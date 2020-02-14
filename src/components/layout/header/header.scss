@@ -1,0 +1,39 @@
+.header {
+    margin-top: 56px; // header
+}
+
+.navbar {
+    @apply flex fixed w-full z-10 top-0 shadow-sm bg-white;
+
+    .left-nav {
+        @apply mr-auto flex flex-1;
+
+        .nav-item {
+            @apply border-b-2 border-transparent text-gray-800;
+            &:hover {
+                @apply text-black;
+            }
+
+            &.active {
+                @apply border-primary;
+                &:hover {
+                    @apply text-primary-dark;
+                }
+            }
+        }
+    }
+    .right-nav {
+        @apply ml-auto flex flex-1;
+    }
+    .logo {
+        @apply mx-auto items-center py-4;
+    }
+
+    .nav-item {
+        @apply px-6 py-3;
+
+        &.active {
+            @apply text-primary;
+        }
+    }
+}

@@ -1,0 +1,18 @@
+.btn {
+    transition: all 0.25s linear;
+    @apply bg-primary text-white font-medium py-2 px-4;
+    &:hover {
+        transition: all 0.25s linear;
+        @apply bg-primary-dark text-white;
+    }
+}
+
+.btn-link {
+    transition: color .25s;
+    @apply no-underline cursor-pointer text-primary;
+
+    &:hover {
+        transition: color .25s;
+        @apply no-underline text-primary-dark;
+    }
+}

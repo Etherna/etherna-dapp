@@ -1,0 +1,47 @@
+body {
+    @apply font-sans antialiased;
+}
+
+a {
+    transition: color .25s;
+    @apply no-underline cursor-pointer text-primary;
+
+    &:hover {
+        transition: color .25s;
+        @apply no-underline text-primary-dark;
+    }
+}
+
+button {
+    &:focus {
+        @apply outline-none;
+    }
+    &:disabled {
+        @apply opacity-50 cursor-not-allowed;
+    }
+}
+
+h1 {
+    @apply text-4xl mb-8 font-semibold;
+    @screen lg {
+        @apply mb-12;
+    }
+}
+h2 {
+    @apply text-3xl mb-5 font-semibold;
+    @screen lg {
+        @apply mb-8;
+    }
+}
+h3 {
+    @apply text-xl mb-3 font-semibold;
+    @screen lg {
+        @apply mb-6;
+    }
+}
+h4 {
+    @apply text-lg mb-2;
+    @screen lg {
+        @apply mb-3;
+    }
+}

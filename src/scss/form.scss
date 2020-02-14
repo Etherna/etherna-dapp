@@ -1,0 +1,20 @@
+label {
+    @apply block uppercase tracking-wide text-gray-700 text-xs font-semibold mb-2;
+}
+
+input[type=text],
+input[type=email],
+input[type=number],
+input[type=date],
+input[type=password],
+textarea {
+    @apply appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 py-3 px-4 leading-tight;
+
+    &:focus {
+        @apply outline-none bg-white border-green-500;
+    }
+}
+
+.form-group {
+    @apply mb-4;
+}
