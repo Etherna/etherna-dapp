@@ -9,8 +9,8 @@ import React from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
 
-import Header from "./header"
-import Sidebar from "./sidebar"
+import Header from "../header"
+import Sidebar from "../sidebar"
 import "./layout.scss"
 
 const Layout = ({ children }) => {

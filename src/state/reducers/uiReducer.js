@@ -7,6 +7,12 @@ const uiReducer = (state = {}, action) => {
                 isFetchingThreeBox: action.isFetchingThreeBox,
             }
 
+        case 'UI_PROFILE_LOADING':
+            return {
+                ...state,
+                isFetchingChannel: action.isFetchingChannel,
+            }
+
         case "UI_3BOX_FAILED":
             return {
                 ...state,

@@ -3,6 +3,7 @@ import Box from "3box"
 import { store } from "../../store"
 import { startPollFlag, pollNetworkAndAddress } from "./addressPoll"
 import getProfile from "../user/getProfile"
+import getChannel from "../channel/getChannel"
 import { fetchEns } from "../../../utils/ensFuncs"
 
 const openBox = (fromSignIn, fromFollowButton) => async dispatch => {
@@ -18,6 +19,7 @@ const openBox = (fromSignIn, fromFollowButton) => async dispatch => {
         startPollFlag()
         pollNetworkAndAddress() // Start polling for address change
         getProfile(currentAddress)
+        getChannel(currentAddress)
 
         dispatch({
             type: "UI_3BOX_LOADING",
@@ -26,9 +28,7 @@ const openBox = (fromSignIn, fromFollowButton) => async dispatch => {
         })
         dispatch({
             type: "UI_PROFILE_LOADING",
-            isFetchingActivity: true,
-            isFetchingWall: true,
-            isFetchingCollectibles: true,
+            isFetchingChannel: true,
         })
     }
 
@@ -45,7 +45,7 @@ const openBox = (fromSignIn, fromFollowButton) => async dispatch => {
 
     try {
         const box = await Box.create(web3Obj.currentProvider)
-        const spaces = []
+        const spaces = ['ETHERNA']
         await box.auth(spaces, {
             address: currentAddress,
         })
@@ -81,23 +81,7 @@ const openBox = (fromSignIn, fromFollowButton) => async dispatch => {
             })
         }
 
-        box.onSyncDone(async () => {
-            const memberSince = await box.public.get("memberSince")
-            let publicActivity
-            let privateActivity
-
-            try {
-                publicActivity = (await box.public.log()) || []
-            } catch (error) {
-                console.error(error)
-            }
-
-            try {
-                privateActivity = (await box.private.log()) || []
-            } catch (error) {
-                console.error(error)
-            }
-
+        box.onSyncDone(() => {
             dispatch({
                 type: "USER_LOGIN_UPDATE",
                 isLoggedIn: true,

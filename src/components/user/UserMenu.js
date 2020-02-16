@@ -1,11 +1,11 @@
-import React, { useState } from "react"
+import React from "react"
 import PropTypes from "prop-types"
 import { connect } from "react-redux"
 
-import LoginButton from "./login-button"
+import LoginButton from "./LoginButton"
 import Avatar from "./Avatar"
 
-import DropDown, { DropDownItem } from "../DropDown"
+import DropDown, { DropDownItem } from "../common/DropDown"
 
 const UserMenu = ({ isLoggedIn, name, image, address, provideConsent, isFetchingThreeBox }) => {
     if (provideConsent) {
@@ -27,8 +27,8 @@ const UserMenu = ({ isLoggedIn, name, image, address, provideConsent, isFetching
                 <Avatar image={image && image[0]} address={address} />
             }
         >
-            <DropDownItem>Sign out</DropDownItem>
-            <DropDownItem>Switch Account</DropDownItem>
+            <DropDownItem action={() => {}}>Sign out</DropDownItem>
+            <DropDownItem action={() => {}}>Switch Account</DropDownItem>
         </DropDown>
     )
 }

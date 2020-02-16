@@ -1,14 +1,14 @@
 import React from "react"
 import PropTypes from "prop-types"
 
-import SidebarItem from "../sidebar-item"
+import SidebarItem from "./SidebarItem"
 
 const ReccomendedChannels = ({ channels }) => {
     return (
         <div className="sidenav-menu">
-            <label className="sidebar-label" htmlFor="">
+            <h6 className="sidebar-label">
                 Reccomended Channels
-            </label>
+            </h6>
             {channels.map(channel => {
                 return (
                     <SidebarItem

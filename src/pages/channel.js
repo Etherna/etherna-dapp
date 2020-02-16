@@ -1,8 +1,7 @@
 import React from "react"
-import { Link, navigate } from "gatsby"
 
-import Layout from "../components/layout"
-import SEO from "../components/seo"
+import Layout from "../components/layout/DefaultLayout"
+import SEO from "../components/layout/SEO"
 
 const ChannelPage = props => (
     <Layout>

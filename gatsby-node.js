@@ -10,6 +10,13 @@
 exports.onCreatePage = async ({ page, actions }) => {
     const { createPage } = actions
 
+    if (page.path.match(/^\/channelEdit\//)) {
+        page.matchPath = "/channel/:id/edit"
+
+        // Update the page.
+        createPage(page)
+    }
+
     if (page.path.match(/^\/channel\//)) {
         page.matchPath = "/channel/:id"
 

@@ -1,8 +1,8 @@
 import React from "react"
 
 import "./sidebar.scss"
-import MyChannel from "./my-channel"
-import ReccomendedChannels from "./reccomended-channels"
+import MyChannel from "./MyChannel"
+import ReccomendedChannels from "./ReccomendedChannels"
 
 const channels = [
     {

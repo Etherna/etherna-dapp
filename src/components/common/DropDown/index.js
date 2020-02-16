@@ -8,13 +8,25 @@ import "./dropdown.scss"
 const DropDown = ({ children, toggleChildren, alignRight }) => {
     const [isDropDownOpen, setDropDownOpen] = useState(false)
 
+    let handleToggle = () => {
+        setDropDownOpen(!isDropDownOpen)
+    }
+
+    let handleKeyDown = e => {
+        if (e.keyCode === 13) {
+            handleToggle()
+        }
+    }
+
     return (
         <>
             <div className="dropdown">
                 <div
                     className="dropdown-toggle"
                     role="button"
-                    onClick={() => setDropDownOpen(!isDropDownOpen)}
+                    tabIndex={0}
+                    onClick={handleToggle}
+                    onKeyDown={handleKeyDown}
                 >
                     {toggleChildren}
                 </div>
@@ -29,9 +41,10 @@ const DropDown = ({ children, toggleChildren, alignRight }) => {
             {isDropDownOpen && (
                 <div
                     className="click-handler"
-                    tabIndex="0"
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setDropDownOpen(false)}
-                    onKeyPress={() => setDropDownOpen(false)}
+                    onKeyDown={() => setDropDownOpen(false)}
                 />
             )}
         </>
@@ -44,9 +57,32 @@ DropDown.propTypes = {
 }
 
 // DropDown item
-const DropDownItem = ({ children }) => (
-    <div className="dropdown-item">{children}</div>
-)
+const DropDownItem = ({ children, action, disabled }) => {
+    let handleAction = () => {
+        action()
+    }
+    let handleKeyDown = e => {
+        if (e.keyCode === 13) {
+            handleAction()
+        }
+    }
+    return (
+        <div
+            className={classnames('dropdown-item', { "disabled": disabled })}
+            role="button"
+            tabIndex={0}
+            onClick={handleAction}
+            onKeyDown={handleKeyDown}
+        >
+            {children}
+        </div>
+    )
+}
+
+DropDownItem.propTypes = {
+    action: PropTypes.func,
+    disabled: PropTypes.bool,
+}
 
 // Exports
 export default DropDown

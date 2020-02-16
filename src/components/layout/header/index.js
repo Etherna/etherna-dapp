@@ -2,8 +2,8 @@ import React from "react"
 import { Location } from "@reach/router"
 import { Link } from "gatsby"
 
-import Image from "../../image"
-import UserMenu from "../../user/user-menu"
+import Image from "../../common/Image"
+import UserMenu from "../../user/UserMenu"
 import "./header.scss"
 
 const ChannelMatches = [/^\/channel\//, /^\/channels/]

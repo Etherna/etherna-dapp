@@ -10,7 +10,7 @@ const Avatar = ({ image, address }) => {
 
     return (
         <div className="avatar">
-            <img src={getImageUrl(image) || blockie} />
+            <img src={getImageUrl(image) || blockie} alt={address} />
         </div>
     )
 }
