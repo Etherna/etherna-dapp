@@ -4,19 +4,23 @@
  * See: https://www.gatsbyjs.org/docs/node-apis/
  */
 
-// You can delete this file if you're not using it
-// exports.onCreateWebpackConfig = ({ actions }) => {
-//     actions.setWebpackConfig({
-//         module: {
-//             rules: [
-//                 {
-//                     test: /\.jsx$/,
-//                     loader: "babel-loader",
-//                 },
-//             ],
-//         },
-//         resolve: {
-//             extensions: [".jsx"],
-//         },
-//     })
-// }
+///
+/// Custom routes
+///
+exports.onCreatePage = async ({ page, actions }) => {
+    const { createPage } = actions
+
+    if (page.path.match(/^\/channel\//)) {
+        page.matchPath = "/channel/:id"
+
+        // Update the page.
+        createPage(page)
+    }
+
+    if (page.path.match(/^\/watch\//)) {
+        page.matchPath = "/watch/:id"
+
+        // Update the page.
+        createPage(page)
+    }
+}

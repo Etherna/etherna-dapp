@@ -42,8 +42,14 @@ const Image = ({ filename, alt, maxWidth }) => (
                 return null
             }
 
-            if (!image.node.childImageSharp && image.node.extension === 'svg') {
-                return <img src={image.node.publicURL} alt={alt} width={maxWidth || null} />
+            if (!image.node.childImageSharp && image.node.extension === "svg") {
+                return (
+                    <img
+                        src={image.node.publicURL}
+                        alt={alt}
+                        width={maxWidth || null}
+                    />
+                )
             }
 
             const imageSizes = image.node.childImageSharp.sizes

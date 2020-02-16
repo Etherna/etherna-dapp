@@ -193,8 +193,7 @@ module.exports = {
             "8": "8px",
         },
         boxShadow: {
-            sm:
-                "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+            sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
             default:
                 "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
             md:
@@ -434,6 +433,7 @@ module.exports = {
             auto: "auto",
             "-1": "-1",
             "0": "0",
+            "1": "1",
             "10": "10",
             "20": "20",
             "30": "30",

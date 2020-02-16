@@ -3,13 +3,14 @@
 }
 
 .navbar {
-    @apply flex fixed w-full z-10 top-0 shadow-sm bg-white;
+    @apply flex fixed w-full z-1 top-0 shadow-sm bg-white;
 
     .left-nav {
-        @apply mr-auto flex flex-1;
+        @apply flex flex-1 justify-start;
 
         .nav-item {
             @apply border-b-2 border-transparent text-gray-800;
+            margin-top: 2px; //balance bottom border
             &:hover {
                 @apply text-black;
             }
@@ -22,9 +23,15 @@
             }
         }
     }
+
     .right-nav {
-        @apply ml-auto flex flex-1;
+        @apply flex flex-1 justify-end items-center;
+
+        @screen sm {
+            @apply pr-2;
+        }
     }
+
     .logo {
         @apply mx-auto items-center py-4;
     }

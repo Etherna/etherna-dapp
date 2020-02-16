@@ -1,0 +1,12 @@
+.video-preview {
+    .video-thumb {
+        @apply w-32 h32 rounded relative;
+
+        .video-duration {
+            @apply absolute right-0 bottom-0 m-2;
+        }
+    }
+    .video-title {
+
+    }
+}

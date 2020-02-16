@@ -1,5 +1,15 @@
+main {
+    @screen sm {
+        @apply ml-72;
+    }
+}
+
 .sidebar {
-    @apply flex flex-col w-72 bg-gray-100 overflow-scroll fixed inset-y-0 left-0 px-2 pt-16;
+    @apply hidden w-72 bg-gray-100 overflow-scroll fixed inset-y-0 left-0 px-2 pt-16;
+
+    @screen sm {
+        @apply flex flex-col;
+    }
 
     .sidenav {
         @apply flex-1;

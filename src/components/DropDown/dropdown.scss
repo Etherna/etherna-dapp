@@ -1,0 +1,35 @@
+.dropdown {
+    @apply relative;
+
+    .dropdown-toggle {
+        @apply cursor-pointer;
+    }
+    .dropdown-menu {
+        @apply hidden absolute top-0 left-0 bg-white rounded shadow z-1;
+        will-change: transform;
+        transform: translate3d(0px, 38px, 0px);
+
+        &.menu-right {
+            @apply right-0 left-auto;
+        }
+        &.open {
+            @apply block;
+        }
+
+        .dropdown-item {
+            @apply px-6 py-2 whitespace-no-wrap cursor-pointer;
+            &:hover {
+                @apply bg-gray-100;
+            }
+        }
+    }
+}
+
+.click-handler {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}

@@ -5,3 +5,6 @@
  */
 
 // You can delete this file if you're not using it
+
+import wrapper from "./src/state/wrapper"
+export const wrapRootElement = wrapper
