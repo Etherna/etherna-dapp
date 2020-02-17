@@ -30,9 +30,10 @@ const DropDown = ({ children, toggleChildren, alignRight }) => {
                 >
                     {toggleChildren}
                 </div>
-                <div className={classnames("dropdown-menu", {
+                <div
+                    className={classnames("dropdown-menu", {
                         "menu-right": alignRight,
-                        "open": isDropDownOpen
+                        open: isDropDownOpen,
                     })}
                 >
                     {children}
@@ -68,7 +69,7 @@ const DropDownItem = ({ children, action, disabled }) => {
     }
     return (
         <div
-            className={classnames('dropdown-item', { "disabled": disabled })}
+            className={classnames("dropdown-item", { disabled: disabled })}
             role="button"
             tabIndex={0}
             onClick={handleAction}

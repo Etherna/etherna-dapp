@@ -7,7 +7,7 @@ const uiReducer = (state = {}, action) => {
                 isFetchingThreeBox: action.isFetchingThreeBox,
             }
 
-        case 'UI_PROFILE_LOADING':
+        case "UI_PROFILE_LOADING":
             return {
                 ...state,
                 isFetchingChannel: action.isFetchingChannel,
@@ -22,7 +22,7 @@ const uiReducer = (state = {}, action) => {
                 errorMessage: action.errorMessage,
             }
 
-        case 'UI_3BOX_FETCHING':
+        case "UI_3BOX_FETCHING":
             return {
                 ...state,
                 isFetchingThreeBox: action.isFetchingThreeBox,
@@ -34,7 +34,6 @@ const uiReducer = (state = {}, action) => {
                 isSyncing: action.isSyncing,
                 onSyncFinished: action.onSyncFinished,
             }
-
 
         case "UI_HANDLE_CONSENT_MODAL":
             return {
@@ -48,6 +47,20 @@ const uiReducer = (state = {}, action) => {
                 ...state,
                 errorMessage: "",
                 showErrorModal: false,
+            }
+
+        case 'UI_UNSUPPORTED_BROWSER_MODAL':
+            return {
+                ...state,
+                showUnsupportedBrowser: action.showUnsupportedBrowser,
+            }
+
+        case 'UI_HANDLE_SWITCHED_ADDRESS_MODAL':
+            return {
+                ...state,
+                switchedAddressModal: action.switchedAddressModal,
+                isFetchingThreeBox: false,
+                prevAddress: action.prevAddress,
             }
 
         default:

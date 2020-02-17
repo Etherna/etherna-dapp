@@ -11,9 +11,7 @@ const ChannelEditPage = ({ id, currentAddress }) => (
         <SEO title="Channel Editing" />
         <h1>channel {id}</h1>
 
-        {currentAddress && currentAddress === id &&
-            <ChannelBlueprint />
-        }
+        {currentAddress && currentAddress === id && <ChannelBlueprint />}
     </Layout>
 )
 
@@ -24,7 +22,7 @@ ChannelEditPage.propTypes = {
 
 const mapState = state => {
     return {
-        currentAddress: state.profile.currentAddress
+        currentAddress: state.profile.currentAddress,
     }
 }
 

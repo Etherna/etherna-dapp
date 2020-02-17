@@ -45,7 +45,7 @@ const openBox = (fromSignIn, fromFollowButton) => async dispatch => {
 
     try {
         const box = await Box.create(web3Obj.currentProvider)
-        const spaces = ['ETHERNA']
+        const spaces = ["ETHERNA"]
         await box.auth(spaces, {
             address: currentAddress,
         })

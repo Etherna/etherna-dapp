@@ -9,5 +9,5 @@ export default combineReducers({
     ui: uiReducer,
     user: userReducer,
     profile: profileReducer,
-    channel: channelsReducer
+    channel: channelsReducer,
 })

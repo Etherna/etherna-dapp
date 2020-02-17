@@ -11,6 +11,7 @@ import { useStaticQuery, graphql } from "gatsby"
 
 import Header from "../Header"
 import Sidebar from "../Sidebar"
+import Modals from "../../modals/ModalsSection"
 import "./layout.scss"
 
 const Layout = ({ children }) => {
@@ -29,6 +30,7 @@ const Layout = ({ children }) => {
             <Header siteTitle={data.site.siteMetadata.title} />
             <Sidebar className="" />
             <main>{children}</main>
+            <Modals />
         </>
     )
 }

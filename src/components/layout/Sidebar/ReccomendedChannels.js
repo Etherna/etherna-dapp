@@ -6,9 +6,7 @@ import SidebarItem from "./SidebarItem"
 const ReccomendedChannels = ({ channels }) => {
     return (
         <div className="sidenav-menu">
-            <h6 className="sidebar-label">
-                Reccomended Channels
-            </h6>
+            <h6 className="sidebar-label">Reccomended Channels</h6>
             {channels.map(channel => {
                 return (
                     <SidebarItem

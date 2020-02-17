@@ -11,7 +11,7 @@ const getChannel = async address => {
             channelName: ethernaSpace.channelName,
             channelDescription: ethernaSpace.channelDescription,
             channelImage: ethernaSpace.channelImage,
-            channelCover: ethernaSpace.channelCover
+            channelCover: ethernaSpace.channelCover,
         })
     } catch (error) {
         console.error(error)

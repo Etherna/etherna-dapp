@@ -1,0 +1,28 @@
+.btn {
+    @apply bg-primary text-white font-medium py-2 px-5 text-sm rounded transition duration-300;
+    &:hover {
+        @apply bg-primary-dark text-white transition duration-300;
+    }
+}
+
+.btn-sm {
+    @apply py-1 px-3 text-xs rounded-sm;
+}
+
+.btn-lg {
+    @apply py-3 px-8 text-base rounded-md;
+}
+
+.btn-outline {
+    @apply border border-primary text-primary bg-transparent rounded;
+    &:hover {
+        @apply border border-primary-dark text-primary-dark bg-transparent rounded;
+    }
+}
+
+.btn-link {
+    @apply no-underline cursor-pointer text-primary transition duration-300;
+    &:hover {
+        @apply no-underline text-primary-dark transition duration-300;
+    }
+}

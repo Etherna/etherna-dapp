@@ -1,12 +1,19 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import React from "react"
+import PropTypes from "prop-types"
+import classnames from "classnames"
 
 import "./modal.scss"
 
-const Modal = ({ children, show, setShow, title, titleTag, showCloseButton }) => {
+const Modal = ({
+    children,
+    show,
+    setShow,
+    title,
+    titleTag,
+    showCloseButton,
+}) => {
     let handleToggle = () => {
-        setShow(!show)
+        setShow && setShow(!show)
     }
 
     let handleKeyDown = e => {
@@ -19,13 +26,11 @@ const Modal = ({ children, show, setShow, title, titleTag, showCloseButton }) =>
 
     return (
         <>
-            <div
-                className={classnames("modal", {"show": show})}
-            >
+            <div className={classnames("modal", { show: show })}>
                 <div className="modal-dialog">
-                    {(title && title !== "" || showCloseButton) &&
+                    {((title && title !== "") || showCloseButton) && (
                         <div className="modal-header">
-                            <TitleTag className="modal-title">{ title }</TitleTag>
+                            <TitleTag className="modal-title">{title}</TitleTag>
                             <div
                                 className="close"
                                 role="button"
@@ -34,12 +39,12 @@ const Modal = ({ children, show, setShow, title, titleTag, showCloseButton }) =>
                                 onKeyDown={handleKeyDown}
                             />
                         </div>
-                    }
+                    )}
                     {children}
                 </div>
             </div>
             <div
-                className={classnames("modal-backdrop", {"show": show})}
+                className={classnames("modal-backdrop", { show: show })}
                 onClick={handleToggle}
                 onKeyDown={handleKeyDown}
             />
@@ -56,7 +61,7 @@ Modal.propTypes = {
 }
 
 Modal.defaultProps = {
-    titleTag: "h5"
+    titleTag: "h5",
 }
 
 export default Modal

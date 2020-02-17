@@ -2,9 +2,7 @@ import React from "react"
 import { connect } from "react-redux"
 import PropTypes from "prop-types"
 
-const ChannelBlueprint = () => (
-    <div>Editing</div>
-)
+const ChannelBlueprint = () => <div>Editing</div>
 
 const ImageObject = PropTypes.shape({
     "@type": PropTypes.string.isRequired,
@@ -20,7 +18,7 @@ ChannelBlueprint.propTypes = {
     channelCover: ImageObject,
 }
 
-const mapState = (state) => {
+const mapState = state => {
     return {
         channelName: state.channel.name,
         channelDescription: state.channel.description,

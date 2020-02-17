@@ -7,7 +7,14 @@ import Avatar from "./Avatar"
 
 import DropDown, { DropDownItem } from "../common/DropDown"
 
-const UserMenu = ({ isLoggedIn, name, image, address, provideConsent, isFetchingThreeBox }) => {
+const UserMenu = ({
+    isLoggedIn,
+    name,
+    image,
+    address,
+    provideConsent,
+    isFetchingThreeBox,
+}) => {
     if (provideConsent) {
         return <small>Syncing...</small>
     }
