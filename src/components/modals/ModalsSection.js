@@ -7,6 +7,7 @@ import UnsupportedBrowserModal from "./UnsupportedBrowserModal"
 import MustConsentModal from "./MustConsentModal"
 import ErrorModal from "./ErrorModal"
 import SwitchedAddressModal from "./SwitchedAddressModal"
+import LoadingChannelModal from "./LoadingChannelModal"
 
 const ModalsSection = ({
     error,
@@ -15,7 +16,9 @@ const ModalsSection = ({
     provideConsent,
     showUnsupportedBrowser,
     switchedAddressModal,
-    showErrorModal
+    showErrorModal,
+    isFetchingThreeBox,
+    isFetchingChannel
 }) => {
     const mustConsentError = error && error.message && error.message.substring(0, 65) === 'Error: Web3 Wallet Message Signature: User denied message signature.'
 
@@ -42,6 +45,10 @@ const ModalsSection = ({
                     prevAddress={prevAddress}
                 />
             }
+
+            {(isFetchingThreeBox || isFetchingChannel) &&
+                <LoadingChannelModal />
+            }
         </section>
     )
 }
@@ -54,6 +61,8 @@ ModalsSection.propTypes = {
     showUnsupportedBrowser: PropTypes.bool,
     showErrorModal: PropTypes.bool,
     switchedAddressModal: PropTypes.bool,
+    isFetchingThreeBox: PropTypes.bool,
+    isFetchingChannel: PropTypes.bool,
 }
 
 ModalsSection.defaultProps = {
@@ -64,6 +73,8 @@ ModalsSection.defaultProps = {
     showUnsupportedBrowser: false,
     showErrorModal: false,
     switchedAddressModal: false,
+    isFetchingThreeBox: false,
+    isFetchingChannel: false,
 }
 
 const mapState = state => {
@@ -73,6 +84,8 @@ const mapState = state => {
         showErrorModal: state.ui.showErrorModal,
         switchedAddressModal: state.ui.switchedAddressModal,
         prevAddress: state.ui.prevAddress,
+        isFetchingThreeBox: state.ui.isFetchingThreeBox,
+        isFetchingChannel: state.ui.isFetchingChannel,
     }
 }
 

@@ -3,7 +3,7 @@ import Box from "3box"
 import { store } from "../../store"
 import { startPollFlag, pollNetworkAndAddress } from "./addressPoll"
 import getProfile from "../user/getProfile"
-import getChannel from "../channel/getChannel"
+import getMyChannel from "../channel/getMyChannel"
 import { fetchEns } from "../../../utils/ensFuncs"
 
 const openBox = (fromSignIn, fromFollowButton) => async dispatch => {
@@ -19,7 +19,7 @@ const openBox = (fromSignIn, fromFollowButton) => async dispatch => {
         startPollFlag()
         pollNetworkAndAddress() // Start polling for address change
         getProfile(currentAddress)
-        getChannel(currentAddress)
+        getMyChannel(currentAddress)
 
         dispatch({
             type: "UI_3BOX_LOADING",

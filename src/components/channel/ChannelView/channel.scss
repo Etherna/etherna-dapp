@@ -1,0 +1,28 @@
+.channel {
+    @apply flex flex-wrap;
+
+    .cover {
+        @apply w-full bg-gray-100 -mb-8;
+
+        .cover-image {
+            @apply w-full h-auto;
+        }
+    }
+
+    .channel-avatar {
+        @apply relative w-32 h-32 border-4 border-white bg-gray-200
+            rounded-full overflow-hidden;
+
+        img {
+            @apply w-full h-full object-cover;
+        }
+    }
+
+    .channel-name {
+        @apply mb-4 text-gray-900;
+    }
+
+    .channel-bio {
+        @apply text-lg text-gray-800;
+    }
+}

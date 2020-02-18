@@ -5,7 +5,7 @@
         @apply cursor-pointer;
     }
     .dropdown-menu {
-        @apply hidden absolute top-0 left-0 bg-white rounded shadow z-1;
+        @apply hidden absolute top-0 left-0 bg-white rounded shadow z-1 overflow-hidden;
         will-change: transform;
         transform: translate3d(0px, 38px, 0px);
 
@@ -23,6 +23,10 @@
                 &:hover {
                     @apply bg-gray-100;
                 }
+            }
+
+            a, a:hover {
+                @apply text-gray-800;
             }
         }
     }

@@ -5,7 +5,7 @@ const channelReducer = (state = {}, action) => {
                 ...state,
                 channelName: action.channelName,
                 channelDescription: action.channelDescription,
-                channelImage: action.channelImage,
+                channelAvatar: action.channelAvatar,
                 channelCover: action.channelCover,
             }
 

@@ -1,0 +1,53 @@
+.channel-editor {
+    .cover {
+        .cover-input {
+            @apply relative h-32 m-0;
+
+            &.active {
+                @apply h-auto;
+            }
+
+            [type=file] {
+                @apply hidden;
+            }
+
+            .cover-actions {
+                @apply flex absolute bottom-0 right-0 mb-3 mr-3;
+
+                .btn {
+                    @apply h-8 py-1 rounded-full mx-2 normal-case cursor-pointer;
+                    background-color: rgba($color: #000000, $alpha: 0.45);
+                    &:hover {
+                        background-color: rgba($color: #000000, $alpha: 0.45);
+                    }
+                }
+                .remove-button {
+                    @apply w-8 p-0;
+                }
+            }
+        }
+    }
+
+    .channel-avatar {
+        [type=file] {
+            @apply hidden;
+        }
+
+        &::after {
+            content: attr(data-label);
+            background-color: rgba($color: #000000, $alpha: 0.45);
+            line-height: theme('spacing.32');
+            @apply absolute left-0 top-0 w-full h-full cursor-pointer text-gray-200
+                text-center text-sm normal-case opacity-0 transition-all duration-200;
+        }
+        &:hover {
+            &::after {
+                @apply opacity-100 transition-all duration-200;
+            }
+        }
+
+        img {
+            @apply w-full h-full object-cover;
+        }
+    }
+}

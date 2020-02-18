@@ -16,12 +16,14 @@ const Avatar = ({ image, address }) => {
 }
 
 Avatar.propTypes = {
-    image: PropTypes.shape({
-        "@type": PropTypes.string.isRequired,
-        contentUrl: PropTypes.shape({
-            "/": PropTypes.string.isRequired,
-        }).isRequired,
-    }),
+    image: PropTypes.arrayOf(
+        PropTypes.shape({
+            "@type": PropTypes.string.isRequired,
+            contentUrl: PropTypes.shape({
+                "/": PropTypes.string.isRequired,
+            }).isRequired,
+        })
+    ),
     address: PropTypes.string,
 }
 

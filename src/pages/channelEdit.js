@@ -1,19 +1,29 @@
-import React from "react"
+import React, { useEffect } from "react"
 import PropTypes from "prop-types"
 import { connect } from "react-redux"
+import { navigate } from "gatsby"
 
 import Layout from "../components/layout/DefaultLayout"
 import SEO from "../components/layout/SEO"
-import ChannelBlueprint from "../components/channel/ChannelBlueprint"
+import ChannelEditor from "../components/channel/ChannelEditor"
 
-const ChannelEditPage = ({ id, currentAddress }) => (
-    <Layout>
-        <SEO title="Channel Editing" />
-        <h1>channel {id}</h1>
+const ChannelEditPage = ({ id, currentAddress, channelName }) => {
+    useEffect(() => {
+        console.log(currentAddress, id);
 
-        {currentAddress && currentAddress === id && <ChannelBlueprint />}
-    </Layout>
-)
+        if (!currentAddress || currentAddress !== id) {
+            navigate(`/channel/${id}`)
+        }
+    })
+    return (
+        <Layout>
+            <SEO title={`Editing channel ${channelName || id}`} />
+            {currentAddress && currentAddress === id &&
+                <ChannelEditor address={id} />
+            }
+        </Layout>
+    )
+}
 
 ChannelEditPage.propTypes = {
     id: PropTypes.string.isRequired,
@@ -22,7 +32,8 @@ ChannelEditPage.propTypes = {
 
 const mapState = state => {
     return {
-        currentAddress: state.profile.currentAddress,
+        currentAddress: state.user.currentAddress,
+        channelName: state.channel.channelName,
     }
 }
 

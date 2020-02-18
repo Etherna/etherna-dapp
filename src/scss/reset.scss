@@ -45,3 +45,9 @@ h4 {
         @apply mb-3;
     }
 }
+
+[role=button] {
+    &:focus {
+        outline: none;
+    }
+}

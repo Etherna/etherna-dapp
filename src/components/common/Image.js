@@ -13,7 +13,7 @@ import Img from "gatsby-image"
  * - `useStaticQuery`: https://www.gatsbyjs.org/docs/use-static-query/
  */
 
-const Image = ({ filename, alt, maxWidth }) => (
+const Image = ({ filename, alt, maxWidth, className }) => (
     <StaticQuery
         query={graphql`
             query {
@@ -47,6 +47,7 @@ const Image = ({ filename, alt, maxWidth }) => (
                     <img
                         src={image.node.publicURL}
                         alt={alt}
+                        className={className}
                         width={maxWidth || null}
                     />
                 )

@@ -1,6 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { connect } from "react-redux"
+import { Link } from "gatsby"
 
 import LoginButton from "./LoginButton"
 import Avatar from "./Avatar"
@@ -10,7 +11,7 @@ import DropDown, { DropDownItem } from "../common/DropDown"
 const UserMenu = ({
     isLoggedIn,
     name,
-    image,
+    avatar,
     address,
     provideConsent,
     isFetchingThreeBox,
@@ -31,9 +32,12 @@ const UserMenu = ({
         <DropDown
             alignRight={true}
             toggleChildren={
-                <Avatar image={image && image[0]} address={address} />
+                <Avatar image={avatar} address={address} />
             }
         >
+            <DropDownItem action={() => {}}>
+                <Link to={`/channel/${address}/edit`}>Edit your channel</Link>
+            </DropDownItem>
             <DropDownItem action={() => {}}>Sign out</DropDownItem>
             <DropDownItem action={() => {}}>Switch Account</DropDownItem>
         </DropDown>
@@ -43,7 +47,7 @@ const UserMenu = ({
 UserMenu.propTypes = {
     isLoggedIn: PropTypes.bool.isRequired,
     name: PropTypes.string,
-    image: PropTypes.arrayOf(Avatar.propTypes.image),
+    avatar: PropTypes.arrayOf(Avatar.propTypes.image),
     address: PropTypes.string,
     provideConsent: PropTypes.bool.isRequired,
     isFetchingThreeBox: PropTypes.bool.isRequired,
@@ -52,8 +56,8 @@ UserMenu.propTypes = {
 const mapState = state => {
     return {
         isLoggedIn: state.user.isLoggedIn || false,
-        name: state.profile.name,
-        image: state.profile.image,
+        name: state.channel.channelName,
+        avatar: state.channel.channelAvatar,
         address: state.user.currentAddress,
         provideConsent: state.ui.provideConsent || false,
         isFetchingThreeBox: state.ui.isFetchingThreeBox || false,

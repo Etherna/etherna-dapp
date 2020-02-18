@@ -1,25 +1,37 @@
 const axios = require("axios")
 
 export const SwarmGateway = "https://swarm-gateways.net"
-export const IpfsGateway = "https://ipfs.infura.io:5001/api/v0"
+export const IpfsGateway = "https://ipfs.infura.io"
+
+export const isImageObject = (imgObject) => {
+    if (imgObject && typeof(imgObject) === "object") {
+        let hash = imgObject &&
+            imgObject[0] &&
+            imgObject[0].contentUrl &&
+            imgObject[0].contentUrl["/"]
+        return hash && typeof(hash) == "string"
+    }
+    return false
+}
 
 export const getImageUrl = imageObject => {
-    const type = imageObject && imageObject["@type"]
+    const type = imageObject && imageObject[0] && imageObject[0]["@type"]
 
     if (type !== "ImageObject" && type !== "SwarmObject") {
         return null
     }
-    const hash = imageObject.contentUrl && imageObject.contentUrl["/"]
+
+    const hash = imageObject[0].contentUrl && imageObject[0].contentUrl["/"]
     return type !== "ImageObject"
         ? `${SwarmGateway}/bzz-raw://${hash}`
-        : `${IpfsGateway}/cat?arg=${hash}`
+        : `${IpfsGateway}/ipfs/${hash}`
 }
 
 export const uploadImageToSwarm = async (formData, type = "swarm") => {
     const endpoint =
         type.toLowerCase() !== "ipfs"
             ? `${SwarmGateway}/bzz-raw:/`
-            : `${IpfsGateway}/add`
+            : `${IpfsGateway}:5001/api/v0/add`
 
     try {
         if (type === "ipfs") {
@@ -42,4 +54,16 @@ export const isValidHash = (hash, type = "swarm") => {
     return type.toLowerCase() !== "ipfs"
         ? /^[0-9a-f]{64}$/.test(hash)
         : /^[0-9a-zA-Z]*$/.test(hash)
+}
+
+export const fileReaderPromise = (file) => {
+    return new Promise((resolve, reject) => {
+        let fr = new FileReader()
+        fr.onload = () => {
+            resolve(fr.result)
+        }
+        fr.onabort = reject
+        fr.onerror = reject
+        fr.readAsArrayBuffer(file)
+    })
 }
