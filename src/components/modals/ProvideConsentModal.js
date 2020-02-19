@@ -18,7 +18,9 @@ const ProvideConsentModal = () => {
                 <Image className="mx-auto" filename="spinner.svg" maxWidth="60" />
             </div>
             <div className="flex">
-                <Button className="mx-auto" action={closeConsentModal}>Close</Button>
+                <Button className="mx-auto" action={closeConsentModal} style="secondary">
+                    Close
+                </Button>
             </div>
         </Modal>
     )

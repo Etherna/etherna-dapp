@@ -5,7 +5,7 @@ main {
 }
 
 .sidebar {
-    @apply hidden w-72 bg-gray-100 overflow-scroll fixed inset-y-0 left-0 px-2 pt-16;
+    @apply hidden w-72 bg-gray-100 overflow-scroll fixed inset-y-0 left-0 pt-16;
 
     @screen sm {
         @apply flex flex-col;
@@ -18,9 +18,9 @@ main {
             @apply flex flex-col mt-6;
 
             .sidebar-item {
-                @apply flex items-center text-gray-800 py-2;
+                @apply flex items-center text-gray-800 py-2 px-3 transition duration-200;
                 &:hover {
-                    @apply text-black;
+                    @apply text-black bg-gray-200 transition duration-200;
                 }
 
                 .sidebar-item-image {
@@ -34,7 +34,10 @@ main {
     }
 
     .sidebar-label {
-        @apply block uppercase tracking-wide text-gray-700 text-xs font-semibold mb-2;
+        @apply block uppercase tracking-wide text-gray-700 text-xs font-semibold mb-2 px-3;
+    }
+    .sidebar-text {
+        @apply mx-3 text-gray-500;
     }
 
     .text-muted {

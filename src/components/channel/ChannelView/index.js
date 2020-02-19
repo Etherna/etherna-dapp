@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react"
-import { connect } from "react-redux"
 import PropTypes from "prop-types"
-import { Link } from "gatsby"
+import { connect } from "react-redux"
+import { Link, navigate } from "gatsby"
 
 import "./channel.scss"
+import SEO from "../../layout/SEO"
 import getChannel from "../../../state/actions/channel/getChannel"
 import {
     isImageObject,
@@ -22,45 +23,53 @@ const ChannelView = ({ currentAddress, channelAddress }) => {
             setCurrentChannelAddress(channelAddress)
             // Get channel data
             getChannel(channelAddress).then(channelData => {
+                if (Object.keys(channelData).length === 0) {
+                    navigate("/404")
+                    return
+                }
                 setChannelName(channelData.channelName)
                 setChannelDescription(channelData.channelDescription)
                 setChannelAvatar(channelData.channelAvatar)
                 setChannelCover(channelData.channelCover)
             }).catch(error => {
                 console.error(error)
+                navigate("/404")
             })
         }
     })
 
     return (
-        <div className="channel">
-            {isImageObject(channelCover) &&
-                <div className="cover">
-                    <img src={getImageUrl(channelCover)} alt={channelName} className="cover-image" />
-                </div>
-            }
+        <>
+            <SEO title={channelName || ""} />
+            <div className="channel">
+                {isImageObject(channelCover) &&
+                    <div className="cover">
+                        <img src={getImageUrl(channelCover)} alt={channelName} className="cover-image" />
+                    </div>
+                }
 
-            <div className="row items-center px-4">
-                <div className="channel-avatar">
-                    {isImageObject(channelAvatar) &&
-                        <img src={getImageUrl(channelAvatar)} alt={channelName} />
+                <div className="row items-center px-4">
+                    <div className="channel-avatar">
+                        {isImageObject(channelAvatar) &&
+                            <img src={getImageUrl(channelAvatar)} alt={channelName} />
+                        }
+                    </div>
+                    {currentAddress && currentAddress === channelAddress &&
+                        <Link to={`/channel/${channelAddress}/edit`} className="btn ml-auto self-center">Customize channel</Link>
                     }
                 </div>
-                {currentAddress && currentAddress === channelAddress &&
-                    <Link to={`/channel/${channelAddress}/edit`} className="btn ml-auto self-center">Customize channel</Link>
-                }
-            </div>
 
-            <div className="row">
-                <div className="w-full sm:w-1/3 md:w-1/4 p-4">
-                    <h1 className="channel-name">{channelName}</h1>
-                    <p className="channel-bio">{channelDescription}</p>
-                </div>
-                <div className="w-full sm:w-2/3 md:w-3/4 p-4 bg-gray-100">
-
+                <div className="row">
+                    <div className="col sm:w-1/3 md:w-1/4 p-4">
+                        <h1 className="channel-name">{channelName}</h1>
+                        <p className="channel-bio">{channelDescription}</p>
+                    </div>
+                    <div className="col sm:w-2/3 md:w-3/4 p-4">
+                        <p className="text-gray-500 text-center my-16">This channel has yet to upload a video</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

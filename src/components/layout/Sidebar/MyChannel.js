@@ -1,12 +1,50 @@
 import React from "react"
+import PropTypes from "prop-types"
+import { connect } from "react-redux"
+import { Link } from "gatsby"
 
-const MyChannel = () => {
+import SidebarItem from "./SidebarItem"
+import { getImageUrl } from "../../../utils/swarm"
+
+const MyChannel = ({ isLoggedIn, currentAddress, channelName, channelAvatar }) => {
+    const hasChannel = isLoggedIn && channelName !== ""
+
     return (
         <div className="sidenav-menu">
             <h6 className="sidebar-label">My Channel</h6>
-            <small className="text-muted">Unlock your account</small>
+            {!isLoggedIn &&
+                <small className="sidebar-text">Unlock your account</small>
+            }
+            {(isLoggedIn && !hasChannel) &&
+                <Link to={`/channel/${currentAddress}/edit`}>
+                    <small className="sidebar-text">Create your channel</small>
+                </Link>
+            }
+            {hasChannel &&
+                <SidebarItem
+                    name={channelName}
+                    imageUrl={getImageUrl(channelAvatar)}
+                    link={`/channel/${currentAddress}`}
+                />
+            }
         </div>
     )
 }
 
-export default MyChannel
+MyChannel.propTypes = {
+    isLoggedIn: PropTypes.bool,
+    currentAddress: PropTypes.string,
+    channelName: PropTypes.string,
+    channelAvatar: PropTypes.array,
+}
+
+const mapState = (state) => {
+    return {
+        isLoggedIn: state.user.isLoggedIn,
+        currentAddress: state.user.currentAddress,
+        channelName: state.channel.channelName,
+        channelAvatar: state.channel.channelAvatar,
+    }
+}
+
+export default connect(mapState)(MyChannel)

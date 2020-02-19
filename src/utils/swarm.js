@@ -15,6 +15,10 @@ export const isImageObject = (imgObject) => {
 }
 
 export const getImageUrl = imageObject => {
+    if (typeof imageObject === "string") {
+        return `${SwarmGateway}/bzz-raw://${imageObject}`
+    }
+
     const type = imageObject && imageObject[0] && imageObject[0]["@type"]
 
     if (type !== "ImageObject" && type !== "SwarmObject") {

@@ -20,6 +20,13 @@
     }
 }
 
+.btn-secondary {
+    @apply bg-gray-500;
+    &:hover {
+        @apply bg-gray-600;
+    }
+}
+
 .btn-link {
     @apply no-underline cursor-pointer text-primary transition duration-300;
     &:hover {

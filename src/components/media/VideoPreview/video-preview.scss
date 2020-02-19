@@ -1,12 +1,43 @@
 .video-preview {
-    .video-thumb {
-        @apply w-32 h32 rounded relative;
+    @apply w-72 m-1;
 
-        .video-duration {
-            @apply absolute right-0 bottom-0 m-2;
+    a {
+        @apply text-gray-800;
+        &:hover {
+            @apply text-gray-900;
         }
     }
-    .video-title {
+    .video-thumbnail {
+        @apply w-full h-48 rounded relative;
 
+        img {
+            @apply w-full h-full object-cover object-center;
+        }
+
+        .video-duration {
+            @apply absolute right-0 bottom-0 m-2 px-1 bg-gray-900 rounded-sm
+                text-xs text-white font-semibold;
+        }
+    }
+
+    .video-info {
+        @apply flex mt-2;
+
+        .avatar {
+            @apply mr-2;
+        }
+        .video-stats {
+            @apply flex flex-col flex-1;
+
+            .video-title {
+                @apply font-semibold mb-0 leading-tight;
+            }
+            .channel-name {
+                @apply mb-0 font-semibold text-sm text-gray-600 transition-colors duration-200;
+                &:hover {
+                    @apply text-gray-800 transition-colors duration-200;
+                }
+            }
+        }
     }
 }

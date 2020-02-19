@@ -17,3 +17,7 @@
 .row {
     @apply flex flex-wrap w-full;
 }
+
+.col {
+    @apply w-full;
+}

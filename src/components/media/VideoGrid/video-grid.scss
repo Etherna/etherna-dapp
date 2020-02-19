@@ -1,0 +1,10 @@
+.video-grid-header {
+    @apply mx-4 mt-4 mb-2;
+
+    h1, h2, h3, h4 {
+        @apply mb-1;
+    }
+}
+.video-grid {
+    @apply flex flex-wrap mx-4;
+}

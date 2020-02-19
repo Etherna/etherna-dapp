@@ -19,10 +19,10 @@
     }
 
     .channel-name {
-        @apply mb-4 text-gray-900;
+        @apply mb-4 text-gray-900 text-3xl font-semibold;
     }
 
     .channel-bio {
-        @apply text-lg text-gray-800;
+        @apply text-lg text-gray-700;
     }
 }

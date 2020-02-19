@@ -3,7 +3,7 @@
         overflow-y-auto z-20 pointer-events-none;
 
     .modal-dialog {
-        @apply fixed max-w-2xl min-w-xs w-1/2 bg-white p-6
+        @apply fixed max-w-xl min-w-xs w-1/2 bg-white p-6
             border border-gray-100 rounded shadow-lg
             transition-all duration-200 opacity-0 pointer-events-auto;
         left: 50%;

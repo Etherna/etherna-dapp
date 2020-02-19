@@ -128,7 +128,9 @@ const ChannelEditor = ({ address, name, description, avatar, cover }) => {
                     </div>
                 </label>
                 {!isSavingChannel &&
-                    <Button className="ml-auto" action={handleSubmit}>Save</Button>
+                    <Button className="ml-auto" action={handleSubmit} disabled={channelName === ""}>
+                        Save
+                    </Button>
                 }
                 {isSavingChannel &&
                     <Image filename="spinner.svg" maxWidth="50" className="ml-auto" />
