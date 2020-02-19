@@ -23,11 +23,4 @@ exports.onCreatePage = async ({ page, actions }) => {
         // Update the page.
         createPage(page)
     }
-
-    if (page.path.match(/^\/watch\//)) {
-        page.matchPath = "/watch/:id"
-
-        // Update the page.
-        createPage(page)
-    }
 }

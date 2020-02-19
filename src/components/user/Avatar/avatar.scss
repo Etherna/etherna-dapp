@@ -1,7 +1,7 @@
 .avatar {
-    @apply border-2 border-white overflow-hidden rounded-full;
+    @apply border-2 border-white overflow-hidden w-10 h-10 rounded-full;
 
     img {
-        @apply w-10 h-10 object-cover;
+        @apply w-full h-full object-cover;
     }
 }

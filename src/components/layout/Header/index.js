@@ -2,12 +2,13 @@ import React from "react"
 import { Location } from "@reach/router"
 import { Link } from "gatsby"
 
+import "./header.scss"
 import Image from "../../common/Image"
 import UserMenu from "../../user/UserMenu"
-import "./header.scss"
+import * as Routes from "../../../routes"
 
 const ChannelMatches = [/^\/channel\//, /^\/channels/]
-const ExplorelMatches = [/^\/watch\//]
+const ExploreMatches = [/^\/watch/]
 
 const anyMatch = (patterns, string) => {
     return patterns.filter(p => string.match(p)).length > 0
@@ -27,7 +28,7 @@ const Header = props => {
                                         "nav-item" +
                                         (location.pathname === "/" ||
                                         anyMatch(
-                                            ExplorelMatches,
+                                            ExploreMatches,
                                             location.pathname
                                         )
                                             ? " active"
@@ -37,7 +38,7 @@ const Header = props => {
                                     Explore
                                 </Link>
                                 <Link
-                                    to="/channels"
+                                    to={Routes.getChannelsLink()}
                                     className={
                                         "nav-item" +
                                         (anyMatch(
@@ -51,7 +52,7 @@ const Header = props => {
                                     Channels
                                 </Link>
                                 <Link
-                                    to="/how-it-works"
+                                    to={Routes.getHowItWorksLink()}
                                     className="nav-item"
                                     activeClassName="active"
                                 >

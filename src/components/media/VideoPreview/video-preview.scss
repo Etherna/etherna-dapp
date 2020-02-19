@@ -1,5 +1,5 @@
 .video-preview {
-    @apply w-72 m-1;
+    @apply w-full;
 
     a {
         @apply text-gray-800;
@@ -8,10 +8,21 @@
         }
     }
     .video-thumbnail {
-        @apply w-full h-48 rounded relative;
+        @apply w-full rounded relative;
+
+        &::before {
+            content: "";
+            float: left;
+            padding-bottom: 62%;
+        }
+        &::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
 
         img {
-            @apply w-full h-full object-cover object-center;
+            @apply absolute top-0 left-0 w-full h-full object-cover object-center;
         }
 
         .video-duration {

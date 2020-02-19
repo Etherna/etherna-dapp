@@ -6,13 +6,12 @@ import { navigate } from "gatsby"
 import Layout from "../components/layout/DefaultLayout"
 import SEO from "../components/layout/SEO"
 import ChannelEditor from "../components/channel/ChannelEditor"
+import * as Routes from "../routes"
 
 const ChannelEditPage = ({ id, currentAddress, channelName }) => {
     useEffect(() => {
-        console.log(currentAddress, id);
-
         if (!currentAddress || currentAddress !== id) {
-            navigate(`/channel/${id}`)
+            navigate(Routes.getChannelLink(id))
         }
     })
     return (

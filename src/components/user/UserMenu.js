@@ -5,8 +5,8 @@ import { Link } from "gatsby"
 
 import LoginButton from "./LoginButton"
 import Avatar from "./Avatar"
-
 import DropDown, { DropDownItem } from "../common/DropDown"
+import * as Routes from "../../routes"
 
 const UserMenu = ({
     isLoggedIn,
@@ -36,7 +36,7 @@ const UserMenu = ({
             }
         >
             <DropDownItem action={() => {}}>
-                <Link to={`/channel/${address}/edit`}>Edit your channel</Link>
+                <Link to={Routes.getChannelEditingLink(address)}>Edit your channel</Link>
             </DropDownItem>
             <DropDownItem action={() => {}}>Sign out</DropDownItem>
             <DropDownItem action={() => {}}>Switch Account</DropDownItem>

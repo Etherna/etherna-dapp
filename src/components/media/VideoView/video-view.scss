@@ -1,0 +1,25 @@
+.video-watch {
+    max-width: theme('screens.xl');
+    @apply mx-auto px-12;
+
+    .video-title {
+        @apply mb-4 font-semibold;
+    }
+    .video-stats {
+        @apply my-4;
+
+        .video-channel {
+            @apply flex items-center;
+            .channel-name {
+                @apply mb-0 text-base font-semibold text-gray-800;
+            }
+        }
+    }
+    .video-description {
+        @apply mt-4;
+    }
+
+    hr {
+        @apply border-gray-200;
+    }
+}

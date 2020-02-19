@@ -2,7 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 import makeBlockie from "ethereum-blockies-base64"
 
-import { getImageUrl } from "../../../utils/swarm"
+import { getResourceUrl } from "../../../utils/swarm"
 import "./avatar.scss"
 
 const Avatar = ({ image, address, size }) => {
@@ -11,7 +11,7 @@ const Avatar = ({ image, address, size }) => {
     return (
         <div className="avatar">
             <img
-                src={getImageUrl(image) || blockie}
+                src={getResourceUrl(image) || blockie}
                 alt={address}
                 style={{
                     width: size ? `${size}px` : null,

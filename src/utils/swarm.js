@@ -14,12 +14,14 @@ export const isImageObject = (imgObject) => {
     return false
 }
 
-export const getImageUrl = imageObject => {
+export const getResourceUrl = (imageObject, type = "swarm") => {
     if (typeof imageObject === "string") {
-        return `${SwarmGateway}/bzz-raw://${imageObject}`
+        return type.toLowerCase() !== "ipfs" ?
+            `${SwarmGateway}/bzz-raw://${imageObject}` :
+            `${IpfsGateway}/ipfs/${imageObject}`
     }
 
-    const type = imageObject && imageObject[0] && imageObject[0]["@type"]
+    type = imageObject && imageObject[0] && imageObject[0]["@type"]
 
     if (type !== "ImageObject" && type !== "SwarmObject") {
         return null

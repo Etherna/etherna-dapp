@@ -10,6 +10,7 @@ import {
     isImageObject,
     getImageUrl
 } from "../../../utils/swarm"
+import * as Routes from "../../../routes"
 
 const ChannelView = ({ currentAddress, channelAddress }) => {
     const [currentChannelAddress, setCurrentChannelAddress] = useState(undefined)
@@ -55,7 +56,7 @@ const ChannelView = ({ currentAddress, channelAddress }) => {
                         }
                     </div>
                     {currentAddress && currentAddress === channelAddress &&
-                        <Link to={`/channel/${channelAddress}/edit`} className="btn ml-auto self-center">Customize channel</Link>
+                        <Link to={Routes.getChannelEditingLink(channelAddress)} className="btn ml-auto self-center">Customize channel</Link>
                     }
                 </div>
 

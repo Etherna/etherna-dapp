@@ -14,6 +14,7 @@ import {
     uploadImageToSwarm,
     fileReaderPromise
 } from "../../../utils/swarm"
+import * as Routes from "../../../routes"
 import actions from "../../../state/actions/channel"
 
 const { updateChannel } = actions
@@ -72,7 +73,7 @@ const ChannelEditor = ({ address, name, description, avatar, cover }) => {
             channelCover
         )
         if (saved) {
-            navigate(`/channel/${address}`)
+            navigate(Routes.getChannelLink(address))
         }
         setSavingChannel(false)
     }

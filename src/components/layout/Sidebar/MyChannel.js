@@ -5,6 +5,7 @@ import { Link } from "gatsby"
 
 import SidebarItem from "./SidebarItem"
 import { getImageUrl } from "../../../utils/swarm"
+import * as Routes from "../../../routes"
 
 const MyChannel = ({ isLoggedIn, currentAddress, channelName, channelAvatar }) => {
     const hasChannel = isLoggedIn && channelName !== ""
@@ -16,7 +17,7 @@ const MyChannel = ({ isLoggedIn, currentAddress, channelName, channelAvatar }) =
                 <small className="sidebar-text">Unlock your account</small>
             }
             {(isLoggedIn && !hasChannel) &&
-                <Link to={`/channel/${currentAddress}/edit`}>
+                <Link to={Routes.getChannelEditingLink(currentAddress)}>
                     <small className="sidebar-text">Create your channel</small>
                 </Link>
             }
@@ -24,7 +25,7 @@ const MyChannel = ({ isLoggedIn, currentAddress, channelName, channelAvatar }) =
                 <SidebarItem
                     name={channelName}
                     imageUrl={getImageUrl(channelAvatar)}
-                    link={`/channel/${currentAddress}`}
+                    link={Routes.getChannelLink(currentAddress)}
                 />
             }
         </div>

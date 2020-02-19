@@ -5,16 +5,17 @@ import { Link } from "gatsby"
 import "./video-preview.scss"
 import Image from "../../common/Image"
 import Avatar from "../../user/Avatar"
-import { getTimeValues } from "../time"
 import getChannel from "../../../state/actions/channel/getChannel"
+import { getTimeValues } from "../time"
+import * as Routes from "../../../routes"
 
 const VideoPreview = ({ hash, title, thumbnail, duration, channel }) => {
     const { hours, minutes, seconds } = getTimeValues(duration)
     const [fetchedChannel, setFetchedChannel] = useState(false)
     const [channelName, setChannelName] = useState(undefined)
     const [channelAvatar, setChannelAvatar] = useState(undefined)
-    const channelLink = `/channel/${channel}`
-    const videoLink = `/watch/${hash}`
+    const channelLink = Routes.getChannelLink(channel)
+    const videoLink = Routes.getVideoLink(hash)
 
     if (!fetchedChannel && channel) {
         setFetchedChannel(true)

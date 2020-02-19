@@ -2,6 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 
 import SidebarItem from "./SidebarItem"
+import * as Routes from "../../../routes"
 
 const ReccomendedChannels = ({ channels }) => {
     return (
@@ -12,7 +13,7 @@ const ReccomendedChannels = ({ channels }) => {
                     <SidebarItem
                         imageUrl={channel.imageUrl}
                         name={channel.name}
-                        link={`/channel/${channel.address}`}
+                        link={Routes.getChannelLink(channel.address)}
                         key={channel.address}
                     />
                 )
