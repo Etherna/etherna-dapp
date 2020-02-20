@@ -14,7 +14,12 @@ const UnsupportedBrowserModal = () => {
                 In alternative you can use Chrome or Brave browsers.
             </p>
             <div className="flex">
-                <Button className="mx-auto" action={closeUnsupportedBrowserModal}>Close</Button>
+                <Button
+                    className="mx-auto"
+                    action={closeUnsupportedBrowserModal}
+                >
+                    Close
+                </Button>
             </div>
         </Modal>
     )

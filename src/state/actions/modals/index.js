@@ -3,7 +3,7 @@ import { store } from "../../store"
 export const closeErrorModal = () => {
     store.dispatch({
         type: "UI_CLOSE_ERROR_MODAL",
-        errorMessage: '',
+        errorMessage: "",
         showErrorModal: false,
     })
 }
@@ -22,10 +22,9 @@ export const closeUnsupportedBrowserModal = () => {
     })
 }
 
-
 export const handleSwitchedAddressModal = () => {
     store.dispatch({
-        type: 'UI_HANDLE_SWITCHED_ADDRESS_MODAL',
+        type: "UI_HANDLE_SWITCHED_ADDRESS_MODAL",
         switchedAddressModal: !store.getState().uiState.switchedAddressModal,
     })
 }

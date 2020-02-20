@@ -6,36 +6,37 @@ import { Link, navigate } from "gatsby"
 import "./channel.scss"
 import SEO from "../../layout/SEO"
 import getChannel from "../../../state/actions/channel/getChannel"
-import {
-    isImageObject,
-    getResourceUrl
-} from "../../../utils/swarm"
+import { isImageObject, getResourceUrl } from "../../../utils/swarm"
 import * as Routes from "../../../routes"
 
 const ChannelView = ({ currentAddress, channelAddress }) => {
-    const [currentChannelAddress, setCurrentChannelAddress] = useState(undefined)
-    const [channelName, setChannelName] = useState('')
-    const [channelDescription, setChannelDescription] = useState('')
-    const [channelAvatar, setChannelAvatar] = useState('')
-    const [channelCover, setChannelCover] = useState('')
+    const [currentChannelAddress, setCurrentChannelAddress] = useState(
+        undefined
+    )
+    const [channelName, setChannelName] = useState("")
+    const [channelDescription, setChannelDescription] = useState("")
+    const [channelAvatar, setChannelAvatar] = useState("")
+    const [channelCover, setChannelCover] = useState("")
 
     useEffect(() => {
         if (currentChannelAddress !== channelAddress) {
             setCurrentChannelAddress(channelAddress)
             // Get channel data
-            getChannel(channelAddress).then(channelData => {
-                if (Object.keys(channelData).length === 0) {
+            getChannel(channelAddress)
+                .then(channelData => {
+                    if (Object.keys(channelData).length === 0) {
+                        navigate("/404")
+                        return
+                    }
+                    setChannelName(channelData.channelName)
+                    setChannelDescription(channelData.channelDescription)
+                    setChannelAvatar(channelData.channelAvatar)
+                    setChannelCover(channelData.channelCover)
+                })
+                .catch(error => {
+                    console.error(error)
                     navigate("/404")
-                    return
-                }
-                setChannelName(channelData.channelName)
-                setChannelDescription(channelData.channelDescription)
-                setChannelAvatar(channelData.channelAvatar)
-                setChannelCover(channelData.channelCover)
-            }).catch(error => {
-                console.error(error)
-                navigate("/404")
-            })
+                })
         }
     })
 
@@ -43,21 +44,33 @@ const ChannelView = ({ currentAddress, channelAddress }) => {
         <>
             <SEO title={channelName || ""} />
             <div className="channel">
-                {isImageObject(channelCover) &&
+                {isImageObject(channelCover) && (
                     <div className="cover">
-                        <img src={getResourceUrl(channelCover)} alt={channelName} className="cover-image" />
+                        <img
+                            src={getResourceUrl(channelCover)}
+                            alt={channelName}
+                            className="cover-image"
+                        />
                     </div>
-                }
+                )}
 
                 <div className="row items-center px-4">
                     <div className="channel-avatar">
-                        {isImageObject(channelAvatar) &&
-                            <img src={getResourceUrl(channelAvatar)} alt={channelName} />
-                        }
+                        {isImageObject(channelAvatar) && (
+                            <img
+                                src={getResourceUrl(channelAvatar)}
+                                alt={channelName}
+                            />
+                        )}
                     </div>
-                    {currentAddress && currentAddress === channelAddress &&
-                        <Link to={Routes.getChannelEditingLink(channelAddress)} className="btn ml-auto self-center">Customize channel</Link>
-                    }
+                    {currentAddress && currentAddress === channelAddress && (
+                        <Link
+                            to={Routes.getChannelEditingLink(channelAddress)}
+                            className="btn ml-auto self-center"
+                        >
+                            Customize channel
+                        </Link>
+                    )}
                 </div>
 
                 <div className="row">
@@ -66,7 +79,9 @@ const ChannelView = ({ currentAddress, channelAddress }) => {
                         <p className="channel-bio">{channelDescription}</p>
                     </div>
                     <div className="col sm:w-2/3 md:w-3/4 p-4">
-                        <p className="text-gray-500 text-center my-16">This channel has yet to upload a video</p>
+                        <p className="text-gray-500 text-center my-16">
+                            This channel has yet to upload a video
+                        </p>
                     </div>
                 </div>
             </div>
@@ -79,9 +94,9 @@ ChannelView.propTypes = {
     channelAddress: PropTypes.string,
 }
 
-const mapState = (state) => {
+const mapState = state => {
     return {
-        currentAddress: state.user.currentAddress
+        currentAddress: state.user.currentAddress,
     }
 }
 

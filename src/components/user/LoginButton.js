@@ -5,41 +5,42 @@ import { connect } from "react-redux"
 import actions from "../../state/actions"
 
 const { openBox, injectWeb3 } = actions.login
+const { checkMobileWeb3, checkNetwork } = actions.enviroment
 
-class LoginButton extends React.Component {
-    handleSignInUp = async (chooseWallet, shouldSignOut, e, fromPost) => {
+const LoginButton = ({
+    children,
+    checkMobileWeb3,
+    injectWeb3,
+    checkNetwork,
+    openBox,
+}) => {
+    const login = async () => {
         try {
-            if (e) e.stopPropagation()
-            //await this.props.checkMobileWeb3()
-            await this.props.injectWeb3(
-                null,
-                chooseWallet,
-                false,
-                shouldSignOut
-            )
-            //await this.props.checkNetwork()
-            await this.props.openBox(true, fromPost)
+            await checkMobileWeb3()
+            await injectWeb3(null, true, false, false)
+            await checkNetwork()
+            await openBox()
         } catch (err) {
             console.error(err)
         }
     }
 
-    render() {
-        return (
-            <button
-                className="btn btn-outline"
-                type="button"
-                onClick={() => this.handleSignInUp(true)}
-            >
-                {this.props.children}
-            </button>
-        )
-    }
+    return (
+        <button
+            className="btn btn-outline"
+            type="button"
+            onClick={() => login()}
+        >
+            {children}
+        </button>
+    )
 }
 
 LoginButton.propTypes = {
     openBox: PropTypes.func.isRequired,
     injectWeb3: PropTypes.func.isRequired,
+    checkMobileWeb3: PropTypes.func.isRequired,
+    checkNetwork: PropTypes.func.isRequired,
 }
 
 const mapState = state => ({})
@@ -47,6 +48,6 @@ const mapState = state => ({})
 export default connect(mapState, {
     openBox,
     injectWeb3,
-    //checkMobileWeb3,
-    //checkNetwork,
+    checkMobileWeb3,
+    checkNetwork,
 })(LoginButton)

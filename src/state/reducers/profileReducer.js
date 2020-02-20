@@ -1,13 +1,5 @@
 const profileReducer = (state = {}, action) => {
     switch (action.type) {
-        case "MY_BOX_UPDATE":
-            return {
-                ...state,
-                box: action.box,
-                ens: action.ens,
-                threeId: action.threeId,
-            }
-
         case "MY_GENERAL_PROFILE_UPDATE":
             return {
                 ...state,

@@ -11,7 +11,10 @@ const ProgressBar = ({ progress }) => {
     progress = clamp(progress, 0, 100)
     return (
         <div className="progress">
-            <div className="progress-bar" style={{ width: `${progress}%` }}></div>
+            <div
+                className="progress-bar"
+                style={{ width: `${progress}%` }}
+            ></div>
         </div>
     )
 }

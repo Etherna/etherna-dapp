@@ -6,12 +6,12 @@ import "./alert.scss"
 
 const Alert = ({ children, style, title }) => {
     return (
-        <div className={classnames("alert", {
-            [`alert-${style}`]: style
-        })}>
-            {title &&
-                <div className="alert-title">{title}</div>
-            }
+        <div
+            className={classnames("alert", {
+                [`alert-${style}`]: style,
+            })}
+        >
+            {title && <div className="alert-title">{title}</div>}
             <p>{children}</p>
         </div>
     )
@@ -23,7 +23,7 @@ Alert.propTypes = {
 }
 
 Alert.defaultProps = {
-    style: "success"
+    style: "success",
 }
 
 export default Alert

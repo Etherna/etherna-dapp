@@ -6,7 +6,7 @@ import getProfile from "../user/getProfile"
 import getMyChannel from "../channel/getMyChannel"
 import { fetchEns } from "../../../utils/ensFuncs"
 
-const openBox = (fromSignIn, fromFollowButton) => async dispatch => {
+const openBox = () => async dispatch => {
     const { currentAddress, web3Obj, hasSignedOut } = store.getState().user
 
     dispatch({

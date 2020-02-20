@@ -18,37 +18,33 @@ const ModalsSection = ({
     switchedAddressModal,
     showErrorModal,
     isFetchingThreeBox,
-    isFetchingChannel
+    isFetchingChannel,
 }) => {
-    const mustConsentError = error && error.message && error.message.substring(0, 65) === 'Error: Web3 Wallet Message Signature: User denied message signature.'
+    const mustConsentError =
+        error &&
+        error.message &&
+        error.message.substring(0, 65) ===
+            "Error: Web3 Wallet Message Signature: User denied message signature."
 
     return (
         <section>
-            {provideConsent &&
-                <ProvideConsentModal />
-            }
+            {provideConsent && <ProvideConsentModal />}
 
-            {showUnsupportedBrowser &&
-                <UnsupportedBrowserModal />
-            }
+            {showUnsupportedBrowser && <UnsupportedBrowserModal />}
 
-            {!!mustConsentError &&
-                <MustConsentModal />
-            }
+            {!!mustConsentError && <MustConsentModal />}
 
-            {showErrorModal && !mustConsentError &&
+            {showErrorModal && !mustConsentError && (
                 <ErrorModal error={error} />
-            }
+            )}
 
-            {switchedAddressModal &&
-                <SwitchedAddressModal
-                    prevAddress={prevAddress}
-                />
-            }
+            {switchedAddressModal && (
+                <SwitchedAddressModal prevAddress={prevAddress} />
+            )}
 
-            {(isFetchingThreeBox || isFetchingChannel) &&
+            {(isFetchingThreeBox || isFetchingChannel) && (
                 <LoadingChannelModal />
-            }
+            )}
         </section>
     )
 }

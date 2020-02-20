@@ -7,27 +7,32 @@ import SidebarItem from "./SidebarItem"
 import { getResourceUrl } from "../../../utils/swarm"
 import * as Routes from "../../../routes"
 
-const MyChannel = ({ isLoggedIn, currentAddress, channelName, channelAvatar }) => {
-    const hasChannel = isLoggedIn && channelName !== ""
+const MyChannel = ({
+    isLoggedIn,
+    currentAddress,
+    channelName,
+    channelAvatar,
+}) => {
+    const hasChannel = isLoggedIn && channelName && channelName !== ""
 
     return (
         <div className="sidenav-menu">
             <h6 className="sidebar-label">My Channel</h6>
-            {!isLoggedIn &&
+            {!isLoggedIn && (
                 <small className="sidebar-text">Unlock your account</small>
-            }
-            {(isLoggedIn && !hasChannel) &&
+            )}
+            {isLoggedIn && !hasChannel && (
                 <Link to={Routes.getChannelEditingLink(currentAddress)}>
                     <small className="sidebar-text">Create your channel</small>
                 </Link>
-            }
-            {hasChannel &&
+            )}
+            {hasChannel && (
                 <SidebarItem
                     name={channelName}
                     imageUrl={getResourceUrl(channelAvatar)}
                     link={Routes.getChannelLink(currentAddress)}
                 />
-            }
+            )}
         </div>
     )
 }
@@ -39,7 +44,7 @@ MyChannel.propTypes = {
     channelAvatar: PropTypes.array,
 }
 
-const mapState = (state) => {
+const mapState = state => {
     return {
         isLoggedIn: state.user.isLoggedIn,
         currentAddress: state.user.currentAddress,

@@ -5,5 +5,5 @@ import updateChannel from "./updateChannel"
 export default {
     getChannel,
     getMyChannel,
-    updateChannel
+    updateChannel,
 }

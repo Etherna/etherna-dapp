@@ -3,8 +3,7 @@ import { store } from "../../store"
 
 const handleSignOut = () => {
     const {
-        user: { isLoggedIn },
-        myData: { box },
+        user: { box, isLoggedIn },
     } = store.getState()
 
     if (isLoggedIn) {
@@ -32,8 +31,9 @@ const handleSignOut = () => {
         store.dispatch({
             type: "MY_DATA_SIGNOUT",
         })
+
+        navigate("/")
     }
-    navigate("/")
 }
 
 export default handleSignOut

@@ -13,9 +13,9 @@ const WatchPage = () => (
         <SEO title="Watch" />
         <Location>
             {({ location }) => {
-                const query = location.search.startsWith('?') ?
-                    location.search.substr(1, location.search.length-1) :
-                    location.search
+                const query = location.search.startsWith("?")
+                    ? location.search.substr(1, location.search.length - 1)
+                    : location.search
                 const params = parse(query)
 
                 if (params && params.v) {

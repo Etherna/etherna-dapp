@@ -69,7 +69,7 @@ const Header = ({ isLoggedIn }) => {
                     </Link>
                 </div>
                 <div className="right-nav">
-                    {isLoggedIn &&
+                    {isLoggedIn && (
                         <Link
                             to={Routes.getVideoUploadLink()}
                             className="nav-item"
@@ -78,7 +78,7 @@ const Header = ({ isLoggedIn }) => {
                             <Image filename="upload-icon.svg" />
                             <span>Upload</span>
                         </Link>
-                    }
+                    )}
                     <UserMenu />
                 </div>
             </nav>
@@ -86,9 +86,9 @@ const Header = ({ isLoggedIn }) => {
     )
 }
 
-const mapState = (state) => {
+const mapState = state => {
     return {
-        isLoggedIn: state.user.isLoggedIn
+        isLoggedIn: state.user.isLoggedIn,
     }
 }
 

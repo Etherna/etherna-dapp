@@ -9,11 +9,14 @@ const VideoDrag = ({ onSelectFile }) => {
     const [isDragOver, setIsDragOver] = useState(false)
 
     return (
-        <label htmlFor="video-input" className={classnames("drag-input", { "drag-over": isDragOver })}>
+        <label
+            htmlFor="video-input"
+            className={classnames("drag-input", { "drag-over": isDragOver })}
+        >
             <input
                 type="file"
                 id="video-input"
-                accept="video/mp4,video/x-m4v"
+
                 onChange={e => onSelectFile(e.target.files[0])}
             />
             <div className="drag-content">

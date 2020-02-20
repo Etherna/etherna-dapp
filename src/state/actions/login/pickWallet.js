@@ -40,10 +40,6 @@ const pickWallet = async (directLogin, dispatch, shouldSignOut) => {
         type: "USER_WEB3CONNECT",
         web3Connect,
     })
-    dispatch({
-        type: "UI_FIX_BODY",
-        fixBody: true,
-    })
 
     const web3Promise = new Promise((resolve, reject) => {
         if (!isBrowserCompatible()) {
@@ -60,16 +56,8 @@ const pickWallet = async (directLogin, dispatch, shouldSignOut) => {
                         type: "MY_DATA_SIGNOUT",
                     })
                     await connectProviderToDapp(provider, directLogin, dispatch)
-                    dispatch({
-                        type: "UI_FIX_BODY",
-                        fixBody: false,
-                    })
                     resolve()
                 } catch (error) {
-                    dispatch({
-                        type: "UI_FIX_BODY",
-                        fixBody: false,
-                    })
                     reject()
                 }
             })
@@ -78,10 +66,7 @@ const pickWallet = async (directLogin, dispatch, shouldSignOut) => {
 
     // subscibe to close
     web3Connect.on("close", () => {
-        dispatch({
-            type: "UI_FIX_BODY",
-            fixBody: false,
-        })
+        // do something
     })
 
     try {

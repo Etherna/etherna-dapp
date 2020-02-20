@@ -28,9 +28,7 @@ const Layout = ({ children, showSidebar }) => {
     return (
         <>
             <Header siteTitle={data.site.siteMetadata.title} />
-            {showSidebar &&
-                <Sidebar />
-            }
+            {showSidebar && <Sidebar />}
             <main>{children}</main>
             <Modals />
         </>
@@ -43,7 +41,7 @@ Layout.propTypes = {
 }
 
 Layout.defaultProps = {
-    showSidebar: true
+    showSidebar: true,
 }
 
 export default Layout

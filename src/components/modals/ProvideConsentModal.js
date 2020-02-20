@@ -9,16 +9,24 @@ const ProvideConsentModal = () => {
     return (
         <Modal show={true} showCloseButton={false}>
             <div className="modal-header">
-                <h4 className="modal-title mx-auto">Provide Consent</h4>
+                <h4 className="modal-title mx-auto">Login into Etherna</h4>
             </div>
             <p className="text-center text-gray-600 my-6">
                 Approve the message in your <br /> Web3 wallet to continue
             </p>
             <div className="flex my-6">
-                <Image className="mx-auto" filename="spinner.svg" maxWidth="60" />
+                <Image
+                    className="mx-auto"
+                    filename="spinner.svg"
+                    maxWidth="60"
+                />
             </div>
             <div className="flex">
-                <Button className="mx-auto" action={closeConsentModal} style="secondary">
+                <Button
+                    className="mx-auto"
+                    action={closeConsentModal}
+                    aspect="secondary"
+                >
                     Close
                 </Button>
             </div>

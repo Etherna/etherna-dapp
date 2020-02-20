@@ -1,5 +1,13 @@
 const userReducer = (state = {}, action) => {
     switch (action.type) {
+        case "MY_BOX_UPDATE":
+            return {
+                ...state,
+                box: action.box,
+                ens: action.ens,
+                threeId: action.threeId,
+            }
+
         case "INITIAL_USER_CHECK_WEB3":
             return {
                 ...state,

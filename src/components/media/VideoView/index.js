@@ -21,23 +21,23 @@ const VideoView = ({ hash }) => {
 
     if (!fetchedChannel && channel) {
         setFetchedChannel(true)
-        getChannel(channel).then(channelData => {
-            setChannelName(channelData.channelName)
-            setChannelAvatar(channelData.channelAvatar)
-        }).catch(error => {
-            console.error(error)
-        })
+        getChannel(channel)
+            .then(channelData => {
+                setChannelName(channelData.channelName)
+                setChannelAvatar(channelData.channelAvatar)
+            })
+            .catch(error => {
+                console.error(error)
+            })
     }
 
     return (
         <div className="video-watch">
-            <Player
-                source={source}
-            />
+            <Player source={source} />
             <div className="video-info">
                 <h1 className="video-title">{title}</h1>
 
-                <hr/>
+                <hr />
 
                 <div className="video-stats">
                     <Link to={channelLink}>
@@ -48,14 +48,14 @@ const VideoView = ({ hash }) => {
                     </Link>
                 </div>
 
-                <hr/>
+                <hr />
 
                 <div className="video-description">
-                    {!description &&
+                    {!description && (
                         <p className="text-gray-500">
                             <em>This video doesn't have a description</em>
                         </p>
-                    }
+                    )}
                 </div>
             </div>
         </div>
@@ -63,7 +63,7 @@ const VideoView = ({ hash }) => {
 }
 
 VideoView.propTypes = {
-    hash : PropTypes.string.isRequired,
+    hash: PropTypes.string.isRequired,
 }
 
 export default VideoView

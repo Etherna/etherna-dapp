@@ -17,9 +17,9 @@ const ChannelEditPage = ({ id, currentAddress, channelName }) => {
     return (
         <Layout>
             <SEO title={`Editing channel ${channelName || id}`} />
-            {currentAddress && currentAddress === id &&
+            {currentAddress && currentAddress === id && (
                 <ChannelEditor address={id} />
-            }
+            )}
         </Layout>
     )
 }

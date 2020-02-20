@@ -19,30 +19,36 @@ const VideoPreview = ({ hash, title, thumbnail, duration, channel }) => {
 
     if (!fetchedChannel && channel) {
         setFetchedChannel(true)
-        getChannel(channel).then(channelData => {
-            setChannelName(channelData.channelName)
-            setChannelAvatar(channelData.channelAvatar)
-        }).catch(error => {
-            console.error(error)
-        })
+        getChannel(channel)
+            .then(channelData => {
+                setChannelName(channelData.channelName)
+                setChannelAvatar(channelData.channelAvatar)
+            })
+            .catch(error => {
+                console.error(error)
+            })
     }
 
     return (
         <div className="video-preview">
             <Link to={videoLink}>
                 <div className="video-thumbnail">
-                    {thumbnail &&
-                        <img src={thumbnail} />
-                    }
-                    {!thumbnail &&
-                        <Image filename="thumb-placeholder.svg" className="w-full h-full" />
-                    }
-                    <div className="video-duration">{hours ? `${hours}:` : null}{minutes}:{seconds}</div>
+                    {thumbnail && <img src={thumbnail} />}
+                    {!thumbnail && (
+                        <Image
+                            filename="thumb-placeholder.svg"
+                            className="w-full h-full"
+                        />
+                    )}
+                    <div className="video-duration">
+                        {hours ? `${hours}:` : null}
+                        {minutes}:{seconds}
+                    </div>
                 </div>
             </Link>
             <div className="video-info">
                 <Link to={channelLink}>
-                    <Avatar image={channelAvatar} />
+                    <Avatar image={channelAvatar} address={channel} />
                 </Link>
                 <div className="video-stats">
                     <Link to={videoLink}>
@@ -60,7 +66,7 @@ const VideoPreview = ({ hash, title, thumbnail, duration, channel }) => {
 }
 
 VideoPreview.propTypes = {
-    hash : PropTypes.string.isRequired,
+    hash: PropTypes.string.isRequired,
     title: PropTypes.string,
     thumbnail: PropTypes.string,
     duration: PropTypes.number,
@@ -69,7 +75,7 @@ VideoPreview.propTypes = {
 
 VideoPreview.defaultProps = {
     title: "NO TITLE",
-    duration: 0
+    duration: 0,
 }
 
 export default VideoPreview

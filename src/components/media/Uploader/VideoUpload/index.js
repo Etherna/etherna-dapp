@@ -5,7 +5,11 @@ import "./video-upload.scss"
 import Alert from "../../../common/Alert"
 import Button from "../../../common/Button"
 import ProgressBar from "../../../common/ProgressBar"
-import { uploadResourceToSwarm, fileReaderPromise } from "../../../../utils/swarm"
+import {
+    uploadResourceToSwarm,
+    fileReaderPromise,
+    uploadVideoToSwarm,
+} from "../../../../utils/swarm"
 
 const VideoUpload = ({ file, onFinishedUploading, onRemoveVideo }) => {
     const [isUploading, setIsUploading] = useState(false)
@@ -19,22 +23,22 @@ const VideoUpload = ({ file, onFinishedUploading, onRemoveVideo }) => {
         setErrorMessage(undefined)
         setHash(undefined)
 
-        const imageBuffer = await fileReaderPromise(file)
-        const videoData = new Blob([new Uint8Array(imageBuffer)])
-
         try {
-            const vidObject = await uploadResourceToSwarm(videoData, progress => {
-                setUploadProgress(progress)
-            })
+            const hash = await uploadVideoToSwarm(
+                file,
+                progress => {
+                    setUploadProgress(progress)
+                }
+            )
             setUploadProgress(100)
             setIsUploading(false)
 
-            console.log(vidObject);
+            console.log(hash)
 
-            const hash = vidObject[0].contentUrl["/"]
-
-            setHash(hash)
-            onFinishedUploading(hash)
+            if (hash) {
+                setHash(hash)
+                onFinishedUploading(hash)
+            }
         } catch (error) {
             console.error(error)
             setErrorMessage(error.message)
@@ -51,39 +55,56 @@ const VideoUpload = ({ file, onFinishedUploading, onRemoveVideo }) => {
 
     return (
         <div className="mb-4">
-            {errorMessage &&
-                <Alert style="danger" title="Upload error">{errorMessage}</Alert>
-            }
-            {(file && !isUploading && uploadProgress == 0) &&
+            {errorMessage && (
+                <Alert style="danger" title="Upload error">
+                    {errorMessage}
+                </Alert>
+            )}
+            {file && !isUploading && uploadProgress == 0 && (
                 <>
                     <p className="text-gray-700">
-                        You selected <span className="text-black">{file.name}</span>. Do you confirm to upload this video?
+                        You selected{" "}
+                        <span className="text-black">{file.name}</span>. Do you
+                        confirm to upload this video?
                     </p>
-                    <Button size="small" style="secondary" action={handleRemoveVideo}>
+                    <Button
+                        size="small"
+                        aspect="secondary"
+                        action={handleRemoveVideo}
+                    >
                         Cancel
                     </Button>
-                    <Button size="small" className="ml-2" action={handleStartUpload}>
+                    <Button
+                        size="small"
+                        className="ml-2"
+                        action={handleStartUpload}
+                    >
                         OK
                     </Button>
                 </>
-            }
-            {(isUploading && uploadProgress < 100) &&
+            )}
+            {isUploading && !hash && (
                 <>
                     <p>Uploading ({uploadProgress}%)...</p>
                     <ProgressBar progress={uploadProgress} />
-                    <Button size="small" style="secondary" action={handleRemoveVideo}>
+                    <Button
+                        size="small"
+                        aspect="secondary"
+                        action={handleRemoveVideo}
+                    >
                         Cancel
                     </Button>
                 </>
-            }
-            {uploadProgress === 100 &&
+            )}
+            {(uploadProgress === 100 && hash) && (
                 <>
                     <p>Finished upload!</p>
                     <p className="text-gray-700">
-                        Video hash: <strong className="text-black">{hash}</strong>
+                        Video hash:{" "}
+                        <strong className="text-black">{hash}</strong>
                     </p>
                 </>
-            }
+            )}
         </div>
     )
 }

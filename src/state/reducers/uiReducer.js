@@ -49,13 +49,13 @@ const uiReducer = (state = {}, action) => {
                 showErrorModal: false,
             }
 
-        case 'UI_UNSUPPORTED_BROWSER_MODAL':
+        case "UI_UNSUPPORTED_BROWSER_MODAL":
             return {
                 ...state,
                 showUnsupportedBrowser: action.showUnsupportedBrowser,
             }
 
-        case 'UI_HANDLE_SWITCHED_ADDRESS_MODAL':
+        case "UI_HANDLE_SWITCHED_ADDRESS_MODAL":
             return {
                 ...state,
                 switchedAddressModal: action.switchedAddressModal,

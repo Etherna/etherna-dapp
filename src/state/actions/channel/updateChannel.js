@@ -2,19 +2,19 @@ import { store } from "../../store"
 
 const updateChannel = async (name, description, avatar, cover) => {
     try {
-        const ethernaSpace = await store.getState().profile.box.openSpace("ETHERNA");
+        const ethernaSpace = await store
+            .getState()
+            .user.box.openSpace("ETHERNA")
 
-        let succes = await ethernaSpace.public.setMultiple([
-            "channelName",
-            "channelDescription",
-            "channelAvatar",
-            "channelCover",
-        ], [
-            name,
-            description,
-            avatar,
-            cover
-        ])
+        let succes = await ethernaSpace.public.setMultiple(
+            [
+                "channelName",
+                "channelDescription",
+                "channelAvatar",
+                "channelCover",
+            ],
+            [name, description, avatar, cover]
+        )
 
         if (succes) {
             store.dispatch({

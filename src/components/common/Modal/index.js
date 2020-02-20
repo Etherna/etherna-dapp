@@ -54,7 +54,7 @@ const Modal = ({
 
 Modal.propTypes = {
     show: PropTypes.bool.isRequired,
-    setShow: PropTypes.func.isRequired,
+    setShow: PropTypes.func,
     title: PropTypes.string,
     titleTag: PropTypes.string,
     showCloseButton: PropTypes.bool,

@@ -4,7 +4,15 @@ import classnames from "classnames"
 
 import "./button.scss"
 
-const Button = ({ children, className, size, outline, style, action, disabled }) => {
+const Button = ({
+    children,
+    className,
+    size,
+    outline,
+    aspect,
+    action,
+    disabled,
+}) => {
     const handleKeyDown = e => {
         if (e.target === document.activeElement && e.keyCode === 13 && action) {
             action()
@@ -13,14 +21,12 @@ const Button = ({ children, className, size, outline, style, action, disabled })
 
     return (
         <button
-            className={
-                classnames("btn", className, {
-                    "btn-sm": size === "small",
-                    "btn-lg": size === "large",
-                    "btn-outline": outline,
-                    [`btn-${style}`]: style && style !== "",
-                }
-            )}
+            className={classnames("btn", className, {
+                "btn-sm": size === "small",
+                "btn-lg": size === "large",
+                "btn-outline": outline,
+                [`btn-${aspect}`]: aspect && aspect !== "",
+            })}
             type="button"
             onClick={action}
             onKeyDown={handleKeyDown}
@@ -35,7 +41,7 @@ Button.propTypes = {
     className: PropTypes.string,
     size: PropTypes.string,
     outline: PropTypes.bool,
-    style: PropTypes.string,
+    aspect: PropTypes.string,
     disabled: PropTypes.bool,
     action: PropTypes.func,
 }

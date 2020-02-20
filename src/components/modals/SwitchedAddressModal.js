@@ -13,10 +13,13 @@ const SwitchedAddressModal = ({ prevAddress }) => {
                 <h4>Address change detected</h4>
             </div>
             <p className="text-center my-6">
-                Revert to the previous address {prevAddress} in your Web3 wallet or sign back in with the new address.
+                Revert to the previous address {prevAddress} in your Web3 wallet
+                or sign back in with the new address.
             </p>
             <div className="flex">
-                <Button className="mx-auto" action={handleSignOut}>Sign in with new address</Button>
+                <Button className="mx-auto" action={handleSignOut}>
+                    Sign in with new address
+                </Button>
             </div>
         </Modal>
     )

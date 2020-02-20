@@ -12,7 +12,7 @@ import {
     isImageObject,
     getResourceUrl,
     uploadResourceToSwarm,
-    fileReaderPromise
+    fileReaderPromise,
 } from "../../../utils/swarm"
 import * as Routes from "../../../routes"
 import actions from "../../../state/actions/channel"
@@ -50,14 +50,18 @@ const ChannelEditor = ({ address, name, description, avatar, cover }) => {
 
         const imageBuffer = await fileReaderPromise(file)
         const imageData = new Blob([new Uint8Array(imageBuffer)])
-        const imgObject = await uploadResourceToSwarm(imageData, undefined, "ipfs")
+        const imgObject = await uploadResourceToSwarm(
+            imageData,
+            undefined,
+            "ipfs"
+        )
 
         type === "avatar" && setUploadingAvatar(false)
         type === "cover" && setUploadingCover(false)
 
         // reset inputs
-        avatarRef.current.value = ''
-        coverRef.current.value = ''
+        avatarRef.current.value = ""
+        coverRef.current.value = ""
 
         if (imgObject) {
             if (type === "cover") {
@@ -87,13 +91,24 @@ const ChannelEditor = ({ address, name, description, avatar, cover }) => {
     return (
         <div className="channel channel-editor">
             <div className="cover">
-                <label className={classnames("cover-input", { "active": isImageObject(channelCover) })} htmlFor="cover-input">
-                    {isImageObject(channelCover) &&
-                        <img src={getResourceUrl(channelCover)} alt={channelName} className="cover-image" />
-                    }
-                    {isUploadingCover &&
-                        <div className="absolute inset-x-0 top-0 mt-24 text-center">Uploading...</div>
-                    }
+                <label
+                    className={classnames("cover-input", {
+                        active: isImageObject(channelCover),
+                    })}
+                    htmlFor="cover-input"
+                >
+                    {isImageObject(channelCover) && (
+                        <img
+                            src={getResourceUrl(channelCover)}
+                            alt={channelName}
+                            className="cover-image"
+                        />
+                    )}
+                    {isUploadingCover && (
+                        <div className="absolute inset-x-0 top-0 mt-24 text-center">
+                            Uploading...
+                        </div>
+                    )}
                     <input
                         ref={coverRef}
                         type="file"
@@ -103,7 +118,7 @@ const ChannelEditor = ({ address, name, description, avatar, cover }) => {
                         onChange={e => handleUploadImage(e, "cover")}
                     />
                     <div className="cover-actions">
-                        {isImageObject(channelCover) &&
+                        {isImageObject(channelCover) && (
                             <Button
                                 className="remove-button"
                                 type="button"
@@ -111,7 +126,7 @@ const ChannelEditor = ({ address, name, description, avatar, cover }) => {
                             >
                                 &#10005;
                             </Button>
-                        }
+                        )}
                         <div className="btn change-button">Change</div>
                     </div>
                 </label>
@@ -120,12 +135,17 @@ const ChannelEditor = ({ address, name, description, avatar, cover }) => {
             <div className="row items-center px-4">
                 <label htmlFor="avatar-input">
                     <div className="channel-avatar" data-label="Change Avatar">
-                        {isImageObject(channelAvatar) &&
-                            <img src={getResourceUrl(channelAvatar)} alt={channelName} />
-                        }
-                        {isUploadingAvatar &&
-                            <div className="absolute inset-x-0 top-0 mt-12 text-center">Uploading...</div>
-                        }
+                        {isImageObject(channelAvatar) && (
+                            <img
+                                src={getResourceUrl(channelAvatar)}
+                                alt={channelName}
+                            />
+                        )}
+                        {isUploadingAvatar && (
+                            <div className="absolute inset-x-0 top-0 mt-12 text-center">
+                                Uploading...
+                            </div>
+                        )}
                         <input
                             ref={avatarRef}
                             type="file"
@@ -136,14 +156,22 @@ const ChannelEditor = ({ address, name, description, avatar, cover }) => {
                         />
                     </div>
                 </label>
-                {!isSavingChannel &&
-                    <Button className="ml-auto" action={handleSubmit} disabled={channelName === ""}>
+                {!isSavingChannel && (
+                    <Button
+                        className="ml-auto"
+                        action={handleSubmit}
+                        disabled={channelName === ""}
+                    >
                         Save
                     </Button>
-                }
-                {isSavingChannel &&
-                    <Image filename="spinner.svg" maxWidth="30" className="ml-auto" />
-                }
+                )}
+                {isSavingChannel && (
+                    <Image
+                        filename="spinner.svg"
+                        maxWidth="30"
+                        className="ml-auto"
+                    />
+                )}
             </div>
 
             <div className="row">
@@ -159,14 +187,23 @@ const ChannelEditor = ({ address, name, description, avatar, cover }) => {
                         placeholder="Channel bio"
                         rows={8}
                         value={channelDescription}
-                        onChange={e => setChannelDescription(e.target.value || "")}
+                        onChange={e =>
+                            setChannelDescription(e.target.value || "")
+                        }
                     />
                 </div>
             </div>
 
-            <Modal show={showUploadErrorModal} setShow={setShowUploadErrorModal} showCloseButton={true}>
+            <Modal
+                show={showUploadErrorModal}
+                setShow={setShowUploadErrorModal}
+                showCloseButton={true}
+            >
                 <div className="flex">
-                    <p>There was an error trying to upload the image. Try again later</p>
+                    <p>
+                        There was an error trying to upload the image. Try again
+                        later
+                    </p>
                 </div>
             </Modal>
         </div>

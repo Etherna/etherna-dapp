@@ -1,4 +1,4 @@
-export const getTimeValues = (time) => {
+export const getTimeValues = time => {
     time = time || 0
 
     let hours = Math.floor(time / 3600)
@@ -13,15 +13,15 @@ export const getTimeValues = (time) => {
     return {
         hours: stringPadLeft(hours),
         minutes: stringPadLeft(minutes),
-        seconds: stringPadLeft(seconds)
+        seconds: stringPadLeft(seconds),
     }
 }
 
-const stringPadLeft = (string) => {
-    if (typeof(string) !== "number") {
+const stringPadLeft = string => {
+    if (typeof string !== "number") {
         return null
     }
     const length = 2
     const pad = "0"
-    return (new Array(length+1).join(pad)+string).slice(-length);
+    return (new Array(length + 1).join(pad) + string).slice(-length)
 }
