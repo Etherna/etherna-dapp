@@ -1,4 +1,4 @@
-const axios = require("axios")
+import axios from "axios"
 
 export const SwarmGateway = "https://swarm-gateways.net"
 export const IpfsGateway = "https://ipfs.infura.io"
@@ -33,7 +33,7 @@ export const getResourceUrl = (imageObject, type = "swarm") => {
         : `${IpfsGateway}/ipfs/${hash}`
 }
 
-export const uploadImageToSwarm = async (formData, type = "swarm") => {
+export const uploadResourceToSwarm = async (formData, progressCallback, type = "swarm") => {
     const endpoint =
         type.toLowerCase() !== "ipfs"
             ? `${SwarmGateway}/bzz-raw:/`
@@ -45,13 +45,27 @@ export const uploadImageToSwarm = async (formData, type = "swarm") => {
             data.append("filename", formData)
             formData = data
         }
+
+        const config = {
+            onUploadProgress: pev => {
+                const progress = Math.round((pev.loaded * 100) / pev.total)
+                if (progressCallback) {
+                    progressCallback(progress)
+                }
+            }
+        }
+
         let resp = await axios.post(endpoint, formData)
-        let hash = resp.data
-        if (isValidHash(hash)) {
+        let hash = type === "ipfs" ? resp.data.Hash : resp.data
+
+        // if (isValidHash(hash)) {
             type = type === "ipfs" ? "ImageObject" : "SwarmObject"
             return [{ "@type": type, contentUrl: { "/": hash } }]
-        }
+        // } else {
+        //     return null
+        // }
     } catch (error) {
+        console.error(error)
         return null
     }
 }

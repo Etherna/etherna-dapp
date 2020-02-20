@@ -4,7 +4,7 @@ import { connect } from "react-redux"
 import { Link } from "gatsby"
 
 import SidebarItem from "./SidebarItem"
-import { getImageUrl } from "../../../utils/swarm"
+import { getResourceUrl } from "../../../utils/swarm"
 import * as Routes from "../../../routes"
 
 const MyChannel = ({ isLoggedIn, currentAddress, channelName, channelAvatar }) => {
@@ -24,7 +24,7 @@ const MyChannel = ({ isLoggedIn, currentAddress, channelName, channelAvatar }) =
             {hasChannel &&
                 <SidebarItem
                     name={channelName}
-                    imageUrl={getImageUrl(channelAvatar)}
+                    imageUrl={getResourceUrl(channelAvatar)}
                     link={Routes.getChannelLink(currentAddress)}
                 />
             }

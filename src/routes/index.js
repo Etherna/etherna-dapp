@@ -23,6 +23,9 @@ export const getVideoLink = (hash) => {
 /**
  * Static routes
  */
+export const getVideoUploadLink = () => {
+    return `/upload`
+}
 export const getHowItWorksLink = () => {
     return `/how-it-works`
 }

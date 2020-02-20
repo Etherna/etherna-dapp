@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import PropTypes from "prop-types"
 import classnames from "classnames"
 import { connect } from "react-redux"
@@ -10,8 +10,8 @@ import Modal from "../../common/Modal"
 import Image from "../../common/Image"
 import {
     isImageObject,
-    getImageUrl,
-    uploadImageToSwarm,
+    getResourceUrl,
+    uploadResourceToSwarm,
     fileReaderPromise
 } from "../../../utils/swarm"
 import * as Routes from "../../../routes"
@@ -20,6 +20,8 @@ import actions from "../../../state/actions/channel"
 const { updateChannel } = actions
 
 const ChannelEditor = ({ address, name, description, avatar, cover }) => {
+    const avatarRef = useRef()
+    const coverRef = useRef()
     const [channelName, setChannelName] = useState(name)
     const [channelDescription, setChannelDescription] = useState(description)
     const [channelAvatar, setChannelAvatar] = useState(avatar)
@@ -48,10 +50,14 @@ const ChannelEditor = ({ address, name, description, avatar, cover }) => {
 
         const imageBuffer = await fileReaderPromise(file)
         const imageData = new Blob([new Uint8Array(imageBuffer)])
-        const imgObject = await uploadImageToSwarm(imageData)
+        const imgObject = await uploadResourceToSwarm(imageData, undefined, "ipfs")
 
         type === "avatar" && setUploadingAvatar(false)
         type === "cover" && setUploadingCover(false)
+
+        // reset inputs
+        avatarRef.current.value = ''
+        coverRef.current.value = ''
 
         if (imgObject) {
             if (type === "cover") {
@@ -83,12 +89,13 @@ const ChannelEditor = ({ address, name, description, avatar, cover }) => {
             <div className="cover">
                 <label className={classnames("cover-input", { "active": isImageObject(channelCover) })} htmlFor="cover-input">
                     {isImageObject(channelCover) &&
-                        <img src={getImageUrl(channelCover)} alt={channelName} className="cover-image" />
+                        <img src={getResourceUrl(channelCover)} alt={channelName} className="cover-image" />
                     }
                     {isUploadingCover &&
                         <div className="absolute inset-x-0 top-0 mt-24 text-center">Uploading...</div>
                     }
                     <input
+                        ref={coverRef}
                         type="file"
                         accept="image/*"
                         name="cover-input"
@@ -114,12 +121,13 @@ const ChannelEditor = ({ address, name, description, avatar, cover }) => {
                 <label htmlFor="avatar-input">
                     <div className="channel-avatar" data-label="Change Avatar">
                         {isImageObject(channelAvatar) &&
-                            <img src={getImageUrl(channelAvatar)} alt={channelName} />
+                            <img src={getResourceUrl(channelAvatar)} alt={channelName} />
                         }
                         {isUploadingAvatar &&
                             <div className="absolute inset-x-0 top-0 mt-12 text-center">Uploading...</div>
                         }
                         <input
+                            ref={avatarRef}
                             type="file"
                             accept="image/*"
                             name="avatar-input"
@@ -134,7 +142,7 @@ const ChannelEditor = ({ address, name, description, avatar, cover }) => {
                     </Button>
                 }
                 {isSavingChannel &&
-                    <Image filename="spinner.svg" maxWidth="50" className="ml-auto" />
+                    <Image filename="spinner.svg" maxWidth="30" className="ml-auto" />
                 }
             </div>
 

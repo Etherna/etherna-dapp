@@ -1,4 +1,5 @@
 import React from "react"
+import { connect } from "react-redux"
 import { Location } from "@reach/router"
 import { Link } from "gatsby"
 
@@ -14,7 +15,7 @@ const anyMatch = (patterns, string) => {
     return patterns.filter(p => string.match(p)).length > 0
 }
 
-const Header = props => {
+const Header = ({ isLoggedIn }) => {
     return (
         <header className="header">
             <nav className="navbar">
@@ -68,6 +69,16 @@ const Header = props => {
                     </Link>
                 </div>
                 <div className="right-nav">
+                    {isLoggedIn &&
+                        <Link
+                            to={Routes.getVideoUploadLink()}
+                            className="nav-item"
+                            activeClassName="active"
+                        >
+                            <Image filename="upload-icon.svg" />
+                            <span>Upload</span>
+                        </Link>
+                    }
                     <UserMenu />
                 </div>
             </nav>
@@ -75,4 +86,10 @@ const Header = props => {
     )
 }
 
-export default Header
+const mapState = (state) => {
+    return {
+        isLoggedIn: state.user.isLoggedIn
+    }
+}
+
+export default connect(mapState)(Header)

@@ -4,7 +4,7 @@ const updateChannel = async (name, description, avatar, cover) => {
     try {
         const ethernaSpace = await store.getState().profile.box.openSpace("ETHERNA");
 
-        ethernaSpace.public.setMultiple([
+        let succes = await ethernaSpace.public.setMultiple([
             "channelName",
             "channelDescription",
             "channelAvatar",
@@ -16,14 +16,16 @@ const updateChannel = async (name, description, avatar, cover) => {
             cover
         ])
 
-        store.dispatch({
-            type: "MY_CHANNEL_UPDATE",
-            channelName: name,
-            channelDescription: description,
-            channelAvatar: avatar,
-            channelCover: cover,
-        })
-        return true
+        if (succes) {
+            store.dispatch({
+                type: "MY_CHANNEL_UPDATE",
+                channelName: name,
+                channelDescription: description,
+                channelAvatar: avatar,
+                channelCover: cover,
+            })
+        }
+        return succes
     } catch (error) {
         console.error(error)
         return false

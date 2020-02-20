@@ -1,15 +1,25 @@
 .header {
-    padding-top: 56px; // header
+    padding-top: 120px; // header
+    @screen sm {
+        padding-top: 56px; // header
+    }
 }
 
 .navbar {
-    @apply flex fixed w-full z-1 top-0 shadow-sm bg-white;
+    @apply flex flex-wrap fixed w-full z-1 top-0 shadow-sm bg-white;
+
+    .nav-item {
+        @apply flex items-center px-6 py-3 whitespace-no-wrap;
+        &.active {
+            @apply text-primary;
+        }
+    }
 
     .left-nav {
-        @apply flex flex-1 justify-start;
+        @apply flex justify-start order-3 w-screen;
 
         .nav-item {
-            @apply border-b-2 border-transparent text-gray-800;
+            @apply block border-b-2 border-transparent text-gray-800 flex-grow text-center;
             margin-top: 2px; //balance bottom border
             &:hover {
                 @apply text-black;
@@ -25,22 +35,46 @@
     }
 
     .right-nav {
-        @apply flex flex-1 justify-end items-center;
+        @apply flex flex-1 justify-end items-center order-2 px-3;
 
         @screen sm {
             @apply pr-2;
         }
+
+        .nav-item {
+            @apply text-gray-800;
+
+            &.active,
+            &:hover {
+                @apply text-black;
+            }
+        }
     }
 
     .logo {
-        @apply mx-auto items-center py-4;
+        @apply mx-auto items-center py-4 order-1 px-3;
     }
 
-    .nav-item {
-        @apply px-6 py-3;
+    @screen sm {
+        @apply flex-no-wrap;
 
-        &.active {
-            @apply text-primary;
+        .navbar {
+            .nav-item {
+                @apply px-6 py-3;
+            }
+        }
+
+        .left-nav {
+            @apply order-none w-auto flex-1;
+            .nav-item {
+                @apply flex-grow-0;
+            }
+        }
+        .logo {
+            @apply order-2 px-0;
+        }
+        .right-nav {
+            @apply order-3 px-2 flex-1;
         }
     }
 }

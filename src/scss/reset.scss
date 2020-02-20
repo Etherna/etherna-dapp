@@ -24,25 +24,25 @@ button {
 h1 {
     @apply text-4xl mb-8 font-semibold;
     @screen lg {
-        @apply mb-12;
+        @apply mb-8;
     }
 }
 h2 {
     @apply text-3xl mb-5 font-semibold;
     @screen lg {
-        @apply mb-8;
+        @apply mb-6;
     }
 }
 h3 {
     @apply text-xl mb-3 font-semibold;
     @screen lg {
-        @apply mb-6;
+        @apply mb-4;
     }
 }
 h4 {
     @apply text-lg mb-2;
     @screen lg {
-        @apply mb-3;
+        @apply mb-2;
     }
 }
 

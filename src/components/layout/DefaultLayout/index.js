@@ -14,7 +14,7 @@ import Sidebar from "../Sidebar"
 import Modals from "../../modals/ModalsSection"
 import "./layout.scss"
 
-const Layout = ({ children }) => {
+const Layout = ({ children, showSidebar }) => {
     const data = useStaticQuery(graphql`
         query SiteTitleQuery {
             site {
@@ -28,7 +28,9 @@ const Layout = ({ children }) => {
     return (
         <>
             <Header siteTitle={data.site.siteMetadata.title} />
-            <Sidebar className="" />
+            {showSidebar &&
+                <Sidebar />
+            }
             <main>{children}</main>
             <Modals />
         </>
@@ -37,6 +39,11 @@ const Layout = ({ children }) => {
 
 Layout.propTypes = {
     children: PropTypes.node.isRequired,
+    showSidebar: PropTypes.bool,
+}
+
+Layout.defaultProps = {
+    showSidebar: true
 }
 
 export default Layout

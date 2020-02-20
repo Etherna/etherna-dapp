@@ -6,5 +6,13 @@
     }
 }
 .video-grid {
-    @apply grid grid-flow-row grid-cols-3 grid-rows-3 gap-4 mx-4;
+    @apply grid grid-flow-row-dense gap-4 mx-4;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+
+    @screen lg {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+    @screen xl {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
 }

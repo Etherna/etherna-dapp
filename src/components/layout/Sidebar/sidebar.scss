@@ -1,14 +1,26 @@
-main {
+.sidebar + main {
     @screen sm {
-        @apply ml-72;
+        @apply ml-48;
+    }
+    @screen md {
+        @apply ml-56;
+    }
+    @screen lg {
+        @apply ml-64;
     }
 }
 
 .sidebar {
-    @apply hidden w-72 bg-gray-100 overflow-scroll fixed inset-y-0 left-0 pt-16;
+    @apply hidden bg-gray-100 overflow-scroll fixed inset-y-0 left-0 pt-16;
 
     @screen sm {
-        @apply flex flex-col;
+        @apply flex flex-col w-48;
+    }
+    @screen md {
+        @apply w-56;
+    }
+    @screen lg {
+        @apply w-64;
     }
 
     .sidenav {

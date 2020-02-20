@@ -8,7 +8,7 @@ import SEO from "../../layout/SEO"
 import getChannel from "../../../state/actions/channel/getChannel"
 import {
     isImageObject,
-    getImageUrl
+    getResourceUrl
 } from "../../../utils/swarm"
 import * as Routes from "../../../routes"
 
@@ -45,14 +45,14 @@ const ChannelView = ({ currentAddress, channelAddress }) => {
             <div className="channel">
                 {isImageObject(channelCover) &&
                     <div className="cover">
-                        <img src={getImageUrl(channelCover)} alt={channelName} className="cover-image" />
+                        <img src={getResourceUrl(channelCover)} alt={channelName} className="cover-image" />
                     </div>
                 }
 
                 <div className="row items-center px-4">
                     <div className="channel-avatar">
                         {isImageObject(channelAvatar) &&
-                            <img src={getImageUrl(channelAvatar)} alt={channelName} />
+                            <img src={getResourceUrl(channelAvatar)} alt={channelName} />
                         }
                     </div>
                     {currentAddress && currentAddress === channelAddress &&
