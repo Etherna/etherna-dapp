@@ -4,10 +4,10 @@ import { connect } from "react-redux"
 import { Link, navigate } from "gatsby"
 
 import "./channel.scss"
-import SEO from "../../layout/SEO"
+import SEO from "@components/layout/SEO"
+import { isImageObject, getResourceUrl } from "@utils/swarm"
+import * as Routes from "@routes"
 import getChannel from "../../../state/actions/channel/getChannel"
-import { isImageObject, getResourceUrl } from "../../../utils/swarm"
-import * as Routes from "../../../routes"
 
 const ChannelView = ({ currentAddress, channelAddress }) => {
     const [currentChannelAddress, setCurrentChannelAddress] = useState(

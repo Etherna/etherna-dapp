@@ -3,11 +3,11 @@ import PropTypes from "prop-types"
 import { Link } from "gatsby"
 
 import "./video-view.scss"
-import Player from "../Player"
-import Avatar from "../../user/Avatar"
+import Player from "@components/media/Player"
+import Avatar from "@components/user/Avatar"
+import { getResourceUrl } from "@utils/swarm"
+import * as Routes from "@routes"
 import getChannel from "../../../state/actions/channel/getChannel"
-import { getResourceUrl } from "../../../utils/swarm"
-import * as Routes from "../../../routes"
 
 const VideoView = ({ hash }) => {
     const source = getResourceUrl(hash)

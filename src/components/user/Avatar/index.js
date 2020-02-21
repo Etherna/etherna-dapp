@@ -2,8 +2,8 @@ import React from "react"
 import PropTypes from "prop-types"
 import makeBlockie from "ethereum-blockies-base64"
 
-import { getResourceUrl } from "../../../utils/swarm"
 import "./avatar.scss"
+import { getResourceUrl } from "@utils/swarm"
 
 const Avatar = ({ image, address, size }) => {
     const blockie = address ? makeBlockie(address) : null

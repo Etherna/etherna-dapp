@@ -5,16 +5,16 @@ import { connect } from "react-redux"
 import { navigate } from "gatsby"
 
 import "./channel-editor.scss"
-import Button from "../../common/Button"
-import Modal from "../../common/Modal"
-import Image from "../../common/Image"
+import Button from "@common/Button"
+import Modal from "@common/Modal"
+import Image from "@common/Image"
 import {
     isImageObject,
     getResourceUrl,
     uploadResourceToSwarm,
     fileReaderPromise,
-} from "../../../utils/swarm"
-import * as Routes from "../../../routes"
+} from "@utils/swarm"
+import * as Routes from "@routes"
 import actions from "../../../state/actions/channel"
 
 const { updateChannel } = actions

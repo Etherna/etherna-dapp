@@ -2,14 +2,10 @@ import React, { useState } from "react"
 import PropTypes from "prop-types"
 
 import "./video-upload.scss"
-import Alert from "../../../common/Alert"
-import Button from "../../../common/Button"
-import ProgressBar from "../../../common/ProgressBar"
-import {
-    uploadResourceToSwarm,
-    fileReaderPromise,
-    uploadVideoToSwarm,
-} from "../../../../utils/swarm"
+import Alert from "@common/Alert"
+import Button from "@common/Button"
+import ProgressBar from "@common/ProgressBar"
+import { uploadVideoToSwarm } from "@utils/swarm"
 
 const VideoUpload = ({ file, onFinishedUploading, onRemoveVideo }) => {
     const [isUploading, setIsUploading] = useState(false)

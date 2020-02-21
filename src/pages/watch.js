@@ -3,10 +3,10 @@ import { Location } from "@reach/router"
 import { parse } from "querystring"
 import { navigate } from "gatsby"
 
-import Layout from "../components/layout/DefaultLayout"
-import SEO from "../components/layout/SEO"
-import VideoView from "../components/media/VideoView"
-import * as Routes from "../routes"
+import Layout from "@components/layout/DefaultLayout"
+import SEO from "@components/layout/SEO"
+import VideoView from "@components/media/VideoView"
+import * as Routes from "@routes"
 
 const WatchPage = () => (
     <Layout>

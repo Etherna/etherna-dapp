@@ -2,7 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 
 import SidebarItem from "./SidebarItem"
-import * as Routes from "../../../routes"
+import * as Routes from "@routes"
 
 const ReccomendedChannels = ({ channels }) => {
     return (

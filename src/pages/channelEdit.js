@@ -3,10 +3,10 @@ import PropTypes from "prop-types"
 import { connect } from "react-redux"
 import { navigate } from "gatsby"
 
-import Layout from "../components/layout/DefaultLayout"
-import SEO from "../components/layout/SEO"
-import ChannelEditor from "../components/channel/ChannelEditor"
-import * as Routes from "../routes"
+import Layout from "@components/layout/DefaultLayout"
+import SEO from "@components/layout/SEO"
+import ChannelEditor from "@components/channel/ChannelEditor"
+import * as Routes from "@routes"
 
 const ChannelEditPage = ({ id, currentAddress, channelName }) => {
     useEffect(() => {

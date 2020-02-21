@@ -4,8 +4,8 @@ import { connect } from "react-redux"
 import { Link } from "gatsby"
 
 import SidebarItem from "./SidebarItem"
-import { getResourceUrl } from "../../../utils/swarm"
-import * as Routes from "../../../routes"
+import { getResourceUrl } from "@utils/swarm"
+import * as Routes from "@routes"
 
 const MyChannel = ({
     isLoggedIn,

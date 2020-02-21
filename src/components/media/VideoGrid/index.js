@@ -2,7 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 
 import "./video-grid.scss"
-import VideoPreview from "../VideoPreview"
+import VideoPreview from "@components/media/VideoPreview"
 
 const VideoGrid = ({ label, videos }) => {
     return (

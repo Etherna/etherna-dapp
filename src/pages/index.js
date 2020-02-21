@@ -1,8 +1,8 @@
 import React from "react"
 
-import Layout from "../components/layout/DefaultLayout"
-import SEO from "../components/layout/SEO"
-import VideoGrid from "../components/media/VideoGrid"
+import Layout from "@components/layout/DefaultLayout"
+import SEO from "@components/layout/SEO"
+import VideoGrid from "@components/media/VideoGrid"
 
 const videoObject = {
     "@type": "SwarmVideo",

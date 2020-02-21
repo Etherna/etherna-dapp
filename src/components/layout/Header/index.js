@@ -4,9 +4,9 @@ import { Location } from "@reach/router"
 import { Link } from "gatsby"
 
 import "./header.scss"
-import Image from "../../common/Image"
-import UserMenu from "../../user/UserMenu"
-import * as Routes from "../../../routes"
+import Image from "@common/Image"
+import UserMenu from "@components/user/UserMenu"
+import * as Routes from "@routes"
 
 const ChannelMatches = [/^\/channel\//, /^\/channels/]
 const ExploreMatches = [/^\/watch/]

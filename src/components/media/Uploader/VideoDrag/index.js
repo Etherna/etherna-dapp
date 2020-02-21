@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import classnames from "classnames"
 
 import "./video-drag.scss"
-import Image from "../../../common/Image"
+import Image from "@common/Image"
 
 const VideoDrag = ({ onSelectFile }) => {
     const [isDragOver, setIsDragOver] = useState(false)

@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@context/*": ["src/context/*"],
+            "@components/*": ["src/components/*"],
+            "@common/*": ["src/components/common/*"],
+            "@routes/*": ["src/routes/*"],
+            "@utils/*": ["src/utils/*"],
+        }
+    },
+    "exclude": [
+        ".cache",
+        "public",
+        "node_modules"
+    ]
+}

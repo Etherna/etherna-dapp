@@ -4,8 +4,8 @@ import classnames from "classnames"
 import { connect } from "react-redux"
 
 import "./uploader.scss"
-import Avatar from "../../user/Avatar"
-import Button from "../../common/Button"
+import Avatar from "@components/user/Avatar"
+import Button from "@common/Button"
 import VideoDrag from "./VideoDrag"
 import VideoUpload from "./VideoUpload"
 

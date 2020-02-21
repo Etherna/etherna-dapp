@@ -5,9 +5,11 @@ import { Link } from "gatsby"
 
 import LoginButton from "./LoginButton"
 import Avatar from "./Avatar"
-import DropDown, { DropDownItem } from "../common/DropDown"
-import * as Routes from "../../routes"
+import DropDown, { DropDownItem } from "@common/DropDown"
+import * as Routes from "@routes"
 import actions from "../../state/actions"
+
+import { useStateValue } from "@context/store"
 
 const { checkMobileWeb3, checkNetwork } = actions.enviroment
 const { openBox, handleSignOut, injectWeb3 } = actions.login
