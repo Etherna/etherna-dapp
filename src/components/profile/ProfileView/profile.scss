@@ -1,0 +1,28 @@
+.profile {
+    @apply flex flex-wrap;
+
+    .cover {
+        @apply w-full bg-gray-100 -mb-8;
+
+        .cover-image {
+            @apply w-full h-auto;
+        }
+    }
+
+    .profile-avatar {
+        @apply relative w-32 h-32 border-4 border-white bg-gray-200
+            rounded-full overflow-hidden;
+
+        img {
+            @apply w-full h-full object-cover;
+        }
+    }
+
+    .profile-name {
+        @apply mb-4 text-gray-900 text-3xl font-semibold;
+    }
+
+    .profile-bio {
+        @apply text-lg text-gray-700;
+    }
+}

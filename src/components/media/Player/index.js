@@ -8,6 +8,7 @@ const Player = ({ source }) => {
         <div className="player">
             <video autoPlay={true} controls>
                 <source src={source} />
+                <track default kind="captions" />
             </video>
         </div>
     )

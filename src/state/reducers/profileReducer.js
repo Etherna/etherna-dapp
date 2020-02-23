@@ -1,24 +1,23 @@
+export const ProfileActionTypes = {
+    PROFILE_UPDATE: "PROFILE_UPDATE",
+    PROFILE_SIGNOUT: "PROFILE_SIGNOUT",
+}
+
 const profileReducer = (state = {}, action) => {
     switch (action.type) {
-        case "MY_GENERAL_PROFILE_UPDATE":
+        case ProfileActionTypes.PROFILE_UPDATE:
             return {
                 ...state,
                 name: action.name,
                 description: action.description,
-                image: action.image,
-                coverPhoto: action.coverPhoto,
+                avatar: action.avatar,
+                cover: action.cover,
                 location: action.location,
                 website: action.website,
                 birthday: action.birthday,
             }
 
-        case "MY_FETCHED_PROFILES_UPDATE":
-            return {
-                ...state,
-                fetchedProfiles: action.fetchedProfiles,
-            }
-
-        case "MY_DATA_SIGNOUT":
+        case ProfileActionTypes.PROFILE_SIGNOUT:
             return {}
 
         default:

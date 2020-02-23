@@ -1,5 +1,5 @@
 import React from "react"
-import { connect } from "react-redux"
+import { useSelector } from "react-redux"
 import { Location } from "@reach/router"
 import { Link } from "gatsby"
 
@@ -8,14 +8,15 @@ import Image from "@common/Image"
 import UserMenu from "@components/user/UserMenu"
 import * as Routes from "@routes"
 
-const ChannelMatches = [/^\/channel\//, /^\/channels/]
+const ProfilesMatches = [/^\/profile\//, /^\/profiles/]
 const ExploreMatches = [/^\/watch/]
 
 const anyMatch = (patterns, string) => {
     return patterns.filter(p => string.match(p)).length > 0
 }
 
-const Header = ({ isLoggedIn }) => {
+const Header = () => {
+    const { isSignedIn } = useSelector(state => state.user)
     return (
         <header className="header">
             <nav className="navbar">
@@ -39,18 +40,18 @@ const Header = ({ isLoggedIn }) => {
                                     Explore
                                 </Link>
                                 <Link
-                                    to={Routes.getChannelsLink()}
+                                    to={Routes.getProfilesLink()}
                                     className={
                                         "nav-item" +
                                         (anyMatch(
-                                            ChannelMatches,
+                                            ProfilesMatches,
                                             location.pathname
                                         )
                                             ? " active"
                                             : "")
                                     }
                                 >
-                                    Channels
+                                    Profiles
                                 </Link>
                                 <Link
                                     to={Routes.getHowItWorksLink()}
@@ -69,7 +70,7 @@ const Header = ({ isLoggedIn }) => {
                     </Link>
                 </div>
                 <div className="right-nav">
-                    {isLoggedIn && (
+                    {isSignedIn && (
                         <Link
                             to={Routes.getVideoUploadLink()}
                             className="nav-item"
@@ -86,10 +87,4 @@ const Header = ({ isLoggedIn }) => {
     )
 }
 
-const mapState = state => {
-    return {
-        isLoggedIn: state.user.isLoggedIn,
-    }
-}
-
-export default connect(mapState)(Header)
+export default Header

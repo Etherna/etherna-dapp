@@ -29,3 +29,36 @@ export const checkUsingInjectedProvider = provider => {
         return false
     return true
 }
+
+export const fetchAccounts = async web3 => {
+    let accounts = []
+
+    if (!web3) {
+        throw new Error("Web3 instance is null")
+    }
+
+    if (web3.currentProvider) {
+        accounts = await web3.currentProvider.enable()
+    } else {
+        accounts = await web3.eth.getAccounts()
+    }
+
+    return accounts
+}
+
+export const getNetworkName = networkId => {
+    switch (networkId) {
+        case 1:
+            return "Main"
+        case 2:
+            return "Morder"
+        case 3:
+            return "Ropsten"
+        case 4:
+            return "Rinkeby"
+        case 42:
+            return "Kovan"
+        default:
+            return "Unknown"
+    }
+}

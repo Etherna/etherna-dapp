@@ -1,66 +1,57 @@
+export const UIActionTypes = {
+    UI_SHOW_ERROR: "UI_SHOW_ERROR",
+    UI_HIDE_ERROR: "UI_HIDE_ERROR",
+    UI_TOGGLE_CONNECTING_WALLET: "UI_TOGGLE_CONNECTING_WALLET",
+    UI_TOGGLE_LOADING_PROFILE: "UI_TOGGLE_LOADING_PROFILE",
+    UI_TOGGLE_BROWSER_SUPPORT: "UI_TOGGLE_BROWSER_SUPPORT",
+    UI_TOGGLE_NETWORK_CHANGE: "UI_TOGGLE_NETWORK_CHANGE",
+    UI_TOGGLE_ADDRESS_CHANGE: "UI_TOGGLE_ADDRESS_CHANGE",
+}
+
 const uiReducer = (state = {}, action) => {
     switch (action.type) {
-        case "UI_3BOX_LOADING":
+        case UIActionTypes.UI_SHOW_ERROR:
             return {
                 ...state,
-                provideConsent: action.provideConsent,
-                isFetchingThreeBox: action.isFetchingThreeBox,
-            }
-
-        case "UI_PROFILE_LOADING":
-            return {
-                ...state,
-                isFetchingChannel: action.isFetchingChannel,
-            }
-
-        case "UI_3BOX_FAILED":
-            return {
-                ...state,
-                isFetchingThreeBox: false,
-                showErrorModal: true,
-                provideConsent: false,
                 errorMessage: action.errorMessage,
+                errorTitle: action.errorTitle,
             }
 
-        case "UI_3BOX_FETCHING":
+        case UIActionTypes.UI_HIDE_ERROR:
             return {
                 ...state,
-                isFetchingThreeBox: action.isFetchingThreeBox,
+                errorMessage: undefined,
+                errorTitle: undefined,
             }
 
-        case "UI_APP_SYNC":
+        case UIActionTypes.UI_TOGGLE_CONNECTING_WALLET:
             return {
                 ...state,
-                isSyncing: action.isSyncing,
-                onSyncFinished: action.onSyncFinished,
+                isConnectingWallet: action.isConnectingWallet,
             }
 
-        case "UI_HANDLE_CONSENT_MODAL":
+        case UIActionTypes.UI_TOGGLE_LOADING_PROFILE:
             return {
                 ...state,
-                provideConsent: action.provideConsent,
-                showSignInBanner: action.showSignInBanner,
+                isLoadingProfile: action.isLoadingProfile,
             }
 
-        case "UI_CLOSE_ERROR_MODAL":
+        case UIActionTypes.UI_TOGGLE_BROWSER_SUPPORT:
             return {
                 ...state,
-                errorMessage: "",
-                showErrorModal: false,
+                showUnsupportedModal: action.showUnsupportedModal,
             }
 
-        case "UI_UNSUPPORTED_BROWSER_MODAL":
+        case UIActionTypes.UI_TOGGLE_NETWORK_CHANGE:
             return {
                 ...state,
-                showUnsupportedBrowser: action.showUnsupportedBrowser,
+                showNetwokChangeModal: action.showNetwokChangeModal,
             }
 
-        case "UI_HANDLE_SWITCHED_ADDRESS_MODAL":
+        case UIActionTypes.UI_TOGGLE_ADDRESS_CHANGE:
             return {
                 ...state,
-                switchedAddressModal: action.switchedAddressModal,
-                isFetchingThreeBox: false,
-                prevAddress: action.prevAddress,
+                showAccountSwitchModal: action.showAccountSwitchModal,
             }
 
         default:

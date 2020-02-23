@@ -43,7 +43,7 @@
             .video-title {
                 @apply font-semibold mb-0 leading-tight;
             }
-            .channel-name {
+            .profile-name {
                 @apply mb-0 font-semibold text-sm text-gray-600 transition-colors duration-200;
                 &:hover {
                     @apply text-gray-800 transition-colors duration-200;

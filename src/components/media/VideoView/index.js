@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import { Link } from "gatsby"
 
@@ -6,30 +6,42 @@ import "./video-view.scss"
 import Player from "@components/media/Player"
 import Avatar from "@components/user/Avatar"
 import { getResourceUrl } from "@utils/swarm"
+import { getProfile } from "@utils/3box"
 import * as Routes from "@routes"
-import getChannel from "../../../state/actions/channel/getChannel"
 
 const VideoView = ({ hash }) => {
-    const source = getResourceUrl(hash)
-    const channel = "0x9A0359B17651Bf2C5e25Fa9eFF49B11B3d4b1aE8"
-    const [title, setTitle] = useState("NO TITLE")
-    const [description, setDescription] = useState(undefined)
-    const [fetchedChannel, setFetchedChannel] = useState(false)
-    const [channelName, setChannelName] = useState(undefined)
-    const [channelAvatar, setChannelAvatar] = useState(undefined)
-    const channelLink = Routes.getChannelLink(channel)
+    // TODO: get real profile address
+    const profileAddress = "0x9A0359B17651Bf2C5e25Fa9eFF49B11B3d4b1aE8"
 
-    if (!fetchedChannel && channel) {
-        setFetchedChannel(true)
-        getChannel(channel)
-            .then(channelData => {
-                setChannelName(channelData.channelName)
-                setChannelAvatar(channelData.channelAvatar)
-            })
-            .catch(error => {
-                console.error(error)
-            })
-    }
+    const source = getResourceUrl(hash)
+    const [title, setTitle] = useState(undefined)
+    const [description, setDescription] = useState(undefined)
+    const [profileName, setProfileName] = useState(undefined)
+    const [profileAvatar, setProfileAvatar] = useState(undefined)
+    const profileLink = Routes.getProfileLink(profileAddress)
+
+    useEffect(() => {
+        const videoTitle = ""
+        const videoDescription = undefined
+
+        if (title !== videoTitle) {
+            setTitle(videoTitle)
+        }
+        if (description !== videoDescription) {
+            setDescription(videoDescription)
+        }
+
+        if (profileAddress) {
+            getProfile(profileAddress)
+                .then(profileData => {
+                    setProfileName(profileData.name)
+                    setProfileAvatar(profileData.image)
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+        }
+    }, [title, description])
 
     return (
         <div className="video-watch">
@@ -40,10 +52,10 @@ const VideoView = ({ hash }) => {
                 <hr />
 
                 <div className="video-stats">
-                    <Link to={channelLink}>
-                        <div className="video-channel">
-                            <Avatar image={channelAvatar} />
-                            <h3 className="channel-name">{channelName}</h3>
+                    <Link to={profileLink}>
+                        <div className="video-profile">
+                            <Avatar image={profileAvatar} />
+                            <h3 className="profile-name">{profileName}</h3>
                         </div>
                     </Link>
                 </div>

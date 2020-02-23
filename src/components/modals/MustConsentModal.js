@@ -7,8 +7,8 @@ import { closeErrorModal } from "../../state/actions/modals"
 const MustConsentModal = () => {
     return (
         <Modal show={true} showCloseButton={false}>
-            <div className="modal-header text-center">
-                <h4>Sign in</h4>
+            <div className="modal-header">
+                <h4 className="modal-title mx-auto">Sign in</h4>
             </div>
             <p className="text-center my-6">
                 You must provide consent to 3Box in your Web3 wallet to sign in

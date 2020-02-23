@@ -1,13 +1,13 @@
 import { combineReducers } from "redux"
 
+import enviromentReducer from "./enviromentReducer"
+import profileReducer from "./profileReducer"
 import uiReducer from "./uiReducer"
 import userReducer from "./userReducer"
-import profileReducer from "./profileReducer"
-import channelsReducer from "./channelsReducer"
 
 export default combineReducers({
+    env: enviromentReducer,
+    profile: profileReducer,
     ui: uiReducer,
     user: userReducer,
-    profile: profileReducer,
-    channel: channelsReducer,
 })

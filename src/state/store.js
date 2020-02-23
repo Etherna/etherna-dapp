@@ -1,5 +1,7 @@
 import { createStore, applyMiddleware, compose } from "redux"
 import thunkMiddleware from "redux-thunk"
+import { createLogger } from "redux-logger"
+
 import reducer from "./reducers"
 
 function configureStore() {
@@ -10,8 +12,7 @@ function configureStore() {
     const middleware = [thunkMiddleware]
 
     if (process.env.NODE_ENV !== "production") {
-        const logger = require("redux-logger").createLogger()
-        middleware.push(logger)
+        middleware.push(createLogger())
     }
 
     return createStore(

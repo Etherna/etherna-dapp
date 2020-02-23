@@ -10,21 +10,20 @@
 exports.onCreatePage = async ({ page, actions }) => {
     const { createPage } = actions
 
-    if (page.path.match(/^\/channelEdit\//)) {
-        page.matchPath = "/channel/:id/edit"
+    if (page.path.match(/^\/profileEdit\//)) {
+        page.matchPath = "/profile/:id/edit"
 
         // Update the page.
         createPage(page)
     }
 
-    if (page.path.match(/^\/channel\//)) {
-        page.matchPath = "/channel/:id"
+    if (page.path.match(/^\/profile\//)) {
+        page.matchPath = "/profile/:id"
 
         // Update the page.
         createPage(page)
     }
 }
-
 
 ///
 /// Webpack extension
@@ -34,12 +33,12 @@ exports.onCreateWebpackConfig = ({ actions }) => {
     actions.setWebpackConfig({
         resolve: {
             alias: {
-                "@context": path.resolve(__dirname, "src/context"),
                 "@components": path.resolve(__dirname, "src/components"),
                 "@common": path.resolve(__dirname, "src/components/common"),
                 "@routes": path.resolve(__dirname, "src/routes"),
+                "@state": path.resolve(__dirname, "src/state"),
                 "@utils": path.resolve(__dirname, "src/utils"),
-            }
-        }
+            },
+        },
     })
 }

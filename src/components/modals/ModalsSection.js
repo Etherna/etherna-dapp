@@ -1,88 +1,51 @@
 import React from "react"
-import { connect } from "react-redux"
-import PropTypes from "prop-types"
+import { useSelector } from "react-redux"
 
-import ProvideConsentModal from "./ProvideConsentModal"
+import ConnectingWalletModal from "./ConnectingWalletModal"
 import UnsupportedBrowserModal from "./UnsupportedBrowserModal"
 import MustConsentModal from "./MustConsentModal"
 import ErrorModal from "./ErrorModal"
 import SwitchedAddressModal from "./SwitchedAddressModal"
-import LoadingChannelModal from "./LoadingChannelModal"
+import LoadingProfileModal from "./LoadingProfileModal"
 
-const ModalsSection = ({
-    error,
-    prevAddress,
+const ModalsSection = () => {
+    const {
+        errorMessage,
+        errorTitle,
+        isConnectingWallet,
+        isLoadingProfile,
+        showUnsupportedModal,
+        showAccountSwitchModal,
+        //showNetwokChangeModal,
+    } = useSelector(state => state.ui)
+    const { address } = useSelector(state => state.user)
+    const { currentAddress } = useSelector(state => state.env)
 
-    provideConsent,
-    showUnsupportedBrowser,
-    switchedAddressModal,
-    showErrorModal,
-    isFetchingThreeBox,
-    isFetchingChannel,
-}) => {
     const mustConsentError =
-        error &&
-        error.message &&
-        error.message.substring(0, 65) ===
-            "Error: Web3 Wallet Message Signature: User denied message signature."
+        errorMessage &&
+        errorMessage.substring(0, 65) === "Error: Web3 Wallet Message Signature: User denied message signature."
 
     return (
         <section>
-            {provideConsent && <ProvideConsentModal />}
+            {isConnectingWallet && <ConnectingWalletModal />}
 
-            {showUnsupportedBrowser && <UnsupportedBrowserModal />}
+            {showUnsupportedModal && <UnsupportedBrowserModal />}
 
             {!!mustConsentError && <MustConsentModal />}
 
-            {showErrorModal && !mustConsentError && (
-                <ErrorModal error={error} />
+            {errorMessage && !mustConsentError && (
+                <ErrorModal title={errorTitle} error={errorMessage} />
             )}
 
-            {switchedAddressModal && (
-                <SwitchedAddressModal prevAddress={prevAddress} />
+            {showAccountSwitchModal && (
+                <SwitchedAddressModal address={currentAddress} prevAddress={address} />
             )}
 
-            {(isFetchingThreeBox || isFetchingChannel) && (
-                <LoadingChannelModal />
+            {isLoadingProfile && (
+                <LoadingProfileModal />
             )}
         </section>
     )
 }
 
-ModalsSection.propTypes = {
-    error: PropTypes.string,
-    prevAddress: PropTypes.string,
-
-    provideConsent: PropTypes.bool,
-    showUnsupportedBrowser: PropTypes.bool,
-    showErrorModal: PropTypes.bool,
-    switchedAddressModal: PropTypes.bool,
-    isFetchingThreeBox: PropTypes.bool,
-    isFetchingChannel: PropTypes.bool,
-}
-
-ModalsSection.defaultProps = {
-    error: "",
-    prevAddress: "",
-
-    provideConsent: false,
-    showUnsupportedBrowser: false,
-    showErrorModal: false,
-    switchedAddressModal: false,
-    isFetchingThreeBox: false,
-    isFetchingChannel: false,
-}
-
-const mapState = state => {
-    return {
-        provideConsent: state.ui.provideConsent,
-        showUnsupportedBrowser: state.ui.showUnsupportedBrowser,
-        showErrorModal: state.ui.showErrorModal,
-        switchedAddressModal: state.ui.switchedAddressModal,
-        prevAddress: state.ui.prevAddress,
-        isFetchingThreeBox: state.ui.isFetchingThreeBox,
-        isFetchingChannel: state.ui.isFetchingChannel,
-    }
-}
-
-export default connect(mapState)(ModalsSection)
+export default ModalsSection

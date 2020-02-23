@@ -1,7 +1,6 @@
 import React, { useState } from "react"
-import PropTypes from "prop-types"
 import classnames from "classnames"
-import { connect } from "react-redux"
+import { useSelector } from "react-redux"
 
 import "./uploader.scss"
 import Avatar from "@components/user/Avatar"
@@ -9,21 +8,18 @@ import Button from "@common/Button"
 import VideoDrag from "./VideoDrag"
 import VideoUpload from "./VideoUpload"
 
-const Uploader = ({
-    isLoggedIn,
-    channelName,
-    channelAvatar,
-    currentAddress,
-}) => {
+const Uploader = () => {
+    const { name, avatar } = useSelector(state => state.profile)
+    const { isSignedIn, address } = useSelector(state => state.user)
     const [videoFile, setVideoFile] = useState(undefined)
     const [videoHash, setVideoHash] = useState(undefined)
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
 
-    if (!isLoggedIn) {
+    if (!isSignedIn) {
         return (
             <p className="text-lg text-gray-700 text-center my-16">
-                You must log in first.
+                You must sign in first.
             </p>
         )
     }
@@ -35,8 +31,8 @@ const Uploader = ({
             </div>
             <div className="row mb-6">
                 <div className="flex items-center">
-                    <Avatar image={channelAvatar} address={currentAddress} />
-                    <h3 className="mb-0 ml-1">{channelName}</h3>
+                    <Avatar image={avatar} address={address} />
+                    <h3 className="mb-0 ml-1">{name}</h3>
                 </div>
             </div>
             <div className="row">
@@ -114,20 +110,4 @@ const Uploader = ({
     )
 }
 
-Uploader.propTypes = {
-    isLoggedIn: PropTypes.bool,
-    currentAddress: PropTypes.string,
-    channelName: PropTypes.string,
-    channelAvatar: PropTypes.array,
-}
-
-const mapState = state => {
-    return {
-        isLoggedIn: state.user.isLoggedIn,
-        currentAddress: state.user.currentAddress,
-        channelName: state.channel.channelName,
-        channelAvatar: state.channel.channelAvatar,
-    }
-}
-
-export default connect(mapState)(Uploader)
+export default Uploader

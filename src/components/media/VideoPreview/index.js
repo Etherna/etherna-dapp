@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import { Link } from "gatsby"
 
@@ -7,33 +7,33 @@ import Image from "@common/Image"
 import Avatar from "@components/user/Avatar"
 import { getTimeValues } from "@components/media/time"
 import * as Routes from "@routes"
-import getChannel from "../../../state/actions/channel/getChannel"
+import { getProfile } from "@utils/3box"
 
-const VideoPreview = ({ hash, title, thumbnail, duration, channel }) => {
+const VideoPreview = ({ hash, title, thumbnail, duration, profileAddress }) => {
     const { hours, minutes, seconds } = getTimeValues(duration)
-    const [fetchedChannel, setFetchedChannel] = useState(false)
-    const [channelName, setChannelName] = useState(undefined)
-    const [channelAvatar, setChannelAvatar] = useState(undefined)
-    const channelLink = Routes.getChannelLink(channel)
+    const [profileName, setProfileName] = useState(undefined)
+    const [profileAvatar, setProfileAvatar] = useState(undefined)
+    const profileLink = Routes.getProfileLink(profileAddress)
     const videoLink = Routes.getVideoLink(hash)
 
-    if (!fetchedChannel && channel) {
-        setFetchedChannel(true)
-        getChannel(channel)
-            .then(channelData => {
-                setChannelName(channelData.channelName)
-                setChannelAvatar(channelData.channelAvatar)
-            })
-            .catch(error => {
-                console.error(error)
-            })
-    }
+    useEffect(() => {
+        if (profileAddress) {
+            getProfile(profileAddress)
+                .then(profileData => {
+                    setProfileName(profileData.name)
+                    setProfileAvatar(profileData.image)
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+        }
+    }, [profileAddress])
 
     return (
         <div className="video-preview">
             <Link to={videoLink}>
                 <div className="video-thumbnail">
-                    {thumbnail && <img src={thumbnail} />}
+                    {thumbnail && <img src={thumbnail} alt="" />}
                     {!thumbnail && (
                         <Image
                             filename="thumb-placeholder.svg"
@@ -47,16 +47,16 @@ const VideoPreview = ({ hash, title, thumbnail, duration, channel }) => {
                 </div>
             </Link>
             <div className="video-info">
-                <Link to={channelLink}>
-                    <Avatar image={channelAvatar} address={channel} />
+                <Link to={profileLink}>
+                    <Avatar image={profileAvatar} address={profileAddress} />
                 </Link>
                 <div className="video-stats">
                     <Link to={videoLink}>
                         <h4 className="video-title">{title}</h4>
                     </Link>
-                    <Link to={channelLink}>
-                        <div className="video-channel">
-                            <h5 className="channel-name">{channelName}</h5>
+                    <Link to={profileLink}>
+                        <div className="video-profile">
+                            <h5 className="profile-name">{profileName}</h5>
                         </div>
                     </Link>
                 </div>
@@ -70,7 +70,7 @@ VideoPreview.propTypes = {
     title: PropTypes.string,
     thumbnail: PropTypes.string,
     duration: PropTypes.number,
-    channel: PropTypes.string,
+    profileAddress: PropTypes.string,
 }
 
 VideoPreview.defaultProps = {

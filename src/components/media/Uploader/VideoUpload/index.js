@@ -20,12 +20,9 @@ const VideoUpload = ({ file, onFinishedUploading, onRemoveVideo }) => {
         setHash(undefined)
 
         try {
-            const hash = await uploadVideoToSwarm(
-                file,
-                progress => {
-                    setUploadProgress(progress)
-                }
-            )
+            const hash = await uploadVideoToSwarm(file, progress => {
+                setUploadProgress(progress)
+            })
             setUploadProgress(100)
             setIsUploading(false)
 
@@ -52,11 +49,11 @@ const VideoUpload = ({ file, onFinishedUploading, onRemoveVideo }) => {
     return (
         <div className="mb-4">
             {errorMessage && (
-                <Alert style="danger" title="Upload error">
+                <Alert type="danger" title="Upload error">
                     {errorMessage}
                 </Alert>
             )}
-            {file && !isUploading && uploadProgress == 0 && (
+            {file && !isUploading && uploadProgress === 0 && (
                 <>
                     <p className="text-gray-700">
                         You selected{" "}
@@ -92,7 +89,7 @@ const VideoUpload = ({ file, onFinishedUploading, onRemoveVideo }) => {
                     </Button>
                 </>
             )}
-            {(uploadProgress === 100 && hash) && (
+            {uploadProgress === 100 && hash && (
                 <>
                     <p>Finished upload!</p>
                     <p className="text-gray-700">

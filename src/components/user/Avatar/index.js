@@ -23,7 +23,7 @@ const Avatar = ({ image, address, size }) => {
 }
 
 Avatar.propTypes = {
-    image: PropTypes.oneOfType(
+    image: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.arrayOf(
             PropTypes.shape({
@@ -32,8 +32,9 @@ Avatar.propTypes = {
                     "/": PropTypes.string.isRequired,
                 }).isRequired,
             })
-        )
-    ),
+        ),
+        PropTypes.object,
+    ]),
     address: PropTypes.string,
     size: PropTypes.number,
 }

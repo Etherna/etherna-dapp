@@ -8,9 +8,9 @@
     .video-stats {
         @apply my-4;
 
-        .video-channel {
+        .video-profile {
             @apply flex items-center;
-            .channel-name {
+            .profile-name {
                 @apply mb-0 text-base font-semibold text-gray-800;
             }
         }

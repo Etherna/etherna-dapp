@@ -1,10 +1,10 @@
 import React from "react"
 
 import "./sidebar.scss"
-import MyChannel from "./MyChannel"
-import ReccomendedChannels from "./ReccomendedChannels"
+import MyProfile from "./MyProfile"
+import ReccomendedProfiles from "./ReccomendedProfiles"
 
-const channels = [
+const profiles = [
     {
         imageUrl:
             "//yt3.ggpht.com/a/AGF-l7_W99JMwHKzSpg_W7z2vFiR5WkawWO4A1FUWQ=s176-c-k-c0x00ffffff-no-rj-mo",
@@ -17,8 +17,8 @@ const Sidebar = () => {
     return (
         <aside className="sidebar">
             <div className="sidenav">
-                <MyChannel />
-                <ReccomendedChannels channels={channels} />
+                <MyProfile />
+                <ReccomendedProfiles profiles={profiles} />
             </div>
             <small className="footer-notice">
                 Copyright © {new Date().getFullYear()} etherna.io.

@@ -34,10 +34,7 @@ export const getResourceUrl = (imageObject, type = "swarm") => {
         : `${IpfsGateway}/ipfs/${hash}`
 }
 
-export const uploadResourceToSwarm = async (
-    formData,
-    type = "swarm"
-) => {
+export const uploadResourceToSwarm = async (formData, type = "swarm") => {
     const endpoint =
         type.toLowerCase() !== "ipfs"
             ? `${SwarmGateway}/bzz-raw:/`
@@ -65,10 +62,7 @@ export const uploadResourceToSwarm = async (
     }
 }
 
-export const uploadVideoToSwarm = async (
-    file,
-    progressCallback
-) => {
+export const uploadVideoToSwarm = async (file, progressCallback) => {
     const endpoint = `${SwarmGateway}/bzz:/?defaultpath=${file.name}`
 
     try {
@@ -76,12 +70,12 @@ export const uploadVideoToSwarm = async (
         // const videoData = new Blob([new Uint8Array(videoBuffer)])
 
         const data = new FormData()
-        data.append('uploadSelected', file.name)
-        data.append('file', file)
+        data.append("uploadSelected", file.name)
+        data.append("file", file)
 
         const resp = await axios.post(endpoint, data, {
             headers: {
-                accept: 'text'
+                accept: "text",
             },
             onUploadProgress: pev => {
                 const progress = Math.round((pev.loaded * 100) / pev.total)
@@ -94,9 +88,7 @@ export const uploadVideoToSwarm = async (
         })
         const hash = resp.data
 
-        return isValidHash(hash) ?
-            hash :
-            undefined
+        return isValidHash(hash) ? hash : undefined
     } catch (error) {
         console.error(error)
         return undefined

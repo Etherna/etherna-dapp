@@ -1,81 +1,36 @@
+export const UserActionTypes = {
+    USER_SIGNIN: "USER_SIGNIN",
+    USER_SIGNOUT: "USER_SIGNOUT",
+    USER_UPDATE_ADDRESS: "USER_UPDATE_ADDRESS",
+    USER_UPDATE_SIGNEDIN: "USER_UPDATE_SIGNEDIN",
+}
+
 const userReducer = (state = {}, action) => {
     switch (action.type) {
-        case "MY_BOX_UPDATE":
+        case UserActionTypes.USER_SIGNIN:
             return {
                 ...state,
                 box: action.box,
                 ens: action.ens,
                 threeId: action.threeId,
+                address: action.address,
             }
 
-        case "INITIAL_USER_CHECK_WEB3":
-            return {
-                ...state,
-                currentWallet: action.currentWallet,
-            }
-
-        case "USER_CHECK_WEB3":
-            return {
-                ...state,
-                currentWallet: action.currentWallet,
-                isMobile: action.isMobile,
-            }
-
-        case "USER_WEB3CONNECT":
-            return {
-                ...state,
-                web3Connect: action.web3Connect,
-            }
-
-        case "USER_UPDATE_WEB3":
-            return {
-                ...state,
-                web3Obj: action.web3Obj,
-                currentWallet: action.currentWallet,
-                currentWalletLogo: action.currentWalletLogo,
-            }
-
-        case "USER_ADDRESSES_UPDATE":
-            return {
-                ...state,
-                isLoggedIn: action.isLoggedIn,
-                currentAddress: action.currentAddress,
-                usingInjectedAddress: action.usingInjectedAddress,
-            }
-
-        case "USER_WEB3_STATUS_UPDATE":
-            return {
-                ...state,
-            }
-
-        case "USER_NETWORK_UPDATE":
-            return {
-                ...state,
-                currentNetwork: action.currentNetwork,
-                prevNetwork: action.prevNetwork,
-                prevPrevNetwork: action.prevPrevNetwork,
-            }
-
-        case "USER_LOGIN_UPDATE":
-            return {
-                ...state,
-                isLoggedIn: action.isLoggedIn,
-            }
-
-        case "USER_UPDATE_ADDRESS":
-            return {
-                ...state,
-                currentAddress: action.currentAddress,
-            }
-
-        case "USER_HANDLE_POLLING":
-            return {
-                ...state,
-                shouldPoll: action.shouldPoll,
-            }
-
-        case "USER_SIGN_OUT":
+        case UserActionTypes.USER_SIGNOUT:
             return {}
+
+        case UserActionTypes.USER_UPDATE_ADDRESS:
+            return {
+                ...state,
+                isSignedIn: action.isSignedIn,
+                address: action.address,
+            }
+
+        case UserActionTypes.USER_UPDATE_SIGNEDIN:
+            return {
+                ...state,
+                isSignedIn: action.isSignedIn,
+            }
 
         default:
             return state

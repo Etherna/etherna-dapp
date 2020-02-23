@@ -4,11 +4,11 @@ import classnames from "classnames"
 
 import "./alert.scss"
 
-const Alert = ({ children, style, title }) => {
+const Alert = ({ children, type, title }) => {
     return (
         <div
             className={classnames("alert", {
-                [`alert-${style}`]: style,
+                [`alert-${type}`]: type,
             })}
         >
             {title && <div className="alert-title">{title}</div>}
@@ -18,12 +18,12 @@ const Alert = ({ children, style, title }) => {
 }
 
 Alert.propTypes = {
-    style: PropTypes.string,
+    type: PropTypes.string,
     title: PropTypes.string,
 }
 
 Alert.defaultProps = {
-    style: "success",
+    type: "success",
 }
 
 export default Alert

@@ -1,30 +1,31 @@
-import { store } from "../../store"
+import { store } from "@state/store"
+import { UIActionTypes } from "@state/reducers/uiReducer"
 
 export const closeErrorModal = () => {
     store.dispatch({
-        type: "UI_CLOSE_ERROR_MODAL",
-        errorMessage: "",
-        showErrorModal: false,
+        type: UIActionTypes.UI_HIDE_ERROR,
+        errorMessage: undefined,
+        errorTitle: undefined,
     })
 }
 
-export const closeConsentModal = () => {
+export const closeConnectingWalletModal = () => {
     store.dispatch({
-        type: "UI_HANDLE_CONSENT_MODAL",
-        provideConsent: false,
+        type: UIActionTypes.UI_TOGGLE_CONNECTING_WALLET,
+        isConnectingWallet: false,
     })
 }
 
 export const closeUnsupportedBrowserModal = () => {
     store.dispatch({
-        type: "UI_UNSUPPORTED_BROWSER_MODAL",
-        showUnsupportedBrowser: false,
+        type: UIActionTypes.UI_TOGGLE_BROWSER_SUPPORT,
+        showUnsupportedModal: false,
     })
 }
 
-export const handleSwitchedAddressModal = () => {
+export const closeSwitchedAddressModal = () => {
     store.dispatch({
-        type: "UI_HANDLE_SWITCHED_ADDRESS_MODAL",
-        switchedAddressModal: !store.getState().uiState.switchedAddressModal,
+        type: UIActionTypes.UI_TOGGLE_ADDRESS_CHANGE,
+        showAccountSwitchModal: false,
     })
 }

@@ -15,7 +15,7 @@ const VideoGrid = ({ label, videos }) => {
                             title={v.title}
                             duration={v.duration}
                             hash={v.hash}
-                            channel={v.channel}
+                            profileAddress={v.profileAddress}
                             key={v.hash + i}
                         />
                     )

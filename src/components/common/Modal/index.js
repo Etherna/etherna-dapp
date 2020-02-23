@@ -47,6 +47,8 @@ const Modal = ({
                 className={classnames("modal-backdrop", { show: show })}
                 onClick={handleToggle}
                 onKeyDown={handleKeyDown}
+                role="button"
+                tabIndex={0}
             />
         </>
     )

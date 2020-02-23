@@ -1,11 +1,7 @@
-import channel from "./channel"
-import enviroment from "./enviroment"
-import login from "./login"
-import user from "./user"
+import providerActions from "./provider"
+import profileActions from "./profile"
 
-export default {
-    channel,
-    enviroment,
-    login,
-    user,
+export {
+    providerActions,
+    profileActions
 }

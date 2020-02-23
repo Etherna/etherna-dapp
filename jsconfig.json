@@ -2,16 +2,14 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "@context/*": ["src/context/*"],
             "@components/*": ["src/components/*"],
             "@common/*": ["src/components/common/*"],
             "@routes/*": ["src/routes/*"],
-            "@utils/*": ["src/utils/*"],
-        }
+            "@state/*": ["src/state/*"],
+            "@utils/*": ["src/utils/*"]
+        },
+        "experimentalDecorators": true
     },
-    "exclude": [
-        ".cache",
-        "public",
-        "node_modules"
-    ]
+    "include": ["src"],
+    "exclude": [".cache", "public", "node_modules"]
 }

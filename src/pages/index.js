@@ -11,7 +11,7 @@ const videoObject = {
         "33f1ea45b3404d1691911729a5dd618216bbd2031c9bf1459d4f4542fb13e067/test%20swarm.mp4"
     ),
     duration: 600,
-    channel: "0x9A0359B17651Bf2C5e25Fa9eFF49B11B3d4b1aE8",
+    profileAddress: "0x9A0359B17651Bf2C5e25Fa9eFF49B11B3d4b1aE8",
 }
 
 const videos = new Array(5).fill("").map(() => videoObject)

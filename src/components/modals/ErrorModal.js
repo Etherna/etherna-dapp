@@ -4,23 +4,22 @@ import PropTypes from "prop-types"
 import Modal from "../common/Modal"
 import Image from "../common/Image"
 import Button from "../common/Button"
-import { closeErrorModal } from "../../state/actions/modals"
+import { closeErrorModal } from "@state/actions/modals"
 
-const ErrorModal = ({ error }) => {
+const ErrorModal = ({ title, error }) => {
     let isMetaMaskSignError
-    let isMetaMaskFromError
+    //let isMetaMaskFromError
     let isMozillaError
     let errorString
 
-    const errorMsg = error.message
-    if (errorMsg) {
+    if (error) {
         isMetaMaskSignError =
-            errorMsg.substring(0, 65) ===
+            error.substring(0, 65) ===
             "Web3 Wallet Signature Error: User denied message signature."
-        //isMetaMaskFromError = errorMsg.substring(0, 58) === 'Web3 Wallet Signature Error: from field is required.'
+        //isMetaMaskFromError = error.substring(0, 58) === 'Web3 Wallet Signature Error: from field is required.'
         isMozillaError =
-            errorMsg.substring(0, 26) === "value/</<@moz-extension://"
-        errorString = errorMsg.substring(0, 200)
+            error.substring(0, 26) === "value/</<@moz-extension://"
+        errorString = error.substring(0, 200)
     }
 
     errorString = errorString || "There was an error logging in."
@@ -41,7 +40,7 @@ const ErrorModal = ({ error }) => {
                     {isMetaMaskSignError || isMozillaError ? (
                         <h3>Log in</h3>
                     ) : (
-                        <h3>Error</h3>
+                        <h3>{title}</h3>
                     )}
                 </h4>
             </div>
