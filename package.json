@@ -12,6 +12,7 @@
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "detect-browser": "^4.8.0",
+    "dotenv": "^8.2.0",
     "ethereum-blockies-base64": "^1.0.2",
     "ethers": "^4.0.44",
     "fortmatic": "^1.1.3",

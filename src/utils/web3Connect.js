@@ -5,24 +5,23 @@ import Fortmatic from "fortmatic"
 import Authereum from "authereum"
 
 export const web3Connect = new Web3Connect.Core({
-    //cacheProvider: true,
     providerOptions: {
         walletconnect: {
             package: WalletConnectProvider,
             options: {
-                infuraId: "2bbea3a9acc247b483759cbbbb61f1d7",
+                infuraId: process.env.INFURA_ID,
             },
         },
         portis: {
             package: Portis,
             options: {
-                id: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+                id: process.env.PORTIS_ID,
             },
         },
         fortmatic: {
             package: Fortmatic,
             options: {
-                key: "pk_live_XXXXXXXXXXXX",
+                key: process.env.FORTMATIC_ID,
             },
         },
         authereum: {
