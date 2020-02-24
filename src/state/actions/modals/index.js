@@ -22,10 +22,3 @@ export const closeUnsupportedBrowserModal = () => {
         showUnsupportedModal: false,
     })
 }
-
-export const closeSwitchedAddressModal = () => {
-    store.dispatch({
-        type: UIActionTypes.UI_TOGGLE_ADDRESS_CHANGE,
-        showAccountSwitchModal: false,
-    })
-}

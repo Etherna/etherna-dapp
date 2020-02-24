@@ -1,15 +1,16 @@
 import React from "react"
 import PropTypes from "prop-types"
 import makeBlockie from "ethereum-blockies-base64"
+import classnames from "classnames"
 
 import "./avatar.scss"
 import { getResourceUrl } from "@utils/swarm"
 
-const Avatar = ({ image, address, size }) => {
+const Avatar = ({ image, address, size, showBadge }) => {
     const blockie = address ? makeBlockie(address) : null
 
     return (
-        <div className="avatar">
+        <div className={classnames("avatar", { badge: showBadge })}>
             <img
                 src={getResourceUrl(image) || blockie}
                 alt={address}
@@ -37,6 +38,7 @@ Avatar.propTypes = {
     ]),
     address: PropTypes.string,
     size: PropTypes.number,
+    showBadge: PropTypes.bool,
 }
 
 export default Avatar

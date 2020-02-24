@@ -26,6 +26,7 @@ const MyProfile = () => {
                 <SidebarItem
                     name={name}
                     imageUrl={getResourceUrl(avatar)}
+                    fallbackAddress={address}
                     link={Routes.getProfileLink(address)}
                 />
             )}

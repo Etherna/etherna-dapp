@@ -58,9 +58,9 @@ DropDown.propTypes = {
 }
 
 // DropDown item
-const DropDownItem = ({ children, action, disabled }) => {
+const DropDownItem = ({ children, action, disabled, inactive }) => {
     let handleAction = () => {
-        action()
+        action && action()
     }
     let handleKeyDown = e => {
         if (e.keyCode === 13) {
@@ -69,7 +69,10 @@ const DropDownItem = ({ children, action, disabled }) => {
     }
     return (
         <div
-            className={classnames("dropdown-item", { disabled: disabled })}
+            className={classnames("dropdown-item", {
+                "disabled": disabled,
+                "inactive": inactive
+            })}
             role="button"
             tabIndex={0}
             onClick={handleAction}
@@ -83,6 +86,7 @@ const DropDownItem = ({ children, action, disabled }) => {
 DropDownItem.propTypes = {
     action: PropTypes.func,
     disabled: PropTypes.bool,
+    inactive: PropTypes.bool,
 }
 
 // Exports

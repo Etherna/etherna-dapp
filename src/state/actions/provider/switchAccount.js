@@ -2,7 +2,7 @@ import signin from "./signin"
 import signout from "./signout"
 
 const switchAccount = async () => {
-    await signout()
+    await signout(false)
     await signin()
 }
 

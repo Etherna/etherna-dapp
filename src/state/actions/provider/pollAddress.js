@@ -1,6 +1,5 @@
 import { store } from "@state/store"
 import { EnvActionTypes } from "@state/reducers/enviromentReducer"
-import { UIActionTypes } from "@state/reducers/uiReducer"
 import { fetchAccounts } from "@utils/ethFuncs"
 
 export const pollAddress = async () => {
@@ -18,10 +17,6 @@ export const pollAddress = async () => {
                         type: EnvActionTypes.ENV_CURRENT_ADDRESS,
                         currentAddress: newAddress,
                         previusAddress: currentAddress,
-                    })
-                    store.dispatch({
-                        type: UIActionTypes.UI_TOGGLE_ADDRESS_CHANGE,
-                        showAccountSwitchModal: true,
                     })
                 }
             }

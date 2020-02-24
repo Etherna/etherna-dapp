@@ -5,7 +5,6 @@ export const UIActionTypes = {
     UI_TOGGLE_LOADING_PROFILE: "UI_TOGGLE_LOADING_PROFILE",
     UI_TOGGLE_BROWSER_SUPPORT: "UI_TOGGLE_BROWSER_SUPPORT",
     UI_TOGGLE_NETWORK_CHANGE: "UI_TOGGLE_NETWORK_CHANGE",
-    UI_TOGGLE_ADDRESS_CHANGE: "UI_TOGGLE_ADDRESS_CHANGE",
 }
 
 const uiReducer = (state = {}, action) => {
@@ -48,12 +47,6 @@ const uiReducer = (state = {}, action) => {
             return {
                 ...state,
                 showNetwokChangeModal: action.showNetwokChangeModal,
-            }
-
-        case UIActionTypes.UI_TOGGLE_ADDRESS_CHANGE:
-            return {
-                ...state,
-                showAccountSwitchModal: action.showAccountSwitchModal,
             }
 
         default:

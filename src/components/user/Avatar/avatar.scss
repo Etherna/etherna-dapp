@@ -1,7 +1,15 @@
 .avatar {
-    @apply border-2 border-white overflow-hidden w-10 h-10 rounded-full;
+    @apply relative border-2 border-white w-10 h-10;
 
     img {
-        @apply w-full h-full object-cover;
+        @apply w-full h-full object-cover rounded-full;
+    }
+
+    &.badge {
+        &::after {
+            content: "";
+            @apply absolute right-0 top-0 w-3 h-3 border border-white bg-blue-600
+                rounded-full;
+        }
     }
 }

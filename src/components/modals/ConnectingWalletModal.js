@@ -9,7 +9,7 @@ const ConnectingWalletModal = () => {
     return (
         <Modal show={true} showCloseButton={false}>
             <div className="modal-header">
-                <h4 className="modal-title mx-auto">Signin into Etherna</h4>
+                <h4 className="modal-title mx-auto">Signing in into Etherna</h4>
             </div>
             <p className="text-center text-gray-600 my-6">
                 Approve the message in your <br /> Web3 wallet to continue
