@@ -10,6 +10,8 @@ export const getProfile = async address => {
 }
 
 export const updateProfile = async (box, data) => {
+    console.log(box);
+
     try {
         const {
             name,

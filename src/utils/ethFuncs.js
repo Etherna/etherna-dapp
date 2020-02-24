@@ -1,3 +1,5 @@
+import { ethers } from "ethers"
+
 export const checkIsEthAddress = string => {
     const isEthereumAddress = /^(0x)?[0-9a-f]{40}$/i.test(string)
     return isEthereumAddress
@@ -44,6 +46,20 @@ export const fetchAccounts = async web3 => {
     }
 
     return accounts
+}
+
+export const resolveEnsName = async (address, web3) => {
+    const currentProvider = web3 ?
+        web3.currentProvider :
+        window.web3 && window.web3.currentProvider
+
+    if (currentProvider) {
+        const provider = new ethers.providers.Web3Provider(currentProvider)
+        const name = await provider.lookupAddress(address)
+        return name
+    }
+
+    return undefined
 }
 
 export const getNetworkName = networkId => {

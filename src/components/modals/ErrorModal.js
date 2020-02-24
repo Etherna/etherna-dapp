@@ -26,21 +26,22 @@ const ErrorModal = ({ title, error }) => {
 
     return (
         <Modal show={true} showCloseButton={false}>
-            {isMetaMaskSignError || isMozillaError ? (
-                <Image
-                    filename="signature-required-icon.svg"
-                    alt="Wallet signature required"
-                />
-            ) : (
-                <Image filename="error-icon.svg" alt="Error" />
-            )}
-
-            <div className="modal-header text-center">
-                <h4>
+            <div className="table mx-auto mb-3">
+                {isMetaMaskSignError || isMozillaError ? (
+                    <Image
+                        filename="signature-required-icon.svg"
+                        alt="Wallet signature required"
+                    />
+                ) : (
+                    <Image filename="error-icon.svg" alt="Error" />
+                )}
+            </div>
+            <div className="modal-header">
+                <h4 className="modal-title mx-auto">
                     {isMetaMaskSignError || isMozillaError ? (
-                        <h3>Log in</h3>
+                        <span>Log in</span>
                     ) : (
-                        <h3>{title}</h3>
+                        {title}
                     )}
                 </h4>
             </div>

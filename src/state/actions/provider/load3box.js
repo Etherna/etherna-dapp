@@ -1,10 +1,11 @@
 import Box from "3box"
 
+import pollAddress from "./pollAddress"
 import { store } from "@state/store"
 import { UIActionTypes } from "@state/reducers/uiReducer"
 import { UserActionTypes } from "@state/reducers/userReducer"
 import fetchProfile from "@state/actions/profile/fetchProfile"
-import pollAddress from "./pollAddress"
+import { resolveEnsName } from "@utils/ethFuncs"
 
 const load3Box = async () => {
     store.dispatch({
@@ -19,10 +20,20 @@ const load3Box = async () => {
 
     try {
         // loading 3box
-        const box = await Box.create(web3.currentProvider)
+        const box = await Box.openBox(address, web3.currentProvider)
         await box.syncDone
 
-        startProfileLoading(address)
+        // fetching address ens name
+        const ens = await resolveEnsName(address, web3)
+
+        // fetching profile data
+        loadProfile(address)
+
+        store.dispatch({
+            type: UserActionTypes.USER_3BOX_UPDATE,
+            box,
+            ens,
+        })
 
         box.onSyncDone(() => {
             store.dispatch({
@@ -44,7 +55,7 @@ const load3Box = async () => {
     }
 }
 
-const startProfileLoading = async (address) => {
+const loadProfile = address => {
     store.dispatch({
         type: UIActionTypes.UI_TOGGLE_CONNECTING_WALLET,
         isConnectingWallet: false,

@@ -15,6 +15,8 @@ const uiReducer = (state = {}, action) => {
                 ...state,
                 errorMessage: action.errorMessage,
                 errorTitle: action.errorTitle,
+                isConnectingWallet: false,
+                isLoadingProfile: false,
             }
 
         case UIActionTypes.UI_HIDE_ERROR:
