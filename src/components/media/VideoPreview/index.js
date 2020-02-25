@@ -47,18 +47,22 @@ const VideoPreview = ({ hash, title, thumbnail, duration, profileAddress }) => {
                 </div>
             </Link>
             <div className="video-info">
-                <Link to={profileLink}>
-                    <Avatar image={profileAvatar} address={profileAddress} />
-                </Link>
+                {profileAddress &&
+                    <Link to={profileLink}>
+                        <Avatar image={profileAvatar} address={profileAddress} />
+                    </Link>
+                }
                 <div className="video-stats">
                     <Link to={videoLink}>
                         <h4 className="video-title">{title}</h4>
                     </Link>
-                    <Link to={profileLink}>
-                        <div className="video-profile">
-                            <h5 className="profile-name">{profileName}</h5>
-                        </div>
-                    </Link>
+                    {profileAddress &&
+                        <Link to={profileLink}>
+                            <div className="video-profile">
+                                <h5 className="profile-name">{profileName}</h5>
+                            </div>
+                        </Link>
+                    }
                 </div>
             </div>
         </div>

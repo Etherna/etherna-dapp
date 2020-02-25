@@ -1,0 +1,25 @@
+.profiles {
+    @apply mt-6;
+
+    .profile-preview {
+        @apply border-t-4 border-gray-200 py-4;
+
+        &:last-of-type {
+            @apply border-b-4;
+        }
+
+        .profile-info {
+            @apply flex items-center;
+            .avatar {
+                @apply mr-2;
+            }
+            h2, h3, h4 {
+                @apply text-lg mb-0;
+            }
+
+            a, a:hover {
+                @apply text-gray-900;
+            }
+        }
+    }
+}
