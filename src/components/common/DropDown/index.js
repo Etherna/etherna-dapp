@@ -1,95 +1,55 @@
-import React, { useState } from "react"
-import PropTypes from "prop-types"
-import classnames from "classnames"
+import React from "react"
 
 import "./dropdown.scss"
 
-// DropDown container
-const DropDown = ({ children, toggleChildren, alignRight }) => {
-    const [isDropDownOpen, setDropDownOpen] = useState(false)
+import {
+    DropDownContextProvider,
+    ReducerTypes,
+    useStateValue,
+} from "./DropDownContext"
+import DropDownItem from "./DropDownItem"
+import DropDownMenu from "./DropDownMenu"
+import DropDownMenuToggle from "./DropDownMenuToggle"
 
-    let handleToggle = () => {
-        setDropDownOpen(!isDropDownOpen)
-    }
+const DropDown = ({ children }) => {
+    return (
+        <DropDownContextProvider>
+            <div className="dropdown">
+                {children}
+            </div>
+            <DropDownBackdrop />
+        </DropDownContextProvider>
+    )
+}
 
-    let handleKeyDown = e => {
-        if (e.keyCode === 13) {
-            handleToggle()
-        }
+const DropDownBackdrop = () => {
+    const [state, dispatch] = useStateValue()
+    const isDropDownOpen = state.current !== undefined
+
+    const handleClear = () => {
+        dispatch({
+            type: ReducerTypes.CLEAR
+        })
     }
 
     return (
         <>
-            <div className="dropdown">
-                <div
-                    className="dropdown-toggle"
-                    role="button"
-                    tabIndex={0}
-                    onClick={handleToggle}
-                    onKeyDown={handleKeyDown}
-                >
-                    {toggleChildren}
-                </div>
-                <div
-                    className={classnames("dropdown-menu", {
-                        "menu-right": alignRight,
-                        open: isDropDownOpen,
-                    })}
-                >
-                    {children}
-                </div>
-            </div>
             {isDropDownOpen && (
                 <div
                     className="click-handler"
                     role="button"
                     tabIndex={0}
-                    onClick={() => setDropDownOpen(false)}
-                    onKeyDown={() => setDropDownOpen(false)}
+                    onClick={() => handleClear()}
+                    onKeyDown={() => handleClear()}
                 />
             )}
         </>
     )
 }
 
-DropDown.propTypes = {
-    toggleChildren: PropTypes.element,
-    alignRight: PropTypes.bool,
+export {
+    DropDown,
+    DropDownItem,
+    DropDownMenu,
+    DropDownMenuToggle
 }
-
-// DropDown item
-const DropDownItem = ({ children, action, disabled, inactive }) => {
-    let handleAction = () => {
-        action && action()
-    }
-    let handleKeyDown = e => {
-        if (e.keyCode === 13) {
-            handleAction()
-        }
-    }
-    return (
-        <div
-            className={classnames("dropdown-item", {
-                "disabled": disabled,
-                "inactive": inactive
-            })}
-            role="button"
-            tabIndex={0}
-            onClick={handleAction}
-            onKeyDown={handleKeyDown}
-        >
-            {children}
-        </div>
-    )
-}
-
-DropDownItem.propTypes = {
-    action: PropTypes.func,
-    disabled: PropTypes.bool,
-    inactive: PropTypes.bool,
-}
-
-// Exports
-export default DropDown
-
-export { DropDownItem }

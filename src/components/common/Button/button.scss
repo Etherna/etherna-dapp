@@ -27,6 +27,17 @@
     }
 }
 
+.btn-transparent {
+    @apply bg-transparent;
+    &:hover {
+        @apply bg-gray-200;
+    }
+}
+
+.btn-rounded {
+    @apply w-10 h-10 rounded-full p-0 flex items-center;
+}
+
 .btn-link {
     @apply no-underline cursor-pointer text-primary transition duration-300;
     &:hover {

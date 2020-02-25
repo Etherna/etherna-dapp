@@ -21,12 +21,12 @@ const Button = ({
 
     return (
         <button
-            className={classnames("btn", className, {
+            className={classnames("btn", {
                 "btn-sm": size === "small",
                 "btn-lg": size === "large",
                 "btn-outline": outline,
                 [`btn-${aspect}`]: aspect && aspect !== "",
-            })}
+            }, className)}
             type="button"
             onClick={action}
             onKeyDown={handleKeyDown}
