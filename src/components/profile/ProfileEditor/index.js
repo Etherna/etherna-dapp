@@ -54,10 +54,8 @@ const ProfileEditor = ({ address }) => {
         type === "avatar" && setUploadingAvatar(true)
         type === "cover" && setUploadingCover(true)
 
-        const imageBuffer = await fileReaderPromise(file)
-        const imageData = new Blob([new Uint8Array(imageBuffer)])
         const imgObject = await uploadResourceToSwarm(
-            imageData,
+            file,
             undefined,
             "ipfs"
         )
@@ -175,7 +173,7 @@ const ProfileEditor = ({ address }) => {
                 {isSavingProfile && (
                     <Image
                         filename="spinner.svg"
-                        maxWidth="30"
+                        width="30"
                         className="ml-auto"
                     />
                 )}

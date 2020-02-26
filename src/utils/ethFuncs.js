@@ -45,6 +45,7 @@ export const fetchAccounts = async web3 => {
         accounts = await web3.eth.getAccounts()
     }
 
+    accounts = accounts.map(a => web3.utils.toChecksumAddress(a))
     return accounts
 }
 

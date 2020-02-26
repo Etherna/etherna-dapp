@@ -90,7 +90,7 @@ const UserMenu = () => {
                         <DropDownItem action={providerActions.switchAccount}>
                             <Image filename="switch-icon.svg" />
                             <div className="inline-flex flex-col">
-                                <span className>Switch Account</span>
+                                <span>Switch Account</span>
                                 <small className="text-gray-600">{shortenEthAddr(currentAddress)}</small>
                             </div>
                         </DropDownItem>

@@ -1,13 +1,13 @@
 import React, { useState } from "react"
 import PropTypes from "prop-types"
 
-import "./video-upload.scss"
+import "./swarm-upload.scss"
 import Alert from "@common/Alert"
 import Button from "@common/Button"
 import ProgressBar from "@common/ProgressBar"
-import { uploadVideoToSwarm } from "@utils/swarm"
+import { gatewayUploadWithProgress, getResourceUrl } from "@utils/swarm"
 
-const VideoUpload = ({ file, onFinishedUploading, onRemoveVideo }) => {
+const SwarmFileUpload = ({ file, onFinishedUploading, onRemoveFile, showImagePreview, disabled }) => {
     const [isUploading, setIsUploading] = useState(false)
     const [uploadProgress, setUploadProgress] = useState(0)
     const [hash, setHash] = useState(undefined)
@@ -20,13 +20,11 @@ const VideoUpload = ({ file, onFinishedUploading, onRemoveVideo }) => {
         setHash(undefined)
 
         try {
-            const hash = await uploadVideoToSwarm(file, progress => {
+            const hash = await gatewayUploadWithProgress(file, progress => {
                 setUploadProgress(progress)
             })
             setUploadProgress(100)
             setIsUploading(false)
-
-            console.log(hash)
 
             if (hash) {
                 setHash(hash)
@@ -38,12 +36,18 @@ const VideoUpload = ({ file, onFinishedUploading, onRemoveVideo }) => {
         }
     }
 
-    const handleRemoveVideo = () => {
+    const handleRemoveFile = () => {
         setIsUploading(false)
         setUploadProgress(0)
         setErrorMessage(undefined)
         setHash(undefined)
-        onRemoveVideo()
+        onRemoveFile()
+    }
+
+    const askToRemoveFile = () => {
+        if (window.confirm("Remove the upload file?")) {
+            handleRemoveFile()
+        }
     }
 
     return (
@@ -58,12 +62,13 @@ const VideoUpload = ({ file, onFinishedUploading, onRemoveVideo }) => {
                     <p className="text-gray-700">
                         You selected{" "}
                         <span className="text-black">{file.name}</span>. Do you
-                        confirm to upload this video?
+                        confirm to upload this file?
                     </p>
                     <Button
                         size="small"
                         aspect="secondary"
-                        action={handleRemoveVideo}
+                        action={handleRemoveFile}
+                        disabled={disabled}
                     >
                         Cancel
                     </Button>
@@ -71,6 +76,7 @@ const VideoUpload = ({ file, onFinishedUploading, onRemoveVideo }) => {
                         size="small"
                         className="ml-2"
                         action={handleStartUpload}
+                        disabled={disabled}
                     >
                         OK
                     </Button>
@@ -83,7 +89,8 @@ const VideoUpload = ({ file, onFinishedUploading, onRemoveVideo }) => {
                     <Button
                         size="small"
                         aspect="secondary"
-                        action={handleRemoveVideo}
+                        action={handleRemoveFile}
+                        disabled={disabled}
                     >
                         Cancel
                     </Button>
@@ -91,21 +98,37 @@ const VideoUpload = ({ file, onFinishedUploading, onRemoveVideo }) => {
             )}
             {uploadProgress === 100 && hash && (
                 <>
-                    <p>Finished upload!</p>
-                    <p className="text-gray-700">
-                        Video hash:{" "}
-                        <strong className="text-black">{hash}</strong>
-                    </p>
+                    {
+                        showImagePreview ?
+                            <img src={getResourceUrl(hash)} alt="" /> :
+                            <>
+                                <p>Finished upload!</p>
+                                <p className="text-gray-700 break-words">
+                                    <span>Hash: <br/></span>
+                                    <strong className="text-black">{hash}</strong>
+                                </p>
+                            </>
+                    }
+                    <Button
+                        size="small"
+                        aspect="secondary"
+                        action={askToRemoveFile}
+                        disabled={disabled}
+                    >
+                        Remove
+                    </Button>
                 </>
             )}
         </div>
     )
 }
 
-VideoUpload.propTypes = {
+SwarmFileUpload.propTypes = {
     file: PropTypes.object.isRequired,
     onFinishedUploading: PropTypes.func.isRequired,
-    onRemoveVideo: PropTypes.func.isRequired,
+    onRemoveFile: PropTypes.func.isRequired,
+    showImagePreview: PropTypes.bool,
+    disabled: PropTypes.bool,
 }
 
-export default VideoUpload
+export default SwarmFileUpload

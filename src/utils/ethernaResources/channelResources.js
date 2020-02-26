@@ -69,10 +69,9 @@ export const createChannel = async (address) => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels`
 
-    const data = new FormData
-    data.append("Address", address)
-
-    const resp = await axios.post(apiUrl, data)
+    const resp = await axios.post(apiUrl, {
+        Address: address
+    })
 
     /**
      * Object:
@@ -88,14 +87,13 @@ export const addVideoToChannel = async (channelAddress, videoHash, title, descri
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels/${channelAddress}/videos`
 
-    const data = new FormData
-    data.append("VideoHash", videoHash)
-    data.append("Description", title)
-    data.append("Title", description)
-    data.append("LengthInSeconds", time)
-    data.append("ThumbnailHash", thumbnailHash)
-
-    const resp = await axios.post(apiUrl, data)
+    const resp = await axios.post(apiUrl, {
+        VideoHash: videoHash,
+        Description: description,
+        Title: title,
+        LengthInSeconds: time,
+        ThumbnailHash: thumbnailHash,
+    })
 
     /**
      * Object:

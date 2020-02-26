@@ -1,7 +1,8 @@
 import axios from "axios"
 
-export const SwarmGateway = "https://swarm-gateways.net"
-export const IpfsGateway = "https://ipfs.infura.io"
+import { store } from "@state/store"
+
+const IpfsGateway = "https://ipfs.infura.io"
 
 export const isImageObject = imgObject => {
     if (imgObject && typeof imgObject === "object") {
@@ -16,9 +17,11 @@ export const isImageObject = imgObject => {
 }
 
 export const getResourceUrl = (imageObject, type = "swarm") => {
+    const SwarmGateway = store.getState().env.gatewayHost
+
     if (typeof imageObject === "string") {
         return type.toLowerCase() !== "ipfs"
-            ? `${SwarmGateway}/bzz-raw://${imageObject}`
+            ? `${SwarmGateway}/bzz-raw:/${imageObject}`
             : `${IpfsGateway}/ipfs/${imageObject}`
     }
 
@@ -30,17 +33,21 @@ export const getResourceUrl = (imageObject, type = "swarm") => {
 
     const hash = imageObject[0].contentUrl && imageObject[0].contentUrl["/"]
     return type !== "ImageObject"
-        ? `${SwarmGateway}/bzz-raw://${hash}`
+        ? `${SwarmGateway}/bzz-raw:/${hash}`
         : `${IpfsGateway}/ipfs/${hash}`
 }
 
-export const uploadResourceToSwarm = async (formData, type = "swarm") => {
+export const uploadResourceToSwarm = async (file, type = "swarm") => {
+    const SwarmGateway = store.getState().env.gatewayHost
     const endpoint =
         type.toLowerCase() !== "ipfs"
             ? `${SwarmGateway}/bzz-raw:/`
             : `${IpfsGateway}:5001/api/v0/add`
 
     try {
+        const buffer = await fileReaderPromise(file)
+        const formData = new Blob([new Uint8Array(buffer)])
+
         if (type === "ipfs") {
             let data = new FormData()
             data.append("filename", formData)
@@ -62,26 +69,17 @@ export const uploadResourceToSwarm = async (formData, type = "swarm") => {
     }
 }
 
-export const uploadVideoToSwarm = async (file, progressCallback) => {
-    const endpoint = `${SwarmGateway}/bzz:/?defaultpath=${file.name}`
+export const gatewayUploadWithProgress = async (file, progressCallback) => {
+    const SwarmGateway = store.getState().env.gatewayHost
+    const endpoint = `${SwarmGateway}/bzz-raw:/`
 
     try {
-        // const videoBuffer = await fileReaderPromise(file)
-        // const videoData = new Blob([new Uint8Array(videoBuffer)])
-
-        const data = new FormData()
-        data.append("uploadSelected", file.name)
-        data.append("file", file)
-
-        const resp = await axios.post(endpoint, data, {
-            headers: {
-                accept: "text",
-            },
+        const buffer = await fileReaderPromise(file)
+        const formData = new Blob([new Uint8Array(buffer)])
+        const resp = await axios.post(endpoint, formData, {
             onUploadProgress: pev => {
                 const progress = Math.round((pev.loaded * 100) / pev.total)
                 if (progressCallback) {
-                    console.log(`Uploaded ${progress}%`)
-
                     progressCallback(progress)
                 }
             },

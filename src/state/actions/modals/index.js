@@ -1,6 +1,14 @@
 import { store } from "@state/store"
 import { UIActionTypes } from "@state/reducers/uiReducer"
 
+export const showError = (title, message) => {
+    store.dispatch({
+        type: UIActionTypes.UI_SHOW_ERROR,
+        errorTitle: title,
+        errorMessage: message,
+    })
+}
+
 export const closeErrorModal = () => {
     store.dispatch({
         type: UIActionTypes.UI_HIDE_ERROR,

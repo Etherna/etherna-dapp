@@ -56,14 +56,13 @@ export const updateVideo = async (hash, title, description, time, thumbnailHash)
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/videos/${hash}`
 
-    const data = new FormData
-    data.append("VideoHash", hash)
-    data.append("Description", title)
-    data.append("Title", description)
-    data.append("LengthInSeconds", time)
-    data.append("ThumbnailHash", thumbnailHash)
-
-    const resp = await axios.put(apiUrl, data)
+    const resp = await axios.put(apiUrl, {
+        VideoHash: hash,
+        Title: title,
+        Description: description,
+        LengthInSeconds: time,
+        ThumbnailHash: thumbnailHash,
+    })
 
     /**
      * Object:

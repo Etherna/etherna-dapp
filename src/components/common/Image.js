@@ -1,4 +1,5 @@
 import React from "react"
+import PropTypes from "prop-types"
 import { StaticQuery, graphql } from "gatsby"
 import Img from "gatsby-image"
 
@@ -13,7 +14,7 @@ import Img from "gatsby-image"
  * - `useStaticQuery`: https://www.gatsbyjs.org/docs/use-static-query/
  */
 
-const Image = ({ filename, alt, maxWidth, className }) => (
+const Image = ({ filename, alt, width, className }) => (
     <StaticQuery
         query={graphql`
             query {
@@ -48,7 +49,7 @@ const Image = ({ filename, alt, maxWidth, className }) => (
                         src={image.node.publicURL}
                         alt={alt}
                         className={className}
-                        width={maxWidth || null}
+                        width={width || null}
                     />
                 )
             }
@@ -58,4 +59,13 @@ const Image = ({ filename, alt, maxWidth, className }) => (
         }}
     />
 )
+
+Image.propTypes = {
+    filename: PropTypes.string.isRequired,
+    alt: PropTypes.string,
+    width: PropTypes.number,
+    minWidth: PropTypes.number,
+    className: PropTypes.string,
+}
+
 export default Image

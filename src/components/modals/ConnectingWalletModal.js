@@ -18,7 +18,7 @@ const ConnectingWalletModal = () => {
                 <Image
                     className="mx-auto"
                     filename="spinner.svg"
-                    maxWidth="60"
+                    width="60"
                 />
             </div>
             <div className="flex">

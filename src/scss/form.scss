@@ -14,6 +14,10 @@ textarea {
     &:focus {
         @apply outline-none bg-white border-green-500;
     }
+
+    &:disabled {
+        @apply text-gray-500 cursor-not-allowed;
+    }
 }
 
 .form-group {

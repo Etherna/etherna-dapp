@@ -66,7 +66,7 @@ const Header = () => {
                 </div>
                 <div className="logo">
                     <Link to="/">
-                        <Image filename="logo.svg" maxWidth={140} />
+                        <Image filename="logo.svg" width={140} />
                     </Link>
                 </div>
                 <div className="right-nav">

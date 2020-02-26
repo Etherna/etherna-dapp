@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react"
-import PropTypes from "prop-types"
-import { useSelector } from "react-redux"
-import { Link, navigate } from "gatsby"
+import { Link } from "gatsby"
 
 import "./profiles.scss"
-import { isImageObject, getResourceUrl } from "@utils/swarm"
 import { getProfile } from "@utils/3box"
 import * as Routes from "@routes"
 import Avatar from "@components/user/Avatar"
@@ -17,9 +14,9 @@ const profileAddresses = [
 
 const videoHashes = [
     "33f1ea45b3404d1691911729a5dd618216bbd2031c9bf1459d4f4542fb13e067/test%20swarm.mp4",
+    "efb99be236211420ca6bc3e12cd88baf543777d5a933a69091dfa215dbc166d6",
     "33f1ea45b3404d1691911729a5dd618216bbd2031c9bf1459d4f4542fb13e067/test%20swarm.mp4",
-    "33f1ea45b3404d1691911729a5dd618216bbd2031c9bf1459d4f4542fb13e067/test%20swarm.mp4",
-    "33f1ea45b3404d1691911729a5dd618216bbd2031c9bf1459d4f4542fb13e067/test%20swarm.mp4",
+    "efb99be236211420ca6bc3e12cd88baf543777d5a933a69091dfa215dbc166d6",
 ]
 
 const ProfilesView = () => {

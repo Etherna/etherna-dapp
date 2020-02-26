@@ -3,18 +3,30 @@ import classnames from "classnames"
 import { useSelector } from "react-redux"
 
 import "./uploader.scss"
+import FileDrag from "./FileDrag"
+import SwarmFileUpload from "./SwarmFileUpload"
 import Avatar from "@components/user/Avatar"
 import Button from "@common/Button"
-import VideoDrag from "./VideoDrag"
-import VideoUpload from "./VideoUpload"
+import Image from "@components/common/Image"
+import Alert from "@components/common/Alert"
+import { showError } from "@state/actions/modals"
+import { addVideoToChannel } from "@utils/ethernaResources/channelResources"
+import { getVideoDuration } from "@utils/media"
+import * as Routes from "@routes"
 
 const Uploader = () => {
     const { name, avatar } = useSelector(state => state.profile)
     const { isSignedIn, address } = useSelector(state => state.user)
     const [videoFile, setVideoFile] = useState(undefined)
     const [videoHash, setVideoHash] = useState(undefined)
+    const [duration, setDuration] = useState(undefined)
+    const [thumbnailFile, setThumbnailFile] = useState(undefined)
+    const [thumbnail, setThumbnail] = useState(undefined)
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [hasSubmitted, setHasSubmitted] = useState(false)
+    const [videoLink, setVideoLink] = useState(false)
 
     if (!isSignedIn) {
         return (
@@ -22,6 +34,48 @@ const Uploader = () => {
                 You must sign in first.
             </p>
         )
+    }
+
+    const submitVideo = async () => {
+        setIsSubmitting(true)
+        try {
+            await addVideoToChannel(
+                address,
+                videoHash,
+                title,
+                description,
+                duration,
+                thumbnail
+            )
+            submitCompleted()
+        } catch (error) {
+            console.error(error)
+            showError("Linking error", error.message)
+        }
+        setIsSubmitting(false)
+    }
+
+    const submitCompleted = () => {
+        setVideoLink(Routes.getVideoLink(videoHash))
+        setVideoFile(undefined)
+        setVideoHash(undefined)
+        setDuration(undefined)
+        setThumbnailFile(undefined)
+        setThumbnail(undefined)
+        setTitle("")
+        setDescription("")
+        setHasSubmitted(true)
+    }
+
+    const selectVideoFile = async (file) => {
+        try {
+            const duration = await getVideoDuration(file)
+            setVideoFile(file)
+            setDuration(duration)
+        } catch (error) {
+            console.error(error)
+            showError("Metadata error", error.message)
+        }
     }
 
     return (
@@ -34,22 +88,68 @@ const Uploader = () => {
                     <Avatar image={avatar} address={address} />
                     <h3 className="mb-0 ml-1">{name}</h3>
                 </div>
+                {hasSubmitted &&
+                    <Alert
+                        title=""
+                        type="success"
+                    >
+                        <p>Your video has been successfully upload and linked to your profile</p>
+                        <p>
+                            You can watch your video at this link:
+                            <a href={videoLink}>
+                                <strong>{videoLink}</strong>
+                            </a>
+                        </p>
+                    </Alert>
+                }
             </div>
             <div className="row">
                 <div className="col sm:w-1/2">
-                    {videoFile === undefined && (
-                        <VideoDrag onSelectFile={file => setVideoFile(file)} />
-                    )}
-                    {videoFile !== undefined && (
-                        <VideoUpload
-                            file={videoFile}
-                            onFinishedUploading={hash => setVideoHash(hash)}
-                            onRemoveVideo={() => {
-                                setVideoFile(undefined)
-                                setVideoHash(undefined)
-                            }}
-                        />
-                    )}
+                    <div className="form-group">
+                        <label htmlFor="video">Video</label>
+                        {videoFile === undefined && (
+                            <FileDrag
+                                id="video-input"
+                                label="Drag your video here"
+                                onSelectFile={selectVideoFile}
+                                disabled={isSubmitting}
+                            />
+                        )}
+                        {videoFile !== undefined && (
+                            <SwarmFileUpload
+                                file={videoFile}
+                                onFinishedUploading={hash => setVideoHash(hash)}
+                                onRemoveFile={() => {
+                                    setVideoFile(undefined)
+                                    setVideoHash(undefined)
+                                }}
+                                disabled={isSubmitting}
+                            />
+                        )}
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="thumbnail">Thumbnail</label>
+                        {thumbnailFile === undefined && (
+                            <FileDrag
+                                id="thumb-input"
+                                label="Drag your thumbnail here"
+                                onSelectFile={file => setThumbnailFile(file)}
+                                disabled={isSubmitting}
+                            />
+                        )}
+                        {thumbnailFile !== undefined && (
+                            <SwarmFileUpload
+                                file={thumbnailFile}
+                                showImagePreview={true}
+                                onFinishedUploading={hash => setThumbnail(hash)}
+                                onRemoveFile={() => {
+                                    setThumbnailFile(undefined)
+                                    setThumbnail(undefined)
+                                }}
+                                disabled={isSubmitting}
+                            />
+                        )}
+                    </div>
                     <div className="form-group">
                         <label htmlFor="title">Title</label>
                         <input
@@ -58,6 +158,7 @@ const Uploader = () => {
                             placeholder="Title of the video"
                             value={title}
                             onChange={e => setTitle(e.target.value)}
+                            disabled={isSubmitting}
                         />
                     </div>
                     <div className="form-group">
@@ -68,6 +169,7 @@ const Uploader = () => {
                             value={description}
                             rows={10}
                             onChange={e => setDescription(e.target.value)}
+                            disabled={isSubmitting}
                         />
                     </div>
                 </div>
@@ -92,18 +194,29 @@ const Uploader = () => {
                                 "step-done": description !== "",
                             })}
                         >
-                            Add a description
+                            Add a description (optional)
+                        </li>
+                        <li
+                            className={classnames("upload-step", {
+                                "step-done": thumbnail,
+                            })}
+                        >
+                            Add a thumbnail (optional)
                         </li>
                     </ul>
-                    <Button
-                        disabled={
-                            videoHash === undefined ||
-                            title === "" ||
-                            description === ""
-                        }
-                    >
-                        Add video
-                    </Button>
+                    {
+                        isSubmitting ?
+                            <Image filename="spinner.svg" width={30} /> :
+                            <Button
+                                action={submitVideo}
+                                disabled={
+                                    videoHash === undefined ||
+                                    title === ""
+                                }
+                            >
+                                Add video
+                            </Button>
+                    }
                 </div>
             </div>
         </div>

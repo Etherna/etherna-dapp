@@ -27,26 +27,30 @@ const ErrorModal = ({ title, error }) => {
     return (
         <Modal show={true} showCloseButton={false}>
             <div className="table mx-auto mb-3">
-                {isMetaMaskSignError || isMozillaError ? (
+                {(isMetaMaskSignError || isMozillaError) ? (
                     <Image
                         filename="signature-required-icon.svg"
                         alt="Wallet signature required"
                     />
                 ) : (
-                    <Image filename="error-icon.svg" alt="Error" />
+                    <Image
+                        filename="error-icon.svg"
+                        alt="Error"
+                        width={40}
+                    />
                 )}
             </div>
             <div className="modal-header">
                 <h4 className="modal-title mx-auto">
-                    {isMetaMaskSignError || isMozillaError ? (
-                        <span>Log in</span>
+                    {(isMetaMaskSignError || isMozillaError) ? (
+                        <span>Sign in</span>
                     ) : (
-                        {title}
+                        <span>{title}</span>
                     )}
                 </h4>
             </div>
 
-            <p className="text-center my-6">
+            <div className="text-center my-6">
                 {isMetaMaskSignError || isMozillaError ? (
                     <p>
                         You must provide consent to 3Box in your Web3 wallet to
@@ -55,11 +59,9 @@ const ErrorModal = ({ title, error }) => {
                 ) : (
                     <>
                         <p>{errorString}</p>
-                        <br />
-                        <p>Please refresh the page and try again.</p>
                     </>
                 )}
-            </p>
+            </div>
 
             <div className="flex">
                 <Button className="mx-auto" action={closeErrorModal}>

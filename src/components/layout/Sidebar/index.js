@@ -4,21 +4,12 @@ import "./sidebar.scss"
 import MyProfile from "./MyProfile"
 import ReccomendedProfiles from "./ReccomendedProfiles"
 
-const profiles = [
-    {
-        imageUrl:
-            "//yt3.ggpht.com/a/AGF-l7_W99JMwHKzSpg_W7z2vFiR5WkawWO4A1FUWQ=s176-c-k-c0x00ffffff-no-rj-mo",
-        address: "0x34535345",
-        name: "Ludo Thorn",
-    },
-]
-
 const Sidebar = () => {
     return (
         <aside className="sidebar">
             <div className="sidenav">
                 <MyProfile />
-                <ReccomendedProfiles profiles={profiles} />
+                <ReccomendedProfiles />
             </div>
             <small className="footer-notice">
                 Copyright © {new Date().getFullYear()} etherna.io.
