@@ -1,3 +1,7 @@
 import fetchProfile from "./fetchProfile"
+import updateProfile from "./updateProfile"
 
-export default { fetchProfile }
+export default {
+    fetchProfile,
+    updateProfile
+}

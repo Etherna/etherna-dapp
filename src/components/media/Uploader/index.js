@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import classnames from "classnames"
+import { navigate } from "gatsby"
 import { useSelector } from "react-redux"
 
 import "./uploader.scss"
@@ -15,7 +16,7 @@ import { getVideoDuration } from "@utils/media"
 import * as Routes from "@routes"
 
 const Uploader = () => {
-    const { name, avatar } = useSelector(state => state.profile)
+    const { name, avatar, existsOnIndex } = useSelector(state => state.profile)
     const { isSignedIn, address } = useSelector(state => state.user)
     const [videoFile, setVideoFile] = useState(undefined)
     const [videoHash, setVideoHash] = useState(undefined)
@@ -34,6 +35,10 @@ const Uploader = () => {
                 You must sign in first.
             </p>
         )
+    }
+
+    if (!existsOnIndex) {
+        navigate(Routes.getProfileEditingLink(address))
     }
 
     const submitVideo = async () => {

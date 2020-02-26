@@ -1,10 +1,12 @@
 import React, { useState, useRef } from "react"
 import PropTypes from "prop-types"
 import classnames from "classnames"
+import makeBlockies from "ethereum-blockies-base64"
 import { useSelector } from "react-redux"
 import { navigate } from "gatsby"
 
 import "./profile-editor.scss"
+import Alert from "@components/common/Alert"
 import Button from "@common/Button"
 import Modal from "@common/Modal"
 import Image from "@common/Image"
@@ -12,9 +14,8 @@ import {
     isImageObject,
     getResourceUrl,
     uploadResourceToSwarm,
-    fileReaderPromise,
 } from "@utils/swarm"
-import { updateProfile } from "@utils/3box"
+import { profileActions } from "@state/actions"
 import * as Routes from "@routes"
 
 const ProfileEditor = ({ address }) => {
@@ -22,7 +23,8 @@ const ProfileEditor = ({ address }) => {
         name,
         description,
         avatar,
-        cover
+        cover,
+        existsOnIndex
     } = useSelector(state => state.profile)
     const { box } = useSelector(state => state.user)
 
@@ -54,11 +56,7 @@ const ProfileEditor = ({ address }) => {
         type === "avatar" && setUploadingAvatar(true)
         type === "cover" && setUploadingCover(true)
 
-        const imgObject = await uploadResourceToSwarm(
-            file,
-            undefined,
-            "ipfs"
-        )
+        const imgObject = await uploadResourceToSwarm(file)
 
         type === "avatar" && setUploadingAvatar(false)
         type === "cover" && setUploadingCover(false)
@@ -81,12 +79,13 @@ const ProfileEditor = ({ address }) => {
     const handleSubmit = async () => {
         setSavingProfile(true)
 
-        const saved = await updateProfile(box, {
+        const saved = await profileActions.updateProfile(box, {
+            address,
             name: profileName,
             description: profileDescription,
             image: profileAvatar,
             coverPhoto: profileCover
-        })
+        }, existsOnIndex)
         if (saved) {
             navigate(Routes.getProfileLink(address))
         }
@@ -140,12 +139,14 @@ const ProfileEditor = ({ address }) => {
             <div className="row items-center px-4">
                 <label htmlFor="avatar-input">
                     <div className="profile-avatar" data-label="Change Avatar">
-                        {isImageObject(profileAvatar) && (
-                            <img
-                                src={getResourceUrl(profileAvatar)}
-                                alt={profileName}
-                            />
-                        )}
+                        <img
+                            src={
+                                isImageObject(profileAvatar) ?
+                                    getResourceUrl(profileAvatar) :
+                                    makeBlockies(address)
+                            }
+                            alt={profileName}
+                        />
                         {isUploadingAvatar && (
                             <div className="absolute inset-x-0 top-0 mt-12 text-center">
                                 Uploading...
@@ -196,6 +197,14 @@ const ProfileEditor = ({ address }) => {
                             setProfileDescription(e.target.value || "")
                         }
                     />
+                </div>
+                <div className="w-full sm:w-1/2 md:w-3/4 p-4">
+                    {name && !existsOnIndex &&
+                        <Alert title="Not on Index" type="warning">
+                            You have a valid 3box profile, but it's not present in the current index. <br/>
+                            <strong>Save the profile</strong> to sync with the current index.
+                        </Alert>
+                    }
                 </div>
             </div>
 

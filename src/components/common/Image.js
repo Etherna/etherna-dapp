@@ -63,8 +63,10 @@ const Image = ({ filename, alt, width, className }) => (
 Image.propTypes = {
     filename: PropTypes.string.isRequired,
     alt: PropTypes.string,
-    width: PropTypes.number,
-    minWidth: PropTypes.number,
+    width: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string,
+    ]),
     className: PropTypes.string,
 }
 

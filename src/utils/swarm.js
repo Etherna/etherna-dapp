@@ -46,7 +46,7 @@ export const uploadResourceToSwarm = async (file, type = "swarm") => {
 
     try {
         const buffer = await fileReaderPromise(file)
-        const formData = new Blob([new Uint8Array(buffer)])
+        let formData = new Blob([new Uint8Array(buffer)])
 
         if (type === "ipfs") {
             let data = new FormData()

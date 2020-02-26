@@ -27,16 +27,20 @@ export const getChannel = async (address) => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels/${address}`
 
-    const resp = await axios.get(apiUrl)
+    try {
+        const resp = await axios.get(apiUrl)
 
-    /**
-     * Object:
-     * {
-     *   address: string,
-     *   creationDateTime: string
-     * }
-     */
-    return resp.data
+        /**
+         * Object:
+         * {
+         *   address: string,
+         *   creationDateTime: string
+         * }
+         */
+        return resp.data
+    } catch (error) {
+        return null
+    }
 }
 
 export const getChannelVideos = async (address, page = 0, take = 25) => {

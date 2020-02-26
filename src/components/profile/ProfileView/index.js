@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
+import makeBlockies from "ethereum-blockies-base64"
 import { useSelector } from "react-redux"
 import { Link, navigate } from "gatsby"
 
@@ -65,12 +66,14 @@ const ProfileView = ({ profileAddress }) => {
 
                 <div className="row items-center px-4">
                     <div className="profile-avatar">
-                        {isImageObject(profileAvatar) && (
-                            <img
-                                src={getResourceUrl(profileAvatar)}
-                                alt={profileName}
-                            />
-                        )}
+                        <img
+                            src={
+                                isImageObject(profileAvatar) ?
+                                    getResourceUrl(profileAvatar) :
+                                    makeBlockies(profileAddress)
+                            }
+                            alt={profileName}
+                        />
                     </div>
                     {address && address === profileAddress && (
                         <Link
