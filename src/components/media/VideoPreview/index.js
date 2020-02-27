@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import PropTypes from "prop-types"
 import { Link } from "gatsby"
 import moment from "moment"
@@ -8,6 +8,7 @@ import Image from "@common/Image"
 import Avatar from "@components/user/Avatar"
 import { getTimeValues } from "@components/media/time"
 import { getResourceUrl } from "@utils/swarm"
+import { getProfile } from "@utils/3box"
 import * as Routes from "@routes"
 
 const VideoPreview = ({ video, hideProfile }) => {
@@ -15,9 +16,24 @@ const VideoPreview = ({ video, hideProfile }) => {
     const profileLink = Routes.getProfileLink(video.channelAddress)
     const videoLink = Routes.getVideoLink(video.videoHash)
     const profileAddress = video.channelAddress
-    const profileAvatar = video.profileData && video.profileData.avatar
-    const profileName = video.profileData && video.profileData.name
     const thumbnail = video.thumbnailHash ? getResourceUrl(video.thumbnailHash) : undefined
+    const [profileName, setProfileName] = useState(video.profileData && video.profileData.name)
+    const [profileAvatar, setProfileAvatar] = useState(video.profileData && video.profileData.avatar)
+
+    useEffect(() => {
+        if (!video.profileData) {
+            fetchProfile()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const fetchProfile = async () => {
+        const profile = await getProfile(video.channelAddress)
+        video.profileData = profile
+
+        setProfileName(profile.name)
+        setProfileAvatar(profile.avatar)
+    }
 
     return (
         <div className="video-preview">
@@ -75,7 +91,7 @@ VideoPreview.propTypes = {
         profileData: PropTypes.shape({
             name: PropTypes.string,
             avatar: PropTypes.arrayOf(PropTypes.object),
-        }).isRequired,
+        }),
     }).isRequired,
     hideProfile: PropTypes.bool,
 }

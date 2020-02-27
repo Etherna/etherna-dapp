@@ -24,6 +24,7 @@ const ProfileView = ({ profileAddress }) => {
     const [profileCover, setProfileCover] = useState("")
     const [profileVideos, setProfileVideos] = useState([])
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         if (currentProfileAddress !== profileAddress) {
             // reset data
@@ -35,7 +36,6 @@ const ProfileView = ({ profileAddress }) => {
             // fetch data
             fetchProfileAndVideos()
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     })
 
     const fetchProfileAndVideos = async () => {
@@ -124,7 +124,7 @@ const ProfileView = ({ profileAddress }) => {
                         <p className="profile-bio">{profileDescription}</p>
                     </div>
                     <div className="col sm:w-2/3 md:w-3/4 p-4">
-                        {!isFetchingProfile && profileVideos.length == 0 && (
+                        {!isFetchingProfile && profileVideos.length === 0 && (
                             <p className="text-gray-500 text-center my-16">
                                 This profile has yet to upload a video
                             </p>
