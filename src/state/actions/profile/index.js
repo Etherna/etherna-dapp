@@ -3,5 +3,5 @@ import updateProfile from "./updateProfile"
 
 export default {
     fetchProfile,
-    updateProfile
+    updateProfile,
 }

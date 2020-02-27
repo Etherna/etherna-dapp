@@ -15,11 +15,7 @@ const ConnectingWalletModal = () => {
                 Approve the message in your <br /> Web3 wallet to continue
             </p>
             <div className="flex my-6">
-                <Image
-                    className="mx-auto"
-                    filename="spinner.svg"
-                    width="60"
-                />
+                <Image className="mx-auto" filename="spinner.svg" width="60" />
             </div>
             <div className="flex">
                 <Button

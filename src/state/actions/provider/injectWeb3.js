@@ -34,7 +34,7 @@ const pickWallet = async () => {
     }
 }
 
-const autoSelectWallet = async (wallet) => {
+const autoSelectWallet = async wallet => {
     if (wallet.toLowerCase() === "walletconnect") {
         await pickWallet() // walletconnect needs to scan qr code
         return
@@ -44,7 +44,7 @@ const autoSelectWallet = async (wallet) => {
     await connectProvider(provider)
 }
 
-const connectProvider = async (provider) => {
+const connectProvider = async provider => {
     try {
         const { name, logo } = Web3Connect.getProviderInfo(provider)
         if (name.toLowerCase() === "walletconnect")

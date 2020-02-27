@@ -10,7 +10,7 @@ export const getVideos = async (page = 0, take = 25) => {
     const apiUrl = `${indexHost}/videos`
 
     const resp = await axios.get(apiUrl, {
-        params: { page, take }
+        params: { page, take },
     })
 
     /**
@@ -28,7 +28,7 @@ export const getVideos = async (page = 0, take = 25) => {
     return resp.data
 }
 
-export const getVideo = async (hash) => {
+export const getVideo = async hash => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/videos/${hash}`
 
@@ -52,7 +52,13 @@ export const getVideo = async (hash) => {
 // ----------------------------------------------------------------------------
 // PUT
 
-export const updateVideo = async (hash, title, description, time, thumbnailHash) => {
+export const updateVideo = async (
+    hash,
+    title,
+    description,
+    time,
+    thumbnailHash
+) => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/videos/${hash}`
 

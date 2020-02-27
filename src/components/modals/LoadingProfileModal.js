@@ -10,11 +10,7 @@ const LoadingProfileModal = () => {
                 <h4 className="modal-title mx-auto">Loading profile</h4>
             </div>
             <div className="flex my-6">
-                <Image
-                    className="mx-auto"
-                    filename="spinner.svg"
-                    width="60"
-                />
+                <Image className="mx-auto" filename="spinner.svg" width="60" />
             </div>
         </Modal>
     )

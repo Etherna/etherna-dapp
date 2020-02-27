@@ -8,7 +8,7 @@ import Image from "@common/Image"
 const FileDrag = ({ id, label, onSelectFile, disabled }) => {
     const [isDragOver, setIsDragOver] = useState(false)
 
-    const updateDragOver = (hasEntered) => {
+    const updateDragOver = hasEntered => {
         if ((hasEntered && !isDragOver) || (!hasEntered && isDragOver)) {
             setIsDragOver(hasEntered)
         }
@@ -20,19 +20,19 @@ const FileDrag = ({ id, label, onSelectFile, disabled }) => {
         updateDragOver(true)
     }
 
-      const handleDragLeave = e => {
+    const handleDragLeave = e => {
         e.preventDefault()
         e.stopPropagation()
         updateDragOver(false)
     }
 
-      const handleDragOver = e => {
+    const handleDragOver = e => {
         e.preventDefault()
         e.stopPropagation()
         updateDragOver(true)
     }
 
-      const handleDrop = e => {
+    const handleDrop = e => {
         e.preventDefault()
         e.stopPropagation()
         updateDragOver(false)
@@ -55,7 +55,9 @@ const FileDrag = ({ id, label, onSelectFile, disabled }) => {
         >
             <label
                 htmlFor={id}
-                className={classnames("drag-input", { "drag-over": isDragOver })}
+                className={classnames("drag-input", {
+                    "drag-over": isDragOver,
+                })}
             >
                 <input
                     type="file"
@@ -65,7 +67,9 @@ const FileDrag = ({ id, label, onSelectFile, disabled }) => {
                 />
                 <div className="drag-content">
                     <Image filename="upload-icon-lg.svg" />
-                    <span className="drag-info text-lg">{label || "Drag here"}</span>
+                    <span className="drag-info text-lg">
+                        {label || "Drag here"}
+                    </span>
                     <span className="drag-info text-sm font-normal">or</span>
                     <div className="btn btn-outline">Select</div>
                 </div>

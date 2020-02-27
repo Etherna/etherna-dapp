@@ -21,9 +21,7 @@ const ProfileEditPage = ({ id }) => {
     return (
         <Layout>
             <SEO title={`Editing channel ${name || id}`} />
-            {address && address === id && (
-                <ProfileEditor address={id} />
-            )}
+            {address && address === id && <ProfileEditor address={id} />}
         </Layout>
     )
 }

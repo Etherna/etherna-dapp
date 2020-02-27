@@ -12,7 +12,7 @@ const IndexPage = () => (
             description="A transparent video platform"
         />
         <div className="p-4">
-            <ExploreView  />
+            <ExploreView />
         </div>
     </Layout>
 )

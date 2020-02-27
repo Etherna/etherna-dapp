@@ -9,7 +9,13 @@ const ProfilesPage = () => (
         <SEO title="Profiles" />
         <div className="p-4">
             <h1 className="mb-1">Profiles</h1>
-            <p className="text-gray-700">Explore all the <em><strong>Ethernauts</strong></em>...</p>
+            <p className="text-gray-700">
+                Explore all the{" "}
+                <em>
+                    <strong>Ethernauts</strong>
+                </em>
+                ...
+            </p>
 
             <ProfilesView />
         </div>

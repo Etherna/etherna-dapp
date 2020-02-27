@@ -14,12 +14,22 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
 
     return (
         <>
-            <DropDownMenu title="Etherna Index" menuRef={indexMenuRef} alignRight={true}>
+            <DropDownMenu
+                title="Etherna Index"
+                menuRef={indexMenuRef}
+                alignRight={true}
+            >
                 <li className="dropdown-content flex flex-col">
                     <p>You can change the default Etherna Index here</p>
-                    <input type="text" value={indexHostValue} onChange={e => setIndexHostValue(e.target.value)} />
+                    <input
+                        type="text"
+                        value={indexHostValue}
+                        onChange={e => setIndexHostValue(e.target.value)}
+                    />
                     <Button
-                        action={() => enviromentActions.updateIndexHost(indexHostValue)}
+                        action={() =>
+                            enviromentActions.updateIndexHost(indexHostValue)
+                        }
                         size="small"
                         className="mt-2 ml-auto"
                         disabled={indexHostValue === indexHost}
@@ -29,12 +39,24 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
                 </li>
             </DropDownMenu>
 
-            <DropDownMenu title="Swarm Gateway" menuRef={gatewayMenuRef} alignRight={true}>
+            <DropDownMenu
+                title="Swarm Gateway"
+                menuRef={gatewayMenuRef}
+                alignRight={true}
+            >
                 <li className="dropdown-content flex flex-col">
                     <p>Here you can specify a different Swarm Gateway</p>
-                    <input type="text" value={gatewayHostValue} onChange={e => setGatewayHostValue(e.target.value)} />
+                    <input
+                        type="text"
+                        value={gatewayHostValue}
+                        onChange={e => setGatewayHostValue(e.target.value)}
+                    />
                     <Button
-                        action={() => enviromentActions.updateGatewayHost(gatewayHostValue)}
+                        action={() =>
+                            enviromentActions.updateGatewayHost(
+                                gatewayHostValue
+                            )
+                        }
                         size="small"
                         className="mt-2 ml-auto"
                         disabled={gatewayHostValue === gatewayHost}

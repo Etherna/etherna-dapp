@@ -16,23 +16,24 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 history: history,
-                current: action.menuRef
+                current: action.menuRef,
             }
         }
         case ReducerTypes.POP_MENU: {
             let history = state.history.slice()
             history.splice(action.index, 1)
-            const current = action.index > 0 ? history[action.index-1] : undefined
+            const current =
+                action.index > 0 ? history[action.index - 1] : undefined
             return {
                 ...state,
                 history,
-                current
+                current,
             }
         }
         case ReducerTypes.CLEAR:
             return {
                 history: [],
-                current: undefined
+                current: undefined,
             }
         default:
             return state
@@ -42,7 +43,7 @@ const reducer = (state, action) => {
 export const DropDownContextProvider = ({ children }) => {
     let store = useReducer(reducer, {
         history: [],
-        current: undefined
+        current: undefined,
     })
     return (
         <DropDownContext.Provider value={store}>

@@ -16,9 +16,15 @@ const VideoPreview = ({ video, hideProfile }) => {
     const profileLink = Routes.getProfileLink(video.channelAddress)
     const videoLink = Routes.getVideoLink(video.videoHash)
     const profileAddress = video.channelAddress
-    const thumbnail = video.thumbnailHash ? getResourceUrl(video.thumbnailHash) : undefined
-    const [profileName, setProfileName] = useState(video.profileData && video.profileData.name)
-    const [profileAvatar, setProfileAvatar] = useState(video.profileData && video.profileData.avatar)
+    const thumbnail = video.thumbnailHash
+        ? getResourceUrl(video.thumbnailHash)
+        : undefined
+    const [profileName, setProfileName] = useState(
+        video.profileData && video.profileData.name
+    )
+    const [profileAvatar, setProfileAvatar] = useState(
+        video.profileData && video.profileData.avatar
+    )
 
     useEffect(() => {
         if (!video.profileData) {
@@ -39,7 +45,13 @@ const VideoPreview = ({ video, hideProfile }) => {
         <div className="video-preview">
             <Link to={videoLink} state={video}>
                 <div className="video-thumbnail">
-                    {thumbnail && <img src={thumbnail} alt="" className="h-full object-cover" />}
+                    {thumbnail && (
+                        <img
+                            src={thumbnail}
+                            alt=""
+                            className="h-full object-cover"
+                        />
+                    )}
                     {!thumbnail && (
                         <Image
                             filename="thumb-placeholder.svg"
@@ -53,27 +65,36 @@ const VideoPreview = ({ video, hideProfile }) => {
                 </div>
             </Link>
             <div className="video-info">
-                {!hideProfile &&
+                {!hideProfile && (
                     <Link to={profileLink}>
-                        <Avatar image={profileAvatar} address={profileAddress} />
+                        <Avatar
+                            image={profileAvatar}
+                            address={profileAddress}
+                        />
                     </Link>
-                }
+                )}
                 <div className="video-stats">
                     <Link to={videoLink} state={video}>
                         <h4 className="video-title">{video.title}</h4>
                     </Link>
-                    {!hideProfile &&
+                    {!hideProfile && (
                         <Link to={profileLink}>
                             <div className="video-profile">
                                 <h5 className="profile-name">{profileName}</h5>
                             </div>
                         </Link>
-                    }
-                    {video.creationDateTime &&
+                    )}
+                    {video.creationDateTime && (
                         <div className="publish-time">
-                            {moment.duration(moment(video.creationDateTime).diff(moment())).humanize(true)}
+                            {moment
+                                .duration(
+                                    moment(video.creationDateTime).diff(
+                                        moment()
+                                    )
+                                )
+                                .humanize(true)}
                         </div>
-                    }
+                    )}
                 </div>
             </div>
         </div>

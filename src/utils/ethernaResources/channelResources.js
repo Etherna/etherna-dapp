@@ -10,7 +10,7 @@ export const getChannels = async (page = 0, take = 25) => {
     const apiUrl = `${indexHost}/channels`
 
     const resp = await axios.get(apiUrl, {
-        params: { page, take }
+        params: { page, take },
     })
 
     /**
@@ -23,7 +23,11 @@ export const getChannels = async (page = 0, take = 25) => {
     return resp.data
 }
 
-export const getChannelsWithVideos = async (page = 0, take = 25, videosTake = 5) => {
+export const getChannelsWithVideos = async (
+    page = 0,
+    take = 25,
+    videosTake = 5
+) => {
     let channels = await getChannels(page, take)
     for (let channel of channels) {
         channel.videos = await getChannelVideos(channel.address, 0, videosTake)
@@ -48,7 +52,7 @@ export const getChannelsWithVideos = async (page = 0, take = 25, videosTake = 5)
     return channels
 }
 
-export const getChannel = async (address) => {
+export const getChannel = async address => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels/${address}`
 
@@ -73,7 +77,7 @@ export const getChannelVideos = async (address, page = 0, take = 25) => {
     const apiUrl = `${indexHost}/channels/${address}/videos`
 
     const resp = await axios.get(apiUrl, {
-        params: { page, take }
+        params: { page, take },
     })
 
     /**
@@ -94,12 +98,12 @@ export const getChannelVideos = async (address, page = 0, take = 25) => {
 // ----------------------------------------------------------------------------
 // POST
 
-export const createChannel = async (address) => {
+export const createChannel = async address => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels`
 
     const resp = await axios.post(apiUrl, {
-        Address: address
+        Address: address,
     })
 
     /**
@@ -112,7 +116,14 @@ export const createChannel = async (address) => {
     return resp.data
 }
 
-export const addVideoToChannel = async (channelAddress, videoHash, title, description, time, thumbnailHash) => {
+export const addVideoToChannel = async (
+    channelAddress,
+    videoHash,
+    title,
+    description,
+    time,
+    thumbnailHash
+) => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels/${channelAddress}/videos`
 

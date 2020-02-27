@@ -19,13 +19,9 @@ import { profileActions } from "@state/actions"
 import * as Routes from "@routes"
 
 const ProfileEditor = ({ address }) => {
-    const {
-        name,
-        description,
-        avatar,
-        cover,
-        existsOnIndex
-    } = useSelector(state => state.profile)
+    const { name, description, avatar, cover, existsOnIndex } = useSelector(
+        state => state.profile
+    )
     const { box } = useSelector(state => state.user)
 
     const avatarRef = useRef()
@@ -79,13 +75,17 @@ const ProfileEditor = ({ address }) => {
     const handleSubmit = async () => {
         setSavingProfile(true)
 
-        const saved = await profileActions.updateProfile(box, {
-            address,
-            name: profileName,
-            description: profileDescription,
-            avatar: profileAvatar,
-            cover: profileCover
-        }, existsOnIndex)
+        const saved = await profileActions.updateProfile(
+            box,
+            {
+                address,
+                name: profileName,
+                description: profileDescription,
+                avatar: profileAvatar,
+                cover: profileCover,
+            },
+            existsOnIndex
+        )
         if (saved) {
             navigate(Routes.getProfileLink(address))
         }
@@ -141,9 +141,9 @@ const ProfileEditor = ({ address }) => {
                     <div className="profile-avatar" data-label="Change Avatar">
                         <img
                             src={
-                                isImageObject(profileAvatar) ?
-                                    getResourceUrl(profileAvatar) :
-                                    makeBlockies(address)
+                                isImageObject(profileAvatar)
+                                    ? getResourceUrl(profileAvatar)
+                                    : makeBlockies(address)
                             }
                             alt={profileName}
                         />
@@ -199,12 +199,14 @@ const ProfileEditor = ({ address }) => {
                     />
                 </div>
                 <div className="w-full sm:w-1/2 md:w-3/4 p-4">
-                    {name && !existsOnIndex &&
+                    {name && !existsOnIndex && (
                         <Alert title="Not on Index" type="warning">
-                            You have a valid 3box profile, but it's not present in the current index. <br/>
-                            <strong>Save the profile</strong> to sync with the current index.
+                            You have a valid 3box profile, but it's not present
+                            in the current index. <br />
+                            <strong>Save the profile</strong> to sync with the
+                            current index.
                         </Alert>
-                    }
+                    )}
                 </div>
             </div>
 

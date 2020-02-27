@@ -17,8 +17,7 @@ const ErrorModal = ({ title, error }) => {
             error.substring(0, 65) ===
             "Web3 Wallet Signature Error: User denied message signature."
         //isMetaMaskFromError = error.substring(0, 58) === 'Web3 Wallet Signature Error: from field is required.'
-        isMozillaError =
-            error.substring(0, 26) === "value/</<@moz-extension://"
+        isMozillaError = error.substring(0, 26) === "value/</<@moz-extension://"
         errorString = error.substring(0, 200)
     }
 
@@ -27,22 +26,18 @@ const ErrorModal = ({ title, error }) => {
     return (
         <Modal show={true} showCloseButton={false}>
             <div className="table mx-auto mb-3">
-                {(isMetaMaskSignError || isMozillaError) ? (
+                {isMetaMaskSignError || isMozillaError ? (
                     <Image
                         filename="signature-required-icon.svg"
                         alt="Wallet signature required"
                     />
                 ) : (
-                    <Image
-                        filename="error-icon.svg"
-                        alt="Error"
-                        width={40}
-                    />
+                    <Image filename="error-icon.svg" alt="Error" width={40} />
                 )}
             </div>
             <div className="modal-header">
                 <h4 className="modal-title mx-auto">
-                    {(isMetaMaskSignError || isMozillaError) ? (
+                    {isMetaMaskSignError || isMozillaError ? (
                         <span>Sign in</span>
                     ) : (
                         <span>{title}</span>

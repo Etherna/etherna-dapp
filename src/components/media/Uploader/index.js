@@ -72,7 +72,7 @@ const Uploader = () => {
         setHasSubmitted(true)
     }
 
-    const selectVideoFile = async (file) => {
+    const selectVideoFile = async file => {
         try {
             const duration = await getVideoDuration(file)
             setVideoFile(file)
@@ -93,12 +93,12 @@ const Uploader = () => {
                     <Avatar image={avatar} address={address} />
                     <h3 className="mb-0 ml-1">{name}</h3>
                 </div>
-                {hasSubmitted &&
-                    <Alert
-                        title=""
-                        type="success"
-                    >
-                        <p>Your video has been successfully upload and linked to your profile</p>
+                {hasSubmitted && (
+                    <Alert title="" type="success">
+                        <p>
+                            Your video has been successfully upload and linked
+                            to your profile
+                        </p>
                         <p>
                             You can watch your video at this link:
                             <a href={videoLink}>
@@ -106,7 +106,7 @@ const Uploader = () => {
                             </a>
                         </p>
                     </Alert>
-                }
+                )}
             </div>
             <div className="row">
                 <div className="col sm:w-1/2">
@@ -209,19 +209,16 @@ const Uploader = () => {
                             Add a thumbnail (optional)
                         </li>
                     </ul>
-                    {
-                        isSubmitting ?
-                            <Image filename="spinner.svg" width={30} /> :
-                            <Button
-                                action={submitVideo}
-                                disabled={
-                                    videoHash === undefined ||
-                                    title === ""
-                                }
-                            >
-                                Add video
-                            </Button>
-                    }
+                    {isSubmitting ? (
+                        <Image filename="spinner.svg" width={30} />
+                    ) : (
+                        <Button
+                            action={submitVideo}
+                            disabled={videoHash === undefined || title === ""}
+                        >
+                            Add video
+                        </Button>
+                    )}
                 </div>
             </div>
         </div>

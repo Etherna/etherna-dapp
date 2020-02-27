@@ -12,19 +12,10 @@ const ExploreView = () => {
 
     const fetchVideos = async (page = 0) => {
         const fetchedVideos = await getVideos(page, 50)
-        setVideos(
-            page === 0 ?
-                fetchedVideos :
-                videos.concat(fetchVideos)
-        )
+        setVideos(page === 0 ? fetchedVideos : videos.concat(fetchVideos))
     }
 
-    return (
-        <VideoGrid
-            label="Reccomended videos"
-            videos={videos}
-        />
-    )
+    return <VideoGrid label="Reccomended videos" videos={videos} />
 }
 
 export default ExploreView

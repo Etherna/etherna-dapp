@@ -18,8 +18,12 @@ const VideoView = ({ hash, video }) => {
     const [title, setTitle] = useState(video.title)
     const [description, setDescription] = useState(video.description)
     const [publishDate, setPublishDate] = useState(video.creationDateTime)
-    const [profileName, setProfileName] = useState(video.profileData && video.profileData.name)
-    const [profileAvatar, setProfileAvatar] = useState(video.profileData && video.profileData.avatar)
+    const [profileName, setProfileName] = useState(
+        video.profileData && video.profileData.name
+    )
+    const [profileAvatar, setProfileAvatar] = useState(
+        video.profileData && video.profileData.avatar
+    )
 
     useEffect(() => {
         if (Object.keys(video).length === 0) {
@@ -56,7 +60,9 @@ const VideoView = ({ hash, video }) => {
             <Player source={source} />
             <div className="video-info">
                 <h1 className="video-title">{title}</h1>
-                <p className="publish-time">{moment(publishDate).format("LLL")}</p>
+                <p className="publish-time">
+                    {moment(publishDate).format("LLL")}
+                </p>
 
                 <hr />
 
@@ -72,13 +78,13 @@ const VideoView = ({ hash, video }) => {
                 <hr />
 
                 <div className="video-description">
-                    {
-                        description && description !== "" ?
-                            <p className="text-gray-800">{description}</p> :
-                            <p className="text-gray-500">
-                                <em>This video doesn't have a description</em>
-                            </p>
-                    }
+                    {description && description !== "" ? (
+                        <p className="text-gray-800">{description}</p>
+                    ) : (
+                        <p className="text-gray-500">
+                            <em>This video doesn't have a description</em>
+                        </p>
+                    )}
                 </div>
             </div>
         </div>

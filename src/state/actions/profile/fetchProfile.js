@@ -17,7 +17,7 @@ const fetchProfile = async address => {
             location: boxProfile.location,
             website: boxProfile.website,
             birthday: boxProfile.birthday,
-            existsOnIndex: profile !== null
+            existsOnIndex: profile !== null,
         })
     } catch (error) {
         console.error(error)

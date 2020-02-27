@@ -50,9 +50,9 @@ export const fetchAccounts = async web3 => {
 }
 
 export const resolveEnsName = async (address, web3) => {
-    const currentProvider = web3 ?
-        web3.currentProvider :
-        window.web3 && window.web3.currentProvider
+    const currentProvider = web3
+        ? web3.currentProvider
+        : window.web3 && window.web3.currentProvider
 
     if (currentProvider) {
         const provider = new ethers.providers.Web3Provider(currentProvider)

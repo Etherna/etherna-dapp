@@ -7,7 +7,13 @@ import Button from "@common/Button"
 import ProgressBar from "@common/ProgressBar"
 import { gatewayUploadWithProgress, getResourceUrl } from "@utils/swarm"
 
-const SwarmFileUpload = ({ file, onFinishedUploading, onRemoveFile, showImagePreview, disabled }) => {
+const SwarmFileUpload = ({
+    file,
+    onFinishedUploading,
+    onRemoveFile,
+    showImagePreview,
+    disabled,
+}) => {
     const [isUploading, setIsUploading] = useState(false)
     const [uploadProgress, setUploadProgress] = useState(0)
     const [hash, setHash] = useState(undefined)
@@ -98,17 +104,19 @@ const SwarmFileUpload = ({ file, onFinishedUploading, onRemoveFile, showImagePre
             )}
             {uploadProgress === 100 && hash && (
                 <>
-                    {
-                        showImagePreview ?
-                            <img src={getResourceUrl(hash)} alt="" /> :
-                            <>
-                                <p>Finished upload!</p>
-                                <p className="text-gray-700 break-words">
-                                    <span>Hash: <br/></span>
-                                    <strong className="text-black">{hash}</strong>
-                                </p>
-                            </>
-                    }
+                    {showImagePreview ? (
+                        <img src={getResourceUrl(hash)} alt="" />
+                    ) : (
+                        <>
+                            <p>Finished upload!</p>
+                            <p className="text-gray-700 break-words">
+                                <span>
+                                    Hash: <br />
+                                </span>
+                                <strong className="text-black">{hash}</strong>
+                            </p>
+                        </>
+                    )}
                     <Button
                         size="small"
                         aspect="secondary"

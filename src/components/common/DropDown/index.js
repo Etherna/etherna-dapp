@@ -14,9 +14,7 @@ import DropDownMenuToggle from "./DropDownMenuToggle"
 const DropDown = ({ children }) => {
     return (
         <DropDownContextProvider>
-            <div className="dropdown">
-                {children}
-            </div>
+            <div className="dropdown">{children}</div>
             <DropDownBackdrop />
         </DropDownContextProvider>
     )
@@ -28,7 +26,7 @@ const DropDownBackdrop = () => {
 
     const handleClear = () => {
         dispatch({
-            type: ReducerTypes.CLEAR
+            type: ReducerTypes.CLEAR,
         })
     }
 
@@ -47,9 +45,4 @@ const DropDownBackdrop = () => {
     )
 }
 
-export {
-    DropDown,
-    DropDownItem,
-    DropDownMenu,
-    DropDownMenuToggle
-}
+export { DropDown, DropDownItem, DropDownMenu, DropDownMenuToggle }

@@ -19,7 +19,9 @@ export const checkNetwork = async () => {
     const network = await getNetwork(web3)
     const currentNetwork = network
     const prevNetwork = window.localStorage.getItem("currentNetwork")
-    const shouldShowSwitchNetwork = window.localStorage.getItem("shouldShowSwitchNetwork")
+    const shouldShowSwitchNetwork = window.localStorage.getItem(
+        "shouldShowSwitchNetwork"
+    )
 
     window.localStorage.setItem("prevNetwork", prevNetwork)
     window.localStorage.setItem("currentNetwork", currentNetwork)
@@ -27,7 +29,7 @@ export const checkNetwork = async () => {
     if (prevNetwork !== currentNetwork) {
         store.dispatch({
             type: EnvActionTypes.ENV_UPDATE_NETWORK,
-            network: currentNetwork
+            network: currentNetwork,
         })
     }
 

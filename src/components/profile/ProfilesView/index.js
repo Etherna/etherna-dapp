@@ -14,17 +14,20 @@ const ProfilesView = () => {
     const fetchProfiles = async (page = 0) => {
         try {
             const fetchedProfiles = await getChannelsWithVideos(page, 10, 5)
-            const boxProfiles = await getProfiles(fetchedProfiles.map(p => p.address))
+            const boxProfiles = await getProfiles(
+                fetchedProfiles.map(p => p.address)
+            )
             const mappedProfiles = fetchedProfiles.map(p => {
-                const boxProfile = boxProfiles.find(bp => bp.address === p.address) || {}
+                const boxProfile =
+                    boxProfiles.find(bp => bp.address === p.address) || {}
                 const videos = (p.videos || []).map(v => ({
                     ...v,
-                    profileData: boxProfile
+                    profileData: boxProfile,
                 }))
                 return {
                     ...p,
                     videos,
-                    profileData: boxProfile
+                    profileData: boxProfile,
                 }
             })
 
@@ -42,21 +45,28 @@ const ProfilesView = () => {
     return (
         <div className="profiles">
             {profiles.map(profile => {
-                return <div className="profile-preview" key={profile.address}>
-                    <div className="profile-info">
-                        <Link to={Routes.getProfileLink(profile.address)}>
-                            <Avatar image={profile.profileData.avatar} address={profile.address} />
-                        </Link>
-                        <Link to={Routes.getProfileLink(profile.address)}>
-                            <h3>{profile.profileData.name}</h3>
-                        </Link>
+                return (
+                    <div className="profile-preview" key={profile.address}>
+                        <div className="profile-info">
+                            <Link to={Routes.getProfileLink(profile.address)}>
+                                <Avatar
+                                    image={profile.profileData.avatar}
+                                    address={profile.address}
+                                />
+                            </Link>
+                            <Link to={Routes.getProfileLink(profile.address)}>
+                                <h3>{profile.profileData.name}</h3>
+                            </Link>
+                        </div>
+                        {profile.videos && profile.videos.length > 0 ? (
+                            <VideoGrid videos={profile.videos} mini={true} />
+                        ) : (
+                            <p className="text-gray-600 italic">
+                                No videos uploaded yet
+                            </p>
+                        )}
                     </div>
-                    {
-                        profile.videos && profile.videos.length > 0 ?
-                            <VideoGrid videos={profile.videos} mini={true} /> :
-                            <p className="text-gray-600 italic">No videos uploaded yet</p>
-                    }
-                </div>
+                )
             })}
         </div>
     )

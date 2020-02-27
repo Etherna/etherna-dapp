@@ -13,7 +13,7 @@ const DropDownMenu = ({ children, alignRight, menuRef, title }) => {
     const pop = () => {
         dispatch({
             type: ReducerTypes.POP_MENU,
-            index: (history.length-1)
+            index: history.length - 1,
         })
     }
 
@@ -25,14 +25,14 @@ const DropDownMenu = ({ children, alignRight, menuRef, title }) => {
                 open: isDropDownOpen,
             })}
         >
-            {history.length > 1 &&
+            {history.length > 1 && (
                 <div className="dropdown-header">
                     <button className="btn-back" onClick={pop}>
                         <Image filename="back-icon.svg" />
                     </button>
                     <span className="ml-3">{title}</span>
                 </div>
-            }
+            )}
             {children}
         </div>
     )

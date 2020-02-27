@@ -1,4 +1,4 @@
-export const getVideoDuration = (file) => {
+export const getVideoDuration = file => {
     return new Promise((resolve, reject) => {
         const video = document.createElement("video")
         video.preload = "metadata"

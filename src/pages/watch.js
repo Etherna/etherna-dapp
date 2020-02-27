@@ -19,7 +19,12 @@ const WatchPage = () => (
                 const params = parse(query)
 
                 if (params && params.v) {
-                    return <VideoView hash={params.v} video={location.state || {}} />
+                    return (
+                        <VideoView
+                            hash={params.v}
+                            video={location.state || {}}
+                        />
+                    )
                 } else {
                     navigate(Routes.getNotFoundLink())
                 }

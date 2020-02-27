@@ -1,10 +1,6 @@
 import React, { useRef } from "react"
 
-import {
-    DropDown,
-    DropDownMenu,
-    DropDownMenuToggle
-} from "@common/DropDown"
+import { DropDown, DropDownMenu, DropDownMenuToggle } from "@common/DropDown"
 import Image from "@common/Image"
 import Button from "@components/common/Button"
 import EnvDropDownMenus from "./EnvDropDownMenu"
@@ -35,7 +31,10 @@ const GuestMenu = () => {
                     </div>
                 </DropDownMenuToggle>
             </DropDownMenu>
-            <EnvDropDownMenus indexMenuRef={indexMenuRef} gatewayMenuRef={gatewayMenuRef} />
+            <EnvDropDownMenus
+                indexMenuRef={indexMenuRef}
+                gatewayMenuRef={gatewayMenuRef}
+            />
         </DropDown>
     )
 }

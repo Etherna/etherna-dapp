@@ -14,8 +14,8 @@ const DropDownItem = ({ children, action, disabled, inactive }) => {
     return (
         <div
             className={classnames("dropdown-item", {
-                "disabled": disabled,
-                "inactive": inactive,
+                disabled: disabled,
+                inactive: inactive,
             })}
             role="button"
             tabIndex={0}

@@ -14,7 +14,9 @@ const ReccomendedProfiles = () => {
         const fetchProfiles = async () => {
             try {
                 const fetchedProfiles = await getChannels(0, 5)
-                const boxProfiles = await getProfiles(fetchedProfiles.map(p => p.address))
+                const boxProfiles = await getProfiles(
+                    fetchedProfiles.map(p => p.address)
+                )
                 setProfiles(boxProfiles || [])
             } catch (error) {
                 console.error(error)

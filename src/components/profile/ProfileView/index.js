@@ -42,12 +42,9 @@ const ProfileView = ({ profileAddress }) => {
         setIsFetchingProfile(true)
 
         try {
-            const {
-                name,
-                description,
-                avatar,
-                cover
-            } = await getProfile(profileAddress)
+            const { name, description, avatar, cover } = await getProfile(
+                profileAddress
+            )
 
             if (!name || name === "") {
                 // we consider a no-name profile a non existing profile
@@ -73,14 +70,10 @@ const ProfileView = ({ profileAddress }) => {
         for (let video of videos) {
             video.profileData = {
                 name: profileName,
-                avatar: profileAvatar
+                avatar: profileAvatar,
             }
         }
-        setProfileVideos(
-            page === 0 ?
-                videos :
-                profileVideos.concat(videos)
-        )
+        setProfileVideos(page === 0 ? videos : profileVideos.concat(videos))
     }
 
     return (
@@ -101,9 +94,9 @@ const ProfileView = ({ profileAddress }) => {
                     <div className="profile-avatar">
                         <img
                             src={
-                                isImageObject(profileAvatar) ?
-                                    getResourceUrl(profileAvatar) :
-                                    makeBlockies(profileAddress)
+                                isImageObject(profileAvatar)
+                                    ? getResourceUrl(profileAvatar)
+                                    : makeBlockies(profileAddress)
                             }
                             alt={profileName}
                         />
@@ -130,10 +123,7 @@ const ProfileView = ({ profileAddress }) => {
                             </p>
                         )}
                         {profileVideos.length > 0 && (
-                            <VideoGrid
-                                videos={profileVideos}
-                                mini={true}
-                            />
+                            <VideoGrid videos={profileVideos} mini={true} />
                         )}
                     </div>
                 </div>
