@@ -8,8 +8,8 @@ const updateProfile = async (box, data, existsOnIndex) => {
             address,
             name,
             description,
-            image,
-            coverPhoto
+            avatar,
+            cover
         } = data
 
         if (!existsOnIndex) {
@@ -24,16 +24,16 @@ const updateProfile = async (box, data, existsOnIndex) => {
         ], [
             name,
             description,
-            image,
-            coverPhoto
+            avatar,
+            cover
         ])
 
         store.dispatch({
             type: ProfileActionTypes.PROFILE_UPDATE,
             name,
             description,
-            avatar: image,
-            cover: coverPhoto,
+            avatar,
+            cover,
             existsOnIndex: true
         })
 

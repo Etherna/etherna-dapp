@@ -2,51 +2,42 @@ import React, { useState, useEffect } from "react"
 import { Link } from "gatsby"
 
 import "./profiles.scss"
-import { getProfile } from "@utils/3box"
+import { getProfiles } from "@utils/3box"
 import * as Routes from "@routes"
 import Avatar from "@components/user/Avatar"
 import VideoGrid from "@components/media/VideoGrid"
-
-const profileAddresses = [
-    "0x9A0359B17651Bf2C5e25Fa9eFF49B11B3d4b1aE8",
-    "0x71b183205423e5c9647D4E77BfFb30Faa9509687"
-]
-
-const videoHashes = [
-    "33f1ea45b3404d1691911729a5dd618216bbd2031c9bf1459d4f4542fb13e067/test%20swarm.mp4",
-    "efb99be236211420ca6bc3e12cd88baf543777d5a933a69091dfa215dbc166d6",
-    "33f1ea45b3404d1691911729a5dd618216bbd2031c9bf1459d4f4542fb13e067/test%20swarm.mp4",
-    "efb99be236211420ca6bc3e12cd88baf543777d5a933a69091dfa215dbc166d6",
-]
+import { getChannelsWithVideos } from "@utils/ethernaResources/channelResources"
 
 const ProfilesView = () => {
     const [profiles, setProfiles] = useState([])
 
-    useEffect(() => {
-        loadProfiles(profileAddresses)
-    }, [])
+    const fetchProfiles = async (page = 0) => {
+        try {
+            const fetchedProfiles = await getChannelsWithVideos(page, 10, 5)
+            const boxProfiles = await getProfiles(fetchedProfiles.map(p => p.address))
+            const mappedProfiles = fetchedProfiles.map(p => {
+                const boxProfile = boxProfiles.find(bp => bp.address === p.address) || {}
+                const videos = (p.videos || []).map(v => ({
+                    ...v,
+                    profileData: boxProfile
+                }))
+                return {
+                    ...p,
+                    videos,
+                    profileData: boxProfile
+                }
+            })
 
-    const loadProfiles = async (addresses) => {
-        let profiles = []
-        for (const profileAddress of addresses) {
-            try {
-                const profile = await getProfile(profileAddress)
-                profiles.push({
-                    address: profileAddress,
-                    profileData: profile,
-                    videos: videoHashes.map(h => ({
-                        title: "",
-                        duration: 0,
-                        hash: h,
-                        profileAddress
-                    }))
-                })
-            } catch (error) {
-                console.error(error)
-            }
+            setProfiles(profiles.concat(mappedProfiles))
+        } catch (error) {
+            console.error(error)
         }
-        setProfiles(profiles)
     }
+
+    useEffect(() => {
+        fetchProfiles()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return (
         <div className="profiles">
@@ -54,13 +45,17 @@ const ProfilesView = () => {
                 return <div className="profile-preview" key={profile.address}>
                     <div className="profile-info">
                         <Link to={Routes.getProfileLink(profile.address)}>
-                            <Avatar image={profile.profileData.image} address={profile.address} />
+                            <Avatar image={profile.profileData.avatar} address={profile.address} />
                         </Link>
                         <Link to={Routes.getProfileLink(profile.address)}>
                             <h3>{profile.profileData.name}</h3>
                         </Link>
                     </div>
-                    <VideoGrid videos={profile.videos} mini={true} />
+                    {
+                        profile.videos && profile.videos.length > 0 ?
+                            <VideoGrid videos={profile.videos} mini={true} /> :
+                            <p className="text-gray-600 italic">No videos uploaded yet</p>
+                    }
                 </div>
             })}
         </div>

@@ -23,6 +23,31 @@ export const getChannels = async (page = 0, take = 25) => {
     return resp.data
 }
 
+export const getChannelsWithVideos = async (page = 0, take = 25, videosTake = 5) => {
+    let channels = await getChannels(page, take)
+    for (let channel of channels) {
+        channel.videos = await getChannelVideos(channel.address, 0, videosTake)
+    }
+
+    /**
+     * Array of:
+     * {
+     *   address: string,
+     *   creationDateTime: string,
+     *   videos: [
+     *     channelAddress: string,
+     *     creationDateTime: string,
+     *     description: string,
+     *     lengthInSeconds: number,
+     *     thumbnailHash: string,
+     *     title: string,
+     *     videoHash: string,
+     *   ]
+     * }
+     */
+    return channels
+}
+
 export const getChannel = async (address) => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels/${address}`

@@ -6,7 +6,7 @@ import "./player.scss"
 const Player = ({ source }) => {
     return (
         <div className="player">
-            <video autoPlay={true} controls>
+            <video autoPlay={false} preload="metadata" controls>
                 <source src={source} />
                 <track default kind="captions" />
             </video>

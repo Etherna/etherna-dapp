@@ -9,46 +9,79 @@ import SEO from "@components/layout/SEO"
 import { isImageObject, getResourceUrl } from "@utils/swarm"
 import { getProfile } from "@utils/3box"
 import * as Routes from "@routes"
+import { getChannelVideos } from "@utils/ethernaResources/channelResources"
+import VideoGrid from "@components/media/VideoGrid"
 
 const ProfileView = ({ profileAddress }) => {
     const { address } = useSelector(state => state.user)
     const [currentProfileAddress, setCurrentProfileAddress] = useState(
         undefined
     )
+    const [isFetchingProfile, setIsFetchingProfile] = useState(false)
     const [profileName, setProfileName] = useState("")
     const [profileDescription, setProfileDescription] = useState("")
-    const [profileAvatar, setProfileAvatar] = useState("")
+    const [profileAvatar, setProfileAvatar] = useState(undefined)
     const [profileCover, setProfileCover] = useState("")
+    const [profileVideos, setProfileVideos] = useState([])
 
     useEffect(() => {
         if (currentProfileAddress !== profileAddress) {
+            // reset data
             setCurrentProfileAddress(profileAddress)
-
-            getProfile(profileAddress)
-                .then(profileData => {
-                    const {
-                        name,
-                        description,
-                        image,
-                        coverPhoto
-                    } = profileData
-
-                    if (!name || name === "") {
-                        // we consider a no-name profile a non existing profile
-                        navigate("/404")
-                        return
-                    }
-                    setProfileName(name)
-                    setProfileDescription(description)
-                    setProfileAvatar(image)
-                    setProfileCover(coverPhoto)
-                })
-                .catch(error => {
-                    console.error(error)
-                    navigate("/404")
-                })
+            setProfileName("")
+            setProfileDescription("")
+            setProfileAvatar(undefined)
+            setProfileVideos([])
+            // fetch data
+            fetchProfileAndVideos()
         }
-    }, [currentProfileAddress, profileAddress])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    })
+
+    const fetchProfileAndVideos = async () => {
+        setIsFetchingProfile(true)
+
+        try {
+            const {
+                name,
+                description,
+                avatar,
+                cover
+            } = await getProfile(profileAddress)
+
+            if (!name || name === "") {
+                // we consider a no-name profile a non existing profile
+                navigate("/404")
+                return
+            }
+
+            setProfileName(name)
+            setProfileDescription(description)
+            setProfileAvatar(avatar)
+            setProfileCover(cover)
+
+            fetchVideos()
+        } catch (error) {
+            console.error(error)
+        }
+
+        setIsFetchingProfile(false)
+    }
+
+    const fetchVideos = async (page = 0) => {
+        let videos = await getChannelVideos(profileAddress, page, 100)
+        for (let video of videos) {
+            video.profileData = {
+                name: profileName,
+                avatar: profileAvatar
+            }
+        }
+        setProfileVideos(
+            page === 0 ?
+                videos :
+                profileVideos.concat(videos)
+        )
+    }
 
     return (
         <>
@@ -91,9 +124,17 @@ const ProfileView = ({ profileAddress }) => {
                         <p className="profile-bio">{profileDescription}</p>
                     </div>
                     <div className="col sm:w-2/3 md:w-3/4 p-4">
-                        <p className="text-gray-500 text-center my-16">
-                            This profile has yet to upload a video
-                        </p>
+                        {!isFetchingProfile && profileVideos.length == 0 && (
+                            <p className="text-gray-500 text-center my-16">
+                                This profile has yet to upload a video
+                            </p>
+                        )}
+                        {profileVideos.length > 0 && (
+                            <VideoGrid
+                                videos={profileVideos}
+                                mini={true}
+                            />
+                        )}
                     </div>
                 </div>
             </div>

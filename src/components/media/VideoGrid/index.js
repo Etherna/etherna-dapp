@@ -13,14 +13,12 @@ const VideoGrid = ({ label, videos, mini }) => {
                 {label && <LabelTag>{label}</LabelTag>}
             </div>
             <div className={classnames("video-grid", { mini: mini })}>
-                {videos.map((v, i) => {
+                {videos.map(v => {
                     return (
                         <VideoPreview
-                            title={v.title}
-                            duration={v.duration}
-                            hash={v.hash}
-                            profileAddress={mini ? undefined : v.profileAddress}
-                            key={v.hash + i}
+                            video={v}
+                            hideProfile={mini}
+                            key={v.videoHash}
                         />
                     )
                 })}

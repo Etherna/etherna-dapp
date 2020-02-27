@@ -29,7 +29,7 @@ const ReccomendedProfiles = () => {
             {profiles.map(profile => {
                 return (
                     <SidebarItem
-                        imageUrl={getResourceUrl(profile.image)}
+                        imageUrl={getResourceUrl(profile.avatar)}
                         fallbackAddress={profile.address}
                         name={profile.name}
                         link={Routes.getProfileLink(profile.address)}

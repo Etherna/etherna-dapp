@@ -3,7 +3,16 @@ import Box from "3box"
 export const getProfile = async address => {
     try {
         let boxProfile = await Box.getProfile(address)
+
+        // Profile object mapping
         boxProfile.address = address
+        boxProfile.avatar = boxProfile.image
+        boxProfile.cover = boxProfile.coverPhoto
+
+        // Remove unused props
+        delete boxProfile.image
+        delete boxProfile.coverPhoto
+
         return boxProfile
     } catch (error) {
         console.error(error)

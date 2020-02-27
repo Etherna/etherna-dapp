@@ -83,8 +83,8 @@ const ProfileEditor = ({ address }) => {
             address,
             name: profileName,
             description: profileDescription,
-            image: profileAvatar,
-            coverPhoto: profileCover
+            avatar: profileAvatar,
+            cover: profileCover
         }, existsOnIndex)
         if (saved) {
             navigate(Routes.getProfileLink(address))
