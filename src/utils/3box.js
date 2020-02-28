@@ -1,4 +1,5 @@
-import Box from "3box"
+// fix SSR build issues
+const Box = typeof window !== "undefined" ? require("3box") : null
 
 export const getProfile = async address => {
     try {

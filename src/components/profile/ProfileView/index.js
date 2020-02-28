@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
-import makeBlockies from "ethereum-blockies-base64"
 import InfiniteScroller from "react-infinite-scroller"
 import { useSelector } from "react-redux"
 import { Link, navigate } from "gatsby"
 
 import "./profile.scss"
 import SEO from "@components/layout/SEO"
-import { isImageObject, getResourceUrl } from "@utils/swarm"
 import { getProfile } from "@utils/3box"
-import * as Routes from "@routes"
-import { getChannelVideos } from "@utils/ethernaResources/channelResources"
 import VideoGrid from "@components/media/VideoGrid"
+import makeBlockies from "@utils/makeBlockies"
+import { getChannelVideos } from "@utils/ethernaResources/channelResources"
+import { isImageObject, getResourceUrl } from "@utils/swarm"
+import * as Routes from "@routes"
 
 const FETCH_COUNT = 50
 

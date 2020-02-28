@@ -1,11 +1,12 @@
-import Box from "3box"
-
 import pollAddress from "./pollAddress"
 import { store } from "@state/store"
 import { UIActionTypes } from "@state/reducers/uiReducer"
 import { UserActionTypes } from "@state/reducers/userReducer"
 import fetchProfile from "@state/actions/profile/fetchProfile"
 import { resolveEnsName } from "@utils/ethFuncs"
+
+// fix SSR build issues
+const Box = typeof window !== "undefined" ? require("3box") : null
 
 const load3Box = async () => {
     store.dispatch({

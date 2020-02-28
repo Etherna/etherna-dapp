@@ -1,10 +1,11 @@
-import Web3Connect from "web3connect"
-import WalletConnectProvider from "@walletconnect/web3-provider"
-import Portis from "@portis/web3"
-import Fortmatic from "fortmatic"
-import Authereum from "authereum"
+// fix SSR building issues
+const Web3Connect = typeof window !== "undefined" ? require("web3connect").default : null
+const WalletConnectProvider = typeof window !== "undefined" ? require("@walletconnect/web3-provider") : null
+const Portis = typeof window !== "undefined" ? require("@portis/web3").default : null
+const Fortmatic = typeof window !== "undefined" ? require("fortmatic") : null
+const Authereum = typeof window !== "undefined" ? require("authereum") : null
 
-export const web3Connect = new Web3Connect.Core({
+export const web3Connect = Web3Connect ? new Web3Connect.Core({
     providerOptions: {
         walletconnect: {
             package: WalletConnectProvider,
@@ -29,7 +30,7 @@ export const web3Connect = new Web3Connect.Core({
             options: {},
         },
     },
-})
+}) : {}
 
 export const connectWallet = async wallet => {
     const normalizedWallet = wallet && wallet.toLowerCase()

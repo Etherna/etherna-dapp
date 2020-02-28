@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react"
 import PropTypes from "prop-types"
 import classnames from "classnames"
-import makeBlockies from "ethereum-blockies-base64"
 import { useSelector } from "react-redux"
 import { navigate } from "gatsby"
 
@@ -15,6 +14,7 @@ import {
     getResourceUrl,
     uploadResourceToSwarm,
 } from "@utils/swarm"
+import makeBlockies from "@utils/makeBlockies"
 import { profileActions } from "@state/actions"
 import * as Routes from "@routes"
 

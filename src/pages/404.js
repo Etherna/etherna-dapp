@@ -1,13 +1,19 @@
 import React from "react"
 
-import Layout from "../components/layout/DefaultLayout"
 import SEO from "../components/layout/SEO"
 
 const NotFoundPage = () => (
-    <Layout>
+    <div className="bg-gray-100 h-screen">
         <SEO title="404: Not found" />
-        <h1>NOT FOUND</h1>
-    </Layout>
+        <div className="container">
+            <div className="row text-center text-blue-900 py-12">
+                <div className="col">
+                    <h2 className="mx-auto" style={{ fontSize: "10rem" }}>404</h2>
+                    <h1 className="mx-auto">Page not found</h1>
+                </div>
+            </div>
+        </div>
+    </div>
 )
 
 export default NotFoundPage

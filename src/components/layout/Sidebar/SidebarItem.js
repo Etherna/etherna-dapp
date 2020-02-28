@@ -1,10 +1,11 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { Link } from "gatsby"
-import makeBlockie from "ethereum-blockies-base64"
+
+import makeBlockies from "@utils/makeBlockies"
 
 const SidebarItem = ({ imageUrl, fallbackAddress, name, link }) => {
-    const image = imageUrl || (fallbackAddress && makeBlockie(fallbackAddress))
+    const image = imageUrl || (fallbackAddress && makeBlockies(fallbackAddress))
     return (
         <Link to={link} activeClassName="active" className="sidebar-item">
             <div
