@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import makeBlockies from "ethereum-blockies-base64"
+import InfiniteScroller from "react-infinite-scroller"
 import { useSelector } from "react-redux"
 import { Link, navigate } from "gatsby"
 
@@ -11,6 +12,8 @@ import { getProfile } from "@utils/3box"
 import * as Routes from "@routes"
 import { getChannelVideos } from "@utils/ethernaResources/channelResources"
 import VideoGrid from "@components/media/VideoGrid"
+
+const FETCH_COUNT = 50
 
 const ProfileView = ({ profileAddress }) => {
     const { address } = useSelector(state => state.user)
@@ -23,6 +26,8 @@ const ProfileView = ({ profileAddress }) => {
     const [profileAvatar, setProfileAvatar] = useState(undefined)
     const [profileCover, setProfileCover] = useState("")
     const [profileVideos, setProfileVideos] = useState([])
+    const [page, setPage] = useState(0)
+    const [hasMore, setHasMore] = useState(true)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
@@ -65,15 +70,26 @@ const ProfileView = ({ profileAddress }) => {
         setIsFetchingProfile(false)
     }
 
-    const fetchVideos = async (page = 0) => {
-        let videos = await getChannelVideos(profileAddress, page, 100)
-        for (let video of videos) {
-            video.profileData = {
-                name: profileName,
-                avatar: profileAvatar,
+    const fetchVideos = async () => {
+        try {
+            let videos = await getChannelVideos(profileAddress, page, FETCH_COUNT)
+            for (let video of videos) {
+                video.profileData = {
+                    name: profileName,
+                    avatar: profileAvatar,
+                }
             }
+            setProfileVideos(page === 0 ? videos : profileVideos.concat(videos))
+
+            if (videos.length < FETCH_COUNT) {
+                setHasMore(false)
+            } else {
+                setPage(page + 1)
+            }
+        } catch (error) {
+            console.error(error)
+            setHasMore(false)
         }
-        setProfileVideos(page === 0 ? videos : profileVideos.concat(videos))
     }
 
     return (
@@ -123,7 +139,14 @@ const ProfileView = ({ profileAddress }) => {
                             </p>
                         )}
                         {profileVideos.length > 0 && (
-                            <VideoGrid videos={profileVideos} mini={true} />
+                            <InfiniteScroller
+                                loadMore={fetchVideos}
+                                hasMore={hasMore}
+                                initialLoad={false}
+                                threshold={30}
+                            >
+                                <VideoGrid videos={profileVideos} mini={true} />
+                            </InfiniteScroller>
                         )}
                     </div>
                 </div>
