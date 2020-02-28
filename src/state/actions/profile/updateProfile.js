@@ -6,14 +6,18 @@ const updateProfile = async (box, data, existsOnIndex) => {
     try {
         const { address, name, description, avatar, cover } = data
 
-        if (!existsOnIndex) {
-            await createChannel(address)
-        }
-
         const saved = await box.public.setMultiple(
             ["name", "description", "image", "coverPhoto"],
             [name, description, avatar, cover]
         )
+
+        if (!saved) {
+            return false
+        }
+
+        if (!existsOnIndex) {
+            await createChannel(address)
+        }
 
         store.dispatch({
             type: ProfileActionTypes.PROFILE_UPDATE,
