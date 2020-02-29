@@ -43,6 +43,11 @@ const ProfileView = ({ profileAddress }) => {
         }
     })
 
+    useEffect(() => {
+        fetchVideos()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [profileName, profileAvatar])
+
     const fetchProfileAndVideos = async () => {
         setIsFetchingProfile(true)
 
@@ -61,8 +66,6 @@ const ProfileView = ({ profileAddress }) => {
             setProfileDescription(description)
             setProfileAvatar(avatar)
             setProfileCover(cover)
-
-            fetchVideos()
         } catch (error) {
             console.error(error)
         }

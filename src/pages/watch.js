@@ -19,7 +19,7 @@ const WatchPage = ({ location }) => {
     }
 
     return (
-        <Layout>
+        <Layout showSidebar={false}>
             <SEO title="Watch" />
             <VideoView
                 hash={params.v}

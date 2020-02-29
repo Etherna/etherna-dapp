@@ -56,7 +56,7 @@ const VideoView = ({ hash, video }) => {
     }
 
     return (
-        <div className="video-watch">
+        <div className="video-watch container">
             <Player source={source} />
             <div className="video-info">
                 <h1 className="video-title">{title}</h1>
