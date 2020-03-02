@@ -22,7 +22,7 @@
         }
 
         img {
-            @apply absolute top-0 left-0 w-full h-full object-cover object-center;
+            @apply absolute top-0 left-0 w-full h-full object-cover object-center bg-gray-200;
         }
 
         .video-duration {
@@ -41,7 +41,7 @@
             @apply flex flex-col flex-1;
 
             .video-title {
-                @apply font-semibold mb-0 leading-tight;
+                @apply font-semibold mb-0 leading-tight text-lg;
             }
             .profile-name {
                 @apply mb-0 font-semibold text-sm text-gray-600 transition-colors duration-200;

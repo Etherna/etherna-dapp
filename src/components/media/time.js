@@ -1,27 +1,21 @@
-export const getTimeValues = time => {
-    time = time || 0
+import React from "react"
+import PropTypes from "prop-types"
 
-    let hours = Math.floor(time / 3600)
-    if (hours >= 1) {
-        time = time - hours * 3600
-    } else {
-        hours = null
-    }
-    const minutes = Math.floor(time / 60)
-    const seconds = time - minutes * 60
+import timeComponents from "@utils/timeComponents"
 
-    return {
-        hours: stringPadLeft(hours),
-        minutes: stringPadLeft(minutes),
-        seconds: stringPadLeft(seconds),
-    }
+const Time = ({ duration }) => {
+    const { hours, minutes, seconds } = timeComponents(duration)
+
+    return (
+        <span>
+            {hours ? `${hours}:` : null}
+            {minutes}:{seconds}
+        </span>
+    )
 }
 
-const stringPadLeft = string => {
-    if (typeof string !== "number") {
-        return null
-    }
-    const length = 2
-    const pad = "0"
-    return (new Array(length + 1).join(pad) + string).slice(-length)
+Time.propTypes = {
+    duration: PropTypes.number.isRequired,
 }
+
+export default Time

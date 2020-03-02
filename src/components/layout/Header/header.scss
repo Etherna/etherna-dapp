@@ -9,7 +9,7 @@
     @apply flex flex-wrap fixed w-full z-1 top-0 shadow-sm bg-white;
 
     .nav-item {
-        @apply flex items-center px-6 py-3 whitespace-no-wrap;
+        @apply flex items-center px-6 py-3 whitespace-no-wrap tracking-wide;
         &.active {
             @apply text-primary;
         }

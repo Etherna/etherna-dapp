@@ -4,15 +4,14 @@ import { Link } from "gatsby"
 import moment from "moment"
 
 import "./video-preview.scss"
+import Time from "../Time"
 import Image from "@common/Image"
 import Avatar from "@components/user/Avatar"
-import { getTimeValues } from "@components/media/time"
-import { getResourceUrl } from "@utils/swarm"
 import { getProfile } from "@utils/3box"
+import { getResourceUrl } from "@utils/swarm"
 import * as Routes from "@routes"
 
 const VideoPreview = ({ video, hideProfile }) => {
-    const { hours, minutes, seconds } = getTimeValues(video.lengthInSeconds)
     const profileLink = Routes.getProfileLink(video.channelAddress)
     const videoLink = Routes.getVideoLink(video.videoHash)
     const profileAddress = video.channelAddress
@@ -59,8 +58,7 @@ const VideoPreview = ({ video, hideProfile }) => {
                         />
                     )}
                     <div className="video-duration">
-                        {hours ? `${hours}:` : null}
-                        {minutes}:{seconds}
+                        <Time duration={video.lengthInSeconds} />
                     </div>
                 </div>
             </Link>
