@@ -13,18 +13,13 @@ const WatchPage = ({ location }) => {
     const params = parse(query)
 
     if (!params || !params.v) {
-        return (
-            <PageNotFound />
-        )
+        return <PageNotFound />
     }
 
     return (
         <Layout showSidebar={false}>
             <SEO title="Watch" />
-            <VideoView
-                hash={params.v}
-                video={location.state || {}}
-            />
+            <VideoView hash={params.v} video={location.state || {}} />
         </Layout>
     )
 }

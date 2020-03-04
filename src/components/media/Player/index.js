@@ -88,15 +88,18 @@ const Player = ({ source }) => {
     const onLoadMetadata = () => {
         const video = videoRef.current
         setDuration(video.duration)
-        console.log('dur', video.duration);
-
     }
 
     const onProgress = () => {
         const video = videoRef.current
         for (let i = 0; i < video.buffered.length; i++) {
-            if (video.buffered.start(video.buffered.length - 1 - i) < video.currentTime) {
-                setBuffering(video.buffered.end(video.buffered.length - 1 - i) / duration)
+            if (
+                video.buffered.start(video.buffered.length - 1 - i) <
+                video.currentTime
+            ) {
+                setBuffering(
+                    video.buffered.end(video.buffered.length - 1 - i) / duration
+                )
                 break
             }
         }
@@ -113,7 +116,7 @@ const Player = ({ source }) => {
     }
 
     return (
-        <div className={classnames("player", { "playing": playing })}>
+        <div className={classnames("player", { playing: playing })}>
             {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <video
                 ref={videoRef}
@@ -127,8 +130,10 @@ const Player = ({ source }) => {
             >
                 <source src={source} />
                 <p className="text-center block">
-                    It's time to upgrade your browser!!! <br/>
-                    <a href="https://www.google.com/chrome" target="blank">Download Chrome</a>
+                    It's time to upgrade your browser!!! <br />
+                    <a href="https://www.google.com/chrome" target="blank">
+                        Download Chrome
+                    </a>
                 </p>
             </video>
             <div className="controls">
@@ -140,8 +145,14 @@ const Player = ({ source }) => {
                     role="button"
                     tabIndex={0}
                 >
-                    <div className="video-buffering" style={{ width: `${buffering*100}%` }} />
-                    <div className="current-time" style={{ width: `${currentTime*100}%` }} />
+                    <div
+                        className="video-buffering"
+                        style={{ width: `${buffering * 100}%` }}
+                    />
+                    <div
+                        className="current-time"
+                        style={{ width: `${currentTime * 100}%` }}
+                    />
                 </div>
 
                 {/* Play / Pause */}
@@ -150,18 +161,17 @@ const Player = ({ source }) => {
                     onClick={togglePlay}
                     onKeyDown={togglePlay}
                     role="button"
-                    tabIndex={1}
+                    tabIndex={0}
                 />
 
                 {/* Time */}
                 <div className="time-progress">
-                    <Time duration={currentTime*duration} />
+                    <Time duration={currentTime * duration} />
                     <span> / </span>
                     <Time duration={duration} />
                 </div>
 
                 <div className="options-group">
-
                     {/* Playback rate */}
                     <div className="option-group">
                         <div className="btn btn-option">
@@ -171,11 +181,13 @@ const Player = ({ source }) => {
                             <div className="tick-menu">
                                 {playbackTicks.map(t => (
                                     <div
-                                        className={classnames("tick-option", { "active": t === playbackRate })}
+                                        className={classnames("tick-option", {
+                                            active: t === playbackRate,
+                                        })}
                                         onClick={() => updatePlaybackRate(t)}
                                         onKeyDown={() => updatePlaybackRate(t)}
                                         role="button"
-                                        tabIndex={1}
+                                        tabIndex={0}
                                         key={t}
                                     >
                                         {t}
@@ -192,7 +204,7 @@ const Player = ({ source }) => {
                             onClick={togglePictureInPicture}
                             onKeyDown={togglePictureInPicture}
                             role="button"
-                            tabIndex={2}
+                            tabIndex={0}
                         >
                             <Image filename="pip-icon.svg" />
                         </div>
@@ -204,7 +216,7 @@ const Player = ({ source }) => {
                         onClick={fullScreen}
                         onKeyDown={fullScreen}
                         role="button"
-                        tabIndex={3}
+                        tabIndex={0}
                     >
                         <Image filename="fullscreen-icon.svg" />
                     </div>
@@ -216,15 +228,15 @@ const Player = ({ source }) => {
                             onClick={toggleMute}
                             onKeyDown={toggleMute}
                             role="button"
-                            tabIndex={4}
+                            tabIndex={0}
                         >
-                            {
-                                muted === true ?
-                                <Image filename="muted-icon.svg" /> :
-                                volume < 0.25 ?
-                                <Image filename="volume-low-icon.svg" /> :
+                            {muted === true ? (
+                                <Image filename="muted-icon.svg" />
+                            ) : volume < 0.25 ? (
+                                <Image filename="volume-low-icon.svg" />
+                            ) : (
                                 <Image filename="volume-icon.svg" />
-                            }
+                            )}
                         </div>
                         <div className="option-menu">
                             <Slider

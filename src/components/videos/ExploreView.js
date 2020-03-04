@@ -33,14 +33,16 @@ const ExploreView = () => {
         }
     }
 
-    return <InfiniteScroller
-        loadMore={fetchVideos}
-        hasMore={hasMore}
-        initialLoad={false}
-        threshold={30}
-    >
-        <VideoGrid label="Reccomended videos" videos={videos} />
-    </InfiniteScroller>
+    return (
+        <InfiniteScroller
+            loadMore={fetchVideos}
+            hasMore={hasMore}
+            initialLoad={false}
+            threshold={30}
+        >
+            <VideoGrid label="Reccomended videos" videos={videos} />
+        </InfiniteScroller>
+    )
 }
 
 export default ExploreView

@@ -23,7 +23,11 @@ const ProfilesView = () => {
 
     const fetchProfiles = async () => {
         try {
-            const fetchedProfiles = await getChannelsWithVideos(page, FETCH_COUNT, 5)
+            const fetchedProfiles = await getChannelsWithVideos(
+                page,
+                FETCH_COUNT,
+                5
+            )
             const boxProfiles = await getProfiles(
                 fetchedProfiles.map(p => p.address)
             )
@@ -66,18 +70,25 @@ const ProfilesView = () => {
                     return (
                         <div className="profile-preview" key={profile.address}>
                             <div className="profile-info">
-                                <Link to={Routes.getProfileLink(profile.address)}>
+                                <Link
+                                    to={Routes.getProfileLink(profile.address)}
+                                >
                                     <Avatar
                                         image={profile.profileData.avatar}
                                         address={profile.address}
                                     />
                                 </Link>
-                                <Link to={Routes.getProfileLink(profile.address)}>
+                                <Link
+                                    to={Routes.getProfileLink(profile.address)}
+                                >
                                     <h3>{profile.profileData.name}</h3>
                                 </Link>
                             </div>
                             {profile.videos && profile.videos.length > 0 ? (
-                                <VideoGrid videos={profile.videos} mini={true} />
+                                <VideoGrid
+                                    videos={profile.videos}
+                                    mini={true}
+                                />
                             ) : (
                                 <p className="text-gray-600 italic">
                                     No videos uploaded yet

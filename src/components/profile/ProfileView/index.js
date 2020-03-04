@@ -75,7 +75,11 @@ const ProfileView = ({ profileAddress }) => {
 
     const fetchVideos = async () => {
         try {
-            let videos = await getChannelVideos(profileAddress, page, FETCH_COUNT)
+            let videos = await getChannelVideos(
+                profileAddress,
+                page,
+                FETCH_COUNT
+            )
             for (let video of videos) {
                 video.profileData = {
                     name: profileName,
