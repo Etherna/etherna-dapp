@@ -71,6 +71,12 @@ const connectProvider = async provider => {
             type: EnvActionTypes.ENV_CURRENT_ADDRESS,
             currentAddress,
         })
+
+        // Update user signed in
+        store.dispatch({
+            type: UserActionTypes.USER_UPDATE_SIGNEDIN,
+            isSignedIn: true,
+        })
     } catch (error) {
         console.error(`Cannot connect provider: ${error.message}`)
         store.dispatch({

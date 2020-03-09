@@ -44,13 +44,13 @@
                 @apply font-semibold mb-0 leading-tight text-lg;
             }
             .profile-name {
-                @apply mb-0 font-semibold text-sm text-gray-600 transition-colors duration-200;
+                @apply mb-0 font-semibold text-sm text-gray-700 transition-colors duration-200;
                 &:hover {
                     @apply text-gray-800 transition-colors duration-200;
                 }
             }
             .publish-time {
-                @apply text-gray-600 text-sm;
+                @apply text-gray-600 text-xs;
             }
         }
     }

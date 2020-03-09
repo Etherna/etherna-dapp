@@ -5,9 +5,6 @@ import { UserActionTypes } from "@state/reducers/userReducer"
 import fetchProfile from "@state/actions/profile/fetchProfile"
 import { resolveEnsName } from "@utils/ethFuncs"
 
-// fix SSR build issues
-const Box = typeof window !== "undefined" ? require("3box") : null
-
 const load3Box = async () => {
     store.dispatch({
         type: UIActionTypes.UI_TOGGLE_CONNECTING_WALLET,
@@ -20,10 +17,6 @@ const load3Box = async () => {
     } = store.getState()
 
     try {
-        // loading 3box
-        const box = await Box.openBox(address, web3.currentProvider)
-        await box.syncDone
-
         // fetching address ens name
         const ens = await resolveEnsName(address, web3)
 
@@ -31,20 +24,8 @@ const load3Box = async () => {
         loadProfile(address)
 
         store.dispatch({
-            type: UserActionTypes.USER_3BOX_UPDATE,
-            box,
+            type: UserActionTypes.USER_ENS_UPDATE,
             ens,
-        })
-
-        box.onSyncDone(() => {
-            store.dispatch({
-                type: UserActionTypes.USER_UPDATE_SIGNEDIN,
-                isSignedIn: true,
-            })
-            store.dispatch({
-                type: UIActionTypes.UI_TOGGLE_LOADING_PROFILE,
-                isLoadingProfile: false,
-            })
         })
     } catch (error) {
         console.error(error)

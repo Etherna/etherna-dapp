@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import PropTypes from "prop-types"
 import classnames from "classnames"
 import { useSelector } from "react-redux"
@@ -34,6 +34,12 @@ const ProfileEditor = ({ address }) => {
     const [isUploadingAvatar, setUploadingAvatar] = useState(false)
     const [showUploadErrorModal, setShowUploadErrorModal] = useState(false)
     const [isSavingProfile, setSavingProfile] = useState(false)
+
+    useEffect(() => {
+        if (!box) {
+            profileActions.openBox()
+        }
+    }, [box])
 
     const handleRemoveImage = (e, type = "cover") => {
         e.stopPropagation()
@@ -166,7 +172,7 @@ const ProfileEditor = ({ address }) => {
                     <Button
                         className="ml-auto"
                         action={handleSubmit}
-                        disabled={profileName === ""}
+                        disabled={profileName === "" || !box}
                     >
                         Save
                     </Button>
