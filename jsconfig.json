@@ -6,7 +6,8 @@
             "@common/*": ["src/components/common/*"],
             "@routes/*": ["src/routes/*"],
             "@state/*": ["src/state/*"],
-            "@utils/*": ["src/utils/*"]
+            "@utils/*": ["src/utils/*"],
+            "@svg/*": ["src/svg/*"],
         },
         "experimentalDecorators": true
     },

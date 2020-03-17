@@ -3,7 +3,6 @@ import PropTypes from "prop-types"
 import classnames from "classnames"
 
 import "./file-drag.scss"
-import Image from "@common/Image"
 
 const FileDrag = ({ id, label, onSelectFile, disabled }) => {
     const [isDragOver, setIsDragOver] = useState(false)
@@ -66,7 +65,7 @@ const FileDrag = ({ id, label, onSelectFile, disabled }) => {
                     disabled={disabled}
                 />
                 <div className="drag-content">
-                    <Image filename="upload-icon-lg.svg" />
+                    <img src={require("@svg/icons/upload-icon-lg.svg")} alt="" />
                     <span className="drag-info text-lg">
                         {label || "Drag here"}
                     </span>

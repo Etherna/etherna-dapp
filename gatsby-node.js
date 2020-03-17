@@ -37,6 +37,7 @@ exports.onCreateWebpackConfig = ({ actions }) => {
                 "@common": path.resolve(__dirname, "src/components/common"),
                 "@routes": path.resolve(__dirname, "src/routes"),
                 "@state": path.resolve(__dirname, "src/state"),
+                "@svg": path.resolve(__dirname, "src/svg"),
                 "@utils": path.resolve(__dirname, "src/utils"),
             },
         },

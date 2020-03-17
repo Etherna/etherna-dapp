@@ -8,7 +8,6 @@ import "./profile-editor.scss"
 import Alert from "@components/common/Alert"
 import Button from "@common/Button"
 import Modal from "@common/Modal"
-import Image from "@common/Image"
 import {
     isImageObject,
     getResourceUrl,
@@ -178,10 +177,11 @@ const ProfileEditor = ({ address }) => {
                     </Button>
                 )}
                 {isSavingProfile && (
-                    <Image
-                        filename="spinner.svg"
-                        width="30"
+                    <img
+                        src={require("@svg/animated/spinner.svg")}
                         className="ml-auto"
+                        width="30"
+                        alt=""
                     />
                 )}
             </div>

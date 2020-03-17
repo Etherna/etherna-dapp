@@ -2,7 +2,6 @@ import React from "react"
 
 import Modal from "../common/Modal"
 import Button from "../common/Button"
-import Image from "../common/Image"
 import { closeConnectingWalletModal } from "@state/actions/modals"
 
 const ConnectingWalletModal = () => {
@@ -15,7 +14,12 @@ const ConnectingWalletModal = () => {
                 Approve the message in your <br /> Web3 wallet to continue
             </p>
             <div className="flex my-6">
-                <Image className="mx-auto" filename="spinner.svg" width="60" />
+                <img
+                    src={require("@svg/animated/spinner.svg")}
+                    className="mx-auto"
+                    width="60"
+                    alt=""
+                />
             </div>
             <div className="flex">
                 <Button

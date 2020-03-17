@@ -5,7 +5,6 @@ import moment from "moment"
 
 import "./video-preview.scss"
 import Time from "../Time"
-import Image from "@common/Image"
 import Avatar from "@components/user/Avatar"
 import { getProfile } from "@utils/3box"
 import { getResourceUrl } from "@utils/swarm"
@@ -52,8 +51,9 @@ const VideoPreview = ({ video, hideProfile }) => {
                         />
                     )}
                     {!thumbnail && (
-                        <Image
-                            filename="thumb-placeholder.svg"
+                        <img
+                            src={require("@svg/backgrounds/thumb-placeholder.svg")}
+                            alt=""
                             className="w-full h-full"
                         />
                     )}

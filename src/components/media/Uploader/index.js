@@ -8,7 +8,6 @@ import FileDrag from "./FileDrag"
 import SwarmFileUpload from "./SwarmFileUpload"
 import Avatar from "@components/user/Avatar"
 import Button from "@common/Button"
-import Image from "@components/common/Image"
 import Alert from "@components/common/Alert"
 import { showError } from "@state/actions/modals"
 import { addVideoToChannel } from "@utils/ethernaResources/channelResources"
@@ -210,7 +209,7 @@ const Uploader = () => {
                         </li>
                     </ul>
                     {isSubmitting ? (
-                        <Image filename="spinner.svg" width={30} />
+                        <img src={require("@svg/animated/spinner.svg")} width={30} alt="" />
                     ) : (
                         <Button
                             action={submitVideo}

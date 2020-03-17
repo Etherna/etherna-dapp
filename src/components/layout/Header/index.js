@@ -4,7 +4,6 @@ import { Location } from "@reach/router"
 import { Link } from "gatsby"
 
 import "./header.scss"
-import Image from "@common/Image"
 import UserMenu from "@components/user/UserMenu"
 import * as Routes from "@routes"
 
@@ -66,7 +65,7 @@ const Header = () => {
                 </div>
                 <div className="logo">
                     <Link to="/">
-                        <Image filename="logo.svg" width={140} />
+                        <img src={require("@svg/logo.svg")} alt="" width={140} />
                     </Link>
                 </div>
                 <div className="right-nav">
@@ -76,7 +75,7 @@ const Header = () => {
                             className="nav-item"
                             activeClassName="active"
                         >
-                            <Image filename="upload-icon.svg" />
+                            <img src={require("@svg/icons/upload-icon.svg")} alt="" />
                             <span>Upload</span>
                         </Link>
                     )}

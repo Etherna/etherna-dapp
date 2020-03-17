@@ -1,7 +1,6 @@
 import React from "react"
 
 import Modal from "../common/Modal"
-import Image from "../common/Image"
 
 const LoadingProfileModal = () => {
     return (
@@ -10,7 +9,12 @@ const LoadingProfileModal = () => {
                 <h4 className="modal-title mx-auto">Loading profile</h4>
             </div>
             <div className="flex my-6">
-                <Image className="mx-auto" filename="spinner.svg" width="60" />
+                <img
+                    src={require("@svg/animated/spinner.svg")}
+                    className="mx-auto"
+                    width="60"
+                    alt=""
+                />
             </div>
         </Modal>
     )

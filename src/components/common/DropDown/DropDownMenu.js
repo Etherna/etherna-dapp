@@ -3,7 +3,6 @@ import PropTypes from "prop-types"
 import classnames from "classnames"
 
 import { useStateValue, ReducerTypes } from "./DropDownContext"
-import Image from "@common/Image"
 
 const DropDownMenu = ({ children, alignRight, menuRef, title }) => {
     const [state, dispatch] = useStateValue()
@@ -28,7 +27,7 @@ const DropDownMenu = ({ children, alignRight, menuRef, title }) => {
             {history.length > 1 && (
                 <div className="dropdown-header">
                     <button className="btn-back" onClick={pop}>
-                        <Image filename="back-icon.svg" />
+                        <img src={require("@svg/icons/back-icon.svg")} alt=""/>
                     </button>
                     <span className="ml-3">{title}</span>
                 </div>
