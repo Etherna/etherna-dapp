@@ -52,13 +52,13 @@ const Header = () => {
                                 >
                                     Profiles
                                 </Link>
-                                <Link
+                                {/* <Link
                                     to={Routes.getHowItWorksLink()}
                                     className="nav-item"
                                     activeClassName="active"
                                 >
                                     How it works
-                                </Link>
+                                </Link> */}
                             </>
                         )}
                     </Location>
