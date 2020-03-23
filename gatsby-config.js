@@ -50,7 +50,7 @@ module.exports = {
             resolve: 'gatsby-plugin-htaccess',
             options: {
                 RewriteBase: true,
-                https: false,
+                https: true,
                 //www: true,
                 //host: 'www.app.etherna.io', // if 'www' is set to 'false', be sure to also remove it here!
                 SymLinksIfOwnerMatch: true,
