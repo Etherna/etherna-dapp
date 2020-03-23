@@ -17,6 +17,7 @@
     "ethers": "^4.0.44",
     "gatsby": "^2.19.34",
     "gatsby-image": "^2.2.39",
+    "gatsby-plugin-htaccess": "^1.4.0",
     "gatsby-plugin-manifest": "^2.2.39",
     "gatsby-plugin-offline": "^3.0.32",
     "gatsby-plugin-postcss": "^2.1.20",
