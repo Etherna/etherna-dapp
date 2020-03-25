@@ -29,14 +29,7 @@ exports.onCreatePage = async ({ page, actions }) => {
 /// Webpack extension
 ///
 const path = require("path")
-exports.onCreateWebpackConfig = ({ actions, stage }) => {
-    if (stage === 'build-javascript') {
-        // turn off source-maps
-        actions.setWebpackConfig({
-            devtool: false
-        })
-    }
-
+exports.onCreateWebpackConfig = ({ actions }) => {
     actions.setWebpackConfig({
         resolve: {
             alias: {

@@ -55,11 +55,28 @@ module.exports = {
                 //host: 'www.app.etherna.io', // if 'www' is set to 'false', be sure to also remove it here!
                 SymLinksIfOwnerMatch: true,
                 ErrorDocument: `
-                    ErrorDocument 401 /401
-                    ErrorDocument 404 /404
-                    ErrorDocument 500 /500
+                    ErrorDocument 401 /401/index.html
+                    ErrorDocument 404 /404/index.html
+                    ErrorDocument 500 /500/index.html
                 `,
                 custom: `
+                    # Redirect profile editing urls
+                    <IfModule mod_rewrite.c>
+                        RewriteEngine On
+                        RewriteBase /profile/(.+)/edit$
+                        RewriteCond %{REQUEST_FILENAME} !-f
+                        RewriteCond %{REQUEST_FILENAME} !-d
+                        RewriteRule (.*) /profileEdit/index.html [QSA,L]
+                    </IfModule>
+
+                    # Redirect profile urls
+                    <IfModule mod_rewrite.c>
+                        RewriteEngine On
+                        RewriteBase /profile
+                        RewriteCond %{REQUEST_FILENAME} !-f
+                        RewriteCond %{REQUEST_FILENAME} !-d
+                        RewriteRule (.*) /profile/index.html [QSA,L]
+                    </IfModule>
                 `,
             },
         },
