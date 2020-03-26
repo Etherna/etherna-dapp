@@ -65,7 +65,11 @@ const Header = () => {
                 </div>
                 <div className="logo">
                     <Link to="/">
-                        <img src={require("@svg/logo.svg")} alt="" width={140} />
+                        <img
+                            src={require("@svg/logo.svg")}
+                            alt=""
+                            width={140}
+                        />
                     </Link>
                 </div>
                 <div className="right-nav">
@@ -75,7 +79,10 @@ const Header = () => {
                             className="nav-item"
                             activeClassName="active"
                         >
-                            <img src={require("@svg/icons/upload-icon.svg")} alt="" />
+                            <img
+                                src={require("@svg/icons/upload-icon.svg")}
+                                alt=""
+                            />
                             <span>Upload</span>
                         </Link>
                     )}

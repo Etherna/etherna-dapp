@@ -13,7 +13,12 @@ import {
 } from "@utils/swarm"
 import makeBlockies from "@utils/makeBlockies"
 
-const ProfileInfoEdit = ({ profileAddress, submitLabel, isSubmitting, onSubmit }) => {
+const ProfileInfoEdit = ({
+    profileAddress,
+    submitLabel,
+    isSubmitting,
+    onSubmit,
+}) => {
     const { name, description, avatar, cover } = useSelector(
         state => state.profile
     )
@@ -212,8 +217,8 @@ ProfileInfoEdit.propTypes = {
 }
 
 ProfileInfoEdit.defaultProps = {
-    submitLabel: 'Save',
-    isSubmitting: false
+    submitLabel: "Save",
+    isSubmitting: false,
 }
 
 export default ProfileInfoEdit

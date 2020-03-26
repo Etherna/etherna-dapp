@@ -14,7 +14,7 @@ const MyChannel = () => {
     return (
         <div className="sidenav-menu">
             <h6 className="sidebar-label">
-                {existsOnIndex ? 'My Channel' : 'My Profile'}
+                {existsOnIndex ? "My Channel" : "My Profile"}
             </h6>
             {!isSignedIn && (
                 <small className="sidebar-text">Unlock your account</small>

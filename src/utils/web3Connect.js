@@ -1,8 +1,12 @@
 // fix SSR building issues
 const Web3Connect =
     typeof window !== "undefined" ? require("web3connect").default : null
-const WalletConnectProvider = typeof window !== "undefined" ? require("@walletconnect/web3-provider").default : null
-const Authereum = typeof window !== "undefined" ? require("authereum").default : null
+const WalletConnectProvider =
+    typeof window !== "undefined"
+        ? require("@walletconnect/web3-provider").default
+        : null
+const Authereum =
+    typeof window !== "undefined" ? require("authereum").default : null
 
 export const web3Connect = Web3Connect
     ? new Web3Connect.Core({

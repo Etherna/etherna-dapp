@@ -11,7 +11,10 @@ import SEO from "@components/layout/SEO"
 import VideoGrid from "@components/media/VideoGrid"
 import ProfileInfo from "@components/profile/ProfileInfo"
 import { profileActions } from "@state/actions"
-import { getChannelVideos, getChannel } from "@utils/ethernaResources/channelResources"
+import {
+    getChannelVideos,
+    getChannel,
+} from "@utils/ethernaResources/channelResources"
 import * as Routes from "@routes"
 
 const FETCH_COUNT = 50
@@ -25,7 +28,9 @@ const ChannelView = ({ channelAddress }) => {
     const [profileInfo, setProfileInfo] = useState(null)
     const [page, setPage] = useState(0)
     const [hasMore, setHasMore] = useState(true)
-    const [showChannelCreatedMessage, setShowChannelCreatedMessage] = useState(false)
+    const [showChannelCreatedMessage, setShowChannelCreatedMessage] = useState(
+        false
+    )
 
     useEffect(() => {
         fetchChannel()
@@ -105,24 +110,34 @@ const ChannelView = ({ channelAddress }) => {
                 profileAddress={channelAddress}
                 actions={
                     <div className="flex ml-auto">
-                        {address === channelAddress && !hasChannel && (
-                            isCreatingChannel ?
+                        {address === channelAddress &&
+                            !hasChannel &&
+                            (isCreatingChannel ? (
                                 <img
                                     src={require("@svg/animated/spinner.svg")}
                                     className="self-center"
                                     width="30"
                                     alt=""
-                                /> :
-                                <Button className="" action={createChannel} aspect="secondary">
+                                />
+                            ) : (
+                                <Button
+                                    className=""
+                                    action={createChannel}
+                                    aspect="secondary"
+                                >
                                     Create channel
                                 </Button>
-                        )}
+                            ))}
                         {address === channelAddress && (
                             <Link
-                                to={Routes.getChannelEditingLink(channelAddress)}
+                                to={Routes.getChannelEditingLink(
+                                    channelAddress
+                                )}
                                 className="btn btn-primary ml-2"
                             >
-                                {hasChannel ? 'Customize channel' : 'Customize profile'}
+                                {hasChannel
+                                    ? "Customize channel"
+                                    : "Customize profile"}
                             </Link>
                         )}
                     </div>
@@ -131,7 +146,8 @@ const ChannelView = ({ channelAddress }) => {
             >
                 {showChannelCreatedMessage && (
                     <Alert title="Congratulation!" type="success">
-                        Your channel has been created and you're now an Ethernaut!
+                        Your channel has been created and you're now an
+                        Ethernaut!
                     </Alert>
                 )}
                 {hasChannel && !isFetching && channelVideos.length === 0 && (

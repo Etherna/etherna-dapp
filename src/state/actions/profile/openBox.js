@@ -23,7 +23,7 @@ const openBox = async () => {
 
         store.dispatch({
             type: UserActionTypes.USER_3BOX_UPDATE,
-            box
+            box,
         })
 
         box.onSyncDone(() => {

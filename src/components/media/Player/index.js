@@ -205,7 +205,10 @@ const Player = ({ source }) => {
                             role="button"
                             tabIndex={0}
                         >
-                            <img src={require("@svg/icons/pip-icon.svg")} alt="" />
+                            <img
+                                src={require("@svg/icons/pip-icon.svg")}
+                                alt=""
+                            />
                         </div>
                     )}
 
@@ -217,7 +220,10 @@ const Player = ({ source }) => {
                         role="button"
                         tabIndex={0}
                     >
-                        <img src={require("@svg/icons/fullscreen-icon.svg")} alt="" />
+                        <img
+                            src={require("@svg/icons/fullscreen-icon.svg")}
+                            alt=""
+                        />
                     </div>
 
                     {/* Volume */}
@@ -230,11 +236,20 @@ const Player = ({ source }) => {
                             tabIndex={0}
                         >
                             {muted === true ? (
-                                <img src={require("@svg/icons/muted-icon.svg")} alt="" />
+                                <img
+                                    src={require("@svg/icons/muted-icon.svg")}
+                                    alt=""
+                                />
                             ) : volume < 0.25 ? (
-                                <img src={require("@svg/icons/volume-low-icon.svg")} alt="" />
+                                <img
+                                    src={require("@svg/icons/volume-low-icon.svg")}
+                                    alt=""
+                                />
                             ) : (
-                                <img src={require("@svg/icons/volume-icon.svg")} alt="" />
+                                <img
+                                    src={require("@svg/icons/volume-icon.svg")}
+                                    alt=""
+                                />
                             )}
                         </div>
                         <div className="option-menu">

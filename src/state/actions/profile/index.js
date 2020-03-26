@@ -7,5 +7,5 @@ export default {
     createChannel,
     fetchProfile,
     updateProfile,
-    openBox
+    openBox,
 }

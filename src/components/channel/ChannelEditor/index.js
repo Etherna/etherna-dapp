@@ -19,10 +19,13 @@ const ChannelEditor = ({ address }) => {
         }
     }, [box])
 
-    const handleSubmit = async (profileInfo) => {
+    const handleSubmit = async profileInfo => {
         setSavingChannel(true)
 
-        const savedProfile = await profileActions.updateProfile(box, profileInfo)
+        const savedProfile = await profileActions.updateProfile(
+            box,
+            profileInfo
+        )
 
         if (savedProfile) {
             navigate(Routes.getChannelLink(address))

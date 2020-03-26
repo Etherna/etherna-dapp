@@ -7,7 +7,7 @@ const createChannel = async address => {
         await createIndexChannel(address)
 
         store.dispatch({
-            type: ProfileActionTypes.CREATE_CHANNEL
+            type: ProfileActionTypes.CREATE_CHANNEL,
         })
 
         return true

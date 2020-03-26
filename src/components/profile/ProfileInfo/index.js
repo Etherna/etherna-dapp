@@ -7,7 +7,12 @@ import { shortenEthAddr } from "@utils/ethFuncs"
 import makeBlockies from "@utils/makeBlockies"
 import { isImageObject, getResourceUrl } from "@utils/swarm"
 
-const ProfileInfo = ({ children, profileAddress, actions, onFetchedProfile }) => {
+const ProfileInfo = ({
+    children,
+    profileAddress,
+    actions,
+    onFetchedProfile,
+}) => {
     //const [isFetchingProfile, setIsFetchingProfile] = useState(false)
     const [profileName, setProfileName] = useState("")
     const [profileDescription, setProfileDescription] = useState("")
@@ -25,7 +30,6 @@ const ProfileInfo = ({ children, profileAddress, actions, onFetchedProfile }) =>
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [profileAddress])
 
-
     const fetchProfile = async () => {
         //setIsFetchingProfile(true)
 
@@ -42,7 +46,7 @@ const ProfileInfo = ({ children, profileAddress, actions, onFetchedProfile }) =>
 
             onFetchedProfile({
                 name: fallbackName,
-                avatar
+                avatar,
             })
         } catch (error) {
             console.error(error)
