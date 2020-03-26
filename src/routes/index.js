@@ -1,16 +1,16 @@
 /**
- * Profile routes
+ * Channel routes
  */
-export const getProfilesLink = () => {
-    return `/profiles`
+export const getChannelsLink = () => {
+    return `/channels`
 }
 
-export const getProfileLink = hash => {
-    return `/profile/${encodeURIComponent(hash)}`
+export const getChannelLink = hash => {
+    return `/channel/${encodeURIComponent(hash)}`
 }
 
-export const getProfileEditingLink = hash => {
-    return `/profile/${encodeURIComponent(hash)}/edit`
+export const getChannelEditingLink = hash => {
+    return `/channel/${encodeURIComponent(hash)}/edit`
 }
 
 /**

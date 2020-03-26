@@ -37,7 +37,7 @@ const Uploader = () => {
     }
 
     if (!existsOnIndex) {
-        navigate(Routes.getProfileEditingLink(address))
+        navigate(Routes.getChannelEditingLink(address))
     }
 
     const submitVideo = async () => {

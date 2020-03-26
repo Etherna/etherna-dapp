@@ -60,22 +60,22 @@ module.exports = {
                     ErrorDocument 500 /500/index.html
                 `,
                 custom: `
-                    # Redirect profile editing urls
+                    # Redirect channel editing urls
                     <IfModule mod_rewrite.c>
                         RewriteEngine On
-                        RewriteBase /profile/(.+)/edit$
+                        RewriteBase /channel/(.+)/edit$
                         RewriteCond %{REQUEST_FILENAME} !-f
                         RewriteCond %{REQUEST_FILENAME} !-d
-                        RewriteRule (.*) /profileEdit/index.html [QSA,L]
+                        RewriteRule (.*) /channelEdit/index.html [QSA,L]
                     </IfModule>
 
-                    # Redirect profile urls
+                    # Redirect channel urls
                     <IfModule mod_rewrite.c>
                         RewriteEngine On
-                        RewriteBase /profile
+                        RewriteBase /channel
                         RewriteCond %{REQUEST_FILENAME} !-f
                         RewriteCond %{REQUEST_FILENAME} !-d
-                        RewriteRule (.*) /profile/index.html [QSA,L]
+                        RewriteRule (.*) /channel/index.html [QSA,L]
                     </IfModule>
                 `,
             },

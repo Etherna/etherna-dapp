@@ -11,7 +11,7 @@ import { getResourceUrl } from "@utils/swarm"
 import * as Routes from "@routes"
 
 const VideoPreview = ({ video, hideProfile }) => {
-    const profileLink = Routes.getProfileLink(video.channelAddress)
+    const profileLink = Routes.getChannelLink(video.channelAddress)
     const videoLink = Routes.getVideoLink(video.videoHash)
     const profileAddress = video.channelAddress
     const thumbnail = video.thumbnailHash

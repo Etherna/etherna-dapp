@@ -7,7 +7,7 @@ import "./header.scss"
 import UserMenu from "@components/user/UserMenu"
 import * as Routes from "@routes"
 
-const ProfilesMatches = [/^\/profile\//, /^\/profiles/]
+const ChannelsMatches = [/^\/channel\//, /^\/channels/]
 const ExploreMatches = [/^\/watch/]
 
 const anyMatch = (patterns, string) => {
@@ -39,18 +39,18 @@ const Header = () => {
                                     Explore
                                 </Link>
                                 <Link
-                                    to={Routes.getProfilesLink()}
+                                    to={Routes.getChannelsLink()}
                                     className={
                                         "nav-item" +
                                         (anyMatch(
-                                            ProfilesMatches,
+                                            ChannelsMatches,
                                             location.pathname
                                         )
                                             ? " active"
                                             : "")
                                     }
                                 >
-                                    Profiles
+                                    Channels
                                 </Link>
                                 {/* <Link
                                     to={Routes.getHowItWorksLink()}

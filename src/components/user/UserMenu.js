@@ -69,14 +69,14 @@ const UserMenu = () => {
                 <hr />
                 {name && (
                     <DropDownItem>
-                        <Link to={Routes.getProfileLink(address)}>
+                        <Link to={Routes.getChannelLink(address)}>
                             <img src={require("@svg/icons/profile-icon.svg")} alt="" />
                             <span>View profile</span>
                         </Link>
                     </DropDownItem>
                 )}
                 <DropDownItem>
-                    <Link to={Routes.getProfileEditingLink(address)}>
+                    <Link to={Routes.getChannelEditingLink(address)}>
                         <img src={require("@svg/icons/profile-edit-icon.svg")} alt="" />
                         <span>{name ? "Edit profile" : "Create profile"}</span>
                     </Link>
