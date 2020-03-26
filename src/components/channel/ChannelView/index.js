@@ -130,9 +130,8 @@ const ChannelView = ({ channelAddress }) => {
                 onFetchedProfile={profile => setProfileInfo(profile)}
             >
                 {showChannelCreatedMessage && (
-                    <Alert type="success">
-                        <strong>Congratulation!</strong>
-                        <p>Your channel has been created and you're now an Ethernaut!</p>
+                    <Alert title="Congratulation!" type="success">
+                        Your channel has been created and you're now an Ethernaut!
                     </Alert>
                 )}
                 {hasChannel && !isFetching && channelVideos.length === 0 && (

@@ -11,9 +11,6 @@ const MyChannel = () => {
     const { isSignedIn, address } = useSelector(state => state.user)
     const hasProfile = isSignedIn && name && name !== ""
 
-    console.log(name);
-
-
     return (
         <div className="sidenav-menu">
             <h6 className="sidebar-label">
