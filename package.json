@@ -54,13 +54,14 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "gatsby build",
+    "build": "rm -rf .cache && rm -rf public && gatsby build",
     "develop": "gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
     "start": "npm run develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "deploy": "rm .cache && rm public && gatsby build && node deploy",
+    "deploy": "node deploy",
+    "buildeploy": "rm -rf .cache && rm -rf public && gatsby build && node deploy",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
   },
   "repository": {
