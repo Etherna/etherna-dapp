@@ -1,14 +1,14 @@
-.profiles {
+.channels {
     @apply mt-6;
 
-    .profile-preview {
+    .channel-preview {
         @apply border-t-4 border-gray-200 py-4;
 
         &:last-of-type {
             @apply border-b-4;
         }
 
-        .profile-info {
+        .channel-info {
             @apply flex items-center;
             .avatar {
                 @apply mr-2;

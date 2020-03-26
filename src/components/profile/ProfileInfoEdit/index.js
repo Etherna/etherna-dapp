@@ -1,11 +1,9 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useRef, useState } from "react"
 import PropTypes from "prop-types"
 import classnames from "classnames"
 import { useSelector } from "react-redux"
-import { navigate } from "gatsby"
 
-import "./profile-editor.scss"
-import Alert from "@components/common/Alert"
+import "./profile-info-edit.scss"
 import Button from "@common/Button"
 import Modal from "@common/Modal"
 import {
@@ -14,15 +12,16 @@ import {
     uploadResourceToSwarm,
 } from "@utils/swarm"
 import makeBlockies from "@utils/makeBlockies"
-import { profileActions } from "@state/actions"
-import * as Routes from "@routes"
 
-const ProfileEditor = ({ address }) => {
-    const { name, description, avatar, cover, existsOnIndex } = useSelector(
+const ProfileInfoEdit = ({
+    profileAddress,
+    submitLabel,
+    isSubmitting,
+    onSubmit,
+}) => {
+    const { name, description, avatar, cover } = useSelector(
         state => state.profile
     )
-    const { box } = useSelector(state => state.user)
-
     const avatarRef = useRef()
     const coverRef = useRef()
     const [profileName, setProfileName] = useState(name)
@@ -32,13 +31,18 @@ const ProfileEditor = ({ address }) => {
     const [isUploadingCover, setUploadingCover] = useState(false)
     const [isUploadingAvatar, setUploadingAvatar] = useState(false)
     const [showUploadErrorModal, setShowUploadErrorModal] = useState(false)
-    const [isSavingProfile, setSavingProfile] = useState(false)
 
-    useEffect(() => {
-        if (!box) {
-            profileActions.openBox()
+    const handleSubmit = () => {
+        if (onSubmit) {
+            onSubmit({
+                profileAddress,
+                name: profileName,
+                description: profileDescription,
+                avatar: profileAvatar,
+                cover: profileCover,
+            })
         }
-    }, [box])
+    }
 
     const handleRemoveImage = (e, type = "cover") => {
         e.stopPropagation()
@@ -77,28 +81,8 @@ const ProfileEditor = ({ address }) => {
         }
     }
 
-    const handleSubmit = async () => {
-        setSavingProfile(true)
-
-        const saved = await profileActions.updateProfile(
-            box,
-            {
-                address,
-                name: profileName,
-                description: profileDescription,
-                avatar: profileAvatar,
-                cover: profileCover,
-            },
-            existsOnIndex
-        )
-        if (saved) {
-            navigate(Routes.getProfileLink(address))
-        }
-        setSavingProfile(false)
-    }
-
     return (
-        <div className="profile profile-editor">
+        <div className="profile profile-info-edit">
             <div className="cover">
                 <label
                     className={classnames("cover-input", {
@@ -148,7 +132,7 @@ const ProfileEditor = ({ address }) => {
                             src={
                                 isImageObject(profileAvatar)
                                     ? getResourceUrl(profileAvatar)
-                                    : makeBlockies(address)
+                                    : makeBlockies(profileAddress)
                             }
                             alt={profileName}
                         />
@@ -167,16 +151,16 @@ const ProfileEditor = ({ address }) => {
                         />
                     </div>
                 </label>
-                {!isSavingProfile && (
+                {!isSubmitting && (
                     <Button
                         className="ml-auto"
                         action={handleSubmit}
-                        disabled={profileName === "" || !box}
+                        disabled={profileName === ""}
                     >
-                        Save
+                        {submitLabel}
                     </Button>
                 )}
-                {isSavingProfile && (
+                {isSubmitting && (
                     <img
                         src={require("@svg/animated/spinner.svg")}
                         className="ml-auto"
@@ -205,14 +189,7 @@ const ProfileEditor = ({ address }) => {
                     />
                 </div>
                 <div className="w-full sm:w-1/2 md:w-3/4 p-4">
-                    {name && !existsOnIndex && (
-                        <Alert title="Not on Index" type="warning">
-                            You have a valid 3box profile, but it's not present
-                            in the current index. <br />
-                            <strong>Save the profile</strong> to sync with the
-                            current index.
-                        </Alert>
-                    )}
+                    {/* Nothing right now */}
                 </div>
             </div>
 
@@ -232,8 +209,16 @@ const ProfileEditor = ({ address }) => {
     )
 }
 
-ProfileEditor.propTypes = {
-    address: PropTypes.string.isRequired,
+ProfileInfoEdit.propTypes = {
+    profileAddress: PropTypes.string.isRequired,
+    submitLabel: PropTypes.string,
+    isSubmitting: PropTypes.bool,
+    onSubmit: PropTypes.func,
 }
 
-export default ProfileEditor
+ProfileInfoEdit.defaultProps = {
+    submitLabel: "Save",
+    isSubmitting: false,
+}
+
+export default ProfileInfoEdit

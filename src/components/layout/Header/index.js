@@ -7,7 +7,7 @@ import "./header.scss"
 import UserMenu from "@components/user/UserMenu"
 import * as Routes from "@routes"
 
-const ProfilesMatches = [/^\/profile\//, /^\/profiles/]
+const ChannelsMatches = [/^\/channel\//, /^\/channels/]
 const ExploreMatches = [/^\/watch/]
 
 const anyMatch = (patterns, string) => {
@@ -15,7 +15,7 @@ const anyMatch = (patterns, string) => {
 }
 
 const Header = () => {
-    const { isSignedIn } = useSelector(state => state.user)
+    const { existsOnIndex } = useSelector(state => state.profile)
     return (
         <header className="header">
             <nav className="navbar">
@@ -39,18 +39,18 @@ const Header = () => {
                                     Explore
                                 </Link>
                                 <Link
-                                    to={Routes.getProfilesLink()}
+                                    to={Routes.getChannelsLink()}
                                     className={
                                         "nav-item" +
                                         (anyMatch(
-                                            ProfilesMatches,
+                                            ChannelsMatches,
                                             location.pathname
                                         )
                                             ? " active"
                                             : "")
                                     }
                                 >
-                                    Profiles
+                                    Channels
                                 </Link>
                                 {/* <Link
                                     to={Routes.getHowItWorksLink()}
@@ -65,17 +65,24 @@ const Header = () => {
                 </div>
                 <div className="logo">
                     <Link to="/">
-                        <img src={require("@svg/logo.svg")} alt="" width={140} />
+                        <img
+                            src={require("@svg/logo.svg")}
+                            alt=""
+                            width={140}
+                        />
                     </Link>
                 </div>
                 <div className="right-nav">
-                    {isSignedIn && (
+                    {existsOnIndex && (
                         <Link
                             to={Routes.getVideoUploadLink()}
                             className="nav-item"
                             activeClassName="active"
                         >
-                            <img src={require("@svg/icons/upload-icon.svg")} alt="" />
+                            <img
+                                src={require("@svg/icons/upload-icon.svg")}
+                                alt=""
+                            />
                             <span>Upload</span>
                         </Link>
                     )}

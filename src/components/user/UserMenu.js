@@ -69,28 +69,40 @@ const UserMenu = () => {
                 <hr />
                 {name && (
                     <DropDownItem>
-                        <Link to={Routes.getProfileLink(address)}>
-                            <img src={require("@svg/icons/profile-icon.svg")} alt="" />
+                        <Link to={Routes.getChannelLink(address)}>
+                            <img
+                                src={require("@svg/icons/profile-icon.svg")}
+                                alt=""
+                            />
                             <span>View profile</span>
                         </Link>
                     </DropDownItem>
                 )}
                 <DropDownItem>
-                    <Link to={Routes.getProfileEditingLink(address)}>
-                        <img src={require("@svg/icons/profile-edit-icon.svg")} alt="" />
+                    <Link to={Routes.getChannelEditingLink(address)}>
+                        <img
+                            src={require("@svg/icons/profile-edit-icon.svg")}
+                            alt=""
+                        />
                         <span>{name ? "Edit profile" : "Create profile"}</span>
                     </Link>
                 </DropDownItem>
                 <hr />
                 <DropDownMenuToggle menuRef={indexMenuRef} isMenuItem={true}>
                     <div className="flex">
-                        <img src={require("@svg/icons/index-icon.svg")} alt="" />
+                        <img
+                            src={require("@svg/icons/index-icon.svg")}
+                            alt=""
+                        />
                         <span>Index</span>
                     </div>
                 </DropDownMenuToggle>
                 <DropDownMenuToggle menuRef={gatewayMenuRef} isMenuItem={true}>
                     <div className="flex">
-                        <img src={require("@svg/icons/gateway-icon.svg")} alt="" />
+                        <img
+                            src={require("@svg/icons/gateway-icon.svg")}
+                            alt=""
+                        />
                         <span>Gateway</span>
                     </div>
                 </DropDownMenuToggle>
@@ -98,7 +110,10 @@ const UserMenu = () => {
                 <li className="dropdown-footer">
                     {hasSwitchedAccount && (
                         <DropDownItem action={providerActions.switchAccount}>
-                            <img src={require("@svg/icons/switch-icon.svg")} alt="" />
+                            <img
+                                src={require("@svg/icons/switch-icon.svg")}
+                                alt=""
+                            />
                             <div className="inline-flex flex-col">
                                 <span>Switch Account</span>
                                 <small className="text-gray-600">

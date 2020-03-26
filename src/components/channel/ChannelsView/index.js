@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import InfiniteScroller from "react-infinite-scroller"
 import { Link } from "gatsby"
 
-import "./profiles.scss"
+import "./channels.scss"
 import { getProfiles } from "@utils/3box"
 import Avatar from "@components/user/Avatar"
 import VideoGrid from "@components/media/VideoGrid"
@@ -11,27 +11,27 @@ import * as Routes from "@routes"
 
 const FETCH_COUNT = 10
 
-const ProfilesView = () => {
-    const [profiles, setProfiles] = useState([])
+const ChannelsView = () => {
+    const [channels, setChannels] = useState([])
     const [page, setPage] = useState(0)
     const [hasMore, setHasMore] = useState(true)
 
     useEffect(() => {
-        fetchProfiles()
+        fetchChannels()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const fetchProfiles = async () => {
+    const fetchChannels = async () => {
         try {
-            const fetchedProfiles = await getChannelsWithVideos(
+            const fetchedChannels = await getChannelsWithVideos(
                 page,
                 FETCH_COUNT,
                 5
             )
             const boxProfiles = await getProfiles(
-                fetchedProfiles.map(p => p.address)
+                fetchedChannels.map(p => p.address)
             )
-            const mappedProfiles = fetchedProfiles.map(p => {
+            const mappedProfiles = fetchedChannels.map(p => {
                 const boxProfile =
                     boxProfiles.find(bp => bp.address === p.address) || {}
                 const videos = (p.videos || []).map(v => ({
@@ -45,9 +45,9 @@ const ProfilesView = () => {
                 }
             })
 
-            setProfiles(profiles.concat(mappedProfiles))
+            setChannels(channels.concat(mappedProfiles))
 
-            if (fetchedProfiles.length < FETCH_COUNT) {
+            if (fetchedChannels.length < FETCH_COUNT) {
                 setHasMore(false)
             } else {
                 setPage(page + 1)
@@ -59,34 +59,34 @@ const ProfilesView = () => {
     }
 
     return (
-        <div className="profiles">
+        <div className="channels">
             <InfiniteScroller
-                loadMore={fetchProfiles}
+                loadMore={fetchChannels}
                 hasMore={hasMore}
                 initialLoad={false}
                 threshold={30}
             >
-                {profiles.map(profile => {
+                {channels.map(channel => {
                     return (
-                        <div className="profile-preview" key={profile.address}>
-                            <div className="profile-info">
+                        <div className="channel-preview" key={channel.address}>
+                            <div className="channel-info">
                                 <Link
-                                    to={Routes.getProfileLink(profile.address)}
+                                    to={Routes.getChannelLink(channel.address)}
                                 >
                                     <Avatar
-                                        image={profile.profileData.avatar}
-                                        address={profile.address}
+                                        image={channel.profileData.avatar}
+                                        address={channel.address}
                                     />
                                 </Link>
                                 <Link
-                                    to={Routes.getProfileLink(profile.address)}
+                                    to={Routes.getChannelLink(channel.address)}
                                 >
-                                    <h3>{profile.profileData.name}</h3>
+                                    <h3>{channel.profileData.name}</h3>
                                 </Link>
                             </div>
-                            {profile.videos && profile.videos.length > 0 ? (
+                            {channel.videos && channel.videos.length > 0 ? (
                                 <VideoGrid
-                                    videos={profile.videos}
+                                    videos={channel.videos}
                                     mini={true}
                                 />
                             ) : (
@@ -102,4 +102,4 @@ const ProfilesView = () => {
     )
 }
 
-export default ProfilesView
+export default ChannelsView

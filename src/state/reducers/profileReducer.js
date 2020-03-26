@@ -1,6 +1,7 @@
 export const ProfileActionTypes = {
     PROFILE_UPDATE: "PROFILE_UPDATE",
     PROFILE_SAVE: "PROFILE_SAVE",
+    CREATE_CHANNEL: "CREATE_CHANNEL",
     PROFILE_SIGNOUT: "PROFILE_SIGNOUT",
 }
 
@@ -26,7 +27,12 @@ const profileReducer = (state = {}, action) => {
                 description: action.description,
                 avatar: action.avatar,
                 cover: action.cover,
-                existsOnIndex: action.existsOnIndex,
+            }
+
+        case ProfileActionTypes.CREATE_CHANNEL:
+            return {
+                ...state,
+                existsOnIndex: true,
             }
 
         case ProfileActionTypes.PROFILE_SIGNOUT:

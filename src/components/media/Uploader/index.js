@@ -37,7 +37,7 @@ const Uploader = () => {
     }
 
     if (!existsOnIndex) {
-        navigate(Routes.getProfileEditingLink(address))
+        navigate(Routes.getChannelLink(address))
     }
 
     const submitVideo = async () => {
@@ -209,7 +209,11 @@ const Uploader = () => {
                         </li>
                     </ul>
                     {isSubmitting ? (
-                        <img src={require("@svg/animated/spinner.svg")} width={30} alt="" />
+                        <img
+                            src={require("@svg/animated/spinner.svg")}
+                            width={30}
+                            alt=""
+                        />
                     ) : (
                         <Button
                             action={submitVideo}

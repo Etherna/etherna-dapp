@@ -7,34 +7,34 @@ import { getChannels } from "@utils/ethernaResources/channelResources"
 import { getProfiles } from "@utils/3box"
 import { getResourceUrl } from "@utils/swarm"
 
-const ReccomendedProfiles = () => {
-    const [profiles, setProfiles] = useState([])
+const RecommendedChannels = () => {
+    const [channels, setChannels] = useState([])
 
     useEffect(() => {
-        const fetchProfiles = async () => {
+        const fetchChannels = async () => {
             try {
-                const fetchedProfiles = await getChannels(0, 5)
+                const fetchedChannels = await getChannels(0, 5)
                 const boxProfiles = await getProfiles(
-                    fetchedProfiles.map(p => p.address)
+                    fetchedChannels.map(p => p.address)
                 )
-                setProfiles(boxProfiles || [])
+                setChannels(boxProfiles || [])
             } catch (error) {
                 console.error(error)
             }
         }
-        fetchProfiles()
+        fetchChannels()
     }, [])
 
     return (
         <div className="sidenav-menu">
-            <h6 className="sidebar-label">Reccomended Profiles</h6>
-            {profiles.map(profile => {
+            <h6 className="sidebar-label">Recommended Channels</h6>
+            {channels.map(profile => {
                 return (
                     <SidebarItem
                         imageUrl={getResourceUrl(profile.avatar)}
                         fallbackAddress={profile.address}
                         name={profile.name}
-                        link={Routes.getProfileLink(profile.address)}
+                        link={Routes.getChannelLink(profile.address)}
                         key={profile.address}
                     />
                 )
@@ -43,7 +43,7 @@ const ReccomendedProfiles = () => {
     )
 }
 
-ReccomendedProfiles.propTypes = {
+RecommendedChannels.propTypes = {
     profiles: PropTypes.arrayOf(
         PropTypes.shape({
             address: PropTypes.string,
@@ -52,8 +52,8 @@ ReccomendedProfiles.propTypes = {
     ),
 }
 
-ReccomendedProfiles.defaultProps = {
+RecommendedChannels.defaultProps = {
     profiles: [],
 }
 
-export default ReccomendedProfiles
+export default RecommendedChannels
