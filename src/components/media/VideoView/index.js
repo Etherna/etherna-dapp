@@ -48,34 +48,9 @@ const VideoView = ({ hash, video }) => {
             setProfileAvatar(profile.avatar)
         } catch (error) {
             console.error(error)
-            //navigate("/404")
+            navigate("/404")
         }
         setIsFetchingVideo(false)
-    }
-
-    const saveVideo = (e) => {
-        e.preventDefault()
-
-        // const click = new MouseEvent('mouseup', {
-        //     view: window,
-        //     altKey: true,
-        //     cancelable: false,
-        //     bubbles: true
-        // })
-        // e.target.dispatchEvent(click)
-
-        const link = document.createElement('a')
-        link.href = source
-        link.download = `video.m4v`
-        document.body.appendChild(link)
-        const click = new MouseEvent('click', {
-            view: window,
-            altKey: true,
-            cancelable: false,
-            bubbles: true
-        })
-        link.dispatchEvent(click)
-        document.body.removeChild(link)
     }
 
     if (isFetchingVideo) {
@@ -94,10 +69,9 @@ const VideoView = ({ hash, video }) => {
                         </span>
                     </div>
                     <div className="video-actions">
-                        {/* <a download href={source} className="btn btn-transparent btn-rounded" onClick={saveVideo}>
+                        <a download href={source} className="btn btn-transparent btn-rounded">
                             <img src={require("@svg/icons/download-icon.svg")} alt="" className="m-auto" />
-                        </a> */}
-                        <button onClick={saveVideo}>Save</button>
+                        </a>
                     </div>
                 </div>
 
