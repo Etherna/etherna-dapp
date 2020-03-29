@@ -13,6 +13,7 @@ const SwarmFileUpload = ({
     onRemoveFile,
     showImagePreview,
     disabled,
+    pinContent,
 }) => {
     const [isUploading, setIsUploading] = useState(false)
     const [uploadProgress, setUploadProgress] = useState(0)
@@ -26,9 +27,13 @@ const SwarmFileUpload = ({
         setHash(undefined)
 
         try {
-            const hash = await gatewayUploadWithProgress(file, progress => {
-                setUploadProgress(progress)
-            })
+            const hash = await gatewayUploadWithProgress(
+                file,
+                progress => {
+                    setUploadProgress(progress)
+                },
+                pinContent
+            )
             setUploadProgress(100)
             setIsUploading(false)
 
@@ -137,6 +142,7 @@ SwarmFileUpload.propTypes = {
     onRemoveFile: PropTypes.func.isRequired,
     showImagePreview: PropTypes.bool,
     disabled: PropTypes.bool,
+    pinContent: PropTypes.bool,
 }
 
 export default SwarmFileUpload

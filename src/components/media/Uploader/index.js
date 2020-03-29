@@ -13,6 +13,7 @@ import { showError } from "@state/actions/modals"
 import { addVideoToChannel } from "@utils/ethernaResources/channelResources"
 import { getVideoDuration } from "@utils/media"
 import * as Routes from "@routes"
+import PinContentField from "./PinContentField"
 
 const Uploader = () => {
     const { name, avatar, existsOnIndex } = useSelector(state => state.profile)
@@ -22,6 +23,7 @@ const Uploader = () => {
     const [duration, setDuration] = useState(undefined)
     const [thumbnailFile, setThumbnailFile] = useState(undefined)
     const [thumbnail, setThumbnail] = useState(undefined)
+    const [pinContent, setPinContent] = useState(false)
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -92,18 +94,16 @@ const Uploader = () => {
                     <Avatar image={avatar} address={address} />
                     <h3 className="mb-0 ml-1">{name}</h3>
                 </div>
+            </div>
+            <div className="row mb-6">
                 {hasSubmitted && (
                     <Alert title="" type="success">
-                        <p>
-                            Your video has been successfully upload and linked
-                            to your profile
-                        </p>
-                        <p>
-                            You can watch your video at this link:
-                            <a href={videoLink}>
-                                <strong>{videoLink}</strong>
-                            </a>
-                        </p>
+                        Your video has been successfully uploaded and linked
+                        to your profile. <br/>
+                        You can watch your video at this link:
+                        <a href={videoLink}>
+                            <strong>{videoLink}</strong>
+                        </a>
                     </Alert>
                 )}
             </div>
@@ -128,6 +128,7 @@ const Uploader = () => {
                                     setVideoHash(undefined)
                                 }}
                                 disabled={isSubmitting}
+                                pinContent={pinContent}
                             />
                         )}
                     </div>
@@ -151,9 +152,11 @@ const Uploader = () => {
                                     setThumbnail(undefined)
                                 }}
                                 disabled={isSubmitting}
+                                pinContent={pinContent}
                             />
                         )}
                     </div>
+                    <PinContentField onChange={pin => setPinContent(pin)} />
                     <div className="form-group">
                         <label htmlFor="title">Title</label>
                         <input
