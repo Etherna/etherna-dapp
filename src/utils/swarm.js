@@ -69,7 +69,7 @@ export const uploadResourceToSwarm = async (file, type = "swarm") => {
     }
 }
 
-export const gatewayUploadWithProgress = async (file, progressCallback) => {
+export const gatewayUploadWithProgress = async (file, progressCallback, pinContent = true) => {
     const SwarmGateway = store.getState().env.gatewayHost
     const endpoint = `${SwarmGateway}/bzz-raw:/`
 
@@ -77,6 +77,9 @@ export const gatewayUploadWithProgress = async (file, progressCallback) => {
         const buffer = await fileReaderPromise(file)
         const formData = new Blob([new Uint8Array(buffer)])
         const resp = await axios.post(endpoint, formData, {
+            headers: {
+                "x-swarm-pin": `${pinContent}`
+            },
             onUploadProgress: pev => {
                 const progress = Math.round((pev.loaded * 100) / pev.total)
                 if (progressCallback) {
@@ -91,6 +94,25 @@ export const gatewayUploadWithProgress = async (file, progressCallback) => {
         console.error(error)
         return undefined
     }
+}
+
+export const isPinningEnabled = async () => {
+    const SwarmGateway = store.getState().env.gatewayHost
+    const endpoint = `${SwarmGateway}/bzz-pin:/`
+    try {
+        await axios.get(endpoint)
+        return true
+    } catch (error) {
+        if ("Msg" in error.response.data && error.response.data.Msg === "Pinning disabled on this node") {
+            return false
+        }
+        if (error.response.status === 403) {
+            return false
+        }
+        console.error(error)
+    }
+
+    return null
 }
 
 export const isValidHash = (hash, type = "swarm") => {
