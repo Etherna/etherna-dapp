@@ -17,6 +17,7 @@ const VideoView = ({ hash, video }) => {
     const [profileAddress, setProfileAddress] = useState(video.channelAddress)
     const [title, setTitle] = useState(video.title)
     const [description, setDescription] = useState(video.description)
+    const [thumbnail, setThumbnail] = useState(getResourceUrl(video.thumbnailHash))
     const [publishDate, setPublishDate] = useState(video.creationDateTime)
     const [profileName, setProfileName] = useState(
         video.profileData && video.profileData.name
@@ -41,6 +42,7 @@ const VideoView = ({ hash, video }) => {
             setProfileAddress(videoInfo.channelAddress)
             setTitle(videoInfo.title)
             setDescription(videoInfo.description)
+            setThumbnail(getResourceUrl(videoInfo.thumbnailHash))
             setPublishDate(videoInfo.creationDateTime)
             setProfileName(profile.name)
             setProfileAvatar(profile.avatar)
@@ -57,12 +59,21 @@ const VideoView = ({ hash, video }) => {
 
     return (
         <div className="video-watch container">
-            <Player source={source} />
+            <Player source={source} thumbnail={thumbnail} />
             <div className="video-info">
                 <h1 className="video-title">{title}</h1>
-                <p className="publish-time">
-                    {moment(publishDate).format("LLL")}
-                </p>
+                <div className="video-info-bar">
+                    <div className="mr-auto">
+                        <span className="publish-time">
+                            {publishDate && moment(publishDate).format("LLL")}
+                        </span>
+                    </div>
+                    <div className="video-actions">
+                        <a download href={source} className="btn btn-transparent btn-rounded">
+                            <img src={require("@svg/icons/download-icon.svg")} alt="" className="m-auto" />
+                        </a>
+                    </div>
+                </div>
 
                 <hr />
 

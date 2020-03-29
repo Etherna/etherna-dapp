@@ -12,6 +12,8 @@ const Button = ({
     aspect,
     action,
     disabled,
+    rounded,
+    type,
 }) => {
     const handleKeyDown = e => {
         if (e.target === document.activeElement && e.keyCode === 13 && action) {
@@ -27,11 +29,12 @@ const Button = ({
                     "btn-sm": size === "small",
                     "btn-lg": size === "large",
                     "btn-outline": outline,
+                    "btn-rounded": rounded,
                     [`btn-${aspect}`]: aspect && aspect !== "",
                 },
                 className
             )}
-            type="button"
+            type={type}
             onClick={action}
             onKeyDown={handleKeyDown}
             disabled={disabled ? true : null}
@@ -48,12 +51,16 @@ Button.propTypes = {
     aspect: PropTypes.string,
     disabled: PropTypes.bool,
     action: PropTypes.func,
+    type: PropTypes.string,
+    rounded: PropTypes.bool,
 }
 
 Button.defaultProps = {
     className: "",
     size: "",
     outline: false,
+    type: "button",
+    rounded: false,
 }
 
 export default Button
