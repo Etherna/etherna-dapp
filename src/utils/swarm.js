@@ -92,6 +92,8 @@ export const isPinningEnabled = async () => {
         await axios.get(endpoint)
         return true
     } catch (error) {
+        console.error(error)
+
         if (
             error.response &&
             error.response.data &&
@@ -100,13 +102,12 @@ export const isPinningEnabled = async () => {
         ) {
             return false
         }
-        if (error.response.status === 403) {
+        if (error.response && error.response.status === 403) {
             return false
         }
-        console.error(error)
     }
 
-    return null
+    throw new Error("Request for pinning has failed. Check if the gateway is secured with a SSL certificate.")
 }
 
 export const isValidHash = (hash, type = "swarm") => {

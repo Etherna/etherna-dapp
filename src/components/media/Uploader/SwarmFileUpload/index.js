@@ -41,7 +41,11 @@ const SwarmFileUpload = ({
             }
         } catch (error) {
             console.error(error)
-            setErrorMessage(error.message)
+            if (error && error.message === "Network Error") {
+                setErrorMessage("Network Error. Check if the gateway is secured with a SSL certificate.")
+            } else {
+                setErrorMessage(error)
+            }
         }
 
         setUploadProgress(100)

@@ -25,9 +25,8 @@ const PinContentField = ({ onChange }) => {
             handlePinChange(available === true)
         } catch (error) {
             console.error(error)
+            setPinningAvailable(null)
             setErrorMessage(error.message)
-            setPinningAvailable(false)
-            handlePinChange(false)
         }
     }
 
