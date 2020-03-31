@@ -1,6 +1,12 @@
-import { updateGatewayHost, updateIndexHost } from "./hosts"
+import { updateGatewayHost,
+    updateIndexHost,
+    resetGatewayHost,
+    resetIndexHost
+} from "./hosts"
 
 export default {
     updateGatewayHost,
     updateIndexHost,
+    resetGatewayHost,
+    resetIndexHost
 }

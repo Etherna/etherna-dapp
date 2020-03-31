@@ -16,3 +16,13 @@ export const updateGatewayHost = host => {
         gatewayHost: host,
     })
 }
+
+export const resetIndexHost = () => {
+    const host = process.env.INDEX_HOST
+    updateIndexHost(host)
+}
+
+export const resetGatewayHost = () => {
+    const host = process.env.GATEWAY_HOST
+    updateGatewayHost(host)
+}
