@@ -30,6 +30,7 @@ const Player = ({ source, thumbnail }) => {
             })
             observer.observe(video, { attributes: true })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [videoRef])
 
     const togglePlay = () => {

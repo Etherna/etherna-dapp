@@ -12,7 +12,6 @@ import {
     DropDownMenu,
     DropDownMenuToggle,
 } from "@common/DropDown"
-import Image from "@components/common/Image"
 import { providerActions } from "@state/actions"
 import { shortenEthAddr } from "@utils/ethFuncs"
 import * as Routes from "@routes"

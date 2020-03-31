@@ -61,24 +61,25 @@ const ProfileInfoEdit = ({
         type === "avatar" && setUploadingAvatar(true)
         type === "cover" && setUploadingCover(true)
 
-        const imgObject = await uploadResourceToSwarm(file)
+        try {
+            const imgObject = await uploadResourceToSwarm(file)
 
-        type === "avatar" && setUploadingAvatar(false)
-        type === "cover" && setUploadingCover(false)
-
-        // reset inputs
-        avatarRef.current.value = ""
-        coverRef.current.value = ""
-
-        if (imgObject) {
             if (type === "cover") {
                 setProfileCover(imgObject)
             } else if (type === "avatar") {
                 setProfileAvatar(imgObject)
             }
-        } else {
+        } catch (error) {
+            console.error(error)
             setShowUploadErrorModal(true)
         }
+
+        // reset inputs
+        avatarRef.current.value = ""
+        coverRef.current.value = ""
+
+        type === "avatar" && setUploadingAvatar(false)
+        type === "cover" && setUploadingCover(false)
     }
 
     return (
@@ -201,7 +202,7 @@ const ProfileInfoEdit = ({
                 <div className="flex">
                     <p>
                         There was an error trying to upload the image. Try again
-                        later
+                        later.
                     </p>
                 </div>
             </Modal>

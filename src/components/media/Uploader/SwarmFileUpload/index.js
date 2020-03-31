@@ -34,8 +34,6 @@ const SwarmFileUpload = ({
                 },
                 pinContent
             )
-            setUploadProgress(100)
-            setIsUploading(false)
 
             if (hash) {
                 setHash(hash)
@@ -43,8 +41,15 @@ const SwarmFileUpload = ({
             }
         } catch (error) {
             console.error(error)
-            setErrorMessage(error.message)
+            if (error && error.message === "Network Error") {
+                setErrorMessage("Network Error. Check if the gateway is secured with a SSL certificate.")
+            } else {
+                setErrorMessage(error)
+            }
         }
+
+        setUploadProgress(100)
+        setIsUploading(false)
     }
 
     const handleRemoveFile = () => {
