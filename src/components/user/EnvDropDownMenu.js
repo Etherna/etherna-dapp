@@ -46,9 +46,7 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
                     </Button>
 
                     <Button
-                        action={() =>
-                            enviromentActions.resetIndexHost()
-                        }
+                        action={() => enviromentActions.resetIndexHost()}
                         size="small"
                         aspect="link"
                         className="mt-2 ml-auto"
@@ -85,9 +83,7 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
                     </Button>
 
                     <Button
-                        action={() =>
-                            enviromentActions.resetGatewayHost()
-                        }
+                        action={() => enviromentActions.resetGatewayHost()}
                         size="small"
                         aspect="link"
                         className="mt-2 ml-auto"

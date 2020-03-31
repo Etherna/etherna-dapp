@@ -98,8 +98,8 @@ const Uploader = () => {
             <div className="row mb-6">
                 {hasSubmitted && (
                     <Alert title="" type="success">
-                        Your video has been successfully uploaded and linked
-                        to your profile. <br/>
+                        Your video has been successfully uploaded and linked to
+                        your profile. <br />
                         You can watch your video at this link:
                         <a href={videoLink}>
                             <strong>{videoLink}</strong>

@@ -198,11 +198,18 @@ const Player = ({ source, thumbnail }) => {
                                 <div className="tick-menu">
                                     {playbackTicks.map(t => (
                                         <div
-                                            className={classnames("tick-option", {
-                                                active: t === playbackRate,
-                                            })}
-                                            onClick={() => updatePlaybackRate(t)}
-                                            onKeyDown={() => updatePlaybackRate(t)}
+                                            className={classnames(
+                                                "tick-option",
+                                                {
+                                                    active: t === playbackRate,
+                                                }
+                                            )}
+                                            onClick={() =>
+                                                updatePlaybackRate(t)
+                                            }
+                                            onKeyDown={() =>
+                                                updatePlaybackRate(t)
+                                            }
                                             role="button"
                                             tabIndex={0}
                                             key={t}

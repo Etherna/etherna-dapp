@@ -64,14 +64,18 @@ export const uploadResourceToSwarm = async (file, type = "swarm") => {
     // }
 }
 
-export const gatewayUploadWithProgress = async (file, progressCallback, pinContent = true) => {
+export const gatewayUploadWithProgress = async (
+    file,
+    progressCallback,
+    pinContent = true
+) => {
     const SwarmGateway = store.getState().env.gatewayHost
     const endpoint = `${SwarmGateway}/bzz-raw:/`
     const buffer = await fileReaderPromise(file)
     const formData = new Blob([new Uint8Array(buffer)])
     const resp = await axios.post(endpoint, formData, {
         headers: {
-            "x-swarm-pin": `${pinContent}`
+            "x-swarm-pin": `${pinContent}`,
         },
         onUploadProgress: pev => {
             const progress = Math.round((pev.loaded * 100) / pev.total)
@@ -107,7 +111,9 @@ export const isPinningEnabled = async () => {
         }
     }
 
-    throw new Error("Request for pinning has failed. Check if the gateway is secured with a SSL certificate.")
+    throw new Error(
+        "Request for pinning has failed. Check if the gateway is secured with a SSL certificate."
+    )
 }
 
 export const isValidHash = (hash, type = "swarm") => {

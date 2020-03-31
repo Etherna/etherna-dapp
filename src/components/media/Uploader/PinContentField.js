@@ -40,11 +40,16 @@ const PinContentField = ({ onChange }) => {
     return (
         <div className="form-group">
             {pinningAvailable === undefined && (
-                <img src={require("@svg/animated/spinner.svg")} alt="" width="20" />
+                <img
+                    src={require("@svg/animated/spinner.svg")}
+                    alt=""
+                    width="20"
+                />
             )}
             {pinningAvailable === false && (
                 <Alert title="Pinning unavailable" type="warning">
-                    Pinning is disabled on the current gateway <em>{gatewayHost}</em>.
+                    Pinning is disabled on the current gateway{" "}
+                    <em>{gatewayHost}</em>.
                 </Alert>
             )}
             {errorMessage && (
@@ -54,8 +59,16 @@ const PinContentField = ({ onChange }) => {
             )}
             {pinningAvailable === true && pinContent !== undefined && (
                 <>
-                    <label title="Pinning a video will make sure the node will always have a copy of the file" htmlFor="pinContent">Pin Content</label>
-                    <label className="flex items-center" htmlFor="pinContent-field">
+                    <label
+                        title="Pinning a video will make sure the node will always have a copy of the file"
+                        htmlFor="pinContent"
+                    >
+                        Pin Content
+                    </label>
+                    <label
+                        className="flex items-center"
+                        htmlFor="pinContent-field"
+                    >
                         <Switch
                             id="pinContent-field"
                             checkedIcon={false}
@@ -69,7 +82,9 @@ const PinContentField = ({ onChange }) => {
                             onChange={handlePinChange}
                         />
                         <span className="ml-2">
-                            {pinContent ? "Pinning enabled" : "Pinning disabled"}
+                            {pinContent
+                                ? "Pinning enabled"
+                                : "Pinning disabled"}
                         </span>
                     </label>
                 </>

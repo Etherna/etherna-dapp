@@ -17,7 +17,9 @@ const VideoView = ({ hash, video }) => {
     const [profileAddress, setProfileAddress] = useState(video.channelAddress)
     const [title, setTitle] = useState(video.title)
     const [description, setDescription] = useState(video.description)
-    const [thumbnail, setThumbnail] = useState(getResourceUrl(video.thumbnailHash))
+    const [thumbnail, setThumbnail] = useState(
+        getResourceUrl(video.thumbnailHash)
+    )
     const [publishDate, setPublishDate] = useState(video.creationDateTime)
     const [profileName, setProfileName] = useState(
         video.profileData && video.profileData.name
@@ -69,8 +71,16 @@ const VideoView = ({ hash, video }) => {
                         </span>
                     </div>
                     <div className="video-actions">
-                        <a download href={source} className="btn btn-transparent btn-rounded">
-                            <img src={require("@svg/icons/download-icon.svg")} alt="" className="m-auto" />
+                        <a
+                            download
+                            href={source}
+                            className="btn btn-transparent btn-rounded"
+                        >
+                            <img
+                                src={require("@svg/icons/download-icon.svg")}
+                                alt=""
+                                className="m-auto"
+                            />
                         </a>
                     </div>
                 </div>
