@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import { useSelector } from "react-redux"
 
@@ -11,6 +11,14 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
 
     const [indexHostValue, setIndexHostValue] = useState(indexHost)
     const [gatewayHostValue, setGatewayHostValue] = useState(gatewayHost)
+
+    useEffect(() => {
+        setIndexHostValue(indexHost)
+    }, [indexHost])
+
+    useEffect(() => {
+        setGatewayHostValue(gatewayHost)
+    }, [gatewayHost])
 
     return (
         <>
@@ -35,6 +43,18 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
                         disabled={indexHostValue === indexHost}
                     >
                         Save
+                    </Button>
+
+                    <Button
+                        action={() =>
+                            enviromentActions.resetIndexHost()
+                        }
+                        size="small"
+                        aspect="link"
+                        className="mt-2 ml-auto"
+                        disabled={indexHostValue === process.env.INDEX_HOST}
+                    >
+                        Reset to default
                     </Button>
                 </li>
             </DropDownMenu>
@@ -62,6 +82,18 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
                         disabled={gatewayHostValue === gatewayHost}
                     >
                         Save
+                    </Button>
+
+                    <Button
+                        action={() =>
+                            enviromentActions.resetGatewayHost()
+                        }
+                        size="small"
+                        aspect="link"
+                        className="mt-2 ml-auto"
+                        disabled={gatewayHostValue === process.env.GATEWAY_HOST}
+                    >
+                        Reset to default
                     </Button>
                 </li>
             </DropDownMenu>

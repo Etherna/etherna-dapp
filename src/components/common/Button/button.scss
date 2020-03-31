@@ -34,6 +34,19 @@
     }
 }
 
+.btn-link {
+    @apply text-primary bg-transparent px-0;
+    &:hover {
+        @apply text-primary-dark bg-transparent;
+        &:disabled {
+            @apply text-gray-500;
+        }
+    }
+    &:disabled {
+        @apply text-gray-500;
+    }
+}
+
 .btn-rounded {
     @apply w-10 h-10 rounded-full p-0 flex items-center;
 }
