@@ -44,56 +44,45 @@ export const uploadResourceToSwarm = async (file, type = "swarm") => {
             ? `${SwarmGateway}/bzz-raw:/`
             : `${IpfsGateway}:5001/api/v0/add`
 
-    try {
-        const buffer = await fileReaderPromise(file)
-        let formData = new Blob([new Uint8Array(buffer)])
+    const buffer = await fileReaderPromise(file)
+    let formData = new Blob([new Uint8Array(buffer)])
 
-        if (type === "ipfs") {
-            let data = new FormData()
-            data.append("filename", formData)
-            formData = data
-        }
-
-        let resp = await axios.post(endpoint, formData)
-        let hash = type === "ipfs" ? resp.data.Hash : resp.data
-
-        // if (isValidHash(hash)) {
-        type = type === "ipfs" ? "ImageObject" : "SwarmObject"
-        return [{ "@type": type, contentUrl: { "/": hash } }]
-        // } else {
-        //     return null
-        // }
-    } catch (error) {
-        console.error(error)
-        return null
+    if (type === "ipfs") {
+        let data = new FormData()
+        data.append("filename", formData)
+        formData = data
     }
+
+    let resp = await axios.post(endpoint, formData)
+    let hash = type === "ipfs" ? resp.data.Hash : resp.data
+
+    // if (isValidHash(hash)) {
+    type = type === "ipfs" ? "ImageObject" : "SwarmObject"
+    return [{ "@type": type, contentUrl: { "/": hash } }]
+    // } else {
+    //     return null
+    // }
 }
 
 export const gatewayUploadWithProgress = async (file, progressCallback, pinContent = true) => {
     const SwarmGateway = store.getState().env.gatewayHost
     const endpoint = `${SwarmGateway}/bzz-raw:/`
+    const buffer = await fileReaderPromise(file)
+    const formData = new Blob([new Uint8Array(buffer)])
+    const resp = await axios.post(endpoint, formData, {
+        headers: {
+            "x-swarm-pin": `${pinContent}`
+        },
+        onUploadProgress: pev => {
+            const progress = Math.round((pev.loaded * 100) / pev.total)
+            if (progressCallback) {
+                progressCallback(progress)
+            }
+        },
+    })
+    const hash = resp.data
 
-    try {
-        const buffer = await fileReaderPromise(file)
-        const formData = new Blob([new Uint8Array(buffer)])
-        const resp = await axios.post(endpoint, formData, {
-            headers: {
-                "x-swarm-pin": `${pinContent}`
-            },
-            onUploadProgress: pev => {
-                const progress = Math.round((pev.loaded * 100) / pev.total)
-                if (progressCallback) {
-                    progressCallback(progress)
-                }
-            },
-        })
-        const hash = resp.data
-
-        return isValidHash(hash) ? hash : undefined
-    } catch (error) {
-        console.error(error)
-        return undefined
-    }
+    return isValidHash(hash) ? hash : undefined
 }
 
 export const isPinningEnabled = async () => {

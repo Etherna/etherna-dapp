@@ -11,6 +11,7 @@ const PinContentField = ({ onChange }) => {
 
     const [pinningAvailable, setPinningAvailable] = useState(undefined)
     const [pinContent, setPinContent] = useState(undefined)
+    const [errorMessage, setErrorMessage] = useState(undefined)
 
     useEffect(() => {
         checkPinningAvailability()
@@ -18,9 +19,16 @@ const PinContentField = ({ onChange }) => {
     }, [])
 
     const checkPinningAvailability = async () => {
-        const available = await isPinningEnabled()
-        setPinningAvailable(available)
-        handlePinChange(available === true)
+        try {
+            const available = await isPinningEnabled()
+            setPinningAvailable(available)
+            handlePinChange(available === true)
+        } catch (error) {
+            console.error(error)
+            setErrorMessage(error.message)
+            setPinningAvailable(false)
+            handlePinChange(false)
+        }
     }
 
     const handlePinChange = checked => {
@@ -40,9 +48,14 @@ const PinContentField = ({ onChange }) => {
                     Pinning is disabled on the current gateway <em>{gatewayHost}</em>.
                 </Alert>
             )}
+            {errorMessage && (
+                <Alert title="An error has occurred" type="danger">
+                    {errorMessage}
+                </Alert>
+            )}
             {pinningAvailable === true && pinContent !== undefined && (
                 <>
-                    <label title="Pinning a video will make sure the node will always have a copy of the file">Pin Content</label>
+                    <label title="Pinning a video will make sure the node will always have a copy of the file" htmlFor="pinContent">Pin Content</label>
                     <label className="flex items-center" htmlFor="pinContent-field">
                         <Switch
                             id="pinContent-field"

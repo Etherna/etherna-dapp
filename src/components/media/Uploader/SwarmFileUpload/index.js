@@ -34,8 +34,6 @@ const SwarmFileUpload = ({
                 },
                 pinContent
             )
-            setUploadProgress(100)
-            setIsUploading(false)
 
             if (hash) {
                 setHash(hash)
@@ -45,6 +43,9 @@ const SwarmFileUpload = ({
             console.error(error)
             setErrorMessage(error.message)
         }
+
+        setUploadProgress(100)
+        setIsUploading(false)
     }
 
     const handleRemoveFile = () => {
