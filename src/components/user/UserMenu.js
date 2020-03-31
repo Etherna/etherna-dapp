@@ -123,7 +123,10 @@ const UserMenu = () => {
                         </DropDownItem>
                     )}
                     <DropDownItem action={signOut}>
-                        <Image filename="signout-icon.svg" />
+                        <img
+                            src={require("@svg/icons/signout-icon.svg")}
+                            alt=""
+                        />
                         <span>Sign out</span>
                     </DropDownItem>
                 </li>

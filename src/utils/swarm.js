@@ -103,7 +103,12 @@ export const isPinningEnabled = async () => {
         await axios.get(endpoint)
         return true
     } catch (error) {
-        if ("Msg" in error.response.data && error.response.data.Msg === "Pinning disabled on this node") {
+        if (
+            error.response &&
+            error.response.data &&
+            "Msg" in error.response.data &&
+            error.response.data.Msg === "Pinning disabled on this node"
+        ) {
             return false
         }
         if (error.response.status === 403) {
