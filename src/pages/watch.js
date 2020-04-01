@@ -1,10 +1,10 @@
 import React from "react"
+import { navigate } from "gatsby"
 import { parse } from "querystring"
 
 import Layout from "@components/layout/DefaultLayout"
 import SEO from "@components/layout/SEO"
 import VideoView from "@components/media/VideoView"
-import { navigate } from "gatsby"
 
 const WatchPage = ({ location }) => {
     const query = location.search.startsWith("?")
@@ -13,7 +13,9 @@ const WatchPage = ({ location }) => {
     const params = parse(query)
 
     if (!params || !params.v) {
-        navigate("/")
+        if (typeof window !== "undefined") {
+            navigate("/")
+        }
         return ""
     }
 
