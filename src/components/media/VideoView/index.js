@@ -4,6 +4,7 @@ import moment from "moment"
 import { Link, navigate } from "gatsby"
 
 import "./video-view.scss"
+import SEO from "@components/layout/SEO"
 import Player from "@components/media/Player"
 import Avatar from "@components/user/Avatar"
 import { getResourceUrl } from "@utils/swarm"
@@ -35,19 +36,25 @@ const VideoView = ({ hash, video }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    useEffect(() => {
+        if (profileAddress) {
+            if (!profileName || !profileAvatar) {
+                fetchProfile(profileAddress)
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [profileAddress])
+
     const fetchVideo = async () => {
         setIsFetchingVideo(true)
         try {
             const videoInfo = await getVideo(hash)
-            const profile = await getProfile(videoInfo.channelAddress)
 
             setProfileAddress(videoInfo.channelAddress)
             setTitle(videoInfo.title)
             setDescription(videoInfo.description)
             setThumbnail(getResourceUrl(videoInfo.thumbnailHash))
             setPublishDate(videoInfo.creationDateTime)
-            setProfileName(profile.name)
-            setProfileAvatar(profile.avatar)
         } catch (error) {
             console.error(error)
             navigate("/404")
@@ -55,60 +62,73 @@ const VideoView = ({ hash, video }) => {
         setIsFetchingVideo(false)
     }
 
+    const fetchProfile = async (profileAddress) => {
+        try {
+            const profile = await getProfile(profileAddress)
+            setProfileName(profile.name)
+            setProfileAvatar(profile.avatar)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     if (isFetchingVideo) {
         return <div />
     }
 
     return (
-        <div className="video-watch container">
-            <Player source={source} thumbnail={thumbnail} />
-            <div className="video-info">
-                <h1 className="video-title">{title}</h1>
-                <div className="video-info-bar">
-                    <div className="mr-auto">
-                        <span className="publish-time">
-                            {publishDate && moment(publishDate).format("LLL")}
-                        </span>
-                    </div>
-                    <div className="video-actions">
-                        <a
-                            download
-                            href={source}
-                            className="btn btn-transparent btn-rounded"
-                        >
-                            <img
-                                src={require("@svg/icons/download-icon.svg")}
-                                alt=""
-                                className="m-auto"
-                            />
-                        </a>
-                    </div>
-                </div>
-
-                <hr />
-
-                <div className="video-stats">
-                    <Link to={Routes.getChannelLink(profileAddress)}>
-                        <div className="video-profile">
-                            <Avatar image={profileAvatar} />
-                            <h3 className="profile-name">{profileName}</h3>
+        <>
+            <SEO title={title} />
+            <div className="video-watch container">
+                <Player source={source} thumbnail={thumbnail} />
+                <div className="video-info">
+                    <h1 className="video-title">{title}</h1>
+                    <div className="video-info-bar">
+                        <div className="mr-auto">
+                            <span className="publish-time">
+                                {publishDate && moment(publishDate).format("LLL")}
+                            </span>
                         </div>
-                    </Link>
-                </div>
+                        <div className="video-actions">
+                            <a
+                                download
+                                href={source}
+                                className="btn btn-transparent btn-rounded"
+                            >
+                                <img
+                                    src={require("@svg/icons/download-icon.svg")}
+                                    alt=""
+                                    className="m-auto"
+                                />
+                            </a>
+                        </div>
+                    </div>
 
-                <hr />
+                    <hr />
 
-                <div className="video-description">
-                    {description && description !== "" ? (
-                        <p className="text-gray-800">{description}</p>
-                    ) : (
-                        <p className="text-gray-500">
-                            <em>This video doesn't have a description</em>
-                        </p>
-                    )}
+                    <div className="video-stats">
+                        <Link to={Routes.getChannelLink(profileAddress)}>
+                            <div className="video-profile">
+                                <Avatar image={profileAvatar} />
+                                <h3 className="profile-name">{profileName}</h3>
+                            </div>
+                        </Link>
+                    </div>
+
+                    <hr />
+
+                    <div className="video-description">
+                        {description && description !== "" ? (
+                            <p className="text-gray-800">{description}</p>
+                        ) : (
+                            <p className="text-gray-500">
+                                <em>This video doesn't have a description</em>
+                            </p>
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

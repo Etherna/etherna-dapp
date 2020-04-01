@@ -26,10 +26,11 @@
             }
 
             &.active {
-                @apply border-primary;
-                &:hover {
-                    @apply text-primary-dark;
-                }
+                @apply border-primary text-primary;
+            }
+
+            &:hover {
+                @apply text-primary-dark;
             }
         }
     }
