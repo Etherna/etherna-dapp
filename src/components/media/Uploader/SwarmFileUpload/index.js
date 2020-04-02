@@ -35,6 +35,9 @@ const SwarmFileUpload = ({
                 pinContent
             )
 
+            console.log('hash', hash);
+
+
             if (hash) {
                 setHash(hash)
                 onFinishedUploading(hash)
@@ -46,7 +49,7 @@ const SwarmFileUpload = ({
                     "Network Error. Check if the gateway is secured with a SSL certificate."
                 )
             } else {
-                setErrorMessage(error)
+                setErrorMessage(error.message)
             }
         }
 
