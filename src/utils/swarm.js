@@ -84,9 +84,14 @@ export const gatewayUploadWithProgress = async (
             }
         },
     })
-    const hash = resp.data
+    const hash = undefined//resp.data
 
-    return isValidHash(hash) ? hash : undefined
+    if (isValidHash(hash)) {
+        return hash
+    }
+    else {
+        throw new Error(`There was a problem uploading ${file.name}. Try again later.`)
+    }
 }
 
 export const isPinningEnabled = async () => {

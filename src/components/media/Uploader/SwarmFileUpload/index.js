@@ -18,7 +18,7 @@ const SwarmFileUpload = ({
     const [isUploading, setIsUploading] = useState(false)
     const [uploadProgress, setUploadProgress] = useState(0)
     const [hash, setHash] = useState(undefined)
-    const [errorMessage, setErrorMessage] = useState(undefined)
+    const [errorMessage, setErrorMessage] = useState()
 
     const handleStartUpload = async () => {
         setIsUploading(true)
@@ -35,15 +35,17 @@ const SwarmFileUpload = ({
                 pinContent
             )
 
-            console.log('hash', hash);
-
-
             if (hash) {
                 setHash(hash)
                 onFinishedUploading(hash)
+                setUploadProgress(100)
+            } else {
+                // should't go here but in case reset form.
+                handleRemoveFile()
             }
         } catch (error) {
             console.error(error)
+
             if (error && error.message === "Network Error") {
                 setErrorMessage(
                     "Network Error. Check if the gateway is secured with a SSL certificate."
@@ -53,7 +55,6 @@ const SwarmFileUpload = ({
             }
         }
 
-        setUploadProgress(100)
         setIsUploading(false)
     }
 
