@@ -75,9 +75,14 @@ const SwarmFileUpload = ({
     return (
         <div className="mb-4">
             {errorMessage && (
-                <Alert type="danger" title="Upload error">
-                    {errorMessage}
-                </Alert>
+                <>
+                    <Alert type="danger" title="Upload error">
+                        {errorMessage}
+                    </Alert>
+                    <Button size="small" aspect="secondary" className="mt-2" action={handleRemoveFile}>
+                        Retry
+                    </Button>
+                </>
             )}
             {file && !isUploading && uploadProgress === 0 && (
                 <>
@@ -136,6 +141,7 @@ const SwarmFileUpload = ({
                     <Button
                         size="small"
                         aspect="secondary"
+                        className="mt-2"
                         action={askToRemoveFile}
                         disabled={disabled}
                     >

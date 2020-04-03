@@ -84,7 +84,7 @@ export const gatewayUploadWithProgress = async (
             }
         },
     })
-    const hash = undefined//resp.data
+    const hash = resp.data
 
     if (isValidHash(hash)) {
         return hash

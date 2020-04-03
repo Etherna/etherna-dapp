@@ -39,6 +39,12 @@ const PinContentField = ({ onChange }) => {
 
     return (
         <div className="form-group">
+            <label
+                title="Pinning a video will make sure the node will always have a copy of the file"
+                htmlFor="pinContent"
+            >
+                Pin Content
+            </label>
             {pinningAvailable === undefined && (
                 <img
                     src={require("@svg/animated/spinner.svg")}
@@ -59,12 +65,6 @@ const PinContentField = ({ onChange }) => {
             )}
             {pinningAvailable === true && pinContent !== undefined && (
                 <>
-                    <label
-                        title="Pinning a video will make sure the node will always have a copy of the file"
-                        htmlFor="pinContent"
-                    >
-                        Pin Content
-                    </label>
                     <label
                         className="flex items-center"
                         htmlFor="pinContent-field"

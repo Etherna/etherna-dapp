@@ -4,14 +4,27 @@ import classnames from "classnames"
 
 import "./alert.scss"
 
-const Alert = ({ children, type, title }) => {
+const Alert = ({ children, type, title, onClose }) => {
     return (
         <div
             className={classnames("alert", {
                 [`alert-${type}`]: type,
             })}
         >
-            {title && <div className="alert-title">{title}</div>}
+            <div className="alert-header">
+                {title && (
+                    <div className="alert-title">{title}</div>
+                )}
+
+                {onClose && (
+                    <button
+                        className="close"
+                        onClick={onClose}
+                    >
+                        <span className="m-auto" aria-hidden="true">&times;</span>
+                    </button>
+                )}
+            </div>
             <p>{children}</p>
         </div>
     )
@@ -20,6 +33,7 @@ const Alert = ({ children, type, title }) => {
 Alert.propTypes = {
     type: PropTypes.string,
     title: PropTypes.string,
+    onClose: PropTypes.func,
 }
 
 Alert.defaultProps = {

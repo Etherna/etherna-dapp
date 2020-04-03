@@ -6,9 +6,9 @@ import { useSelector } from "react-redux"
 import "./uploader.scss"
 import FileDrag from "./FileDrag"
 import SwarmFileUpload from "./SwarmFileUpload"
-import Avatar from "@components/user/Avatar"
-import Button from "@common/Button"
 import Alert from "@components/common/Alert"
+import Button from "@common/Button"
+import Avatar from "@components/user/Avatar"
 import { showError } from "@state/actions/modals"
 import { addVideoToChannel } from "@utils/ethernaResources/channelResources"
 import { getVideoDuration } from "@utils/media"
@@ -97,7 +97,7 @@ const Uploader = () => {
             </div>
             <div className="row mb-6">
                 {hasSubmitted && (
-                    <Alert title="" type="success">
+                    <Alert title="" type="success" onClose={() => setHasSubmitted(false)}>
                         Your video has been successfully uploaded and linked to
                         your profile. <br />
                         You can watch your video at this link:
