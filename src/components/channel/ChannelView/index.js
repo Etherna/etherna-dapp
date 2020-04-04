@@ -24,7 +24,7 @@ const ChannelView = ({ channelAddress }) => {
     const [isFetching, setIsFetching] = useState(false)
     const [isCreatingChannel, setIsCreatingChannel] = useState(false)
     const [hasChannel, setHasChannel] = useState(false)
-    const [channelVideos, setChannelVideos] = useState([])
+    const [channelVideos, setChannelVideos] = useState(undefined)
     const [profileInfo, setProfileInfo] = useState(null)
     const [page, setPage] = useState(0)
     const [hasMore, setHasMore] = useState(true)
@@ -81,7 +81,7 @@ const ChannelView = ({ channelAddress }) => {
     }
 
     const mapVideosWithProfile = () => {
-        if (!profileInfo) return
+        if (!profileInfo || !channelVideos) return
         let videos = channelVideos
         for (let video of videos) {
             video.profileData = {
@@ -150,12 +150,15 @@ const ChannelView = ({ channelAddress }) => {
                         Ethernaut!
                     </Alert>
                 )}
-                {hasChannel && !isFetching && channelVideos.length === 0 && (
+                {hasChannel && !isFetching && (channelVideos || []).length === 0 && (
                     <p className="text-gray-500 text-center my-16">
                         This channel has yet to upload a video
                     </p>
                 )}
-                {channelVideos.length > 0 && (
+                {channelVideos === undefined && (
+                    <VideoGrid mini={true} />
+                )}
+                {channelVideos && channelVideos.length > 0 && (
                     <InfiniteScroller
                         loadMore={fetchVideos}
                         hasMore={hasMore}

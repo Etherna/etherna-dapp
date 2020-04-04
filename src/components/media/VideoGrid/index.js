@@ -4,6 +4,7 @@ import classnames from "classnames"
 
 import "./video-grid.scss"
 import VideoPreview from "@components/media/VideoPreview"
+import VideoPreviewPlaceholder from "../VideoPreviewPlaceholder"
 
 const VideoGrid = ({ label, videos, mini }) => {
     const LabelTag = mini ? "h5" : "h3"
@@ -13,7 +14,10 @@ const VideoGrid = ({ label, videos, mini }) => {
                 {label && <LabelTag>{label}</LabelTag>}
             </div>
             <div className={classnames("video-grid", { mini: mini })}>
-                {videos.map((v, i) => {
+                {videos === undefined && (
+                    <VideoPreviewPlaceholder />
+                )}
+                {videos && videos.map((v, i) => {
                     return (
                         <VideoPreview
                             video={v}
