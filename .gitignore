@@ -51,10 +51,6 @@ typings/
 # Output of 'npm pack'
 *.tgz
 
-# gatsby files
-.cache/
-public
-
 # Mac files
 .DS_Store
 
@@ -69,5 +65,4 @@ yarn-error.log
 .yarn-integrity
 
 # Deploy config
-deploy.js
 deploy.config.js
