@@ -11,10 +11,10 @@ import {
     DropDownItem,
     DropDownMenu,
     DropDownMenuToggle,
-} from "@common/DropDown"
-import { providerActions } from "@state/actions"
-import { shortenEthAddr } from "@utils/ethFuncs"
-import * as Routes from "@routes"
+} from "components/common/DropDown"
+import { providerActions } from "state/actions"
+import { shortenEthAddr } from "utils/ethFuncs"
+import * as Routes from "routes"
 
 const UserMenu = () => {
     const { currentWalletLogo, currentAddress } = useSelector(
@@ -70,7 +70,7 @@ const UserMenu = () => {
                     <DropDownItem>
                         <Link to={Routes.getChannelLink(address)}>
                             <img
-                                src={require("@svg/icons/profile-icon.svg")}
+                                src={require("svg/icons/profile-icon.svg")}
                                 alt=""
                             />
                             <span>View profile</span>
@@ -80,7 +80,7 @@ const UserMenu = () => {
                 <DropDownItem>
                     <Link to={Routes.getChannelEditingLink(address)}>
                         <img
-                            src={require("@svg/icons/profile-edit-icon.svg")}
+                            src={require("svg/icons/profile-edit-icon.svg")}
                             alt=""
                         />
                         <span>{name ? "Edit profile" : "Create profile"}</span>
@@ -90,7 +90,7 @@ const UserMenu = () => {
                 <DropDownMenuToggle menuRef={indexMenuRef} isMenuItem={true}>
                     <div className="flex">
                         <img
-                            src={require("@svg/icons/index-icon.svg")}
+                            src={require("svg/icons/index-icon.svg")}
                             alt=""
                         />
                         <span>Index</span>
@@ -99,7 +99,7 @@ const UserMenu = () => {
                 <DropDownMenuToggle menuRef={gatewayMenuRef} isMenuItem={true}>
                     <div className="flex">
                         <img
-                            src={require("@svg/icons/gateway-icon.svg")}
+                            src={require("svg/icons/gateway-icon.svg")}
                             alt=""
                         />
                         <span>Gateway</span>
@@ -110,7 +110,7 @@ const UserMenu = () => {
                     {hasSwitchedAccount && (
                         <DropDownItem action={providerActions.switchAccount}>
                             <img
-                                src={require("@svg/icons/switch-icon.svg")}
+                                src={require("svg/icons/switch-icon.svg")}
                                 alt=""
                             />
                             <div className="inline-flex flex-col">
@@ -123,7 +123,7 @@ const UserMenu = () => {
                     )}
                     <DropDownItem action={signOut}>
                         <img
-                            src={require("@svg/icons/signout-icon.svg")}
+                            src={require("svg/icons/signout-icon.svg")}
                             alt=""
                         />
                         <span>Sign out</span>

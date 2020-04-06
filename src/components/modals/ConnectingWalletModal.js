@@ -2,7 +2,7 @@ import React from "react"
 
 import Modal from "../common/Modal"
 import Button from "../common/Button"
-import { closeConnectingWalletModal } from "@state/actions/modals"
+import { closeConnectingWalletModal } from "state/actions/modals"
 
 const ConnectingWalletModal = () => {
     return (
@@ -15,7 +15,7 @@ const ConnectingWalletModal = () => {
             </p>
             <div className="flex my-6">
                 <img
-                    src={require("@svg/animated/spinner.svg")}
+                    src={require("svg/animated/spinner.svg")}
                     className="mx-auto"
                     width="60"
                     alt=""

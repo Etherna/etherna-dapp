@@ -4,13 +4,13 @@ import moment from "moment"
 import { Link, navigate } from "gatsby"
 
 import "./video-view.scss"
-import SEO from "@components/layout/SEO"
-import Player from "@components/media/Player"
-import Avatar from "@components/user/Avatar"
-import { getResourceUrl } from "@utils/swarm"
-import { getProfile } from "@utils/3box"
-import * as Routes from "@routes"
-import { getVideo } from "@utils/ethernaResources/videosResources"
+import SEO from "components/layout/SEO"
+import Player from "components/media/Player"
+import Avatar from "components/user/Avatar"
+import { getResourceUrl } from "utils/swarm"
+import { getProfile } from "utils/3box"
+import * as Routes from "routes"
+import { getVideo } from "utils/ethernaResources/videosResources"
 
 const VideoView = ({ hash, video }) => {
     const source = getResourceUrl(hash)
@@ -96,7 +96,7 @@ const VideoView = ({ hash, video }) => {
                                 className="btn btn-transparent btn-rounded"
                             >
                                 <img
-                                    src={require("@svg/icons/download-icon.svg")}
+                                    src={require("svg/icons/download-icon.svg")}
                                     alt=""
                                     className="m-auto"
                                 />

@@ -2,9 +2,9 @@ import React from "react"
 import { navigate } from "gatsby"
 import { parse } from "querystring"
 
-import Layout from "@components/layout/DefaultLayout"
-import SEO from "@components/layout/SEO"
-import VideoView from "@components/media/VideoView"
+import Layout from "components/layout/DefaultLayout"
+import SEO from "components/layout/SEO"
+import VideoView from "components/media/VideoView"
 
 const WatchPage = ({ location }) => {
     const query = location.search.startsWith("?")

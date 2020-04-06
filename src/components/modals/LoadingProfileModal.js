@@ -10,7 +10,7 @@ const LoadingProfileModal = () => {
             </div>
             <div className="flex my-6">
                 <img
-                    src={require("@svg/animated/spinner.svg")}
+                    src={require("svg/animated/spinner.svg")}
                     className="mx-auto"
                     width="60"
                     alt=""

@@ -1,5 +1,5 @@
-import { store } from "@state/store"
-import { EnvActionTypes } from "@state/reducers/enviromentReducer"
+import { store } from "state/store"
+import { EnvActionTypes } from "state/reducers/enviromentReducer"
 
 export const updateIndexHost = host => {
     window.localStorage.setItem("indexHost", host)

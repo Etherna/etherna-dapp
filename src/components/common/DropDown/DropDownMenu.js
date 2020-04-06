@@ -27,7 +27,7 @@ const DropDownMenu = ({ children, alignRight, menuRef, title }) => {
             {history.length > 1 && (
                 <div className="dropdown-header">
                     <button className="btn-back" onClick={pop}>
-                        <img src={require("@svg/icons/back-icon.svg")} alt="" />
+                        <img src={require("svg/icons/back-icon.svg")} alt="" />
                     </button>
                     <span className="ml-3">{title}</span>
                 </div>

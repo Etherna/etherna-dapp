@@ -1,6 +1,6 @@
 import React from "react"
 
-import { providerActions } from "@state/actions"
+import { providerActions } from "state/actions"
 
 const SigninButton = ({ children }) => {
     return (

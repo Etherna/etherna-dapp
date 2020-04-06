@@ -1,8 +1,8 @@
 import React from "react"
 
-import Layout from "@components/layout/DefaultLayout"
-import SEO from "@components/layout/SEO"
-import ChannelsView from "@components/channel/ChannelsView"
+import Layout from "components/layout/DefaultLayout"
+import SEO from "components/layout/SEO"
+import ChannelsView from "components/channel/ChannelsView"
 
 const ChannelsPage = () => (
     <Layout>

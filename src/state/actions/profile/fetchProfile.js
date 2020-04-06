@@ -1,8 +1,8 @@
-import { store } from "@state/store"
-import { ProfileActionTypes } from "@state/reducers/profileReducer"
-import { UIActionTypes } from "@state/reducers/uiReducer"
-import { getProfile } from "@utils/3box"
-import { getChannel } from "@utils/ethernaResources/channelResources"
+import { store } from "state/store"
+import { ProfileActionTypes } from "state/reducers/profileReducer"
+import { UIActionTypes } from "state/reducers/uiReducer"
+import { getProfile } from "utils/3box"
+import { getChannel } from "utils/ethernaResources/channelResources"
 
 const fetchProfile = async address => {
     try {

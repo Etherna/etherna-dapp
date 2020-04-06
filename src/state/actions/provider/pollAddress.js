@@ -1,6 +1,6 @@
-import { store } from "@state/store"
-import { EnvActionTypes } from "@state/reducers/enviromentReducer"
-import { fetchAccounts } from "@utils/ethFuncs"
+import { store } from "state/store"
+import { EnvActionTypes } from "state/reducers/enviromentReducer"
+import { fetchAccounts } from "utils/ethFuncs"
 
 export const pollAddress = async () => {
     setTimeout(async () => {

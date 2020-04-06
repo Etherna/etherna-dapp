@@ -1,13 +1,13 @@
 import Web3 from "web3"
 import Web3Connect from "web3connect"
 
-import { store } from "@state/store"
-import { EnvActionTypes } from "@state/reducers/enviromentReducer"
-import { UserActionTypes } from "@state/reducers/userReducer"
-import { UIActionTypes } from "@state/reducers/uiReducer"
-import { isBrowserCompatible } from "@utils/browser"
-import { fetchAccounts } from "@utils/ethFuncs"
-import { connectWallet, web3Connect } from "@utils/web3Connect"
+import { store } from "state/store"
+import { EnvActionTypes } from "state/reducers/enviromentReducer"
+import { UserActionTypes } from "state/reducers/userReducer"
+import { UIActionTypes } from "state/reducers/uiReducer"
+import { isBrowserCompatible } from "utils/browser"
+import { fetchAccounts } from "utils/ethFuncs"
+import { connectWallet, web3Connect } from "utils/web3Connect"
 
 const injectWeb3 = async () => {
     if (!isBrowserCompatible()) {

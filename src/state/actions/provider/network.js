@@ -1,7 +1,7 @@
-import { store } from "@state/store"
-import { EnvActionTypes } from "@state/reducers/enviromentReducer"
-import { getNetworkName } from "@utils/ethFuncs"
-import { UIActionTypes } from "@state/reducers/uiReducer"
+import { store } from "state/store"
+import { EnvActionTypes } from "state/reducers/enviromentReducer"
+import { getNetworkName } from "utils/ethFuncs"
+import { UIActionTypes } from "state/reducers/uiReducer"
 
 export const checkMobileWeb3 = () => {
     const mobilePattern = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i

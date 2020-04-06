@@ -2,7 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 import { Link } from "gatsby"
 
-import makeBlockies from "@utils/makeBlockies"
+import makeBlockies from "utils/makeBlockies"
 
 const SidebarItem = ({ imageUrl, fallbackAddress, name, link }) => {
     const image = imageUrl || (fallbackAddress && makeBlockies(fallbackAddress))

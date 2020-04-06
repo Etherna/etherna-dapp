@@ -4,7 +4,7 @@ import classnames from "classnames"
 
 import "./player.scss"
 import Time from "../Time"
-import Slider from "@common/Slider"
+import Slider from "components/common/Slider"
 
 const Player = ({ source, thumbnail }) => {
     const [playing, setPlaying] = useState(false)
@@ -231,7 +231,7 @@ const Player = ({ source, thumbnail }) => {
                                 tabIndex={0}
                             >
                                 <img
-                                    src={require("@svg/icons/pip-icon.svg")}
+                                    src={require("svg/icons/pip-icon.svg")}
                                     alt=""
                                 />
                             </div>
@@ -246,7 +246,7 @@ const Player = ({ source, thumbnail }) => {
                             tabIndex={0}
                         >
                             <img
-                                src={require("@svg/icons/fullscreen-icon.svg")}
+                                src={require("svg/icons/fullscreen-icon.svg")}
                                 alt=""
                             />
                         </div>
@@ -262,17 +262,17 @@ const Player = ({ source, thumbnail }) => {
                             >
                                 {muted === true ? (
                                     <img
-                                        src={require("@svg/icons/muted-icon.svg")}
+                                        src={require("svg/icons/muted-icon.svg")}
                                         alt=""
                                     />
                                 ) : volume < 0.25 ? (
                                     <img
-                                        src={require("@svg/icons/volume-low-icon.svg")}
+                                        src={require("svg/icons/volume-low-icon.svg")}
                                         alt=""
                                     />
                                 ) : (
                                     <img
-                                        src={require("@svg/icons/volume-icon.svg")}
+                                        src={require("svg/icons/volume-icon.svg")}
                                         alt=""
                                     />
                                 )}

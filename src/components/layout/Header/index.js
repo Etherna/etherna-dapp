@@ -4,8 +4,8 @@ import { Location } from "@reach/router"
 import { Link } from "gatsby"
 
 import "./header.scss"
-import UserMenu from "@components/user/UserMenu"
-import * as Routes from "@routes"
+import UserMenu from "components/user/UserMenu"
+import * as Routes from "routes"
 
 const ChannelsMatches = [/^\/channel\//, /^\/channels/]
 const ExploreMatches = [/^\/watch/]
@@ -66,7 +66,7 @@ const Header = () => {
                 <div className="logo">
                     <Link to="/">
                         <img
-                            src={require("@svg/logo.svg")}
+                            src={require("svg/logo.svg")}
                             alt=""
                             width={140}
                         />
@@ -80,7 +80,7 @@ const Header = () => {
                             activeClassName="active"
                         >
                             <img
-                                src={require("@svg/icons/upload-icon.svg")}
+                                src={require("svg/icons/upload-icon.svg")}
                                 alt=""
                             />
                             <span>Upload</span>

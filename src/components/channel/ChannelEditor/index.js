@@ -4,9 +4,9 @@ import { useSelector } from "react-redux"
 import { navigate } from "gatsby"
 
 import "./channel-editor.scss"
-import ProfileInfoEdit from "@components/profile/ProfileInfoEdit"
-import { profileActions } from "@state/actions"
-import * as Routes from "@routes"
+import ProfileInfoEdit from "components/profile/ProfileInfoEdit"
+import { profileActions } from "state/actions"
+import * as Routes from "routes"
 
 const ChannelEditor = ({ address }) => {
     const { box } = useSelector(state => state.user)

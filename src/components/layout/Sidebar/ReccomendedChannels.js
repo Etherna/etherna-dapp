@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react"
 import PropTypes from "prop-types"
 
 import SidebarItem from "./SidebarItem"
-import * as Routes from "@routes"
-import { getChannels } from "@utils/ethernaResources/channelResources"
-import { getProfiles } from "@utils/3box"
-import { getResourceUrl } from "@utils/swarm"
+import * as Routes from "routes"
+import { getChannels } from "utils/ethernaResources/channelResources"
+import { getProfiles } from "utils/3box"
+import { getResourceUrl } from "utils/swarm"
 
 const RecommendedChannels = () => {
     const [channels, setChannels] = useState([])

@@ -2,10 +2,10 @@ import React, { useState } from "react"
 import PropTypes from "prop-types"
 
 import "./swarm-upload.scss"
-import Alert from "@common/Alert"
-import Button from "@common/Button"
-import ProgressBar from "@common/ProgressBar"
-import { gatewayUploadWithProgress, getResourceUrl } from "@utils/swarm"
+import Alert from "components/common/Alert"
+import Button from "components/common/Button"
+import ProgressBar from "components/common/ProgressBar"
+import { gatewayUploadWithProgress, getResourceUrl } from "utils/swarm"
 
 const SwarmFileUpload = ({
     file,

@@ -5,10 +5,10 @@ import moment from "moment"
 
 import "./video-preview.scss"
 import Time from "../Time"
-import Avatar from "@components/user/Avatar"
-import { getProfile } from "@utils/3box"
-import { getResourceUrl } from "@utils/swarm"
-import * as Routes from "@routes"
+import Avatar from "components/user/Avatar"
+import { getProfile } from "utils/3box"
+import { getResourceUrl } from "utils/swarm"
+import * as Routes from "routes"
 
 const VideoPreview = ({ video, hideProfile }) => {
     const profileLink = Routes.getChannelLink(video.channelAddress)
@@ -52,7 +52,7 @@ const VideoPreview = ({ video, hideProfile }) => {
                     )}
                     {!thumbnail && (
                         <img
-                            src={require("@svg/backgrounds/thumb-placeholder.svg")}
+                            src={require("svg/backgrounds/thumb-placeholder.svg")}
                             alt=""
                             className="w-full h-full"
                         />

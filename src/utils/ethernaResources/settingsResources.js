@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import { store } from "@state/store"
+import { store } from "state/store"
 
 // ----------------------------------------------------------------------------
 // GET

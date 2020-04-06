@@ -66,7 +66,7 @@ const FileDrag = ({ id, label, onSelectFile, disabled }) => {
                 />
                 <div className="drag-content">
                     <img
-                        src={require("@svg/icons/upload-icon-lg.svg")}
+                        src={require("svg/icons/upload-icon-lg.svg")}
                         alt=""
                     />
                     <span className="drag-info text-lg">

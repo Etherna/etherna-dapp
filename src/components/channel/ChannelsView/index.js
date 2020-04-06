@@ -3,11 +3,11 @@ import InfiniteScroller from "react-infinite-scroller"
 import { Link } from "gatsby"
 
 import "./channels.scss"
-import { getProfiles } from "@utils/3box"
-import Avatar from "@components/user/Avatar"
-import VideoGrid from "@components/media/VideoGrid"
-import { getChannelsWithVideos } from "@utils/ethernaResources/channelResources"
-import * as Routes from "@routes"
+import { getProfiles } from "utils/3box"
+import Avatar from "components/user/Avatar"
+import VideoGrid from "components/media/VideoGrid"
+import { getChannelsWithVideos } from "utils/ethernaResources/channelResources"
+import * as Routes from "routes"
 
 const FETCH_COUNT = 10
 

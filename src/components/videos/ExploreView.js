@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
 import InfiniteScroller from "react-infinite-scroller"
 
-import { getVideos } from "@utils/ethernaResources/videosResources"
-import VideoGrid from "@components/media/VideoGrid"
+import { getVideos } from "utils/ethernaResources/videosResources"
+import VideoGrid from "components/media/VideoGrid"
 
 const FETCH_COUNT = 25
 

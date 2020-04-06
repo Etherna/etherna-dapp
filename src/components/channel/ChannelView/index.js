@@ -5,17 +5,17 @@ import { useSelector } from "react-redux"
 import { Link } from "gatsby"
 
 import "./channel.scss"
-import Alert from "@common/Alert"
-import Button from "@common/Button"
-import SEO from "@components/layout/SEO"
-import VideoGrid from "@components/media/VideoGrid"
-import ProfileInfo from "@components/profile/ProfileInfo"
-import { profileActions } from "@state/actions"
+import Alert from "components/common/Alert"
+import Button from "components/common/Button"
+import SEO from "components/layout/SEO"
+import VideoGrid from "components/media/VideoGrid"
+import ProfileInfo from "components/profile/ProfileInfo"
+import { profileActions } from "state/actions"
 import {
     getChannelVideos,
     getChannel,
-} from "@utils/ethernaResources/channelResources"
-import * as Routes from "@routes"
+} from "utils/ethernaResources/channelResources"
+import * as Routes from "routes"
 
 const FETCH_COUNT = 50
 
@@ -114,7 +114,7 @@ const ChannelView = ({ channelAddress }) => {
                             !hasChannel &&
                             (isCreatingChannel ? (
                                 <img
-                                    src={require("@svg/animated/spinner.svg")}
+                                    src={require("svg/animated/spinner.svg")}
                                     className="self-center"
                                     width="30"
                                     alt=""
