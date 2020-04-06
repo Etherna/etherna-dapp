@@ -1,10 +1,10 @@
 import React from "react"
 import { useSelector } from "react-redux"
-import { Link } from "gatsby"
+import { Link } from "react-router-dom"
 
 import SidebarItem from "./SidebarItem"
-import { getResourceUrl } from "utils/swarm"
-import * as Routes from "routes"
+import { getResourceUrl } from "@utils/swarm"
+import * as Routes from "@routes"
 
 const MyChannel = () => {
     const { name, avatar, existsOnIndex } = useSelector(state => state.profile)

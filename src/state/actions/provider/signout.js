@@ -1,6 +1,6 @@
-import { store } from "state/store"
-import { ProfileActionTypes } from "state/reducers/profileReducer"
-import { UserActionTypes } from "state/reducers/userReducer"
+import { store } from "@state/store"
+import { ProfileActionTypes } from "@state/reducers/profileReducer"
+import { UserActionTypes } from "@state/reducers/userReducer"
 
 const signout = async (clearStorage = true) => {
     const { isSignedIn, box } = store.getState().user

@@ -1,5 +1,5 @@
-import { store } from "state/store"
-import { EnvActionTypes } from "state/reducers/enviromentReducer"
+import { store } from "@state/store"
+import { EnvActionTypes } from "@state/reducers/enviromentReducer"
 
 export const updateIndexHost = host => {
     window.localStorage.setItem("indexHost", host)
@@ -18,11 +18,11 @@ export const updateGatewayHost = host => {
 }
 
 export const resetIndexHost = () => {
-    const host = process.env.INDEX_HOST
+    const host = process.env.REACT_APP_INDEX_HOST
     updateIndexHost(host)
 }
 
 export const resetGatewayHost = () => {
-    const host = process.env.GATEWAY_HOST
+    const host = process.env.REACT_APP_GATEWAY_HOST
     updateGatewayHost(host)
 }

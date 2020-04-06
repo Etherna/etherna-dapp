@@ -1,6 +1,6 @@
-import { store } from "state/store"
-import { UIActionTypes } from "state/reducers/uiReducer"
-import { UserActionTypes } from "state/reducers/userReducer"
+import { store } from "@state/store"
+import { UIActionTypes } from "@state/reducers/uiReducer"
+import { UserActionTypes } from "@state/reducers/userReducer"
 
 // fix SSR build issues
 const Box = typeof window !== "undefined" ? require("3box") : null

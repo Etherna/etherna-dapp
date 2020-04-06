@@ -1,7 +1,7 @@
 import React, { useRef } from "react"
 
-import { DropDown, DropDownMenu, DropDownMenuToggle } from "components/common/DropDown"
-import Button from "components/common/Button"
+import { DropDown, DropDownMenu, DropDownMenuToggle } from "@common/DropDown"
+import Button from "@common/Button"
 import EnvDropDownMenus from "./EnvDropDownMenu"
 
 const GuestMenu = () => {
@@ -14,7 +14,7 @@ const GuestMenu = () => {
             <DropDownMenuToggle menuRef={mainMenuRef}>
                 <Button aspect="transparent" className="btn-rounded mr-2">
                     <img
-                        src={require("svg/icons/menu-icon.svg")}
+                        src={require("@svg/icons/menu-icon.svg")}
                         className="mx-auto"
                         alt=""
                     />
@@ -24,7 +24,7 @@ const GuestMenu = () => {
                 <DropDownMenuToggle menuRef={indexMenuRef} isMenuItem={true}>
                     <div className="flex">
                         <img
-                            src={require("svg/icons/index-icon.svg")}
+                            src={require("@svg/icons/index-icon.svg")}
                             alt=""
                         />
                         <span>Index</span>
@@ -33,7 +33,7 @@ const GuestMenu = () => {
                 <DropDownMenuToggle menuRef={gatewayMenuRef} isMenuItem={true}>
                     <div className="flex">
                         <img
-                            src={require("svg/icons/gateway-icon.svg")}
+                            src={require("@svg/icons/gateway-icon.svg")}
                             alt=""
                         />
                         <span>Gateway</span>

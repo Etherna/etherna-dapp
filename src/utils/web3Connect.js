@@ -14,7 +14,7 @@ export const web3Connect = Web3Connect
               walletconnect: {
                   package: WalletConnectProvider,
                   options: {
-                      infuraId: process.env.INFURA_ID,
+                      infuraId: process.env.REACT_APP_INFURA_ID,
                   },
               },
               authereum: {

@@ -1,6 +1,6 @@
 import React from "react"
 
-import SEO from "../components/layout/SEO"
+import SEO from "@components/layout/SEO"
 
 const NotFoundPage = () => (
     <div className="bg-gray-100 h-screen">

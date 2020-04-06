@@ -1,7 +1,7 @@
 import React from "react"
 
-import Layout from "components/layout/DefaultLayout"
-import SEO from "components/layout/SEO"
+import Layout from "@components/layout/DefaultLayout"
+import SEO from "@components/layout/SEO"
 
 const HowItWorks = () => (
     <Layout showSidebar={false}>

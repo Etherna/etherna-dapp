@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import moment from "moment"
-import { Link, navigate } from "gatsby"
+import { Link, Redirect } from "react-router-dom"
 
 import "./video-view.scss"
-import SEO from "components/layout/SEO"
-import Player from "components/media/Player"
-import Avatar from "components/user/Avatar"
-import { getResourceUrl } from "utils/swarm"
-import { getProfile } from "utils/3box"
-import * as Routes from "routes"
-import { getVideo } from "utils/ethernaResources/videosResources"
+import SEO from "@components/layout/SEO"
+import Player from "@components/media/Player"
+import Avatar from "@components/user/Avatar"
+import { getResourceUrl } from "@utils/swarm"
+import { getProfile } from "@utils/3box"
+import * as Routes from "@routes"
+import { getVideo } from "@utils/ethernaResources/videosResources"
 
 const VideoView = ({ hash, video }) => {
     const source = getResourceUrl(hash)
+    const [videoOnIndex, setVideoOnIndex] = useState(true)
     const [isFetchingVideo, setIsFetchingVideo] = useState(false)
     const [profileAddress, setProfileAddress] = useState(video.channelAddress)
     const [title, setTitle] = useState(video.title)
@@ -57,7 +58,7 @@ const VideoView = ({ hash, video }) => {
             setPublishDate(videoInfo.creationDateTime)
         } catch (error) {
             console.error(error)
-            navigate("/404")
+            setVideoOnIndex(false)
         }
         setIsFetchingVideo(false)
     }
@@ -74,6 +75,10 @@ const VideoView = ({ hash, video }) => {
 
     if (isFetchingVideo) {
         return <div />
+    }
+
+    if (videoOnIndex) {
+        return <Redirect to={Routes.getNotFoundLink()} />
     }
 
     return (
@@ -96,7 +101,7 @@ const VideoView = ({ hash, video }) => {
                                 className="btn btn-transparent btn-rounded"
                             >
                                 <img
-                                    src={require("svg/icons/download-icon.svg")}
+                                    src={require("@svg/icons/download-icon.svg")}
                                     alt=""
                                     className="m-auto"
                                 />

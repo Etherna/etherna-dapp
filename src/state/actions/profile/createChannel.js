@@ -1,6 +1,6 @@
-import { store } from "state/store"
-import { ProfileActionTypes } from "state/reducers/profileReducer"
-import { createChannel as createIndexChannel } from "utils/ethernaResources/channelResources"
+import { store } from "@state/store"
+import { ProfileActionTypes } from "@state/reducers/profileReducer"
+import { createChannel as createIndexChannel } from "@utils/ethernaResources/channelResources"
 
 const createChannel = async address => {
     try {

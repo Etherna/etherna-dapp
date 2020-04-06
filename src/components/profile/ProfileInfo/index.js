@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react"
 import PropTypes from "prop-types"
 
 import "./profile-info.scss"
-import { getProfile } from "utils/3box"
-import { shortenEthAddr } from "utils/ethFuncs"
-import makeBlockies from "utils/makeBlockies"
-import { isImageObject, getResourceUrl } from "utils/swarm"
+import { getProfile } from "@utils/3box"
+import { shortenEthAddr } from "@utils/ethFuncs"
+import makeBlockies from "@utils/makeBlockies"
+import { isImageObject, getResourceUrl } from "@utils/swarm"
 
 const ProfileInfo = ({
     children,

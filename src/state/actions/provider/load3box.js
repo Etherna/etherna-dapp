@@ -1,9 +1,9 @@
 import pollAddress from "./pollAddress"
-import { store } from "state/store"
-import { UIActionTypes } from "state/reducers/uiReducer"
-import { UserActionTypes } from "state/reducers/userReducer"
-import fetchProfile from "state/actions/profile/fetchProfile"
-import { resolveEnsName } from "utils/ethFuncs"
+import { store } from "@state/store"
+import { UIActionTypes } from "@state/reducers/uiReducer"
+import { UserActionTypes } from "@state/reducers/userReducer"
+import fetchProfile from "@state/actions/profile/fetchProfile"
+import { resolveEnsName } from "@utils/ethFuncs"
 
 const load3Box = async () => {
     store.dispatch({

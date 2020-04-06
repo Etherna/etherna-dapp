@@ -3,8 +3,8 @@ import PropTypes from "prop-types"
 import Switch from "react-switch"
 import { useSelector } from "react-redux"
 
-import Alert from "components/common/Alert"
-import { isPinningEnabled } from "utils/swarm"
+import Alert from "@common/Alert"
+import { isPinningEnabled } from "@utils/swarm"
 
 const PinContentField = ({ onChange }) => {
     const { gatewayHost } = useSelector(state => state.env)
@@ -47,7 +47,7 @@ const PinContentField = ({ onChange }) => {
             </label>
             {pinningAvailable === undefined && (
                 <img
-                    src={require("svg/animated/spinner.svg")}
+                    src={require("@svg/animated/spinner.svg")}
                     alt=""
                     width="20"
                 />

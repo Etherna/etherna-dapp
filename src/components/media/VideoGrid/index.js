@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import classnames from "classnames"
 
 import "./video-grid.scss"
-import VideoPreview from "components/media/VideoPreview"
+import VideoPreview from "@components/media/VideoPreview"
 
 const VideoGrid = ({ label, videos, mini }) => {
     const LabelTag = mini ? "h5" : "h3"

@@ -4,14 +4,14 @@ import classnames from "classnames"
 import { useSelector } from "react-redux"
 
 import "./profile-info-edit.scss"
-import Button from "components/common/Button"
-import Modal from "components/common/Modal"
+import Button from "@common/Button"
+import Modal from "@common/Modal"
 import {
     isImageObject,
     getResourceUrl,
     uploadResourceToSwarm,
-} from "utils/swarm"
-import makeBlockies from "utils/makeBlockies"
+} from "@utils/swarm"
+import makeBlockies from "@utils/makeBlockies"
 
 const ProfileInfoEdit = ({
     profileAddress,
@@ -163,7 +163,7 @@ const ProfileInfoEdit = ({
                 )}
                 {isSubmitting && (
                     <img
-                        src={require("svg/animated/spinner.svg")}
+                        src={require("@svg/animated/spinner.svg")}
                         className="ml-auto"
                         width="30"
                         alt=""

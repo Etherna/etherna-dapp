@@ -1,5 +1,5 @@
-import { store } from "state/store"
-import { ProfileActionTypes } from "state/reducers/profileReducer"
+import { store } from "@state/store"
+import { ProfileActionTypes } from "@state/reducers/profileReducer"
 
 const updateProfile = async (box, data) => {
     try {

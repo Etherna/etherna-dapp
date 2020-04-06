@@ -3,8 +3,8 @@ import PropTypes from "prop-types"
 import classnames from "classnames"
 
 import "./avatar.scss"
-import makeBlockies from "utils/makeBlockies"
-import { getResourceUrl } from "utils/swarm"
+import makeBlockies from "@utils/makeBlockies"
+import { getResourceUrl } from "@utils/swarm"
 
 const Avatar = ({ image, address, size, showBadge }) => {
     const blockie = address ? makeBlockies(address) : null

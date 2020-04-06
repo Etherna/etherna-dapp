@@ -1,5 +1,5 @@
-import { store } from "state/store"
-import { UIActionTypes } from "state/reducers/uiReducer"
+import { store } from "@state/store"
+import { UIActionTypes } from "@state/reducers/uiReducer"
 
 export const showError = (title, message) => {
     store.dispatch({
