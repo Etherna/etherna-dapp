@@ -10,7 +10,7 @@ import * as Routes from "@routes"
 export const SignedInRoute = ({
     path,
     exact,
-    component
+    children
 }) => {
     const { isSignedIn } = useSelector(state => state.user)
 
@@ -20,7 +20,7 @@ export const SignedInRoute = ({
             exact={exact}
             render={({ location }) =>
                 isSignedIn ? (
-                    component
+                    children
                 ) : (
                     <Redirect to = {
                         {
@@ -39,7 +39,7 @@ export const SignedInRoute = ({
 export const HasChannelRoute = ({
     path,
     exact,
-    component
+    children
 }) => {
     const { existsOnIndex } = useSelector(state => state.profile)
 
@@ -49,7 +49,7 @@ export const HasChannelRoute = ({
             exact={exact}
             render={({ location }) =>
                 existsOnIndex ? (
-                    component
+                    children
                 ) : (
                     <Redirect to = {
                         {
@@ -68,7 +68,7 @@ export const HasChannelRoute = ({
 export const ChannelOwnerRoute = ({
     path,
     exact,
-    component
+    children
 }) => {
     const { address } = useSelector(state => state.user)
 
@@ -78,7 +78,7 @@ export const ChannelOwnerRoute = ({
             exact={exact}
             render={({ location, match }) =>
                 match.params.id === address ? (
-                    component
+                    children
                 ) : (
                     <Redirect to = {
                         {
@@ -97,29 +97,27 @@ export const ChannelOwnerRoute = ({
 export const WatchRoute = ({
     path,
     exact,
-    component
+    children
 }) => {
+    const hasVideoParam = (search) => {
+        const query = new URLSearchParams(search)
+        return query.has("v") && query.get("v") !== ""
+    }
     return (
         <Route
             path={path}
             exact={exact}
-            render={({ location }) => {
-                const query = new URLSearchParams(location.search)
-                return (
-                    query.has("v") && query.get("v") !== "" ? (
-                        component
-                    ) : (
-                        <Redirect to = {
-                            {
-                                pathname: Routes.getHomeLink(),
-                                state: {
-                                    from: location
-                                }
-                            }
-                        } />
-                    )
+            render={({ location }) =>
+                hasVideoParam(location.search) ? (
+                    children
+                ) : (
+                    <Redirect to = {
+                        {
+                            pathname: Routes.getHomeLink()
+                        }
+                    } />
                 )
-            }}
+            }
         />
     )
 }

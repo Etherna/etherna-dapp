@@ -10,8 +10,7 @@
             "@state": ["src/state", "src/state/*"],
             "@utils": ["src/utils", "src/utils/*"],
             "@svg": ["src/svg", "src/svg/*"]
-        },
-        "experimentalDecorators": true
+        }
     },
     "include": ["src"],
     "exclude": ["build", "node_modules"]

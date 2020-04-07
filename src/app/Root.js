@@ -27,14 +27,30 @@ const Root = () => {
         <StateWrapper>
             <Router>
                 <Switch>
-                    <Route path="/" exact component={Home} />
-                    <Route path="/channels" exact component={Channels} />
-                    <Route path="/channel/:id" exact component={Channel} />
-                    <ChannelOwnerRoute path="/channel/:id/edit" exact component={ChannelEdit} />
-                    <WatchRoute path="/watch" exact component={Watch} />
-                    <HasChannelRoute path="/upload" exact component={Upload} />
-                    <Route path="/how-it-works" exact component={HowItWorks} />
-                    <Route path="*" component={NotFound} />
+                    <Route path="/" exact>
+                        <Home />
+                    </Route>
+                    <Route path="/channels" exact>
+                        <Channels />
+                    </Route>
+                    <Route path="/channel/:id" exact>
+                        <Channel />
+                    </Route>
+                    <ChannelOwnerRoute path="/channel/:id/edit" exact>
+                        <ChannelEdit />
+                    </ChannelOwnerRoute>
+                    <WatchRoute path="/watch*">
+                        <Watch />
+                    </WatchRoute>
+                    <HasChannelRoute path="/upload">
+                        <Upload />
+                    </HasChannelRoute>
+                    <Route path="/how-it-works">
+                        <HowItWorks />
+                    </Route>
+                    <Route path="*">
+                        <NotFound />
+                    </Route>
                 </Switch>
             </Router>
         </StateWrapper>

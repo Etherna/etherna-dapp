@@ -1,6 +1,6 @@
 import React from "react"
 import { useSelector } from "react-redux"
-import { Link, useLocation } from "react-router-dom"
+import { NavLink } from "react-router-dom"
 
 import "./header.scss"
 import UserMenu from "@components/user/UserMenu"
@@ -14,61 +14,69 @@ const anyMatch = (patterns, string) => {
 }
 
 const Header = () => {
-    const location = useLocation()
     const { existsOnIndex } = useSelector(state => state.profile)
+
     return (
         <header className="header">
             <nav className="navbar">
                 <div className="left-nav">
-                    <Link
+                    <NavLink
                         to={Routes.getHomeLink()}
-                        className={
-                            "nav-item" +
-                            (location.pathname === "/" ||
-                            anyMatch(
-                                ExploreMatches,
-                                location.pathname
-                            )
-                                ? " active"
-                                : "")
-                        }
+                        className="nav-item"
+                        activeClassName="active"
+                        isActive={(_, location) => {
+                            if (
+                                location.pathname === "/" ||
+                                anyMatch(
+                                    ExploreMatches,
+                                    location.pathname
+                                )
+                            ) {
+                                return true
+                            }
+                            return false
+                        }}
                     >
                         Explore
-                    </Link>
-                    <Link
+                    </NavLink>
+                    <NavLink
                         to={Routes.getChannelsLink()}
-                        className={
-                            "nav-item" +
-                            (anyMatch(
-                                ChannelsMatches,
-                                location.pathname
-                            )
-                                ? " active"
-                                : "")
-                        }
+                        className="nav-item"
+                        activeClassName="active"
+                        isActive={(_, location) => {
+                            if (
+                                anyMatch(
+                                    ChannelsMatches,
+                                    location.pathname
+                                )
+                            ) {
+                                return true
+                            }
+                            return false
+                        }}
                     >
                         Channels
-                    </Link>
-                    {/* <Link
+                    </NavLink>
+                    {/* <NavLink
                         to={Routes.getHowItWorksLink()}
                         className="nav-item"
                         activeClassName="active"
                     >
                         How it works
-                    </Link> */}
+                    </NavLink> */}
                 </div>
                 <div className="logo">
-                    <Link to={Routes.getHomeLink()}>
+                    <NavLink to={Routes.getHomeLink()}>
                         <img
                             src={require("@svg/logo.svg")}
                             alt=""
                             width={140}
                         />
-                    </Link>
+                    </NavLink>
                 </div>
                 <div className="right-nav">
                     {existsOnIndex && (
-                        <Link
+                        <NavLink
                             to={Routes.getVideoUploadLink()}
                             className="nav-item"
                             activeClassName="active"
@@ -78,7 +86,7 @@ const Header = () => {
                                 alt=""
                             />
                             <span>Upload</span>
-                        </Link>
+                        </NavLink>
                     )}
                     <UserMenu />
                 </div>

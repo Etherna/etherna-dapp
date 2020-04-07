@@ -33,9 +33,6 @@ const ExploreView = () => {
         }
     }
 
-    console.log(process.env);
-
-
     return (
         <InfiniteScroller
             loadMore={fetchVideos}

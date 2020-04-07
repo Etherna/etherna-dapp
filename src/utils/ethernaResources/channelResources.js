@@ -13,6 +13,10 @@ export const getChannels = async (page = 0, take = 25) => {
         params: { page, take },
     })
 
+    if (!Array.isArray(resp.data)) {
+        throw new Error("Cannot fetch channels")
+    }
+
     /**
      * Array of:
      * {
@@ -56,20 +60,20 @@ export const getChannel = async address => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels/${address}`
 
-    try {
-        const resp = await axios.get(apiUrl)
+    const resp = await axios.get(apiUrl)
 
-        /**
-         * Object:
-         * {
-         *   address: string,
-         *   creationDateTime: string
-         * }
-         */
-        return resp.data
-    } catch (error) {
-        return null
+    if (typeof resp.data !== "object") {
+        throw new Error("Cannot fetch channel")
     }
+
+    /**
+     * Object:
+     * {
+     *   address: string,
+     *   creationDateTime: string
+     * }
+     */
+    return resp.data
 }
 
 export const getChannelVideos = async (address, page = 0, take = 25) => {
@@ -79,6 +83,10 @@ export const getChannelVideos = async (address, page = 0, take = 25) => {
     const resp = await axios.get(apiUrl, {
         params: { page, take },
     })
+
+    if (!Array.isArray(resp.data)) {
+        throw new Error("Cannot fetch channel videos")
+    }
 
     /**
      * Array of:
@@ -105,6 +113,10 @@ export const createChannel = async address => {
     const resp = await axios.post(apiUrl, {
         Address: address,
     })
+
+    if (typeof resp.data !== "object") {
+        throw new Error("Cannot create channel")
+    }
 
     /**
      * Object:
@@ -134,6 +146,10 @@ export const addVideoToChannel = async (
         LengthInSeconds: time,
         ThumbnailHash: thumbnailHash,
     })
+
+    if (typeof resp.data !== "object") {
+        throw new Error("Cannot add video to the channel")
+    }
 
     /**
      * Object:
