@@ -9,9 +9,6 @@ const WatchPage = () => {
     const location = useLocation()
     const query = new URLSearchParams(location.search)
 
-    console.log(location);
-
-
     return (
         <Layout showSidebar={false}>
             <SEO title="Watch" />

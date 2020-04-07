@@ -78,8 +78,6 @@ const VideoView = ({ hash, video }) => {
     }
 
     if (!isFetchingVideo && !videoOnIndex) {
-        console.log('not found');
-
         return <Redirect to={Routes.getNotFoundLink()} />
     }
 
