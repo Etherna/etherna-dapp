@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 import moment from "moment"
 
 import "./video-preview.scss"
-import Time from "../time"
+import Time from "../Time"
 import Avatar from "@components/user/Avatar"
 import { getProfile } from "@utils/3box"
 import { getResourceUrl } from "@utils/swarm"

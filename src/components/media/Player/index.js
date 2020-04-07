@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import classnames from "classnames"
 
 import "./player.scss"
-import Time from "../time"
+import Time from "../Time"
 import Slider from "@common/Slider"
 
 const Player = ({ source, thumbnail }) => {
