@@ -7,6 +7,7 @@
   "dependencies": {
     "3box": "^1.17.1",
     "3id-blockchain-utils": "^0.3.3",
+    "@loadable/component": "^5.12.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -37,6 +38,8 @@
     "web3connect": "^1.0.0-beta.32"
   },
   "devDependencies": {
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/preset-react": "^7.9.4",
     "@fullhuman/postcss-purgecss": "^2.1.0",
     "customize-cra": "^0.9.1",
     "electron": "8.0.2",

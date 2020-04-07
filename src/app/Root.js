@@ -1,4 +1,5 @@
 import React from "react"
+import loadable from "@loadable/component"
 import {
   BrowserRouter as Router,
   Switch,
@@ -13,14 +14,40 @@ import {
     WatchRoute
 } from "./ProtectedRoutes"
 import StateWrapper from "@state/wrapper"
-import NotFound from "@pages/404"
-import Home from "@pages/home"
-import Channel from "@pages/channel"
-import ChannelEdit from "@pages/channelEdit"
-import Channels from "@pages/channels"
-import Watch from "@pages/watch"
-import Upload from "@pages/upload"
-import HowItWorks from "@pages/how-it-works"
+
+const AsyncHome = loadable(() => import("@pages/home"), {
+    fallback: <div></div>
+})
+const  AsyncChannel = loadable(() => import("@pages/channel"), {
+    fallback: <div></div>
+})
+const  AsyncChannelEdit = loadable(() => import("@pages/channelEdit"), {
+    fallback: <div></div>
+})
+const  AsyncChannels = loadable(() => import("@pages/channels"), {
+    fallback: <div></div>
+})
+const  AsyncWatch = loadable(() => import("@pages/watch"), {
+    fallback: <div></div>
+})
+const  AsyncUpload = loadable(() => import("@pages/upload"), {
+    fallback: <div></div>
+})
+const  AsyncHowItWorks = loadable(() => import("@pages/how-it-works"), {
+    fallback: <div></div>
+})
+const AsyncNotFound = loadable(() => import("@pages/404"), {
+    fallback: <div></div>
+})
+
+const Home = () => (<AsyncHome />)
+const Channel = () => (<AsyncChannel />)
+const ChannelEdit = () => (<AsyncChannelEdit />)
+const Channels = () => (<AsyncChannels />)
+const Watch = () => (<AsyncWatch />)
+const Upload = () => (<AsyncUpload />)
+const HowItWorks = () => (<AsyncHowItWorks />)
+const NotFound = () => (<AsyncNotFound />)
 
 const Root = () => {
     return (
@@ -39,7 +66,7 @@ const Root = () => {
                     <ChannelOwnerRoute path="/channel/:id/edit" exact>
                         <ChannelEdit />
                     </ChannelOwnerRoute>
-                    <WatchRoute path="/watch*">
+                    <WatchRoute path="/watch">
                         <Watch />
                     </WatchRoute>
                     <HasChannelRoute path="/upload">
