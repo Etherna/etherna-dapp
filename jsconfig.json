@@ -2,15 +2,16 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "@app": ["src/app", "src/app/*"],
-            "@components": ["src/components", "src/components/*"],
-            "@common": ["src/components/common", "src/components/common/*"],
-            "@pages": ["src/pages", "src/pages/*"],
-            "@routes": ["src/routes", "src/routes/*"],
-            "@state": ["src/state", "src/state/*"],
-            "@utils": ["src/utils", "src/utils/*"],
-            "@svg": ["src/svg", "src/svg/*"]
-        }
+            "@app/*": ["src/app/*"],
+            "@components/*": ["src/components/*"],
+            "@common/*": ["src/components/common/*"],
+            "@pages/*": ["src/pages/*"],
+            "@routes": ["src/routes"],
+            "@state/*": ["src/state/*"],
+            "@utils/*": ["src/utils/*"],
+            "@svg/*": ["src/svg/*"]
+        },
+        "experimentalDecorators": true
     },
     "include": ["src"],
     "exclude": ["build", "node_modules"]
