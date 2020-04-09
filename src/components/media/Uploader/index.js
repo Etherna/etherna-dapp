@@ -117,6 +117,7 @@ const Uploader = () => {
                                 label="Drag your video here"
                                 onSelectFile={selectVideoFile}
                                 disabled={isSubmitting}
+                                uploadLimit={100}
                             />
                         )}
                         {videoFile !== undefined && (
@@ -140,6 +141,7 @@ const Uploader = () => {
                                 label="Drag your thumbnail here"
                                 onSelectFile={file => setThumbnailFile(file)}
                                 disabled={isSubmitting}
+                                uploadLimit={2}
                             />
                         )}
                         {thumbnailFile !== undefined && (
