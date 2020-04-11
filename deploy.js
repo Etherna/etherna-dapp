@@ -27,14 +27,10 @@ const deployToHost = () => {
 }
 
 const deployToSwarm = async () => {
-    // TOOD
-    const axios = require("axios")
-    try {
-        const resp = await axios.post("https://gateway.etherna.io/bzz:/", "hello")
-        console.log(resp.data)
-    } catch (error) {
-        console.error(error)
-    }
+    // TODO
+    /**
+     * swarm --bzzapi https://gateway.etherna.io --defaultpath build/index.html --recursive up build
+     */
 }
 
 const deploy = () => {

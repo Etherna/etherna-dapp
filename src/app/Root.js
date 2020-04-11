@@ -15,28 +15,28 @@ import {
 } from "./ProtectedRoutes"
 import StateWrapper from "@state/wrapper"
 
-const AsyncHome = loadable(() => import("@pages/home"), {
+const AsyncHome = loadable(() => import(/* webpackChunkName: "home" */ "@pages/home"), {
     fallback: <div></div>
 })
-const  AsyncChannel = loadable(() => import("@pages/channel"), {
+const  AsyncChannel = loadable(() => import(/* webpackChunkName: "channel" */ "@pages/channel"), {
     fallback: <div></div>
 })
-const  AsyncChannelEdit = loadable(() => import("@pages/channelEdit"), {
+const  AsyncChannelEdit = loadable(() => import(/* webpackChunkName: "channel-edit" */ "@pages/channelEdit"), {
     fallback: <div></div>
 })
-const  AsyncChannels = loadable(() => import("@pages/channels"), {
+const  AsyncChannels = loadable(() => import(/* webpackChunkName: "channels" */ "@pages/channels"), {
     fallback: <div></div>
 })
-const  AsyncWatch = loadable(() => import("@pages/watch"), {
+const  AsyncWatch = loadable(() => import(/* webpackChunkName: "watch" */ "@pages/watch"), {
     fallback: <div></div>
 })
-const  AsyncUpload = loadable(() => import("@pages/upload"), {
+const  AsyncUpload = loadable(() => import(/* webpackChunkName: "upload" */ "@pages/upload"), {
     fallback: <div></div>
 })
-const  AsyncHowItWorks = loadable(() => import("@pages/how-it-works"), {
+const  AsyncHowItWorks = loadable(() => import(/* webpackChunkName: "how-it-works" */ "@pages/how-it-works"), {
     fallback: <div></div>
 })
-const AsyncNotFound = loadable(() => import("@pages/404"), {
+const AsyncNotFound = loadable(() => import(/* webpackChunkName: "404" */ "@pages/404"), {
     fallback: <div></div>
 })
 
