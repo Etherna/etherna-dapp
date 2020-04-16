@@ -20,23 +20,23 @@ import * as Routes from "@routes"
 const FETCH_COUNT = 50
 
 const ChannelView = ({ channelAddress }) => {
-    const prefetchProfile = (window.prefetchData && window.prefetchData.profile) || {}
+    const prefetchProfile = window.prefetchData && window.prefetchData.profile
     const prefetchVideos = window.prefetchData && window.prefetchData.videos
 
     const { address } = useSelector(state => state.user)
     const [isFetching, setIsFetching] = useState(false)
     const [isCreatingChannel, setIsCreatingChannel] = useState(false)
     const [hasChannel, setHasChannel] = useState(false)
-    const [channelVideos, setChannelVideos] = useState(prefetchVideos || [])
+    const [channelVideos, setChannelVideos] = useState([])
     const [profileInfo, setProfileInfo] = useState(null)
-    const [page, setPage] = useState(prefetchVideos ? 1 : 0)
+    const [page, setPage] = useState(0)
     const [hasMore, setHasMore] = useState(true)
     const [showChannelCreatedMessage, setShowChannelCreatedMessage] = useState(
         false
     )
 
     useEffect(() => {
-        if (channelAddress && prefetchProfile.address !== channelAddress) {
+        if (channelAddress) {
             // reset
             setHasChannel(false)
             setChannelVideos([])
@@ -58,25 +58,31 @@ const ChannelView = ({ channelAddress }) => {
         setIsFetching(true)
 
         try {
-            const channel = await getChannel(channelAddress)
+            const channel = prefetchVideos && prefetchProfile.address === channelAddress
+                ? {}
+                : await getChannel(channelAddress)
 
             setHasChannel(!!channel)
             fetchVideos()
         } catch (error) {
             console.error(error)
-            setIsFetching(false)
         }
+        setIsFetching(false)
     }
 
     const fetchVideos = async () => {
         setIsFetching(true)
 
+        const hasPrefetch = prefetchVideos && prefetchProfile.address === channelAddress
+
         try {
-            const videos = await getChannelVideos(
-                channelAddress,
-                page,
-                FETCH_COUNT
-            )
+            const videos = hasPrefetch
+                ? prefetchVideos
+                : await getChannelVideos(
+                    channelAddress,
+                    page,
+                    FETCH_COUNT
+                )
             setChannelVideos(page === 0 ? videos : channelVideos.concat(videos))
 
             if (videos.length < FETCH_COUNT) {
@@ -93,7 +99,7 @@ const ChannelView = ({ channelAddress }) => {
     }
 
     const mapVideosWithProfile = () => {
-        if (!profileInfo) return
+        if (!profileInfo || !channelVideos) return
         let videos = channelVideos
         for (let video of videos) {
             video.profileData = {
@@ -162,12 +168,15 @@ const ChannelView = ({ channelAddress }) => {
                         Ethernaut!
                     </Alert>
                 )}
-                {hasChannel && !isFetching && channelVideos.length === 0 && (
+                {hasChannel && !isFetching && (channelVideos || []).length === 0 && (
                     <p className="text-gray-500 text-center my-16">
                         This channel has yet to upload a video
                     </p>
                 )}
-                {channelVideos.length > 0 && (
+                {channelVideos === undefined && (
+                    <VideoGrid mini={true} />
+                )}
+                {channelVideos && channelVideos.length > 0 && (
                     <InfiniteScroller
                         loadMore={fetchVideos}
                         hasMore={hasMore}

@@ -7,7 +7,7 @@ import VideoGrid from "@components/media/VideoGrid"
 const FETCH_COUNT = 25
 
 const ExploreView = () => {
-    const [videos, setVideos] = useState([])
+    const [videos, setVideos] = useState(undefined)
     const [page, setPage] = useState(0)
     const [hasMore, setHasMore] = useState(true)
 

@@ -13,7 +13,7 @@ const SwarmFileUpload = ({
     onRemoveFile,
     showImagePreview,
     disabled,
-    pinContent,
+    pinContent
 }) => {
     const [isUploading, setIsUploading] = useState(false)
     const [uploadProgress, setUploadProgress] = useState(0)

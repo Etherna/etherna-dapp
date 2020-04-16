@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react"
 import InfiniteScroller from "react-infinite-scroller"
-import { Link } from "react-router-dom"
 
 import "./channels.scss"
+import ChannelPreview from "../ChannelPreview"
+import ChannelPreviewPlaceholder from "../ChannelPreviewPlaceholder"
 import { getProfiles } from "@utils/3box"
-import Avatar from "@components/user/Avatar"
-import VideoGrid from "@components/media/VideoGrid"
 import { getChannelsWithVideos } from "@utils/ethernaResources/channelResources"
-import * as Routes from "@routes"
 
 const FETCH_COUNT = 10
 
 const ChannelsView = () => {
-    const [channels, setChannels] = useState([])
+    const [channels, setChannels] = useState(undefined)
     const [page, setPage] = useState(0)
     const [hasMore, setHasMore] = useState(true)
 
@@ -31,21 +29,21 @@ const ChannelsView = () => {
             const boxProfiles = await getProfiles(
                 fetchedChannels.map(p => p.address)
             )
-            const mappedProfiles = fetchedChannels.map(p => {
+            const mappedProfiles = fetchedChannels.map(c => {
                 const boxProfile =
-                    boxProfiles.find(bp => bp.address === p.address) || {}
-                const videos = (p.videos || []).map(v => ({
+                    boxProfiles.find(bp => bp.address === c.address) || {}
+                const videos = (c.videos || []).map(v => ({
                     ...v,
                     profileData: boxProfile,
                 }))
                 return {
-                    ...p,
+                    ...c,
                     videos,
                     profileData: boxProfile,
                 }
             })
 
-            setChannels(channels.concat(mappedProfiles))
+            setChannels((channels || []).concat(mappedProfiles))
 
             if (fetchedChannels.length < FETCH_COUNT) {
                 setHasMore(false)
@@ -60,41 +58,28 @@ const ChannelsView = () => {
 
     return (
         <div className="channels">
+            {channels === undefined && (
+                <ChannelPreviewPlaceholder />
+            )}
+
             <InfiniteScroller
                 loadMore={fetchChannels}
                 hasMore={hasMore}
                 initialLoad={false}
                 threshold={30}
             >
-                {channels.map(channel => {
+                {!channels && (
+                    <div></div>
+                )}
+                {channels && channels.map(channel => {
                     return (
-                        <div className="channel-preview" key={channel.address}>
-                            <div className="channel-info">
-                                <Link
-                                    to={Routes.getChannelLink(channel.address)}
-                                >
-                                    <Avatar
-                                        image={channel.profileData.avatar}
-                                        address={channel.address}
-                                    />
-                                </Link>
-                                <Link
-                                    to={Routes.getChannelLink(channel.address)}
-                                >
-                                    <h3>{channel.profileData.name}</h3>
-                                </Link>
-                            </div>
-                            {channel.videos && channel.videos.length > 0 ? (
-                                <VideoGrid
-                                    videos={channel.videos}
-                                    mini={true}
-                                />
-                            ) : (
-                                <p className="text-gray-600 italic">
-                                    No videos uploaded yet
-                                </p>
-                            )}
-                        </div>
+                        <ChannelPreview
+                            channelAddress={channel.address}
+                            avatar={channel.profileData.avatar}
+                            name={channel.profileData.name}
+                            videos={channel.videos}
+                            key={channel.address}
+                        />
                     )
                 })}
             </InfiniteScroller>
