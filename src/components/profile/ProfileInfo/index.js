@@ -13,7 +13,8 @@ const ProfileInfo = ({
     actions,
     onFetchedProfile,
 }) => {
-    //const [isFetchingProfile, setIsFetchingProfile] = useState(false)
+    const prefetchProfile = window.prefetchData && window.prefetchData.profile
+
     const [profileName, setProfileName] = useState("")
     const [profileDescription, setProfileDescription] = useState("")
     const [profileAvatar, setProfileAvatar] = useState(undefined)
@@ -33,10 +34,12 @@ const ProfileInfo = ({
     const fetchProfile = async () => {
         //setIsFetchingProfile(true)
 
+        const hasPrefetch = prefetchProfile && prefetchProfile.address === profileAddress
+
         try {
-            const { name, description, avatar, cover } = await getProfile(
-                profileAddress
-            )
+            const { name, description, avatar, cover } = hasPrefetch
+                ? prefetchProfile
+                : await getProfile(profileAddress)
             const fallbackName = name || shortenEthAddr(profileAddress)
 
             setProfileName(fallbackName)

@@ -20,20 +20,32 @@ import * as Routes from "@routes"
 const FETCH_COUNT = 50
 
 const ChannelView = ({ channelAddress }) => {
+    const prefetchProfile = (window.prefetchData && window.prefetchData.profile) || {}
+    const prefetchVideos = window.prefetchData && window.prefetchData.videos
+
     const { address } = useSelector(state => state.user)
     const [isFetching, setIsFetching] = useState(false)
     const [isCreatingChannel, setIsCreatingChannel] = useState(false)
     const [hasChannel, setHasChannel] = useState(false)
-    const [channelVideos, setChannelVideos] = useState([])
+    const [channelVideos, setChannelVideos] = useState(prefetchVideos || [])
     const [profileInfo, setProfileInfo] = useState(null)
-    const [page, setPage] = useState(0)
+    const [page, setPage] = useState(prefetchVideos ? 1 : 0)
     const [hasMore, setHasMore] = useState(true)
     const [showChannelCreatedMessage, setShowChannelCreatedMessage] = useState(
         false
     )
 
     useEffect(() => {
-        fetchChannel()
+        if (channelAddress && prefetchProfile.address !== channelAddress) {
+            // reset
+            setHasChannel(false)
+            setChannelVideos([])
+            setProfileInfo(null)
+            setPage(0)
+            setHasMore(true)
+            // fetch channel
+            fetchChannel()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [channelAddress])
 

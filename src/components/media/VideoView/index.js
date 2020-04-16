@@ -14,21 +14,16 @@ import { getVideo } from "@utils/ethernaResources/videosResources"
 
 const VideoView = ({ hash, video }) => {
     const source = getResourceUrl(hash)
+
     const [videoOnIndex, setVideoOnIndex] = useState(true)
     const [isFetchingVideo, setIsFetchingVideo] = useState(false)
     const [profileAddress, setProfileAddress] = useState(video.channelAddress)
     const [title, setTitle] = useState(video.title)
     const [description, setDescription] = useState(video.description)
-    const [thumbnail, setThumbnail] = useState(
-        getResourceUrl(video.thumbnailHash)
-    )
+    const [thumbnail, setThumbnail] = useState(getResourceUrl(video.thumbnailHash))
     const [publishDate, setPublishDate] = useState(video.creationDateTime)
-    const [profileName, setProfileName] = useState(
-        video.profileData && video.profileData.name
-    )
-    const [profileAvatar, setProfileAvatar] = useState(
-        video.profileData && video.profileData.avatar
-    )
+    const [profileName, setProfileName] = useState(video.profileData && video.profileData.name)
+    const [profileAvatar, setProfileAvatar] = useState(video.profileData && video.profileData.avatar)
 
     useEffect(() => {
         if (Object.keys(video).length === 0) {
@@ -39,17 +34,20 @@ const VideoView = ({ hash, video }) => {
 
     useEffect(() => {
         if (profileAddress) {
-            if (!profileName || !profileAvatar) {
-                fetchProfile(profileAddress)
-            }
+            fetchProfile(profileAddress)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [profileAddress])
 
     const fetchVideo = async () => {
         setIsFetchingVideo(true)
+
+        const hasPrefetch = window.prefetchData && window.prefetchData.videoHash === hash
+
         try {
-            const videoInfo = await getVideo(hash)
+            const videoInfo = hasPrefetch
+                ? window.prefetchData
+                : await getVideo(hash)
 
             setProfileAddress(videoInfo.channelAddress)
             setTitle(videoInfo.title)

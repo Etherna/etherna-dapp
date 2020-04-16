@@ -1,6 +1,7 @@
+const config = require("./deploy.config")
+
 const deployToHost = () => {
     const FtpDeploy = require("ftp-deploy")
-    const config = require("./deploy.config")
     const moment = require("moment")
 
     const start = moment()
@@ -27,10 +28,31 @@ const deployToHost = () => {
 }
 
 const deployToSwarm = async () => {
-    // TODO
-    /**
-     * swarm --bzzapi https://gateway.etherna.io --defaultpath build/index.html --recursive up build
-     */
+    // TODO:
+    // swarm --bzzapi https://gateway.etherna.io --defaultpath build/index.html --recursive up build --progress
+
+    const exec = require('child_process').exec
+
+    const command = "swarm --bzzapi https://gateway.etherna.io --defaultpath build/index.html --recursive up build --progress"
+
+    const execUpload = () => {
+        return new Promise((resolve, reject) => {
+            exec(command, (error, stdout, stderr) => {
+                if (error) {
+                    console.log(`error: ${error.message}`)
+                    reject(error)
+                } else if (stderr) {
+                    console.log(`stderr: ${stderr}`)
+                    reject(stderr)
+                } else {
+                    console.log(`stdout: ${stdout}`)
+                    resolve(stdout)
+                }
+            })
+        })
+    }
+
+    const hash = await execUpload()
 }
 
 const deploy = () => {
