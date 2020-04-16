@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom"
 
 import "./header.scss"
 import UserMenu from "@components/user/UserMenu"
-import * as Routes from "@routes"
+import Routes from "@routes"
 
 const ChannelsMatches = [/^\/channel\//, /^\/channels/]
 const ExploreMatches = [/^\/watch/]

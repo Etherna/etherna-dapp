@@ -9,7 +9,7 @@ import Player from "@components/media/Player"
 import Avatar from "@components/user/Avatar"
 import { getResourceUrl } from "@utils/swarm"
 import { getProfile } from "@utils/3box"
-import * as Routes from "@routes"
+import Routes from "@routes"
 import { getVideo } from "@utils/ethernaResources/videosResources"
 
 const VideoView = ({ hash, video }) => {

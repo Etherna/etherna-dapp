@@ -12,7 +12,7 @@ import Avatar from "@components/user/Avatar"
 import { showError } from "@state/actions/modals"
 import { addVideoToChannel } from "@utils/ethernaResources/channelResources"
 import { getVideoDuration } from "@utils/media"
-import * as Routes from "@routes"
+import Routes from "@routes"
 import PinContentField from "./PinContentField"
 
 const Uploader = () => {

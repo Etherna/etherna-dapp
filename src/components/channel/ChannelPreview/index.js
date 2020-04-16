@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import "./channel-preview.scss"
 import Avatar from "@components/user/Avatar"
 import VideoGrid from "@components/media/VideoGrid"
-import * as Routes from "@routes"
+import Routes from "@routes"
 
 const ChannelPreview = ({ channelAddress, avatar, name, videos }) => {
     return (

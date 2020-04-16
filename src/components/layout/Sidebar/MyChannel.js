@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 
 import SidebarItem from "./SidebarItem"
 import { getResourceUrl } from "@utils/swarm"
-import * as Routes from "@routes"
+import Routes from "@routes"
 
 const MyChannel = () => {
     const { name, avatar, existsOnIndex } = useSelector(state => state.profile)

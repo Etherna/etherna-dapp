@@ -14,7 +14,7 @@ import {
 } from "@common/DropDown"
 import { providerActions } from "@state/actions"
 import { shortenEthAddr } from "@utils/ethFuncs"
-import * as Routes from "@routes"
+import Routes from "@routes"
 
 const UserMenu = () => {
     const { currentWalletLogo, currentAddress } = useSelector(

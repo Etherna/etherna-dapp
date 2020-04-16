@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 
 import SidebarItem from "./SidebarItem"
 import SidebarItemPlaceholder from "./SidebarItemPlaceholder"
-import * as Routes from "@routes"
+import Routes from "@routes"
 import { getChannels } from "@utils/ethernaResources/channelResources"
 import { getProfiles } from "@utils/3box"
 import { getResourceUrl } from "@utils/swarm"

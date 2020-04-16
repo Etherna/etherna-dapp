@@ -15,7 +15,7 @@ import {
     getChannelVideos,
     getChannel,
 } from "@utils/ethernaResources/channelResources"
-import * as Routes from "@routes"
+import Routes from "@routes"
 
 const FETCH_COUNT = 50
 

@@ -6,7 +6,7 @@ import { useSelector } from "react-redux"
 import "./channel-editor.scss"
 import ProfileInfoEdit from "@components/profile/ProfileInfoEdit"
 import { profileActions } from "@state/actions"
-import * as Routes from "@routes"
+import Routes from "@routes"
 
 const ChannelEditor = ({ address }) => {
     const { box } = useSelector(state => state.user)

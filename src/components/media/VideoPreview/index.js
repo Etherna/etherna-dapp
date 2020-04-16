@@ -8,7 +8,7 @@ import Time from "../Time"
 import Avatar from "@components/user/Avatar"
 import { getProfile } from "@utils/3box"
 import { getResourceUrl } from "@utils/swarm"
-import * as Routes from "@routes"
+import Routes from "@routes"
 
 const VideoPreview = ({ video, hideProfile }) => {
     const profileLink = Routes.getChannelLink(video.channelAddress)

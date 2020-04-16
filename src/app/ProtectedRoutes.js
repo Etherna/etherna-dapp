@@ -5,7 +5,7 @@ import {
     Redirect
 } from "react-router-dom"
 
-import * as Routes from "@routes"
+import Routes from "@routes"
 
 export const SignedInRoute = ({
     path,
