@@ -50,6 +50,7 @@ const ProfileInfo = ({
             onFetchedProfile({
                 name: fallbackName,
                 avatar,
+                address: profileAddress
             })
         } catch (error) {
             console.error(error)

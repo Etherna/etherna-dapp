@@ -36,16 +36,9 @@ const ChannelView = ({ channelAddress }) => {
     )
 
     useEffect(() => {
-        if (channelAddress) {
-            // reset
-            setHasChannel(false)
-            setChannelVideos([])
-            setProfileInfo(null)
-            setPage(0)
-            setHasMore(true)
-            // fetch channel
-            fetchChannel()
-        }
+        // fetch channel
+        fetchChannel()
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [channelAddress])
 
@@ -55,6 +48,15 @@ const ChannelView = ({ channelAddress }) => {
     }, [profileInfo])
 
     const fetchChannel = async () => {
+        if (profileInfo && profileInfo.address !== channelAddress) {
+            // reset
+            setHasChannel(false)
+            setChannelVideos([])
+            setProfileInfo(null)
+            setPage(0)
+            setHasMore(true)
+        }
+
         setIsFetching(true)
 
         try {
@@ -121,6 +123,10 @@ const ChannelView = ({ channelAddress }) => {
         setIsCreatingChannel(false)
     }
 
+    const handleFetchedProfile = profile => {
+        setProfileInfo(profile)
+    }
+
     return (
         <>
             <SEO title={(profileInfo || {}).name || channelAddress} />
@@ -160,7 +166,7 @@ const ChannelView = ({ channelAddress }) => {
                         )}
                     </div>
                 }
-                onFetchedProfile={profile => setProfileInfo(profile)}
+                onFetchedProfile={handleFetchedProfile}
             >
                 {showChannelCreatedMessage && (
                     <Alert title="Congratulation!" type="success">
