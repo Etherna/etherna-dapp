@@ -1,31 +1,12 @@
-/**
- * SEO component that queries for data with
- *  Gatsby's useStaticQuery React hook
- *
- * See: https://www.gatsbyjs.org/docs/use-static-query/
- */
-
 import React from "react"
 import PropTypes from "prop-types"
 import Helmet from "react-helmet"
-import { useStaticQuery, graphql } from "gatsby"
 
 function SEO({ description, lang, meta, title, tagline }) {
-    const { site } = useStaticQuery(
-        graphql`
-            query {
-                site {
-                    siteMetadata {
-                        title
-                        description
-                        author
-                    }
-                }
-            }
-        `
-    )
+    const siteTitle = process.env.REACT_APP_NAME
+    const siteTagline = process.env.REACT_APP_TAGLINE
 
-    const metaDescription = description || site.siteMetadata.description
+    const metaDescription = description || siteTagline
 
     return (
         <Helmet
@@ -33,7 +14,7 @@ function SEO({ description, lang, meta, title, tagline }) {
                 lang,
             }}
             title={title}
-            titleTemplate={`%s – ${tagline || site.siteMetadata.title}`}
+            titleTemplate={`%s – ${tagline || siteTitle}`}
             meta={[
                 {
                     name: `description`,
@@ -57,7 +38,7 @@ function SEO({ description, lang, meta, title, tagline }) {
                 },
                 {
                     name: `twitter:creator`,
-                    content: site.siteMetadata.author,
+                    content: siteTitle,
                 },
                 {
                     name: `twitter:title`,
@@ -72,17 +53,17 @@ function SEO({ description, lang, meta, title, tagline }) {
     )
 }
 
-SEO.defaultProps = {
-    lang: `en`,
-    meta: [],
-    description: ``,
-}
-
 SEO.propTypes = {
     description: PropTypes.string,
     lang: PropTypes.string,
     meta: PropTypes.arrayOf(PropTypes.object),
     title: PropTypes.string.isRequired,
+}
+
+SEO.defaultProps = {
+    lang: `en`,
+    meta: [],
+    description: ``,
 }
 
 export default SEO

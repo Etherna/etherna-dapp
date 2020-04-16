@@ -1,6 +1,6 @@
 import React, { useRef } from "react"
 import { useSelector } from "react-redux"
-import { Link, navigate } from "gatsby"
+import { Link } from "react-router-dom"
 
 import SigninButton from "./SigninButton"
 import Avatar from "./Avatar"
@@ -39,7 +39,6 @@ const UserMenu = () => {
 
     const signOut = async () => {
         await providerActions.signout()
-        navigate("/")
     }
 
     return (

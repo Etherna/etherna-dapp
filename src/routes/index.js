@@ -1,4 +1,11 @@
 /**
+ * Home route
+ */
+export const getHomeLink = () => {
+    return `/`
+}
+
+/**
  * Channel routes
  */
 export const getChannelsLink = () => {

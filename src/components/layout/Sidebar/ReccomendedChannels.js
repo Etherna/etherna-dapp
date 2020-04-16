@@ -12,19 +12,21 @@ const RecommendedChannels = () => {
     const [channels, setChannels] = useState(undefined)
 
     useEffect(() => {
-        const fetchChannels = async () => {
-            try {
-                const fetchedChannels = await getChannels(0, 5)
-                const boxProfiles = await getProfiles(
-                    fetchedChannels.map(p => p.address)
-                )
-                setChannels(boxProfiles || [])
-            } catch (error) {
-                console.error(error)
-            }
-        }
         fetchChannels()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    const fetchChannels = async () => {
+        try {
+            const fetchedChannels = await getChannels(0, 5)
+            const boxProfiles = await getProfiles(
+                fetchedChannels.map(p => p.address)
+            )
+            setChannels(boxProfiles || [])
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     return (
         <div className="sidenav-menu">

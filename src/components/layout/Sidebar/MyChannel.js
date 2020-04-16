@@ -1,6 +1,6 @@
 import React from "react"
 import { useSelector } from "react-redux"
-import { Link } from "gatsby"
+import { Link } from "react-router-dom"
 
 import SidebarItem from "./SidebarItem"
 import { getResourceUrl } from "@utils/swarm"

@@ -1,12 +1,12 @@
 import React, { useState } from "react"
 import classnames from "classnames"
-import { navigate } from "gatsby"
+import { Redirect } from "react-router-dom"
 import { useSelector } from "react-redux"
 
 import "./uploader.scss"
 import FileDrag from "./FileDrag"
 import SwarmFileUpload from "./SwarmFileUpload"
-import Alert from "@components/common/Alert"
+import Alert from "@common/Alert"
 import Button from "@common/Button"
 import Avatar from "@components/user/Avatar"
 import { showError } from "@state/actions/modals"
@@ -39,7 +39,7 @@ const Uploader = () => {
     }
 
     if (!existsOnIndex) {
-        navigate(Routes.getChannelLink(address))
+        return <Redirect to={Routes.getChannelLink(address)} />
     }
 
     const submitVideo = async () => {

@@ -1,7 +1,7 @@
 import React, { useRef } from "react"
 
 import { DropDown, DropDownMenu, DropDownMenuToggle } from "@common/DropDown"
-import Button from "@components/common/Button"
+import Button from "@common/Button"
 import EnvDropDownMenus from "./EnvDropDownMenu"
 
 const GuestMenu = () => {

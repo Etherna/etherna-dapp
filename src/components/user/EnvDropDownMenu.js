@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import { useSelector } from "react-redux"
 
 import { DropDownMenu } from "@common/DropDown"
-import Button from "@components/common/Button"
+import Button from "@common/Button"
 import { enviromentActions } from "@state/actions"
 
 const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
@@ -50,7 +50,7 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
                         size="small"
                         aspect="link"
                         className="mt-2 ml-auto"
-                        disabled={indexHostValue === process.env.INDEX_HOST}
+                        disabled={indexHostValue === process.env.REACT_APP_INDEX_HOST}
                     >
                         Reset to default
                     </Button>
@@ -87,7 +87,7 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
                         size="small"
                         aspect="link"
                         className="mt-2 ml-auto"
-                        disabled={gatewayHostValue === process.env.GATEWAY_HOST}
+                        disabled={gatewayHostValue === process.env.REACT_APP_GATEWAY_HOST}
                     >
                         Reset to default
                     </Button>

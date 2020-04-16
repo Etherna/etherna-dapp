@@ -11,12 +11,12 @@ const initialState = {
     indexHost:
         (typeof window !== "undefined" &&
             window.localStorage.getItem("indexHost")) ||
-        process.env.INDEX_HOST ||
+        process.env.REACT_APP_INDEX_HOST ||
         "localhost",
     gatewayHost:
         (typeof window !== "undefined" &&
             window.localStorage.getItem("gatewayHost")) ||
-        process.env.GATEWAY_HOST ||
+        process.env.REACT_APP_GATEWAY_HOST ||
         "https://swarm-gateways.net",
 }
 
