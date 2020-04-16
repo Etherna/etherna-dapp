@@ -66,8 +66,8 @@ const ChannelView = ({ channelAddress }) => {
             fetchVideos()
         } catch (error) {
             console.error(error)
+            setIsFetching(false)
         }
-        setIsFetching(false)
     }
 
     const fetchVideos = async () => {
