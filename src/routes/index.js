@@ -1,45 +1,56 @@
 /**
  * Home route
  */
-export const getHomeLink = () => {
+const getHomeLink = () => {
     return `/`
 }
 
 /**
  * Channel routes
  */
-export const getChannelsLink = () => {
+const getChannelsLink = () => {
     return `/channels`
 }
 
-export const getChannelLink = hash => {
+const getChannelLink = hash => {
     return `/channel/${encodeURIComponent(hash)}`
 }
 
-export const getChannelEditingLink = hash => {
+const getChannelEditingLink = hash => {
     return `/channel/${encodeURIComponent(hash)}/edit`
 }
 
 /**
  * Video routes
  */
-export const getVideoLink = hash => {
+const getVideoLink = hash => {
     return `/watch?v=${encodeURIComponent(hash)}`
 }
 
 /**
  * Static routes
  */
-export const getVideoUploadLink = () => {
+const getVideoUploadLink = () => {
     return `/upload`
 }
-export const getHowItWorksLink = () => {
+const getHowItWorksLink = () => {
     return `/how-it-works`
 }
 
 /**
  * Fallback routes
  */
-export const getNotFoundLink = () => {
+const getNotFoundLink = () => {
     return `/404`
+}
+
+export default {
+    getHomeLink,
+    getChannelsLink,
+    getChannelLink,
+    getChannelEditingLink,
+    getVideoLink,
+    getVideoUploadLink,
+    getHowItWorksLink,
+    getNotFoundLink,
 }

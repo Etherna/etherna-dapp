@@ -49,10 +49,15 @@ const Upload = () => (<AsyncUpload />)
 const HowItWorks = () => (<AsyncHowItWorks />)
 const NotFound = () => (<AsyncNotFound />)
 
+const bzzPattern = /\/bzz:\/([^/]+)/
+const basename = bzzPattern.test(window.location.pathname)
+    ? window.location.pathname.match(bzzPattern)[0]
+    : ""
+
 const Root = () => {
     return (
         <StateWrapper>
-            <Router>
+            <Router basename={basename}>
                 <Switch>
                     <Route path="/" exact>
                         <Home />

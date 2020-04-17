@@ -29,11 +29,10 @@ const deployToHost = () => {
 
 const deployToSwarm = async () => {
     // TODO:
-    // swarm --bzzapi https://gateway.etherna.io --defaultpath build/index.html --recursive up build --progress
+    // swarm --bzzapi https://gateway.etherna.io --defaultpath build/index.html --recursive up build
 
     const exec = require('child_process').exec
-
-    const command = "swarm --bzzapi https://gateway.etherna.io --defaultpath build/index.html --recursive up build --progress"
+    const command = `swarm --bzzapi ${config.swarmGateway} --defaultpath build/index.html --recursive up build`
 
     const execUpload = () => {
         return new Promise((resolve, reject) => {
@@ -52,7 +51,7 @@ const deployToSwarm = async () => {
         })
     }
 
-    const hash = await execUpload()
+    await execUpload()
 }
 
 const deploy = () => {
