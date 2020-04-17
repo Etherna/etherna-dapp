@@ -6,15 +6,69 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/images/icon-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#34BA9C" />
-    <meta
-      name="description"
-      content="A transparent video platform"
-    />
+    <meta name="description" content="A transparent video platform" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Etherna</title>
+    <script>
+      var path = window.location.pathname;
+      var bzzPattern = /\/bzz:\/([^/]+)/;
+      window.__basename__ = bzzPattern.test(window.location.pathname)
+        ? window.location.pathname.match(bzzPattern)[0]
+        : '';
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+
+    <!-- Fix relative paths -->
+    <script>
+      (function () {
+        var observer = new MutationObserver(mutations => {
+          mutations.map(mutation => {
+            var nodes = Array.from(mutation.addedNodes).filter(node => node.tagName === "SCRIPT" || node.tagName === "LINK");
+            fixUrls(nodes);
+          })
+        });
+        observer.observe(document.documentElement, {
+          childList: true,
+          subtree: true,
+          attributes: false
+        });
+
+        var currentScripts = document.querySelectorAll('script');
+        fixUrls(currentScripts);
+
+        var currentLinks = document.querySelectorAll('link');
+        fixUrls(currentLinks);
+
+        function fixUrls(nodes) {
+          nodes.forEach(node => {
+            if (node.tagName === "SCRIPT" && /__basename__/g.test(node.innerText)) {
+              var copy = node.cloneNode(true);
+              copy.innerText = node.innerText.replace(/__basename__/g, window.__basename__);
+              node.parentNode.appendChild(copy);
+              node.remove();
+            } else {
+              var href = node.getAttribute('href');
+              if (href && /__basename__/.test(href)) {
+                var copy = node.cloneNode(true);
+                copy.href = href.replace(/__basename__/g, window.__basename__);
+                node.parentNode.appendChild(copy);
+                node.remove();
+              }
+
+              var src = node.getAttribute('src');
+              if (src && /__basename__/.test(src)) {
+                var copy = node.cloneNode(true);
+                copy.src = src.replace(/__basename__/g, window.__basename__);
+                node.parentNode.appendChild(copy);
+                node.remove();
+              }
+            }
+          });
+        }
+      })();
+    </script>
   </body>
 </html>

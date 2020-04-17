@@ -51,7 +51,7 @@ const NotFound = () => (<AsyncNotFound />)
 
 const bzzPattern = /\/bzz:\/([^/]+)/
 const basename = bzzPattern.test(window.location.pathname)
-    ? window.location.pathname.match(bzzPattern)
+    ? window.location.pathname.match(bzzPattern)[0]
     : ""
 
 const Root = () => {
