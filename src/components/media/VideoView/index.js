@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import moment from "moment"
-import { Link, navigate } from "gatsby"
+import { Link, Redirect } from "react-router-dom"
 
 import "./video-view.scss"
 import SEO from "@components/layout/SEO"
@@ -9,25 +9,21 @@ import Player from "@components/media/Player"
 import Avatar from "@components/user/Avatar"
 import { getResourceUrl } from "@utils/swarm"
 import { getProfile } from "@utils/3box"
-import * as Routes from "@routes"
+import Routes from "@routes"
 import { getVideo } from "@utils/ethernaResources/videosResources"
 
 const VideoView = ({ hash, video }) => {
     const source = getResourceUrl(hash)
+
+    const [videoOnIndex, setVideoOnIndex] = useState(true)
     const [isFetchingVideo, setIsFetchingVideo] = useState(false)
     const [profileAddress, setProfileAddress] = useState(video.channelAddress)
     const [title, setTitle] = useState(video.title)
     const [description, setDescription] = useState(video.description)
-    const [thumbnail, setThumbnail] = useState(
-        getResourceUrl(video.thumbnailHash)
-    )
+    const [thumbnail, setThumbnail] = useState(getResourceUrl(video.thumbnailHash))
     const [publishDate, setPublishDate] = useState(video.creationDateTime)
-    const [profileName, setProfileName] = useState(
-        video.profileData && video.profileData.name
-    )
-    const [profileAvatar, setProfileAvatar] = useState(
-        video.profileData && video.profileData.avatar
-    )
+    const [profileName, setProfileName] = useState(video.profileData && video.profileData.name)
+    const [profileAvatar, setProfileAvatar] = useState(video.profileData && video.profileData.avatar)
 
     useEffect(() => {
         if (Object.keys(video).length === 0) {
@@ -38,17 +34,20 @@ const VideoView = ({ hash, video }) => {
 
     useEffect(() => {
         if (profileAddress) {
-            if (!profileName || !profileAvatar) {
-                fetchProfile(profileAddress)
-            }
+            fetchProfile(profileAddress)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [profileAddress])
 
     const fetchVideo = async () => {
         setIsFetchingVideo(true)
+
+        const hasPrefetch = window.prefetchData && window.prefetchData.videoHash === hash
+
         try {
-            const videoInfo = await getVideo(hash)
+            const videoInfo = hasPrefetch
+                ? window.prefetchData
+                : await getVideo(hash)
 
             setProfileAddress(videoInfo.channelAddress)
             setTitle(videoInfo.title)
@@ -57,7 +56,7 @@ const VideoView = ({ hash, video }) => {
             setPublishDate(videoInfo.creationDateTime)
         } catch (error) {
             console.error(error)
-            navigate("/404")
+            setVideoOnIndex(false)
         }
         setIsFetchingVideo(false)
     }
@@ -74,6 +73,10 @@ const VideoView = ({ hash, video }) => {
 
     if (isFetchingVideo) {
         return <div />
+    }
+
+    if (!isFetchingVideo && !videoOnIndex) {
+        return <Redirect to={Routes.getNotFoundLink()} />
     }
 
     return (

@@ -1,19 +1,12 @@
-/**
- * Layout component that queries for data
- * with Gatsby's useStaticQuery component
- *
- * See: https://www.gatsbyjs.org/docs/use-static-query/
- */
-
 import React, { useEffect } from "react"
 import PropTypes from "prop-types"
+import { useSelector } from "react-redux"
 
 import "./layout.scss"
 import Header from "@components/layout/Header"
 import Sidebar from "@components/layout/Sidebar"
 import Modals from "@components/modals/ModalsSection"
 import { providerActions } from "@state/actions"
-import { useSelector } from "react-redux"
 
 const Layout = ({ children, showSidebar }) => {
     const { isSignedIn } = useSelector(state => state.user)

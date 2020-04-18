@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import Switch from "react-switch"
 import { useSelector } from "react-redux"
 
-import Alert from "@components/common/Alert"
+import Alert from "@common/Alert"
 import { isPinningEnabled } from "@utils/swarm"
 
 const PinContentField = ({ onChange }) => {

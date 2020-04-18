@@ -1,18 +1,18 @@
 import React, { useState } from "react"
 import classnames from "classnames"
-import { navigate } from "gatsby"
+import { Redirect } from "react-router-dom"
 import { useSelector } from "react-redux"
 
 import "./uploader.scss"
 import FileDrag from "./FileDrag"
 import SwarmFileUpload from "./SwarmFileUpload"
-import Alert from "@components/common/Alert"
+import Alert from "@common/Alert"
 import Button from "@common/Button"
 import Avatar from "@components/user/Avatar"
 import { showError } from "@state/actions/modals"
 import { addVideoToChannel } from "@utils/ethernaResources/channelResources"
 import { getVideoDuration } from "@utils/media"
-import * as Routes from "@routes"
+import Routes from "@routes"
 import PinContentField from "./PinContentField"
 
 const Uploader = () => {
@@ -39,7 +39,7 @@ const Uploader = () => {
     }
 
     if (!existsOnIndex) {
-        navigate(Routes.getChannelLink(address))
+        return <Redirect to={Routes.getChannelLink(address)} />
     }
 
     const submitVideo = async () => {
@@ -117,6 +117,7 @@ const Uploader = () => {
                                 label="Drag your video here"
                                 onSelectFile={selectVideoFile}
                                 disabled={isSubmitting}
+                                uploadLimit={100}
                             />
                         )}
                         {videoFile !== undefined && (
@@ -140,6 +141,7 @@ const Uploader = () => {
                                 label="Drag your thumbnail here"
                                 onSelectFile={file => setThumbnailFile(file)}
                                 disabled={isSubmitting}
+                                uploadLimit={2}
                             />
                         )}
                         {thumbnailFile !== undefined && (

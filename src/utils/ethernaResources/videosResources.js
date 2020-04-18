@@ -13,6 +13,10 @@ export const getVideos = async (page = 0, take = 25) => {
         params: { page, take },
     })
 
+    if (!Array.isArray(resp.data)) {
+        throw new Error("Cannot fetch videos")
+    }
+
     /**
      * Array of:
      * {
@@ -33,6 +37,10 @@ export const getVideo = async hash => {
     const apiUrl = `${indexHost}/videos/${hash}`
 
     const resp = await axios.get(apiUrl)
+
+    if (typeof resp.data !== "object") {
+        throw new Error("Cannot fetch the video")
+    }
 
     /**
      * Object:
@@ -69,6 +77,10 @@ export const updateVideo = async (
         LengthInSeconds: time,
         ThumbnailHash: thumbnailHash,
     })
+
+    if (typeof resp.data !== "object") {
+        throw new Error("Cannot update the video")
+    }
 
     /**
      * Object:

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import InfiniteScroller from "react-infinite-scroller"
 import { useSelector } from "react-redux"
-import { Link } from "gatsby"
+import { Link } from "react-router-dom"
 
 import "./channel.scss"
 import Alert from "@common/Alert"
@@ -15,16 +15,19 @@ import {
     getChannelVideos,
     getChannel,
 } from "@utils/ethernaResources/channelResources"
-import * as Routes from "@routes"
+import Routes from "@routes"
 
 const FETCH_COUNT = 50
 
 const ChannelView = ({ channelAddress }) => {
+    const prefetchProfile = window.prefetchData && window.prefetchData.profile
+    const prefetchVideos = window.prefetchData && window.prefetchData.videos
+
     const { address } = useSelector(state => state.user)
     const [isFetching, setIsFetching] = useState(false)
     const [isCreatingChannel, setIsCreatingChannel] = useState(false)
     const [hasChannel, setHasChannel] = useState(false)
-    const [channelVideos, setChannelVideos] = useState(undefined)
+    const [channelVideos, setChannelVideos] = useState([])
     const [profileInfo, setProfileInfo] = useState(null)
     const [page, setPage] = useState(0)
     const [hasMore, setHasMore] = useState(true)
@@ -33,7 +36,9 @@ const ChannelView = ({ channelAddress }) => {
     )
 
     useEffect(() => {
+        // fetch channel
         fetchChannel()
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [channelAddress])
 
@@ -43,10 +48,21 @@ const ChannelView = ({ channelAddress }) => {
     }, [profileInfo])
 
     const fetchChannel = async () => {
+        if (profileInfo && profileInfo.address !== channelAddress) {
+            // reset
+            setHasChannel(false)
+            setChannelVideos([])
+            setProfileInfo(null)
+            setPage(0)
+            setHasMore(true)
+        }
+
         setIsFetching(true)
 
         try {
-            const channel = await getChannel(channelAddress)
+            const channel = prefetchVideos && prefetchProfile.address === channelAddress
+                ? {}
+                : await getChannel(channelAddress)
 
             setHasChannel(!!channel)
             fetchVideos()
@@ -59,12 +75,16 @@ const ChannelView = ({ channelAddress }) => {
     const fetchVideos = async () => {
         setIsFetching(true)
 
+        const hasPrefetch = prefetchVideos && prefetchProfile.address === channelAddress
+
         try {
-            const videos = await getChannelVideos(
-                channelAddress,
-                page,
-                FETCH_COUNT
-            )
+            const videos = hasPrefetch
+                ? prefetchVideos
+                : await getChannelVideos(
+                    channelAddress,
+                    page,
+                    FETCH_COUNT
+                )
             setChannelVideos(page === 0 ? videos : channelVideos.concat(videos))
 
             if (videos.length < FETCH_COUNT) {
@@ -101,6 +121,10 @@ const ChannelView = ({ channelAddress }) => {
         setShowChannelCreatedMessage(created)
         setHasChannel(created)
         setIsCreatingChannel(false)
+    }
+
+    const handleFetchedProfile = profile => {
+        setProfileInfo(profile)
     }
 
     return (
@@ -142,7 +166,7 @@ const ChannelView = ({ channelAddress }) => {
                         )}
                     </div>
                 }
-                onFetchedProfile={profile => setProfileInfo(profile)}
+                onFetchedProfile={handleFetchedProfile}
             >
                 {showChannelCreatedMessage && (
                     <Alert title="Congratulation!" type="success">

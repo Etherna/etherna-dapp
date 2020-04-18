@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 
 import SidebarItem from "./SidebarItem"
 import SidebarItemPlaceholder from "./SidebarItemPlaceholder"
-import * as Routes from "@routes"
+import Routes from "@routes"
 import { getChannels } from "@utils/ethernaResources/channelResources"
 import { getProfiles } from "@utils/3box"
 import { getResourceUrl } from "@utils/swarm"
@@ -12,19 +12,21 @@ const RecommendedChannels = () => {
     const [channels, setChannels] = useState(undefined)
 
     useEffect(() => {
-        const fetchChannels = async () => {
-            try {
-                const fetchedChannels = await getChannels(0, 5)
-                const boxProfiles = await getProfiles(
-                    fetchedChannels.map(p => p.address)
-                )
-                setChannels(boxProfiles || [])
-            } catch (error) {
-                console.error(error)
-            }
-        }
         fetchChannels()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    const fetchChannels = async () => {
+        try {
+            const fetchedChannels = await getChannels(0, 5)
+            const boxProfiles = await getProfiles(
+                fetchedChannels.map(p => p.address)
+            )
+            setChannels(boxProfiles || [])
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     return (
         <div className="sidenav-menu">
