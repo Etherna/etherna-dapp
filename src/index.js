@@ -20,7 +20,7 @@ prefetch(RenderDOM)
 
 // Load bootstrap.
 // This will inject usefull packages.
-require("@app/bootstrap")
+require("./app/bootstrap")
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
