@@ -5781,7 +5781,7 @@ del@^4.1.1:
     pify "^4.0.1"
     rimraf "^2.6.3"
 
-delay@^4.3.0:
+delay@^4.1.0, delay@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/delay/-/delay-4.3.0.tgz#efeebfb8f545579cb396b3a722443ec96d14c50e"
   integrity sha512-Lwaf3zVFDMBop1yDuFZ19F9WyGcZcGacsbdlZtWjQmM50tOcMntm1njF/Nb/Vjij3KaSvCF+sEYGKrrjObu2NA==
@@ -13219,6 +13219,11 @@ npm-run-path@^2.0.0:
     gauge "~2.7.3"
     set-blocking "~2.0.0"
 
+nprogress@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/nprogress/-/nprogress-0.2.0.tgz#cb8f34c53213d895723fcbab907e9422adbcafb1"
+  integrity sha1-y480xTIT2JVyP8urkH6UIq28r7E=
+
 nth-check@^1.0.2, nth-check@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/nth-check/-/nth-check-1.0.2.tgz#b2bd295c37e3dd58a3bf0700376663ba4d9cf05c"
@@ -13811,6 +13816,13 @@ p-map@~1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/p-map/-/p-map-1.1.1.tgz#05f5e4ae97a068371bc2a5cc86bfbdbc19c4ae7a"
   integrity sha1-BfXkrpegaDcbwqXMhr+9vBnErno=
+
+p-min-delay@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/p-min-delay/-/p-min-delay-3.1.0.tgz#9355640bd988710f85abfb82fd6002502b4b17c7"
+  integrity sha512-N7h+7SRInlJZXzV99qaNntiRsmtHDoZAbcPNc2oSA9CHUvkrEJcKAXDD2DkCEVOyoIlBoVw2wUW7Y2OTGDY4Yg==
+  dependencies:
+    delay "^4.1.0"
 
 p-queue@^6.0.0, p-queue@^6.1.0:
   version "6.3.0"
