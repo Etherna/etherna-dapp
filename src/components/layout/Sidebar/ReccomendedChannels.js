@@ -5,7 +5,7 @@ import SidebarItem from "./SidebarItem"
 import SidebarItemPlaceholder from "./SidebarItemPlaceholder"
 import Routes from "@routes"
 import { getChannels } from "@utils/ethernaResources/channelResources"
-import { getProfiles } from "@utils/3box"
+import { getProfiles } from "@utils/swarmProfile"
 import { getResourceUrl } from "@utils/swarm"
 
 const RecommendedChannels = () => {

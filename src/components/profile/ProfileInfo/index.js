@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react"
 import PropTypes from "prop-types"
 
 import "./profile-info.scss"
-import { getProfile } from "@utils/3box"
 import { shortenEthAddr } from "@utils/ethFuncs"
 import makeBlockies from "@utils/makeBlockies"
 import { isImageObject, getResourceUrl } from "@utils/swarm"
+import { getProfile } from "@utils/swarmProfile"
 
 const ProfileInfo = ({
     children,
@@ -61,10 +61,10 @@ const ProfileInfo = ({
 
     return (
         <div className="profile">
-            {isImageObject(profileCover) && (
+            {profileCover.url && (
                 <div className="cover">
                     <img
-                        src={getResourceUrl(profileCover)}
+                        src={profileCover.url}
                         alt={profileName}
                         className="cover-image"
                     />
@@ -75,8 +75,8 @@ const ProfileInfo = ({
                 <div className="profile-avatar">
                     <img
                         src={
-                            isImageObject(profileAvatar)
-                                ? getResourceUrl(profileAvatar)
+                            profileAvatar.url
+                                ? profileAvatar.url
                                 : makeBlockies(profileAddress)
                         }
                         alt={profileName}

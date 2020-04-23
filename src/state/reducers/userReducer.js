@@ -1,5 +1,4 @@
 export const UserActionTypes = {
-    USER_3BOX_UPDATE: "USER_3BOX_UPDATE",
     USER_ENS_UPDATE: "USER_ENS_UPDATE",
     USER_SIGNOUT: "USER_SIGNOUT",
     USER_UPDATE_ADDRESS: "USER_UPDATE_ADDRESS",
@@ -8,12 +7,6 @@ export const UserActionTypes = {
 
 const userReducer = (state = {}, action) => {
     switch (action.type) {
-        case UserActionTypes.USER_3BOX_UPDATE:
-            return {
-                ...state,
-                box: action.box,
-            }
-
         case UserActionTypes.USER_ENS_UPDATE:
             return {
                 ...state,

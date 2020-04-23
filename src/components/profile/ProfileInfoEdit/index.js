@@ -35,7 +35,7 @@ const ProfileInfoEdit = ({
     const handleSubmit = () => {
         if (onSubmit) {
             onSubmit({
-                profileAddress,
+                address: profileAddress,
                 name: profileName,
                 description: profileDescription,
                 avatar: profileAvatar,
@@ -62,12 +62,16 @@ const ProfileInfoEdit = ({
         type === "cover" && setUploadingCover(true)
 
         try {
-            const imgObject = await uploadResourceToSwarm(file)
+            const imgHash = await uploadResourceToSwarm(file)
+            const imgObj = {
+                url: getResourceUrl(imgHash),
+                hash: imgHash
+            }
 
             if (type === "cover") {
-                setProfileCover(imgObject)
+                setProfileCover(imgObj)
             } else if (type === "avatar") {
-                setProfileAvatar(imgObject)
+                setProfileAvatar(imgObj)
             }
         } catch (error) {
             console.error(error)

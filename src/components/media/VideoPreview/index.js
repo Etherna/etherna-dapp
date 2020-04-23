@@ -6,7 +6,7 @@ import moment from "moment"
 import "./video-preview.scss"
 import Time from "../Time"
 import Avatar from "@components/user/Avatar"
-import { getProfile } from "@utils/3box"
+import { getProfile } from "@utils/swarmProfile"
 import { getResourceUrl } from "@utils/swarm"
 import Routes from "@routes"
 

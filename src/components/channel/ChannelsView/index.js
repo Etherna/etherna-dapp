@@ -4,7 +4,7 @@ import InfiniteScroller from "react-infinite-scroller"
 import "./channels.scss"
 import ChannelPreview from "../ChannelPreview"
 import ChannelPreviewPlaceholder from "../ChannelPreviewPlaceholder"
-import { getProfiles } from "@utils/3box"
+import { getProfiles } from "@utils/swarmProfile"
 import { getChannelsWithVideos } from "@utils/ethernaResources/channelResources"
 
 const FETCH_COUNT = 10

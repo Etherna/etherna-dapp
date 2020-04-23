@@ -8,7 +8,7 @@ import SEO from "@components/layout/SEO"
 import Player from "@components/media/Player"
 import Avatar from "@components/user/Avatar"
 import { getResourceUrl } from "@utils/swarm"
-import { getProfile } from "@utils/3box"
+import { getProfile } from "@utils/swarmProfile"
 import Routes from "@routes"
 import { getVideo } from "@utils/ethernaResources/videosResources"
 

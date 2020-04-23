@@ -3,7 +3,6 @@ import { useSelector } from "react-redux"
 
 import ConnectingWalletModal from "./ConnectingWalletModal"
 import UnsupportedBrowserModal from "./UnsupportedBrowserModal"
-import MustConsentModal from "./MustConsentModal"
 import ErrorModal from "./ErrorModal"
 import LoadingProfileModal from "./LoadingProfileModal"
 
@@ -26,8 +25,6 @@ const ModalsSection = () => {
             {isConnectingWallet && <ConnectingWalletModal />}
 
             {showUnsupportedModal && <UnsupportedBrowserModal />}
-
-            {!!mustConsentError && <MustConsentModal />}
 
             {errorMessage && !mustConsentError && (
                 <ErrorModal title={errorTitle} error={errorMessage} />

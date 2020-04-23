@@ -6,6 +6,7 @@ import { useSelector } from "react-redux"
 import "./channel-editor.scss"
 import ProfileInfoEdit from "@components/profile/ProfileInfoEdit"
 import { profileActions } from "@state/actions"
+import { showError } from "@state/actions/modals"
 import Routes from "@routes"
 
 const ChannelEditor = ({ address }) => {
@@ -23,12 +24,13 @@ const ChannelEditor = ({ address }) => {
     const handleSubmit = async profileInfo => {
         setSavingChannel(true)
 
-        const savedProfile = await profileActions.updateProfile(
-            box,
-            profileInfo
-        )
-
-        setSavedProfile(savedProfile)
+        try {
+            await profileActions.updateProfile(profileInfo)
+            setSavedProfile(true)
+        } catch (error) {
+            console.error(error)
+            showError("Cannot save profile", error.message)
+        }
 
         setSavingChannel(false)
     }

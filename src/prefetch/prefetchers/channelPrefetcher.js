@@ -1,4 +1,4 @@
-import { getProfile } from "@utils/3box"
+import { getProfile } from "@utils/swarmProfile"
 import { getChannelVideos } from "@utils/ethernaResources/channelResources"
 
 const match = /\/channel\/([^/]+)/
