@@ -21,7 +21,7 @@ export const getResourceUrl = (imageObject, type = "swarm") => {
 
     if (typeof imageObject === "string") {
         return type.toLowerCase() !== "ipfs"
-            ? `${SwarmGateway}/bzz-raw:/${imageObject}`
+            ? `${SwarmGateway}/bzz:/${imageObject}`
             : `${IpfsGateway}/ipfs/${imageObject}`
     }
 
@@ -33,35 +33,25 @@ export const getResourceUrl = (imageObject, type = "swarm") => {
 
     const hash = imageObject[0].contentUrl && imageObject[0].contentUrl["/"]
     return type !== "ImageObject"
-        ? `${SwarmGateway}/bzz-raw:/${hash}`
+        ? `${SwarmGateway}/bzz:/${hash}`
         : `${IpfsGateway}/ipfs/${hash}`
 }
 
-export const uploadResourceToSwarm = async (file, type = "swarm") => {
+export const uploadResourceToSwarm = async (file) => {
     const SwarmGateway = store.getState().env.gatewayHost
-    const endpoint =
-        type.toLowerCase() !== "ipfs"
-            ? `${SwarmGateway}/bzz-raw:/`
-            : `${IpfsGateway}:5001/api/v0/add`
+    const endpoint = `${SwarmGateway}/bzz-raw:/`
 
     const buffer = await fileReaderPromise(file)
-    let formData = new Blob([new Uint8Array(buffer)])
+    const formData = new Blob([new Uint8Array(buffer)])
 
-    if (type === "ipfs") {
-        let data = new FormData()
-        data.append("filename", formData)
-        formData = data
+    const resp = await axios.post(endpoint, formData)
+    const hash = resp.data
+
+    if (isValidHash(hash)) {
+        return hash
+    } else {
+        throw new Error("Invalid hash returned")
     }
-
-    let resp = await axios.post(endpoint, formData)
-    let hash = type === "ipfs" ? resp.data.Hash : resp.data
-
-    // if (isValidHash(hash)) {
-    type = type === "ipfs" ? "ImageObject" : "SwarmObject"
-    return [{ "@type": type, contentUrl: { "/": hash } }]
-    // } else {
-    //     return null
-    // }
 }
 
 export const gatewayUploadWithProgress = async (

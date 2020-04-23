@@ -35,6 +35,11 @@ export const readFeed = async (topic, name, user, meta = undefined) => {
  */
 export const updatedFeed = async (topic, name, user, update) => {
     const data = (new TextEncoder()).encode(update) //Buffer.from(update.slice(2), "hex")
+
+    if (data.length > 3963) {
+        throw new Error("Data exceed max length of 3963 bytes")
+    }
+
     const subtopic = parseSubTopic(topic, name)
     const feed = await readFeed(subtopic, undefined, user, 1)
     const digest = feedDigest(feed, data)
