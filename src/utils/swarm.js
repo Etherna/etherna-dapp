@@ -6,26 +6,28 @@ export const getResourceUrl = (image) => {
     const SwarmGateway = store.getState().env.gatewayHost
 
     if (typeof image === "string") {
-        return `${SwarmGateway}/bzz:/${image}`
+        return `${SwarmGateway}/bzz-raw:/${image}`
     }
 
     if (typeof image === "object") {
-        if ("hash" in image) {
-            return `${SwarmGateway}/bzz:/${image.hash}`
+        if (image.hash) {
+            return `${SwarmGateway}/bzz-raw:/${image.hash}`
         }
-        if ("url" in image) {
+        if (image.url) {
             return image.url
         }
     }
 
-    return null
+    return undefined
 }
 
 export const uploadResourceToSwarm = async (file) => {
     const SwarmGateway = store.getState().env.gatewayHost
     const endpoint = `${SwarmGateway}/bzz-raw:/`
 
-    const buffer = await fileReaderPromise(file)
+    const buffer = typeof file === "string"
+        ? (new TextEncoder()).encode(file)
+        : await fileReaderPromise(file)
     const formData = new Blob([new Uint8Array(buffer)])
 
     const resp = await axios.post(endpoint, formData)

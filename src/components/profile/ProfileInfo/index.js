@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react"
 import PropTypes from "prop-types"
 
 import "./profile-info.scss"
-import { shortenEthAddr } from "@utils/ethFuncs"
 import makeBlockies from "@utils/makeBlockies"
-import { isImageObject, getResourceUrl } from "@utils/swarm"
 import { getProfile } from "@utils/swarmProfile"
+import { checkIsEthAddress, shortenEthAddr } from "@utils/ethFuncs"
 
 const ProfileInfo = ({
     children,
@@ -17,14 +16,15 @@ const ProfileInfo = ({
 
     const [profileName, setProfileName] = useState("")
     const [profileDescription, setProfileDescription] = useState("")
-    const [profileAvatar, setProfileAvatar] = useState(undefined)
-    const [profileCover, setProfileCover] = useState("")
+    const [profileAvatar, setProfileAvatar] = useState({})
+    const [profileCover, setProfileCover] = useState({})
 
     useEffect(() => {
         // reset data
         setProfileName("")
         setProfileDescription("")
-        setProfileAvatar(undefined)
+        setProfileAvatar({})
+        setProfileCover({})
         // fetch data
         fetchProfile()
 
@@ -40,7 +40,7 @@ const ProfileInfo = ({
             const { name, description, avatar, cover } = hasPrefetch
                 ? prefetchProfile
                 : await getProfile(profileAddress)
-            const fallbackName = name || shortenEthAddr(profileAddress)
+            const fallbackName = name || profileAddress
 
             setProfileName(fallbackName)
             setProfileDescription(description)
@@ -61,15 +61,15 @@ const ProfileInfo = ({
 
     return (
         <div className="profile">
-            {profileCover.url && (
-                <div className="cover">
+            <div className="cover">
+                {profileCover.url && (
                     <img
                         src={profileCover.url}
                         alt={profileName}
                         className="cover-image"
                     />
-                </div>
-            )}
+                )}
+            </div>
 
             <div className="row items-center px-4">
                 <div className="profile-avatar">
@@ -87,7 +87,13 @@ const ProfileInfo = ({
 
             <div className="row">
                 <div className="col sm:w-1/3 md:w-1/4 p-4">
-                    <h1 className="profile-name">{profileName}</h1>
+                    <h1 className="profile-name">
+                        {
+                            checkIsEthAddress(profileName)
+                                ? shortenEthAddr(profileName)
+                                : profileName || shortenEthAddr(profileName)
+                        }
+                    </h1>
                     <p className="profile-bio">{profileDescription}</p>
                 </div>
                 <div className="col sm:w-2/3 md:w-3/4 p-4">

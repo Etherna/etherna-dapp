@@ -13,7 +13,7 @@ const Avatar = ({ image, address, size, showBadge }) => {
         <div className={classnames("avatar", { badge: showBadge })}>
             <img
                 src={getResourceUrl(image) || blockie}
-                alt={address}
+                alt=""
                 style={{
                     width: size ? `${size}px` : null,
                     height: size ? `${size}px` : null,

@@ -6,11 +6,7 @@ import { useSelector } from "react-redux"
 import "./profile-info-edit.scss"
 import Button from "@common/Button"
 import Modal from "@common/Modal"
-import {
-    isImageObject,
-    getResourceUrl,
-    uploadResourceToSwarm,
-} from "@utils/swarm"
+import { getResourceUrl, uploadResourceToSwarm } from "@utils/swarm"
 import makeBlockies from "@utils/makeBlockies"
 
 const ProfileInfoEdit = ({
@@ -87,17 +83,17 @@ const ProfileInfoEdit = ({
     }
 
     return (
-        <div className="profile profile-info-edit">
+        <div className="profile-info-edit">
             <div className="cover">
                 <label
                     className={classnames("cover-input", {
-                        active: isImageObject(profileCover),
+                        active: !!profileCover.url,
                     })}
                     htmlFor="cover-input"
                 >
-                    {isImageObject(profileCover) && (
+                    {!!profileCover.url && (
                         <img
-                            src={getResourceUrl(profileCover)}
+                            src={profileCover.url}
                             alt={profileName}
                             className="cover-image"
                         />
@@ -116,7 +112,7 @@ const ProfileInfoEdit = ({
                         onChange={e => handleUploadImage(e, "cover")}
                     />
                     <div className="cover-actions">
-                        {isImageObject(profileCover) && (
+                        {!!profileCover.url && (
                             <Button
                                 className="remove-button"
                                 type="button"
@@ -135,8 +131,8 @@ const ProfileInfoEdit = ({
                     <div className="profile-avatar" data-label="Change Avatar">
                         <img
                             src={
-                                isImageObject(profileAvatar)
-                                    ? getResourceUrl(profileAvatar)
+                                !!profileAvatar.url
+                                    ? profileAvatar.url
                                     : makeBlockies(profileAddress)
                             }
                             alt={profileName}

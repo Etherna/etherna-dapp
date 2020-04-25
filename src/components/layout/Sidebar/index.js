@@ -9,7 +9,7 @@ const Sidebar = () => {
         <aside className="sidebar">
             <div className="sidenav">
                 <MyChannel />
-                <ReccomendedChannels />
+                {/* <ReccomendedChannels /> */}
             </div>
             <small className="footer-notice">
                 Copyright © {new Date().getFullYear()} etherna.io.

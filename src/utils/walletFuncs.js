@@ -13,13 +13,58 @@ export const askToSignMessage = async (hash, normalize = false) => {
         throw new Error("Coudn't find a default account. Unlock your wallet first.")
     }
 
-    let sig = await window.web3.eth.personal.sign(hash, window.web3.currentProvider.selectedAddress)
+    const from = await window.web3.eth.getCoinbase()
 
-    if (normalize) {
-        let sigBytes = web3.utils.hexToBytes(sig)
-        sigBytes[64] -= 27
-        sig = web3.utils.bytesToHex(sigBytes)
-    }
+    //window.web3.eth.disableSignPrefix = true
+    let sig = await requestSign(hash, window.web3.currentProvider.selectedAddress)
+    // let sig = await window.web3.eth.sign(hash, window.web3.currentProvider.selectedAddress)
+    //window.web3.eth.disableSignPrefix = false
+
+    console.log(sig);
+    console.log(window.web3.currentProvider.selectedAddress);
+    console.log(window.web3.eth.accounts.recover(hash, sig));
+    console.log(window.web3.eth.accounts.recover(hash, sig, true));
 
     return sig
 }
+
+const requestSign = async (data, address) => {
+    if (!window.ethereum) {
+        throw new Error("Cannot find ethereum instance")
+    }
+
+    if (window.ethereum.isAuthereum) {
+        return window.ethereum.signMessageWithSigningKey(data)
+    }
+
+    var params = [
+        data,
+        address
+    ]
+    var method = 'personal_sign'
+    const res = await callRpc(window.ethereum, method, params, address)
+
+    return res
+}
+
+const callRpc = async (provider, method, params, fromAddress) =>
+    safeSend(provider, encodeRpcCall(method, params, fromAddress))
+
+const safeSend = (provider, data) => {
+    const send = (Boolean(provider.sendAsync) ? provider.sendAsync : provider.send).bind(provider)
+    return new Promise((resolve, reject) => {
+        send(data, function(err, result) {
+            if (err) reject(err)
+            else if (result.error) reject(result.error)
+            else resolve(result.result)
+        })
+    })
+}
+
+const encodeRpcCall = (method, params, fromAddress) => ({
+    jsonrpc: '2.0',
+    id: 1,
+    method,
+    params,
+    fromAddress
+})

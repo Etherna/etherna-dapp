@@ -112,7 +112,7 @@ const VideoView = ({ hash, video }) => {
                     <div className="video-stats">
                         <Link to={Routes.getChannelLink(profileAddress)}>
                             <div className="video-profile">
-                                <Avatar image={profileAvatar} />
+                                <Avatar image={profileAvatar} address={profileAddress} />
                                 <h3 className="profile-name">{profileName}</h3>
                             </div>
                         </Link>

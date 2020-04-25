@@ -5,6 +5,7 @@ import SidebarItem from "./SidebarItem"
 import SidebarItemPlaceholder from "./SidebarItemPlaceholder"
 import Routes from "@routes"
 import { getChannels } from "@utils/ethernaResources/channelResources"
+import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import { getProfiles } from "@utils/swarmProfile"
 import { getResourceUrl } from "@utils/swarm"
 
@@ -19,13 +20,19 @@ const RecommendedChannels = () => {
     const fetchChannels = async () => {
         try {
             const fetchedChannels = await getChannels(0, 5)
-            const boxProfiles = await getProfiles(
-                fetchedChannels.map(p => p.address)
-            )
-            setChannels(boxProfiles || [])
+            setChannels(fetchedChannels || [])
+
+            loadProfiles(fetchedChannels)
         } catch (error) {
             console.error(error)
         }
+    }
+
+    const loadProfiles = async (fetchedChannels) => {
+        const profiles = await getProfiles(
+            fetchedChannels.map(c => c.address)
+        )
+        setChannels(profiles)
     }
 
     return (
@@ -34,14 +41,18 @@ const RecommendedChannels = () => {
             {channels === undefined && (
                 <SidebarItemPlaceholder />
             )}
-            {channels && channels.map(profile => {
+            {channels && channels.map(channel => {
                 return (
                     <SidebarItem
-                        imageUrl={getResourceUrl(profile.avatar)}
-                        fallbackAddress={profile.address}
-                        name={profile.name}
-                        link={Routes.getChannelLink(profile.address)}
-                        key={profile.address}
+                        imageUrl={getResourceUrl(channel.avatar)}
+                        fallbackAddress={channel.address}
+                        name={
+                            checkIsEthAddress(channel.name)
+                                ? shortenEthAddr(channel.address)
+                                : channel.name || shortenEthAddr(channel.address)
+                        }
+                        link={Routes.getChannelLink(channel.address)}
+                        key={channel.address}
                     />
                 )
             })}
@@ -62,4 +73,4 @@ RecommendedChannels.defaultProps = {
     profiles: [],
 }
 
-export default RecommendedChannels
+export default React.memo(RecommendedChannels)

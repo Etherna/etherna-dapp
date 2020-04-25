@@ -1,7 +1,7 @@
 import axios from "axios"
 import web3 from "web3"
 
-import { shortenEthAddr, checkIsEthAddress } from "./ethFuncs"
+import { checkIsEthAddress } from "./ethFuncs"
 import { readFeed, updatedFeed } from "./feedFuncs"
 import { getResourceUrl, isValidHash, uploadResourceToSwarm } from "./swarm"
 
@@ -10,36 +10,31 @@ const EthernaTopic = web3.utils.padRight(web3.utils.fromAscii(EthernaTopicName),
 const EthernaVideoName = "EthernaVideo"
 
 export const getProfile = async address => {
-    try {
-        const baseProfile = await resolveProfile(EthernaTopic, null, address)
-        const ethernaVideoProfile = await resolveProfile(EthernaTopic, EthernaVideoName, address)
-        return {
-            ...baseProfile,
-            ...ethernaVideoProfile
-        }
-    } catch (error) {
-        console.error(error)
-
-        return {
-            address,
-            name: shortenEthAddr(address),
-            avatar: null,
-            cover: null
-        }
+    const baseProfile = await resolveProfile(EthernaTopic, null, address)
+    const ethernaVideoProfile = await resolveProfile(EthernaTopic, EthernaVideoName, address)
+    return {
+        ...baseProfile,
+        ...ethernaVideoProfile
     }
 }
 
 export const getProfiles = async addresses => {
     try {
         let profiles = []
-        addresses.forEach(async address => {
+
+        for (let address of addresses) {
             const profile = await getProfile(address)
             profiles.push(profile)
-        })
+        }
+
         return profiles
     } catch (error) {
         console.error(error)
-        return []
+
+        return addresses.map(a => ({
+            address: a,
+            name: null
+        }))
     }
 }
 
@@ -48,6 +43,7 @@ export const updateProfile = async (profile) => {
 
     // Split profile data into "base profile" and "etherna video profile"
     let baseProfile = {
+        address: profile.address,
         name: profile.name,
         avatar: profile.avatar,
         cover: profile.cover
@@ -69,10 +65,10 @@ const resolveProfile = async (topic, name, address) => {
     const profile = await fetchFeedOrDefault(topic, name, address)
     return {
         address,
-        name: shortenEthAddr(address),
-        location: '',
-        website: '',
-        birthday: '',
+        name: null,
+        location: null,
+        website: null,
+        birthday: null,
 
         ...profile,
 
@@ -145,6 +141,11 @@ const validatedProfile = async profile => {
             throw new Error ("Birthday field must be a string not longer than 24 (ISO length)")
         }
     }
+    if (profile.description) {
+        if (typeof profile.description !== "string" || profile.description.length > 500) {
+            throw new Error ("Description field must be a string not longer than 500")
+        }
+    }
 
     // address is not necessary
     delete profile.address
@@ -164,7 +165,7 @@ const validatedProfile = async profile => {
         if (key === "description") {
             const type = "@text"
             const value = profile[key] && profile[key] !== ""
-                ? (await uploadResourceToSwarm(profile[key].toString().slice(0, 500)))
+                ? (await uploadResourceToSwarm(profile[key]))
                 : ""
             profile[key] = { type, value }
         }
@@ -182,7 +183,7 @@ const fetchFeedOrDefault = async (topic, name, address) => {
     try {
         const feed = await readFeed(topic, name, address)
         return JSON.parse(feed)
-    } catch (error) {
+    } catch {
         return {}
     }
 }

@@ -34,7 +34,7 @@ export const readFeed = async (topic, name, user, meta = undefined) => {
  * @param {string} update String value to update
  */
 export const updatedFeed = async (topic, name, user, update) => {
-    const data = (new TextEncoder()).encode(update) //Buffer.from(update.slice(2), "hex")
+    const data = (new TextEncoder()).encode(update)
 
     if (data.length > 3963) {
         throw new Error("Data exceed max length of 3963 bytes")
@@ -43,7 +43,7 @@ export const updatedFeed = async (topic, name, user, update) => {
     const subtopic = parseSubTopic(topic, name)
     const feed = await readFeed(subtopic, undefined, user, 1)
     const digest = feedDigest(feed, data)
-    const signature = await askToSignMessage(digest)
+    const signature = web3.utils.toHex(await askToSignMessage(digest, true))
 
     const resp = await axios.post(`${SwarmGateway}/bzz-feed:/`, data, {
         params: {

@@ -13,7 +13,7 @@ import {
     DropDownMenuToggle,
 } from "@common/DropDown"
 import { providerActions } from "@state/actions"
-import { shortenEthAddr } from "@utils/ethFuncs"
+import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import Routes from "@routes"
 
 const UserMenu = () => {
@@ -55,7 +55,13 @@ const UserMenu = () => {
                 <DropDownItem inactive={true}>
                     <Avatar image={avatar} address={address} />
                     <div className="flex flex-col flex-1">
-                        <span>{name || shortenEthAddr(address)}</span>
+                        <span>
+                            {
+                                checkIsEthAddress(name)
+                                    ? shortenEthAddr(name)
+                                    : name || shortenEthAddr(address)
+                            }
+                        </span>
                         {name && (
                             <small className="text-gray-500">
                                 {shortenEthAddr(address)}
