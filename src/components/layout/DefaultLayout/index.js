@@ -1,5 +1,6 @@
 import React, { useEffect } from "react"
 import PropTypes from "prop-types"
+import { useLocation } from "react-router-dom"
 import { useSelector } from "react-redux"
 
 import "./layout.scss"
@@ -8,8 +9,13 @@ import Sidebar from "@components/layout/Sidebar"
 import Modals from "@components/modals/ModalsSection"
 import { providerActions } from "@state/actions"
 
-const Layout = ({ children, showSidebar }) => {
+const Layout = ({ children }) => {
+    const location = useLocation()
     const { isSignedIn } = useSelector(state => state.user)
+
+    const hideSidebar =
+        location.pathname === "/watch" ||
+        location.pathname === "/how-it-works"
 
     useEffect(() => {
         autoLogin()
@@ -27,7 +33,7 @@ const Layout = ({ children, showSidebar }) => {
     return (
         <>
             <Header />
-            {showSidebar && <Sidebar />}
+            {!hideSidebar && <Sidebar />}
             <main>{children}</main>
             <Modals />
         </>
@@ -36,11 +42,6 @@ const Layout = ({ children, showSidebar }) => {
 
 Layout.propTypes = {
     children: PropTypes.node.isRequired,
-    showSidebar: PropTypes.bool,
-}
-
-Layout.defaultProps = {
-    showSidebar: true,
 }
 
 export default Layout

@@ -1,10 +1,9 @@
 import React from "react"
 
-import Layout from "@components/layout/DefaultLayout"
 import SEO from "@components/layout/SEO"
 
 const HowItWorks = () => (
-    <Layout showSidebar={false}>
+    <>
         <SEO title="How it works" />
 
         <div className="container my-8">
@@ -23,7 +22,7 @@ const HowItWorks = () => (
 
             <h2>Upload videos</h2>
         </div>
-    </Layout>
+    </>
 )
 
 export default HowItWorks

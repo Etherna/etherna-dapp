@@ -1,11 +1,10 @@
 import React from "react"
 
-import Layout from "@components/layout/DefaultLayout"
 import SEO from "@components/layout/SEO"
 import ChannelsView from "@components/channel/ChannelsView"
 
 const ChannelsPage = () => (
-    <Layout>
+    <>
         <SEO title="Channels" />
         <div className="p-4">
             <h1 className="mb-1">Channels</h1>
@@ -17,7 +16,7 @@ const ChannelsPage = () => (
 
             <ChannelsView />
         </div>
-    </Layout>
+    </>
 )
 
 export default ChannelsPage
