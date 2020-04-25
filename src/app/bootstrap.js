@@ -3,6 +3,8 @@
 const Web3 = require("web3")
 window.web3 = new Web3(window.web3 && window.web3.currentProvider)
 
+var NOTICE = 'No need to inject web 3 --> use web3 instance in redux store'
+
 // Override hashMessage with custom implementation.
 // This is because to update a swarm feed it cannot
 // have the default prefix “\x19Ethereum Signed Message”
