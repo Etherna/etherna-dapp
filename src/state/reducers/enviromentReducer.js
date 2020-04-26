@@ -1,3 +1,5 @@
+import { defaultKeymap } from "@keyboard"
+
 export const EnvActionTypes = {
     ENV_UPDATE_PROVIDER: "ENV_UPDATE_PROVIDER",
     ENV_UPDATE_NETWORK: "ENV_UPDATE_NETWORK",
@@ -5,19 +7,19 @@ export const EnvActionTypes = {
     ENV_IS_MOBILE: "ENV_IS_MOBILE",
     ENV_UPDATE_INDEXHOST: "ENV_UPDATE_INDEXHOST",
     ENV_UPDATE_GATEWAY_HOST: "ENV_UPDATE_GATEWAY_HOST",
+    UPDATE_KEYMAP: "UPDATE_KEYMAP",
 }
 
 const initialState = {
     indexHost:
-        (typeof window !== "undefined" &&
-            window.localStorage.getItem("indexHost")) ||
+        window.localStorage.getItem("indexHost") ||
         process.env.REACT_APP_INDEX_HOST ||
         "localhost",
     gatewayHost:
-        (typeof window !== "undefined" &&
-            window.localStorage.getItem("gatewayHost")) ||
+        window.localStorage.getItem("gatewayHost") ||
         process.env.REACT_APP_GATEWAY_HOST ||
         "https://swarm-gateways.net",
+    keymap: defaultKeymap
 }
 
 const enviromentReducer = (state = initialState, action) => {
@@ -59,6 +61,12 @@ const enviromentReducer = (state = initialState, action) => {
             return {
                 ...state,
                 gatewayHost: action.gatewayHost,
+            }
+
+        case EnvActionTypes.UPDATE_KEYMAP:
+            return {
+                ...state,
+                keymap: action.keymap,
             }
 
         default:

@@ -16,6 +16,7 @@ import {
 } from "./ProtectedRoutes"
 import PageLoader from "@common/PageLoader"
 import Layout from "@components/layout/DefaultLayout"
+import { ShortcutWrapper } from "@keyboard"
 import StateWrapper from "@state/wrapper"
 import { getBasename, isMatch } from "@routes"
 
@@ -73,36 +74,38 @@ const NotFound =
 const Root = () => {
     return (
         <StateWrapper>
-            <Router basename={basename}>
-                <Layout>
-                    <Switch>
-                        <Route path={"/"} exact>
-                            <Home />
-                        </Route>
-                        <Route path={"/channels"} exact>
-                            <Channels />
-                        </Route>
-                        <Route path={"/channel/:id"} exact>
-                            <Channel />
-                        </Route>
-                        <ChannelOwnerRoute path={"/channel/:id/edit"} exact>
-                            <ChannelEdit />
-                        </ChannelOwnerRoute>
-                        <WatchRoute path={"/watch"}>
-                            <Watch />
-                        </WatchRoute>
-                        <HasChannelRoute path={"/upload"}>
-                            <Upload />
-                        </HasChannelRoute>
-                        <Route path={"/how-it-works"}>
-                            <HowItWorks />
-                        </Route>
-                        <Route path="*">
-                            <NotFound />
-                        </Route>
-                    </Switch>
-                </Layout>
-            </Router>
+            <ShortcutWrapper>
+                <Router basename={basename}>
+                    <Layout>
+                        <Switch>
+                            <Route path={"/"} exact>
+                                <Home />
+                            </Route>
+                            <Route path={"/channels"} exact>
+                                <Channels />
+                            </Route>
+                            <Route path={"/channel/:id"} exact>
+                                <Channel />
+                            </Route>
+                            <ChannelOwnerRoute path={"/channel/:id/edit"} exact>
+                                <ChannelEdit />
+                            </ChannelOwnerRoute>
+                            <WatchRoute path={"/watch"}>
+                                <Watch />
+                            </WatchRoute>
+                            <HasChannelRoute path={"/upload"}>
+                                <Upload />
+                            </HasChannelRoute>
+                            <Route path={"/how-it-works"}>
+                                <HowItWorks />
+                            </Route>
+                            <Route path="*">
+                                <NotFound />
+                            </Route>
+                        </Switch>
+                    </Layout>
+                </Router>
+            </ShortcutWrapper>
         </StateWrapper>
     )
 }
