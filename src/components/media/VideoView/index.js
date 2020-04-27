@@ -9,8 +9,9 @@ import Player from "@components/media/Player"
 import Avatar from "@components/user/Avatar"
 import { getResourceUrl } from "@utils/swarm"
 import { getProfile } from "@utils/3box"
-import Routes from "@routes"
 import { getVideo } from "@utils/ethernaResources/videosResources"
+import Routes from "@routes"
+import DownloadIcon from "@icons/common/DownloadIcon"
 
 const VideoView = ({ hash, video }) => {
     const source = getResourceUrl(hash)
@@ -20,10 +21,16 @@ const VideoView = ({ hash, video }) => {
     const [profileAddress, setProfileAddress] = useState(video.channelAddress)
     const [title, setTitle] = useState(video.title)
     const [description, setDescription] = useState(video.description)
-    const [thumbnail, setThumbnail] = useState(getResourceUrl(video.thumbnailHash))
+    const [thumbnail, setThumbnail] = useState(
+        getResourceUrl(video.thumbnailHash)
+    )
     const [publishDate, setPublishDate] = useState(video.creationDateTime)
-    const [profileName, setProfileName] = useState(video.profileData && video.profileData.name)
-    const [profileAvatar, setProfileAvatar] = useState(video.profileData && video.profileData.avatar)
+    const [profileName, setProfileName] = useState(
+        video.profileData && video.profileData.name
+    )
+    const [profileAvatar, setProfileAvatar] = useState(
+        video.profileData && video.profileData.avatar
+    )
 
     useEffect(() => {
         if (Object.keys(video).length === 0) {
@@ -42,7 +49,8 @@ const VideoView = ({ hash, video }) => {
     const fetchVideo = async () => {
         setIsFetchingVideo(true)
 
-        const hasPrefetch = window.prefetchData && window.prefetchData.videoHash === hash
+        const hasPrefetch =
+            window.prefetchData && window.prefetchData.videoHash === hash
 
         try {
             const videoInfo = hasPrefetch
@@ -61,7 +69,7 @@ const VideoView = ({ hash, video }) => {
         setIsFetchingVideo(false)
     }
 
-    const fetchProfile = async (profileAddress) => {
+    const fetchProfile = async profileAddress => {
         try {
             const profile = await getProfile(profileAddress)
             setProfileName(profile.name)
@@ -89,7 +97,8 @@ const VideoView = ({ hash, video }) => {
                     <div className="video-info-bar">
                         <div className="mr-auto">
                             <span className="publish-time">
-                                {publishDate && moment(publishDate).format("LLL")}
+                                {publishDate &&
+                                    moment(publishDate).format("LLL")}
                             </span>
                         </div>
                         <div className="video-actions">
@@ -98,11 +107,7 @@ const VideoView = ({ hash, video }) => {
                                 href={source}
                                 className="btn btn-transparent btn-rounded"
                             >
-                                <img
-                                    src={require("@svg/icons/download-icon.svg")}
-                                    alt=""
-                                    className="m-auto"
-                                />
+                                <DownloadIcon />
                             </a>
                         </div>
                     </div>

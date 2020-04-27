@@ -5,6 +5,8 @@ import { NavLink } from "react-router-dom"
 import "./header.scss"
 import UserMenu from "@components/user/UserMenu"
 import Routes from "@routes"
+import Logo from "@icons/Logo"
+import UploadIcon from "@icons/menu/UploadIcon"
 
 const ChannelsMatches = [/^\/channel\//, /^\/channels/]
 const ExploreMatches = [/^\/watch/]
@@ -27,10 +29,7 @@ const Header = () => {
                         isActive={(_, location) => {
                             if (
                                 location.pathname === "/" ||
-                                anyMatch(
-                                    ExploreMatches,
-                                    location.pathname
-                                )
+                                anyMatch(ExploreMatches, location.pathname)
                             ) {
                                 return true
                             }
@@ -44,12 +43,7 @@ const Header = () => {
                         className="nav-item"
                         activeClassName="active"
                         isActive={(_, location) => {
-                            if (
-                                anyMatch(
-                                    ChannelsMatches,
-                                    location.pathname
-                                )
-                            ) {
+                            if (anyMatch(ChannelsMatches, location.pathname)) {
                                 return true
                             }
                             return false
@@ -67,11 +61,7 @@ const Header = () => {
                 </div>
                 <div className="logo">
                     <NavLink to={Routes.getHomeLink()}>
-                        <img
-                            src={require("@svg/logo.svg")}
-                            alt=""
-                            width={140}
-                        />
+                        <Logo />
                     </NavLink>
                 </div>
                 <div className="right-nav">
@@ -81,10 +71,7 @@ const Header = () => {
                             className="nav-item"
                             activeClassName="active"
                         >
-                            <img
-                                src={require("@svg/icons/upload-icon.svg")}
-                                alt=""
-                            />
+                            <UploadIcon />
                             <span>Upload</span>
                         </NavLink>
                     )}

@@ -4,6 +4,7 @@ import classnames from "classnames"
 
 import "./file-drag.scss"
 import Alert from "@components/common/Alert"
+import UploadLargeIcon from "@icons/common/UploadLargeIcon"
 
 const FileDrag = ({ id, label, onSelectFile, disabled, uploadLimit }) => {
     const [isDragOver, setIsDragOver] = useState(false)
@@ -62,7 +63,8 @@ const FileDrag = ({ id, label, onSelectFile, disabled, uploadLimit }) => {
                         type="warning"
                         onClose={() => setShowSizeLimitError(false)}
                     >
-                        Your file is too large. The maximum upload size is currently {uploadLimit}MB.
+                        Your file is too large. The maximum upload size is
+                        currently {uploadLimit}MB.
                     </Alert>
                 </div>
             )}
@@ -87,14 +89,13 @@ const FileDrag = ({ id, label, onSelectFile, disabled, uploadLimit }) => {
                         disabled={disabled}
                     />
                     <div className="drag-content">
-                        <img
-                            src={require("@svg/icons/upload-icon-lg.svg")}
-                            alt=""
-                        />
+                        <UploadLargeIcon />
                         <span className="drag-info text-lg">
                             {label || "Drag here"}
                         </span>
-                        <span className="drag-info text-sm font-normal">or</span>
+                        <span className="drag-info text-sm font-normal">
+                            or
+                        </span>
                         <div className="btn btn-outline">Select</div>
                         {uploadLimit && (
                             <small className="bold">{uploadLimit}MB</small>

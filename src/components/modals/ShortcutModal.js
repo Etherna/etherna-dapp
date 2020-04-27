@@ -10,8 +10,12 @@ import Kbd from "@components/common/Kbd"
 const key2string = require("key-event-to-string")()
 
 const ShortcutModal = () => {
-    const { shortcutNamespace, shortcutKey, keymap } = useSelector(state => state.env)
-    const [shortcut, setShortcut] = useState(keymap[shortcutNamespace][shortcutKey])
+    const { shortcutNamespace, shortcutKey, keymap } = useSelector(
+        state => state.env
+    )
+    const [shortcut, setShortcut] = useState(
+        keymap[shortcutNamespace][shortcutKey]
+    )
     const editorRef = useRef()
 
     useEffect(() => {
@@ -41,7 +45,11 @@ const ShortcutModal = () => {
     }
 
     return (
-        <Modal show={true} showCloseButton={true} onClose={() => closeShortcutModal()}>
+        <Modal
+            show={true}
+            showCloseButton={true}
+            onClose={() => closeShortcutModal()}
+        >
             {/* {editorRef && editorRef.current && (
                 <small>
                     {editorRef.current.hasFocus()
@@ -62,10 +70,18 @@ const ShortcutModal = () => {
                 )}
             </div>
             <div className="flex">
-                <Button aspect="danger" className="flex-1 mr-1" action={deleteShortcut}>
+                <Button
+                    aspect="danger"
+                    className="flex-1 mr-1"
+                    action={deleteShortcut}
+                >
                     Delete
                 </Button>
-                <Button aspect="secondary" className="flex-1 ml-1" action={overrideShortcut}>
+                <Button
+                    aspect="secondary"
+                    className="flex-1 ml-1"
+                    action={overrideShortcut}
+                >
                     Save
                 </Button>
             </div>

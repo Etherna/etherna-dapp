@@ -10,7 +10,7 @@ import VolumeControl from "./controls/VolumeControl"
 
 const PlayerControls = () => {
     return (
-        <div className="controls">
+        <div className="controls theme-light">
             {/* Progress */}
             <ProgressControl />
 
@@ -25,9 +25,7 @@ const PlayerControls = () => {
                 <PlaybackRateControl />
 
                 {/* Picture in Picture */}
-                {"pictureInPictureEnabled" in document && (
-                    <PiPButton />
-                )}
+                {"pictureInPictureEnabled" in document && <PiPButton />}
 
                 {/* Fullscreen */}
                 <FullScreenButton />

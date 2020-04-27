@@ -12,7 +12,7 @@ import Routes from "@routes"
 
 const VideoPreview = ({ video, hideProfile }) => {
     const profileLink = Routes.getChannelLink(video.channelAddress)
-    const videoLink =  Routes.getVideoLink(video.videoHash)
+    const videoLink = Routes.getVideoLink(video.videoHash)
     const videoSearch = new URL(videoLink, document.baseURI).search
     const videoPath = videoLink.replace(videoSearch, "")
     const profileAddress = video.channelAddress
@@ -47,7 +47,7 @@ const VideoPreview = ({ video, hideProfile }) => {
                 to={{
                     pathname: videoPath,
                     search: videoSearch,
-                    state: video
+                    state: video,
                 }}
             >
                 <div className="video-thumbnail">
@@ -84,7 +84,7 @@ const VideoPreview = ({ video, hideProfile }) => {
                         to={{
                             pathname: videoPath,
                             search: videoSearch,
-                            state: video
+                            state: video,
                         }}
                     >
                         <h4 className="video-title">{video.title}</h4>

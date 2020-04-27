@@ -34,7 +34,8 @@ const ProfileInfo = ({
     const fetchProfile = async () => {
         //setIsFetchingProfile(true)
 
-        const hasPrefetch = prefetchProfile && prefetchProfile.address === profileAddress
+        const hasPrefetch =
+            prefetchProfile && prefetchProfile.address === profileAddress
 
         try {
             const { name, description, avatar, cover } = hasPrefetch
@@ -50,7 +51,7 @@ const ProfileInfo = ({
             onFetchedProfile({
                 name: fallbackName,
                 avatar,
-                address: profileAddress
+                address: profileAddress,
             })
         } catch (error) {
             console.error(error)

@@ -50,7 +50,9 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
                         size="small"
                         aspect="link"
                         className="mt-2 ml-auto"
-                        disabled={indexHostValue === process.env.REACT_APP_INDEX_HOST}
+                        disabled={
+                            indexHostValue === process.env.REACT_APP_INDEX_HOST
+                        }
                     >
                         Reset to default
                     </Button>
@@ -87,7 +89,10 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
                         size="small"
                         aspect="link"
                         className="mt-2 ml-auto"
-                        disabled={gatewayHostValue === process.env.REACT_APP_GATEWAY_HOST}
+                        disabled={
+                            gatewayHostValue ===
+                            process.env.REACT_APP_GATEWAY_HOST
+                        }
                     >
                         Reset to default
                     </Button>

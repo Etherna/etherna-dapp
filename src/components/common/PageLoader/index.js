@@ -6,7 +6,7 @@ import "./page-loader.scss"
 class PageLoader extends React.Component {
     UNSAFE_componentWillMount() {
         NProgress.configure({
-            showSpinner: false
+            showSpinner: false,
         })
         NProgress.start()
     }

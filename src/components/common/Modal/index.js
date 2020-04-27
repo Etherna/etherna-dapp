@@ -11,7 +11,7 @@ const Modal = ({
     title,
     titleTag,
     showCloseButton,
-    onClose
+    onClose,
 }) => {
     let handleToggle = () => {
         setShow && setShow(!show)

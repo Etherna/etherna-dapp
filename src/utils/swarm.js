@@ -88,9 +88,10 @@ export const gatewayUploadWithProgress = async (
 
     if (isValidHash(hash)) {
         return hash
-    }
-    else {
-        throw new Error(`There was a problem uploading ${file.name}. Try again later.`)
+    } else {
+        throw new Error(
+            `There was a problem uploading ${file.name}. Try again later.`
+        )
     }
 }
 

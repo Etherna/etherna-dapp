@@ -3,7 +3,11 @@ import PropTypes from "prop-types"
 import classnames from "classnames"
 
 import "./player.scss"
-import { PlayerContextProvider, ReducerTypes, useStateValue } from "./PlayerContext"
+import {
+    PlayerContextProvider,
+    ReducerTypes,
+    useStateValue,
+} from "./PlayerContext"
 import PlayerControls from "./PlayerControls"
 import PlayerShortcuts from "./PlayerShortcuts"
 
@@ -28,7 +32,7 @@ const InnerPlayer = ({ source, thumbnail }) => {
 
             dispatch({
                 type: ReducerTypes.SET_VIDEO_ELEMENT,
-                videoEl: video
+                videoEl: video,
             })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -37,7 +41,7 @@ const InnerPlayer = ({ source, thumbnail }) => {
     useEffect(() => {
         if (currentTime === 1) {
             dispatch({
-                type: ReducerTypes.RESET_PLAY
+                type: ReducerTypes.RESET_PLAY,
             })
         }
     }, [currentTime, dispatch])
@@ -45,29 +49,28 @@ const InnerPlayer = ({ source, thumbnail }) => {
     const togglePlay = () => {
         dispatch({
             type: ReducerTypes.TOGGLE_PLAY,
-            isPlaying: !isPlaying
+            isPlaying: !isPlaying,
         })
     }
-
 
     // Video events
 
     const onLoadMetadata = () => {
         dispatch({
             type: ReducerTypes.UPDATE_DURATION,
-            duration: videoRef.current.duration
+            duration: videoRef.current.duration,
         })
     }
 
     const onProgress = () => {
         dispatch({
-            type: ReducerTypes.REFRESH_BUFFERING
+            type: ReducerTypes.REFRESH_BUFFERING,
         })
     }
 
     const onTimeUpdate = () => {
         dispatch({
-            type: ReducerTypes.REFRESH_CURRENT_TIME
+            type: ReducerTypes.REFRESH_CURRENT_TIME,
         })
     }
 
@@ -94,9 +97,7 @@ const InnerPlayer = ({ source, thumbnail }) => {
                         </a>
                     </p>
                 </video>
-                {!hiddenControls && videoRef.current && (
-                    <PlayerControls />
-                )}
+                {!hiddenControls && videoRef.current && <PlayerControls />}
             </div>
         </PlayerShortcuts>
     )
@@ -104,10 +105,7 @@ const InnerPlayer = ({ source, thumbnail }) => {
 
 const Player = ({ source, thumbnail }) => (
     <PlayerContextProvider>
-        <InnerPlayer
-            source={source}
-            thumbnail={thumbnail}
-        />
+        <InnerPlayer source={source} thumbnail={thumbnail} />
     </PlayerContextProvider>
 )
 

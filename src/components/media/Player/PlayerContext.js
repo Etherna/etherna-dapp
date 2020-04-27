@@ -21,11 +21,10 @@ const clamp = (val, min, max) => Math.min(Math.max(min, val), max)
 
 const reducer = (state, action) => {
     switch (action.type) {
-
         case ReducerTypes.SET_VIDEO_ELEMENT: {
             return {
                 ...state,
-                videoEl: action.videoEl
+                videoEl: action.videoEl,
             }
         }
 
@@ -40,7 +39,7 @@ const reducer = (state, action) => {
             }
             return {
                 ...state,
-                isPlaying: !state.videoEl.paused
+                isPlaying: !state.videoEl.paused,
             }
         }
 
@@ -82,14 +81,14 @@ const reducer = (state, action) => {
             state.videoEl.muted = action.muted
             return {
                 ...state,
-                muted: action.muted
+                muted: action.muted,
             }
         }
 
         case ReducerTypes.UPDATE_DURATION: {
             return {
                 ...state,
-                duration: action.duration
+                duration: action.duration,
             }
         }
 
@@ -107,7 +106,7 @@ const reducer = (state, action) => {
             state.videoEl.currentTime = currentTime
 
             return {
-                ...state
+                ...state,
             }
         }
 
@@ -115,7 +114,7 @@ const reducer = (state, action) => {
             state.videoEl.playbackRate = action.playbackRate
             return {
                 ...state,
-                playbackRate: action.playbackRate
+                playbackRate: action.playbackRate,
             }
         }
 
@@ -134,17 +133,18 @@ const reducer = (state, action) => {
             state.videoEl.volume = volume
             return {
                 ...state,
-                volume: volume
+                volume: volume,
             }
         }
 
         case ReducerTypes.REFRESH_CURRENT_TIME: {
-            const time = state.duration > 0
-                ? state.videoEl.currentTime / state.duration
-                : 0
+            const time =
+                state.duration > 0
+                    ? state.videoEl.currentTime / state.duration
+                    : 0
             return {
                 ...state,
-                currentTime: time
+                currentTime: time,
             }
         }
 
@@ -152,17 +152,21 @@ const reducer = (state, action) => {
             let buffering = state.buffering
             for (let i = 0; i < state.videoEl.buffered.length; i++) {
                 if (
-                    state.videoEl.buffered.start(state.videoEl.buffered.length - 1 - i) <
-                    state.videoEl.currentTime
+                    state.videoEl.buffered.start(
+                        state.videoEl.buffered.length - 1 - i
+                    ) < state.videoEl.currentTime
                 ) {
-                    buffering = state.videoEl.buffered.end(state.videoEl.buffered.length - 1 - i) / state.duration
+                    buffering =
+                        state.videoEl.buffered.end(
+                            state.videoEl.buffered.length - 1 - i
+                        ) / state.duration
                     break
                 }
             }
 
             return {
                 ...state,
-                buffering
+                buffering,
             }
         }
 
@@ -180,7 +184,7 @@ export const PlayerContextProvider = ({ children }) => {
         buffering: 0,
         volume: 1,
         muted: false,
-        playbackRate: 1
+        playbackRate: 1,
     })
     return (
         <PlayerContext.Provider value={store}>

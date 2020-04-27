@@ -31,20 +31,19 @@ const RecommendedChannels = () => {
     return (
         <div className="sidenav-menu">
             <h6 className="sidebar-label">Recommended Channels</h6>
-            {channels === undefined && (
-                <SidebarItemPlaceholder />
-            )}
-            {channels && channels.map(profile => {
-                return (
-                    <SidebarItem
-                        imageUrl={getResourceUrl(profile.avatar)}
-                        fallbackAddress={profile.address}
-                        name={profile.name}
-                        link={Routes.getChannelLink(profile.address)}
-                        key={profile.address}
-                    />
-                )
-            })}
+            {channels === undefined && <SidebarItemPlaceholder />}
+            {channels &&
+                channels.map(profile => {
+                    return (
+                        <SidebarItem
+                            imageUrl={getResourceUrl(profile.avatar)}
+                            fallbackAddress={profile.address}
+                            name={profile.name}
+                            link={Routes.getChannelLink(profile.address)}
+                            key={profile.address}
+                        />
+                    )
+                })}
         </div>
     )
 }

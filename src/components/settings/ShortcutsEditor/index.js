@@ -7,6 +7,7 @@ import Button from "@common/Button"
 import Kbd from "@common/Kbd"
 import { splitArray } from "@utils/arrays"
 import { editShortcut } from "@state/actions/enviroment/shortcuts"
+import EditIcon from "@icons/common/EditIcon"
 
 const ShortcutsEditor = ({ namespace }) => {
     const { lang, keymap } = useSelector(state => state.env)
@@ -21,16 +22,23 @@ const ShortcutsEditor = ({ namespace }) => {
                         {shortcutNames.map(shortcut => (
                             <tr key={shortcut}>
                                 <td>{lang.get(`player.${shortcut}`)}</td>
-                                <td><Kbd shortcut={shortcuts[shortcut]} /></td>
+                                <td>
+                                    <Kbd shortcut={shortcuts[shortcut]} />
+                                </td>
                                 <td>
                                     <div className="flex">
                                         <Button
                                             aspect="transparent"
                                             size="small"
                                             rounded={true}
-                                            action={() => editShortcut(namespace, shortcut)}
+                                            action={() =>
+                                                editShortcut(
+                                                    namespace,
+                                                    shortcut
+                                                )
+                                            }
                                         >
-                                            <img src={require("@svg/icons/edit-icon.svg")} alt="" className="m-auto" />
+                                            <EditIcon />
                                         </Button>
                                     </div>
                                 </td>

@@ -10,14 +10,14 @@ const VolumeControl = () => {
     const toggleMute = () => {
         dispatch({
             type: ReducerTypes.TOGGLE_MUTED,
-            muted: !muted
+            muted: !muted,
         })
     }
 
     const updateVolume = value => {
         dispatch({
             type: ReducerTypes.UPDATE_VOLUME,
-            volume: value
+            volume: value,
         })
     }
 
@@ -31,20 +31,14 @@ const VolumeControl = () => {
                 tabIndex={0}
             >
                 {muted === true ? (
-                    <img
-                        src={require("@svg/icons/muted-icon.svg")}
-                        alt=""
-                    />
+                    <img src={require("@svg/icons/muted-icon.svg")} alt="" />
                 ) : volume < 0.25 ? (
                     <img
                         src={require("@svg/icons/volume-low-icon.svg")}
                         alt=""
                     />
                 ) : (
-                    <img
-                        src={require("@svg/icons/volume-icon.svg")}
-                        alt=""
-                    />
+                    <img src={require("@svg/icons/volume-icon.svg")} alt="" />
                 )}
             </div>
             <div className="option-menu">

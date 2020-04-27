@@ -14,18 +14,17 @@ const VideoGrid = ({ label, videos, mini }) => {
                 {label && <LabelTag>{label}</LabelTag>}
             </div>
             <div className={classnames("video-grid", { mini: mini })}>
-                {videos === undefined && (
-                    <VideoPreviewPlaceholder />
-                )}
-                {videos && videos.map((v, i) => {
-                    return (
-                        <VideoPreview
-                            video={v}
-                            hideProfile={mini}
-                            key={v.videoHash + `_${i}`}
-                        />
-                    )
-                })}
+                {videos === undefined && <VideoPreviewPlaceholder />}
+                {videos &&
+                    videos.map((v, i) => {
+                        return (
+                            <VideoPreview
+                                video={v}
+                                hideProfile={mini}
+                                key={v.videoHash + `_${i}`}
+                            />
+                        )
+                    })}
             </div>
         </>
     )

@@ -8,7 +8,7 @@ const FullScreenButton = () => {
 
     const toggleFullscreen = () => {
         dispatch({
-            type: ReducerTypes.TOGGLE_FULLSCREEN
+            type: ReducerTypes.TOGGLE_FULLSCREEN,
         })
     }
 
@@ -20,10 +20,7 @@ const FullScreenButton = () => {
             role="button"
             tabIndex={0}
         >
-            <img
-                src={require("@svg/icons/fullscreen-icon.svg")}
-                alt=""
-            />
+            <img src={require("@svg/icons/fullscreen-icon.svg")} alt="" />
         </div>
     )
 }

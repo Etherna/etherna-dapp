@@ -9,9 +9,6 @@ export const splitArray = (array, limit) => {
         return [array]
     } else {
         const index = Math.floor(array.length / 2)
-        return [
-            array.slice(0, index),
-            array.slice(index + 1)
-        ]
+        return [array.slice(0, index), array.slice(index + 1)]
     }
 }

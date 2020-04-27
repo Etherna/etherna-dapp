@@ -58,9 +58,7 @@ const ChannelsView = () => {
 
     return (
         <div className="channels">
-            {channels === undefined && (
-                <ChannelPreviewPlaceholder />
-            )}
+            {channels === undefined && <ChannelPreviewPlaceholder />}
 
             <InfiniteScroller
                 loadMore={fetchChannels}
@@ -68,20 +66,19 @@ const ChannelsView = () => {
                 initialLoad={false}
                 threshold={30}
             >
-                {!channels && (
-                    <div></div>
-                )}
-                {channels && channels.map(channel => {
-                    return (
-                        <ChannelPreview
-                            channelAddress={channel.address}
-                            avatar={channel.profileData.avatar}
-                            name={channel.profileData.name}
-                            videos={channel.videos}
-                            key={channel.address}
-                        />
-                    )
-                })}
+                {!channels && <div></div>}
+                {channels &&
+                    channels.map(channel => {
+                        return (
+                            <ChannelPreview
+                                channelAddress={channel.address}
+                                avatar={channel.profileData.avatar}
+                                name={channel.profileData.name}
+                                videos={channel.videos}
+                                key={channel.address}
+                            />
+                        )
+                    })}
             </InfiniteScroller>
         </div>
     )

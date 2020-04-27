@@ -14,8 +14,7 @@ const Layout = ({ children }) => {
     const { isSignedIn } = useSelector(state => state.user)
 
     const hideSidebar =
-        location.pathname === "/watch" ||
-        location.pathname === "/how-it-works"
+        location.pathname === "/watch" || location.pathname === "/how-it-works"
 
     useEffect(() => {
         autoLogin()
