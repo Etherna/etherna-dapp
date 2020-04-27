@@ -7,6 +7,7 @@
             "@common/*": ["src/components/common/*"],
             "@keyboard": ["src/keyboard"],
             "@lang/*": ["src/lang/*"],
+            "@icons/*": ["src/components/icons/*"],
             "@pages/*": ["src/pages/*"],
             "@routes": ["src/routes"],
             "@state/*": ["src/state/*"],

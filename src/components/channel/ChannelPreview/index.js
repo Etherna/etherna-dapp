@@ -1,6 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import React from "react"
+import PropTypes from "prop-types"
+import { Link } from "react-router-dom"
 
 import "./channel-preview.scss"
 import Avatar from "@components/user/Avatar"
@@ -12,24 +12,16 @@ const ChannelPreview = ({ channelAddress, avatar, name, videos }) => {
         <div className="channel-preview" key={channelAddress}>
             <div className="channel-info">
                 <Link to={Routes.getChannelLink(channelAddress)}>
-                    <Avatar
-                        image={avatar}
-                        address={channelAddress}
-                    />
+                    <Avatar image={avatar} address={channelAddress} />
                 </Link>
                 <Link to={Routes.getChannelLink(channelAddress)}>
                     <h3>{name}</h3>
                 </Link>
             </div>
             {videos && videos.length > 0 ? (
-                <VideoGrid
-                    videos={videos}
-                    mini={true}
-                />
+                <VideoGrid videos={videos} mini={true} />
             ) : (
-                <p className="text-gray-600 italic">
-                    No videos uploaded yet
-                </p>
+                <p className="text-gray-600 italic">No videos uploaded yet</p>
             )}
         </div>
     )

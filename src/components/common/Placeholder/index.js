@@ -7,16 +7,13 @@ import "./placeholder.scss"
 const Placeholder = ({ width, height, round, className }) => {
     return (
         <div
-            className={
-                classnames(
-                    "placeholder",
-                    className, {
-                        [`rounded${round !== "" ? "-" + round : round}`]: round !== "none",
-                    }
-                )
-            }
+            className={classnames("placeholder", className, {
+                [`rounded${round !== "" ? "-" + round : round}`]:
+                    round !== "none",
+            })}
             style={{
-                width, height
+                width,
+                height,
             }}
         />
     )
@@ -25,16 +22,14 @@ const Placeholder = ({ width, height, round, className }) => {
 Placeholder.propTypes = {
     width: PropTypes.string,
     height: PropTypes.string,
-    round: PropTypes.oneOf([
-        "", "sm", "lg", "full", "none"
-    ]),
+    round: PropTypes.oneOf(["", "sm", "lg", "full", "none"]),
     className: PropTypes.string,
 }
 
 Placeholder.defaultProps = {
     width: "100%",
     height: "2rem",
-    round: ""
+    round: "",
 }
 
 export default Placeholder

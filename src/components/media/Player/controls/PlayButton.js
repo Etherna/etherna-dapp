@@ -9,7 +9,7 @@ const PlayButton = () => {
     const togglePlay = () => {
         dispatch({
             type: ReducerTypes.TOGGLE_PLAY,
-            isPlaying: !isPlaying
+            isPlaying: !isPlaying,
         })
     }
 

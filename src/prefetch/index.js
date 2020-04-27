@@ -3,7 +3,7 @@ const prefetchers = [
     require("./prefetchers/videoPrefetcher").default,
 ]
 
-const prefetch = async (renderCallback) => {
+const prefetch = async renderCallback => {
     window.prefetchData = null
 
     for (let prefetcher of prefetchers) {

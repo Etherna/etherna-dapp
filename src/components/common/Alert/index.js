@@ -12,16 +12,13 @@ const Alert = ({ children, type, title, onClose }) => {
             })}
         >
             <div className="alert-header">
-                {title && (
-                    <div className="alert-title">{title}</div>
-                )}
+                {title && <div className="alert-title">{title}</div>}
 
                 {onClose && (
-                    <button
-                        className="close"
-                        onClick={onClose}
-                    >
-                        <span className="m-auto" aria-hidden="true">&times;</span>
+                    <button className="close" onClick={onClose}>
+                        <span className="m-auto" aria-hidden="true">
+                            &times;
+                        </span>
                     </button>
                 )}
             </div>

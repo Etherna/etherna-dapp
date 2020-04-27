@@ -2,16 +2,18 @@ import { PlayerKeymap } from "./keymaps/player"
 
 let baseKeymap = {
     PLAYER: {
-        ...PlayerKeymap
+        ...PlayerKeymap,
     },
 }
 
 // Apply user overrided shortcuts
-const keymapOverride = JSON.parse(window.localStorage.getItem("keymapOverride") || "{}")
+const keymapOverride = JSON.parse(
+    window.localStorage.getItem("keymapOverride") || "{}"
+)
 Object.keys(baseKeymap).forEach(namespace => {
     baseKeymap[namespace] = {
         ...baseKeymap[namespace],
-        ...(keymapOverride[namespace] || {})
+        ...(keymapOverride[namespace] || {}),
     }
 })
 

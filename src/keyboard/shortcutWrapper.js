@@ -19,12 +19,12 @@ class ShortcutWrapper extends React.Component {
 }
 
 ShortcutWrapper.childContextTypes = {
-    shortcuts: PropTypes.object.isRequired
+    shortcuts: PropTypes.object.isRequired,
 }
 
 const mapState = state => {
     return {
-        keymap: state.env.keymap
+        keymap: state.env.keymap,
     }
 }
 

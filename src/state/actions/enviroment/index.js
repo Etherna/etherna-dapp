@@ -9,5 +9,5 @@ export default {
     updateGatewayHost,
     updateIndexHost,
     resetGatewayHost,
-    resetIndexHost
+    resetIndexHost,
 }

@@ -14,20 +14,25 @@ export const editShortcut = (namespace, key) => {
     })
 }
 
-export const saveShortcut = (newShortcut) => {
+export const saveShortcut = newShortcut => {
     const { keymap, shortcutNamespace, shortcutKey } = store.getState().env
 
     // Create new keymap
     let newKeymap = {
-        ...keymap
+        ...keymap,
     }
     keymap[shortcutNamespace][shortcutKey] = newShortcut
 
     // Save locally user's keymap preferences
-    let keymapOverride = JSON.parse(window.localStorage.getItem("keymapOverride") || "{}")
+    let keymapOverride = JSON.parse(
+        window.localStorage.getItem("keymapOverride") || "{}"
+    )
     keymapOverride[shortcutNamespace] = keymapOverride[shortcutNamespace] || {}
     keymapOverride[shortcutNamespace][shortcutKey] = newShortcut
-    window.localStorage.setItem("keymapOverride", JSON.stringify(keymapOverride))
+    window.localStorage.setItem(
+        "keymapOverride",
+        JSON.stringify(keymapOverride)
+    )
 
     store.dispatch({
         type: EnvActionTypes.UPDATE_KEYMAP,
@@ -43,4 +48,3 @@ export const saveShortcut = (newShortcut) => {
         isEditingShortcut: false,
     })
 }
-

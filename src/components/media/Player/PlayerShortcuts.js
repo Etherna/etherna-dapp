@@ -12,7 +12,10 @@ const PlayerShortcuts = ({ children }) => {
         // eslint-disable-next-line default-case
         switch (action) {
             case PlayerActions.PLAYPAUSE:
-                dispatch({ type: ReducerTypes.TOGGLE_PLAY, isPlaying: !isPlaying })
+                dispatch({
+                    type: ReducerTypes.TOGGLE_PLAY,
+                    isPlaying: !isPlaying,
+                })
                 break
             case PlayerActions.SKIP_BACKWARD:
                 dispatch({ type: ReducerTypes.UPDATE_PROGRESS, bySec: 5 })
@@ -99,7 +102,6 @@ const PlayerShortcuts = ({ children }) => {
                 break
         }
     }
-
 
     return (
         <Shortcuts

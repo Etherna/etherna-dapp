@@ -8,7 +8,7 @@ const PiPButton = () => {
 
     const togglePictureInPicture = () => {
         dispatch({
-            type: ReducerTypes.TOGGLE_PICTURE_IN_PICTURE
+            type: ReducerTypes.TOGGLE_PICTURE_IN_PICTURE,
         })
     }
 
@@ -20,10 +20,7 @@ const PiPButton = () => {
             role="button"
             tabIndex={0}
         >
-            <img
-                src={require("@svg/icons/pip-icon.svg")}
-                alt=""
-            />
+            <img src={require("@svg/icons/pip-icon.svg")} alt="" />
         </div>
     )
 }

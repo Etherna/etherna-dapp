@@ -5,7 +5,6 @@ import { getProfile } from "@utils/3box"
 import { getChannel } from "@utils/ethernaResources/channelResources"
 
 const fetchProfile = async address => {
-
     try {
         const boxProfile = await getProfile(address)
         const channel = await getChannelOrNull(address)

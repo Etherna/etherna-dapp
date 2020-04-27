@@ -13,7 +13,7 @@ const ProgressControl = () => {
 
         dispatch({
             type: ReducerTypes.UPDATE_PROGRESS,
-            atPercent: time
+            atPercent: time,
         })
     }
 

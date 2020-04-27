@@ -1,5 +1,6 @@
 import { defaultKeymap } from "@keyboard"
 import lang from "@lang"
+import { loadDarkMode } from "@state/actions/enviroment/darkMode"
 
 export const EnvActionTypes = {
     ENV_UPDATE_PROVIDER: "ENV_UPDATE_PROVIDER",
@@ -10,6 +11,7 @@ export const EnvActionTypes = {
     ENV_UPDATE_GATEWAY_HOST: "ENV_UPDATE_GATEWAY_HOST",
     UPDATE_KEYMAP: "UPDATE_KEYMAP",
     EDIT_SHORTCUT: "EDIT_SHORTCUT",
+    TOGGLE_DARK_MODE: "TOGGLE_DARK_MODE",
 }
 
 const initialState = {
@@ -22,7 +24,8 @@ const initialState = {
         process.env.REACT_APP_GATEWAY_HOST ||
         "https://swarm-gateways.net",
     keymap: defaultKeymap,
-    lang
+    darkMode: loadDarkMode(),
+    lang,
 }
 
 const enviromentReducer = (state = initialState, action) => {
@@ -77,6 +80,12 @@ const enviromentReducer = (state = initialState, action) => {
                 ...state,
                 shortcutNamespace: action.shortcutNamespace,
                 shortcutKey: action.shortcutKey,
+            }
+
+        case EnvActionTypes.TOGGLE_DARK_MODE:
+            return {
+                ...state,
+                darkMode: action.darkMode
             }
 
         default:

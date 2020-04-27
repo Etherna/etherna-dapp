@@ -97,7 +97,11 @@ const Uploader = () => {
             </div>
             <div className="row mb-6">
                 {hasSubmitted && (
-                    <Alert title="" type="success" onClose={() => setHasSubmitted(false)}>
+                    <Alert
+                        title=""
+                        type="success"
+                        onClose={() => setHasSubmitted(false)}
+                    >
                         Your video has been successfully uploaded and linked to
                         your profile. <br />
                         You can watch your video at this link:

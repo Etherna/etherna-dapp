@@ -13,7 +13,7 @@ const SwarmFileUpload = ({
     onRemoveFile,
     showImagePreview,
     disabled,
-    pinContent
+    pinContent,
 }) => {
     const [isUploading, setIsUploading] = useState(false)
     const [uploadProgress, setUploadProgress] = useState(0)
@@ -79,7 +79,12 @@ const SwarmFileUpload = ({
                     <Alert type="danger" title="Upload error">
                         {errorMessage}
                     </Alert>
-                    <Button size="small" aspect="secondary" className="mt-2" action={handleRemoveFile}>
+                    <Button
+                        size="small"
+                        aspect="secondary"
+                        className="mt-2"
+                        action={handleRemoveFile}
+                    >
                         Retry
                     </Button>
                 </>

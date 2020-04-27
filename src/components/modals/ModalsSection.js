@@ -16,7 +16,7 @@ const ModalsSection = () => {
         isLoadingProfile,
         showUnsupportedModal,
         //showNetwokChangeModal,
-        isEditingShortcut
+        isEditingShortcut,
     } = useSelector(state => state.ui)
     const mustConsentError =
         errorMessage &&

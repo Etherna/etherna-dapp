@@ -6,7 +6,7 @@
 }
 
 .navbar {
-    @apply flex flex-wrap fixed w-full z-1 top-0 shadow-sm bg-white;
+    @apply flex flex-wrap fixed w-full z-1 top-0 shadow-sm bg-background-secondary;
 
     .nav-item {
         @apply flex items-center px-6 pt-4 pb-3 whitespace-no-wrap;

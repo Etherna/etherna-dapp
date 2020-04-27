@@ -51,3 +51,25 @@
         }
     }
 }
+
+.theme-dark {
+    .profile-info-edit {
+        .cover {
+            .cover-input {
+                .cover-actions {
+                    .btn {
+                        background-color: rgba($color: #fff, $alpha: 0.45);
+                        &:hover {
+                            background-color: rgba($color: #fff, $alpha: 0.45);
+                        }
+                    }
+                }
+            }
+        }
+        .profile-avatar {
+            &::after {
+                @apply text-gray-800;
+            }
+        }
+    }
+}
