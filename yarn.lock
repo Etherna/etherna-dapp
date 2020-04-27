@@ -10826,6 +10826,11 @@ keccak@^2.0.0:
     nan "^2.14.0"
     safe-buffer "^5.2.0"
 
+key-event-to-string@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/key-event-to-string/-/key-event-to-string-1.2.0.tgz#6cf2ed0d246fe2ae3ff5e7751fd2d66764437bf3"
+  integrity sha512-XtYtvEp/f6WaYgNCOdRUuE/cTqoQXU7TK62rmGsA4ylRGvvFRlBsItkR9f+/MEaVzTAIqBDCU1Zt/67lv7L1iA==
+
 keypair@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/keypair/-/keypair-1.0.1.tgz#7603719270afb6564ed38a22087a06fc9aa4ea1b"
@@ -10891,6 +10896,11 @@ ky@^0.15.0:
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/ky/-/ky-0.15.0.tgz#bea059d57cc179575adadbba2d8e15610d8fd75b"
   integrity sha512-6IlJRPFHq4ZKRRa9lyh6YqHqlmddAkfyXI9CYvZpLQtg7fQvwncPHyHrmtXAHKCqHOilINPMT88eW6FTA3HwkA==
+
+lang.js@^1.1.14:
+  version "1.1.14"
+  resolved "https://registry.yarnpkg.com/lang.js/-/lang.js-1.1.14.tgz#96329c064c18f8d5e1299d79d827a368af08c710"
+  integrity sha512-HsNKw3b7tYHwDQux3lQtbLGAntwJ5fl8Pl1BPXTKu+gdpaZsK9d787yFmLi6/LSXeNSgPO1CjZDKkrrPsERbSw==
 
 last-call-webpack-plugin@^3.0.0:
   version "3.0.0"

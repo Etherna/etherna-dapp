@@ -6,9 +6,6 @@ import { ShortcutManager } from "react-shortcuts"
 class ShortcutWrapper extends React.Component {
     constructor(props) {
         super(props)
-
-        console.log('props shortcuts', props.keymap);
-
         this.shortcutManager = new ShortcutManager(props.keymap)
     }
 

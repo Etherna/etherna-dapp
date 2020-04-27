@@ -19,6 +19,8 @@
     "detect-browser": "^4.8.0",
     "ethereum-blockies-base64": "^1.0.2",
     "ethers": "^4.0.46",
+    "key-event-to-string": "^1.2.0",
+    "lang.js": "^1.1.14",
     "moment": "^2.24.0",
     "node-sass": "^4.13.1",
     "nprogress": "^0.2.0",

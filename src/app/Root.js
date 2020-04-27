@@ -41,6 +41,9 @@ const  AsyncUpload = loadable(() => pMinDelay(import(/* webpackChunkName: "uploa
 const  AsyncHowItWorks = loadable(() => pMinDelay(import(/* webpackChunkName: "how-it-works" */ "@pages/how-it-works"), 200), {
     fallback: <PageLoader />
 })
+const  AsyncShortcuts = loadable(() => pMinDelay(import(/* webpackChunkName: "shortcuts" */ "@pages/shortcuts"), 200), {
+    fallback: <PageLoader />
+})
 const AsyncNotFound = loadable(() => pMinDelay(import(/* webpackChunkName: "404" */ "@pages/404"), 200), {
     fallback: <PageLoader />
 })
@@ -68,6 +71,9 @@ const Upload = isMatch("/upload", false)
 const HowItWorks = isMatch("/how-it-works", false)
     ? require("@pages/how-it-works").default
     : () => (<AsyncHowItWorks />)
+const Shortcuts = isMatch("/shortcuts", false)
+    ? require("@pages/shortcuts").default
+    : () => (<AsyncShortcuts />)
 const NotFound =
     () => (<AsyncNotFound />)
 
@@ -98,6 +104,9 @@ const Root = () => {
                             </HasChannelRoute>
                             <Route path={"/how-it-works"}>
                                 <HowItWorks />
+                            </Route>
+                            <Route path={"/shortcuts"}>
+                                <Shortcuts />
                             </Route>
                             <Route path="*">
                                 <NotFound />

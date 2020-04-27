@@ -1,8 +1,10 @@
 import React, { useRef } from "react"
+import { Link } from "react-router-dom"
 
-import { DropDown, DropDownMenu, DropDownMenuToggle } from "@common/DropDown"
+import { DropDown, DropDownMenu, DropDownMenuToggle, DropDownItem } from "@common/DropDown"
 import Button from "@common/Button"
 import EnvDropDownMenus from "./EnvDropDownMenu"
+import Routes from "@routes"
 
 const GuestMenu = () => {
     let mainMenuRef = useRef()
@@ -39,6 +41,18 @@ const GuestMenu = () => {
                         <span>Gateway</span>
                     </div>
                 </DropDownMenuToggle>
+
+                <hr />
+
+                <DropDownItem>
+                    <Link to={Routes.getShortcutsLink()}>
+                        <img
+                            src={require("@svg/icons/shortcuts-icon.svg")}
+                            alt=""
+                        />
+                        <span>Shortcuts</span>
+                    </Link>
+                </DropDownItem>
             </DropDownMenu>
             <EnvDropDownMenus
                 indexMenuRef={indexMenuRef}

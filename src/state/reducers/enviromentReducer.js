@@ -1,4 +1,5 @@
 import { defaultKeymap } from "@keyboard"
+import lang from "@lang"
 
 export const EnvActionTypes = {
     ENV_UPDATE_PROVIDER: "ENV_UPDATE_PROVIDER",
@@ -8,6 +9,7 @@ export const EnvActionTypes = {
     ENV_UPDATE_INDEXHOST: "ENV_UPDATE_INDEXHOST",
     ENV_UPDATE_GATEWAY_HOST: "ENV_UPDATE_GATEWAY_HOST",
     UPDATE_KEYMAP: "UPDATE_KEYMAP",
+    EDIT_SHORTCUT: "EDIT_SHORTCUT",
 }
 
 const initialState = {
@@ -19,7 +21,8 @@ const initialState = {
         window.localStorage.getItem("gatewayHost") ||
         process.env.REACT_APP_GATEWAY_HOST ||
         "https://swarm-gateways.net",
-    keymap: defaultKeymap
+    keymap: defaultKeymap,
+    lang
 }
 
 const enviromentReducer = (state = initialState, action) => {
@@ -67,6 +70,13 @@ const enviromentReducer = (state = initialState, action) => {
             return {
                 ...state,
                 keymap: action.keymap,
+            }
+
+        case EnvActionTypes.EDIT_SHORTCUT:
+            return {
+                ...state,
+                shortcutNamespace: action.shortcutNamespace,
+                shortcutKey: action.shortcutKey,
             }
 
         default:

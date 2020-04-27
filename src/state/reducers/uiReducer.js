@@ -5,6 +5,7 @@ export const UIActionTypes = {
     UI_TOGGLE_LOADING_PROFILE: "UI_TOGGLE_LOADING_PROFILE",
     UI_TOGGLE_BROWSER_SUPPORT: "UI_TOGGLE_BROWSER_SUPPORT",
     UI_TOGGLE_NETWORK_CHANGE: "UI_TOGGLE_NETWORK_CHANGE",
+    UI_TOGGLE_EDITING_SHORTCUT: "UI_TOGGLE_EDITING_SHORTCUT",
 }
 
 const uiReducer = (state = {}, action) => {
@@ -47,6 +48,12 @@ const uiReducer = (state = {}, action) => {
             return {
                 ...state,
                 showNetwokChangeModal: action.showNetwokChangeModal,
+            }
+
+        case UIActionTypes.UI_TOGGLE_EDITING_SHORTCUT:
+            return {
+                ...state,
+                isEditingShortcut: action.isEditingShortcut,
             }
 
         default:

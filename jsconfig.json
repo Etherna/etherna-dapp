@@ -6,6 +6,7 @@
             "@components/*": ["src/components/*"],
             "@common/*": ["src/components/common/*"],
             "@keyboard": ["src/keyboard"],
+            "@lang/*": ["src/lang/*"],
             "@pages/*": ["src/pages/*"],
             "@routes": ["src/routes"],
             "@state/*": ["src/state/*"],
