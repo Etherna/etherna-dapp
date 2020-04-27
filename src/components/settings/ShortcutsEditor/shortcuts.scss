@@ -1,0 +1,14 @@
+.shortcuts-table-container {
+    @apply flex flex-wrap;
+
+    .shortcuts-table {
+        @apply w-full;
+        @screen md {
+            @apply w-1/2;
+        }
+
+        tr {
+            @apply w-full py-1;
+        }
+    }
+}

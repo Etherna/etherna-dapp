@@ -28,6 +28,8 @@ module.exports = override(
         "@app": path.resolve(__dirname, "src/app"),
         "@components": path.resolve(__dirname, "src/components"),
         "@common": path.resolve(__dirname, "src/components/common"),
+        "@keyboard": path.resolve(__dirname, "src/keyboard"),
+        "@lang": path.resolve(__dirname, "src/lang"),
         "@pages": path.resolve(__dirname, "src/pages"),
         "@routes": path.resolve(__dirname, "src/routes"),
         "@state": path.resolve(__dirname, "src/state"),

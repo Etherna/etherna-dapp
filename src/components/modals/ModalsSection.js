@@ -6,6 +6,7 @@ import UnsupportedBrowserModal from "./UnsupportedBrowserModal"
 import MustConsentModal from "./MustConsentModal"
 import ErrorModal from "./ErrorModal"
 import LoadingProfileModal from "./LoadingProfileModal"
+import ShortcutModal from "./ShortcutModal"
 
 const ModalsSection = () => {
     const {
@@ -15,6 +16,7 @@ const ModalsSection = () => {
         isLoadingProfile,
         showUnsupportedModal,
         //showNetwokChangeModal,
+        isEditingShortcut
     } = useSelector(state => state.ui)
     const mustConsentError =
         errorMessage &&
@@ -34,6 +36,8 @@ const ModalsSection = () => {
             )}
 
             {isLoadingProfile && <LoadingProfileModal />}
+
+            {isEditingShortcut && <ShortcutModal />}
         </section>
     )
 }
