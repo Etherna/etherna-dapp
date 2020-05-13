@@ -95,7 +95,7 @@ const VideoView = ({ hash, video }) => {
                 <div className="video-info">
                     <h1 className="video-title">{title}</h1>
                     <div className="video-info-bar">
-                        <div className="mr-auto">
+                        <div className="video-stats">
                             <span className="publish-time">
                                 {publishDate &&
                                     moment(publishDate).format("LLL")}
@@ -114,7 +114,7 @@ const VideoView = ({ hash, video }) => {
 
                     <hr />
 
-                    <div className="video-stats">
+                    <div className="video-channel-info">
                         <Link to={Routes.getChannelLink(profileAddress)}>
                             <div className="video-profile">
                                 <Avatar image={profileAvatar} />
