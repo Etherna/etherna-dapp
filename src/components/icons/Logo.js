@@ -3,8 +3,8 @@ import React from "react"
 const Logo = () => {
     return (
         <svg width="135px" height="24px" viewBox="0 0 425 76">
-            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                <g fill-rule="nonzero">
+            <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                <g fillRule="nonzero">
                     <path d="M112.00071,1.55431223e-15 C112.792627,1.55431223e-15 113.551269,0.317946463 114.105921,0.882206338 L147.250908,35.0006765
                     C148.777525,36.5537388 148.777525,39.0410435 147.250908,40.5941059 L114.106328,74.1174344 C112.965273,75.2782553 111.097603,75.2964444
                     109.93477,74.1573652 C109.369486,73.603629 109.050742,72.8416274 109.050742,72.0510174 L109.050742,66.4806758 C109.050742,65.434642
