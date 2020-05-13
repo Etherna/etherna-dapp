@@ -1,6 +1,7 @@
 import React, { useRef } from "react"
 import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
+import Switch from "react-switch"
 
 import SigninButton from "./SigninButton"
 import Avatar from "./Avatar"
@@ -12,12 +13,22 @@ import {
     DropDownMenu,
     DropDownMenuToggle,
 } from "@common/DropDown"
+import { toggleDarkMode } from "@state/actions/enviroment/darkMode"
 import { providerActions } from "@state/actions"
 import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import Routes from "@routes"
+import EditProfileIcon from "@icons/menu/EditProfileIcon"
+import ProfileIcon from "@icons/menu/ProfileIcon"
+import IndexIcon from "@icons/menu/IndexIcon"
+import GatewayIcon from "@icons/menu/GatewayIcon"
+import SwitchIcon from "@icons/menu/SwitchIcon"
+import SignoutIcon from "@icons/menu/SignoutIcon"
+import DarkModeIcon from "@icons/menu/DarkModeIcon"
+import LightModeIcon from "@icons/menu/LightModeIcon"
+import ShortcutsIcon from "@icons/menu/ShortcutsIcon"
 
 const UserMenu = () => {
-    const { currentWalletLogo, currentAddress } = useSelector(
+    const { currentWalletLogo, currentAddress, darkMode } = useSelector(
         state => state.env
     )
     const { name, avatar } = useSelector(state => state.profile)
@@ -39,6 +50,10 @@ const UserMenu = () => {
 
     const signOut = async () => {
         await providerActions.signout()
+    }
+
+    const handleDarkModeChange = () => {
+        toggleDarkMode(!darkMode)
     }
 
     return (
@@ -74,50 +89,65 @@ const UserMenu = () => {
                 {name && (
                     <DropDownItem>
                         <Link to={Routes.getChannelLink(address)}>
-                            <img
-                                src={require("@svg/icons/profile-icon.svg")}
-                                alt=""
-                            />
+                            <ProfileIcon />
                             <span>View profile</span>
                         </Link>
                     </DropDownItem>
                 )}
                 <DropDownItem>
                     <Link to={Routes.getChannelEditingLink(address)}>
-                        <img
-                            src={require("@svg/icons/profile-edit-icon.svg")}
-                            alt=""
-                        />
+                        <EditProfileIcon />
                         <span>{name ? "Edit profile" : "Create profile"}</span>
                     </Link>
                 </DropDownItem>
                 <hr />
                 <DropDownMenuToggle menuRef={indexMenuRef} isMenuItem={true}>
                     <div className="flex">
-                        <img
-                            src={require("@svg/icons/index-icon.svg")}
-                            alt=""
-                        />
+                        <IndexIcon />
                         <span>Index</span>
                     </div>
                 </DropDownMenuToggle>
                 <DropDownMenuToggle menuRef={gatewayMenuRef} isMenuItem={true}>
                     <div className="flex">
-                        <img
-                            src={require("@svg/icons/gateway-icon.svg")}
-                            alt=""
-                        />
+                        <GatewayIcon />
                         <span>Gateway</span>
                     </div>
                 </DropDownMenuToggle>
+
                 <hr />
+
+                <DropDownItem>
+                    <div className="flex w-full">
+                        <DarkModeIcon />
+                        <span htmlFor="darkMode-field">Dark Mode</span>
+                        <Switch
+                            id="darkMode-field"
+                            className="ml-auto"
+                            checkedIcon={<DarkModeIcon className="mx-1" color="#fff" />}
+                            uncheckedIcon={<LightModeIcon className="mx-1" color="#333" />}
+                            height={24}
+                            width={50}
+                            handleDiameter={20}
+                            offColor={darkMode ? "#333" : "#ccc"}
+                            onColor="#34BA9C"
+                            checked={darkMode}
+                            onChange={handleDarkModeChange}
+                        />
+                    </div>
+                </DropDownItem>
+                <DropDownItem>
+                    <Link to={Routes.getShortcutsLink()}>
+                        <ShortcutsIcon />
+                        <span>Shortcuts</span>
+                    </Link>
+                </DropDownItem>
+
+                <hr />
+
                 <li className="dropdown-footer">
                     {hasSwitchedAccount && (
                         <DropDownItem action={providerActions.switchAccount}>
-                            <img
-                                src={require("@svg/icons/switch-icon.svg")}
-                                alt=""
-                            />
+                            <SwitchIcon />
                             <div className="inline-flex flex-col">
                                 <span>Switch Account</span>
                                 <small className="text-gray-600">
@@ -127,10 +157,7 @@ const UserMenu = () => {
                         </DropDownItem>
                     )}
                     <DropDownItem action={signOut}>
-                        <img
-                            src={require("@svg/icons/signout-icon.svg")}
-                            alt=""
-                        />
+                        <SignoutIcon />
                         <span>Sign out</span>
                     </DropDownItem>
                 </li>

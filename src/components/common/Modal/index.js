@@ -11,9 +11,11 @@ const Modal = ({
     title,
     titleTag,
     showCloseButton,
+    onClose,
 }) => {
     let handleToggle = () => {
         setShow && setShow(!show)
+        onClose && onClose()
     }
 
     let handleKeyDown = e => {
@@ -60,6 +62,7 @@ Modal.propTypes = {
     title: PropTypes.string,
     titleTag: PropTypes.string,
     showCloseButton: PropTypes.bool,
+    onClose: PropTypes.func,
 }
 
 Modal.defaultProps = {

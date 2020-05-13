@@ -6,12 +6,7 @@ import prefetch from "./prefetch"
 import * as serviceWorker from "./serviceWorker"
 
 const RenderDOM = () => {
-    ReactDOM.render(
-        <React.StrictMode>
-            <Root />
-        </React.StrictMode>,
-        document.getElementById("root")
-    )
+    ReactDOM.render(<Root />, document.getElementById("root"))
 }
 
 // Prefetch data for SEO

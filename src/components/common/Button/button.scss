@@ -1,5 +1,5 @@
 .btn {
-    @apply bg-primary text-white font-medium py-2 px-5 text-sm rounded transition duration-300;
+    @apply bg-primary text-white font-semibold py-2 px-5 text-sm rounded transition duration-300;
     &:hover {
         @apply bg-primary-dark text-white transition duration-300;
     }
@@ -14,9 +14,9 @@
 }
 
 .btn-outline {
-    @apply border border-primary text-primary bg-transparent rounded;
+    @apply border-2 border-primary text-primary bg-transparent rounded;
     &:hover {
-        @apply border border-primary-dark text-primary-dark bg-transparent rounded;
+        @apply border-2 border-primary-dark text-primary-dark bg-transparent rounded;
     }
 }
 
@@ -24,6 +24,21 @@
     @apply bg-gray-500;
     &:hover {
         @apply bg-gray-600;
+    }
+}
+.theme-dark {
+    .btn-secondary {
+        @apply bg-gray-400 text-dark;
+        &:hover {
+            @apply bg-gray-500;
+        }
+    }
+}
+
+.btn-danger {
+    @apply bg-red-500;
+    &:hover {
+        @apply bg-red-600;
     }
 }
 

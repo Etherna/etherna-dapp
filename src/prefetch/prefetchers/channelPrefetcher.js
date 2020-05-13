@@ -23,5 +23,5 @@ const fetch = async () => {
 
 export default {
     match,
-    fetch
+    fetch,
 }

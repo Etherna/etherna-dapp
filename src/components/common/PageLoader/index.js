@@ -4,9 +4,9 @@ import NProgress from "nprogress"
 import "./page-loader.scss"
 
 class PageLoader extends React.Component {
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         NProgress.configure({
-            showSpinner: false
+            showSpinner: false,
         })
         NProgress.start()
     }

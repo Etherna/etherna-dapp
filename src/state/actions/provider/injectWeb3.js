@@ -1,5 +1,5 @@
 import Web3 from "web3"
-import Web3Connect from "web3connect"
+import { getProviderInfo } from "web3modal"
 
 import { store } from "@state/store"
 import { EnvActionTypes } from "@state/reducers/enviromentReducer"
@@ -7,7 +7,7 @@ import { UserActionTypes } from "@state/reducers/userReducer"
 import { UIActionTypes } from "@state/reducers/uiReducer"
 import { isBrowserCompatible } from "@utils/browser"
 import { fetchAccounts } from "@utils/ethFuncs"
-import { connectWallet, web3Connect } from "@utils/web3Connect"
+import { connectWallet, web3Modal } from "@utils/web3Modal"
 
 const injectWeb3 = async () => {
     if (!isBrowserCompatible()) {
@@ -27,7 +27,7 @@ const injectWeb3 = async () => {
 
 const pickWallet = async () => {
     try {
-        const provider = await web3Connect.connect()
+        const provider = await web3Modal.connect()
         await connectProvider(provider)
     } catch (error) {
         console.error(error)
@@ -46,7 +46,7 @@ const autoSelectWallet = async wallet => {
 
 const connectProvider = async provider => {
     try {
-        const { name, logo } = Web3Connect.getProviderInfo(provider)
+        const { name, logo } = getProviderInfo(provider)
         if (name.toLowerCase() === "walletconnect")
             window.localStorage.removeItem("walletconnect")
         window.localStorage.setItem("defaultWallet", name)

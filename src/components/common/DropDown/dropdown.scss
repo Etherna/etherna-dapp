@@ -59,8 +59,35 @@
                 }
             }
 
-            img {
+            svg {
                 @apply inline-block mr-2;
+            }
+        }
+    }
+}
+
+.theme-dark {
+    .dropdown {
+        .dropdown-menu {
+            .dropdown-footer {
+                @apply bg-gray-300;
+
+                .dropdown-item:not(.disabled),
+                .dropdown-item:not(.inactive) {
+                    &:hover {
+                        @apply bg-gray-300;
+                    }
+                }
+            }
+            .dropdown-item {
+                &:not(.disabled):not(.inactive) {
+                    &:hover {
+                        @apply bg-gray-300;
+                    }
+                    a, a:hover {
+                        @apply text-gray-800;
+                    }
+                }
             }
         }
     }

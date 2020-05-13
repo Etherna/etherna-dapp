@@ -3,10 +3,7 @@ import getBasename from "./getBasename"
 import isMatch from "./isMatch"
 
 export default {
-    ...routes
+    ...routes,
 }
 
-export {
-    getBasename,
-    isMatch
-}
+export { getBasename, isMatch }

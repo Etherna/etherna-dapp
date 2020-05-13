@@ -59,9 +59,7 @@ const ChannelsView = () => {
 
     return (
         <div className="channels">
-            {channels === undefined && (
-                <ChannelPreviewPlaceholder />
-            )}
+            {channels === undefined && <ChannelPreviewPlaceholder />}
 
             <InfiniteScroller
                 loadMore={fetchChannels}

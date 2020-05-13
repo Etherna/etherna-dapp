@@ -26,8 +26,10 @@
         }
 
         .video-duration {
-            @apply absolute right-0 bottom-0 m-2 px-1 bg-gray-900 rounded-sm
-                text-xs text-white font-semibold;
+            @apply absolute right-0 bottom-0 m-2 px-1 rounded-sm text-xs font-semibold;
+            // Disable dark mode
+            background-color: #111;
+            color: #fefefe;
         }
     }
 

@@ -30,3 +30,10 @@ export const closeUnsupportedBrowserModal = () => {
         showUnsupportedModal: false,
     })
 }
+
+export const closeShortcutModal = () => {
+    store.dispatch({
+        type: UIActionTypes.UI_TOGGLE_EDITING_SHORTCUT,
+        isEditingShortcut: false,
+    })
+}

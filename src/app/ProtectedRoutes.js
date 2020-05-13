@@ -1,17 +1,10 @@
 import React from "react"
 import { useSelector } from "react-redux"
-import {
-    Route,
-    Redirect
-} from "react-router-dom"
+import { Route, Redirect } from "react-router-dom"
 
 import Routes from "@routes"
 
-export const SignedInRoute = ({
-    path,
-    exact,
-    children
-}) => {
+export const SignedInRoute = ({ path, exact, children }) => {
     const { isSignedIn } = useSelector(state => state.user)
 
     return (
@@ -22,25 +15,21 @@ export const SignedInRoute = ({
                 isSignedIn ? (
                     children
                 ) : (
-                    <Redirect to = {
-                        {
+                    <Redirect
+                        to={{
                             pathname: Routes.getHomeLink(),
                             state: {
-                                from: location
-                            }
-                        }
-                    } />
+                                from: location,
+                            },
+                        }}
+                    />
                 )
             }
         />
     )
 }
 
-export const HasChannelRoute = ({
-    path,
-    exact,
-    children
-}) => {
+export const HasChannelRoute = ({ path, exact, children }) => {
     const { existsOnIndex } = useSelector(state => state.profile)
 
     return (
@@ -51,25 +40,21 @@ export const HasChannelRoute = ({
                 existsOnIndex ? (
                     children
                 ) : (
-                    <Redirect to = {
-                        {
+                    <Redirect
+                        to={{
                             pathname: Routes.getHomeLink(),
                             state: {
-                                from: location
-                            }
-                        }
-                    } />
+                                from: location,
+                            },
+                        }}
+                    />
                 )
             }
         />
     )
 }
 
-export const ChannelOwnerRoute = ({
-    path,
-    exact,
-    children
-}) => {
+export const ChannelOwnerRoute = ({ path, exact, children }) => {
     const { address } = useSelector(state => state.user)
 
     return (
@@ -80,26 +65,22 @@ export const ChannelOwnerRoute = ({
                 match.params.id === address ? (
                     children
                 ) : (
-                    <Redirect to = {
-                        {
+                    <Redirect
+                        to={{
                             pathname: Routes.getChannelLink(match.params.id),
                             state: {
-                                from: location
-                            }
-                        }
-                    } />
+                                from: location,
+                            },
+                        }}
+                    />
                 )
             }
         />
     )
 }
 
-export const WatchRoute = ({
-    path,
-    exact,
-    children
-}) => {
-    const hasVideoParam = (search) => {
+export const WatchRoute = ({ path, exact, children }) => {
+    const hasVideoParam = search => {
         const query = new URLSearchParams(search)
         return query.has("v") && query.get("v") !== ""
     }
@@ -111,11 +92,11 @@ export const WatchRoute = ({
                 hasVideoParam(location.search) ? (
                     children
                 ) : (
-                    <Redirect to = {
-                        {
-                            pathname: Routes.getHomeLink()
-                        }
-                    } />
+                    <Redirect
+                        to={{
+                            pathname: Routes.getHomeLink(),
+                        }}
+                    />
                 )
             }
         />

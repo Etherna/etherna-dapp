@@ -36,6 +36,9 @@ export const getVideoUploadLink = () => {
 export const getHowItWorksLink = () => {
     return `/how-it-works`
 }
+export const getShortcutsLink = () => {
+    return `/shortcuts`
+}
 
 /**
  * Fallback routes

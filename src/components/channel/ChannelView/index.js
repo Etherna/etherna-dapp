@@ -60,9 +60,10 @@ const ChannelView = ({ channelAddress }) => {
         setIsFetching(true)
 
         try {
-            const channel = prefetchVideos && prefetchProfile.address === channelAddress
-                ? {}
-                : await getChannel(channelAddress)
+            const channel =
+                prefetchVideos && prefetchProfile.address === channelAddress
+                    ? {}
+                    : await getChannel(channelAddress)
 
             setHasChannel(!!channel)
             fetchVideos()
@@ -75,16 +76,13 @@ const ChannelView = ({ channelAddress }) => {
     const fetchVideos = async () => {
         setIsFetching(true)
 
-        const hasPrefetch = prefetchVideos && prefetchProfile.address === channelAddress
+        const hasPrefetch =
+            prefetchVideos && prefetchProfile.address === channelAddress
 
         try {
             const videos = hasPrefetch
                 ? prefetchVideos
-                : await getChannelVideos(
-                    channelAddress,
-                    page,
-                    FETCH_COUNT
-                )
+                : await getChannelVideos(channelAddress, page, FETCH_COUNT)
             setChannelVideos(page === 0 ? videos : channelVideos.concat(videos))
 
             if (videos.length < FETCH_COUNT) {
@@ -174,14 +172,14 @@ const ChannelView = ({ channelAddress }) => {
                         Ethernaut!
                     </Alert>
                 )}
-                {hasChannel && !isFetching && (channelVideos || []).length === 0 && (
-                    <p className="text-gray-500 text-center my-16">
-                        This channel has yet to upload a video
-                    </p>
-                )}
-                {channelVideos === undefined && (
-                    <VideoGrid mini={true} />
-                )}
+                {hasChannel &&
+                    !isFetching &&
+                    (channelVideos || []).length === 0 && (
+                        <p className="text-gray-500 text-center my-16">
+                            This channel has yet to upload a video
+                        </p>
+                    )}
+                {channelVideos === undefined && <VideoGrid mini={true} />}
                 {channelVideos && channelVideos.length > 0 && (
                     <InfiniteScroller
                         loadMore={fetchVideos}
