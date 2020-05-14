@@ -12,6 +12,7 @@ import {
     uploadResourceToSwarm,
 } from "@utils/swarm"
 import makeBlockies from "@utils/makeBlockies"
+import EnvActions from "@state/actions/enviroment"
 
 const ProfileInfoEdit = ({
     profileAddress,
@@ -54,10 +55,18 @@ const ProfileInfoEdit = ({
         }
     }
 
-    const handleUploadImage = async (e, type = "cover") => {
+    const handleImageChange = async (e, type = "cover") => {
         const file = e && e.target && e.target.files[0]
         if (!file) return
 
+        const img = await EnvActions.cropImage(file, type)
+
+        if (img) {
+            handleUploadImage(img, type)
+        }
+    }
+
+    const handleUploadImage = async (file, type = "cover") => {
         type === "avatar" && setUploadingAvatar(true)
         type === "cover" && setUploadingCover(true)
 
@@ -109,7 +118,7 @@ const ProfileInfoEdit = ({
                         accept="image/*"
                         name="cover-input"
                         id="cover-input"
-                        onChange={e => handleUploadImage(e, "cover")}
+                        onChange={e => handleImageChange(e, "cover")}
                     />
                     <div className="cover-actions">
                         {isImageObject(profileCover) && (
@@ -148,7 +157,7 @@ const ProfileInfoEdit = ({
                             accept="image/*"
                             name="avatar-input"
                             id="avatar-input"
-                            onChange={e => handleUploadImage(e, "avatar")}
+                            onChange={e => handleImageChange(e, "avatar")}
                         />
                     </div>
                 </label>

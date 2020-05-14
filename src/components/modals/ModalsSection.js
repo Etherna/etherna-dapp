@@ -7,6 +7,7 @@ import MustConsentModal from "./MustConsentModal"
 import ErrorModal from "./ErrorModal"
 import LoadingProfileModal from "./LoadingProfileModal"
 import ShortcutModal from "./ShortcutModal"
+import ImageCropModal from "./ImageCropModal"
 
 const ModalsSection = () => {
     const {
@@ -17,6 +18,7 @@ const ModalsSection = () => {
         showUnsupportedModal,
         //showNetwokChangeModal,
         isEditingShortcut,
+        isCroppingImage
     } = useSelector(state => state.ui)
     const mustConsentError =
         errorMessage &&
@@ -38,6 +40,8 @@ const ModalsSection = () => {
             {isLoadingProfile && <LoadingProfileModal />}
 
             {isEditingShortcut && <ShortcutModal />}
+
+            {isCroppingImage && <ImageCropModal />}
         </section>
     )
 }

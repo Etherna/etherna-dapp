@@ -6,6 +6,7 @@ export const UIActionTypes = {
     UI_TOGGLE_BROWSER_SUPPORT: "UI_TOGGLE_BROWSER_SUPPORT",
     UI_TOGGLE_NETWORK_CHANGE: "UI_TOGGLE_NETWORK_CHANGE",
     UI_TOGGLE_EDITING_SHORTCUT: "UI_TOGGLE_EDITING_SHORTCUT",
+    UI_TOGGLE_IMAGE_CROPPER: "UI_TOGGLE_IMAGE_CROPPER",
 }
 
 const uiReducer = (state = {}, action) => {
@@ -54,6 +55,12 @@ const uiReducer = (state = {}, action) => {
             return {
                 ...state,
                 isEditingShortcut: action.isEditingShortcut,
+            }
+
+        case UIActionTypes.UI_TOGGLE_IMAGE_CROPPER:
+            return {
+                ...state,
+                isCroppingImage: action.isCroppingImage
             }
 
         default:
