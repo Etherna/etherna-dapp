@@ -10,9 +10,11 @@ const VideoGrid = ({ label, videos, mini }) => {
     const LabelTag = mini ? "h5" : "h3"
     return (
         <>
-            <div className="video-grid-header">
-                {label && <LabelTag>{label}</LabelTag>}
-            </div>
+            {label && (
+                <div className="video-grid-header">
+                    <LabelTag>{label}</LabelTag>
+                </div>
+            )}
             <div className={classnames("video-grid", { mini: mini })}>
                 {videos === undefined && <VideoPreviewPlaceholder />}
                 {videos &&

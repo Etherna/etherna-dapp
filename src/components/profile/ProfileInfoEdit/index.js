@@ -172,25 +172,25 @@ const ProfileInfoEdit = ({
             </div>
 
             <div className="row">
-                <div className="w-full sm:w-1/2 md:w-1/4 p-4">
+                <div className="col max-w-xxs p-4">
                     <input
                         type="text"
                         placeholder="Profile name"
                         value={profileName}
                         onChange={e => setProfileName(e.target.value || "")}
                     />
+                </div>
+                <div className="flex-1 p-4">
+                    <label htmlFor="description">Channel description</label>
                     <textarea
-                        className="mt-2"
-                        placeholder="Profile bio"
+                        className=""
+                        placeholder="Something about you or your channel"
                         rows={8}
                         value={profileDescription}
                         onChange={e =>
                             setProfileDescription(e.target.value || "")
                         }
                     />
-                </div>
-                <div className="w-full sm:w-1/2 md:w-3/4 p-4">
-                    {/* Nothing right now */}
                 </div>
             </div>
 
