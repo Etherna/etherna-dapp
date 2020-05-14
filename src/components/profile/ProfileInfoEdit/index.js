@@ -12,6 +12,7 @@ import {
     uploadResourceToSwarm,
 } from "@utils/swarm"
 import makeBlockies from "@utils/makeBlockies"
+import EnvActions from "@state/actions/enviroment"
 
 const ProfileInfoEdit = ({
     profileAddress,
@@ -54,10 +55,18 @@ const ProfileInfoEdit = ({
         }
     }
 
-    const handleUploadImage = async (e, type = "cover") => {
+    const handleImageChange = async (e, type = "cover") => {
         const file = e && e.target && e.target.files[0]
         if (!file) return
 
+        const img = await EnvActions.cropImage(file, type)
+
+        if (img) {
+            handleUploadImage(img, type)
+        }
+    }
+
+    const handleUploadImage = async (file, type = "cover") => {
         type === "avatar" && setUploadingAvatar(true)
         type === "cover" && setUploadingCover(true)
 
@@ -109,7 +118,7 @@ const ProfileInfoEdit = ({
                         accept="image/*"
                         name="cover-input"
                         id="cover-input"
-                        onChange={e => handleUploadImage(e, "cover")}
+                        onChange={e => handleImageChange(e, "cover")}
                     />
                     <div className="cover-actions">
                         {isImageObject(profileCover) && (
@@ -148,7 +157,7 @@ const ProfileInfoEdit = ({
                             accept="image/*"
                             name="avatar-input"
                             id="avatar-input"
-                            onChange={e => handleUploadImage(e, "avatar")}
+                            onChange={e => handleImageChange(e, "avatar")}
                         />
                     </div>
                 </label>
@@ -172,25 +181,25 @@ const ProfileInfoEdit = ({
             </div>
 
             <div className="row">
-                <div className="w-full sm:w-1/2 md:w-1/4 p-4">
+                <div className="col max-w-xxs p-4">
                     <input
                         type="text"
                         placeholder="Profile name"
                         value={profileName}
                         onChange={e => setProfileName(e.target.value || "")}
                     />
+                </div>
+                <div className="flex-1 p-4">
+                    <label htmlFor="description">Channel description</label>
                     <textarea
-                        className="mt-2"
-                        placeholder="Profile bio"
+                        className=""
+                        placeholder="Something about you or your channel"
                         rows={8}
                         value={profileDescription}
                         onChange={e =>
                             setProfileDescription(e.target.value || "")
                         }
                     />
-                </div>
-                <div className="w-full sm:w-1/2 md:w-3/4 p-4">
-                    {/* Nothing right now */}
                 </div>
             </div>
 

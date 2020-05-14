@@ -1,7 +1,7 @@
 .profile-info-edit {
     .cover {
         .cover-input {
-            @apply relative h-32 m-0;
+            @apply relative w-full h-32 m-0;
 
             &.active {
                 @apply h-auto;

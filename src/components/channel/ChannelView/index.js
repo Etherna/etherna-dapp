@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
-import InfiniteScroller from "react-infinite-scroller"
 import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 
 import "./channel.scss"
+import ChannelAbout from "./ChannelAbout"
+import ChannelVideos from "./ChannelVideos"
 import Alert from "@common/Alert"
 import Button from "@common/Button"
+import NavPills from "@common/NavPills"
 import SEO from "@components/layout/SEO"
-import VideoGrid from "@components/media/VideoGrid"
 import ProfileInfo from "@components/profile/ProfileInfo"
 import { profileActions } from "@state/actions"
 import {
@@ -24,6 +25,7 @@ const ChannelView = ({ channelAddress }) => {
     const prefetchVideos = window.prefetchData && window.prefetchData.videos
 
     const { address } = useSelector(state => state.user)
+    const [activeTab, setActiveTab] = useState("videos")
     const [isFetching, setIsFetching] = useState(false)
     const [isCreatingChannel, setIsCreatingChannel] = useState(false)
     const [hasChannel, setHasChannel] = useState(false)
@@ -130,6 +132,16 @@ const ChannelView = ({ channelAddress }) => {
             <SEO title={(profileInfo || {}).name || channelAddress} />
             <ProfileInfo
                 profileAddress={channelAddress}
+                nav={
+                    <NavPills.Container vertical={true} className="mt-10">
+                        <NavPills.Pill active={activeTab === "videos"} onClick={() => setActiveTab("videos")}>
+                            Videos
+                        </NavPills.Pill>
+                        <NavPills.Pill active={activeTab === "about"} onClick={() => setActiveTab("about")}>
+                            About
+                        </NavPills.Pill>
+                    </NavPills.Container>
+                }
                 actions={
                     <div className="flex ml-auto">
                         {address === channelAddress &&
@@ -172,23 +184,21 @@ const ChannelView = ({ channelAddress }) => {
                         Ethernaut!
                     </Alert>
                 )}
-                {hasChannel &&
-                    !isFetching &&
-                    (channelVideos || []).length === 0 && (
-                        <p className="text-gray-500 text-center my-16">
-                            This channel has yet to upload a video
-                        </p>
-                    )}
-                {channelVideos === undefined && <VideoGrid mini={true} />}
-                {channelVideos && channelVideos.length > 0 && (
-                    <InfiniteScroller
-                        loadMore={fetchVideos}
-                        hasMore={hasMore}
-                        initialLoad={false}
-                        threshold={30}
-                    >
-                        <VideoGrid videos={channelVideos} mini={true} />
-                    </InfiniteScroller>
+                {activeTab === "videos" && (
+                    <ChannelVideos
+                        hasChannel={hasChannel}
+                        hasMoreVideos={hasMore}
+                        isFetching={isFetching}
+                        onLoadMore={fetchVideos}
+                        videos={channelVideos}
+                    />
+                )}
+                {activeTab === "about" && (
+                    <ChannelAbout
+                        address={channelAddress}
+                        description={profileInfo.description}
+                        name={profileInfo.name}
+                    />
                 )}
             </ProfileInfo>
         </>

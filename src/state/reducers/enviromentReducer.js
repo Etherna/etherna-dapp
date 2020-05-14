@@ -12,6 +12,8 @@ export const EnvActionTypes = {
     UPDATE_KEYMAP: "UPDATE_KEYMAP",
     EDIT_SHORTCUT: "EDIT_SHORTCUT",
     TOGGLE_DARK_MODE: "TOGGLE_DARK_MODE",
+    SET_CROP_IMAGE: "SET_CROP_IMAGE",
+    UPDATE_IMAGE_CROP: "UPDATE_IMAGE_CROP",
 }
 
 const initialState = {
@@ -86,6 +88,19 @@ const enviromentReducer = (state = initialState, action) => {
             return {
                 ...state,
                 darkMode: action.darkMode
+            }
+
+        case EnvActionTypes.UPDATE_IMAGE_CROP:
+            return {
+                ...state,
+                imageCrop: action.imageCrop
+            }
+
+        case EnvActionTypes.SET_CROP_IMAGE:
+            return {
+                ...state,
+                imageType: action.imageType,
+                image: action.image
             }
 
         default:
