@@ -13,7 +13,7 @@ $bg-alpha-50-light: rgba($color: #fff, $alpha: 0.50);
 
     .controls {
         @apply opacity-0 absolute flex flex-wrap items-center inset-x-0 bottom-0 cursor-default
-            transition duration-100 px-4 pb-4 pt-12 rounded-b;
+            transition duration-100 px-4 pb-4 pt-12 rounded-b text-white;
         background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(20,20,20,0) 100%);
 
         .btn {

@@ -335,10 +335,12 @@ module.exports = {
             ...negative(theme("spacing")),
         }),
         maxHeight: {
+            xxs: "12rem",
             full: "100%",
             screen: "100vh",
         },
         maxWidth: theme => ({
+            xxs: "14rem",
             xs: "20rem",
             sm: "24rem",
             md: "28rem",
@@ -355,12 +357,13 @@ module.exports = {
             "screen-lg": theme("screens.lg"),
             "screen-xl": theme("screens.xl"),
         }),
-        minHeight: {
+        minHeight: theme => ({
+            ...theme("spacing"),
             "0": "0",
             md: "28rem",
             full: "100%",
             screen: "100vh",
-        },
+        }),
         minWidth: {
             "0": "0",
             xs: "20rem",

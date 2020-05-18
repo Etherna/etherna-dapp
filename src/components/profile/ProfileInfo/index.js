@@ -8,6 +8,7 @@ import { checkIsEthAddress, shortenEthAddr } from "@utils/ethFuncs"
 
 const ProfileInfo = ({
     children,
+    nav,
     profileAddress,
     actions,
     onFetchedProfile,
@@ -15,14 +16,12 @@ const ProfileInfo = ({
     const prefetchProfile = window.prefetchData && window.prefetchData.profile
 
     const [profileName, setProfileName] = useState("")
-    const [profileDescription, setProfileDescription] = useState("")
-    const [profileAvatar, setProfileAvatar] = useState({})
-    const [profileCover, setProfileCover] = useState({})
+    const [profileAvatar, setProfileAvatar] = useState(undefined)
+    const [profileCover, setProfileCover] = useState("")
 
     useEffect(() => {
         // reset data
         setProfileName("")
-        setProfileDescription("")
         setProfileAvatar({})
         setProfileCover({})
         // fetch data
@@ -44,13 +43,13 @@ const ProfileInfo = ({
             const fallbackName = name || profileAddress
 
             setProfileName(fallbackName)
-            setProfileDescription(description)
             setProfileAvatar(avatar)
             setProfileCover(cover)
 
             onFetchedProfile({
                 name: fallbackName,
                 avatar,
+                description,
                 address: profileAddress,
             })
         } catch (error) {
@@ -72,22 +71,28 @@ const ProfileInfo = ({
                 )}
             </div>
 
-            <div className="row items-center px-4">
-                <div className="profile-avatar">
-                    <img
-                        src={
-                            profileAvatar.url
-                                ? profileAvatar.url
-                                : makeBlockies(profileAddress)
-                        }
-                        alt={profileName}
-                    />
+            <div className="row items-center">
+                <div className="col max-w-xxs px-4">
+                    <div className="profile-avatar">
+                        <img
+                            src={
+                                profileAvatar.url
+                                    ? profileAvatar.url
+                                    : makeBlockies(profileAddress)
+                            }
+                            alt={profileName}
+                        />
+                    </div>
                 </div>
-                {actions}
+                <div className="col flex-1 px-4">
+                    <div className="flex">
+                        {actions}
+                    </div>
+                </div>
             </div>
 
             <div className="row">
-                <div className="col sm:w-1/3 md:w-1/4 p-4">
+                <div className="col max-w-xxs p-4">
                     <h1 className="profile-name">
                         {
                             checkIsEthAddress(profileName)
@@ -95,9 +100,9 @@ const ProfileInfo = ({
                                 : profileName || shortenEthAddr(profileName)
                         }
                     </h1>
-                    <p className="profile-bio">{profileDescription}</p>
+                    {nav}
                 </div>
-                <div className="col sm:w-2/3 md:w-3/4 p-4">
+                <div className="col flex-1 p-4">
                     {/* Main content */}
                     {children}
                 </div>
@@ -108,6 +113,7 @@ const ProfileInfo = ({
 
 ProfileInfo.propTypes = {
     profileAddress: PropTypes.string.isRequired,
+    nav: PropTypes.element,
     actions: PropTypes.element,
     onFetchedProfile: PropTypes.func,
 }

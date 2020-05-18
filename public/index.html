@@ -28,7 +28,7 @@
           mutations.map(mutation => {
             var nodes = Array.from(mutation.addedNodes).filter(node => node.tagName === "SCRIPT" || node.tagName === "LINK");
             fixUrls(nodes);
-          })
+          });
         });
         observer.observe(document.documentElement, {
           childList: true,
@@ -43,7 +43,7 @@
         fixUrls(currentLinks);
 
         function fixUrls(nodes) {
-          nodes.forEach(node => {
+          nodes.forEach(function (node) {
             if (node.tagName === "SCRIPT" && /__basename__/g.test(node.innerText)) {
               var copy = node.cloneNode(true);
               copy.innerText = node.innerText.replace(/__basename__/g, window.__basename__);
