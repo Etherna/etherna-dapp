@@ -17,7 +17,7 @@ const ChannelEditor = ({ address }) => {
 
         try {
             await profileActions.updateProfile(profileInfo)
-            //setSavedProfile(true)
+            setSavedProfile(true)
         } catch (error) {
             console.error(error)
             showError("Cannot save profile", error.message)

@@ -4,6 +4,7 @@ import { loadDarkMode } from "@state/actions/enviroment/darkMode"
 
 export const EnvActionTypes = {
     ENV_UPDATE_PROVIDER: "ENV_UPDATE_PROVIDER",
+    ENV_UPDATE_WALLET: "ENV_UPDATE_WALLET",
     ENV_UPDATE_NETWORK: "ENV_UPDATE_NETWORK",
     ENV_CURRENT_ADDRESS: "ENV_CURRENT_ADDRESS",
     ENV_IS_MOBILE: "ENV_IS_MOBILE",
@@ -38,6 +39,12 @@ const enviromentReducer = (state = initialState, action) => {
                 web3: action.web3,
                 currentWallet: action.currentWallet,
                 currentWalletLogo: action.currentWalletLogo,
+            }
+
+        case EnvActionTypes.ENV_UPDATE_WALLET:
+            return {
+                ...state,
+                wallet: action.wallet
             }
 
         case EnvActionTypes.ENV_UPDATE_NETWORK:

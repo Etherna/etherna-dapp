@@ -3,15 +3,22 @@ import web3 from "web3"
 
 import { checkIsEthAddress } from "./ethFuncs"
 import { readFeed, updatedFeed } from "./feedFuncs"
-import { getResourceUrl, isValidHash, uploadResourceToSwarm } from "./swarm"
+import { getResourceUrl, isValidHash } from "./swarm"
+import promisePipeline from "./promisePipeline"
 
 const EthernaTopicName = "Etherna"
 const EthernaTopic = web3.utils.padRight(web3.utils.fromAscii(EthernaTopicName), 64)
 const EthernaVideoName = "EthernaVideo"
 
 export const getProfile = async address => {
-    const baseProfile = await resolveProfile(EthernaTopic, null, address)
-    const ethernaVideoProfile = await resolveProfile(EthernaTopic, EthernaVideoName, address)
+    const [
+        baseProfile,
+        ethernaVideoProfile
+    ] = await promisePipeline([
+        resolveProfile(EthernaTopic, null, address),
+        resolveProfile(EthernaTopic, EthernaVideoName, address)
+    ])
+
     return {
         ...baseProfile,
         ...ethernaVideoProfile
@@ -46,7 +53,7 @@ export const updateProfile = async (profile) => {
         address: profile.address,
         name: profile.name,
         avatar: profile.avatar,
-        cover: profile.cover
+        description: profile.description,
     }
     let ethernaVideoProfile = web3.utils._.omit(profile, "name", "avatar", "cover")
 
@@ -55,8 +62,8 @@ export const updateProfile = async (profile) => {
     ethernaVideoProfile = await validatedProfile(ethernaVideoProfile)
 
     // Update feed
-    await updatedFeed(EthernaTopic, undefined, address, baseProfile)
-    await updatedFeed(EthernaTopic, EthernaVideoName, address, ethernaVideoProfile)
+    await updatedFeed(EthernaTopic, undefined, address, JSON.stringify(baseProfile))
+    await updatedFeed(EthernaTopic, EthernaVideoName, address, JSON.stringify(ethernaVideoProfile))
 }
 
 
@@ -97,6 +104,11 @@ const resolveImage = imgObj => {
 
 const resolveText = async textObj => {
     let text = ""
+
+    if (typeof textObj === "string") {
+        return textObj
+    }
+
     if (
         typeof textObj === "object" &&
         "@type" in textObj &&
@@ -151,23 +163,14 @@ const validatedProfile = async profile => {
     delete profile.address
 
     // map fields with corrected values
-    Object.keys(profile).forEach(async key => {
+    Object.keys(profile).forEach(key => {
         if (key === "name") {
             profile[key] = profile[key] || ""
         }
 
         if (key === "avatar" || key === "cover") {
-            const type = "@image"
             const value = profile[key].hash
-            profile[key] = { type, value }
-        }
-
-        if (key === "description") {
-            const type = "@text"
-            const value = profile[key] && profile[key] !== ""
-                ? (await uploadResourceToSwarm(profile[key]))
-                : ""
-            profile[key] = { type, value }
+            profile[key] = { "@type": "image", value }
         }
     })
 
@@ -182,8 +185,11 @@ const validatedProfile = async profile => {
 const fetchFeedOrDefault = async (topic, name, address) => {
     try {
         const feed = await readFeed(topic, name, address)
-        return JSON.parse(feed)
-    } catch {
+        return typeof feed === "string"
+            ? JSON.parse(feed)
+            : feed
+    } catch (error) {
+        console.error(error)
         return {}
     }
 }

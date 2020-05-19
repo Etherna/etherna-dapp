@@ -16,8 +16,8 @@ const ProfileInfo = ({
     const prefetchProfile = window.prefetchData && window.prefetchData.profile
 
     const [profileName, setProfileName] = useState("")
-    const [profileAvatar, setProfileAvatar] = useState(undefined)
-    const [profileCover, setProfileCover] = useState("")
+    const [profileAvatar, setProfileAvatar] = useState({})
+    const [profileCover, setProfileCover] = useState({})
 
     useEffect(() => {
         // reset data

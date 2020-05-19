@@ -15,6 +15,7 @@
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "detect-browser": "^4.8.0",
+    "eth-lib": "^0.2.8",
     "ethereum-blockies-base64": "^1.0.2",
     "ethers": "^4.0.46",
     "key-event-to-string": "^1.2.0",

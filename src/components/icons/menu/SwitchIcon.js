@@ -34,7 +34,7 @@ const SwitchIcon = () => {
                 ></path>
                 <circle
                     stroke="#FFFFFF"
-                    fill="var(color-blue-600)"
+                    fill="#3182CE"
                     cx="14"
                     cy="5"
                     r="4"

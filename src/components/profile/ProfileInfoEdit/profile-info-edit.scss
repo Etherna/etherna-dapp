@@ -65,6 +65,8 @@
 .theme-dark {
     .profile-info-edit {
         .cover {
+            @apply bg-gray-300;
+
             .cover-input {
                 .cover-actions {
                     .btn {

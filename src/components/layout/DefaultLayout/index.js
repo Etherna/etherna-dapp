@@ -17,13 +17,13 @@ const Layout = ({ children }) => {
         location.pathname === "/watch" || location.pathname === "/how-it-works"
 
     useEffect(() => {
-        autoLogin()
+        autoSignIn()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const autoLogin = () => {
+    const autoSignIn = () => {
         if (typeof window === "undefined") return
-        if (!isSignedIn && window.localStorage.getItem("defaultWallet")) {
+        if (!isSignedIn && window.localStorage.getItem("signedIn")) {
             // auto login
             providerActions.signin()
         }

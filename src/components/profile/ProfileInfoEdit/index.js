@@ -23,8 +23,8 @@ const ProfileInfoEdit = ({
     const coverRef = useRef()
     const [profileName, setProfileName] = useState(name)
     const [profileDescription, setProfileDescription] = useState(description)
-    const [profileAvatar, setProfileAvatar] = useState(avatar)
-    const [profileCover, setProfileCover] = useState(cover)
+    const [profileAvatar, setProfileAvatar] = useState(avatar || {})
+    const [profileCover, setProfileCover] = useState(cover || {})
     const [isUploadingCover, setUploadingCover] = useState(false)
     const [isUploadingAvatar, setUploadingAvatar] = useState(false)
     const [showUploadErrorModal, setShowUploadErrorModal] = useState(false)
@@ -185,7 +185,7 @@ const ProfileInfoEdit = ({
                     <input
                         type="text"
                         placeholder="Profile name"
-                        value={profileName}
+                        value={profileName || ""}
                         onChange={e => setProfileName(e.target.value || "")}
                     />
                 </div>
@@ -195,7 +195,7 @@ const ProfileInfoEdit = ({
                         className=""
                         placeholder="Something about you or your channel"
                         rows={8}
-                        value={profileDescription}
+                        value={profileDescription || ""}
                         onChange={e =>
                             setProfileDescription(e.target.value || "")
                         }

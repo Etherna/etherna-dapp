@@ -4,8 +4,6 @@ import web3 from "web3"
 import { store } from "@state/store"
 import { askToSignMessage } from "./walletFuncs"
 
-const SwarmGateway = store.getState().env.gatewayHost
-
 /**
  * Fetch feed data
  * @param {string} topic Hash of the topic, default is 0x0... (use null for name only)
@@ -14,6 +12,7 @@ const SwarmGateway = store.getState().env.gatewayHost
  * @param {number} meta Specify 1 to get the feed metadata instead of the feed itself (optional)
  */
 export const readFeed = async (topic, name, user, meta = undefined) => {
+    const SwarmGateway = store.getState().env.gatewayHost
     const api = `${SwarmGateway}/bzz-feed:/`
     const resp = await axios.get(api, {
         params: {
@@ -34,21 +33,24 @@ export const readFeed = async (topic, name, user, meta = undefined) => {
  * @param {string} update String value to update
  */
 export const updatedFeed = async (topic, name, user, update) => {
+    const SwarmGateway = store.getState().env.gatewayHost
     const data = (new TextEncoder()).encode(update)
+    const userAddress = web3.utils.toChecksumAddress(user)
 
     if (data.length > 3963) {
         throw new Error("Data exceed max length of 3963 bytes")
     }
 
     const subtopic = parseSubTopic(topic, name)
-    const feed = await readFeed(subtopic, undefined, user, 1)
+    const feed = await readFeed(subtopic, undefined, userAddress, 1)
     const digest = feedDigest(feed, data)
-    const signature = web3.utils.toHex(await askToSignMessage(digest, true))
+    const sig = await askToSignMessage(digest, true)
+    const signature = web3.utils.toHex(sig)
 
     const resp = await axios.post(`${SwarmGateway}/bzz-feed:/`, data, {
         params: {
             topic: feed.feed.topic,
-            user: user,
+            user: userAddress,
             level: feed.epoch.level,
             time: feed.epoch.time,
             protocolVersion: feed.protocolVersion,
@@ -87,7 +89,9 @@ export const parseSubTopic = (topic, name) => {
  * @param {string} update String value of the new update
  */
 export const feedDigest = (feed, update) => {
-    const data = (new TextEncoder()).encode(update)
+    const data = typeof update === "string"
+        ? (new TextEncoder()).encode(update)
+        : update
     const topicBytes = web3.utils.hexToBytes(feed.feed.topic)
     const userBytes = web3.utils.hexToBytes(feed.feed.user)
     const protocolVersion = feed.protocolVersion

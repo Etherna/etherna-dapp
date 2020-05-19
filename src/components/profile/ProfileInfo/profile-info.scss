@@ -26,3 +26,11 @@
         @apply text-lg text-gray-700;
     }
 }
+
+.theme-dark {
+    .profile {
+        .cover {
+            @apply bg-gray-300;
+        }
+    }
+}

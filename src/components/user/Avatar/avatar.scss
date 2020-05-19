@@ -1,8 +1,8 @@
 .avatar {
-    @apply relative border-2 border-white w-10 h-10 rounded-full overflow-hidden;
+    @apply relative w-10 h-10;
 
     img {
-        @apply w-full h-full object-cover;
+        @apply w-full h-full object-cover border-2 border-white rounded-full overflow-hidden;
     }
 
     &.badge {

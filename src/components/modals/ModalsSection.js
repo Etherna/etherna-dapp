@@ -4,7 +4,6 @@ import { useSelector } from "react-redux"
 import ConnectingWalletModal from "./ConnectingWalletModal"
 import UnsupportedBrowserModal from "./UnsupportedBrowserModal"
 import ErrorModal from "./ErrorModal"
-import LoadingProfileModal from "./LoadingProfileModal"
 import ShortcutModal from "./ShortcutModal"
 import ImageCropModal from "./ImageCropModal"
 
@@ -13,7 +12,6 @@ const ModalsSection = () => {
         errorMessage,
         errorTitle,
         isConnectingWallet,
-        isLoadingProfile,
         showUnsupportedModal,
         //showNetwokChangeModal,
         isEditingShortcut,
@@ -33,8 +31,6 @@ const ModalsSection = () => {
             {errorMessage && !mustConsentError && (
                 <ErrorModal title={errorTitle} error={errorMessage} />
             )}
-
-            {isLoadingProfile && <LoadingProfileModal />}
 
             {isEditingShortcut && <ShortcutModal />}
 

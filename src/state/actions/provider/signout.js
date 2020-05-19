@@ -7,6 +7,7 @@ const signout = async (clearStorage = true) => {
 
     if (isSignedIn) {
         if (clearStorage) {
+            window.localStorage.removeItem("signedIn")
             window.localStorage.removeItem("defaultWallet")
             window.localStorage.removeItem("prevNetwork")
             window.localStorage.removeItem("currentNetwork")
