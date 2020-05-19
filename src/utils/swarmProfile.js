@@ -27,12 +27,8 @@ export const getProfile = async address => {
 
 export const getProfiles = async addresses => {
     try {
-        let profiles = []
-
-        for (let address of addresses) {
-            const profile = await getProfile(address)
-            profiles.push(profile)
-        }
+        const promises = addresses.map(address => getProfile(address))
+        const profiles = await promisePipeline(promises)
 
         return profiles
     } catch (error) {

@@ -9,7 +9,7 @@ import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import { getProfiles } from "@utils/swarmProfile"
 import { getResourceUrl } from "@utils/swarm"
 
-const RecommendedChannels = () => {
+const NewChannels = () => {
     const [channels, setChannels] = useState(undefined)
 
     useEffect(() => {
@@ -37,7 +37,7 @@ const RecommendedChannels = () => {
 
     return (
         <div className="sidenav-menu">
-            <h6 className="sidebar-label">Recommended Channels</h6>
+            <h6 className="sidebar-label">New Channels</h6>
             {channels === undefined && (
                 <SidebarItemPlaceholder />
             )}
@@ -60,7 +60,7 @@ const RecommendedChannels = () => {
     )
 }
 
-RecommendedChannels.propTypes = {
+NewChannels.propTypes = {
     profiles: PropTypes.arrayOf(
         PropTypes.shape({
             address: PropTypes.string,
@@ -69,8 +69,8 @@ RecommendedChannels.propTypes = {
     ),
 }
 
-RecommendedChannels.defaultProps = {
+NewChannels.defaultProps = {
     profiles: [],
 }
 
-export default React.memo(RecommendedChannels)
+export default React.memo(NewChannels)

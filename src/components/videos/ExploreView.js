@@ -40,7 +40,7 @@ const ExploreView = () => {
             initialLoad={false}
             threshold={30}
         >
-            <VideoGrid label="Recommended videos" videos={videos} />
+            <VideoGrid label="New videos" videos={videos} />
         </InfiniteScroller>
     )
 }
