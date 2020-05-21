@@ -2,31 +2,3 @@
 // the web3 package
 const Web3 = require("web3")
 window.web3 = new Web3(window.web3 && window.web3.currentProvider)
-
-// Override hashMessage with custom implementation.
-// This is because to update a swarm feed it cannot
-// have the default prefix “\x19Ethereum Signed Message”
-window.web3.eth.personal.hashMessage = function hashMessage(data) {
-    if (window.web3.eth.disableSignPrefix === true) {
-        return data
-    }
-    var message = window.web3.utils.isHexStrict(data) ? window.web3.utils.hexToBytes(data) : data
-    var messageBuffer = Buffer.from(message)
-    var preamble = '\x19Ethereum Signed Message:\n' + message.length
-    var preambleBuffer = Buffer.from(preamble)
-    var ethMessage = Buffer.concat([preambleBuffer, messageBuffer])
-    return window.web3.utils.sha3._Hash.keccak256s(ethMessage)
-}
-window.web3.eth.accounts.hashMessage = function hashMessage(data) {
-    console.log(window.web3.eth.disableSignPrefix);
-
-    if (window.web3.eth.disableSignPrefix === true) {
-        return data
-    }
-    var message = window.web3.utils.isHexStrict(data) ? window.web3.utils.hexToBytes(data) : data
-    var messageBuffer = Buffer.from(message)
-    var preamble = '\x19Ethereum Signed Message:\n' + message.length
-    var preambleBuffer = Buffer.from(preamble)
-    var ethMessage = Buffer.concat([preambleBuffer, messageBuffer])
-    return window.web3.utils.sha3._Hash.keccak256s(ethMessage)
-}

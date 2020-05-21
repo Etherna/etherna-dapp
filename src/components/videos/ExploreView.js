@@ -29,6 +29,7 @@ const ExploreView = () => {
                 setPage(page + 1)
             }
         } catch (error) {
+            setVideos([])
             setHasMore(false)
         }
     }

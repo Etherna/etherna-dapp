@@ -24,6 +24,7 @@ const NewChannels = () => {
 
             loadProfiles(fetchedChannels)
         } catch (error) {
+            setChannels([])
             console.error(error)
         }
     }
