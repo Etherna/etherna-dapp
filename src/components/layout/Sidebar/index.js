@@ -2,14 +2,14 @@ import React from "react"
 
 import "./sidebar.scss"
 import MyChannel from "./MyChannel"
-import ReccomendedChannels from "./ReccomendedChannels"
+import NewChannels from "./NewChannels"
 
 const Sidebar = () => {
     return (
         <aside className="sidebar">
             <div className="sidenav">
                 <MyChannel />
-                <ReccomendedChannels />
+                <NewChannels />
             </div>
             <small className="footer-notice">
                 Copyright © {new Date().getFullYear()} etherna.io.

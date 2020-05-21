@@ -5,12 +5,7 @@ import { UserActionTypes } from "@state/reducers/userReducer"
 import fetchProfile from "@state/actions/profile/fetchProfile"
 import { resolveEnsName } from "@utils/ethFuncs"
 
-const load3Box = async () => {
-    store.dispatch({
-        type: UIActionTypes.UI_TOGGLE_CONNECTING_WALLET,
-        isConnectingWallet: true,
-    })
-
+const loadProfile = async () => {
     const {
         user: { address },
         env: { web3 },
@@ -18,37 +13,29 @@ const load3Box = async () => {
 
     try {
         // fetching address ens name
-        const ens = await resolveEnsName(address, web3)
+        resolveEns(address, web3)
 
         // fetching profile data
-        loadProfile(address)
+        fetchProfile(address)
 
-        store.dispatch({
-            type: UserActionTypes.USER_ENS_UPDATE,
-            ens,
-        })
+        // observe address change
+        pollAddress()
     } catch (error) {
         console.error(error)
         store.dispatch({
             type: UIActionTypes.UI_SHOW_ERROR,
             errorMessage: error.message,
-            errorTitle: "3Box profile error",
+            errorTitle: "Profile Error",
         })
     }
 }
 
-const loadProfile = address => {
+const resolveEns = async (address, web3) => {
+    const ens = await resolveEnsName(address, web3)
     store.dispatch({
-        type: UIActionTypes.UI_TOGGLE_CONNECTING_WALLET,
-        isConnectingWallet: false,
+        type: UserActionTypes.USER_ENS_UPDATE,
+        ens,
     })
-    store.dispatch({
-        type: UIActionTypes.UI_TOGGLE_LOADING_PROFILE,
-        isLoadingProfile: true,
-    })
-
-    pollAddress()
-    fetchProfile(address)
 }
 
-export default load3Box
+export default loadProfile

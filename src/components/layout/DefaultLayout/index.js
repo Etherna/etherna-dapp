@@ -1,7 +1,6 @@
 import React, { useEffect } from "react"
 import PropTypes from "prop-types"
 import { useLocation } from "react-router-dom"
-import { useSelector } from "react-redux"
 
 import "./layout.scss"
 import Header from "@components/layout/Header"
@@ -11,22 +10,18 @@ import { providerActions } from "@state/actions"
 
 const Layout = ({ children }) => {
     const location = useLocation()
-    const { isSignedIn } = useSelector(state => state.user)
 
     const hideSidebar =
         location.pathname === "/watch" || location.pathname === "/how-it-works"
 
     useEffect(() => {
-        autoLogin()
+        autoSignIn()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const autoLogin = () => {
-        if (typeof window === "undefined") return
-        if (!isSignedIn && window.localStorage.getItem("defaultWallet")) {
-            // auto login
-            providerActions.signin()
-        }
+    const autoSignIn = () => {
+        // auto login
+        providerActions.signin()
     }
 
     return (

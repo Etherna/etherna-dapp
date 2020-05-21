@@ -2,66 +2,42 @@ import axios from "axios"
 
 import { store } from "@state/store"
 
-const IpfsGateway = "https://ipfs.infura.io"
-
-export const isImageObject = imgObject => {
-    if (imgObject && typeof imgObject === "object") {
-        let hash =
-            imgObject &&
-            imgObject[0] &&
-            imgObject[0].contentUrl &&
-            imgObject[0].contentUrl["/"]
-        return hash && typeof hash == "string"
-    }
-    return false
-}
-
-export const getResourceUrl = (imageObject, type = "swarm") => {
+export const getResourceUrl = (image) => {
     const SwarmGateway = store.getState().env.gatewayHost
 
-    if (typeof imageObject === "string") {
-        return type.toLowerCase() !== "ipfs"
-            ? `${SwarmGateway}/bzz-raw:/${imageObject}`
-            : `${IpfsGateway}/ipfs/${imageObject}`
+    if (typeof image === "string") {
+        return `${SwarmGateway}/bzz-raw:/${image}`
     }
 
-    type = imageObject && imageObject[0] && imageObject[0]["@type"]
-
-    if (type !== "ImageObject" && type !== "SwarmObject") {
-        return null
+    if (typeof image === "object") {
+        if (image.hash) {
+            return `${SwarmGateway}/bzz-raw:/${image.hash}`
+        }
+        if (image.url) {
+            return image.url
+        }
     }
 
-    const hash = imageObject[0].contentUrl && imageObject[0].contentUrl["/"]
-    return type !== "ImageObject"
-        ? `${SwarmGateway}/bzz-raw:/${hash}`
-        : `${IpfsGateway}/ipfs/${hash}`
+    return undefined
 }
 
-export const uploadResourceToSwarm = async (file, type = "swarm") => {
+export const uploadResourceToSwarm = async (file) => {
     const SwarmGateway = store.getState().env.gatewayHost
-    const endpoint =
-        type.toLowerCase() !== "ipfs"
-            ? `${SwarmGateway}/bzz-raw:/`
-            : `${IpfsGateway}:5001/api/v0/add`
+    const endpoint = `${SwarmGateway}/bzz-raw:/`
 
-    const buffer = await fileReaderPromise(file)
-    let formData = new Blob([new Uint8Array(buffer)])
+    const buffer = typeof file === "string"
+        ? (new TextEncoder()).encode(file)
+        : await fileReaderPromise(file)
+    const formData = new Blob([new Uint8Array(buffer)])
 
-    if (type === "ipfs") {
-        let data = new FormData()
-        data.append("filename", formData)
-        formData = data
+    const resp = await axios.post(endpoint, formData)
+    const hash = resp.data
+
+    if (isValidHash(hash)) {
+        return hash
+    } else {
+        throw new Error("Invalid hash returned")
     }
-
-    let resp = await axios.post(endpoint, formData)
-    let hash = type === "ipfs" ? resp.data.Hash : resp.data
-
-    // if (isValidHash(hash)) {
-    type = type === "ipfs" ? "ImageObject" : "SwarmObject"
-    return [{ "@type": type, contentUrl: { "/": hash } }]
-    // } else {
-    //     return null
-    // }
 }
 
 export const gatewayUploadWithProgress = async (
@@ -122,10 +98,8 @@ export const isPinningEnabled = async () => {
     )
 }
 
-export const isValidHash = (hash, type = "swarm") => {
-    return type.toLowerCase() !== "ipfs"
-        ? /^[0-9a-f]{64}$/.test(hash)
-        : /^[0-9a-zA-Z]*$/.test(hash)
+export const isValidHash = (hash) => {
+    return /^[0-9a-f]{64}$/.test(hash)
 }
 
 export const fileReaderPromise = file => {

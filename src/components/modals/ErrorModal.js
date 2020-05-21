@@ -51,7 +51,7 @@ const ErrorModal = ({ title, error }) => {
             <div className="text-center my-6">
                 {isMetaMaskSignError || isMozillaError ? (
                     <p>
-                        You must provide consent to 3Box in your Web3 wallet to
+                        You must provide consent in your Web3 wallet to
                         sign in or create a profile, please try again.
                     </p>
                 ) : (

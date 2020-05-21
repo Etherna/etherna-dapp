@@ -1,5 +1,6 @@
-import { getProfile } from "@utils/3box"
+import { getProfile } from "@utils/swarmProfile"
 import { getChannelVideos } from "@utils/ethernaResources/channelResources"
+import promisePipeline from "@utils/promisePipeline"
 
 const match = /\/channel\/([^/]+)/
 
@@ -8,16 +9,18 @@ const fetch = async () => {
     if (matches && matches.length >= 2) {
         const address = matches[1]
 
-        try {
-            const profile = await getProfile(address)
-            const videos = await getChannelVideos(address, 0, 50)
-            // set prefetch data
-            window.prefetchData = {}
-            window.prefetchData.profile = profile
-            window.prefetchData.videos = videos
-        } catch (error) {
-            console.error(error)
-        }
+        const [
+            profile,
+            videos
+        ] = await promisePipeline([
+            getProfile(address),
+            getChannelVideos(address, 0, 50)
+        ])
+
+        // set prefetch data
+        window.prefetchData = {}
+        window.prefetchData.profile = profile
+        window.prefetchData.videos = videos
     }
 }
 

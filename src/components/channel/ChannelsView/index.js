@@ -4,7 +4,8 @@ import InfiniteScroller from "react-infinite-scroller"
 import "./channels.scss"
 import ChannelPreview from "../ChannelPreview"
 import ChannelPreviewPlaceholder from "../ChannelPreviewPlaceholder"
-import { getProfiles } from "@utils/3box"
+import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
+import { getProfiles } from "@utils/swarmProfile"
 import { getChannelsWithVideos } from "@utils/ethernaResources/channelResources"
 
 const FETCH_COUNT = 10
@@ -66,19 +67,24 @@ const ChannelsView = () => {
                 initialLoad={false}
                 threshold={30}
             >
-                {!channels && <div></div>}
-                {channels &&
-                    channels.map(channel => {
-                        return (
-                            <ChannelPreview
-                                channelAddress={channel.address}
-                                avatar={channel.profileData.avatar}
-                                name={channel.profileData.name}
-                                videos={channel.videos}
-                                key={channel.address}
-                            />
-                        )
-                    })}
+                {!channels && (
+                    <div></div>
+                )}
+                {channels && channels.map(channel => {
+                    return (
+                        <ChannelPreview
+                            channelAddress={channel.address}
+                            avatar={channel.profileData.avatar}
+                            name={
+                                checkIsEthAddress(channel.profileData.name)
+                                    ? shortenEthAddr(channel.profileData.name)
+                                    : channel.profileData.name || shortenEthAddr(channel.address)
+                            }
+                            videos={channel.videos}
+                            key={channel.address}
+                        />
+                    )
+                })}
             </InfiniteScroller>
         </div>
     )

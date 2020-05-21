@@ -64,7 +64,7 @@ const ChannelView = ({ channelAddress }) => {
         try {
             const channel =
                 prefetchVideos && prefetchProfile.address === channelAddress
-                    ? {}
+                    ? null
                     : await getChannel(channelAddress)
 
             setHasChannel(!!channel)
@@ -144,8 +144,7 @@ const ChannelView = ({ channelAddress }) => {
                 }
                 actions={
                     <div className="flex ml-auto">
-                        {address === channelAddress &&
-                            !hasChannel &&
+                        {address === channelAddress && !hasChannel &&
                             (isCreatingChannel ? (
                                 <img
                                     src={require("@svg/animated/spinner.svg")}

@@ -7,7 +7,7 @@ const SigninButton = ({ children }) => {
         <button
             className="btn btn-outline"
             type="button"
-            onClick={providerActions.signin}
+            onClick={() => providerActions.signin(true)}
         >
             {children}
         </button>

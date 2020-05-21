@@ -159,14 +159,13 @@ const unlockAccount = (keystore, password) => {
 
 const signData = (decryptedAccount, data) => {
     const web3 = require("web3")
+    const { sign, recover } = require("eth-lib").account
+    let signature = sign(data, decryptedAccount.privateKey)
 
-    const { makeSigner, recover } = require("eth-lib").account
-    const sig = makeSigner(0)(data, decryptedAccount.privateKey)
-    // Fix signature lenght
-    const signature =
-        sig.length === 131
-            ? sig.slice(0, sig.length - 1) + "0" + sig.slice(sig.length - 1)
-            : sig + "00"
+    // Fix signature recover version
+    let sigBytes = web3.utils.hexToBytes(signature)
+    sigBytes[64] -= 27
+    signature = web3.utils.bytesToHex(sigBytes)
 
     if (recover(data, signature) !== decryptedAccount.address) {
         throw new Error("Invalid signature")

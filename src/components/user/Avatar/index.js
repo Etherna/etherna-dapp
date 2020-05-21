@@ -13,7 +13,7 @@ const Avatar = ({ image, address, size, showBadge }) => {
         <div className={classnames("avatar", { badge: showBadge })}>
             <img
                 src={getResourceUrl(image) || blockie}
-                alt={address}
+                alt=""
                 style={{
                     width: size ? `${size}px` : null,
                     height: size ? `${size}px` : null,
@@ -26,14 +26,10 @@ const Avatar = ({ image, address, size, showBadge }) => {
 Avatar.propTypes = {
     image: PropTypes.oneOfType([
         PropTypes.string,
-        PropTypes.arrayOf(
-            PropTypes.shape({
-                "@type": PropTypes.string.isRequired,
-                contentUrl: PropTypes.shape({
-                    "/": PropTypes.string.isRequired,
-                }).isRequired,
-            })
-        ),
+        PropTypes.shape({
+            "url": PropTypes.string.isRequired,
+            "hash": PropTypes.string.isRequired,
+        }),
         PropTypes.object,
     ]),
     address: PropTypes.string,

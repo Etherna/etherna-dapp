@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 
 import SidebarItem from "./SidebarItem"
 import { getResourceUrl } from "@utils/swarm"
+import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import Routes from "@routes"
 
 const MyChannel = () => {
@@ -26,7 +27,11 @@ const MyChannel = () => {
             )}
             {hasProfile && (
                 <SidebarItem
-                    name={name}
+                    name={
+                        checkIsEthAddress(name)
+                            ? shortenEthAddr(name)
+                            : name || shortenEthAddr(name)
+                    }
                     imageUrl={getResourceUrl(avatar)}
                     fallbackAddress={address}
                     link={Routes.getChannelLink(address)}

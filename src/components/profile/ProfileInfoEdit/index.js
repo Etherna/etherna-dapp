@@ -6,11 +6,7 @@ import { useSelector } from "react-redux"
 import "./profile-info-edit.scss"
 import Button from "@common/Button"
 import Modal from "@common/Modal"
-import {
-    isImageObject,
-    getResourceUrl,
-    uploadResourceToSwarm,
-} from "@utils/swarm"
+import { getResourceUrl, uploadResourceToSwarm } from "@utils/swarm"
 import makeBlockies from "@utils/makeBlockies"
 import EnvActions from "@state/actions/enviroment"
 
@@ -27,8 +23,8 @@ const ProfileInfoEdit = ({
     const coverRef = useRef()
     const [profileName, setProfileName] = useState(name)
     const [profileDescription, setProfileDescription] = useState(description)
-    const [profileAvatar, setProfileAvatar] = useState(avatar)
-    const [profileCover, setProfileCover] = useState(cover)
+    const [profileAvatar, setProfileAvatar] = useState(avatar || {})
+    const [profileCover, setProfileCover] = useState(cover || {})
     const [isUploadingCover, setUploadingCover] = useState(false)
     const [isUploadingAvatar, setUploadingAvatar] = useState(false)
     const [showUploadErrorModal, setShowUploadErrorModal] = useState(false)
@@ -36,7 +32,7 @@ const ProfileInfoEdit = ({
     const handleSubmit = () => {
         if (onSubmit) {
             onSubmit({
-                profileAddress,
+                address: profileAddress,
                 name: profileName,
                 description: profileDescription,
                 avatar: profileAvatar,
@@ -71,12 +67,16 @@ const ProfileInfoEdit = ({
         type === "cover" && setUploadingCover(true)
 
         try {
-            const imgObject = await uploadResourceToSwarm(file)
+            const imgHash = await uploadResourceToSwarm(file)
+            const imgObj = {
+                url: getResourceUrl(imgHash),
+                hash: imgHash
+            }
 
             if (type === "cover") {
-                setProfileCover(imgObject)
+                setProfileCover(imgObj)
             } else if (type === "avatar") {
-                setProfileAvatar(imgObject)
+                setProfileAvatar(imgObj)
             }
         } catch (error) {
             console.error(error)
@@ -92,17 +92,17 @@ const ProfileInfoEdit = ({
     }
 
     return (
-        <div className="profile profile-info-edit">
+        <div className="profile-info-edit">
             <div className="cover">
                 <label
                     className={classnames("cover-input", {
-                        active: isImageObject(profileCover),
+                        active: !!profileCover.url,
                     })}
                     htmlFor="cover-input"
                 >
-                    {isImageObject(profileCover) && (
+                    {!!profileCover.url && (
                         <img
-                            src={getResourceUrl(profileCover)}
+                            src={profileCover.url}
                             alt={profileName}
                             className="cover-image"
                         />
@@ -121,7 +121,7 @@ const ProfileInfoEdit = ({
                         onChange={e => handleImageChange(e, "cover")}
                     />
                     <div className="cover-actions">
-                        {isImageObject(profileCover) && (
+                        {!!profileCover.url && (
                             <Button
                                 className="remove-button"
                                 type="button"
@@ -140,8 +140,8 @@ const ProfileInfoEdit = ({
                     <div className="profile-avatar" data-label="Change Avatar">
                         <img
                             src={
-                                isImageObject(profileAvatar)
-                                    ? getResourceUrl(profileAvatar)
+                                !!profileAvatar.url
+                                    ? profileAvatar.url
                                     : makeBlockies(profileAddress)
                             }
                             alt={profileName}
@@ -185,7 +185,7 @@ const ProfileInfoEdit = ({
                     <input
                         type="text"
                         placeholder="Profile name"
-                        value={profileName}
+                        value={profileName || ""}
                         onChange={e => setProfileName(e.target.value || "")}
                     />
                 </div>
@@ -195,7 +195,7 @@ const ProfileInfoEdit = ({
                         className=""
                         placeholder="Something about you or your channel"
                         rows={8}
-                        value={profileDescription}
+                        value={profileDescription || ""}
                         onChange={e =>
                             setProfileDescription(e.target.value || "")
                         }

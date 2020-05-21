@@ -64,7 +64,7 @@ const connectProvider = async provider => {
         const addresses = await fetchAccounts(web3)
         const currentAddress = addresses[0]
         store.dispatch({
-            type: UserActionTypes.USER_UPDATE_ADDRESS,
+            type: UserActionTypes.USER_UPDATE_IDENTITY,
             address: currentAddress,
         })
         store.dispatch({

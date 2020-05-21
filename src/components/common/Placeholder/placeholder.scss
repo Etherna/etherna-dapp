@@ -3,7 +3,6 @@
     background-size: 250% 250%;
     animation: placeholder-animation 3s ease infinite;
 
-    /*! purgecss start ignore */
     &.rounded {
         @apply rounded;
     }
@@ -16,7 +15,14 @@
     &.rounded-lg {
         @apply rounded-lg;
     }
-    /*! purgecss end ignore */
+}
+
+.theme-dark {
+    .placeholder {
+        background: linear-gradient(270deg, theme('colors.gray.400'), theme('colors.gray.200'), theme('colors.gray.400'), theme('colors.gray.200'));
+        background-size: 250% 250%;
+        animation: placeholder-animation 3s ease infinite;
+    }
 }
 
 @keyframes placeholder-animation {

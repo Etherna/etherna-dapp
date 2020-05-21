@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react"
 import PropTypes from "prop-types"
 
 import "./profile-info.scss"
-import { getProfile } from "@utils/3box"
-import { shortenEthAddr } from "@utils/ethFuncs"
 import makeBlockies from "@utils/makeBlockies"
-import { isImageObject, getResourceUrl } from "@utils/swarm"
+import { getProfile } from "@utils/swarmProfile"
+import { checkIsEthAddress, shortenEthAddr } from "@utils/ethFuncs"
 
 const ProfileInfo = ({
     children,
@@ -17,13 +16,14 @@ const ProfileInfo = ({
     const prefetchProfile = window.prefetchData && window.prefetchData.profile
 
     const [profileName, setProfileName] = useState("")
-    const [profileAvatar, setProfileAvatar] = useState(undefined)
-    const [profileCover, setProfileCover] = useState("")
+    const [profileAvatar, setProfileAvatar] = useState({})
+    const [profileCover, setProfileCover] = useState({})
 
     useEffect(() => {
         // reset data
         setProfileName("")
-        setProfileAvatar(undefined)
+        setProfileAvatar({})
+        setProfileCover({})
         // fetch data
         fetchProfile()
 
@@ -40,7 +40,7 @@ const ProfileInfo = ({
             const { name, description, avatar, cover } = hasPrefetch
                 ? prefetchProfile
                 : await getProfile(profileAddress)
-            const fallbackName = name || shortenEthAddr(profileAddress)
+            const fallbackName = name || profileAddress
 
             setProfileName(fallbackName)
             setProfileAvatar(avatar)
@@ -62,9 +62,9 @@ const ProfileInfo = ({
     return (
         <div className="profile">
             <div className="cover">
-                {isImageObject(profileCover) && (
+                {profileCover.url && (
                     <img
-                        src={getResourceUrl(profileCover)}
+                        src={profileCover.url}
                         alt={profileName}
                         className="cover-image"
                     />
@@ -76,8 +76,8 @@ const ProfileInfo = ({
                     <div className="profile-avatar">
                         <img
                             src={
-                                isImageObject(profileAvatar)
-                                    ? getResourceUrl(profileAvatar)
+                                profileAvatar.url
+                                    ? profileAvatar.url
                                     : makeBlockies(profileAddress)
                             }
                             alt={profileName}
@@ -93,7 +93,13 @@ const ProfileInfo = ({
 
             <div className="row">
                 <div className="col max-w-xxs p-4">
-                    <h1 className="profile-name">{profileName}</h1>
+                    <h1 className="profile-name">
+                        {
+                            checkIsEthAddress(profileName)
+                                ? shortenEthAddr(profileName)
+                                : profileName || shortenEthAddr(profileName)
+                        }
+                    </h1>
                     {nav}
                 </div>
                 <div className="col flex-1 p-4">

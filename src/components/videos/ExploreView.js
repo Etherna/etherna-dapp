@@ -29,6 +29,7 @@ const ExploreView = () => {
                 setPage(page + 1)
             }
         } catch (error) {
+            setVideos([])
             setHasMore(false)
         }
     }
@@ -40,7 +41,7 @@ const ExploreView = () => {
             initialLoad={false}
             threshold={30}
         >
-            <VideoGrid label="Recommended videos" videos={videos} />
+            <VideoGrid label="New videos" videos={videos} />
         </InfiniteScroller>
     )
 }

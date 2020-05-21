@@ -1,5 +1,12 @@
 .profile-info-edit {
+    @apply flex flex-wrap;
+
     .cover {
+        @apply w-full bg-gray-100 -mb-8;
+
+        .cover-image {
+            @apply w-full h-auto;
+        }
         .cover-input {
             @apply relative w-full h-32 m-0;
 
@@ -29,6 +36,9 @@
     }
 
     .profile-avatar {
+        @apply relative w-40 h-40 border-4 border-white bg-gray-200
+            rounded-full overflow-hidden;
+
         [type=file] {
             @apply hidden;
         }
@@ -55,6 +65,8 @@
 .theme-dark {
     .profile-info-edit {
         .cover {
+            @apply bg-gray-300;
+
             .cover-input {
                 .cover-actions {
                     .btn {

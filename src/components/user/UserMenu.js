@@ -7,6 +7,7 @@ import SigninButton from "./SigninButton"
 import Avatar from "./Avatar"
 import EnvDropDownMenus from "./EnvDropDownMenu"
 import GuestMenu from "./GuestMenu"
+import ProfileLoadingPlaceholder from "./ProfileLoadingPlaceholder"
 import {
     DropDown,
     DropDownItem,
@@ -15,8 +16,7 @@ import {
 } from "@common/DropDown"
 import { toggleDarkMode } from "@state/actions/enviroment/darkMode"
 import { providerActions } from "@state/actions"
-import { shortenEthAddr } from "@utils/ethFuncs"
-import Routes from "@routes"
+import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import EditProfileIcon from "@icons/menu/EditProfileIcon"
 import ProfileIcon from "@icons/menu/ProfileIcon"
 import IndexIcon from "@icons/menu/IndexIcon"
@@ -26,6 +26,7 @@ import SignoutIcon from "@icons/menu/SignoutIcon"
 import DarkModeIcon from "@icons/menu/DarkModeIcon"
 import LightModeIcon from "@icons/menu/LightModeIcon"
 import ShortcutsIcon from "@icons/menu/ShortcutsIcon"
+import Routes from "@routes"
 
 const UserMenu = () => {
     const { currentWalletLogo, currentAddress, darkMode } = useSelector(
@@ -33,20 +34,13 @@ const UserMenu = () => {
     )
     const { name, avatar } = useSelector(state => state.profile)
     const { isSignedIn, address } = useSelector(state => state.user)
+    const { isLoadingProfile } = useSelector(state => state.ui)
 
-    const hasSwitchedAccount = address !== currentAddress
+    const hasSwitchedAccount = currentAddress && address !== currentAddress
+
     let mainMenuRef = useRef()
     let indexMenuRef = useRef()
     let gatewayMenuRef = useRef()
-
-    if (!isSignedIn) {
-        return (
-            <>
-                <GuestMenu />
-                <SigninButton>Sign in</SigninButton>
-            </>
-        )
-    }
 
     const signOut = async () => {
         await providerActions.signout()
@@ -54,6 +48,24 @@ const UserMenu = () => {
 
     const handleDarkModeChange = () => {
         toggleDarkMode(!darkMode)
+    }
+
+    if (isSignedIn === undefined || isLoadingProfile) {
+        return (
+            <>
+                <GuestMenu />
+                <ProfileLoadingPlaceholder />
+            </>
+        )
+    }
+
+    if (isSignedIn === false) {
+        return (
+            <>
+                <GuestMenu />
+                <SigninButton>Sign in</SigninButton>
+            </>
+        )
     }
 
     return (
@@ -70,7 +82,13 @@ const UserMenu = () => {
                 <DropDownItem inactive={true}>
                     <Avatar image={avatar} address={address} />
                     <div className="flex flex-col flex-1">
-                        <span>{name || shortenEthAddr(address)}</span>
+                        <span>
+                            {
+                                checkIsEthAddress(name)
+                                    ? shortenEthAddr(name)
+                                    : name || shortenEthAddr(address)
+                            }
+                        </span>
                         {name && (
                             <small className="text-gray-500">
                                 {shortenEthAddr(address)}

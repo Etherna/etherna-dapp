@@ -6,7 +6,8 @@ import moment from "moment"
 import "./video-preview.scss"
 import Time from "../Time"
 import Avatar from "@components/user/Avatar"
-import { getProfile } from "@utils/3box"
+import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
+import { getProfile } from "@utils/swarmProfile"
 import { getResourceUrl } from "@utils/swarm"
 import Routes from "@routes"
 
@@ -20,7 +21,8 @@ const VideoPreview = ({ video, hideProfile }) => {
         ? getResourceUrl(video.thumbnailHash)
         : undefined
     const [profileName, setProfileName] = useState(
-        video.profileData && video.profileData.name
+        (video.profileData && video.profileData.name) ||
+        shortenEthAddr(profileAddress)
     )
     const [profileAvatar, setProfileAvatar] = useState(
         video.profileData && video.profileData.avatar
@@ -37,7 +39,7 @@ const VideoPreview = ({ video, hideProfile }) => {
         const profile = await getProfile(video.channelAddress)
         video.profileData = profile
 
-        setProfileName(profile.name)
+        setProfileName(profile.name || shortenEthAddr(profileAddress))
         setProfileAvatar(profile.avatar)
     }
 
@@ -92,7 +94,13 @@ const VideoPreview = ({ video, hideProfile }) => {
                     {!hideProfile && (
                         <Link to={profileLink}>
                             <div className="video-profile">
-                                <h5 className="profile-name">{profileName}</h5>
+                                <h5 className="profile-name">
+                                    {
+                                        checkIsEthAddress(profileName)
+                                            ? shortenEthAddr(profileName)
+                                            : profileName || shortenEthAddr(profileName)
+                                    }
+                                </h5>
                             </div>
                         </Link>
                     )}
@@ -123,7 +131,7 @@ VideoPreview.propTypes = {
         videoHash: PropTypes.string.isRequired,
         profileData: PropTypes.shape({
             name: PropTypes.string,
-            avatar: PropTypes.arrayOf(PropTypes.object),
+            avatar: PropTypes.object,
         }),
     }).isRequired,
     hideProfile: PropTypes.bool,
