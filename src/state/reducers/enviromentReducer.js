@@ -1,4 +1,4 @@
-import { defaultKeymap } from "@keyboard"
+import { baseKeymap } from "@keyboard"
 import lang from "@lang"
 import { loadDarkMode } from "@state/actions/enviroment/darkMode"
 
@@ -26,7 +26,7 @@ const initialState = {
         window.localStorage.getItem("gatewayHost") ||
         process.env.REACT_APP_GATEWAY_HOST ||
         "https://swarm-gateways.net",
-    keymap: defaultKeymap,
+    keymap: baseKeymap,
     darkMode: loadDarkMode(),
     lang,
 }
