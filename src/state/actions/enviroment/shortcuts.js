@@ -65,6 +65,18 @@ export const saveShortcut = newShortcut => {
     })
 }
 
+export const shortcutExists = shortcut => {
+    const { keymap } = store.getState().env
+    for (let namespace in keymap) {
+        for (let shortcutKey in keymap[namespace]) {
+            if (keymap[namespace][shortcutKey] === shortcut) {
+                return shortcutKey
+            }
+        }
+    }
+    return false
+}
+
 
 // Private functions
 
