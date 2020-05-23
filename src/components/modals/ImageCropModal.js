@@ -44,14 +44,6 @@ const ImageCropModal = () => {
             <div className="modal-header">
                 <h4 className="modal-title mx-auto">Crop the image</h4>
             </div>
-            <div>
-                <small className="text-gray-500">
-                    <span>x: {crop.x}, </span>
-                    <span>y: {crop.y}, </span>
-                    <span>width: {crop.width}, </span>
-                    <span>height: {crop.height}</span>
-                </small>
-            </div>
             <div className="my-6">
                 <ReactCrop
                     src={image}
