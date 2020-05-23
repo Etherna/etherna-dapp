@@ -6,8 +6,9 @@ import "./shortcuts.scss"
 import Button from "@common/Button"
 import Kbd from "@common/Kbd"
 import { splitArray } from "@utils/arrays"
-import { editShortcut } from "@state/actions/enviroment/shortcuts"
+import { editShortcut, resetShortcut, hasCustomShortcut } from "@state/actions/enviroment/shortcuts"
 import EditIcon from "@icons/common/EditIcon"
+import ResetIcon from "@icons/common/ResetIcon"
 
 const ShortcutsEditor = ({ namespace }) => {
     const { lang, keymap } = useSelector(state => state.env)
@@ -38,7 +39,29 @@ const ShortcutsEditor = ({ namespace }) => {
                                                 )
                                             }
                                         >
-                                            <EditIcon />
+                                            <div className="m-auto">
+                                                <EditIcon />
+                                            </div>
+                                        </Button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div className="flex">
+                                        <Button
+                                            aspect="transparent"
+                                            size="small"
+                                            rounded={true}
+                                            disabled={!hasCustomShortcut(namespace, shortcut)}
+                                            action={() =>
+                                                resetShortcut(
+                                                    namespace,
+                                                    shortcut
+                                                )
+                                            }
+                                        >
+                                            <div className="m-auto">
+                                                <ResetIcon />
+                                            </div>
                                         </Button>
                                     </div>
                                 </td>
