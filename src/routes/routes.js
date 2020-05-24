@@ -44,5 +44,5 @@ export const getShortcutsLink = () => {
  * Fallback routes
  */
 export const getNotFoundLink = () => {
-    return `/404`
+    return `/notfound`
 }
