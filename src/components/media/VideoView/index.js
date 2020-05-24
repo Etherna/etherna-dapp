@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import moment from "moment"
-import { Link, Redirect } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 import "./video-view.scss"
 import SEO from "@components/layout/SEO"
@@ -84,7 +84,10 @@ const VideoView = ({ hash, video }) => {
     }
 
     if (!isFetchingVideo && !videoOnIndex) {
-        return <Redirect to={Routes.getNotFoundLink()} />
+        return <div className="table mx-auto mt-32">
+            <img src={require("@svg/backgrounds/404-illustration.svg")} alt="" width={400} />
+            <h2 className="text-center text-gray-800 mt-12">Video not found</h2>
+        </div>
     }
 
     return (

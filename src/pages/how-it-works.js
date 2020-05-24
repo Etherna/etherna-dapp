@@ -1,9 +1,10 @@
 import React from "react"
 
+import LayoutWrapper from "@components/layout/DefaultLayout/LayoutWrapper"
 import SEO from "@components/layout/SEO"
 
 const HowItWorks = () => (
-    <>
+    <LayoutWrapper hideSidebar={true}>>
         <SEO title="How it works" />
 
         <div className="container my-8">
@@ -22,7 +23,7 @@ const HowItWorks = () => (
 
             <h2>Upload videos</h2>
         </div>
-    </>
+    </LayoutWrapper>
 )
 
 export default HowItWorks
