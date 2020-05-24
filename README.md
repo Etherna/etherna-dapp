@@ -10,7 +10,29 @@ Moreover, there is no advertisement on content. We are not trying to sell you an
 
 And last but not least, if you aren’t happy with our index... you will be able to open your totally independent instance, because code will be open source! On web application, there will be an option for switch our default index with another totally different, and out of our control. No problem, go and build your own index. This is freedom!
 
-So yes, creators will be able to release their creativity and offer it to the world, final users will decide if a creator deserve to be paid. 
+So yes, creators will be able to release their creativity and offer it to the world, final users will decide if a creator deserve to be paid.
 
 And even if it sounds incredible, for the same amount of views, creator will gain more with Etherna than with YouTube.
 With our service, we think, every people will be able to learn the real value of information.
+
+
+## Build project
+
+### Install node modules
+
+```
+npm install
+```
+or
+```
+yarn install
+```
+
+### Run the project
+```
+npm run start
+```
+or
+```
+yarn start
+```
