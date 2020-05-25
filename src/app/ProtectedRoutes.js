@@ -1,8 +1,8 @@
 import React from "react"
-import { useSelector } from "react-redux"
 import { Route, Redirect } from "react-router-dom"
 
 import Routes from "@routes"
+import useSelector from "@state/useSelector"
 
 export const SignedInRoute = ({ path, exact, children }) => {
     const { isSignedIn } = useSelector(state => state.user)

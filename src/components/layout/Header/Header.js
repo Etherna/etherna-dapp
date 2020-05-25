@@ -1,5 +1,4 @@
 import React from "react"
-import { useSelector } from "react-redux"
 import { NavLink } from "react-router-dom"
 
 import "./header.scss"
@@ -7,6 +6,7 @@ import UserMenu from "@components/user/UserMenu"
 import Routes from "@routes"
 import Logo from "@icons/Logo"
 import UploadIcon from "@icons/menu/UploadIcon"
+import useSelector from "@state/useSelector"
 
 const ChannelsMatches = [/^\/channel\//, /^\/channels/]
 const ExploreMatches = [/^\/watch/]

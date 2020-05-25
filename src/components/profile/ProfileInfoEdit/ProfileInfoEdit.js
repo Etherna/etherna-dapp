@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react"
 import PropTypes from "prop-types"
 import classnames from "classnames"
-import { useSelector } from "react-redux"
 
 import "./profile-info-edit.scss"
 import Button from "@common/Button"
@@ -9,6 +8,7 @@ import Modal from "@common/Modal"
 import { getResourceUrl, uploadResourceToSwarm } from "@utils/swarm"
 import makeBlockies from "@utils/makeBlockies"
 import EnvActions from "@state/actions/enviroment"
+import useSelector from "@state/useSelector"
 
 const ProfileInfoEdit = ({
     profileAddress,

@@ -1,6 +1,5 @@
 import React, { useRef } from "react"
 import { Link } from "react-router-dom"
-import { useSelector } from "react-redux"
 import Switch from "react-switch"
 
 import EnvDropDownMenus from "./EnvDropDownMenu"
@@ -11,14 +10,15 @@ import {
     DropDownItem,
 } from "@common/DropDown"
 import Button from "@common/Button"
-import Routes from "@routes"
-import { toggleDarkMode } from "@state/actions/enviroment/darkMode"
 import MenuIcon from "@icons/menu/MenuIcon"
 import IndexIcon from "@icons/menu/IndexIcon"
 import GatewayIcon from "@icons/menu/GatewayIcon"
 import ShortcutsIcon from "@icons/menu/ShortcutsIcon"
 import DarkModeIcon from "@icons/menu/DarkModeIcon"
 import LightModeIcon from "@icons/menu/LightModeIcon"
+import { toggleDarkMode } from "@state/actions/enviroment/darkMode"
+import useSelector from "@state/useSelector"
+import Routes from "@routes"
 
 const GuestMenu = () => {
     const { darkMode } = useSelector(state => state.env)

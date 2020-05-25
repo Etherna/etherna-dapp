@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from "react"
-import { useSelector } from "react-redux"
 import classnames from "classnames"
 
 import Modal from "../common/Modal"
 import Button from "../common/Button"
+import Kbd from "../common/Kbd"
 import { closeShortcutModal } from "@state/actions/modals"
 import { saveShortcut, shortcutExists } from "@state/actions/enviroment/shortcuts"
-import Kbd from "@components/common/Kbd"
+import useSelector from "@state/useSelector"
 
 const key2string = require("key-event-to-string")()
 

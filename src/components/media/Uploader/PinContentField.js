@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
 import PropTypes from "prop-types"
 import Switch from "react-switch"
-import { useSelector } from "react-redux"
 
 import Alert from "@common/Alert"
+import useSelector from "@state/useSelector"
 import { isPinningEnabled } from "@utils/swarm"
 
 const PinContentField = ({ onChange }) => {

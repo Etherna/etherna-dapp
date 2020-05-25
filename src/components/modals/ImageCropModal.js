@@ -1,10 +1,10 @@
 import React, { useState, useRef, useCallback } from "react"
-import { useSelector } from "react-redux"
 import ReactCrop from "react-image-crop"
 import "react-image-crop/dist/ReactCrop.css"
 
 import Modal from "@components/common/Modal"
 import Button from "@components/common/Button"
+import useSelector from "@state/useSelector"
 import { finishCropping } from "@state/actions/enviroment/cropImage"
 
 const ImageCropModal = () => {

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
-import { useSelector } from "react-redux"
 
 import { DropDownMenu } from "@common/DropDown"
 import Button from "@common/Button"
 import { enviromentActions } from "@state/actions"
+import useSelector from "@state/useSelector"
 
 const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
     const { indexHost, gatewayHost } = useSelector(state => state.env)
