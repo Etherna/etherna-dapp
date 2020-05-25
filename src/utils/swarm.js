@@ -2,6 +2,16 @@ import axios from "axios"
 
 import { store } from "@state/store"
 
+/**
+ * Get the Swarm url of an image or resource
+ *
+ * @typedef {object} SwarmObject
+ * @property {string} hash Resource hash
+ * @property {string} url Resource url
+ *
+ * @param {SwarmObject|string} image Image object definition or hash string value
+ * @returns {string|undefined}
+ */
 export const getResourceUrl = (image) => {
     const SwarmGateway = store.getState().env.gatewayHost
 
@@ -21,7 +31,12 @@ export const getResourceUrl = (image) => {
     return undefined
 }
 
-export const uploadResourceToSwarm = async (file) => {
+/**
+ * Upload a file to swarm
+ * @param {File} file File to upload
+ * @returns {string} Hash of the uplaoded file
+ */
+export const uploadResourceToSwarm = async file => {
     const SwarmGateway = store.getState().env.gatewayHost
     const endpoint = `${SwarmGateway}/bzz-raw:/`
 
@@ -40,6 +55,13 @@ export const uploadResourceToSwarm = async (file) => {
     }
 }
 
+/**
+ * Upload a file to swarm with progress and pinning option
+ * @param {File} file File to upload
+ * @param {Function} progressCallback Progress callback function
+ * @param {boolean} pinContent Content should be pinned (default = true)
+ * @returns {string} Hash of the uloaded file
+ */
 export const gatewayUploadWithProgress = async (
     file,
     progressCallback,
@@ -71,6 +93,10 @@ export const gatewayUploadWithProgress = async (
     }
 }
 
+/**
+ * Check if pinning is available on the current gateway
+ * @returns {boolean}
+ */
 export const isPinningEnabled = async () => {
     const SwarmGateway = store.getState().env.gatewayHost
     const endpoint = `${SwarmGateway}/bzz-pin:/`
@@ -98,10 +124,20 @@ export const isPinningEnabled = async () => {
     )
 }
 
+/**
+ * Check if a hash is a valid Swarm hash
+ * @param {string} hash Hash of the resource
+ * @returns {boolean}
+ */
 export const isValidHash = (hash) => {
     return /^[0-9a-f]{64}$/.test(hash)
 }
 
+/**
+ * Get the array buffer of a file
+ * @param {File} file File to convert
+ * @returns {ArrayBuffer}
+ */
 export const fileReaderPromise = file => {
     return new Promise((resolve, reject) => {
         let fr = new FileReader()

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
-import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 
 import "./channel.scss"
@@ -12,6 +11,7 @@ import NavPills from "@common/NavPills"
 import SEO from "@components/layout/SEO"
 import ProfileInfo from "@components/profile/ProfileInfo"
 import { profileActions } from "@state/actions"
+import useSelector from "@state/useSelector"
 import {
     getChannelVideos,
     getChannel,

@@ -1,3 +1,7 @@
+/**
+ * Get the video duration of a file
+ * @param {File} file Video file object
+ */
 export const getVideoDuration = file => {
     return new Promise((resolve, reject) => {
         const video = document.createElement("video")

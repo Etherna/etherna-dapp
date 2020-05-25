@@ -1,11 +1,11 @@
 import React from "react"
-import { useSelector } from "react-redux"
 
 import ConnectingWalletModal from "./ConnectingWalletModal"
 import UnsupportedBrowserModal from "./UnsupportedBrowserModal"
 import ErrorModal from "./ErrorModal"
 import ShortcutModal from "./ShortcutModal"
 import ImageCropModal from "./ImageCropModal"
+import useSelector from "@state/useSelector"
 
 const ModalsSection = () => {
     const {

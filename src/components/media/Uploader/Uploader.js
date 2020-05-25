@@ -1,19 +1,19 @@
 import React, { useState } from "react"
 import classnames from "classnames"
 import { Redirect } from "react-router-dom"
-import { useSelector } from "react-redux"
 
 import "./uploader.scss"
 import FileDrag from "./FileDrag"
 import SwarmFileUpload from "./SwarmFileUpload"
+import PinContentField from "./PinContentField"
 import Alert from "@common/Alert"
 import Button from "@common/Button"
 import Avatar from "@components/user/Avatar"
 import { showError } from "@state/actions/modals"
+import useSelector from "@state/useSelector"
 import { addVideoToChannel } from "@utils/ethernaResources/channelResources"
 import { getVideoDuration } from "@utils/media"
 import Routes from "@routes"
-import PinContentField from "./PinContentField"
 
 const Uploader = () => {
     const { name, avatar, existsOnIndex } = useSelector(state => state.profile)

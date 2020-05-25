@@ -2,13 +2,13 @@ import { createStore, applyMiddleware, compose } from "redux"
 import thunkMiddleware from "redux-thunk"
 import { createLogger } from "redux-logger"
 
-import reducer from "./reducers"
+import reducers from "./reducers"
 
+/**
+ * Configure a new redux store
+ */
 function configureStore() {
-    const composeEnhancers =
-        typeof window !== "undefined"
-            ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-            : compose
+    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
     const middleware = [thunkMiddleware]
 
     if (process.env.NODE_ENV !== "production") {
@@ -16,11 +16,17 @@ function configureStore() {
     }
 
     return createStore(
-        reducer,
+        reducers,
         composeEnhancers(applyMiddleware(...middleware))
     )
 }
 
+/**
+ * Redux store
+ */
 const store = configureStore()
 
-export { configureStore, store }
+export {
+    configureStore,
+    store
+}

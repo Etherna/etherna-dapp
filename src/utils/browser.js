@@ -1,7 +1,7 @@
-import { detect } from "detect-browser"
-
-import { store } from "../state/store"
-
+/**
+ * Check if current browser is a mobile browser.
+ * @returns {boolean}
+ */
 export const checkIsMobile = () => {
     let isMobile
     if (
@@ -16,6 +16,10 @@ export const checkIsMobile = () => {
     return isMobile
 }
 
+/**
+ * Check if current browser is a mobile browser without web3 instance.
+ * @returns {boolean}
+ */
 export const checkIsMobileWithoutWeb3 = () => {
     let isMobileWithWeb3 = false
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -28,25 +32,10 @@ export const checkIsMobileWithoutWeb3 = () => {
     return isMobileWithWeb3
 }
 
-export const isBrowserCompatible = () => {
-    const browser = detect()
-    const { version, name } = browser
-
-    if (name !== "safari") return true
-
-    const majorVersion = parseInt(version.split(".")[0])
-    const minorVersion = parseInt(version.split(".")[1])
-    if (majorVersion > 11 || (majorVersion === 11 && minorVersion >= 1))
-        return true
-    if (majorVersion < 11 || (majorVersion === 11 && minorVersion < 1)) {
-        store.dispatch({
-            type: "UI_UNSUPPORTED_BROWSER_MODAL",
-            showUnsupportedBrowser: true,
-        })
-        return false
-    }
-}
-
+/**
+ * Check if current device is a mobile
+ * @returns {boolean}
+ */
 export const checkIsMobileDevice = () => {
     return (
         (window && typeof window.orientation !== "undefined") ||

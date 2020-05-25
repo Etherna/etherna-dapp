@@ -2,9 +2,30 @@ import axios from "axios"
 
 import { store } from "@state/store"
 
+
+/**
+ *
+ * @typedef {object} Video
+ * @property {string} channelAddress Video channel address
+ * @property {string} creationDateTime Video creation date
+ * @property {string} description Video description
+ * @property {number} lengthInSeconds Video length in seconds
+ * @property {string} thumbnailHash Video thumbnail hash on Swarm
+ * @property {string} title Video title
+ * @property {string} videoHash Video hash on Swarm
+ *
+ */
+
+
 // ----------------------------------------------------------------------------
 // GET
 
+/**
+ * Get a list of recent videos uploaded on the platform
+ * @param {number} page Page offset (default = 0)
+ * @param {number} take Count of videos to get (default = 25)
+ * @returns {Video[]}
+ */
 export const getVideos = async (page = 0, take = 25) => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/videos`
@@ -17,21 +38,14 @@ export const getVideos = async (page = 0, take = 25) => {
         throw new Error("Cannot fetch videos")
     }
 
-    /**
-     * Array of:
-     * {
-     *   channelAddress: string,
-     *   creationDateTime: string,
-     *   description: string,
-     *   lengthInSeconds: number,
-     *   thumbnailHash: string,
-     *   title: string,
-     *   videoHash: string,
-     * }
-     */
     return resp.data
 }
 
+/**
+ * Get video information
+ * @param {string} hash Video hash on Swarm
+ * @returns {Video}
+ */
 export const getVideo = async hash => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/videos/${hash}`
@@ -42,24 +56,21 @@ export const getVideo = async hash => {
         throw new Error("Cannot fetch the video")
     }
 
-    /**
-     * Object:
-     * {
-     *   channelAddress: string,
-     *   creationDateTime: string,
-     *   description: string,
-     *   lengthInSeconds: number,
-     *   thumbnailHash: string,
-     *   title: string,
-     *   videoHash: string,
-     * }
-     */
     return resp.data
 }
 
 // ----------------------------------------------------------------------------
 // PUT
 
+/**
+ * Update a video information
+ * @param {string} hash Hash of the video on Swarm
+ * @param {string} title Video title
+ * @param {string} description Video description
+ * @param {number} time Video duration in seconds
+ * @param {string} thumbnailHash Video thumbnail hash on Swarm
+ * @returns {Video}
+ */
 export const updateVideo = async (
     hash,
     title,
@@ -82,17 +93,5 @@ export const updateVideo = async (
         throw new Error("Cannot update the video")
     }
 
-    /**
-     * Object:
-     * {
-     *   channelAddress: string,
-     *   creationDateTime: string,
-     *   description: string,
-     *   lengthInSeconds: number,
-     *   thumbnailHash: string,
-     *   title: string,
-     *   videoHash: string,
-     * }
-     */
     return resp.data
 }

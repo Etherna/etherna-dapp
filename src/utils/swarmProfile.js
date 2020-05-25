@@ -10,6 +10,30 @@ const EthernaTopicName = "Etherna"
 const EthernaTopic = web3.utils.padRight(web3.utils.fromAscii(EthernaTopicName), 64)
 const EthernaVideoName = "EthernaVideo"
 
+/**
+ *
+ * @typedef {object} SwarmObject
+ * @property {string} value Hash of the resource
+ *
+ * @typedef {object} SwarmImage
+ * @property {string} url Url of the resource
+ * @property {string} hash Hash of the resource on Swarm
+ *
+ * @typedef {object} Profile
+ * @property {string} address Profile address
+ * @property {string} name Name of the Profile/Channel
+ * @property {string} description Description of the Profile/Channel
+ * @property {SwarmImage} avatar User's avatar
+ * @property {SwarmImage} avatar User's cover
+ *
+ */
+
+/**
+ * Get the profile information of a address
+ * @param {string} address Address of the profile to retrieve
+ *
+ * @returns {Profile}
+ */
 export const getProfile = async address => {
     const [
         baseProfile,
@@ -25,6 +49,11 @@ export const getProfile = async address => {
     }
 }
 
+/**
+ * Get a list of profiles
+ * @param {string[]} addresses Array of address
+ * @returns {Profile[]}
+ */
 export const getProfiles = async addresses => {
     try {
         const promises = addresses.map(address => getProfile(address))
@@ -41,7 +70,11 @@ export const getProfiles = async addresses => {
     }
 }
 
-export const updateProfile = async (profile) => {
+/**
+ * Update a user's feeds for the profile
+ * @param {Profile} profile Profile information
+ */
+export const updateProfile = async profile => {
     const address = profile.address
 
     // Split profile data into "base profile" and "etherna video profile"
@@ -64,6 +97,14 @@ export const updateProfile = async (profile) => {
 
 
 // Private utils functions
+
+/**
+ * Resolve a profile by fetching feeds and resolving images
+ * @param {string} topic Hash of the feed topic
+ * @param {string} name Name of feed
+ * @param {string} address Owner of the feed
+ * @returns {Profile}
+ */
 const resolveProfile = async (topic, name, address) => {
     const profile = await fetchFeedOrDefault(topic, name, address)
     return {
@@ -81,6 +122,11 @@ const resolveProfile = async (topic, name, address) => {
     }
 }
 
+/**
+ * Resolve an image by parsing its url
+ * @param {SwarmObject} imgObj
+ * @returns {SwarmImage}
+ */
 const resolveImage = imgObj => {
     let url = null, hash = null
     if (
@@ -98,6 +144,11 @@ const resolveImage = imgObj => {
     }
 }
 
+/**
+ * Resolve a long text by fetching its content on Swarm
+ * @param {SwarmObject|string} textObj
+ * @returns {string}
+ */
 const resolveText = async textObj => {
     let text = ""
 
@@ -121,6 +172,11 @@ const resolveText = async textObj => {
     return text
 }
 
+/**
+ * Validate a profile by checking its props are in the correct format
+ * @param {Profile} profile Profile to validate
+ * @returns {Profile}
+ */
 const validatedProfile = async profile => {
     // Object validation
     if (typeof profile !== "object") {
@@ -178,6 +234,13 @@ const validatedProfile = async profile => {
     return profile
 }
 
+/**
+ * Fetch the feed or a empty object if non existing
+ * @param {string} topic Hash of the topic feed
+ * @param {string} name Name of the feed
+ * @param {string} address Owner address
+ * @returns {object} Feed data
+ */
 const fetchFeedOrDefault = async (topic, name, address) => {
     try {
         const feed = await readFeed(topic, name, address)

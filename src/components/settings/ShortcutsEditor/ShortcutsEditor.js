@@ -1,14 +1,14 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { useSelector } from "react-redux"
 
 import "./shortcuts.scss"
 import Button from "@common/Button"
 import Kbd from "@common/Kbd"
-import { splitArray } from "@utils/arrays"
-import { editShortcut, resetShortcut, hasCustomShortcut } from "@state/actions/enviroment/shortcuts"
 import EditIcon from "@icons/common/EditIcon"
 import ResetIcon from "@icons/common/ResetIcon"
+import { splitArray } from "@utils/arrays"
+import { editShortcut, resetShortcut, hasCustomShortcut } from "@state/actions/enviroment/shortcuts"
+import useSelector from "@state/useSelector"
 
 const ShortcutsEditor = ({ namespace }) => {
     const { lang, keymap } = useSelector(state => state.env)

@@ -1,5 +1,4 @@
 import React, { useRef } from "react"
-import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import Switch from "react-switch"
 
@@ -14,9 +13,6 @@ import {
     DropDownMenu,
     DropDownMenuToggle,
 } from "@common/DropDown"
-import { toggleDarkMode } from "@state/actions/enviroment/darkMode"
-import { providerActions } from "@state/actions"
-import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import EditProfileIcon from "@icons/menu/EditProfileIcon"
 import ProfileIcon from "@icons/menu/ProfileIcon"
 import IndexIcon from "@icons/menu/IndexIcon"
@@ -26,6 +22,10 @@ import SignoutIcon from "@icons/menu/SignoutIcon"
 import DarkModeIcon from "@icons/menu/DarkModeIcon"
 import LightModeIcon from "@icons/menu/LightModeIcon"
 import ShortcutsIcon from "@icons/menu/ShortcutsIcon"
+import { toggleDarkMode } from "@state/actions/enviroment/darkMode"
+import { providerActions } from "@state/actions"
+import useSelector from "@state/useSelector"
+import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import Routes from "@routes"
 
 const UserMenu = () => {
