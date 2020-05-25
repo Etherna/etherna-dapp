@@ -85,7 +85,17 @@ export const parseSubTopic = (topic, name) => {
 
 /**
  * Get the digest hash used to update a feed
- * @param {object} feed Json object containing the current feed information
+ *
+ * @typedef {object} Feed Topic meta information
+ * @property {object} feed
+ * @property {string} feed.topic Topic hash
+ * @property {string} feed.user Owner eth address
+ * @property {object} epoch
+ * @property {number} epoch.time Timestamp
+ * @property {number} epoch.level Suggested frequency level
+ * @property {number} protocolVersion Feeds protocol version
+ *
+ * @param {Feed} feed Json object containing the current feed information
  * @param {string} update String value of the new update
  */
 export const feedDigest = (feed, update) => {

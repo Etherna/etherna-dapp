@@ -2,31 +2,53 @@ import axios from "axios"
 
 import { store } from "@state/store"
 
+
+/**
+ *
+ * @typedef {object} Channel
+ * @property {string} address Channel address
+ * @property {string} creationDateTime Channel creation date
+ *
+ *
+ * @typedef {object} ChannelVideos
+ * @property {string} address Channel address
+ * @property {string} creationDateTime Channel creation date
+ * @property {import('./videosResources.js').Video[]} videos List of recent videos
+ *
+ */
+
+
 // ----------------------------------------------------------------------------
 // GET
 
+/**
+ * Get a list of recent channels
+ * @param {number} page Page offset (default = 0)
+ * @param {number} take Count of channels to get (default = 25)
+ * @returns {Channel[]}
+ */
 export const getChannels = async (page = 0, take = 25) => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels`
 
     const resp = await axios.get(apiUrl, {
-        params: { page, take },
+        params: { page, take }
     })
 
     if (!Array.isArray(resp.data)) {
         throw new Error("Cannot fetch channels")
     }
 
-    /**
-     * Array of:
-     * {
-     *   address: string,
-     *   creationDateTime: string
-     * }
-     */
     return resp.data
 }
 
+/**
+ * Get a list of recent channels with the recent videos
+ * @param {number} page Page offset (default = 0)
+ * @param {number} take Count of channels to get (default = 25)
+ * @param {number} videosTake Count of videos to get (default = 5)
+ * @returns {ChannelVideos[]}
+ */
 export const getChannelsWithVideos = async (
     page = 0,
     take = 25,
@@ -36,26 +58,14 @@ export const getChannelsWithVideos = async (
     for (let channel of channels) {
         channel.videos = await getChannelVideos(channel.address, 0, videosTake)
     }
-
-    /**
-     * Array of:
-     * {
-     *   address: string,
-     *   creationDateTime: string,
-     *   videos: [
-     *     channelAddress: string,
-     *     creationDateTime: string,
-     *     description: string,
-     *     lengthInSeconds: number,
-     *     thumbnailHash: string,
-     *     title: string,
-     *     videoHash: string,
-     *   ]
-     * }
-     */
     return channels
 }
 
+/**
+ * Get a channel from the address
+ * @param {string} address Channel address
+ * @returns {Channel}
+ */
 export const getChannel = async address => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels/${address}`
@@ -66,16 +76,16 @@ export const getChannel = async address => {
         throw new Error("Cannot fetch channel")
     }
 
-    /**
-     * Object:
-     * {
-     *   address: string,
-     *   creationDateTime: string
-     * }
-     */
     return resp.data
 }
 
+/**
+ * Get a list of recent videos by a channel
+ * @param {string} address Channel address
+ * @param {number} page Page offset (default = 0)
+ * @param {number} take Count of videos to get (default = 25)
+ * @returns {import('./videosResources.js').Video[]}
+ */
 export const getChannelVideos = async (address, page = 0, take = 25) => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels/${address}/videos`
@@ -88,24 +98,17 @@ export const getChannelVideos = async (address, page = 0, take = 25) => {
         throw new Error("Cannot fetch channel videos")
     }
 
-    /**
-     * Array of:
-     * {
-     *   channelAddress: string,
-     *   creationDateTime: string,
-     *   description: string,
-     *   lengthInSeconds: number,
-     *   thumbnailHash: string,
-     *   title: string,
-     *   videoHash: string,
-     * }
-     */
     return resp.data
 }
 
 // ----------------------------------------------------------------------------
 // POST
 
+/**
+ * Create a new channel
+ * @param {string} address New channel address
+ * @returns {Channel}
+ */
 export const createChannel = async address => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels`
@@ -118,16 +121,19 @@ export const createChannel = async address => {
         throw new Error("Cannot create channel")
     }
 
-    /**
-     * Object:
-     * {
-     *   address: string,
-     *   creationDateTime: string
-     * }
-     */
     return resp.data
 }
 
+/**
+ * Add a video to a channel
+ * @param {string} channelAddress Channel address
+ * @param {string} videoHash Hash of the video on Swarm
+ * @param {string} title Video title
+ * @param {string} description Video description
+ * @param {number} time Video duration in seconds
+ * @param {string} thumbnailHash Video thumbnail hash on Swarm
+ * @returns {import('./videosResources.js').Video}
+ */
 export const addVideoToChannel = async (
     channelAddress,
     videoHash,
@@ -151,24 +157,18 @@ export const addVideoToChannel = async (
         throw new Error("Cannot add video to the channel")
     }
 
-    /**
-     * Object:
-     * {
-     *   channelAddress: string,
-     *   creationDateTime: string,
-     *   description: string,
-     *   lengthInSeconds: number,
-     *   thumbnailHash: string,
-     *   title: string,
-     *   videoHash: string,
-     * }
-     */
     return resp.data
 }
 
 // ----------------------------------------------------------------------------
 // DELETE
 
+/**
+ * Remove a video from a channel
+ * @param {string} channelAddress Channel address
+ * @param {string} videoHash Hash of the video to remove
+ * @returns {boolean}
+ */
 export const removeVideoFromChannel = async (channelAddress, videoHash) => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels/${channelAddress}/videos/${videoHash}`

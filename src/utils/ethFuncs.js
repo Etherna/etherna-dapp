@@ -1,17 +1,29 @@
 import { ethers } from "ethers"
 
-export const checkIsEthAddress = string => {
-    const isEthereumAddress = /^(0x)?[0-9a-f]{40}$/i.test(string)
+/**
+ * Check if a string a valid eth address
+ * @param {string} address Address string value
+ */
+export const checkIsEthAddress = address => {
+    const isEthereumAddress = /^(0x)?[0-9a-f]{40}$/i.test(address)
     return isEthereumAddress
 }
 
-export const shortenEthAddr = str => {
+/**
+ * Get the shorten string of a address
+ * @param {string} address Address string value
+ */
+export const shortenEthAddr = address => {
     const shortenStr =
-        str &&
-        `${str.substring(0, 5)}...${str.substring(str.length - 5, str.length)}`
+        address &&
+        `${address.substring(0, 5)}...${address.substring(address.length - 5, address.length)}`
     return shortenStr
 }
 
+/**
+ * Check if a provider is injected by the browser
+ * @param {object} provider Web3 provider
+ */
 export const checkUsingInjectedProvider = provider => {
     const {
         isFortmatic,
@@ -32,6 +44,10 @@ export const checkUsingInjectedProvider = provider => {
     return true
 }
 
+/**
+ * Fetch the wallet accounts
+ * @param {web3} web3 Web3 instance
+ */
 export const fetchAccounts = async web3 => {
     let accounts = []
 
@@ -49,6 +65,11 @@ export const fetchAccounts = async web3 => {
     return accounts
 }
 
+/**
+ * Resolve the ens of a eth address
+ * @param {string} address Address of the ens to fetch
+ * @param {web3} web3 Web3 instance
+ */
 export const resolveEnsName = async (address, web3) => {
     const currentProvider = web3
         ? web3.currentProvider
@@ -63,6 +84,10 @@ export const resolveEnsName = async (address, web3) => {
     return undefined
 }
 
+/**
+ * Get the network name from the id
+ * @param {number} networkId Id of the networks
+ */
 export const getNetworkName = networkId => {
     switch (networkId) {
         case 1:
