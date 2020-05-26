@@ -59,9 +59,6 @@ const ChannelPreview = ({ channelAddress }) => {
 
         setVideos(mappedVideos)
 
-        console.log('mapped videos');
-
-
         setHasMappedVideosProfile(true)
     }
 
