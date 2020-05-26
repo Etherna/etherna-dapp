@@ -4,9 +4,7 @@ import InfiniteScroller from "react-infinite-scroller"
 import "./channels.scss"
 import ChannelPreview from "../ChannelPreview"
 import ChannelPreviewPlaceholder from "../ChannelPreviewPlaceholder"
-import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
-import { getProfiles } from "@utils/swarmProfile"
-import { getChannelsWithVideos } from "@utils/ethernaResources/channelResources"
+import { getChannels } from "@utils/ethernaResources/channelResources"
 
 const FETCH_COUNT = 10
 
@@ -21,38 +19,20 @@ const ChannelsView = () => {
     }, [])
 
     const fetchChannels = async () => {
-        try {
-            const fetchedChannels = await getChannelsWithVideos(
-                page,
-                FETCH_COUNT,
-                5
-            )
-            const boxProfiles = await getProfiles(
-                fetchedChannels.map(p => p.address)
-            )
-            const mappedProfiles = fetchedChannels.map(c => {
-                const boxProfile =
-                    boxProfiles.find(bp => bp.address === c.address) || {}
-                const videos = (c.videos || []).map(v => ({
-                    ...v,
-                    profileData: boxProfile,
-                }))
-                return {
-                    ...c,
-                    videos,
-                    profileData: boxProfile,
-                }
-            })
+        // increment page to avoid requests at the same page
+        setPage(page + 1)
 
-            setChannels((channels || []).concat(mappedProfiles))
+        try {
+            const fetchedChannels = await getChannels(page, FETCH_COUNT)
+
+            setChannels((channels || []).concat(fetchedChannels))
 
             if (fetchedChannels.length < FETCH_COUNT) {
                 setHasMore(false)
-            } else {
-                setPage(page + 1)
             }
         } catch (error) {
             console.error(error)
+            setChannels(channels || [])
             setHasMore(false)
         }
     }
@@ -70,18 +50,11 @@ const ChannelsView = () => {
                 {!channels && (
                     <div></div>
                 )}
-                {channels && channels.map(channel => {
+                {channels && channels.map((channel, index) => {
                     return (
                         <ChannelPreview
                             channelAddress={channel.address}
-                            avatar={channel.profileData.avatar}
-                            name={
-                                checkIsEthAddress(channel.profileData.name)
-                                    ? shortenEthAddr(channel.profileData.name)
-                                    : channel.profileData.name || shortenEthAddr(channel.address)
-                            }
-                            videos={channel.videos}
-                            key={channel.address}
+                            key={`${channel.address}-${index}`}
                         />
                     )
                 })}
