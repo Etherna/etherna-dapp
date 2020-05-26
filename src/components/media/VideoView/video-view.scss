@@ -1,4 +1,6 @@
 .video-watch {
+    @apply mb-16;
+
     .video-title {
         @apply mb-1 font-semibold text-2xl;
     }
