@@ -9,6 +9,11 @@ export const UIActionTypes = {
     UI_TOGGLE_IMAGE_CROPPER: "UI_TOGGLE_IMAGE_CROPPER",
 }
 
+/**
+ * @param {import("..").UIState} state
+ * @param {object} action
+ * @returns {import("..").UIState}
+ */
 const uiReducer = (state = {}, action) => {
     switch (action.type) {
         case UIActionTypes.UI_SHOW_ERROR:

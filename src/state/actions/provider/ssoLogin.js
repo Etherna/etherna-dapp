@@ -1,8 +1,8 @@
-const ssoLogin = () => {
-    window.localStorage.setItem("signedIn", "true")
+import { store } from "@state/store"
 
-    const returnUrl = encodeURIComponent(window.location.href)
-    window.location.href = `${process.env.REACT_APP_SSO_HOST}/identity/account/login?returnUrl=${returnUrl}`
+const ssoLogin = () => {
+    const { oidcManager } = store.getState().user
+    oidcManager.signinRedirect()
 }
 
 export default ssoLogin

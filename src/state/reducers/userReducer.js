@@ -1,3 +1,5 @@
+import { UserManager } from "oidc-client"
+
 export const UserActionTypes = {
     USER_ENS_UPDATE: "USER_ENS_UPDATE",
     USER_SIGNOUT: "USER_SIGNOUT",
@@ -5,7 +7,23 @@ export const UserActionTypes = {
     USER_UPDATE_SIGNEDIN: "USER_UPDATE_SIGNEDIN",
 }
 
-const userReducer = (state = {}, action) => {
+const initialState = {
+    oidcManager: new UserManager({
+        authority: process.env.REACT_APP_SSO_HOST,
+        client_id: "ethernaDappClientId",
+        redirect_uri: window.location.href,
+        response_type: "code",
+        scope: "openid ether_accounts",
+        post_logout_redirect_uri: window.location.href,
+    })
+}
+
+/**
+ * @param {import("..").UserState} state
+ * @param {object} action
+ * @returns {import("..").UserState}
+ */
+const userReducer = (state = initialState, action) => {
     switch (action.type) {
         case UserActionTypes.USER_ENS_UPDATE:
             return {
@@ -14,7 +32,10 @@ const userReducer = (state = {}, action) => {
             }
 
         case UserActionTypes.USER_SIGNOUT:
-            return {}
+            return {
+                oidcManager: state.oidcManager,
+                isSignedIn: false
+            }
 
         case UserActionTypes.USER_UPDATE_IDENTITY:
             return {

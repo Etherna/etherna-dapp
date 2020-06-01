@@ -31,6 +31,11 @@ const initialState = {
     lang,
 }
 
+/**
+ * @param {import("..").EnvState} state
+ * @param {object} action
+ * @returns {import("..").EnvState}
+ */
 const enviromentReducer = (state = initialState, action) => {
     switch (action.type) {
         case EnvActionTypes.ENV_UPDATE_PROVIDER:

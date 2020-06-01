@@ -17,7 +17,7 @@ import axios from "axios"
  * @returns {Identity}
  */
 export const getIdentity = async () => {
-    const apiUrl = `${process.env.REACT_APP_SSO_HOST}/api/v0.1/identity`
+    const apiUrl = `${process.env.REACT_APP_SSO_HOST}/api/v0.2/identity`
 
     const resp = await axios.get(apiUrl, {
         headers: {

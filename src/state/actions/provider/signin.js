@@ -6,7 +6,7 @@ import ssoLogin from "./ssoLogin"
 
 /**
  * Sign in user and fetch profile
- * @param {boolean} forceSSO Wheater to send user to the SSO login page
+ * @param {boolean} forceSSO Whether to send user to the SSO login page
  */
 const signin = async (forceSSO = false) => {
     if (forceSSO) {

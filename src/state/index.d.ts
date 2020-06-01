@@ -1,4 +1,5 @@
 import Web3 from "web3"
+import { UserManager } from "oidc-client"
 import { Account as Wallet } from "web3-core"
 import { Crop } from "react-image-crop"
 import Lang from "lang.js"
@@ -64,6 +65,7 @@ export interface UserState {
     username?: string
     ens?: string
     isSignedIn: boolean
+    oidcManager: UserManager
 }
 
 

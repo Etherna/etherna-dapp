@@ -5,6 +5,11 @@ export const ProfileActionTypes = {
     PROFILE_SIGNOUT: "PROFILE_SIGNOUT",
 }
 
+/**
+ * @param {import("..").ProfileState} state
+ * @param {object} action
+ * @returns {import("..").ProfileState}
+ */
 const profileReducer = (state = {}, action) => {
     switch (action.type) {
         case ProfileActionTypes.PROFILE_UPDATE:
