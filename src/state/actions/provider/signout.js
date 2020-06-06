@@ -1,20 +1,11 @@
 import { store } from "@state/store"
-import { ProfileActionTypes } from "@state/reducers/profileReducer"
-import { UserActionTypes } from "@state/reducers/userReducer"
-import { getIdentity } from "@utils/ethernaResources/identityResources"
 
 const signout = async (clearStorage = true) => {
     const { isSignedIn, oidcManager } = store.getState().user
 
     if (isSignedIn) {
-        try {
-            await oidcManager.signinPopup()
-        } catch {}
-        try {
-            await getIdentity()
-        } catch (error) {
-            clearStore(clearStorage)
-        }
+        clearStore(clearStorage)
+        oidcManager.signoutRedirect()
     }
 }
 
@@ -26,12 +17,16 @@ const clearStore = (clearLocalStorage = true) => {
         window.localStorage.removeItem("shouldShowSwitchNetwork")
     }
 
-    store.dispatch({
-        type: UserActionTypes.USER_SIGNOUT,
-    })
-    store.dispatch({
-        type: ProfileActionTypes.PROFILE_SIGNOUT,
-    })
+    /**
+     * With redirect there is no need to update
+     * the store state.
+     */
+    // store.dispatch({
+    //     type: UserActionTypes.USER_SIGNOUT,
+    // })
+    // store.dispatch({
+    //     type: ProfileActionTypes.PROFILE_SIGNOUT,
+    // })
 }
 
 export default signout
