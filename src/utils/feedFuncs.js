@@ -10,6 +10,7 @@ import { askToSignMessage } from "./walletFuncs"
  * @param {string} name Name of the subtopic (use null for topic only)
  * @param {string} user Address of the user
  * @param {number} meta Specify 1 to get the feed metadata instead of the feed itself (optional)
+ * @returns {object} The feed content or metadata (in case meta param = 1)
  */
 export const readFeed = async (topic, name, user, meta = undefined) => {
     const SwarmGateway = store.getState().env.gatewayHost
@@ -31,6 +32,7 @@ export const readFeed = async (topic, name, user, meta = undefined) => {
  * @param {string} name Name of the subtopic (use null for topic only)
  * @param {string} user Address of the user
  * @param {string} update String value to update
+ * @returns {string} Feed manifest
  */
 export const updatedFeed = async (topic, name, user, update) => {
     const SwarmGateway = store.getState().env.gatewayHost

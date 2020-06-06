@@ -4,18 +4,18 @@ const signout = async (clearStorage = true) => {
     const { isSignedIn, oidcManager } = store.getState().user
 
     if (isSignedIn) {
-        clearStore(clearStorage)
-        oidcManager.signoutRedirect()
+        if (clearStorage) {
+            clearStore()
+        }
+        await oidcManager.signoutRedirect()
     }
 }
 
-const clearStore = (clearLocalStorage = true) => {
-    if (clearLocalStorage) {
-        window.localStorage.removeItem("defaultWallet")
-        window.localStorage.removeItem("prevNetwork")
-        window.localStorage.removeItem("currentNetwork")
-        window.localStorage.removeItem("shouldShowSwitchNetwork")
-    }
+const clearStore = () => {
+    window.localStorage.removeItem("defaultWallet")
+    window.localStorage.removeItem("prevNetwork")
+    window.localStorage.removeItem("currentNetwork")
+    window.localStorage.removeItem("shouldShowSwitchNetwork")
 
     /**
      * With redirect there is no need to update

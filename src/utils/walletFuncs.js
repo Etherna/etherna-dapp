@@ -4,26 +4,21 @@ import { store } from "@state/store"
  * Ask a user to sign a message with his wallet
  * @param {string} hash Hash of the message to sign
  * @param {boolean} normalize Seet to true to use 0-1 as recover version instead of 27-28 (default false)
+ * @returns {string} The signature
  */
 export const askToSignMessage = async (hash, normalize = false) => {
-    const { wallet } = store.getState().env
+    const { web3, wallet } = store.getState().env
 
-    if (!wallet) {
-        throw new Error("No wallet intance found. Make sure you are signed in.")
+    if (!web3.currentProvider.selectedAddress && !wallet) {
+        throw new Error("Coudn't find a web3 instance. Make sure you are signed in with etherna or MetaMask")
     }
-    if (!window.web3 || !window.web3.eth) {
-        throw new Error("Coudn't find a web3 instance.")
-    }
-    // if (!window.web3.currentProvider.selectedAddress) {
-    //     throw new Error("Coudn't find a default account. Unlock your wallet first.")
-    // }
 
     let sig = wallet.sign(hash)
 
     if (normalize) {
-        let sigBytes = window.web3.utils.hexToBytes(sig)
+        let sigBytes = web3.utils.hexToBytes(sig)
         sigBytes[64] -= 27
-        sig = window.web3.utils.bytesToHex(sigBytes)
+        sig = web3.utils.bytesToHex(sigBytes)
     }
 
     return sig

@@ -15,7 +15,7 @@ const initialState = {
         redirect_uri: appUrl + "callback.html",
         response_type: "code",
         scope: "openid ether_accounts",
-        post_logout_redirect_uri: appUrl + "",
+        post_logout_redirect_uri: appUrl,
     })
 }
 
