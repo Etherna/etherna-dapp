@@ -1,7 +1,7 @@
-//import injectWeb3 from "./injectWeb3"
+import injectWeb3 from "./injectWeb3"
 import fetchIdentity from "./fetchIdentity"
 import loadProfile from "./loadProfile"
-import { checkMobileWeb3, /* checkNetwork */ } from "./network"
+import { checkMobileWeb3, checkNetwork } from "./network"
 import ssoLogin from "./ssoLogin"
 
 /**
@@ -14,8 +14,8 @@ const signin = async (forceSSO = false) => {
         ssoLogin()
     } else {
         await checkMobileWeb3()
-        //await injectWeb3()
-        //await checkNetwork()
+        await injectWeb3()
+        await checkNetwork()
 
         const signedIn = await fetchIdentity()
         if (signedIn) {

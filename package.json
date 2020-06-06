@@ -9,8 +9,6 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "@walletconnect/web3-provider": "^1.0.0-beta.47",
-    "authereum": "0.0.4-beta.96",
     "autoprefixer": "^9.7.5",
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
@@ -40,8 +38,7 @@
     "react-switch": "^5.0.1",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "web3": "^1.2.6",
-    "web3modal": "^1.5.0"
+    "web3": "^1.2.6"
   },
   "devDependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",

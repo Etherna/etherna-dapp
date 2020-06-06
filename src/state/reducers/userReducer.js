@@ -7,14 +7,16 @@ export const UserActionTypes = {
     USER_UPDATE_SIGNEDIN: "USER_UPDATE_SIGNEDIN",
 }
 
+const hasBasename = window.__basename__ && window.__basename__ !== ""
+const appUrl = `${window.location.origin}${hasBasename ? "/" + window.__basename__ : ""}`
 const initialState = {
     oidcManager: new UserManager({
         authority: process.env.REACT_APP_SSO_HOST,
         client_id: "ethernaDappClientId",
-        redirect_uri: window.location.href,
+        redirect_uri: appUrl + "/callback.html",
         response_type: "code",
         scope: "openid ether_accounts",
-        post_logout_redirect_uri: window.location.href,
+        post_logout_redirect_uri: appUrl,
     })
 }
 
