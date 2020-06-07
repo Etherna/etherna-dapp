@@ -1,3 +1,5 @@
+/*! purgecss start ignore */
+
 kbd {
     @apply inline-block text-gray-600 font-bold text-center px-2 bg-gray-200 rounded-sm
         border-b-2 border-gray-300;
@@ -35,3 +37,5 @@ kbd {
         @apply pointer-events-none;
     }
 }
+
+/*! purgecss end ignore */

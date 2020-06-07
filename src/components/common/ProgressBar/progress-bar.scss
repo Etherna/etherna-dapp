@@ -1,3 +1,5 @@
+/*! purgecss start ignore */
+
 .progress {
     @apply block w-full h-1 rounded-full bg-gray-300;
 
@@ -5,3 +7,5 @@
         @apply rounded-full h-full bg-primary;
     }
 }
+
+/*! purgecss end ignore */

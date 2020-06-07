@@ -1,6 +1,5 @@
 import React, { useState, useRef, useCallback } from "react"
 import ReactCrop from "react-image-crop"
-import "react-image-crop/dist/ReactCrop.css"
 
 import Modal from "@components/common/Modal"
 import Button from "@components/common/Button"
