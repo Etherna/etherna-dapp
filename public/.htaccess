@@ -9,21 +9,10 @@
     RewriteRule (.*) https://%{SERVER_NAME}/$1 [R,L]
 
     ##
-    ## White listed
-    ##
-    RewriteCond %{REQUEST_FILENAME} -f
-    RewriteCond %{REQUEST_FILENAME} !/.well-known/*
-    RewriteCond %{REQUEST_FILENAME} !/callback.html
-    RewriteRule . /index.html [L]
-
-    ##
     ## Standard routes
     ##
-    RewriteBase /
-    RewriteRule ^index\.html$ - [L]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-l
     RewriteRule . /index.html [L]
 
 </IfModule>
