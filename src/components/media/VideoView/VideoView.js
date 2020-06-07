@@ -7,12 +7,12 @@ import "./video-view.scss"
 import SEO from "@components/layout/SEO"
 import Player from "@components/media/Player"
 import Avatar from "@components/user/Avatar"
+import DownloadIcon from "@icons/common/DownloadIcon"
 import { getResourceUrl } from "@utils/swarm"
 import { getProfile } from "@utils/swarmProfile"
 import { getVideo } from "@utils/ethernaResources/videosResources"
-import DownloadIcon from "@icons/common/DownloadIcon"
-import Routes from "@routes"
 import { shortenEthAddr } from "@utils/ethFuncs"
+import Routes from "@routes"
 
 const VideoView = ({ hash, video }) => {
     const source = getResourceUrl(hash)
