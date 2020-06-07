@@ -4,7 +4,6 @@ import web3 from "web3"
 import { checkIsEthAddress } from "./ethFuncs"
 import { readFeed, updatedFeed } from "./feedFuncs"
 import { getResourceUrl, isValidHash } from "./swarm"
-import promisePipeline from "./promisePipeline"
 
 const EthernaTopicName = "Etherna"
 const EthernaTopic = web3.utils.padRight(web3.utils.fromAscii(EthernaTopicName), 64)
@@ -38,7 +37,7 @@ export const getProfile = async address => {
     const [
         baseProfile,
         ethernaVideoProfile
-    ] = await promisePipeline([
+    ] = await Promise.all([
         resolveProfile(EthernaTopic, null, address),
         resolveProfile(EthernaTopic, EthernaVideoName, address)
     ])
@@ -57,7 +56,7 @@ export const getProfile = async address => {
 export const getProfiles = async addresses => {
     try {
         const promises = addresses.map(address => getProfile(address))
-        const profiles = await promisePipeline(promises)
+        const profiles = await Promise.all(promises)
 
         return profiles
     } catch (error) {
