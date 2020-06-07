@@ -1,6 +1,5 @@
 import { getProfile } from "@utils/swarmProfile"
 import { getChannelVideos } from "@utils/ethernaResources/channelResources"
-import promisePipeline from "@utils/promisePipeline"
 
 const match = /\/channel\/([^/]+)/
 
@@ -12,7 +11,7 @@ const fetch = async () => {
         const [
             profile,
             videos
-        ] = await promisePipeline([
+        ] = await Promise.all([
             getProfile(address),
             getChannelVideos(address, 0, 50)
         ])
