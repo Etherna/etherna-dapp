@@ -1,3 +1,5 @@
+/*! purgecss start ignore */
+
 $color: theme('colors.primary');
 $bar-height: 2px;
 
@@ -14,3 +16,5 @@ $bar-height: 2px;
         transform: rotate(3deg) translate(0px, -4px);
     }
 }
+
+/*! purgecss end ignore */
