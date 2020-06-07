@@ -19,7 +19,7 @@ export const getResourceUrl = (image) => {
         return `${SwarmGateway}/bzz-raw:/${image}`
     }
 
-    if (typeof image === "object") {
+    if (image && typeof image === "object") {
         if (image.hash) {
             return `${SwarmGateway}/bzz-raw:/${image.hash}`
         }

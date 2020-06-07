@@ -7,10 +7,11 @@ import "./video-view.scss"
 import SEO from "@components/layout/SEO"
 import Player from "@components/media/Player"
 import Avatar from "@components/user/Avatar"
+import DownloadIcon from "@icons/common/DownloadIcon"
 import { getResourceUrl } from "@utils/swarm"
 import { getProfile } from "@utils/swarmProfile"
 import { getVideo } from "@utils/ethernaResources/videosResources"
-import DownloadIcon from "@icons/common/DownloadIcon"
+import { shortenEthAddr } from "@utils/ethFuncs"
 import Routes from "@routes"
 
 const VideoView = ({ hash, video }) => {
@@ -92,7 +93,7 @@ const VideoView = ({ hash, video }) => {
 
     return (
         <>
-            <SEO title={title} />
+            <SEO title={title} description={description} />
             <div className="video-watch container">
                 <Player source={source} thumbnail={thumbnail} />
                 <div className="video-info">
@@ -121,7 +122,7 @@ const VideoView = ({ hash, video }) => {
                         <Link to={Routes.getChannelLink(profileAddress)}>
                             <div className="video-profile">
                                 <Avatar image={profileAvatar} address={profileAddress} />
-                                <h3 className="profile-name">{profileName}</h3>
+                                <h3 className="profile-name">{profileName || shortenEthAddr(profileAddress)}</h3>
                             </div>
                         </Link>
                     </div>
