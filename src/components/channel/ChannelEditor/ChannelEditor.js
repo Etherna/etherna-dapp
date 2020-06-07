@@ -19,7 +19,7 @@ const ChannelEditor = ({ address }) => {
         /**
          * Remove the wallet from store when component is unmounted.
          */
-        return () => {console.log("UNMOUNT"); providerActions.clearWallet()}
+        return () => providerActions.clearWallet()
     }, [])
 
     const loadWallet = async () => {
