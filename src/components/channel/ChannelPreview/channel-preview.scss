@@ -1,3 +1,5 @@
+/*! purgecss start ignore */
+
 .channel-preview,
 .channel-placeholder {
     @apply border-t-4 border-gray-200 py-4;
@@ -22,3 +24,5 @@
         }
     }
 }
+
+/*! purgecss end ignore */

@@ -1,3 +1,5 @@
+/*! purgecss start ignore */
+
 .video-grid-header {
     @apply mt-4 mb-2;
 
@@ -5,6 +7,7 @@
         @apply mb-1;
     }
 }
+
 .video-grid {
     $video-size: 200px;
     $video-size-mini: 120px;
@@ -31,3 +34,5 @@
         }
     }
 }
+
+/*! purgecss end ignore */

@@ -1,3 +1,5 @@
+/*! purgecss start ignore */
+
 .vertical-slider {
     @apply w-2 h-32 my-4 mx-auto rounded-full;
     touch-action: none;
@@ -14,3 +16,5 @@
         @apply hidden;
     }
 }
+
+/*! purgecss end ignore */

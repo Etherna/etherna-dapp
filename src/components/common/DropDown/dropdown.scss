@@ -1,3 +1,5 @@
+/*! purgecss start ignore */
+
 .dropdown {
     @apply relative;
 
@@ -96,3 +98,5 @@
 .click-handler {
     @apply fixed top-0 left-0 w-full h-full z-0;
 }
+
+/*! purgecss end ignore */

@@ -1,3 +1,5 @@
+/*! purgecss start ignore */
+
 .btn {
     @apply bg-primary text-white font-semibold py-2 px-5 text-sm rounded transition duration-300;
     &:hover {
@@ -72,3 +74,5 @@
         @apply no-underline text-primary-dark transition duration-300;
     }
 }
+
+/*! purgecss end ignore */

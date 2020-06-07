@@ -1,3 +1,5 @@
+/*! purgecss start ignore */
+
 .modal {
     @apply invisible fixed top-0 left-0 w-full h-full overflow-x-hidden
         overflow-y-auto z-20 pointer-events-none;
@@ -61,3 +63,13 @@
         }
     }
 }
+
+.theme-dark {
+    .modal {
+        .modal-dialog {
+            @apply bg-gray-300;
+        }
+    }
+}
+
+/*! purgecss end ignore */
