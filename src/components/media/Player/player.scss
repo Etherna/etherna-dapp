@@ -10,7 +10,7 @@ $bg-alpha-50-light: rgba($color: #fff, $alpha: 0.50);
     @apply relative my-6 bg-gray-200 overflow-hidden rounded shadow-lg;
 
     video {
-        @apply min-h-md w-full;
+        @apply min-h-md max-h-80vh w-full;
     }
 
     .controls {

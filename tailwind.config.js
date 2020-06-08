@@ -337,6 +337,7 @@ module.exports = {
         maxHeight: {
             xxs: "12rem",
             full: "100%",
+            "80vh": "80vh",
             screen: "100vh",
         },
         maxWidth: theme => ({
