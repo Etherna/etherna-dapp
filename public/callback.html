@@ -5,11 +5,19 @@
     <title></title>
 </head>
 <body>
+    <div id="error" style="display: none;">
+        <h2>Error</h2>
+        <p id="error-message"></p>
+    </div>
+
     <script src="oidc-client.js"></script>
     <script>
-        new Oidc.UserManager({response_mode:"query"}).signinRedirectCallback().then(function() {
+        const year = 60 * 60 * 24 * 365;
+        new Oidc.UserManager({response_mode:"query", max_age: year, automaticSilentRenew: true}).signinRedirectCallback().then(function() {
             window.location = window.location.href.replace(/\/callback\.html.*/, '');
         }).catch(function(e) {
+            document.getElementById('error-message').innerText = e.message;
+            document.getElementById('error-message').style.display = 'block';
             console.error(e);
         });
     </script>
