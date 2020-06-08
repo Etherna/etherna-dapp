@@ -1,5 +1,6 @@
 import axios from "axios"
 import web3 from "web3"
+import { mergeWith, omit } from "lodash"
 
 import { checkIsEthAddress } from "./ethFuncs"
 import { readFeed, updatedFeed } from "./feedFuncs"
@@ -42,10 +43,11 @@ export const getProfile = async address => {
         resolveProfile(EthernaTopic, EthernaVideoName, address)
     ])
 
-    return {
-        ...baseProfile,
-        ...ethernaVideoProfile
-    }
+    return mergeWith(
+        baseProfile,
+        ethernaVideoProfile,
+        (a, b) => !b ? a : undefined
+    )
 }
 
 /**
@@ -80,10 +82,9 @@ export const updateProfile = async profile => {
     let baseProfile = {
         address: profile.address,
         name: profile.name,
-        avatar: profile.avatar,
-        description: profile.description,
+        avatar: profile.avatar
     }
-    let ethernaVideoProfile = web3.utils._.omit(profile, "name", "avatar", "cover")
+    let ethernaVideoProfile = omit(profile, "name", "avatar")
 
     // Get validated profiles
     baseProfile = await validatedProfile(baseProfile)

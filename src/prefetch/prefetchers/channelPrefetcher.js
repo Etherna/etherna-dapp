@@ -1,5 +1,6 @@
 import { getProfile } from "@utils/swarmProfile"
 import { getChannelVideos } from "@utils/ethernaResources/channelResources"
+import { nullablePromise } from "@utils/promise"
 
 const match = /\/channel\/([^/]+)/
 
@@ -12,8 +13,8 @@ const fetch = async () => {
             profile,
             videos
         ] = await Promise.all([
-            getProfile(address),
-            getChannelVideos(address, 0, 50)
+            nullablePromise(getProfile(address)),
+            nullablePromise(getChannelVideos(address, 0, 50))
         ])
 
         // set prefetch data

@@ -17,7 +17,7 @@ export const readFeed = async (topic, name, user, meta = undefined) => {
     const api = `${SwarmGateway}/bzz-feed:/`
     const resp = await axios.get(api, {
         params: {
-            topic,
+            topic: parseSubTopic(topic, name),
             name,
             user,
             meta
@@ -69,6 +69,8 @@ export const updatedFeed = async (topic, name, user, update) => {
  * @param {string} name Name of the subtopic (use null for topic only)
  */
 export const parseSubTopic = (topic, name) => {
+    if (!name) return topic
+
     const nameHash = web3.utils.fromAscii(name || '')
     const topicBytes = web3.utils.hexToBytes(topic)
     const nameBytes = web3.utils.hexToBytes(nameHash)
