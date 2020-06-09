@@ -17,7 +17,7 @@
             window.location = window.location.href.replace(/\/callback\.html.*/, '');
         }).catch(function(e) {
             document.getElementById('error-message').innerText = e.message;
-            document.getElementById('error-message').style.display = 'block';
+            document.getElementById('error').style.display = 'block';
             console.error(e);
         });
     </script>
