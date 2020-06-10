@@ -109,7 +109,7 @@ const UserMenu = () => {
                 <DropDownItem>
                     <Link to={Routes.getChannelEditingLink(address)}>
                         <EditProfileIcon />
-                        <span>{name ? "Edit profile" : "Create profile"}</span>
+                        <span>Edit profile</span>
                     </Link>
                 </DropDownItem>
                 <hr />
