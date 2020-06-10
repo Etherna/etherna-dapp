@@ -1,4 +1,4 @@
-import { UserManager } from "oidc-client"
+import { UserManager, WebStorageStateStore } from "oidc-client"
 
 export const UserActionTypes = {
     USER_ENS_UPDATE: "USER_ENS_UPDATE",
@@ -17,6 +17,9 @@ const initialState = {
         response_type: "code",
         scope: "openid ether_accounts",
         post_logout_redirect_uri: appUrl,
+        userStore: new WebStorageStateStore({ store: window.localStorage }),
+        stateStore: new WebStorageStateStore({ store: window.localStorage }),
+        automaticSilentRenew: true
     })
 }
 
