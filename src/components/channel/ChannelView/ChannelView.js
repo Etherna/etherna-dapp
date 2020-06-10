@@ -25,6 +25,8 @@ const ChannelView = ({ channelAddress }) => {
     const prefetchVideos = window.prefetchData && window.prefetchData.videos
 
     const { address } = useSelector(state => state.user)
+    const { isMobile } = useSelector(state => state.env)
+
     const [activeTab, setActiveTab] = useState("videos")
     const [isFetching, setIsFetching] = useState(false)
     const [isCreatingChannel, setIsCreatingChannel] = useState(false)
@@ -133,7 +135,7 @@ const ChannelView = ({ channelAddress }) => {
             <ProfileInfo
                 profileAddress={channelAddress}
                 nav={
-                    <NavPills.Container vertical={true} className="mt-10">
+                    <NavPills.Container vertical={!isMobile} className="mt-10">
                         <NavPills.Pill active={activeTab === "videos"} onClick={() => setActiveTab("videos")}>
                             Videos
                         </NavPills.Pill>
