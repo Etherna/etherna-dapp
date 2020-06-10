@@ -5,6 +5,12 @@
 
     &.nav-vertical {
         @apply flex-col;
+
+        .nav-pill {
+            &:not(:last-child) {
+                @apply mb-2 w-full;
+            }
+        }
     }
 
     .nav-pill {
@@ -12,7 +18,7 @@
             cursor-pointer transition duration-200;
 
         &:not(:last-child) {
-            @apply mb-2;
+            @apply mr-2;
         }
         &:hover {
             @apply bg-gray-200 transition duration-200;

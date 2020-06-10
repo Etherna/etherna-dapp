@@ -1,9 +1,9 @@
 /*! purgecss start ignore */
 
 .header {
-    padding-top: 120px; // header
+    padding-top: 100px; // mobile
     @screen sm {
-        padding-top: 56px; // header
+        padding-top: 54px; // tablet/desktop
     }
 }
 

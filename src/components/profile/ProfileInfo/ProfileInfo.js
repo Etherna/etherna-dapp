@@ -72,7 +72,7 @@ const ProfileInfo = ({
             </div>
 
             <div className="row items-center">
-                <div className="col max-w-xxs px-4">
+                <div className="col md:max-w-xxs px-4">
                     <div className="profile-avatar">
                         <img
                             src={
@@ -92,7 +92,7 @@ const ProfileInfo = ({
             </div>
 
             <div className="row">
-                <div className="col max-w-xxs p-4">
+                <div className="col md:max-w-xxs p-4">
                     <h1 className="profile-name">
                         {
                             checkIsEthAddress(profileName)
