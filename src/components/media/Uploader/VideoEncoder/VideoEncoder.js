@@ -10,6 +10,11 @@ const ffmpeg = createFFmpeg({
     log: process.env.NODE_ENV !== "production",
 })
 
+/**
+ *
+ * @param {object} param0
+ * @param {File} param0.file
+ */
 const VideoEncoder = ({ file, onEncodingComplete, onCancel }) => {
     const [isEncoding, setIsEncoding] = useState(false)
 
@@ -27,10 +32,12 @@ const VideoEncoder = ({ file, onEncodingComplete, onCancel }) => {
     const startEncoding = async () => {
         setIsEncoding(true)
 
+        const ext = file.name.match(/\.[a-z0-9]*$/)[0]
+
         try {
             await ffmpeg.load()
-            await ffmpeg.write(file.name, file)
-            await ffmpeg.transcode(file.name, "output.mp4", "-threads 2")
+            await ffmpeg.write(`input${ext}`, file)
+            await ffmpeg.transcode(`input${ext}`, "output.mp4", "-threads 2")
             const data = ffmpeg.read("output.mp4")
             ffmpeg.remove("output.mp4")
 
