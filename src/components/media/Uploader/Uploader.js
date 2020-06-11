@@ -1,27 +1,24 @@
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import classnames from "classnames"
-import { Redirect } from "react-router-dom"
 
 import "./uploader.scss"
-import FileDrag from "./FileDrag"
-import SwarmFileUpload from "./SwarmFileUpload"
+import FileUploadFlow from "./FileUploadFlow"
 import PinContentField from "./PinContentField"
 import Alert from "@common/Alert"
 import Button from "@common/Button"
 import Avatar from "@components/user/Avatar"
-import { showError } from "@state/actions/modals"
 import useSelector from "@state/useSelector"
+import { showError } from "@state/actions/modals"
 import { addVideoToChannel } from "@utils/ethernaResources/channelResources"
-import { getVideoDuration } from "@utils/media"
 import Routes from "@routes"
 
 const Uploader = () => {
+    const videoFlow = useRef()
+    const thumbFlow = useRef()
     const { name, avatar, existsOnIndex } = useSelector(state => state.profile)
-    const { isSignedIn, address } = useSelector(state => state.user)
-    const [videoFile, setVideoFile] = useState(undefined)
+    const { address } = useSelector(state => state.user)
     const [videoHash, setVideoHash] = useState(undefined)
-    const [duration, setDuration] = useState(undefined)
-    const [thumbnailFile, setThumbnailFile] = useState(undefined)
+    const [duration, setVideoDuration] = useState(undefined)
     const [thumbnail, setThumbnail] = useState(undefined)
     const [pinContent, setPinContent] = useState(false)
     const [title, setTitle] = useState("")
@@ -29,18 +26,6 @@ const Uploader = () => {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [hasSubmitted, setHasSubmitted] = useState(false)
     const [videoLink, setVideoLink] = useState(false)
-
-    if (!isSignedIn) {
-        return (
-            <p className="text-lg text-gray-700 text-center my-16">
-                You must sign in first.
-            </p>
-        )
-    }
-
-    if (!existsOnIndex) {
-        return <Redirect to={Routes.getChannelLink(address)} />
-    }
 
     const submitVideo = async () => {
         setIsSubmitting(true)
@@ -63,25 +48,18 @@ const Uploader = () => {
 
     const submitCompleted = () => {
         setVideoLink(Routes.getVideoLink(videoHash))
-        setVideoFile(undefined)
         setVideoHash(undefined)
-        setDuration(undefined)
-        setThumbnailFile(undefined)
+        setVideoDuration(undefined)
         setThumbnail(undefined)
         setTitle("")
         setDescription("")
         setHasSubmitted(true)
+        clearFlows()
     }
 
-    const selectVideoFile = async file => {
-        try {
-            const duration = await getVideoDuration(file)
-            setVideoFile(file)
-            setDuration(duration)
-        } catch (error) {
-            console.error(error)
-            showError("Metadata error", error.message)
-        }
+    const clearFlows = () => {
+        videoFlow.current.clear()
+        thumbFlow.current.clear()
     }
 
     return (
@@ -114,53 +92,29 @@ const Uploader = () => {
             <div className="row">
                 <div className="col sm:w-1/2">
                     <div className="form-group">
-                        <label htmlFor="video">Video</label>
-                        {videoFile === undefined && (
-                            <FileDrag
-                                id="video-input"
-                                label="Drag your video here"
-                                onSelectFile={selectVideoFile}
-                                disabled={isSubmitting}
-                                uploadLimit={100}
-                            />
-                        )}
-                        {videoFile !== undefined && (
-                            <SwarmFileUpload
-                                file={videoFile}
-                                onFinishedUploading={hash => setVideoHash(hash)}
-                                onRemoveFile={() => {
-                                    setVideoFile(undefined)
-                                    setVideoHash(undefined)
-                                }}
-                                disabled={isSubmitting}
-                                pinContent={pinContent}
-                            />
-                        )}
+                        <FileUploadFlow
+                            ref={videoFlow}
+                            label={"Video"}
+                            dragLabel={"Drag your video here"}
+                            acceptTypes={["video", "audio"]}
+                            sizeLimit={100}
+                            pinContent={pinContent}
+                            disabled={isSubmitting}
+                            onHashUpdate={hash => setVideoHash(hash)}
+                            onDurationUpdate={duration => setVideoDuration(duration)}
+                        />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="thumbnail">Thumbnail</label>
-                        {thumbnailFile === undefined && (
-                            <FileDrag
-                                id="thumb-input"
-                                label="Drag your thumbnail here"
-                                onSelectFile={file => setThumbnailFile(file)}
-                                disabled={isSubmitting}
-                                uploadLimit={2}
-                            />
-                        )}
-                        {thumbnailFile !== undefined && (
-                            <SwarmFileUpload
-                                file={thumbnailFile}
-                                showImagePreview={true}
-                                onFinishedUploading={hash => setThumbnail(hash)}
-                                onRemoveFile={() => {
-                                    setThumbnailFile(undefined)
-                                    setThumbnail(undefined)
-                                }}
-                                disabled={isSubmitting}
-                                pinContent={pinContent}
-                            />
-                        )}
+                        <FileUploadFlow
+                            ref={thumbFlow}
+                            label={"Thumbnail"}
+                            dragLabel={"Drag your thumbnail here"}
+                            acceptTypes={["image"]}
+                            sizeLimit={2}
+                            pinContent={pinContent}
+                            disabled={isSubmitting}
+                            onHashUpdate={hash => setThumbnail(hash)}
+                        />
                     </div>
                     <PinContentField onChange={pin => setPinContent(pin)} />
                     <div className="form-group">

@@ -1,11 +1,14 @@
 /**
- * Get the video duration of a file
- * @param {File} file Video file object
+ * Get a video duration
+ * @param {File|ArrayBuffer} videoObj Video file object or encoded buffer
  */
-export const getVideoDuration = file => {
+export const getVideoDuration = videoObj => {
     return new Promise((resolve, reject) => {
         const video = document.createElement("video")
         video.preload = "metadata"
+        video.onerror = error => {
+            reject(error)
+        }
         video.onloadedmetadata = () => {
             try {
                 window.URL.revokeObjectURL(video.src)
@@ -16,6 +19,8 @@ export const getVideoDuration = file => {
                 reject(error)
             }
         }
-        video.src = URL.createObjectURL(file)
+        video.src = videoObj instanceof File
+            ? URL.createObjectURL(videoObj)
+            : URL.createObjectURL(new Blob([videoObj], { type: 'video/mp4' }))
     })
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 
 import "./swarm-upload.scss"
@@ -8,10 +8,12 @@ import ProgressBar from "@common/ProgressBar"
 import { gatewayUploadWithProgress, getResourceUrl } from "@utils/swarm"
 
 const SwarmFileUpload = ({
-    file,
+    buffer,
+    filename,
     onFinishedUploading,
     onRemoveFile,
     showImagePreview,
+    showConfirmation,
     disabled,
     pinContent,
 }) => {
@@ -19,6 +21,13 @@ const SwarmFileUpload = ({
     const [uploadProgress, setUploadProgress] = useState(0)
     const [hash, setHash] = useState(undefined)
     const [errorMessage, setErrorMessage] = useState()
+
+    useEffect(() => {
+        if (!showConfirmation && !isUploading) {
+            handleStartUpload()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showConfirmation])
 
     const handleStartUpload = async () => {
         setIsUploading(true)
@@ -28,7 +37,7 @@ const SwarmFileUpload = ({
 
         try {
             const hash = await gatewayUploadWithProgress(
-                file,
+                buffer,
                 progress => {
                     setUploadProgress(progress)
                 },
@@ -89,12 +98,11 @@ const SwarmFileUpload = ({
                     </Button>
                 </>
             )}
-            {file && !isUploading && uploadProgress === 0 && (
+            {showConfirmation && buffer && !isUploading && uploadProgress === 0 && (
                 <>
-                    <p className="text-gray-700">
-                        You selected{" "}
-                        <span className="text-black">{file.name}</span>. Do you
-                        confirm to upload this file?
+                    <p className="text-gray-700 mb-3">
+                        You selected <span className="text-black">{filename}</span>.
+                        Do you confirm to upload this file?
                     </p>
                     <Button
                         size="small"
@@ -116,11 +124,16 @@ const SwarmFileUpload = ({
             )}
             {isUploading && !hash && (
                 <>
-                    <p>Uploading ({uploadProgress}%)...</p>
+                    {
+                        uploadProgress < 100
+                            ? <p>Uploading ({uploadProgress}%)...</p>
+                            : <p>Processing...</p>
+                    }
                     <ProgressBar progress={uploadProgress} />
                     <Button
                         size="small"
                         aspect="secondary"
+                        className="mt-2"
                         action={handleRemoveFile}
                         disabled={disabled}
                     >
@@ -159,10 +172,12 @@ const SwarmFileUpload = ({
 }
 
 SwarmFileUpload.propTypes = {
-    file: PropTypes.object.isRequired,
+    buffer: PropTypes.object.isRequired,
+    filename: PropTypes.string,
     onFinishedUploading: PropTypes.func.isRequired,
     onRemoveFile: PropTypes.func.isRequired,
     showImagePreview: PropTypes.bool,
+    showConfirmation: PropTypes.bool,
     disabled: PropTypes.bool,
     pinContent: PropTypes.bool,
 }

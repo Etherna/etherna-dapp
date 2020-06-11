@@ -55,7 +55,7 @@ export const fetchAccounts = async web3 => {
         throw new Error("Web3 instance is null")
     }
 
-    if (web3.currentProvider) {
+    if (web3.currentProvider && web3.currentProvider.enable) {
         accounts = await web3.currentProvider.enable()
     } else {
         accounts = await web3.eth.getAccounts()
@@ -75,7 +75,7 @@ export const resolveEnsName = async (address, web3) => {
         ? web3.currentProvider
         : window.web3 && window.web3.currentProvider
 
-    if (currentProvider) {
+    if (currentProvider && address) {
         const provider = new ethers.providers.Web3Provider(currentProvider)
         const name = await provider.lookupAddress(address)
         return name
