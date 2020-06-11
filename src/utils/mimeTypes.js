@@ -21,7 +21,24 @@ export const isMimeMedia = mime => {
 /**
  * Check if a mime type is encodable with the FFMpeg coedc
  * @param {string} mime File mime type
+ * @returns {boolean} Whether the mime is FFMpeg encodable
  */
 export const isMimeFFMpegEncodable = mime => {
     return /(video\/avi)$/.test(mime)
+}
+
+/**
+ * Check if a mime type is compatible with a list of mimes
+ *
+ * @param {string} mime Mime type
+ * @param {string[]} compare Array of mime types to compare with
+ * @returns {boolean} Whether the mime is compatible
+ */
+export const isMimeCompatible = (mime, compare) => {
+    for (const match of compare) {
+        if (mime.match(match)) {
+            return true
+        }
+    }
+    return false
 }

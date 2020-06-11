@@ -5,6 +5,8 @@ import classnames from "classnames"
 import "./file-drag.scss"
 import Alert from "@components/common/Alert"
 import UploadLargeIcon from "@icons/common/UploadLargeIcon"
+import { showError } from "@state/actions/modals"
+import { isMimeCompatible } from "@utils/mimeTypes"
 
 const FileDrag = ({ id, label, mimeTypes, onSelectFile, disabled, uploadLimit }) => {
     const [isDragOver, setIsDragOver] = useState(false)
@@ -44,11 +46,26 @@ const FileDrag = ({ id, label, mimeTypes, onSelectFile, disabled, uploadLimit })
         handleFileSelect(files)
     }
 
-    const handleFileSelect = files => {
+    /**
+     * @param {string} mime
+     */
+    const checkFileMimeType = mime => {
+        return isMimeCompatible(mime, mimeTypes.split(","))
+    }
 
+    /**
+     * @param {File[]} files
+     */
+    const handleFileSelect = files => {
         if (files && files.length > 0) {
-            if (!uploadLimit || files[0].size <= uploadLimit * 1024 * 1024) {
-                onSelectFile(files[0])
+            const file = files[0]
+            if (!checkFileMimeType(file.type)) {
+                showError("Invalid File", "File type of the selected element is not valid.")
+                return
+            }
+
+            if (!uploadLimit || file.size <= uploadLimit * 1024 * 1024) {
+                onSelectFile(file)
             } else {
                 setShowSizeLimitError(true)
             }
