@@ -9,6 +9,7 @@ import Button from "@common/Button"
 import Avatar from "@components/user/Avatar"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
+import { profileActions } from "@state/actions"
 import { addVideoToChannel } from "@utils/ethernaResources/channelResources"
 import Routes from "@routes"
 
@@ -30,6 +31,19 @@ const Uploader = () => {
     const submitVideo = async () => {
         setIsSubmitting(true)
         try {
+            if (!existsOnIndex) {
+                const created = await profileActions.createChannel(address)
+
+                if (!created) {
+                    showError(
+                        "Cannot create channel",
+                        `You first need to create a channel.
+                        This process is automated, but didn't work this time.
+                        Try again in your profile page.`
+                    )
+                    return
+                }
+            }
             await addVideoToChannel(
                 address,
                 videoHash,
