@@ -6,7 +6,7 @@ import "./file-drag.scss"
 import Alert from "@components/common/Alert"
 import UploadLargeIcon from "@icons/common/UploadLargeIcon"
 
-const FileDrag = ({ id, label, onSelectFile, disabled, uploadLimit }) => {
+const FileDrag = ({ id, label, mimeTypes, onSelectFile, disabled, uploadLimit }) => {
     const [isDragOver, setIsDragOver] = useState(false)
     const [showSizeLimitError, setShowSizeLimitError] = useState(false)
 
@@ -45,12 +45,15 @@ const FileDrag = ({ id, label, onSelectFile, disabled, uploadLimit }) => {
     }
 
     const handleFileSelect = files => {
+
         if (files && files.length > 0) {
             if (!uploadLimit || files[0].size <= uploadLimit * 1024 * 1024) {
                 onSelectFile(files[0])
             } else {
                 setShowSizeLimitError(true)
             }
+        } else {
+            onSelectFile(null)
         }
     }
 
@@ -85,6 +88,7 @@ const FileDrag = ({ id, label, onSelectFile, disabled, uploadLimit }) => {
                     <input
                         type="file"
                         id={id}
+                        accept={mimeTypes}
                         onChange={e => handleFileSelect(e.target.files)}
                         disabled={disabled}
                     />
@@ -110,9 +114,14 @@ const FileDrag = ({ id, label, onSelectFile, disabled, uploadLimit }) => {
 FileDrag.propTypes = {
     id: PropTypes.string.isRequired,
     label: PropTypes.string,
+    mimeTypes: PropTypes.string,
     onSelectFile: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
     uploadLimit: PropTypes.number,
+}
+
+FileDrag.defaultProps = {
+    mimeTypes: "*"
 }
 
 export default FileDrag

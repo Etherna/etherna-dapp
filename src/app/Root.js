@@ -7,7 +7,7 @@ import "./scss/theme.scss"
 
 import {
     ChannelOwnerRoute,
-    HasChannelRoute,
+    SignedInRoute,
     WatchRoute,
 } from "./ProtectedRoutes"
 import PageLoader from "@common/PageLoader"
@@ -78,9 +78,9 @@ const Root = () => {
                             <WatchRoute path={"/watch"}>
                                 <Watch />
                             </WatchRoute>
-                            <HasChannelRoute path={"/upload"}>
+                            <SignedInRoute path={"/upload"}>
                                 <Upload />
-                            </HasChannelRoute>
+                            </SignedInRoute>
                             <Route path={"/how-it-works"}>
                                 <HowItWorks />
                             </Route>

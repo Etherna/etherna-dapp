@@ -57,19 +57,18 @@ export const uploadResourceToSwarm = async file => {
 
 /**
  * Upload a file to swarm with progress and pinning option
- * @param {File} file File to upload
+ * @param {ArrayBuffer} buffer Buffer of the encoded file
  * @param {Function} progressCallback Progress callback function
  * @param {boolean} pinContent Content should be pinned (default = true)
  * @returns {string} Hash of the uloaded file
  */
 export const gatewayUploadWithProgress = async (
-    file,
+    buffer,
     progressCallback,
     pinContent = true
 ) => {
     const SwarmGateway = store.getState().env.gatewayHost
     const endpoint = `${SwarmGateway}/bzz-raw:/`
-    const buffer = await fileReaderPromise(file)
     const formData = new Blob([new Uint8Array(buffer)])
     const resp = await axios.post(endpoint, formData, {
         headers: {
@@ -88,7 +87,7 @@ export const gatewayUploadWithProgress = async (
         return hash
     } else {
         throw new Error(
-            `There was a problem uploading ${file.name}. Try again later.`
+            `There was a problem uploading this file. Try again later.`
         )
     }
 }

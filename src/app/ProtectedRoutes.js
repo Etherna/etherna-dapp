@@ -12,7 +12,9 @@ export const SignedInRoute = ({ path, exact, children }) => {
             path={path}
             exact={exact}
             render={({ location }) =>
-                isSignedIn ? (
+                isSignedIn === undefined ? (
+                    null
+                ) : isSignedIn === true ? (
                     children
                 ) : (
                     <Redirect
