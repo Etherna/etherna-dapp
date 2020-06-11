@@ -24,7 +24,7 @@ export const isMimeMedia = mime => {
  * @returns {boolean} Whether the mime is FFMpeg encodable
  */
 export const isMimeFFMpegEncodable = mime => {
-    return /(video\/avi)$/.test(mime)
+    return /(video\/avi$)|(video\/mp4$)/.test(mime)
 }
 
 /**
