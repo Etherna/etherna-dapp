@@ -16,7 +16,7 @@ const anyMatch = (patterns, string) => {
 }
 
 const Header = () => {
-    const { existsOnIndex } = useSelector(state => state.profile)
+    const { isSignedIn } = useSelector(state => state.user)
 
     return (
         <header className="header">
@@ -65,7 +65,7 @@ const Header = () => {
                     </NavLink>
                 </div>
                 <div className="right-nav">
-                    {existsOnIndex && (
+                    {isSignedIn === true && (
                         <NavLink
                             to={Routes.getVideoUploadLink()}
                             className="nav-item"
