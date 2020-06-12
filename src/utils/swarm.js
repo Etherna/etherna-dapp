@@ -59,13 +59,15 @@ export const uploadResourceToSwarm = async file => {
  * Upload a file to swarm with progress and pinning option
  * @param {ArrayBuffer} buffer Buffer of the encoded file
  * @param {Function} progressCallback Progress callback function
+ * @param {Function} cancelTokenCallback Axios cancellation token callback
  * @param {boolean} pinContent Content should be pinned (default = true)
  * @returns {string} Hash of the uloaded file
  */
 export const gatewayUploadWithProgress = async (
     buffer,
     progressCallback,
-    pinContent = true
+    cancelTokenCallback,
+    pinContent = true,
 ) => {
     const SwarmGateway = store.getState().env.gatewayHost
     const endpoint = `${SwarmGateway}/bzz-raw:/`
@@ -80,6 +82,9 @@ export const gatewayUploadWithProgress = async (
                 progressCallback(progress)
             }
         },
+        cancelToken: new axios.CancelToken(function executor(c) {
+            cancelTokenCallback && cancelTokenCallback(c)
+        })
     })
     const hash = resp.data
 
