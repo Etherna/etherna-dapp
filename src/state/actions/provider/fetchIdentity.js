@@ -7,8 +7,13 @@ import { UserActionTypes } from "@state/reducers/userReducer"
 const fetchIdentity = async () => {
     try {
         const { oidcManager } = store.getState().user
+        await oidcManager.clearStaleState()
         const user = await oidcManager.getUser()
         const identity = user.profile
+
+        // in case user gets signout on the server directly.
+        // subscribe for changes and update redux store.
+        oidcManager.events.addUserSignedOut(() => signoutCallback(oidcManager))
 
         store.dispatch({
             type: UserActionTypes.USER_UPDATE_IDENTITY,
@@ -31,6 +36,22 @@ const fetchIdentity = async () => {
 
         return false
     }
+}
+
+/**
+ * Signout user and clear storage
+ * @param {import('oidc-client').UserManager} oidcManager OIDC User Manager
+ */
+const signoutCallback = async oidcManager => {
+    await oidcManager.removeUser()
+
+    store.dispatch({
+        type: UserActionTypes.USER_UPDATE_IDENTITY
+    })
+    store.dispatch({
+        type: UserActionTypes.USER_UPDATE_SIGNEDIN,
+        isSignedIn: false
+    })
 }
 
 export default fetchIdentity
