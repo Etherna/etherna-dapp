@@ -5,27 +5,27 @@ import { createFFmpeg } from "@ffmpeg/ffmpeg"
 import "./video-encoder.scss"
 import Button from "@components/common/Button"
 import { showError } from "@state/actions/modals"
+import { isMimeWebCompatible } from "@utils/mimeTypes"
+import { fileReaderPromise } from "@utils/swarm"
 
 const ffmpeg = createFFmpeg({
     log: process.env.NODE_ENV !== "production",
 })
 
 /**
- *
- * @param {object} param0
- * @param {File} param0.file
+ * @param {object} props
+ * @param {File} props.file
+ * @param {Function} onCancel
+ * @param {Function} onEncodingComplete
  */
 const VideoEncoder = ({ file, onEncodingComplete, onCancel }) => {
     const [isEncoding, setIsEncoding] = useState(false)
+    const isWebCompatible = isMimeWebCompatible(file.type)
 
     useEffect(() => {
         // Clear previus cache
         try { ffmpeg.remove("output.mp4") } catch {}
 
-        return () => {
-            // Clear cache in case of cancel/error
-            try { ffmpeg.remove("output.mp4") } catch {}
-        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -51,13 +51,18 @@ const VideoEncoder = ({ file, onEncodingComplete, onCancel }) => {
         }
     }
 
+    const upload = async () => {
+        const buffer = await fileReaderPromise(file)
+        onEncodingComplete(buffer)
+    }
+
     return (
         <>
             {file && !isEncoding && (
                 <>
                     <p className="text-gray-700 mb-3">
                         You selected <span className="text-black">{file.name}</span>.
-                        Do you confirm to encode and upload this file?
+                        Do you confirm to upload this file?
                     </p>
                     <Button
                         size="small"
@@ -71,8 +76,17 @@ const VideoEncoder = ({ file, onEncodingComplete, onCancel }) => {
                         className="ml-2"
                         action={startEncoding}
                     >
-                        OK
+                        Encode and Upload
                     </Button>
+                    {isWebCompatible && (
+                        <Button
+                            size="small"
+                            className="ml-2"
+                            action={upload}
+                        >
+                            Upload
+                        </Button>
+                    )}
                 </>
             )}
             {isEncoding && (

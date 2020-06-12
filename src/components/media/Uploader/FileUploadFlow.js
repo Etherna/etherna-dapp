@@ -51,7 +51,7 @@ const FileUploadFlow = ({
     const getMime = () => {
         let mime = []
         if (acceptTypes.indexOf("video") >= 0) {
-            mime = mime.concat(["video/mp4", "video/m4v", "video/avi"])
+            mime = mime.concat(["video/mp4", "video/m4v", "video/avi", "video/webm"])
         }
         if (acceptTypes.indexOf("audio") >= 0) {
             mime = mime.concat(["audio/mp3", "audio/m4a"])
