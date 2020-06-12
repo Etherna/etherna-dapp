@@ -24,7 +24,27 @@ export const isMimeMedia = mime => {
  * @returns {boolean} Whether the mime is FFMpeg encodable
  */
 export const isMimeFFMpegEncodable = mime => {
-    return /(video\/avi$)|(video\/mp4$)/.test(mime)
+    const mimeEncodables = [
+        /video\/avi$/,
+        /video\/webm$/,
+        /video\/mp4$/,
+        /audio\/mpeg$/,
+    ]
+    for (const pattern of mimeEncodables) {
+        if (mime.match(pattern)) {
+            return true
+        }
+    }
+    return false
+}
+
+/**
+ * Check if a mime type is compatible with html <video> or <audio> tags
+ * @param {string} mime File mime type
+ * @returns {boolean} Whether the mime is web compatible
+ */
+export const isMimeWebCompatible = mime => {
+    return !/(video\/avi$)/.test(mime)
 }
 
 /**
