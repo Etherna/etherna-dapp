@@ -13,17 +13,45 @@ import { askToSignMessage } from "./walletFuncs"
  * @returns {object} The feed content or metadata (in case meta param = 1)
  */
 export const readFeed = async (topic, name, user, meta = undefined) => {
+    const cacheKey = user + "_" + parseSubTopic(topic, name)
+
+    // check cache first
+    if (window.sessionStorage.key(cacheKey)) {
+        let feed = window.sessionStorage.getItem(cacheKey)
+
+        // try to parse json or return the string value
+        try { feed = JSON.parse(feed) } catch {}
+
+        return feed
+    }
+
     const SwarmGateway = store.getState().env.gatewayHost
     const api = `${SwarmGateway}/bzz-feed:/`
-    const resp = await axios.get(api, {
-        params: {
-            topic: parseSubTopic(topic, name),
-            name,
-            user,
-            meta
+
+    try {
+        const resp = await axios.get(api, {
+            params: {
+                topic: parseSubTopic(topic, name),
+                name,
+                user,
+                meta
+            }
+        })
+
+        // save cache
+        window.sessionStorage.setItem(cacheKey, JSON.stringify(resp.data))
+
+        return resp.data
+    } catch (error) {
+        if (error.response && error.response.status === 404) {
+            // in case of 404 save empty json
+            window.sessionStorage.setItem(cacheKey, JSON.stringify({}))
+
+            return {}
+        } else {
+            throw error
         }
-    })
-    return resp.data
+    }
 }
 
 /**
