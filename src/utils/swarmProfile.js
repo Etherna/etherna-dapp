@@ -246,9 +246,8 @@ const fetchFeedOrDefault = async (topic, name, address) => {
         const feed = await readFeed(topic, name, address)
         return typeof feed === "string"
             ? JSON.parse(feed)
-            : feed
+            : feed || {}
     } catch (error) {
-        console.error(error)
         return {}
     }
 }
