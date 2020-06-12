@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
+import axios from "axios"
 
 import "./swarm-upload.scss"
 import Alert from "@common/Alert"
 import Button from "@common/Button"
 import ProgressBar from "@common/ProgressBar"
 import { gatewayUploadWithProgress, getResourceUrl } from "@utils/swarm"
+
+// cancellation token function
+let uploadCancel
 
 const SwarmFileUpload = ({
     buffer,
@@ -38,16 +42,16 @@ const SwarmFileUpload = ({
         try {
             const hash = await gatewayUploadWithProgress(
                 buffer,
-                progress => {
-                    setUploadProgress(progress)
-                },
-                pinContent
+                progress => setUploadProgress(progress),
+                c => uploadCancel = c,
+                pinContent,
             )
 
             if (hash) {
                 setHash(hash)
                 onFinishedUploading(hash)
                 setUploadProgress(100)
+                setIsUploading(false)
             } else {
                 // should't go here but in case reset form.
                 handleRemoveFile()
@@ -55,16 +59,15 @@ const SwarmFileUpload = ({
         } catch (error) {
             console.error(error)
 
-            if (error && error.message === "Network Error") {
-                setErrorMessage(
-                    "Network Error. Check if the gateway is secured with a SSL certificate."
-                )
-            } else {
-                setErrorMessage(error.message)
+            if (!axios.isCancel(error)) {
+                if (error && error.message === "Network Error") {
+                    setErrorMessage("Network Error. Check if the gateway is secured with a SSL certificate.")
+                } else {
+                    setErrorMessage(error.message)
+                }
+                setIsUploading(false)
             }
         }
-
-        setIsUploading(false)
     }
 
     const handleRemoveFile = () => {
@@ -72,6 +75,11 @@ const SwarmFileUpload = ({
         setUploadProgress(0)
         setErrorMessage(undefined)
         setHash(undefined)
+        onRemoveFile()
+    }
+
+    const handleCancel = () => {
+        uploadCancel("Upload canceled by user")
         onRemoveFile()
     }
 
@@ -107,7 +115,7 @@ const SwarmFileUpload = ({
                     <Button
                         size="small"
                         aspect="secondary"
-                        action={handleRemoveFile}
+                        action={handleCancel}
                         disabled={disabled}
                     >
                         Cancel
