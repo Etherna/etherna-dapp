@@ -1,79 +1,14 @@
-const promptPassphrase = address => {
-    return new Promise(resolve => {
-        const readline = require("readline")
-        const Writable = require("stream").Writable
-        const mutableStdout = new Writable({
-            write: function(chunk, encoding, callback) {
-                if (!this.muted) process.stdout.write(chunk, encoding)
-                callback()
-            },
-        })
-        mutableStdout.muted = false
-
-        const rl = readline.createInterface({
-            input: process.stdin,
-            output: mutableStdout,
-            terminal: true,
-        })
-        rl.write(
-            `Unlock account ${address} to update the feed...\n`
-        )
-        rl.question("Passphrase: ", password => {
-            rl.close()
-            resolve(password)
-        })
-
-        mutableStdout.muted = true
-    })
-}
-
-const unlockAccount = async (address, keystore) => {
-    var attempts = 1
-    var decryptedAccount = null
-    var password = null
-    while (!decryptedAccount && attempts <= 3) {
-        password = await promptPassphrase(address)
-        decryptedAccount = unlockAccount(
-            keystore,
-            password
-        )
-
-        if (!decryptedAccount) {
-            console.log(`\nWrong passphrase. Attempt ${attempts}/3\n`)
-        }
-
-        attempts++
-    }
-
-    if (!decryptedAccount) {
-        throw new Error("cannot unlock account. Retry.")
-    }
-
-    try {
-        const fs = require("fs")
-        const Web3 = require("web3")
-        const web3 = new Web3()
-        const decryptedAccount = web3.eth.accounts.decrypt(
-            fs.readFileSync(keystore, { encoding: "utf-8" }),
-            password
-        )
-        return decryptedAccount
-    } catch (error) {
-        return false
-    }
-}
-
-const signData = (decryptedAccount, data) => {
+const signData = (address, privateKey, data) => {
     const web3 = require("web3")
     const { sign, recover } = require("eth-lib").account
-    let signature = sign(data, decryptedAccount.privateKey)
+    let signature = sign(data, privateKey)
 
     // Fix signature recover version
     let sigBytes = web3.utils.hexToBytes(signature)
     sigBytes[64] -= 27
     signature = web3.utils.bytesToHex(sigBytes)
 
-    if (recover(data, signature) !== decryptedAccount.address) {
+    if (recover(data, signature) !== address) {
         throw new Error("Invalid signature")
     }
 
@@ -130,13 +65,16 @@ const feedDigest = (request, data) => {
  * @param {string|null} hash App hash on Swarm
  */
 const updateFeed = async hash => {
+    if (!hash || hash === "") {
+        throw new Error("Invalid hash")
+    }
+
     const axios = require("axios")
     const config = require("./deploy.config")
 
     try {
-        const decryptedAccount = await unlockAccount(config.swarmAccount, config.swarmAccountKeystore)
         const feed = (
-            await axios.get("https://swarm-gateways.net/bzz-feed:/", {
+            await axios.get(`${config.swarmGateway}/bzz-feed:/`, {
                 params: {
                     name: config.feedName,
                     user: config.swarmAccount,
@@ -146,10 +84,10 @@ const updateFeed = async hash => {
         ).data
         const data = Buffer.from(hash.slice(2), "hex")
         const digest = feedDigest(feed, data)
-        const signature = signData(decryptedAccount, digest)
+        const signature = signData(config.swarmAccount, config.swarmAccountPrivateKey, digest)
 
         const resp = await axios.post(
-            "https://swarm-gateways.net/bzz-feed:/",
+            `${config.swarmGateway}/bzz-feed:/`,
             data,
             {
                 params: {
