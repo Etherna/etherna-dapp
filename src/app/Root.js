@@ -31,6 +31,9 @@ const AsyncChannels = loadable(() => pMinDelay(import(/* webpackChunkName: "chan
 const AsyncWatch = loadable(() => pMinDelay(import(/* webpackChunkName: "watch" */ "@pages/watch"), 200), {
     fallback: <PageLoader />
 })
+const AsyncVideoSettings = loadable(() => pMinDelay(import(/* webpackChunkName: "videoSettings" */ "@pages/videoSettings"), 200), {
+    fallback: <PageLoader />
+})
 const AsyncUpload = loadable(() => pMinDelay(import(/* webpackChunkName: "upload" */ "@pages/upload"), 200), {
     fallback: <PageLoader />
 })
@@ -51,6 +54,7 @@ const Channel = () => <AsyncChannel />
 const ChannelEdit = () => <AsyncChannelEdit />
 const Channels = () => <AsyncChannels />
 const Watch = () => <AsyncWatch />
+const VideoSettings = () => <AsyncVideoSettings />
 const Upload = () => <AsyncUpload />
 const HowItWorks = () => <AsyncHowItWorks />
 const Shortcuts = () => <AsyncShortcuts />
@@ -78,6 +82,9 @@ const Root = () => {
                             <WatchRoute path={"/watch"}>
                                 <Watch />
                             </WatchRoute>
+                            <SignedInRoute path={"/videoSettings"}>
+                                <VideoSettings />
+                            </SignedInRoute>
                             <SignedInRoute path={"/upload"}>
                                 <Upload />
                             </SignedInRoute>

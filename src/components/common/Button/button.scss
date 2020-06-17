@@ -66,6 +66,10 @@
 
 .btn-rounded {
     @apply w-10 h-10 rounded-full p-0 flex items-center;
+
+    &.btn-sm {
+        @apply w-6 h-6;
+    }
 }
 
 .btn-link {

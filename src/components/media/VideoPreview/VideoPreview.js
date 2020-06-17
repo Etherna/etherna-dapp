@@ -10,12 +10,12 @@ import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import { getProfile } from "@utils/swarmProfile"
 import { getResourceUrl } from "@utils/swarm"
 import Routes from "@routes"
+import useSelector from "@state/useSelector"
+import VideoMenu from "../VideoMenu"
 
 const VideoPreview = ({ video, hideProfile }) => {
-    const profileLink = Routes.getChannelLink(video.channelAddress)
-    const videoLink = Routes.getVideoLink(video.videoHash)
-    const videoSearch = new URL(videoLink, document.baseURI).search
-    const videoPath = videoLink.replace(videoSearch, "")
+    const { address } = useSelector(state => state.user)
+
     const profileAddress = video.channelAddress
     const thumbnail = video.thumbnailHash
         ? getResourceUrl(video.thumbnailHash)
@@ -27,6 +27,11 @@ const VideoPreview = ({ video, hideProfile }) => {
     const [profileAvatar, setProfileAvatar] = useState(
         video.profileData && video.profileData.avatar
     )
+
+    const profileLink = Routes.getChannelLink(video.channelAddress)
+    const videoLink = Routes.getVideoLink(video.videoHash)
+    const videoSearch = new URL(videoLink, document.baseURI).search
+    const videoPath = videoLink.replace(videoSearch, "")
 
     useEffect(() => {
         if (!video.profileData) {
@@ -116,6 +121,9 @@ const VideoPreview = ({ video, hideProfile }) => {
                         </div>
                     )}
                 </div>
+                {address === profileAddress && (
+                    <VideoMenu hash={video.videoHash} />
+                )}
             </div>
         </div>
     )

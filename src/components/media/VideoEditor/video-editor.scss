@@ -1,0 +1,15 @@
+/*! purgecss start ignore */
+
+.video-editor {
+    @apply max-w-screen-lg p-10;
+
+    .video-preview {
+        @apply max-w-sm;
+
+        .thumbnail {
+            @apply rounded max-h-xxs h-auto;
+        }
+    }
+}
+
+/*! purgecss end ignore */

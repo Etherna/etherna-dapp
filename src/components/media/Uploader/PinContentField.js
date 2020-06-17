@@ -6,11 +6,11 @@ import Alert from "@common/Alert"
 import useSelector from "@state/useSelector"
 import { isPinningEnabled } from "@utils/swarm"
 
-const PinContentField = ({ onChange }) => {
+const PinContentField = ({ pinningEnabled, onChange }) => {
     const { gatewayHost } = useSelector(state => state.env)
 
     const [pinningAvailable, setPinningAvailable] = useState(undefined)
-    const [pinContent, setPinContent] = useState(undefined)
+    const [pinContent, setPinContent] = useState(pinningEnabled)
     const [errorMessage, setErrorMessage] = useState(undefined)
 
     useEffect(() => {
@@ -22,7 +22,7 @@ const PinContentField = ({ onChange }) => {
         try {
             const available = await isPinningEnabled()
             setPinningAvailable(available)
-            handlePinChange(available === true)
+            pinContent === undefined && handlePinChange(available === true)
         } catch (error) {
             console.error(error)
             setPinningAvailable(null)
@@ -94,6 +94,7 @@ const PinContentField = ({ onChange }) => {
 }
 
 PinContentField.propTypes = {
+    pinningEnabled: PropTypes.bool,
     onChange: PropTypes.func,
 }
 
