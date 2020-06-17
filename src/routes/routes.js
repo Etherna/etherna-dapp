@@ -28,7 +28,7 @@ export const getVideoLink = hash => {
 }
 
 export const getVideoSettingsLink = hash => {
-    return `videoSettings?v=${encodeURIComponent(hash)}`
+    return `/videoSettings?v=${encodeURIComponent(hash)}`
 }
 
 /**

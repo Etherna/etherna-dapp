@@ -21,7 +21,7 @@ const VideoEditor = ({ hash, video }) => {
     const [saved, setSaved] = useState(false)
     const [deleted, setDeleted] = useState(false)
     const [pinContent, setPinContent] = useState(undefined)
-    const [videoOnIndex, setVideoOnIndex] = useState(true)
+    const [videoOnIndex, setVideoOnIndex] = useState(undefined)
     const [videoOwner, setVideoOwner] = useState(video.channelAddress)
     const [title, setTitle] = useState(video.title)
     const [description, setDescription] = useState(video.description)
@@ -51,6 +51,7 @@ const VideoEditor = ({ hash, video }) => {
             setDescription(videoInfo.description)
             setDuration(videoInfo.lengthInSeconds)
             setThumbnail(videoInfo.thumbnailHash)
+            setVideoOnIndex(true)
         } catch (error) {
             console.error(error)
             setVideoOnIndex(false)
@@ -113,11 +114,14 @@ const VideoEditor = ({ hash, video }) => {
         }
     }
 
-    if (videoOwner === undefined || isSignedIn === undefined) {
+    if (
+        (videoOnIndex === undefined && videoOwner === undefined) ||
+        isSignedIn === undefined
+    ) {
         return <div />
     }
 
-    if (address !== videoOwner) {
+    if (videoOnIndex && address !== videoOwner) {
         return <Redirect to={Routes.getHomeLink()} />
     }
 
@@ -125,7 +129,7 @@ const VideoEditor = ({ hash, video }) => {
         <div className="video-editor">
             {!videoOnIndex && (
                 <div className="table mx-auto mt-32">
-                    <img src={require("@svg/backgrounds/404-illustration.svg")} alt="" width={400} />
+                    <img src={require("@svg/backgrounds/404-illustration.svg")} alt="" width={320} />
                     <h2 className="text-center text-gray-800 mt-12">Video not found</h2>
                 </div>
             )}
