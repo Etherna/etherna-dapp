@@ -32,6 +32,16 @@
         @screen xl {
             grid-template-columns: repeat(auto-fill, minmax($video-size-mini+80px, 1fr));
         }
+
+        .video-preview {
+            .video-info {
+                .video-stats {
+                    .video-title {
+                        @apply text-sm;
+                    }
+                }
+            }
+        }
     }
 }
 

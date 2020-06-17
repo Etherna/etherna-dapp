@@ -28,10 +28,14 @@
         }
 
         .video-duration {
-            @apply absolute right-0 bottom-0 m-2 px-1 rounded-sm text-xs font-semibold;
+            @apply absolute right-0 bottom-0 m-2 px-1 py-1 leading-none rounded-sm text-2xs font-semibold;
             // Disable dark mode
             background-color: #111;
             color: #fefefe;
+
+            @screen sm {
+                @apply text-xs;
+            }
         }
     }
 
@@ -45,10 +49,10 @@
             @apply flex flex-col flex-1;
 
             .video-title {
-                @apply font-semibold mb-0 leading-tight text-lg;
+                @apply font-semibold mb-0 leading-tight text-md text-gray-900;
             }
             .profile-name {
-                @apply mb-0 font-semibold text-sm text-gray-700 transition-colors duration-200;
+                @apply mb-0 font-semibold text-sm text-gray-600 transition-colors duration-200;
                 &:hover {
                     @apply text-gray-800 transition-colors duration-200;
                 }
@@ -63,7 +67,7 @@
 // Mini video-grid
 .mini {
     .video-title {
-        @apply text-base;
+        @apply text-sm;
     }
 }
 

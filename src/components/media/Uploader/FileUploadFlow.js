@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useImperativeHandle } from "react"
-import PropTypes from "prop-types"
 
 import FileDrag from "./FileDrag"
 import VideoEncoder from "./VideoEncoder"
@@ -12,9 +11,9 @@ import { fileReaderPromise } from "@utils/swarm"
 const FileUploadFlow = ({
     label,
     dragLabel,
-    acceptTypes,
-    sizeLimit,
-    pinContent,
+    acceptTypes = ["mime"],
+    sizeLimit = 100,
+    pinContent = false,
     disabled,
     onHashUpdate,
     onDurationUpdate
@@ -134,24 +133,6 @@ const FileUploadFlow = ({
             )}
         </>
     )
-}
-
-FileUploadFlow.propTypes = {
-    ref: PropTypes.object,
-    label: PropTypes.string.isRequired,
-    dragLabel: PropTypes.string,
-    acceptTypes: PropTypes.arrayOf(PropTypes.string),
-    sizeLimit: PropTypes.number,
-    pinContent: PropTypes.bool,
-    disabled: PropTypes.bool,
-    onHashUpdate: PropTypes.func.isRequired,
-    onDurationUpdate: PropTypes.func,
-}
-
-FileUploadFlow.defaultProps = {
-    mime: ["video"],
-    sizeLimit: 100,
-    pinContent: false,
 }
 
 export default React.forwardRef(FileUploadFlow)

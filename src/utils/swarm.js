@@ -1,6 +1,7 @@
 import axios from "axios"
 
 import { store } from "@state/store"
+import { isArray } from "lodash"
 
 /**
  * Get the Swarm url of an image or resource
@@ -126,6 +127,76 @@ export const isPinningEnabled = async () => {
     throw new Error(
         "Request for pinning has failed. Check if the gateway is secured with a SSL certificate."
     )
+}
+
+/**
+ * Check if a resource is pinned on the current gateway.
+ * @param {string|string[]} hashList Swarm file hash or array of hashes
+ * @returns {boolean}
+ */
+export const isPinned = async hashList => {
+    const SwarmGateway = store.getState().env.gatewayHost
+    const endpoint = `${SwarmGateway}/bzz-pin:/`
+    const hashes = isArray(hashList)
+        ? hashList
+        : [hashList]
+
+    try {
+        const resp = await axios.get(endpoint)
+        const pins = isArray(resp.data)
+            ? resp.data.filter(pin => hashes.indexOf(pin.Address) >= 0)
+            : []
+
+        let allPinned = true
+        hashes.forEach(hash => {
+            if (pins.findIndex(pin => pin.Address === hash) === -1) {
+                allPinned = false
+            }
+        })
+
+        return allPinned
+    } catch {
+        return false
+    }
+}
+
+/**
+ * Pin a content after the upload on the current gateway.
+ * @param {string} hash Swarm file hash
+ * @param {boolean} raw The hash is raw content (default = false)
+ * @returns {boolean}
+ */
+export const pinResource = async (hash, raw = false) => {
+    const SwarmGateway = store.getState().env.gatewayHost
+    const endpoint = `${SwarmGateway}/bzz-pin:/${hash}`
+
+    try {
+        await axios.post(endpoint, null, {
+            params: {
+                raw: raw ? "true" : null
+            }
+        })
+        return true
+    } catch {
+        return false
+    }
+}
+
+/**
+ * Unpin a content after the upload on the current gateway.
+ * @param {string} hash Swarm file hash
+ * @returns {boolean}
+ */
+export const unpinResource = async hash => {
+    const SwarmGateway = store.getState().env.gatewayHost
+    const endpoint = `${SwarmGateway}/bzz-pin:/${hash}`
+
+    try {
+        await axios.delete(endpoint)
+        return true
+    } catch {
+        return false
+    }
 }
 
 /**

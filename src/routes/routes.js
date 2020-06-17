@@ -27,6 +27,10 @@ export const getVideoLink = hash => {
     return `/watch?v=${encodeURIComponent(hash)}`
 }
 
+export const getVideoSettingsLink = hash => {
+    return `videoSettings?v=${encodeURIComponent(hash)}`
+}
+
 /**
  * Static routes
  */
