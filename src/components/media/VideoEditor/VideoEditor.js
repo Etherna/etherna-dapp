@@ -164,7 +164,10 @@ const VideoEditor = ({ hash, video }) => {
                     </div>
                     {pinContent !== undefined && (
                         <div className="form-group">
-                            <PinContentField onChange={pin => setPinContent(pin)} />
+                            <PinContentField
+                                pinningEnabled={pinContent}
+                                onChange={pin => setPinContent(pin)}
+                            />
                         </div>
                     )}
                     <div className="form-group">
