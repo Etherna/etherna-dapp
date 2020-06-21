@@ -18,7 +18,7 @@
       var bzzPattern = /\/bzz:\/([^/]+)/;
       window.__basename__ = bzzPattern.test(path)
         ? path.match(bzzPattern)[0]
-        : '';
+        : null;
     </script>
   </head>
   <body class="theme-light">
@@ -26,8 +26,8 @@
     <div id="root"></div>
 
     <script>
-      /// exit script if __basename__ is empty
-      if (window.__basename__ !== "") {
+      /// don't run if __basename__ is empty
+      if (window.__basename__) {
         fixCurrentUrls();
         observeDOM();
       }
@@ -59,25 +59,22 @@
         const basename = window.__basename__;
 
         nodes.forEach(function (node) {
-          if (!node instanceof Element) return;
+          if (typeof node !== "object") return;
 
-          if (node.tagName === "SCRIPT" && /__basename__/g.test(node.innerText)) {
+          var href = node.getAttribute('href');
+          if (href && !href.startsWith(basename)) {
             var copy = clonedEl(node);
-            copy.innerText = node.innerText.replace(/__basename__/g, window.__basename__);
-            node.parentNode.appendChild(copy);
-            node.remove();
-          } else {
-            var href = node.getAttribute('href');
-            if (href && !href.startsWith(basename)) {
-              var copy = clonedEl(node);
-              //copy.setAttribute('href', href.replace(/__basename__/, window.__basename__));
+            if (copy) {
+              copy.setAttribute('href', basename + href);
               node.parentNode.appendChild(copy);
               node.remove();
             }
-            var src = node.getAttribute('src');
-            if (src && !src.startsWith(basename)) {
-              var copy = clonedEl(node);
-              //copy.setAttribute('src', src.replace(/__basename__/, window.__basename__));
+          }
+          var src = node.getAttribute('src');
+          if (src && !src.startsWith(basename)) {
+            var copy = clonedEl(node);
+            if (copy) {
+              copy.setAttribute('src', basename + src);
               node.parentNode.appendChild(copy);
               node.remove();
             }
