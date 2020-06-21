@@ -13,24 +13,38 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Etherna</title>
     <script>
+      /// Define basepath
       var path = window.location.pathname;
       var bzzPattern = /\/bzz:\/([^/]+)/;
-      window.__basename__ = bzzPattern.test(window.location.pathname)
-        ? window.location.pathname.match(bzzPattern)[0]
-        : '';
+      window.__basename__ = bzzPattern.test(path)
+        ? path.match(bzzPattern)[0]
+        : null;
     </script>
   </head>
   <body class="theme-light">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
 
-    <!-- Fix relative paths -->
     <script>
-      (function () {
-        var observer = new MutationObserver(mutations => {
-          mutations.map(mutation => {
-            var nodes = Array.from(mutation.addedNodes).filter(node => node.tagName === "SCRIPT" || node.tagName === "LINK");
-            fixUrls(nodes);
+      /// don't run if __basename__ is empty
+      if (window.__basename__) {
+        fixCurrentUrls();
+        observeDOM();
+      }
+
+      /// Fix current scripts and links
+      function fixCurrentUrls() {
+        var currentScripts = document.querySelectorAll('script');
+        var currentLinks = document.querySelectorAll('link');
+        fixUrls(currentScripts);
+        fixUrls(currentLinks);
+      }
+
+      /// Observe for added scripts and links in DOM
+      function observeDOM() {
+        var observer = new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            fixUrls(mutation.addedNodes);
           });
         });
         observer.observe(document.documentElement, {
@@ -38,40 +52,47 @@
           subtree: true,
           attributes: false
         });
+      }
 
-        var currentScripts = document.querySelectorAll('script');
-        fixUrls(currentScripts);
+      /// Replace script and link tags with corrected one
+      function fixUrls(nodes) {
+        const basename = window.__basename__;
 
-        var currentLinks = document.querySelectorAll('link');
-        fixUrls(currentLinks);
+        nodes.forEach(function (node) {
+          if (typeof node !== "object") return;
 
-        function fixUrls(nodes) {
-          nodes.forEach(function (node) {
-            if (node.tagName === "SCRIPT" && /__basename__/g.test(node.innerText)) {
-              var copy = node.cloneNode(true);
-              copy.innerText = node.innerText.replace(/__basename__/g, window.__basename__);
+          var href = node.getAttribute('href');
+          if (href && !href.startsWith(basename)) {
+            var copy = clonedEl(node);
+            if (copy) {
+              copy.setAttribute('href', basename + href);
               node.parentNode.appendChild(copy);
               node.remove();
-            } else {
-              var href = node.getAttribute('href');
-              if (href && /__basename__/.test(href)) {
-                var copy = node.cloneNode(true);
-                copy.href = href.replace(/__basename__/g, window.__basename__);
-                node.parentNode.appendChild(copy);
-                node.remove();
-              }
-
-              var src = node.getAttribute('src');
-              if (src && /__basename__/.test(src)) {
-                var copy = node.cloneNode(true);
-                copy.src = src.replace(/__basename__/g, window.__basename__);
-                node.parentNode.appendChild(copy);
-                node.remove();
-              }
             }
-          });
+          }
+          var src = node.getAttribute('src');
+          if (src && !src.startsWith(basename)) {
+            var copy = clonedEl(node);
+            if (copy) {
+              copy.setAttribute('src', basename + src);
+              node.parentNode.appendChild(copy);
+              node.remove();
+            }
+          }
+        });
+      }
+
+      // Clone element with attributes
+      function clonedEl(originEl) {
+        if (!originEl) return null;
+
+        var cloneEl = document.createElement(originEl.tagName);
+        for (var i = 0; i < originEl.attributes.length; i++) {
+          var attr = originEl.attributes[i];
+          cloneEl.setAttribute(attr.name, attr.value);
         }
-      })();
+        return cloneEl;
+      }
     </script>
   </body>
 </html>

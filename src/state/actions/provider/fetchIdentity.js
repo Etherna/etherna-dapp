@@ -9,6 +9,11 @@ const fetchIdentity = async () => {
         const { oidcManager } = store.getState().user
         await oidcManager.clearStaleState()
         const user = await oidcManager.getUser()
+
+        if (!user) {
+            return updateUserSignedOut()
+        }
+
         const identity = user.profile
 
         // in case user gets signout on the server directly.
@@ -29,13 +34,16 @@ const fetchIdentity = async () => {
     } catch (error) {
         console.error(error)
 
-        store.dispatch({
-            type: UserActionTypes.USER_UPDATE_SIGNEDIN,
-            isSignedIn: false
-        })
-
-        return false
+        return updateUserSignedOut()
     }
+}
+
+const updateUserSignedOut = () => {
+    store.dispatch({
+        type: UserActionTypes.USER_UPDATE_SIGNEDIN,
+        isSignedIn: false
+    })
+    return false
 }
 
 /**
