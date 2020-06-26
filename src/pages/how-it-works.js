@@ -4,7 +4,7 @@ import LayoutWrapper from "@components/layout/DefaultLayout/LayoutWrapper"
 import SEO from "@components/layout/SEO"
 
 const HowItWorks = () => (
-    <LayoutWrapper hideSidebar={true}>>
+    <LayoutWrapper hideSidebar={true}>
         <SEO title="How it works" />
 
         <div className="container my-8">
