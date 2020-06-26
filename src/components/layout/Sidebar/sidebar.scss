@@ -59,6 +59,22 @@
     }
 }
 
+.footer-menu {
+    @apply my-3;
+
+    .footer-link {
+        @apply text-gray-600;
+        &:hover {
+            @apply text-gray-800;
+        }
+
+        &:not(:last-child)::after {
+            content: "–";
+            @apply inline-block px-2;
+        }
+    }
+}
+
 .footer-notice {
     @apply w-full text-gray-600 p-2;
 }
