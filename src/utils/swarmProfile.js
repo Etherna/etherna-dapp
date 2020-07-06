@@ -1,10 +1,10 @@
-import axios from "axios"
 import web3 from "web3"
 import { mergeWith, omit } from "lodash"
 
 import { checkIsEthAddress } from "./ethFuncs"
 import { readFeed, updatedFeed } from "./feedFuncs"
 import { getResourceUrl, isValidHash } from "./swarm"
+import http from "@utils/request"
 
 const EthernaTopicName = "Etherna"
 const EthernaTopic = web3.utils.padRight(web3.utils.fromAscii(EthernaTopicName), 64)
@@ -165,7 +165,7 @@ const resolveText = async textObj => {
     ) {
         const url = getResourceUrl(textObj.value)
         try {
-            text = (await axios.get(url)).data
+            text = (await http.get(url)).data
         } catch {}
     }
 

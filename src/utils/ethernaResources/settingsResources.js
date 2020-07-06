@@ -1,6 +1,5 @@
-import axios from "axios"
-
 import { store } from "@state/store"
+import http from "@utils/request"
 
 // ----------------------------------------------------------------------------
 // GET
@@ -17,7 +16,7 @@ export const getSettings = async () => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/system/settings`
 
-    const resp = await axios.get(apiUrl)
+    const resp = await http.get(apiUrl)
 
     return resp.data
 }
