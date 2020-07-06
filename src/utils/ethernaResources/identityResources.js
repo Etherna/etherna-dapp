@@ -1,4 +1,4 @@
-import axios from "axios"
+import http from "@utils/request"
 
 // ----------------------------------------------------------------------------
 // GET
@@ -19,7 +19,7 @@ import axios from "axios"
 export const getIdentity = async () => {
     const apiUrl = `${process.env.REACT_APP_SSO_HOST}/api/v0.2/identity`
 
-    const resp = await axios.get(apiUrl, {
+    const resp = await http.get(apiUrl, {
         headers: {
             "Accept": "application/json",
             "Content-type": "application/json"

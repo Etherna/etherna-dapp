@@ -1,6 +1,5 @@
-import axios from "axios"
-
 import { store } from "@state/store"
+import http from "@utils/request"
 
 
 /**
@@ -30,7 +29,7 @@ export const getVideos = async (page = 0, take = 25) => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/videos`
 
-    const resp = await axios.get(apiUrl, {
+    const resp = await http.get(apiUrl, {
         params: { page, take },
     })
 
@@ -50,7 +49,7 @@ export const getVideo = async hash => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/videos/${hash}`
 
-    const resp = await axios.get(apiUrl)
+    const resp = await http.get(apiUrl)
 
     if (typeof resp.data !== "object") {
         throw new Error("Cannot fetch the video")
@@ -81,7 +80,7 @@ export const updateVideo = async (
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/videos/${hash}`
 
-    const resp = await axios.put(apiUrl, {
+    const resp = await http.put(apiUrl, {
         VideoHash: hash,
         Title: title,
         Description: description,

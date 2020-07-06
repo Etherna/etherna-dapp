@@ -1,7 +1,7 @@
-import axios from "axios"
+import { isArray } from "lodash"
 
 import { store } from "@state/store"
-import { isArray } from "lodash"
+import http from "@utils/request"
 
 /**
  * Get the Swarm url of an image or resource
@@ -46,7 +46,7 @@ export const uploadResourceToSwarm = async file => {
         : await fileReaderPromise(file)
     const formData = new Blob([new Uint8Array(buffer)])
 
-    const resp = await axios.post(endpoint, formData)
+    const resp = await http.post(endpoint, formData)
     const hash = resp.data
 
     if (isValidHash(hash)) {
@@ -73,7 +73,7 @@ export const gatewayUploadWithProgress = async (
     const SwarmGateway = store.getState().env.gatewayHost
     const endpoint = `${SwarmGateway}/bzz-raw:/`
     const formData = new Blob([new Uint8Array(buffer)])
-    const resp = await axios.post(endpoint, formData, {
+    const resp = await http.post(endpoint, formData, {
         headers: {
             "x-swarm-pin": `${pinContent}`,
         },
@@ -83,7 +83,7 @@ export const gatewayUploadWithProgress = async (
                 progressCallback(progress)
             }
         },
-        cancelToken: new axios.CancelToken(function executor(c) {
+        cancelToken: new http.CancelToken(function executor(c) {
             cancelTokenCallback && cancelTokenCallback(c)
         })
     })
@@ -106,7 +106,7 @@ export const isPinningEnabled = async () => {
     const SwarmGateway = store.getState().env.gatewayHost
     const endpoint = `${SwarmGateway}/bzz-pin:/`
     try {
-        await axios.get(endpoint)
+        await http.get(endpoint)
         return true
     } catch (error) {
         console.error(error)
@@ -142,7 +142,7 @@ export const isPinned = async hashList => {
         : [hashList]
 
     try {
-        const resp = await axios.get(endpoint)
+        const resp = await http.get(endpoint)
         const pins = isArray(resp.data)
             ? resp.data.filter(pin => hashes.indexOf(pin.Address) >= 0)
             : []
@@ -171,7 +171,7 @@ export const pinResource = async (hash, raw = false) => {
     const endpoint = `${SwarmGateway}/bzz-pin:/${hash}`
 
     try {
-        await axios.post(endpoint, null, {
+        await http.post(endpoint, null, {
             params: {
                 raw: raw ? "true" : null
             }
@@ -192,7 +192,7 @@ export const unpinResource = async hash => {
     const endpoint = `${SwarmGateway}/bzz-pin:/${hash}`
 
     try {
-        await axios.delete(endpoint)
+        await http.delete(endpoint)
         return true
     } catch {
         return false

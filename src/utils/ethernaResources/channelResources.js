@@ -1,7 +1,5 @@
-import axios from "axios"
-
 import { store } from "@state/store"
-
+import http from "@utils/request"
 
 /**
  *
@@ -31,7 +29,7 @@ export const getChannels = async (page = 0, take = 25) => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels`
 
-    const resp = await axios.get(apiUrl, {
+    const resp = await http.get(apiUrl, {
         params: { page, take }
     })
 
@@ -70,7 +68,7 @@ export const getChannel = async address => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels/${address}`
 
-    const resp = await axios.get(apiUrl)
+    const resp = await http.get(apiUrl)
 
     if (typeof resp.data !== "object") {
         throw new Error("Cannot fetch channel")
@@ -90,7 +88,7 @@ export const getChannelVideos = async (address, page = 0, take = 25) => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels/${address}/videos`
 
-    const resp = await axios.get(apiUrl, {
+    const resp = await http.get(apiUrl, {
         params: { page, take },
     })
 
@@ -113,7 +111,7 @@ export const createChannel = async address => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels`
 
-    const resp = await axios.post(apiUrl, {
+    const resp = await http.post(apiUrl, {
         Address: address,
     })
 
@@ -145,7 +143,7 @@ export const addVideoToChannel = async (
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels/${channelAddress}/videos`
 
-    const resp = await axios.post(apiUrl, {
+    const resp = await http.post(apiUrl, {
         VideoHash: videoHash,
         Description: description,
         Title: title,
@@ -173,7 +171,7 @@ export const removeVideoFromChannel = async (channelAddress, videoHash) => {
     const { indexHost } = store.getState().env
     const apiUrl = `${indexHost}/channels/${channelAddress}/videos/${videoHash}`
 
-    await axios.delete(apiUrl)
+    await http.delete(apiUrl)
 
     return true
 }

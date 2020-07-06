@@ -1,6 +1,6 @@
-import axios from "axios"
 import web3 from "web3"
 
+import http from "@utils/request"
 import { store } from "@state/store"
 import { askToSignMessage } from "./walletFuncs"
 
@@ -29,7 +29,7 @@ export const readFeed = async (topic, name, user, meta = undefined) => {
     const api = `${SwarmGateway}/bzz-feed:/`
 
     try {
-        const resp = await axios.get(api, {
+        const resp = await http.get(api, {
             params: {
                 topic: parseSubTopic(topic, name),
                 name,
@@ -77,7 +77,7 @@ export const updatedFeed = async (topic, name, user, update) => {
     const sig = await askToSignMessage(digest, true)
     const signature = web3.utils.toHex(sig)
 
-    const resp = await axios.post(`${SwarmGateway}/bzz-feed:/`, data, {
+    const resp = await http.post(`${SwarmGateway}/bzz-feed:/`, data, {
         params: {
             topic: feed.feed.topic,
             user: userAddress,

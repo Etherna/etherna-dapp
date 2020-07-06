@@ -1,5 +1,6 @@
-import axios from "axios"
 import { ethers } from "ethers"
+
+import http from "@utils/request"
 
 /**
  *
@@ -29,7 +30,7 @@ export const fetchEns = async (web3Obj, address, isGetAllNames) => {
             }`,
         }
 
-        const resp = await axios.post(
+        const resp = await http.post(
             "https://api.thegraph.com/subgraphs/name/ensdomains/ens",
             JSON.stringify(ensDomainRequest), {
                 headers: {
@@ -82,7 +83,7 @@ export const fetchEthAddrByENS = async name => {
             }`
         }
 
-        const resp = await axios.post(
+        const resp = await http.post(
             "https://api.thegraph.com/subgraphs/name/ensdomains/ens",
             JSON.stringify(ensDomainRequest), {
                 headers: {
