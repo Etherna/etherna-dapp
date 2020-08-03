@@ -14,6 +14,7 @@ export interface RootState {
 
 export interface EnvState {
     indexHost: string
+    indexApiVersion: string
     gatewayHost: string
     keymap: Keymap
     lang: Lang

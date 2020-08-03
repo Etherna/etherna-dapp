@@ -17,11 +17,15 @@ export const EnvActionTypes = {
     UPDATE_IMAGE_CROP: "UPDATE_IMAGE_CROP",
 }
 
+/** @type {import("..").EnvState} */
 const initialState = {
     indexHost:
         window.localStorage.getItem("indexHost") ||
-        process.env.REACT_APP_INDEX_HOST ||
-        "localhost",
+        process.env.REACT_APP_INDEX_HOST,
+    indexApiVersion:
+        window.localStorage.getItem("indexApiVersion") != null
+            ? window.localStorage.getItem("indexApiVersion")
+            : process.env.REACT_APP_INDEX_API_VERSION,
     gatewayHost:
         window.localStorage.getItem("gatewayHost") ||
         process.env.REACT_APP_GATEWAY_HOST ||
@@ -75,6 +79,7 @@ const enviromentReducer = (state = initialState, action) => {
             return {
                 ...state,
                 indexHost: action.indexHost,
+                indexApiVersion: action.indexApiVersion || "",
             }
 
         case EnvActionTypes.ENV_UPDATE_GATEWAY_HOST:

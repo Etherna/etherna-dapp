@@ -1,5 +1,5 @@
-import { store } from "@state/store"
 import http from "@utils/request"
+import apiPath from "./apiPath.js"
 
 /**
  *
@@ -26,8 +26,8 @@ import http from "@utils/request"
  * @returns {Channel[]}
  */
 export const getChannels = async (page = 0, take = 25) => {
-    const { indexHost } = store.getState().env
-    const apiUrl = `${indexHost}/channels`
+    const path = apiPath()
+    const apiUrl = `${path}/channels`
 
     const resp = await http.get(apiUrl, {
         params: { page, take }
@@ -65,8 +65,8 @@ export const getChannelsWithVideos = async (
  * @returns {Channel}
  */
 export const getChannel = async address => {
-    const { indexHost } = store.getState().env
-    const apiUrl = `${indexHost}/channels/${address}`
+    const path = apiPath()
+    const apiUrl = `${path}/channels/${address}`
 
     const resp = await http.get(apiUrl)
 
@@ -85,8 +85,8 @@ export const getChannel = async address => {
  * @returns {import('./videosResources.js').Video[]}
  */
 export const getChannelVideos = async (address, page = 0, take = 25) => {
-    const { indexHost } = store.getState().env
-    const apiUrl = `${indexHost}/channels/${address}/videos`
+    const path = apiPath()
+    const apiUrl = `${path}/channels/${address}/videos`
 
     const resp = await http.get(apiUrl, {
         params: { page, take },
@@ -108,8 +108,8 @@ export const getChannelVideos = async (address, page = 0, take = 25) => {
  * @returns {Channel}
  */
 export const createChannel = async address => {
-    const { indexHost } = store.getState().env
-    const apiUrl = `${indexHost}/channels`
+    const path = apiPath()
+    const apiUrl = `${path}/channels`
 
     const resp = await http.post(apiUrl, {
         Address: address,
@@ -140,8 +140,8 @@ export const addVideoToChannel = async (
     time,
     thumbnailHash
 ) => {
-    const { indexHost } = store.getState().env
-    const apiUrl = `${indexHost}/channels/${channelAddress}/videos`
+    const path = apiPath()
+    const apiUrl = `${path}/channels/${channelAddress}/videos`
 
     const resp = await http.post(apiUrl, {
         VideoHash: videoHash,
@@ -168,8 +168,8 @@ export const addVideoToChannel = async (
  * @returns {boolean}
  */
 export const removeVideoFromChannel = async (channelAddress, videoHash) => {
-    const { indexHost } = store.getState().env
-    const apiUrl = `${indexHost}/channels/${channelAddress}/videos/${videoHash}`
+    const path = apiPath()
+    const apiUrl = `${path}/channels/${channelAddress}/videos/${videoHash}`
 
     await http.delete(apiUrl)
 

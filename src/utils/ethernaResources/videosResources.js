@@ -1,5 +1,5 @@
-import { store } from "@state/store"
 import http from "@utils/request"
+import apiPath from "./apiPath"
 
 
 /**
@@ -26,8 +26,8 @@ import http from "@utils/request"
  * @returns {Video[]}
  */
 export const getVideos = async (page = 0, take = 25) => {
-    const { indexHost } = store.getState().env
-    const apiUrl = `${indexHost}/videos`
+    const path = apiPath()
+    const apiUrl = `${path}/videos`
 
     const resp = await http.get(apiUrl, {
         params: { page, take },
@@ -46,8 +46,8 @@ export const getVideos = async (page = 0, take = 25) => {
  * @returns {Video}
  */
 export const getVideo = async hash => {
-    const { indexHost } = store.getState().env
-    const apiUrl = `${indexHost}/videos/${hash}`
+    const path = apiPath()
+    const apiUrl = `${path}/videos/${hash}`
 
     const resp = await http.get(apiUrl)
 
@@ -77,8 +77,8 @@ export const updateVideo = async (
     time,
     thumbnailHash
 ) => {
-    const { indexHost } = store.getState().env
-    const apiUrl = `${indexHost}/videos/${hash}`
+    const path = apiPath()
+    const apiUrl = `${path}/videos/${hash}`
 
     const resp = await http.put(apiUrl, {
         VideoHash: hash,

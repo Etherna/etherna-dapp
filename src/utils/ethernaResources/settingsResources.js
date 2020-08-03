@@ -1,5 +1,5 @@
-import { store } from "@state/store"
 import http from "@utils/request"
+import apiPath from "./apiPath"
 
 // ----------------------------------------------------------------------------
 // GET
@@ -13,8 +13,8 @@ import http from "@utils/request"
  * @returns {Settings}
  */
 export const getSettings = async () => {
-    const { indexHost } = store.getState().env
-    const apiUrl = `${indexHost}/system/settings`
+    const path = apiPath()
+    const apiUrl = `${path}/system/settings`
 
     const resp = await http.get(apiUrl)
 

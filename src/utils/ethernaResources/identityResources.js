@@ -17,7 +17,9 @@ import http from "@utils/request"
  * @returns {Identity}
  */
 export const getIdentity = async () => {
-    const apiUrl = `${process.env.REACT_APP_SSO_HOST}/api/v0.2/identity`
+    const host = process.env.REACT_APP_SSO_HOST
+    const version = process.env.REACT_APP_SSO_API_VERSION
+    const apiUrl = `${host}/api/v${version}/identity`
 
     const resp = await http.get(apiUrl, {
         headers: {

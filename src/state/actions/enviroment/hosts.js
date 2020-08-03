@@ -1,11 +1,13 @@
 import { store } from "@state/store"
 import { EnvActionTypes } from "@state/reducers/enviromentReducer"
 
-export const updateIndexHost = host => {
+export const updateIndexHost = (host, version) => {
     window.localStorage.setItem("indexHost", host)
+    window.localStorage.setItem("indexApiVersion", version || "")
     store.dispatch({
         type: EnvActionTypes.ENV_UPDATE_INDEXHOST,
         indexHost: host,
+        indexApiVersion: version
     })
 }
 
@@ -19,7 +21,8 @@ export const updateGatewayHost = host => {
 
 export const resetIndexHost = () => {
     const host = process.env.REACT_APP_INDEX_HOST
-    updateIndexHost(host)
+    const version = process.env.REACT_APP_INDEX_API_VERSION
+    updateIndexHost(host, version)
 }
 
 export const resetGatewayHost = () => {
