@@ -4,16 +4,16 @@ import classnames from "classnames"
 
 import "./avatar.scss"
 import makeBlockies from "@utils/makeBlockies"
-import { getResourceUrl } from "@utils/swarm"
+import SwarmImage from "@components/common/SwarmImage"
 
 const Avatar = ({ image, address, size, showBadge }) => {
     const blockie = address ? makeBlockies(address) : null
 
     return (
         <div className={classnames("avatar", { badge: showBadge })}>
-            <img
-                src={getResourceUrl(image) || blockie}
-                alt=""
+            <SwarmImage
+                hash={image}
+                fallback={blockie}
                 style={{
                     width: size ? `${size}px` : null,
                     height: size ? `${size}px` : null,

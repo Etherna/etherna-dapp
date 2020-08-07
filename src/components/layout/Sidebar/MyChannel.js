@@ -2,7 +2,6 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import SidebarItem from "./SidebarItem"
-import { getResourceUrl } from "@utils/swarm"
 import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import useSelector from "@state/useSelector"
 import Routes from "@routes"
@@ -32,7 +31,7 @@ const MyChannel = () => {
                             ? shortenEthAddr(name)
                             : name || shortenEthAddr(name)
                     }
-                    imageUrl={getResourceUrl(avatar)}
+                    image={avatar}
                     fallbackAddress={address}
                     link={Routes.getChannelLink(address)}
                 />

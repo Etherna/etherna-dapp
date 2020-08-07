@@ -7,7 +7,6 @@ import Routes from "@routes"
 import { getChannels } from "@utils/ethernaResources/channelResources"
 import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import { getProfiles } from "@utils/swarmProfile"
-import { getResourceUrl } from "@utils/swarm"
 
 const NewChannels = () => {
     const [channels, setChannels] = useState(undefined)
@@ -45,7 +44,7 @@ const NewChannels = () => {
             {channels && channels.map(channel => {
                 return (
                     <SidebarItem
-                        imageUrl={getResourceUrl(channel.avatar)}
+                        image={channel.avatar}
                         fallbackAddress={channel.address}
                         name={
                             checkIsEthAddress(channel.name)
