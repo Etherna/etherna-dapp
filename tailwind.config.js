@@ -164,6 +164,7 @@ module.exports = {
             "120": "30rem",
         },
         backgroundColor: theme => theme("colors"),
+        backgroundOpacity: theme => theme('opacity'),
         backgroundPosition: {
             bottom: "bottom",
             center: "center",
@@ -473,6 +474,7 @@ module.exports = {
         appearance: ["responsive"],
         backgroundAttachment: ["responsive"],
         backgroundColor: ["responsive", "hover", "focus"],
+        backgroundOpacity: ['responsive', 'hover', 'focus'],
         backgroundPosition: ["responsive"],
         backgroundRepeat: ["responsive"],
         backgroundSize: ["responsive"],

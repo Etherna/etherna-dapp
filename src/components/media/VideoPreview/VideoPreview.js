@@ -5,21 +5,18 @@ import moment from "moment"
 
 import "./video-preview.scss"
 import Time from "../Time"
+import VideoMenu from "../VideoMenu"
 import Avatar from "@components/user/Avatar"
+import SwarmImage from "@components/common/SwarmImage"
 import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import { getProfile } from "@utils/swarmProfile"
-import { getResourceUrl } from "@utils/swarm"
-import Routes from "@routes"
 import useSelector from "@state/useSelector"
-import VideoMenu from "../VideoMenu"
+import Routes from "@routes"
 
 const VideoPreview = ({ video, hideProfile }) => {
     const { address } = useSelector(state => state.user)
 
     const profileAddress = video.channelAddress
-    const thumbnail = video.thumbnailHash
-        ? getResourceUrl(video.thumbnailHash)
-        : undefined
     const [profileName, setProfileName] = useState(
         (video.profileData && video.profileData.name) ||
         shortenEthAddr(profileAddress)
@@ -58,20 +55,11 @@ const VideoPreview = ({ video, hideProfile }) => {
                 }}
             >
                 <div className="video-thumbnail">
-                    {thumbnail && (
-                        <img
-                            src={thumbnail}
-                            alt=""
-                            className="h-full object-cover"
-                        />
-                    )}
-                    {!thumbnail && (
-                        <img
-                            src={require("@svg/backgrounds/thumb-placeholder.svg")}
-                            alt=""
-                            className="w-full h-full"
-                        />
-                    )}
+                    <SwarmImage
+                        hash={video.thumbnailHash}
+                        fallback={require("@svg/backgrounds/thumb-placeholder.svg")}
+                        className="w-full h-full object-cover"
+                    />
                     <div className="video-duration">
                         <Time duration={video.lengthInSeconds} />
                     </div>

@@ -13,14 +13,7 @@ export const askToSignMessage = async (hash, normalize = false) => {
         throw new Error("Coudn't find a web3 instance. Make sure you are signed in with etherna or MetaMask")
     }
 
-    let sig = wallet.sign(hash)
-
-    if (normalize) {
-        let sigBytes = web3.utils.hexToBytes(sig)
-        sigBytes[64] -= 27
-        sig = web3.utils.bytesToHex(sigBytes)
-    }
-
+    const sig = wallet.sign(hash, normalize)
     return sig
 }
 

@@ -15,23 +15,16 @@ import { shortenEthAddr } from "@utils/ethFuncs"
 import Routes from "@routes"
 
 const VideoView = ({ hash, video }) => {
-    const source = getResourceUrl(hash)
-
+    const source = getResourceUrl(hash, true)
     const [videoOnIndex, setVideoOnIndex] = useState(true)
     const [isFetchingVideo, setIsFetchingVideo] = useState(false)
     const [profileAddress, setProfileAddress] = useState(video.channelAddress)
     const [title, setTitle] = useState(video.title)
     const [description, setDescription] = useState(video.description)
-    const [thumbnail, setThumbnail] = useState(
-        getResourceUrl(video.thumbnailHash)
-    )
+    const [thumbnail, setThumbnail] = useState(getResourceUrl(video.thumbnailHash))
     const [publishDate, setPublishDate] = useState(video.creationDateTime)
-    const [profileName, setProfileName] = useState(
-        video.profileData && video.profileData.name
-    )
-    const [profileAvatar, setProfileAvatar] = useState(
-        video.profileData && video.profileData.avatar
-    )
+    const [profileName, setProfileName] = useState(video.profileData && video.profileData.name)
+    const [profileAvatar, setProfileAvatar] = useState(video.profileData && video.profileData.avatar)
 
     useEffect(() => {
         if (Object.keys(video).length === 0) {
@@ -93,7 +86,7 @@ const VideoView = ({ hash, video }) => {
 
     return (
         <>
-            <SEO title={title} description={description} />
+            <SEO title={title} />
             <div className="video-watch container">
                 <Player source={source} thumbnail={thumbnail} />
                 <div className="video-info">

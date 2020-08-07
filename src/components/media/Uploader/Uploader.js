@@ -1,7 +1,9 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import classnames from "classnames"
 
 import "./uploader.scss"
+import { UploaderContextWrapper, useUploaderState } from "./UploaderContext"
+import VideoSourcesUpload from "./VideoSourcesUpload"
 import FileUploadFlow from "./FileUploadFlow"
 import PinContentField from "./PinContentField"
 import Alert from "@common/Alert"
@@ -9,17 +11,23 @@ import Button from "@common/Button"
 import Avatar from "@components/user/Avatar"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
-import { profileActions } from "@state/actions"
+import { profileActions, providerActions } from "@state/actions"
 import { addVideoToChannel } from "@utils/ethernaResources/channelResources"
+import { getIdentity } from "@utils/ethernaResources/identityResources"
+import { updatedVideoMeta, updateVideoFeed } from "@utils/video"
 import Routes from "@routes"
 
 const Uploader = () => {
     const videoFlow = useRef()
     const thumbFlow = useRef()
+
+    const { state, actions } = useUploaderState()
+    const { manifest, duration, originalQuality, queue } = state
+    const { updateManifest } = actions
+    const hasQueuedProcesses = queue.filter(q => q.finished === false).length > 0
     const { name, avatar, existsOnIndex } = useSelector(state => state.profile)
     const { address } = useSelector(state => state.user)
-    const [videoHash, setVideoHash] = useState(undefined)
-    const [duration, setVideoDuration] = useState(undefined)
+
     const [thumbnail, setThumbnail] = useState(undefined)
     const [pinContent, setPinContent] = useState(false)
     const [title, setTitle] = useState("")
@@ -27,6 +35,27 @@ const Uploader = () => {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [hasSubmitted, setHasSubmitted] = useState(false)
     const [videoLink, setVideoLink] = useState(false)
+
+    useEffect(() => {
+        loadWallet()
+
+        /**
+         * Remove the wallet from store when component is unmounted.
+         */
+        return () => providerActions.clearWallet()
+    }, [])
+
+    const loadWallet = async () => {
+        try {
+            const identity = await getIdentity()
+
+            providerActions.injectWallet("0x" + identity.etherManagedPrivateKey)
+        } catch (error) {
+            console.error(error)
+
+            showError("Cannot get your identity", error.message)
+        }
+    }
 
     const submitVideo = async () => {
         setIsSubmitting(true)
@@ -41,18 +70,32 @@ const Uploader = () => {
                         This process is automated, but didn't work this time.
                         Try again in your profile page.`
                     )
+                    setIsSubmitting(false)
                     return
                 }
             }
+
+            const videoManifest = await updatedVideoMeta(manifest, {
+                title,
+                description,
+                originalQuality,
+                thumbnailHash: thumbnail,
+                duration
+            })
+
+            updateManifest(videoManifest)
+
+            const videoFeed = await updateVideoFeed(null, videoManifest)
+
             await addVideoToChannel(
                 address,
-                videoHash,
+                videoFeed,
                 title,
                 description,
                 duration,
                 thumbnail
             )
-            submitCompleted()
+            submitCompleted(videoFeed)
         } catch (error) {
             console.error(error)
             showError("Linking error", error.message)
@@ -60,10 +103,8 @@ const Uploader = () => {
         setIsSubmitting(false)
     }
 
-    const submitCompleted = () => {
-        setVideoLink(Routes.getVideoLink(videoHash))
-        setVideoHash(undefined)
-        setVideoDuration(undefined)
+    const submitCompleted = videoFeed => {
+        setVideoLink(Routes.getVideoLink(videoFeed))
         setThumbnail(undefined)
         setTitle("")
         setDescription("")
@@ -104,18 +145,12 @@ const Uploader = () => {
                 )}
             </div>
             <div className="row">
-                <div className="col sm:w-1/2">
+                <div className="col sm:w-1/2 lg:w-2/3">
                     <div className="form-group">
-                        <FileUploadFlow
+                        <VideoSourcesUpload
                             ref={videoFlow}
-                            label={"Video"}
-                            dragLabel={"Drag your video here"}
-                            acceptTypes={["video", "audio"]}
-                            sizeLimit={100}
                             pinContent={pinContent}
                             disabled={isSubmitting}
-                            onHashUpdate={hash => setVideoHash(hash)}
-                            onDurationUpdate={duration => setVideoDuration(duration)}
                         />
                     </div>
                     <div className="form-group">
@@ -154,11 +189,11 @@ const Uploader = () => {
                         />
                     </div>
                 </div>
-                <div className="col step-col sm:w-1/2">
+                <div className="col step-col sm:w-1/2 lg:w-1/3">
                     <ul className="upload-steps mb-4">
                         <li
                             className={classnames("upload-step", {
-                                "step-done": videoHash,
+                                "step-done": manifest,
                             })}
                         >
                             Upload a video
@@ -194,7 +229,7 @@ const Uploader = () => {
                     ) : (
                         <Button
                             action={submitVideo}
-                            disabled={videoHash === undefined || title === ""}
+                            disabled={manifest == null || title === "" || hasQueuedProcesses}
                         >
                             Add video
                         </Button>
@@ -205,4 +240,10 @@ const Uploader = () => {
     )
 }
 
-export default Uploader
+const UploaderWithContext = () => (
+    <UploaderContextWrapper>
+        <Uploader />
+    </UploaderContextWrapper>
+)
+
+export default UploaderWithContext

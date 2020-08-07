@@ -128,7 +128,7 @@ export const createChannel = async address => {
  * @param {string} videoHash Hash of the video on Swarm
  * @param {string} title Video title
  * @param {string} description Video description
- * @param {number} time Video duration in seconds
+ * @param {number} duration Video duration in seconds
  * @param {string} thumbnailHash Video thumbnail hash on Swarm
  * @returns {import('./videosResources.js').Video}
  */
@@ -137,7 +137,7 @@ export const addVideoToChannel = async (
     videoHash,
     title,
     description,
-    time,
+    duration,
     thumbnailHash
 ) => {
     const path = apiPath()
@@ -147,7 +147,7 @@ export const addVideoToChannel = async (
         VideoHash: videoHash,
         Description: description,
         Title: title,
-        LengthInSeconds: time,
+        LengthInSeconds: duration,
         ThumbnailHash: thumbnailHash,
     })
 

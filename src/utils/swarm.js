@@ -1,3 +1,4 @@
+import Axios from "axios"
 import { isArray } from "lodash"
 
 import { store } from "@state/store"
@@ -11,18 +12,20 @@ import http from "@utils/request"
  * @property {string} url Resource url
  *
  * @param {SwarmObject|string} image Image object definition or hash string value
+ * @param {boolean} raw Is the resource raw (default = false)
  * @returns {string|undefined}
  */
-export const getResourceUrl = (image) => {
+export const getResourceUrl = (image, raw = false) => {
     const SwarmGateway = store.getState().env.gatewayHost
+    const protocol = raw ? "bzz-raw:" : "bzz:"
 
     if (typeof image === "string") {
-        return `${SwarmGateway}/bzz-raw:/${image}`
+        return `${SwarmGateway}/${protocol}/${image}`
     }
 
     if (image && typeof image === "object") {
         if (image.hash) {
-            return `${SwarmGateway}/bzz-raw:/${image.hash}`
+            return `${SwarmGateway}/${protocol}/${image.hash}`
         }
         if (image.url) {
             return image.url
@@ -39,7 +42,7 @@ export const getResourceUrl = (image) => {
  */
 export const uploadResourceToSwarm = async file => {
     const SwarmGateway = store.getState().env.gatewayHost
-    const endpoint = `${SwarmGateway}/bzz-raw:/`
+    const endpoint = `${SwarmGateway}/bzz:/`
 
     const buffer = typeof file === "string"
         ? (new TextEncoder()).encode(file)
@@ -57,45 +60,46 @@ export const uploadResourceToSwarm = async file => {
 }
 
 /**
- * Upload a file to swarm with progress and pinning option
- * @param {ArrayBuffer} buffer Buffer of the encoded file
- * @param {Function} progressCallback Progress callback function
- * @param {Function} cancelTokenCallback Axios cancellation token callback
- * @param {boolean} pinContent Content should be pinned (default = true)
- * @returns {string} Hash of the uloaded file
+ * Update content on swarm
+ *
+ * @param {string} manifest Current manifest hash to update (use null to crete a new one)
+ * @param {string} path File path (empty for defaultPath)
+ * @param {Buffer} buffer Buffer of the data to upload
+ * @param {string} type Mime type (eg: video/mp4)
+ * @param {object} options Upload options
+ * @param {(p: number) => void} options.progressCallback Upload progress callback
+ * @param {(c: import("axios").Canceler) => void} options.cancelTokenCallback Cancellation token callback
+ * @param {boolean} options.pinContent Cancellation token callback
+ * @returns {string} The file manifest
  */
-export const gatewayUploadWithProgress = async (
+export const uploadManifestData = async (
+    manifest,
+    path,
     buffer,
-    progressCallback,
-    cancelTokenCallback,
-    pinContent = true,
+    type,
+    options = { pinContent: true }
 ) => {
-    const SwarmGateway = store.getState().env.gatewayHost
-    const endpoint = `${SwarmGateway}/bzz-raw:/`
-    const formData = new Blob([new Uint8Array(buffer)])
-    const resp = await http.post(endpoint, formData, {
+    const { gatewayHost } = store.getState().env
+    const endpoint = `${gatewayHost}/bzz:/${manifest ? `${manifest}/`: ``}`
+
+    const data = new FormData()
+    data.append(path || "", new Blob([buffer], { type }), path || "")
+
+    const resp = await http.post(endpoint, data, {
         headers: {
-            "x-swarm-pin": `${pinContent}`,
+            "x-swarm-pin": `${options.pinContent}`,
+            "content-type": "multipart/form-data"
         },
         onUploadProgress: pev => {
             const progress = Math.round((pev.loaded * 100) / pev.total)
-            if (progressCallback) {
-                progressCallback(progress)
-            }
+            options.progressCallback && options.progressCallback(progress)
         },
-        cancelToken: new http.CancelToken(function executor(c) {
-            cancelTokenCallback && cancelTokenCallback(c)
+        cancelToken: new Axios.CancelToken(function executor(c) {
+            options.cancelTokenCallback && options.cancelTokenCallback(c)
         })
     })
-    const hash = resp.data
 
-    if (isValidHash(hash)) {
-        return hash
-    } else {
-        throw new Error(
-            `There was a problem uploading this file. Try again later.`
-        )
-    }
+    return resp.data
 }
 
 /**
@@ -196,6 +200,17 @@ export const unpinResource = async hash => {
         return true
     } catch {
         return false
+    }
+}
+
+export const isRaw = async hash => {
+    try {
+        const SwarmGateway = store.getState().env.gatewayHost
+        const url = `${SwarmGateway}/bzz-list:/${hash}`
+        await http.get(url)
+        return false
+    } catch (error) {
+        return true
     }
 }
 

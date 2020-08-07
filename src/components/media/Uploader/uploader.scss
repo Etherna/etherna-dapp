@@ -1,7 +1,7 @@
 /*! purgecss start ignore */
 
 .uploader {
-    @apply m-6;
+    @apply m-6 max-w-screen-xl;
 
     @screen sm {
         .col {

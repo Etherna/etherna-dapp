@@ -1047,6 +1047,16 @@
     global-agent "^2.0.2"
     global-tunnel-ng "^2.7.1"
 
+"@erebos/bzz-feed@^0.13.2":
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/@erebos/bzz-feed/-/bzz-feed-0.13.2.tgz#9f5deb91e6c525caad4ca0da2b3d037439ef855d"
+  integrity sha512-7K4C4FkgKLmhxQPNA1cUe8nOrkKUYwxh2VZHQPXvi3nkr2W8zTGRTMSlDCxCCK5Sgxd0gMdqykDWzMsSfFP5qA==
+  dependencies:
+    "@babel/runtime" "^7.8.3"
+    "@erebos/hex" "^0.13.0"
+    "@erebos/keccak256" "^0.13.1"
+    rxjs "^6.5.4"
+
 "@erebos/bzz-node@^0.13.0":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@erebos/bzz-node/-/bzz-node-0.13.0.tgz#495240c8b4fa67fa920c52a2d8db2cf82e673e1a"
@@ -1080,6 +1090,15 @@
   integrity sha512-aKHoLiWX+LeejzHrkM8I52G1EbZGqA/JgmqscrVDJAabjvXgDyaa7fES9218th0D9c115C4pv5mxxNKCoaADpA==
   dependencies:
     "@babel/runtime" "^7.8.3"
+
+"@erebos/keccak256@^0.13.1":
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/@erebos/keccak256/-/keccak256-0.13.1.tgz#7e79d6a781664263fd757ec45f77075bfc8ff7d4"
+  integrity sha512-zeNl0p201iv39U9aBnqqV9I4SWvRjAZ8OiN78cemEBBouNvBFisrhurHE8/cOcuwAFQf+6Vfo07tnspQJcsTPQ==
+  dependencies:
+    "@babel/runtime" "^7.8.3"
+    "@erebos/hex" "^0.13.0"
+    js-sha3 "^0.8.0"
 
 "@erebos/pss@^0.13.0":
   version "0.13.0"
@@ -1164,6 +1183,14 @@
     "@babel/runtime" "^7.7.4"
     "@erebos/rpc-stream" "^0.11.0"
     "@erebos/transport-ws-node" "^0.10.0"
+
+"@erebos/secp256k1@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@erebos/secp256k1/-/secp256k1-0.10.0.tgz#4003aae0e8c5d3ac197c576491f3cf15dff5c29a"
+  integrity sha512-0mGDq937uQiEE4tyEseEiW8b7ymX/m/ARrXSIyrsYPBJA89A2uj1hLbMQF8fwCBYSD7XA464g1JYQC2r//ZgHQ==
+  dependencies:
+    "@babel/runtime" "^7.6.2"
+    elliptic "^6.5.1"
 
 "@erebos/swarm-node@^0.13.0":
   version "0.13.0"
@@ -4632,6 +4659,19 @@ elliptic@6.5.2, elliptic@^6.0.0, elliptic@^6.4.0, elliptic@^6.5.2:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.2.tgz#05c5678d7173c049d8ca433552224a495d0e3762"
   integrity sha512-f4x70okzZbIQl/NSRLkI/+tteV/9WqL98zx+SQ69KbXxmVrmjwsNUPn/gYJJ0sHvEak24cZgHIPegRePAtA/xw==
+  dependencies:
+    bn.js "^4.4.0"
+    brorand "^1.0.1"
+    hash.js "^1.0.0"
+    hmac-drbg "^1.0.0"
+    inherits "^2.0.1"
+    minimalistic-assert "^1.0.0"
+    minimalistic-crypto-utils "^1.0.0"
+
+elliptic@^6.5.1:
+  version "6.5.3"
+  resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.3.tgz#cb59eb2efdaf73a0bd78ccd7015a62ad6e0f93d6"
+  integrity sha512-IMqzv5wNQf+E6aHeIqATs0tOLeOTwj1QKbRcS3jBbYkl5oLAserA8yJTT7/VyHUYG91PRmPyeQDObKLPpeS4dw==
   dependencies:
     bn.js "^4.4.0"
     brorand "^1.0.1"
