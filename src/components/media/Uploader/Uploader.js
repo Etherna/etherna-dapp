@@ -81,7 +81,9 @@ const Uploader = () => {
                 description,
                 originalQuality,
                 thumbnailHash: thumbnail,
-                duration
+                channelAddress: address,
+                duration,
+                sources: queue.map(q => q.quality)
             })
 
             updateManifest(videoManifest)

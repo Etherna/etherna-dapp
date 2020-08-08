@@ -88,7 +88,6 @@ const InnerPlayer = ({ source, thumbnail }) => {
                     onLoadedMetadata={onLoadMetadata}
                     onProgress={onProgress}
                     onTimeUpdate={onTimeUpdate}
-                    onError={e => {console.log('----------------------------------------');console.error(e)}}
                 >
                     <source src={source} />
                     <p className="text-center block">

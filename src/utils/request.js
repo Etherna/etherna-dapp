@@ -18,12 +18,12 @@ const AxiosPendingCache = {
      * @return {string}
      */
     configHash: config => {
-        return sha3(JSON.stringify({
+        return config ? sha3(JSON.stringify({
             method: config.method,
             url: config.url,
             params: config.params,
             body: config.data || "",
-        }))
+        })) : ""
     },
 
     /**

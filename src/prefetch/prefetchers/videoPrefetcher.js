@@ -1,4 +1,4 @@
-import { getVideo } from "@utils/ethernaResources/videosResources"
+import { fetchFullVideoInfo } from "@utils/video"
 
 const match = /\/watch/
 
@@ -8,7 +8,7 @@ const fetch = async () => {
         const hash = searchParams.get("v")
 
         try {
-            const video = await getVideo(hash)
+            const video = await fetchFullVideoInfo(hash, true)
             // set prefetch data
             window.prefetchData = video
         } catch (error) {

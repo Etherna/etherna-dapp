@@ -24,7 +24,7 @@ export const getChannelEditingLink = hash => {
  * Video routes
  */
 export const getVideoLink = (hash, sourcePath) => {
-    return `/watch?v=${encodeURIComponent(hash + `${sourcePath ? sourcePath : ""}`)}`
+    return `/watch?v=${encodeURIComponent(hash + `/${sourcePath ? sourcePath : ""}`)}`
 }
 
 export const getVideoSettingsLink = hash => {
