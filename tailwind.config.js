@@ -24,7 +24,7 @@ let colors = {
         500: "var(--color-gray-500)",
         600: "var(--color-gray-600)",
         700: "var(--color-gray-700)",
-        800: "var(--color-gray-700)",
+        800: "var(--color-gray-800)",
         900: "var(--color-gray-900)",
     },
     red: {
@@ -35,7 +35,7 @@ let colors = {
         500: "var(--color-red-500)",
         600: "var(--color-red-600)",
         700: "var(--color-red-700)",
-        800: "var(--color-red-700)",
+        800: "var(--color-red-800)",
         900: "var(--color-red-900)",
     },
     orange: {
@@ -46,7 +46,7 @@ let colors = {
         500: "var(--color-orange-500)",
         600: "var(--color-orange-600)",
         700: "var(--color-orange-700)",
-        800: "var(--color-orange-700)",
+        800: "var(--color-orange-800)",
         900: "var(--color-orange-900)",
     },
     yellow: {
@@ -57,7 +57,7 @@ let colors = {
         500: "var(--color-yellow-500)",
         600: "var(--color-yellow-600)",
         700: "var(--color-yellow-700)",
-        800: "var(--color-yellow-700)",
+        800: "var(--color-yellow-800)",
         900: "var(--color-yellow-900)",
     },
     green: {
@@ -68,7 +68,7 @@ let colors = {
         500: "var(--color-green-500)",
         600: "var(--color-green-600)",
         700: "var(--color-green-700)",
-        800: "var(--color-green-700)",
+        800: "var(--color-green-800)",
         900: "var(--color-green-900)",
     },
     teal: {
@@ -79,7 +79,7 @@ let colors = {
         500: "var(--color-teal-500)",
         600: "var(--color-teal-600)",
         700: "var(--color-teal-700)",
-        800: "var(--color-teal-700)",
+        800: "var(--color-teal-800)",
         900: "var(--color-teal-900)",
     },
     blue: {
@@ -90,7 +90,7 @@ let colors = {
         500: "var(--color-blue-500)",
         600: "var(--color-blue-600)",
         700: "var(--color-blue-700)",
-        800: "var(--color-blue-700)",
+        800: "var(--color-blue-800)",
         900: "var(--color-blue-900)",
     },
     indigo: {
@@ -101,7 +101,7 @@ let colors = {
         500: "var(--color-indigo-500)",
         600: "var(--color-indigo-600)",
         700: "var(--color-indigo-700)",
-        800: "var(--color-indigo-700)",
+        800: "var(--color-indigo-800)",
         900: "var(--color-indigo-900)",
     },
     purple: {
@@ -112,7 +112,7 @@ let colors = {
         500: "var(--color-purple-500)",
         600: "var(--color-purple-600)",
         700: "var(--color-purple-700)",
-        800: "var(--color-purple-700)",
+        800: "var(--color-purple-800)",
         900: "var(--color-purple-900)",
     },
     pink: {
@@ -123,7 +123,7 @@ let colors = {
         500: "var(--color-pink-500)",
         600: "var(--color-pink-600)",
         700: "var(--color-pink-700)",
-        800: "var(--color-pink-700)",
+        800: "var(--color-pink-800)",
         900: "var(--color-pink-900)",
     },
 }
