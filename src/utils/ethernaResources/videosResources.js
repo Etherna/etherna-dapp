@@ -7,11 +7,9 @@ import apiPath from "./apiPath"
  * @typedef {object} Video
  * @property {string} channelAddress Video channel address
  * @property {string} creationDateTime Video creation date
- * @property {string} description Video description
- * @property {number} lengthInSeconds Video length in seconds
- * @property {string} thumbnailHash Video thumbnail hash on Swarm
- * @property {string} title Video title
- * @property {string} videoHash Video hash on Swarm
+ * @property {string} encryptionKey Encryption key of the video
+ * @property {string} encryptionType Type of encryption (eg: AES256)
+ * @property {string} manifestHash Manifest/Feed of the video metadata
  *
  */
 
@@ -58,34 +56,58 @@ export const getVideo = async hash => {
     return resp.data
 }
 
+
+// ----------------------------------------------------------------------------
+// POST
+
+/**
+ * Create a new video on the index
+ * @param {number} hash Hash of the manifest/feed with the video metadata
+ * @param {string} encryptionKey Encryption key
+ * @param {string} encryptionType Encryption type (default AES256)
+ * @returns {Video} Video info
+ */
+export const createVideo = async (hash, encryptionKey, encryptionType = "AES256") => {
+    const path = apiPath()
+    const apiUrl = `${path}/videos`
+
+    const resp = await http.post(apiUrl, {
+        manifestHash: hash,
+        encryptionKey,
+        encryptionType
+    }, {
+        headers: {
+            "Accept": "application/json",
+            "Content-type": "application/json"
+        },
+        withCredentials: true
+    })
+
+    if (typeof resp.data !== "object") {
+        throw new Error("Cannot create the video")
+    }
+
+    return resp.data
+}
+
+
 // ----------------------------------------------------------------------------
 // PUT
 
 /**
  * Update a video information
  * @param {string} hash Hash of the video on Swarm
- * @param {string} title Video title
- * @param {string} description Video description
- * @param {number} time Video duration in seconds
- * @param {string} thumbnailHash Video thumbnail hash on Swarm
- * @returns {Video}
+ * @param {string} newHash New manifest hash with video metadata
+ * @returns {Video} Video info
  */
-export const updateVideo = async (
-    hash,
-    title,
-    description,
-    time,
-    thumbnailHash
-) => {
+export const updateVideo = async (hash, newHash) => {
     const path = apiPath()
     const apiUrl = `${path}/videos/${hash}`
 
-    const resp = await http.put(apiUrl, {
-        VideoHash: hash,
-        Title: title,
-        Description: description,
-        LengthInSeconds: time,
-        ThumbnailHash: thumbnailHash,
+    const resp = await http.put(apiUrl, null, {
+        params: {
+            newHash
+        }
     })
 
     if (typeof resp.data !== "object") {
@@ -93,4 +115,22 @@ export const updateVideo = async (
     }
 
     return resp.data
+}
+
+
+// ----------------------------------------------------------------------------
+// DELETE
+
+/**
+ * Delete a video from the index
+ * @param {string} hash Hash of the video
+ * @returns {boolean} Success state
+ */
+export const deleteVideo = async hash => {
+    const path = apiPath()
+    const apiUrl = `${path}/videos/${hash}`
+
+    await http.delete(apiUrl)
+
+    return true
 }

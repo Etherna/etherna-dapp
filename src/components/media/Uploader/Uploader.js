@@ -12,9 +12,9 @@ import Avatar from "@components/user/Avatar"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
 import { profileActions, providerActions } from "@state/actions"
-import { addVideoToChannel } from "@utils/ethernaResources/channelResources"
 import { getIdentity } from "@utils/ethernaResources/identityResources"
-import { updatedVideoMeta, updateVideoFeed } from "@utils/video"
+import { createVideo } from "@utils/ethernaResources/videosResources"
+import { updatedVideoMeta } from "@utils/video"
 import Routes from "@routes"
 
 const Uploader = () => {
@@ -25,6 +25,7 @@ const Uploader = () => {
     const { manifest, duration, originalQuality, queue } = state
     const { updateManifest } = actions
     const hasQueuedProcesses = queue.filter(q => q.finished === false).length > 0
+
     const { name, avatar, existsOnIndex } = useSelector(state => state.profile)
     const { address } = useSelector(state => state.user)
 
@@ -85,17 +86,10 @@ const Uploader = () => {
 
             updateManifest(videoManifest)
 
-            const videoFeed = await updateVideoFeed(null, videoManifest)
+            //const videoFeed = await updateVideoFeed(null, videoManifest)
 
-            await addVideoToChannel(
-                address,
-                videoFeed,
-                title,
-                description,
-                duration,
-                thumbnail
-            )
-            submitCompleted(videoFeed)
+            await createVideo(videoManifest)
+            submitCompleted(videoManifest)
         } catch (error) {
             console.error(error)
             showError("Linking error", error.message)

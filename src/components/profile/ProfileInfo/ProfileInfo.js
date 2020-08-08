@@ -5,6 +5,7 @@ import "./profile-info.scss"
 import makeBlockies from "@utils/makeBlockies"
 import { getProfile } from "@utils/swarmProfile"
 import { checkIsEthAddress, shortenEthAddr } from "@utils/ethFuncs"
+import SwarmImage from "@components/common/SwarmImage"
 
 const ProfileInfo = ({
     children,
@@ -63,8 +64,8 @@ const ProfileInfo = ({
         <div className="profile">
             <div className="cover">
                 {profileCover.url && (
-                    <img
-                        src={profileCover.url}
+                    <SwarmImage
+                        hash={profileCover.hash}
                         alt={profileName}
                         className="cover-image"
                     />
@@ -74,12 +75,13 @@ const ProfileInfo = ({
             <div className="row items-center">
                 <div className="col md:max-w-xxs px-4">
                     <div className="profile-avatar">
-                        <img
-                            src={
-                                profileAvatar.url
-                                    ? profileAvatar.url
+                        <SwarmImage
+                            hash={
+                                profileAvatar.hash
+                                    ? profileAvatar.hash
                                     : makeBlockies(profileAddress)
                             }
+                            fallback={makeBlockies(profileAddress)}
                             alt={profileName}
                         />
                     </div>

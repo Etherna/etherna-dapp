@@ -162,7 +162,7 @@ request.interceptors.response.use(response => {
         }
     } else {
         // check if the first request throwed
-        let pendingRequest = AxiosPendingCache.findPendingRequest(error.response.config)
+        let pendingRequest = AxiosPendingCache.findPendingRequest(error.response && error.response.config)
         if (pendingRequest) {
             if (pendingRequest.count > 0) {
                 pendingRequest.response = error
