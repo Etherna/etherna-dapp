@@ -7,7 +7,6 @@ import Avatar from "@components/user/Avatar"
 import VideoGrid from "@components/media/VideoGrid"
 import Routes from "@routes"
 import { getProfile } from "@utils/swarmProfile"
-import { getChannelVideos } from "@utils/ethernaResources/channelResources"
 import { shortenEthAddr } from "@utils/ethFuncs"
 import { fetchFullVideosInfo } from "@utils/video"
 

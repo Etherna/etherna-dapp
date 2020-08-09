@@ -11,8 +11,8 @@ import { UploaderContextWrapper, useUploaderState } from "@components/media/Uplo
 import FileUploadFlow from "@components/media/Uploader/FileUploadFlow"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
-import { getResourceUrl, pinResource, unpinResource, isPinned } from "@utils/swarm"
-import { getVideo, updateVideo } from "@utils/ethernaResources/videosResources"
+import { pinResource, unpinResource, isPinned } from "@utils/swarm"
+import { updateVideo } from "@utils/ethernaResources/videosResources"
 import Routes from "@routes"
 import { fetchFullVideoInfo, updatedVideoMeta } from "@utils/video"
 import VideoSourcesUpload from "../Uploader/VideoSourcesUpload"
@@ -100,8 +100,6 @@ const VideoEditor = ({ hash, video }) => {
                 duration,
                 sources: queue.map(q => q.quality)
             })
-
-            console.log(videoManifest);
 
             updateManifest(videoManifest)
 

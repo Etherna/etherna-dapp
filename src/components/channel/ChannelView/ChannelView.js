@@ -12,10 +12,7 @@ import SEO from "@components/layout/SEO"
 import ProfileInfo from "@components/profile/ProfileInfo"
 import { profileActions } from "@state/actions"
 import useSelector from "@state/useSelector"
-import {
-    getChannelVideos,
-    getChannel,
-} from "@utils/ethernaResources/channelResources"
+import {getChannel} from "@utils/ethernaResources/channelResources"
 import Routes from "@routes"
 import { fetchFullVideosInfo } from "@utils/video"
 
