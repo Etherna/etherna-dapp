@@ -2,11 +2,11 @@ import React from "react"
 import PropTypes from "prop-types"
 
 const LightModeIcon = ({ className, color }) => {
-    return (
-        <svg width="20px" height="20px" viewBox="0 0 20 20" className={className}>
-            <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                <path
-                    d="M10,15.625 C10.3796958,15.625 10.693491,15.9071539 10.7431534,16.2732294 L10.75,16.375 L10.75,18.875 C10.75,19.2892136
+  return (
+    <svg width="20px" height="20px" viewBox="0 0 20 20" className={className}>
+      <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+        <path
+          d="M10,15.625 C10.3796958,15.625 10.693491,15.9071539 10.7431534,16.2732294 L10.75,16.375 L10.75,18.875 C10.75,19.2892136
                     10.4142136,19.625 10,19.625 C9.62030423,19.625 9.30650904,19.3428461 9.25684662,18.9767706 L9.25,18.875 L9.25,16.375
                     C9.25,15.9607864 9.58578644,15.625 10,15.625 Z M14.9613319,13.9103543 L15.0381358,13.9774756 L16.8059028,15.7452426
                     C17.098796,16.0381358 17.098796,16.5130096 16.8059028,16.8059028 C16.5374173,17.0743882 16.1160177,17.096762
@@ -32,17 +32,17 @@ const LightModeIcon = ({ className, color }) => {
                     3.19409723,3.19409723 C3.46258268,2.92561178 3.88398232,2.90323799 4.17795346,3.12697587 Z M10,0.375 C10.3796958,0.375
                     10.693491,0.657153882 10.7431534,1.02322944 L10.75,1.125 L10.75,3.625 C10.75,4.03921356 10.4142136,4.375 10,4.375
                     C9.62030423,4.375 9.30650904,4.09284612 9.25684662,3.72677056 L9.25,3.625 L9.25,1.125 C9.25,0.710786438 9.58578644,0.375 10,0.375 Z"
-                    fill={color ? color : "var(--color-gray-700)"}
-                    fillRule="nonzero"
-                ></path>
-            </g>
-        </svg>
-    )
+          fill={color ? color : "var(--color-gray-700)"}
+          fillRule="nonzero"
+        ></path>
+      </g>
+    </svg>
+  )
 }
 
 LightModeIcon.propTypes = {
-    className: PropTypes.string,
-    color: PropTypes.string,
+  className: PropTypes.string,
+  color: PropTypes.string,
 }
 
 export default LightModeIcon

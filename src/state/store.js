@@ -8,17 +8,17 @@ import reducers from "./reducers"
  * Configure a new redux store
  */
 function configureStore() {
-    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-    const middleware = [thunkMiddleware]
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+  const middleware = [thunkMiddleware]
 
-    if (process.env.NODE_ENV !== "production") {
-        middleware.push(createLogger())
-    }
+  if (process.env.NODE_ENV !== "production") {
+    middleware.push(createLogger())
+  }
 
-    return createStore(
-        reducers,
-        composeEnhancers(applyMiddleware(...middleware))
-    )
+  return createStore(
+    reducers,
+    composeEnhancers(applyMiddleware(...middleware))
+  )
 }
 
 /**
@@ -26,7 +26,4 @@ function configureStore() {
  */
 const store = configureStore()
 
-export {
-    configureStore,
-    store
-}
+export { configureStore, store }

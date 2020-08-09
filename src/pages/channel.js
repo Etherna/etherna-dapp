@@ -6,14 +6,14 @@ import SEO from "@components/layout/SEO"
 import ChannelView from "@components/channel/ChannelView"
 
 const ChannelPage = () => {
-    const { id } = useParams()
+  const { id } = useParams()
 
-    return (
-        <LayoutWrapper>
-            <SEO title="Channel" />
-            <ChannelView channelAddress={id} />
-        </LayoutWrapper>
-    )
+  return (
+    <LayoutWrapper>
+      <SEO title="Channel" />
+      <ChannelView channelAddress={id} />
+    </LayoutWrapper>
+  )
 }
 
 export default ChannelPage

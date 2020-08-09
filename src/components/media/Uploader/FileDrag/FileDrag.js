@@ -3,142 +3,138 @@ import PropTypes from "prop-types"
 import classnames from "classnames"
 
 import "./file-drag.scss"
+
 import Alert from "@components/common/Alert"
 import UploadLargeIcon from "@icons/common/UploadLargeIcon"
 import { showError } from "@state/actions/modals"
 import { isMimeCompatible } from "@utils/mimeTypes"
 
 const FileDrag = ({ id, label, mimeTypes, onSelectFile, disabled, uploadLimit }) => {
-    const [isDragOver, setIsDragOver] = useState(false)
-    const [showSizeLimitError, setShowSizeLimitError] = useState(false)
+  const [isDragOver, setIsDragOver] = useState(false)
+  const [showSizeLimitError, setShowSizeLimitError] = useState(false)
 
-    const updateDragOver = hasEntered => {
-        if ((hasEntered && !isDragOver) || (!hasEntered && isDragOver)) {
-            setIsDragOver(hasEntered)
-        }
+  const updateDragOver = hasEntered => {
+    if ((hasEntered && !isDragOver) || (!hasEntered && isDragOver)) {
+      setIsDragOver(hasEntered)
     }
+  }
 
-    const handleDragEnter = e => {
-        e.preventDefault()
-        e.stopPropagation()
-        updateDragOver(true)
+  const handleDragEnter = e => {
+    e.preventDefault()
+    e.stopPropagation()
+    updateDragOver(true)
+  }
+
+  const handleDragLeave = e => {
+    e.preventDefault()
+    e.stopPropagation()
+    updateDragOver(false)
+  }
+
+  const handleDragOver = e => {
+    e.preventDefault()
+    e.stopPropagation()
+    updateDragOver(true)
+  }
+
+  const handleDrop = e => {
+    e.preventDefault()
+    e.stopPropagation()
+    updateDragOver(false)
+
+    const files = [...e.dataTransfer.files]
+
+    handleFileSelect(files)
+  }
+
+  /**
+   * @param {string} mime
+   */
+  const checkFileMimeType = mime => {
+    return isMimeCompatible(mime, mimeTypes.split(","))
+  }
+
+  /**
+   * @param {File[]} files
+   */
+  const handleFileSelect = files => {
+    if (files && files.length > 0) {
+      const file = files[0]
+      if (!checkFileMimeType(file.type)) {
+        showError("Invalid File", "File type of the selected element is not valid.")
+        return
+      }
+
+      if (!uploadLimit || file.size <= uploadLimit * 1024 * 1024) {
+        onSelectFile(file)
+      } else {
+        setShowSizeLimitError(true)
+      }
+    } else {
+      onSelectFile(null)
     }
+  }
 
-    const handleDragLeave = e => {
-        e.preventDefault()
-        e.stopPropagation()
-        updateDragOver(false)
-    }
-
-    const handleDragOver = e => {
-        e.preventDefault()
-        e.stopPropagation()
-        updateDragOver(true)
-    }
-
-    const handleDrop = e => {
-        e.preventDefault()
-        e.stopPropagation()
-        updateDragOver(false)
-
-        const files = [...e.dataTransfer.files]
-
-        handleFileSelect(files)
-    }
-
-    /**
-     * @param {string} mime
-     */
-    const checkFileMimeType = mime => {
-        return isMimeCompatible(mime, mimeTypes.split(","))
-    }
-
-    /**
-     * @param {File[]} files
-     */
-    const handleFileSelect = files => {
-        if (files && files.length > 0) {
-            const file = files[0]
-            if (!checkFileMimeType(file.type)) {
-                showError("Invalid File", "File type of the selected element is not valid.")
-                return
-            }
-
-            if (!uploadLimit || file.size <= uploadLimit * 1024 * 1024) {
-                onSelectFile(file)
-            } else {
-                setShowSizeLimitError(true)
-            }
-        } else {
-            onSelectFile(null)
-        }
-    }
-
-    return (
-        <>
-            {showSizeLimitError && (
-                <div className="mb-2">
-                    <Alert
-                        title="File size exceeded"
-                        type="warning"
-                        onClose={() => setShowSizeLimitError(false)}
-                    >
-                        Your file is too large. The maximum upload size is
-                        currently {uploadLimit}MB.
-                    </Alert>
-                </div>
+  return (
+    <>
+      {showSizeLimitError && (
+        <div className="mb-2">
+          <Alert
+            title="File size exceeded"
+            type="warning"
+            onClose={() => setShowSizeLimitError(false)}
+          >
+            Your file is too large. The maximum upload size is currently {uploadLimit}MB.
+          </Alert>
+        </div>
+      )}
+      <div
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        role="button"
+        tabIndex={0}
+      >
+        <label
+          htmlFor={id}
+          className={classnames("drag-input", {
+            "drag-over": isDragOver,
+          })}
+        >
+          <input
+            type="file"
+            id={id}
+            accept={mimeTypes}
+            onChange={e => handleFileSelect(e.target.files)}
+            disabled={disabled}
+          />
+          <div className="drag-content">
+            <UploadLargeIcon />
+            <span className="drag-info text-lg">{label || "Drag here"}</span>
+            <span className="drag-info text-sm font-normal">or</span>
+            <div className="btn btn-outline">Select</div>
+            {uploadLimit && (
+              <small className="bold">{uploadLimit}MB</small>
             )}
-            <div
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
-                role="button"
-                tabIndex={0}
-            >
-                <label
-                    htmlFor={id}
-                    className={classnames("drag-input", {
-                        "drag-over": isDragOver,
-                    })}
-                >
-                    <input
-                        type="file"
-                        id={id}
-                        accept={mimeTypes}
-                        onChange={e => handleFileSelect(e.target.files)}
-                        disabled={disabled}
-                    />
-                    <div className="drag-content">
-                        <UploadLargeIcon />
-                        <span className="drag-info text-lg">
-                            {label || "Drag here"}
-                        </span>
-                        <span className="drag-info text-sm font-normal">
-                            or
-                        </span>
-                        <div className="btn btn-outline">Select</div>
-                        {uploadLimit && (
-                            <small className="bold">{uploadLimit}MB</small>
-                        )}
-                    </div>
-                </label>
-            </div>
-        </>
-    )
+          </div>
+        </label>
+      </div>
+    </>
+  )
 }
 
 FileDrag.propTypes = {
-    id: PropTypes.string.isRequired,
-    label: PropTypes.string,
-    mimeTypes: PropTypes.string,
-    onSelectFile: PropTypes.func.isRequired,
-    disabled: PropTypes.bool,
-    uploadLimit: PropTypes.number,
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  mimeTypes: PropTypes.string,
+  onSelectFile: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+  uploadLimit: PropTypes.number,
 }
 
 FileDrag.defaultProps = {
-    mimeTypes: "*"
+  mimeTypes: "*",
 }
 
 export default FileDrag

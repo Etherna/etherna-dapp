@@ -1,13 +1,13 @@
 /*! purgecss start ignore */
 
 .video-editor {
-    @apply max-w-screen-md p-10;
+  @apply max-w-screen-md p-10;
 
-    .video-preview {
-        .thumbnail {
-            @apply rounded max-h-xxs h-auto;
-        }
+  .video-preview {
+    .thumbnail {
+      @apply rounded max-h-xxs h-auto;
     }
+  }
 }
 
 /*! purgecss end ignore */

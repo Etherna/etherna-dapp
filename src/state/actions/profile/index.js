@@ -3,7 +3,7 @@ import fetchProfile from "./fetchProfile"
 import updateProfile from "./updateProfile"
 
 export default {
-    createChannel,
-    fetchProfile,
-    updateProfile,
+  createChannel,
+  fetchProfile,
+  updateProfile,
 }

@@ -1,20 +1,20 @@
 /*! purgecss start ignore */
 
 .vertical-slider {
-    @apply w-2 h-32 my-4 mx-auto rounded-full;
-    touch-action: none;
-    background-color: rgba($color: #fff, $alpha: 0.15);
+  @apply w-2 h-32 my-4 mx-auto rounded-full;
+  touch-action: none;
+  background-color: rgba($color: #fff, $alpha: 0.15);
 
-    .track {
-        @apply w-full bottom-0 rounded-full;
+  .track {
+    @apply w-full bottom-0 rounded-full;
 
-        &.track-0 {
-            @apply bg-white;
-        }
+    &.track-0 {
+      @apply bg-white;
     }
-    .thumb {
-        @apply hidden;
-    }
+  }
+  .thumb {
+    @apply hidden;
+  }
 }
 
 /*! purgecss end ignore */

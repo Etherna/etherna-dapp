@@ -3,17 +3,13 @@
  * @returns {boolean}
  */
 export const checkIsMobile = () => {
-    let isMobile
-    if (
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-            navigator.userAgent
-        )
-    ) {
-        isMobile = true
-    } else {
-        isMobile = false
-    }
-    return isMobile
+  let isMobile
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    isMobile = true
+  } else {
+    isMobile = false
+  }
+  return isMobile
 }
 
 /**
@@ -21,15 +17,15 @@ export const checkIsMobile = () => {
  * @returns {boolean}
  */
 export const checkIsMobileWithoutWeb3 = () => {
-    let isMobileWithWeb3 = false
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-    )
-    const hasWeb3 =
-        typeof window.web3 !== "undefined" ||
-        typeof window.ethereum !== "undefined"
-    if (isMobile && !hasWeb3) isMobileWithWeb3 = true
-    return isMobileWithWeb3
+  let isMobileWithWeb3 = false
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  )
+  const hasWeb3 =
+    typeof window.web3 !== "undefined" ||
+    typeof window.ethereum !== "undefined"
+  if (isMobile && !hasWeb3) isMobileWithWeb3 = true
+  return isMobileWithWeb3
 }
 
 /**
@@ -37,8 +33,8 @@ export const checkIsMobileWithoutWeb3 = () => {
  * @returns {boolean}
  */
 export const checkIsMobileDevice = () => {
-    return (
-        (window && typeof window.orientation !== "undefined") ||
-        (navigator && navigator.userAgent.indexOf("IEMobile") !== -1)
-    )
+  return (
+    (window && typeof window.orientation !== "undefined") ||
+    (navigator && navigator.userAgent.indexOf("IEMobile") !== -1)
+  )
 }

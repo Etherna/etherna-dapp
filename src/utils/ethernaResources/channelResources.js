@@ -15,7 +15,6 @@ import apiPath from "./apiPath.js"
  *
  */
 
-
 // ----------------------------------------------------------------------------
 // GET
 
@@ -26,18 +25,18 @@ import apiPath from "./apiPath.js"
  * @returns {Channel[]}
  */
 export const getChannels = async (page = 0, take = 25) => {
-    const path = apiPath()
-    const apiUrl = `${path}/channels`
+  const path = apiPath()
+  const apiUrl = `${path}/channels`
 
-    const resp = await http.get(apiUrl, {
-        params: { page, take }
-    })
+  const resp = await http.get(apiUrl, {
+    params: { page, take },
+  })
 
-    if (!Array.isArray(resp.data)) {
-        throw new Error("Cannot fetch channels")
-    }
+  if (!Array.isArray(resp.data)) {
+    throw new Error("Cannot fetch channels")
+  }
 
-    return resp.data
+  return resp.data
 }
 
 /**
@@ -47,16 +46,12 @@ export const getChannels = async (page = 0, take = 25) => {
  * @param {number} videosTake Count of videos to get (default = 5)
  * @returns {ChannelVideos[]}
  */
-export const getChannelsWithVideos = async (
-    page = 0,
-    take = 25,
-    videosTake = 5
-) => {
-    let channels = await getChannels(page, take)
-    for (let channel of channels) {
-        channel.videos = await getChannelVideos(channel.address, 0, videosTake)
-    }
-    return channels
+export const getChannelsWithVideos = async (page = 0, take = 25, videosTake = 5) => {
+  let channels = await getChannels(page, take)
+  for (let channel of channels) {
+    channel.videos = await getChannelVideos(channel.address, 0, videosTake)
+  }
+  return channels
 }
 
 /**
@@ -65,16 +60,16 @@ export const getChannelsWithVideos = async (
  * @returns {Channel}
  */
 export const getChannel = async address => {
-    const path = apiPath()
-    const apiUrl = `${path}/channels/${address}`
+  const path = apiPath()
+  const apiUrl = `${path}/channels/${address}`
 
-    const resp = await http.get(apiUrl)
+  const resp = await http.get(apiUrl)
 
-    if (typeof resp.data !== "object") {
-        throw new Error("Cannot fetch channel")
-    }
+  if (typeof resp.data !== "object") {
+    throw new Error("Cannot fetch channel")
+  }
 
-    return resp.data
+  return resp.data
 }
 
 /**
@@ -85,18 +80,18 @@ export const getChannel = async address => {
  * @returns {import('./videosResources.js').Video[]}
  */
 export const getChannelVideos = async (address, page = 0, take = 25) => {
-    const path = apiPath()
-    const apiUrl = `${path}/channels/${address}/videos`
+  const path = apiPath()
+  const apiUrl = `${path}/channels/${address}/videos`
 
-    const resp = await http.get(apiUrl, {
-        params: { page, take },
-    })
+  const resp = await http.get(apiUrl, {
+    params: { page, take },
+  })
 
-    if (!Array.isArray(resp.data)) {
-        throw new Error("Cannot fetch channel videos")
-    }
+  if (!Array.isArray(resp.data)) {
+    throw new Error("Cannot fetch channel videos")
+  }
 
-    return resp.data
+  return resp.data
 }
 
 // ----------------------------------------------------------------------------
@@ -108,16 +103,16 @@ export const getChannelVideos = async (address, page = 0, take = 25) => {
  * @returns {Channel}
  */
 export const createChannel = async address => {
-    const path = apiPath()
-    const apiUrl = `${path}/channels`
+  const path = apiPath()
+  const apiUrl = `${path}/channels`
 
-    const resp = await http.post(apiUrl, {
-        Address: address,
-    })
+  const resp = await http.post(apiUrl, {
+    Address: address,
+  })
 
-    if (typeof resp.data !== "object") {
-        throw new Error("Cannot create channel")
-    }
+  if (typeof resp.data !== "object") {
+    throw new Error("Cannot create channel")
+  }
 
-    return resp.data
+  return resp.data
 }

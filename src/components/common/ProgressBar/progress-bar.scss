@@ -1,11 +1,11 @@
 /*! purgecss start ignore */
 
 .progress {
-    @apply block w-full h-1 rounded-full bg-gray-300;
+  @apply block w-full h-1 rounded-full bg-gray-300;
 
-    .progress-bar {
-        @apply rounded-full h-full bg-primary;
-    }
+  .progress-bar {
+    @apply rounded-full h-full bg-primary;
+  }
 }
 
 /*! purgecss end ignore */

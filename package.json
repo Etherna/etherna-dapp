@@ -68,14 +68,24 @@
     "serve": "serve -s build -l 4000",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",
-    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
+    "format": "prettier --write \"**/*.{js,jsx,json,scss}\"",
     "buildeploy": "npm run build && node deploy",
     "buildeployswarm": "npm run build && node deploy --swarm",
     "deploy": "node deploy",
     "updatefeed": "node deploy --feed"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "rules": {
+      "indent": [
+        "error",
+        2
+      ],
+      "quotes": [
+        "warn",
+        "double"
+      ]
+    }
   },
   "browserslist": {
     "production": [

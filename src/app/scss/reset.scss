@@ -1,70 +1,69 @@
-//@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i,700&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Inter:400,400i,600,600i,700&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Inter:400,400i,600,600i,700&display=swap");
 
 html {
-    font-size: 15px;
-    line-height: 22px;
+  font-size: 15px;
+  line-height: 22px;
 }
 
 body {
-    @apply font-sans antialiased bg-background text-dark;
+  @apply font-sans antialiased bg-background text-dark;
 }
 
 a {
-    transition: color .25s;
-    @apply no-underline cursor-pointer text-primary;
+  transition: color 0.25s;
+  @apply no-underline cursor-pointer text-primary;
 
-    &:hover {
-        transition: color .25s;
-        @apply no-underline text-primary-dark;
-    }
+  &:hover {
+    transition: color 0.25s;
+    @apply no-underline text-primary-dark;
+  }
 }
 
 button {
-    &:focus {
-        @apply outline-none;
-    }
-    &:disabled {
-        @apply opacity-50 cursor-not-allowed;
-    }
+  &:focus {
+    @apply outline-none;
+  }
+  &:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
 }
 
 h1 {
-    @apply text-4xl mb-8 font-semibold;
-    @screen lg {
-        @apply mb-8;
-    }
+  @apply text-4xl mb-8 font-semibold;
+  @screen lg {
+    @apply mb-8;
+  }
 }
 h2 {
-    @apply text-3xl mb-5 font-semibold;
-    @screen lg {
-        @apply mb-6;
-    }
+  @apply text-3xl mb-5 font-semibold;
+  @screen lg {
+    @apply mb-6;
+  }
 }
 h3 {
-    @apply text-xl mb-3 font-semibold;
-    @screen lg {
-        @apply mb-4;
-    }
+  @apply text-xl mb-3 font-semibold;
+  @screen lg {
+    @apply mb-4;
+  }
 }
 h4 {
-    @apply text-lg mb-2;
-    @screen lg {
-        @apply mb-2;
-    }
+  @apply text-lg mb-2;
+  @screen lg {
+    @apply mb-2;
+  }
 }
 
-[role=button] {
-    &:focus {
-        outline: none;
-    }
+[role="button"] {
+  &:focus {
+    outline: none;
+  }
 }
 
 hr {
-    @apply border-gray-300;
+  @apply border-gray-300;
 }
 .theme-dark {
-    hr {
-        @apply border-gray-400;
-    }
+  hr {
+    @apply border-gray-400;
+  }
 }

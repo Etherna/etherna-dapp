@@ -35,19 +35,16 @@ const EthernaVideoName = "EthernaVideo"
  * @returns {Profile}
  */
 export const getProfile = async address => {
-    const [
-        baseProfile,
-        ethernaVideoProfile
-    ] = await Promise.all([
-        resolveProfile(EthernaTopic, null, address),
-        resolveProfile(EthernaTopic, EthernaVideoName, address)
-    ])
+  const [baseProfile, ethernaVideoProfile] = await Promise.all([
+    resolveProfile(EthernaTopic, null, address),
+    resolveProfile(EthernaTopic, EthernaVideoName, address),
+  ])
 
-    return mergeWith(
-        baseProfile,
-        ethernaVideoProfile,
-        (a, b) => !b ? a : undefined
-    )
+  return mergeWith(
+    baseProfile,
+    ethernaVideoProfile,
+    (a, b) => (!b ? a : undefined)
+  )
 }
 
 /**
@@ -56,19 +53,19 @@ export const getProfile = async address => {
  * @returns {Profile[]}
  */
 export const getProfiles = async addresses => {
-    try {
-        const promises = addresses.map(address => getProfile(address))
-        const profiles = await Promise.all(promises)
+  try {
+    const promises = addresses.map(address => getProfile(address))
+    const profiles = await Promise.all(promises)
 
-        return profiles
-    } catch (error) {
-        console.error(error)
+    return profiles
+  } catch (error) {
+    console.error(error)
 
-        return addresses.map(a => ({
-            address: a,
-            name: null
-        }))
-    }
+    return addresses.map(a => ({
+      address: a,
+      name: null,
+    }))
+  }
 }
 
 /**
@@ -76,25 +73,24 @@ export const getProfiles = async addresses => {
  * @param {Profile} profile Profile information
  */
 export const updateProfile = async profile => {
-    const address = profile.address
+  const address = profile.address
 
-    // Split profile data into "base profile" and "etherna video profile"
-    let baseProfile = {
-        address: profile.address,
-        name: profile.name,
-        avatar: profile.avatar
-    }
-    let ethernaVideoProfile = omit(profile, "name", "avatar")
+  // Split profile data into "base profile" and "etherna video profile"
+  let baseProfile = {
+    address: profile.address,
+    name: profile.name,
+    avatar: profile.avatar,
+  }
+  let ethernaVideoProfile = omit(profile, "name", "avatar")
 
-    // Get validated profiles
-    baseProfile = await validatedProfile(baseProfile)
-    ethernaVideoProfile = await validatedProfile(ethernaVideoProfile)
+  // Get validated profiles
+  baseProfile = await validatedProfile(baseProfile)
+  ethernaVideoProfile = await validatedProfile(ethernaVideoProfile)
 
-    // Update feed
-    await updatedFeed(EthernaTopic, undefined, address, JSON.stringify(baseProfile))
-    await updatedFeed(EthernaTopic, EthernaVideoName, address, JSON.stringify(ethernaVideoProfile))
+  // Update feed
+  await updatedFeed(EthernaTopic, undefined, address, JSON.stringify(baseProfile))
+  await updatedFeed(EthernaTopic, EthernaVideoName, address, JSON.stringify(ethernaVideoProfile))
 }
-
 
 // Private utils functions
 
@@ -106,20 +102,20 @@ export const updateProfile = async profile => {
  * @returns {Profile}
  */
 const resolveProfile = async (topic, name, address) => {
-    const profile = await fetchFeedOrDefault(topic, name, address)
-    return {
-        address,
-        name: null,
-        location: null,
-        website: null,
-        birthday: null,
+  const profile = await fetchFeedOrDefault(topic, name, address)
+  return {
+    address,
+    name: null,
+    location: null,
+    website: null,
+    birthday: null,
 
-        ...profile,
+    ...profile,
 
-        avatar: resolveImage(profile.avatar),
-        cover: resolveImage(profile.cover),
-        description: (await resolveText(profile.description)),
-    }
+    avatar: resolveImage(profile.avatar),
+    cover: resolveImage(profile.cover),
+    description: await resolveText(profile.description),
+  }
 }
 
 /**
@@ -128,20 +124,21 @@ const resolveProfile = async (topic, name, address) => {
  * @returns {SwarmImage}
  */
 const resolveImage = imgObj => {
-    let url = null, hash = null
-    if (
-        typeof imgObj === "object" &&
-        "@type" in imgObj &&
-        "value" in imgObj &&
-        imgObj["@type"] === "image" &&
-        isValidHash(imgObj.value)
-    ) {
-        url = getResourceUrl(imgObj.value)
-        hash = imgObj.value
-    }
-    return {
-        url, hash
-    }
+  let url = null, hash = null
+  if (
+    typeof imgObj === "object" &&
+    "@type" in imgObj &&
+    "value" in imgObj &&
+    imgObj["@type"] === "image" &&
+    isValidHash(imgObj.value)
+  ) {
+    url = getResourceUrl(imgObj.value)
+    hash = imgObj.value
+  }
+  return {
+    url,
+    hash,
+  }
 }
 
 /**
@@ -150,26 +147,26 @@ const resolveImage = imgObj => {
  * @returns {string}
  */
 const resolveText = async textObj => {
-    let text = ""
+  let text = ""
 
-    if (typeof textObj === "string") {
-        return textObj
-    }
+  if (typeof textObj === "string") {
+    return textObj
+  }
 
-    if (
-        typeof textObj === "object" &&
-        "@type" in textObj &&
-        "value" in textObj &&
-        textObj["@type"] === "text" &&
-        isValidHash(textObj.value)
-    ) {
-        const url = getResourceUrl(textObj.value)
-        try {
-            text = (await http.get(url)).data
-        } catch {}
-    }
+  if (
+    typeof textObj === "object" &&
+    "@type" in textObj &&
+    "value" in textObj &&
+    textObj["@type"] === "text" &&
+    isValidHash(textObj.value)
+  ) {
+    const url = getResourceUrl(textObj.value)
+    try {
+      text = (await http.get(url)).data
+    } catch {}
+  }
 
-    return text
+  return text
 }
 
 /**
@@ -178,60 +175,60 @@ const resolveText = async textObj => {
  * @returns {Profile}
  */
 const validatedProfile = async profile => {
-    // Object validation
-    if (typeof profile !== "object") {
-        throw new Error ("Profile must be an object")
+  // Object validation
+  if (typeof profile !== "object") {
+    throw new Error("Profile must be an object")
+  }
+  if (!checkIsEthAddress(profile.address)) {
+    throw new Error("Address field is required and must be a valid ethereum address")
+  }
+  if (profile.name) {
+    if (typeof profile.name !== "string" || profile.name.length > 50) {
+      throw new Error("Name field must be a string not longer than 50")
     }
-    if (!checkIsEthAddress(profile.address)) {
-        throw new Error ("Address field is required and must be a valid ethereum address")
+  }
+  if (profile.location) {
+    if (typeof profile.location !== "string" || profile.location.length > 50) {
+      throw new Error("Location field must be a string not longer than 50")
     }
-    if (profile.name) {
-        if (typeof profile.name !== "string" || profile.name.length > 50) {
-            throw new Error ("Name field must be a string not longer than 50")
-        }
+  }
+  if (profile.website) {
+    if (typeof profile.website !== "string" || profile.website.length > 50) {
+      throw new Error("Website field must be a string not longer than 50")
     }
-    if (profile.location) {
-        if (typeof profile.location !== "string" || profile.location.length > 50) {
-            throw new Error ("Location field must be a string not longer than 50")
-        }
+  }
+  if (profile.birthday) {
+    if (typeof profile.birthday !== "string" || profile.birthday.length > 24) {
+      throw new Error("Birthday field must be a string not longer than 24 (ISO length)")
     }
-    if (profile.website) {
-        if (typeof profile.website !== "string" || profile.website.length > 50) {
-            throw new Error ("Website field must be a string not longer than 50")
-        }
+  }
+  if (profile.description) {
+    if (typeof profile.description !== "string" || profile.description.length > 500) {
+      throw new Error("Description field must be a string not longer than 500")
     }
-    if (profile.birthday) {
-        if (typeof profile.birthday !== "string" || profile.birthday.length > 24) {
-            throw new Error ("Birthday field must be a string not longer than 24 (ISO length)")
-        }
-    }
-    if (profile.description) {
-        if (typeof profile.description !== "string" || profile.description.length > 500) {
-            throw new Error ("Description field must be a string not longer than 500")
-        }
+  }
+
+  // address is not necessary
+  delete profile.address
+
+  // map fields with corrected values
+  Object.keys(profile).forEach(key => {
+    if (key === "name") {
+      profile[key] = profile[key] || ""
     }
 
-    // address is not necessary
-    delete profile.address
-
-    // map fields with corrected values
-    Object.keys(profile).forEach(key => {
-        if (key === "name") {
-            profile[key] = profile[key] || ""
-        }
-
-        if (key === "avatar" || key === "cover") {
-            const value = profile[key].hash
-            profile[key] = { "@type": "image", value }
-        }
-    })
-
-    // Validate payload size
-    if ((new TextEncoder()).encode(profile).length > 3963) {
-        throw new Error("Data exceed max length of 3963 bytes")
+    if (key === "avatar" || key === "cover") {
+      const value = profile[key].hash
+      profile[key] = { "@type": "image", value }
     }
+  })
 
-    return profile
+  // Validate payload size
+  if (new TextEncoder().encode(profile).length > 3963) {
+    throw new Error("Data exceed max length of 3963 bytes")
+  }
+
+  return profile
 }
 
 /**
@@ -242,12 +239,10 @@ const validatedProfile = async profile => {
  * @returns {object} Feed data
  */
 const fetchFeedOrDefault = async (topic, name, address) => {
-    try {
-        const feed = await readFeed(topic, name, address)
-        return typeof feed === "string"
-            ? JSON.parse(feed)
-            : feed || {}
-    } catch (error) {
-        return {}
-    }
+  try {
+    const feed = await readFeed(topic, name, address)
+    return typeof feed === "string" ? JSON.parse(feed) : feed || {}
+  } catch (error) {
+    return {}
+  }
 }

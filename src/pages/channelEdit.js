@@ -7,15 +7,15 @@ import ChannelEditor from "@components/channel/ChannelEditor"
 import useSelector from "@state/useSelector"
 
 const ChannelEditPage = () => {
-    const { id } = useParams()
-    const { name } = useSelector(state => state.profile)
+  const { id } = useParams()
+  const { name } = useSelector(state => state.profile)
 
-    return (
-        <LayoutWrapper>
-            <SEO title={`Editing channel ${name || id}`} />
-            <ChannelEditor address={id} />
-        </LayoutWrapper>
-    )
+  return (
+    <LayoutWrapper>
+      <SEO title={`Editing channel ${name || id}`} />
+      <ChannelEditor address={id} />
+    </LayoutWrapper>
+  )
 }
 
 export default ChannelEditPage

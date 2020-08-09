@@ -4,24 +4,24 @@
  * @returns {number} Duration in seconds
  */
 export const getVideoDuration = videoObj => {
-    return new Promise((resolve, reject) => {
-        const video = document.createElement("video")
-        video.preload = "metadata"
-        video.onerror = error => {
-            reject(error)
-        }
-        video.onloadedmetadata = () => {
-            try {
-                window.URL.revokeObjectURL(video.src)
-                const duration = parseInt(video.duration)
+  return new Promise((resolve, reject) => {
+    const video = document.createElement("video")
+    video.preload = "metadata"
+    video.onerror = error => {
+      reject(error)
+    }
+    video.onloadedmetadata = () => {
+      try {
+        window.URL.revokeObjectURL(video.src)
+        const duration = parseInt(video.duration)
 
-                resolve(duration)
-            } catch (error) {
-                reject(error)
-            }
-        }
-        video.src = videoSource(videoObj)
-    })
+        resolve(duration)
+      } catch (error) {
+        reject(error)
+      }
+    }
+    video.src = videoSource(videoObj)
+  })
 }
 
 /**
@@ -30,24 +30,24 @@ export const getVideoDuration = videoObj => {
  * @returns {number} Video resolution
  */
 export const getVideoResolution = videoObj => {
-    return new Promise((resolve, reject) => {
-        const video = document.createElement("video")
-        video.preload = "metadata"
-        video.onerror = error => {
-            reject(error)
-        }
-        video.onloadedmetadata = () => {
-            try {
-                window.URL.revokeObjectURL(video.src)
-                const resolution = parseInt(video.videoHeight)
+  return new Promise((resolve, reject) => {
+    const video = document.createElement("video")
+    video.preload = "metadata"
+    video.onerror = error => {
+      reject(error)
+    }
+    video.onloadedmetadata = () => {
+      try {
+        window.URL.revokeObjectURL(video.src)
+        const resolution = parseInt(video.videoHeight)
 
-                resolve(resolution)
-            } catch (error) {
-                reject(error)
-            }
-        }
-        video.src = videoSource(videoObj)
-    })
+        resolve(resolution)
+      } catch (error) {
+        reject(error)
+      }
+    }
+    video.src = videoSource(videoObj)
+  })
 }
 
 /**
@@ -57,7 +57,7 @@ export const getVideoResolution = videoObj => {
  * @returns {string}
  */
 const videoSource = videoObj =>
-    typeof videoObj === "string" ? videoObj
-        : videoObj instanceof File
-            ? URL.createObjectURL(videoObj)
-            : URL.createObjectURL(new Blob([videoObj], { type: 'video/mp4' }))
+  typeof videoObj === "string" ? videoObj
+    : videoObj instanceof File
+      ? URL.createObjectURL(videoObj)
+      : URL.createObjectURL(new Blob([videoObj], { type: "video/mp4" }))
