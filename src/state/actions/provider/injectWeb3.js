@@ -4,16 +4,17 @@ import { store } from "@state/store"
 import { EnvActionTypes } from "@state/reducers/enviromentReducer"
 
 const injectWeb3 = async () => {
-    const web3 = window.web && window.web3.currentProvider
-        ? new Web3(window.web3.currentProvider)
-        : new Web3(`wss://mainnet.infura.io/ws/v3/${process.env.REACT_APP_INFURA_ID}`)
+  const web3 =
+    window.web && window.web3.currentProvider
+      ? new Web3(window.web3.currentProvider)
+      : new Web3(`wss://mainnet.infura.io/ws/v3/${process.env.REACT_APP_INFURA_ID}`)
 
-    store.dispatch({
-        type: EnvActionTypes.ENV_UPDATE_PROVIDER,
-        web3,
-        currentWallet: undefined,
-        currentWalletLogo: undefined,
-    })
+  store.dispatch({
+    type: EnvActionTypes.ENV_UPDATE_PROVIDER,
+    web3,
+    currentWallet: undefined,
+    currentWalletLogo: undefined,
+  })
 }
 
 export default injectWeb3

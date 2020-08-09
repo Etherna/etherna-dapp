@@ -12,74 +12,67 @@ const ChannelsMatches = [/^\/channel\//, /^\/channels/]
 const ExploreMatches = [/^\/watch/]
 
 const anyMatch = (patterns, string) => {
-    return patterns.filter(p => string.match(p)).length > 0
+  return patterns.filter(p => string.match(p)).length > 0
 }
 
 const Header = () => {
-    const { isSignedIn } = useSelector(state => state.user)
+  const { isSignedIn } = useSelector(state => state.user)
 
-    return (
-        <header className="header">
-            <nav className="navbar">
-                <div className="left-nav">
-                    <NavLink
-                        to={Routes.getHomeLink()}
-                        className="nav-item"
-                        activeClassName="active"
-                        isActive={(_, location) => {
-                            if (
-                                location.pathname === "/" ||
-                                anyMatch(ExploreMatches, location.pathname)
-                            ) {
-                                return true
-                            }
-                            return false
-                        }}
-                    >
-                        Explore
-                    </NavLink>
-                    <NavLink
-                        to={Routes.getChannelsLink()}
-                        className="nav-item"
-                        activeClassName="active"
-                        isActive={(_, location) => {
-                            if (anyMatch(ChannelsMatches, location.pathname)) {
-                                return true
-                            }
-                            return false
-                        }}
-                    >
-                        Channels
-                    </NavLink>
-                    {/* <NavLink
+  return (
+    <header className="header">
+      <nav className="navbar">
+        <div className="left-nav">
+          <NavLink
+            to={Routes.getHomeLink()}
+            className="nav-item"
+            activeClassName="active"
+            isActive={(_, location) => {
+              if (location.pathname === "/" || anyMatch(ExploreMatches, location.pathname)) {
+                return true
+              }
+              return false
+            }}
+          >
+            Explore
+          </NavLink>
+          <NavLink
+            to={Routes.getChannelsLink()}
+            className="nav-item"
+            activeClassName="active"
+            isActive={(_, location) => {
+              if (anyMatch(ChannelsMatches, location.pathname)) {
+                return true
+              }
+              return false
+            }}
+          >
+            Channels
+          </NavLink>
+          {/* <NavLink
                         to={Routes.getHowItWorksLink()}
                         className="nav-item"
                         activeClassName="active"
                     >
                         How it works
                     </NavLink> */}
-                </div>
-                <div className="logo">
-                    <NavLink to={Routes.getHomeLink()}>
-                        <Logo />
-                    </NavLink>
-                </div>
-                <div className="right-nav">
-                    {isSignedIn === true && (
-                        <NavLink
-                            to={Routes.getVideoUploadLink()}
-                            className="nav-item"
-                            activeClassName="active"
-                        >
-                            <UploadIcon />
-                            <span>Upload</span>
-                        </NavLink>
-                    )}
-                    <UserMenu />
-                </div>
-            </nav>
-        </header>
-    )
+        </div>
+        <div className="logo">
+          <NavLink to={Routes.getHomeLink()}>
+            <Logo />
+          </NavLink>
+        </div>
+        <div className="right-nav">
+          {isSignedIn === true && (
+            <NavLink to={Routes.getVideoUploadLink()} className="nav-item" activeClassName="active">
+              <UploadIcon />
+              <span>Upload</span>
+            </NavLink>
+          )}
+          <UserMenu />
+        </div>
+      </nav>
+    </header>
+  )
 }
 
 export default React.memo(Header)

@@ -1,23 +1,19 @@
-import React from "react"
+import { useEffect } from "react"
 import NProgress from "nprogress"
 
 import "./page-loader.scss"
 
-class PageLoader extends React.Component {
-    UNSAFE_componentWillMount() {
-        NProgress.configure({
-            showSpinner: false,
-        })
-        NProgress.start()
-    }
+const PageLoader = () => {
+  useEffect(() => {
+    NProgress.configure({
+      showSpinner: false,
+    })
+    NProgress.start()
 
-    componentWillUnmount() {
-        NProgress.done()
-    }
+    return () => NProgress.done()
+  }, [])
 
-    render() {
-        return ""
-    }
+  return ""
 }
 
 export default PageLoader

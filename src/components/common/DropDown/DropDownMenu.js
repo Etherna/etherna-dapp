@@ -6,42 +6,42 @@ import { useStateValue, ReducerTypes } from "./DropDownContext"
 import BackIcon from "@icons/menu/BackIcon"
 
 const DropDownMenu = ({ children, alignRight, menuRef, title }) => {
-    const [state, dispatch] = useStateValue()
-    const { history } = state
-    const isDropDownOpen = state.current === menuRef
+  const [state, dispatch] = useStateValue()
+  const { history } = state
+  const isDropDownOpen = state.current === menuRef
 
-    const pop = () => {
-        dispatch({
-            type: ReducerTypes.POP_MENU,
-            index: history.length - 1,
-        })
-    }
+  const pop = () => {
+    dispatch({
+      type: ReducerTypes.POP_MENU,
+      index: history.length - 1,
+    })
+  }
 
-    return (
-        <div
-            ref={menuRef}
-            className={classnames("dropdown-menu", {
-                "menu-right": alignRight,
-                open: isDropDownOpen,
-            })}
-        >
-            {history.length > 1 && (
-                <div className="dropdown-header">
-                    <button className="btn-back" onClick={pop}>
-                        <BackIcon />
-                    </button>
-                    <span className="ml-3">{title}</span>
-                </div>
-            )}
-            {children}
+  return (
+    <div
+      ref={menuRef}
+      className={classnames("dropdown-menu", {
+        "menu-right": alignRight,
+        open: isDropDownOpen,
+      })}
+    >
+      {history.length > 1 && (
+        <div className="dropdown-header">
+          <button className="btn-back" onClick={pop}>
+            <BackIcon />
+          </button>
+          <span className="ml-3">{title}</span>
         </div>
-    )
+      )}
+      {children}
+    </div>
+  )
 }
 
 DropDownMenu.propTypes = {
-    alignRight: PropTypes.bool,
-    title: PropTypes.string,
-    menuRef: PropTypes.any.isRequired,
+  alignRight: PropTypes.bool,
+  title: PropTypes.string,
+  menuRef: PropTypes.any.isRequired,
 }
 
 export default DropDownMenu

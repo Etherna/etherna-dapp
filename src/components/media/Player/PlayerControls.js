@@ -9,32 +9,32 @@ import FullScreenButton from "./controls/FullScreenButton"
 import VolumeControl from "./controls/VolumeControl"
 
 const PlayerControls = () => {
-    return (
-        <div className="controls theme-light">
-            {/* Progress */}
-            <ProgressControl />
+  return (
+    <div className="controls theme-light">
+      {/* Progress */}
+      <ProgressControl />
 
-            {/* Play / Pause */}
-            <PlayButton />
+      {/* Play / Pause */}
+      <PlayButton />
 
-            {/* Time */}
-            <TimeStatus />
+      {/* Time */}
+      <TimeStatus />
 
-            <div className="options-group">
-                {/* Playback rate */}
-                <PlaybackRateControl />
+      <div className="options-group">
+        {/* Playback rate */}
+        <PlaybackRateControl />
 
-                {/* Picture in Picture */}
-                {"pictureInPictureEnabled" in document && <PiPButton />}
+        {/* Picture in Picture */}
+        {"pictureInPictureEnabled" in document && <PiPButton />}
 
-                {/* Fullscreen */}
-                <FullScreenButton />
+        {/* Fullscreen */}
+        <FullScreenButton />
 
-                {/* Volume */}
-                <VolumeControl />
-            </div>
-        </div>
-    )
+        {/* Volume */}
+        <VolumeControl />
+      </div>
+    </div>
+  )
 }
 
 export default PlayerControls

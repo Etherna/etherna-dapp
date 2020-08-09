@@ -1,32 +1,32 @@
 /*! purgecss start ignore */
 
 .nav-pills {
-    @apply flex;
+  @apply flex;
 
-    &.nav-vertical {
-        @apply flex-col;
-
-        .nav-pill {
-            &:not(:last-child) {
-                @apply mb-2 w-full;
-            }
-        }
-    }
+  &.nav-vertical {
+    @apply flex-col;
 
     .nav-pill {
-        @apply text-center text-gray-500 px-4 py-1 rounded-full border-2 border-transparent
+      &:not(:last-child) {
+        @apply mb-2 w-full;
+      }
+    }
+  }
+
+  .nav-pill {
+    @apply text-center text-gray-500 px-4 py-1 rounded-full border-2 border-transparent
             cursor-pointer transition duration-200;
 
-        &:not(:last-child) {
-            @apply mr-2;
-        }
-        &:hover {
-            @apply bg-gray-200 transition duration-200;
-        }
-        &.active {
-            @apply border-primary-light text-primary;
-        }
+    &:not(:last-child) {
+      @apply mr-2;
     }
+    &:hover {
+      @apply bg-gray-200 transition duration-200;
+    }
+    &.active {
+      @apply border-primary-light text-primary;
+    }
+  }
 }
 
 /*! purgecss end ignore */

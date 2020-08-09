@@ -9,7 +9,7 @@ import prefetch from "./prefetch"
 import * as serviceWorker from "./serviceWorker"
 
 const RenderDOM = () => {
-    ReactDOM.render(<Root />, document.getElementById("root"))
+  ReactDOM.render(<Root />, document.getElementById("root"))
 }
 
 // Prefetch data for SEO

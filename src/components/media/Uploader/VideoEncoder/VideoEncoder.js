@@ -3,13 +3,14 @@ import PropTypes from "prop-types"
 import { createFFmpeg } from "@ffmpeg/ffmpeg"
 
 import "./video-encoder.scss"
+
 import Button from "@components/common/Button"
 import { showError } from "@state/actions/modals"
 import { isMimeWebCompatible } from "@utils/mimeTypes"
 import { fileReaderPromise } from "@utils/swarm"
 
 const ffmpeg = createFFmpeg({
-    log: process.env.NODE_ENV !== "production",
+  log: process.env.NODE_ENV !== "production",
 })
 
 /**
@@ -18,139 +19,111 @@ const ffmpeg = createFFmpeg({
  * @param {Function} onCancel
  * @param {Function} onEncodingComplete
  */
-const VideoEncoder = ({
-    file,
-    canEncode,
-    onConfirmEncode,
-    onEncodingComplete,
-    onCancel
-}) => {
-    const [confirmed, setConfirmed] = useState(false)
-    const [isEncoding, setIsEncoding] = useState(false)
-    const isWebCompatible = isMimeWebCompatible(file.type)
+const VideoEncoder = ({ file, canEncode, onConfirmEncode, onEncodingComplete, onCancel }) => {
+  const [confirmed, setConfirmed] = useState(false)
+  const [isEncoding, setIsEncoding] = useState(false)
+  const isWebCompatible = isMimeWebCompatible(file.type)
 
-    useEffect(() => {
-        // Clear previus cache
-        try { ffmpeg.remove("output.mp4") } catch {}
+  useEffect(() => {
+    // Clear previus cache
+    try {
+      ffmpeg.remove("output.mp4")
+    } catch {}
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    useEffect(() => {
-        confirmed && canEncode && startEncoding()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [confirmed, canEncode])
+  }, [])
 
-    const startEncoding = async () => {
-        setIsEncoding(true)
+  useEffect(() => {
+    confirmed && canEncode && startEncoding()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [confirmed, canEncode])
 
-        const ext = file.name.match(/\.[a-z0-9]*$/)[0]
+  const startEncoding = async () => {
+    setIsEncoding(true)
 
-        try {
-            await ffmpeg.load()
-            await ffmpeg.write(`input${ext}`, file)
-            await ffmpeg.transcode(`input${ext}`, "output.mp4", "-threads 2")
-            const data = ffmpeg.read("output.mp4")
-            ffmpeg.remove("output.mp4")
+    const ext = file.name.match(/\.[a-z0-9]*$/)[0]
 
-            setIsEncoding(false)
-            onEncodingComplete(data.buffer)
-        } catch (error) {
-            console.error(error)
+    try {
+      await ffmpeg.load()
+      await ffmpeg.write(`input${ext}`, file)
+      await ffmpeg.transcode(`input${ext}`, "output.mp4", "-threads 2")
+      const data = ffmpeg.read("output.mp4")
+      ffmpeg.remove("output.mp4")
 
-            showError("Encoding Error", error.message)
-            onCancel()
-        }
+      setIsEncoding(false)
+      onEncodingComplete(data.buffer)
+    } catch (error) {
+      console.error(error)
+
+      showError("Encoding Error", error.message)
+      onCancel()
     }
+  }
 
-    const confirmEncode = () => {
-        setConfirmed(true)
-        onConfirmEncode && onConfirmEncode()
-    }
+  const confirmEncode = () => {
+    setConfirmed(true)
+    onConfirmEncode && onConfirmEncode()
+  }
 
-    const upload = async () => {
-        const buffer = await fileReaderPromise(file)
-        onEncodingComplete(buffer)
+  const upload = async () => {
+    const buffer = await fileReaderPromise(file)
+    onEncodingComplete(buffer)
 
-        onConfirmEncode && onConfirmEncode()
-    }
+    onConfirmEncode && onConfirmEncode()
+  }
 
-    return (
+  return (
+    <>
+      {file && !isEncoding && (
         <>
-            {file && !isEncoding && (
-                <>
-                    <p className="text-gray-700 mb-3">
-                        You selected <span className="text-black">{file.name}</span>.
-                        Do you confirm to upload this file?
-                    </p>
-                    <Button
-                        size="small"
-                        aspect="secondary"
-                        action={onCancel}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        size="small"
-                        className="ml-2"
-                        action={confirmEncode}
-                    >
-                        Encode and Upload
-                    </Button>
-                    {isWebCompatible && (
-                        <Button
-                            size="small"
-                            className="ml-2"
-                            action={upload}
-                        >
-                            Upload
-                        </Button>
-                    )}
-                </>
-            )}
-            {confirmed && !canEncode && (
-                <p className="text-gray-700 mb-3">
-                    Pending encoding...
-                </p>
-            )}
-            {isEncoding && (
-                <div className="video-encoder">
-                    <p className="leading-loose">
-                        Encoding {file.name} <br/>
-                        This process might take a while...
-                    </p>
-                    <div className="flex flex-col items-center mt-4">
-                        <img
-                            src={require("@svg/animated/spinner.svg")}
-                            className="mx-auto"
-                            width="30"
-                            alt=""
-                        />
-                        <Button
-                            size="small"
-                            aspect="secondary"
-                            className="mt-4"
-                            action={onCancel}
-                        >
-                            Cancel
-                        </Button>
-                    </div>
-                </div>
-            )}
+          <p className="text-gray-700 mb-3">
+            You selected <span className="text-black">{file.name}</span>. Do you confirm to upload
+            this file?
+          </p>
+          <Button size="small" aspect="secondary" action={onCancel}>
+            Cancel
+          </Button>
+          <Button size="small" className="ml-2" action={confirmEncode}>
+            Encode and Upload
+          </Button>
+          {isWebCompatible && (
+            <Button size="small" className="ml-2" action={upload}>
+              Upload
+            </Button>
+          )}
         </>
-    )
+      )}
+      {confirmed && !canEncode && (
+        <p className="text-gray-700 mb-3">Pending encoding...</p>
+      )}
+      {isEncoding && (
+        <div className="video-encoder">
+          <p className="leading-loose">
+            Encoding {file.name} <br />
+            This process might take a while...
+          </p>
+          <div className="flex flex-col items-center mt-4">
+            <img src={require("@svg/animated/spinner.svg")} className="mx-auto" width="30" alt="" />
+            <Button size="small" aspect="secondary" className="mt-4" action={onCancel}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
+    </>
+  )
 }
 
 VideoEncoder.propTypes = {
-    file: PropTypes.object.isRequired,
-    canEncode: PropTypes.bool,
-    onConfirmEncode: PropTypes.func,
-    onEncodingComplete: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
+  file: PropTypes.object.isRequired,
+  canEncode: PropTypes.bool,
+  onConfirmEncode: PropTypes.func,
+  onEncodingComplete: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
 }
 
 VideoEncoder.defaultProps = {
-    canEncode: true,
+  canEncode: true,
 }
 
 export default VideoEncoder

@@ -4,12 +4,12 @@
  */
 @tailwind base;
 
- /**
+/**
   * This injects any component classes registered by plugins.
   */
 @tailwind components;
 
- /**
+/**
   * Here you would add any of your custom component classes; stuff that you'd
   * want loaded *before* the utilities so that the utilities could still
   * override them.
@@ -17,19 +17,19 @@
 
 /*! purgecss start ignore */
 @import "~react-image-crop/lib/ReactCrop.scss";
-@import './reset.scss';
-@import './colors.scss';
-@import './form.scss';
-@import './grid.scss';
+@import "./reset.scss";
+@import "./colors.scss";
+@import "./form.scss";
+@import "./grid.scss";
 /*! purgecss end ignore */
 
- /**
+/**
   * This injects all of Tailwind's utility classes, generated based on your
   * config file.
   */
 @tailwind utilities;
 
- /**
+/**
   * Here you would add any custom utilities you need that don't come out of the
   * box with Tailwind.
   */

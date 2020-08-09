@@ -2,17 +2,12 @@ import React, { useRef } from "react"
 import { Link } from "react-router-dom"
 import Switch from "react-switch"
 
-import SigninButton from "./SigninButton"
 import Avatar from "./Avatar"
 import EnvDropDownMenus from "./EnvDropDownMenu"
 import GuestMenu from "./GuestMenu"
 import ProfileLoadingPlaceholder from "./ProfileLoadingPlaceholder"
-import {
-    DropDown,
-    DropDownItem,
-    DropDownMenu,
-    DropDownMenuToggle,
-} from "@common/DropDown"
+import SigninButton from "./SigninButton"
+import { DropDown, DropDownItem, DropDownMenu, DropDownMenuToggle } from "@common/DropDown"
 import EditProfileIcon from "@icons/menu/EditProfileIcon"
 import ProfileIcon from "@icons/menu/ProfileIcon"
 import IndexIcon from "@icons/menu/IndexIcon"
@@ -29,158 +24,141 @@ import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import Routes from "@routes"
 
 const UserMenu = () => {
-    const { currentWalletLogo, currentAddress, darkMode } = useSelector(
-        state => state.env
-    )
-    const { name, avatar } = useSelector(state => state.profile)
-    const { isSignedIn, address } = useSelector(state => state.user)
-    const { isLoadingProfile } = useSelector(state => state.ui)
+  const { currentWalletLogo, currentAddress, darkMode } = useSelector(state => state.env)
+  const { name, avatar } = useSelector(state => state.profile)
+  const { isSignedIn, address } = useSelector(state => state.user)
+  const { isLoadingProfile } = useSelector(state => state.ui)
 
-    const hasSwitchedAccount = currentAddress && address !== currentAddress
+  const hasSwitchedAccount = currentAddress && address !== currentAddress
 
-    let mainMenuRef = useRef()
-    let indexMenuRef = useRef()
-    let gatewayMenuRef = useRef()
+  const mainMenuRef = useRef()
+  const indexMenuRef = useRef()
+  const gatewayMenuRef = useRef()
 
-    const signOut = async () => {
-        await providerActions.signout()
-    }
+  const signOut = async () => {
+    await providerActions.signout()
+  }
 
-    const handleDarkModeChange = () => {
-        toggleDarkMode(!darkMode)
-    }
+  const handleDarkModeChange = () => {
+    toggleDarkMode(!darkMode)
+  }
 
-    if (isSignedIn === undefined || isLoadingProfile) {
-        return (
-            <>
-                <GuestMenu />
-                <ProfileLoadingPlaceholder />
-            </>
-        )
-    }
-
-    if (isSignedIn === false) {
-        return (
-            <>
-                <GuestMenu />
-                <SigninButton>Sign in</SigninButton>
-            </>
-        )
-    }
-
+  if (isSignedIn === undefined || isLoadingProfile) {
     return (
-        <DropDown>
-            <DropDownMenuToggle menuRef={mainMenuRef}>
-                <Avatar
-                    image={avatar}
-                    address={address}
-                    showBadge={hasSwitchedAccount}
-                />
-            </DropDownMenuToggle>
-
-            <DropDownMenu menuRef={mainMenuRef} alignRight={true}>
-                <DropDownItem inactive={true}>
-                    <Avatar image={avatar} address={address} />
-                    <div className="flex flex-col flex-1">
-                        <span>
-                            {
-                                checkIsEthAddress(name)
-                                    ? shortenEthAddr(name)
-                                    : name || shortenEthAddr(address)
-                            }
-                        </span>
-                        {name && (
-                            <small className="text-gray-500">
-                                {shortenEthAddr(address)}
-                            </small>
-                        )}
-                    </div>
-                    <img src={currentWalletLogo} alt="" width="30" />
-                </DropDownItem>
-                <hr />
-                {name && (
-                    <DropDownItem>
-                        <Link to={Routes.getChannelLink(address)}>
-                            <ProfileIcon />
-                            <span>View profile</span>
-                        </Link>
-                    </DropDownItem>
-                )}
-                <DropDownItem>
-                    <Link to={Routes.getChannelEditingLink(address)}>
-                        <EditProfileIcon />
-                        <span>Edit profile</span>
-                    </Link>
-                </DropDownItem>
-                <hr />
-                <DropDownMenuToggle menuRef={indexMenuRef} isMenuItem={true}>
-                    <div className="flex">
-                        <IndexIcon />
-                        <span>Index</span>
-                    </div>
-                </DropDownMenuToggle>
-                <DropDownMenuToggle menuRef={gatewayMenuRef} isMenuItem={true}>
-                    <div className="flex">
-                        <GatewayIcon />
-                        <span>Gateway</span>
-                    </div>
-                </DropDownMenuToggle>
-
-                <hr />
-
-                <DropDownItem>
-                    <div className="flex w-full">
-                        <DarkModeIcon />
-                        <span htmlFor="darkMode-field">Dark Mode</span>
-                        <Switch
-                            id="darkMode-field"
-                            className="ml-auto"
-                            checkedIcon={<DarkModeIcon className="mx-1" color="#fff" />}
-                            uncheckedIcon={<LightModeIcon className="mx-1" color="#333" />}
-                            height={24}
-                            width={50}
-                            handleDiameter={20}
-                            offColor={darkMode ? "#333" : "#ccc"}
-                            onColor="#34BA9C"
-                            checked={darkMode}
-                            onChange={handleDarkModeChange}
-                        />
-                    </div>
-                </DropDownItem>
-                <DropDownItem>
-                    <Link to={Routes.getShortcutsLink()}>
-                        <ShortcutsIcon />
-                        <span>Shortcuts</span>
-                    </Link>
-                </DropDownItem>
-
-                <hr />
-
-                <li className="dropdown-footer">
-                    {hasSwitchedAccount && (
-                        <DropDownItem action={providerActions.switchAccount}>
-                            <SwitchIcon />
-                            <div className="inline-flex flex-col">
-                                <span>Switch Account</span>
-                                <small className="text-gray-600">
-                                    {shortenEthAddr(currentAddress)}
-                                </small>
-                            </div>
-                        </DropDownItem>
-                    )}
-                    <DropDownItem action={signOut}>
-                        <SignoutIcon />
-                        <span>Sign out</span>
-                    </DropDownItem>
-                </li>
-            </DropDownMenu>
-
-            <EnvDropDownMenus
-                indexMenuRef={indexMenuRef}
-                gatewayMenuRef={gatewayMenuRef}
-            />
-        </DropDown>
+      <>
+        <GuestMenu />
+        <ProfileLoadingPlaceholder />
+      </>
     )
+  }
+
+  if (isSignedIn === false) {
+    return (
+      <>
+        <GuestMenu />
+        <SigninButton>Sign in</SigninButton>
+      </>
+    )
+  }
+
+  return (
+    <DropDown>
+      <DropDownMenuToggle menuRef={mainMenuRef}>
+        <Avatar image={avatar} address={address} showBadge={hasSwitchedAccount} />
+      </DropDownMenuToggle>
+
+      <DropDownMenu menuRef={mainMenuRef} alignRight={true}>
+        <DropDownItem inactive={true}>
+          <Avatar image={avatar} address={address} />
+          <div className="flex flex-col flex-1">
+            <span>
+              {checkIsEthAddress(name) ? shortenEthAddr(name) : name || shortenEthAddr(address)}
+            </span>
+            {name && (
+              <small className="text-gray-500">{shortenEthAddr(address)}</small>
+            )}
+          </div>
+          <img src={currentWalletLogo} alt="" width="30" />
+        </DropDownItem>
+        <hr />
+        {name && (
+          <DropDownItem>
+            <Link to={Routes.getChannelLink(address)}>
+              <ProfileIcon />
+              <span>View profile</span>
+            </Link>
+          </DropDownItem>
+        )}
+        <DropDownItem>
+          <Link to={Routes.getChannelEditingLink(address)}>
+            <EditProfileIcon />
+            <span>Edit profile</span>
+          </Link>
+        </DropDownItem>
+        <hr />
+        <DropDownMenuToggle menuRef={indexMenuRef} isMenuItem={true}>
+          <div className="flex">
+            <IndexIcon />
+            <span>Index</span>
+          </div>
+        </DropDownMenuToggle>
+        <DropDownMenuToggle menuRef={gatewayMenuRef} isMenuItem={true}>
+          <div className="flex">
+            <GatewayIcon />
+            <span>Gateway</span>
+          </div>
+        </DropDownMenuToggle>
+
+        <hr />
+
+        <DropDownItem>
+          <div className="flex w-full">
+            <DarkModeIcon />
+            <span htmlFor="darkMode-field">Dark Mode</span>
+            <Switch
+              id="darkMode-field"
+              className="ml-auto"
+              checkedIcon={<DarkModeIcon className="mx-1" color="#fff" />}
+              uncheckedIcon={<LightModeIcon className="mx-1" color="#333" />}
+              height={24}
+              width={50}
+              handleDiameter={20}
+              offColor={darkMode ? "#333" : "#ccc"}
+              onColor="#34BA9C"
+              checked={darkMode}
+              onChange={handleDarkModeChange}
+            />
+          </div>
+        </DropDownItem>
+        <DropDownItem>
+          <Link to={Routes.getShortcutsLink()}>
+            <ShortcutsIcon />
+            <span>Shortcuts</span>
+          </Link>
+        </DropDownItem>
+
+        <hr />
+
+        <li className="dropdown-footer">
+          {hasSwitchedAccount && (
+            <DropDownItem action={providerActions.switchAccount}>
+              <SwitchIcon />
+              <div className="inline-flex flex-col">
+                <span>Switch Account</span>
+                <small className="text-gray-600">{shortenEthAddr(currentAddress)}</small>
+              </div>
+            </DropDownItem>
+          )}
+          <DropDownItem action={signOut}>
+            <SignoutIcon />
+            <span>Sign out</span>
+          </DropDownItem>
+        </li>
+      </DropDownMenu>
+
+      <EnvDropDownMenus indexMenuRef={indexMenuRef} gatewayMenuRef={gatewayMenuRef} />
+    </DropDown>
+  )
 }
 
 export default UserMenu

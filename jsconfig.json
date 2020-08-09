@@ -1,21 +1,21 @@
 {
-    "compilerOptions": {
-        "baseUrl": ".",
-        "paths": {
-            "@app/*": ["src/app/*"],
-            "@components/*": ["src/components/*"],
-            "@common/*": ["src/components/common/*"],
-            "@keyboard": ["src/keyboard"],
-            "@lang/*": ["src/lang/*"],
-            "@icons/*": ["src/components/icons/*"],
-            "@pages/*": ["src/pages/*"],
-            "@routes": ["src/routes"],
-            "@state/*": ["src/state/*"],
-            "@utils/*": ["src/utils/*"],
-            "@svg/*": ["src/svg/*"]
-        },
-        "experimentalDecorators": true
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@components/*": ["src/components/*"],
+      "@common/*": ["src/components/common/*"],
+      "@keyboard": ["src/keyboard"],
+      "@lang/*": ["src/lang/*"],
+      "@icons/*": ["src/components/icons/*"],
+      "@pages/*": ["src/pages/*"],
+      "@routes": ["src/routes"],
+      "@state/*": ["src/state/*"],
+      "@utils/*": ["src/utils/*"],
+      "@svg/*": ["src/svg/*"]
     },
-    "include": ["src"],
-    "exclude": ["build", "node_modules", "public"]
+    "experimentalDecorators": true
+  },
+  "include": ["src"],
+  "exclude": ["build", "node_modules", "public"]
 }

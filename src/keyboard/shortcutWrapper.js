@@ -4,28 +4,28 @@ import { connect } from "react-redux"
 import { ShortcutManager } from "react-shortcuts"
 
 class ShortcutWrapper extends React.Component {
-    constructor(props) {
-        super(props)
-        this.shortcutManager = new ShortcutManager(props.keymap)
-    }
+  constructor(props) {
+    super(props)
+    this.shortcutManager = new ShortcutManager(props.keymap)
+  }
 
-    getChildContext() {
-        return { shortcuts: this.shortcutManager }
-    }
+  getChildContext() {
+    return { shortcuts: this.shortcutManager }
+  }
 
-    render() {
-        return this.props.children
-    }
+  render() {
+    return this.props.children
+  }
 }
 
 ShortcutWrapper.childContextTypes = {
-    shortcuts: PropTypes.object.isRequired,
+  shortcuts: PropTypes.object.isRequired,
 }
 
 const mapState = state => {
-    return {
-        keymap: state.env.keymap,
-    }
+  return {
+    keymap: state.env.keymap,
+  }
 }
 
 export default connect(mapState)(ShortcutWrapper)

@@ -9,40 +9,38 @@ import Modals from "@components/modals/ModalsSection"
 import { providerActions } from "@state/actions"
 
 const Layout = ({ children }) => {
-    return (
-        <LayoutContextProvider>
-            <LayoutContent>
-                {children}
-            </LayoutContent>
-        </LayoutContextProvider>
-    )
+  return (
+    <LayoutContextProvider>
+      <LayoutContent>{children}</LayoutContent>
+    </LayoutContextProvider>
+  )
 }
 
 const LayoutContent = ({ children }) => {
-    const [state] = useStateValue()
-    const { emptyLayout, hideSidebar } = state
+  const [state] = useStateValue()
+  const { emptyLayout, hideSidebar } = state
 
-    useEffect(() => {
-        !emptyLayout && providerActions.signin()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+  useEffect(() => {
+    !emptyLayout && providerActions.signin()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-    if (emptyLayout) {
-        return <main>{children}</main>
-    }
+  if (emptyLayout) {
+    return <main>{children}</main>
+  }
 
-    return (
-        <>
-            <Header />
-            {!hideSidebar && <Sidebar />}
-            <main>{children}</main>
-            <Modals />
-        </>
-    )
+  return (
+    <>
+      <Header />
+      {!hideSidebar && <Sidebar />}
+      <main>{children}</main>
+      <Modals />
+    </>
+  )
 }
 
 Layout.propTypes = {
-    children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired,
 }
 
 export default Layout

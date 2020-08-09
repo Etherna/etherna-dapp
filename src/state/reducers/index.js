@@ -6,8 +6,8 @@ import uiReducer from "./uiReducer"
 import userReducer from "./userReducer"
 
 export default combineReducers({
-    env: enviromentReducer,
-    profile: profileReducer,
-    ui: uiReducer,
-    user: userReducer,
+  env: enviromentReducer,
+  profile: profileReducer,
+  ui: uiReducer,
+  user: userReducer,
 })

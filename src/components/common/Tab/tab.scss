@@ -1,37 +1,37 @@
 .tab {
-    &-nav {
-        @apply flex flex-wrap items-center border-b-2 border-gray-400;
-    }
-    &-nav-link {
-        @apply px-4 py-2 text-gray-700 border-b-2 border-transparent;
-        margin-bottom: -2px;
+  &-nav {
+    @apply flex flex-wrap items-center border-b-2 border-gray-400;
+  }
+  &-nav-link {
+    @apply px-4 py-2 text-gray-700 border-b-2 border-transparent;
+    margin-bottom: -2px;
 
-        &.active {
-            @apply border-blue-500 text-gray-900;
-        }
-        &:hover {
-            @apply text-gray-600;
-        }
+    &.active {
+      @apply border-blue-500 text-gray-900;
     }
-    &-link-add {
-        @apply w-6 h-6 ml-3 mb-2 flex items-center justify-center rounded border border-gray-500
+    &:hover {
+      @apply text-gray-600;
+    }
+  }
+  &-link-add {
+    @apply w-6 h-6 ml-3 mb-2 flex items-center justify-center rounded border border-gray-500
             text-gray-600 text-lg font-semibold transition-colors duration-300 leading-none;
-        &:hover {
-            @apply bg-gray-400 border-gray-400 text-gray-900 transition-colors;
-        }
+    &:hover {
+      @apply bg-gray-400 border-gray-400 text-gray-900 transition-colors;
     }
-    &-link-remove {
-        @apply w-4 h-4 ml-2 inline-flex items-center justify-center rounded-full bg-red-500
+  }
+  &-link-remove {
+    @apply w-4 h-4 ml-2 inline-flex items-center justify-center rounded-full bg-red-500
             leading-none text-lg font-semibold;
-    }
-    &-contents {
-        @apply pt-4;
-    }
-    &-content {
-        @apply hidden;
+  }
+  &-contents {
+    @apply pt-4;
+  }
+  &-content {
+    @apply hidden;
 
-        &.active {
-            @apply block;
-        }
+    &.active {
+      @apply block;
     }
+  }
 }

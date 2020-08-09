@@ -17,18 +17,18 @@ import http from "@utils/request"
  * @returns {Identity}
  */
 export const getIdentity = async () => {
-    const host = process.env.REACT_APP_SSO_HOST
-    const version = process.env.REACT_APP_SSO_API_VERSION
-    const apiUrl = `${host}/api/v${version}/identity`
+  const host = process.env.REACT_APP_SSO_HOST
+  const version = process.env.REACT_APP_SSO_API_VERSION
+  const apiUrl = `${host}/api/v${version}/identity`
 
-    const resp = await http.get(apiUrl, {
-        headers: {
-            "Accept": "application/json",
-            "Content-type": "application/json"
-        },
-        withCredentials: true
-    })
-    const data = resp.data
+  const resp = await http.get(apiUrl, {
+    headers: {
+      "Accept": "application/json",
+      "Content-type": "application/json",
+    },
+    withCredentials: true,
+  })
+  const data = resp.data
 
-    return data
+  return data
 }

@@ -7,14 +7,16 @@ import { store } from "@state/store"
  * @returns {string} The signature
  */
 export const askToSignMessage = async (hash, normalize = false) => {
-    const { web3, wallet } = store.getState().env
+  const { web3, wallet } = store.getState().env
 
-    if (!web3.currentProvider.selectedAddress && !wallet) {
-        throw new Error("Coudn't find a web3 instance. Make sure you are signed in with etherna or MetaMask")
-    }
+  if (!web3.currentProvider.selectedAddress && !wallet) {
+    throw new Error(
+      "Coudn't find a web3 instance. Make sure you are signed in with etherna or MetaMask"
+    )
+  }
 
-    const sig = wallet.sign(hash, normalize)
-    return sig
+  const sig = wallet.sign(hash, normalize)
+  return sig
 }
 
 // const requestSign = async (data, address) => {

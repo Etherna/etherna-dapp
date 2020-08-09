@@ -1,7 +1,6 @@
 import http from "@utils/request"
 import apiPath from "./apiPath"
 
-
 /**
  *
  * @typedef {object} Video
@@ -13,7 +12,6 @@ import apiPath from "./apiPath"
  *
  */
 
-
 // ----------------------------------------------------------------------------
 // GET
 
@@ -24,18 +22,18 @@ import apiPath from "./apiPath"
  * @returns {Video[]}
  */
 export const getVideos = async (page = 0, take = 25) => {
-    const path = apiPath()
-    const apiUrl = `${path}/videos`
+  const path = apiPath()
+  const apiUrl = `${path}/videos`
 
-    const resp = await http.get(apiUrl, {
-        params: { page, take },
-    })
+  const resp = await http.get(apiUrl, {
+    params: { page, take },
+  })
 
-    if (!Array.isArray(resp.data)) {
-        throw new Error("Cannot fetch videos")
-    }
+  if (!Array.isArray(resp.data)) {
+    throw new Error("Cannot fetch videos")
+  }
 
-    return resp.data
+  return resp.data
 }
 
 /**
@@ -44,18 +42,17 @@ export const getVideos = async (page = 0, take = 25) => {
  * @returns {Video}
  */
 export const getVideo = async hash => {
-    const path = apiPath()
-    const apiUrl = `${path}/videos/${hash}`
+  const path = apiPath()
+  const apiUrl = `${path}/videos/${hash}`
 
-    const resp = await http.get(apiUrl)
+  const resp = await http.get(apiUrl)
 
-    if (typeof resp.data !== "object") {
-        throw new Error("Cannot fetch the video")
-    }
+  if (typeof resp.data !== "object") {
+    throw new Error("Cannot fetch the video")
+  }
 
-    return resp.data
+  return resp.data
 }
-
 
 // ----------------------------------------------------------------------------
 // POST
@@ -68,28 +65,31 @@ export const getVideo = async hash => {
  * @returns {Video} Video info
  */
 export const createVideo = async (hash, encryptionKey, encryptionType = "AES256") => {
-    const path = apiPath()
-    const apiUrl = `${path}/videos`
+  const path = apiPath()
+  const apiUrl = `${path}/videos`
 
-    const resp = await http.post(apiUrl, {
-        manifestHash: hash,
-        encryptionKey,
-        encryptionType
-    }, {
-        headers: {
-            "Accept": "application/json",
-            "Content-type": "application/json"
-        },
-        withCredentials: true
-    })
-
-    if (typeof resp.data !== "object") {
-        throw new Error("Cannot create the video")
+  const resp = await http.post(
+    apiUrl,
+    {
+      manifestHash: hash,
+      encryptionKey,
+      encryptionType,
+    },
+    {
+      headers: {
+        "Accept": "application/json",
+        "Content-type": "application/json",
+      },
+      withCredentials: true,
     }
+  )
 
-    return resp.data
+  if (typeof resp.data !== "object") {
+    throw new Error("Cannot create the video")
+  }
+
+  return resp.data
 }
-
 
 // ----------------------------------------------------------------------------
 // PUT
@@ -101,22 +101,21 @@ export const createVideo = async (hash, encryptionKey, encryptionType = "AES256"
  * @returns {Video} Video info
  */
 export const updateVideo = async (hash, newHash) => {
-    const path = apiPath()
-    const apiUrl = `${path}/videos/${hash}`
+  const path = apiPath()
+  const apiUrl = `${path}/videos/${hash}`
 
-    const resp = await http.put(apiUrl, null, {
-        params: {
-            newHash
-        }
-    })
+  const resp = await http.put(apiUrl, null, {
+    params: {
+      newHash,
+    },
+  })
 
-    if (typeof resp.data !== "object") {
-        throw new Error("Cannot update the video")
-    }
+  if (typeof resp.data !== "object") {
+    throw new Error("Cannot update the video")
+  }
 
-    return resp.data
+  return resp.data
 }
-
 
 // ----------------------------------------------------------------------------
 // DELETE
@@ -127,10 +126,10 @@ export const updateVideo = async (hash, newHash) => {
  * @returns {boolean} Success state
  */
 export const deleteVideo = async hash => {
-    const path = apiPath()
-    const apiUrl = `${path}/videos/${hash}`
+  const path = apiPath()
+  const apiUrl = `${path}/videos/${hash}`
 
-    await http.delete(apiUrl)
+  await http.delete(apiUrl)
 
-    return true
+  return true
 }

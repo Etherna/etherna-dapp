@@ -13,10 +13,10 @@ import apiPath from "./apiPath"
  * @returns {Settings}
  */
 export const getSettings = async () => {
-    const path = apiPath()
-    const apiUrl = `${path}/system/settings`
+  const path = apiPath()
+  const apiUrl = `${path}/system/settings`
 
-    const resp = await http.get(apiUrl)
+  const resp = await http.get(apiUrl)
 
-    return resp.data
+  return resp.data
 }

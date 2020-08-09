@@ -5,7 +5,7 @@ import blockies from "ethereum-blockies-base64"
  * @param {string} address Eth address
  */
 const makeBlockies = address => {
-    return blockies(address || "0x0")
+  return blockies(address || "0x0")
 }
 
 export default makeBlockies
