@@ -9,6 +9,7 @@ import Routes from "@routes"
 import { getProfile } from "@utils/swarmProfile"
 import { getChannelVideos } from "@utils/ethernaResources/channelResources"
 import { shortenEthAddr } from "@utils/ethFuncs"
+import { fetchFullVideosInfo } from "@utils/video"
 
 const ChannelPreview = ({ channelAddress }) => {
     const [isFetchingChannel, setIsFetchingChannel] = useState(false)
@@ -19,12 +20,12 @@ const ChannelPreview = ({ channelAddress }) => {
     useEffect(() => {
         fetchProfile()
         fetchVideos()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
         mapVideosProfile()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [profile, videos])
 
     const fetchProfile = async () => {
@@ -42,7 +43,7 @@ const ChannelPreview = ({ channelAddress }) => {
 
     const fetchVideos = async () => {
         try {
-            const videos = await getChannelVideos(channelAddress, 0, 5)
+            const videos = await fetchFullVideosInfo(0, 5, false, channelAddress)
             setVideos(videos)
         } catch (error) {
             console.error(error)

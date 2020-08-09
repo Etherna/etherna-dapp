@@ -6,6 +6,7 @@ import { getVideoDuration } from "./media"
 import { getVideos, getVideo } from "./ethernaResources/videosResources"
 import { getProfile } from "./swarmProfile"
 import { store } from "@state/store"
+import { getChannelVideos } from "./ethernaResources/channelResources"
 
 /**
  * @typedef SwarmVideoMeta
@@ -52,10 +53,13 @@ import { store } from "@state/store"
  * @param {number} page Page offset (default = 0)
  * @param {number} take Count of videos to get (default = 25)
  * @param {boolean} fetchProfile Fetch channel profile info
+ * @param {string} channelAddress Fetch videos by a channel
  * @returns {VideoMetadata[]}
  */
-export const fetchFullVideosInfo = async (page = 0, take = 25, fetchProfile = true) => {
-    const videos = await getVideos(page, take)
+export const fetchFullVideosInfo = async (page = 0, take = 25, fetchProfile = true, channelAddress) => {
+    const videos = channelAddress
+        ? await getChannelVideos(channelAddress, page, take)
+        : await getVideos(page, take)
     const videoManifests = videos.map(video => fetchVideoMeta(video.manifestHash))
     const promises = videoManifests.concat(
         fetchProfile ? videos.map(video => getProfile(video.channelAddress)) : []

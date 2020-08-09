@@ -17,6 +17,7 @@ import {
     getChannel,
 } from "@utils/ethernaResources/channelResources"
 import Routes from "@routes"
+import { fetchFullVideosInfo } from "@utils/video"
 
 const FETCH_COUNT = 50
 
@@ -86,7 +87,7 @@ const ChannelView = ({ channelAddress }) => {
         try {
             const videos = hasPrefetch
                 ? prefetchVideos
-                : await getChannelVideos(channelAddress, page, FETCH_COUNT)
+                : await fetchFullVideosInfo(page, FETCH_COUNT, false, channelAddress)
             setChannelVideos(page === 0 ? videos : channelVideos.concat(videos))
 
             if (videos.length < FETCH_COUNT) {
@@ -104,14 +105,15 @@ const ChannelView = ({ channelAddress }) => {
 
     const mapVideosWithProfile = () => {
         if (!profileInfo || !channelVideos) return
-        let videos = channelVideos
-        for (let video of videos) {
-            video.profileData = {
+
+        const videos = channelVideos.map(v => ({
+            ...v,
+            profileData: {
                 name: profileInfo.name,
                 avatar: profileInfo.avatar,
+                address: profileInfo.address
             }
-        }
-
+        }))
         setChannelVideos(videos)
     }
 
