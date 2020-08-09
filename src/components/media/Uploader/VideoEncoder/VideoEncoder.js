@@ -18,7 +18,14 @@ const ffmpeg = createFFmpeg({
  * @param {Function} onCancel
  * @param {Function} onEncodingComplete
  */
-const VideoEncoder = ({ file, onEncodingComplete, onCancel }) => {
+const VideoEncoder = ({
+    file,
+    canEncode,
+    onConfirmEncode,
+    onEncodingComplete,
+    onCancel
+}) => {
+    const [confirmed, setConfirmed] = useState(false)
     const [isEncoding, setIsEncoding] = useState(false)
     const isWebCompatible = isMimeWebCompatible(file.type)
 
@@ -28,6 +35,11 @@ const VideoEncoder = ({ file, onEncodingComplete, onCancel }) => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    useEffect(() => {
+        confirmed && canEncode && startEncoding()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [confirmed, canEncode])
 
     const startEncoding = async () => {
         setIsEncoding(true)
@@ -51,9 +63,16 @@ const VideoEncoder = ({ file, onEncodingComplete, onCancel }) => {
         }
     }
 
+    const confirmEncode = () => {
+        setConfirmed(true)
+        onConfirmEncode && onConfirmEncode()
+    }
+
     const upload = async () => {
         const buffer = await fileReaderPromise(file)
         onEncodingComplete(buffer)
+
+        onConfirmEncode && onConfirmEncode()
     }
 
     return (
@@ -74,7 +93,7 @@ const VideoEncoder = ({ file, onEncodingComplete, onCancel }) => {
                     <Button
                         size="small"
                         className="ml-2"
-                        action={startEncoding}
+                        action={confirmEncode}
                     >
                         Encode and Upload
                     </Button>
@@ -88,6 +107,11 @@ const VideoEncoder = ({ file, onEncodingComplete, onCancel }) => {
                         </Button>
                     )}
                 </>
+            )}
+            {confirmed && !canEncode && (
+                <p className="text-gray-700 mb-3">
+                    Pending encoding...
+                </p>
             )}
             {isEncoding && (
                 <div className="video-encoder">
@@ -119,7 +143,14 @@ const VideoEncoder = ({ file, onEncodingComplete, onCancel }) => {
 
 VideoEncoder.propTypes = {
     file: PropTypes.object.isRequired,
+    canEncode: PropTypes.bool,
+    onConfirmEncode: PropTypes.func,
     onEncodingComplete: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+}
+
+VideoEncoder.defaultProps = {
+    canEncode: true,
 }
 
 export default VideoEncoder

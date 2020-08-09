@@ -1,6 +1,5 @@
 import Web3 from "web3"
 import { UserManager } from "oidc-client"
-import { Account as Wallet } from "web3-core"
 import { Crop } from "react-image-crop"
 import Lang from "lang.js"
 import { Keymap } from "@keyboard"
@@ -21,7 +20,10 @@ export interface EnvState {
     isMobile: boolean
     darkMode: boolean
 
-    wallet?: Wallet
+    wallet?: {
+        address: string,
+        sign: (data: string, normalize: boolean = false) => string
+    }
     web3?: Web3
     currentWallet?: string
     currentWalletLogo?: string

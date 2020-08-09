@@ -5,6 +5,8 @@
   "version": "0.1.0",
   "author": "Mattia Dalzocchio",
   "dependencies": {
+    "@erebos/bzz-feed": "^0.13.2",
+    "@erebos/secp256k1": "^0.10.0",
     "@erebos/swarm-node": "^0.13.0",
     "@ffmpeg/ffmpeg": "^0.8.3",
     "@loadable/component": "^5.12.0",

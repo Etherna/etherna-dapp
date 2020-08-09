@@ -8,9 +8,21 @@ import { EnvActionTypes } from "@state/reducers/enviromentReducer"
 export const injectWallet = privateKey => {
     const { web3 } = store.getState().env
     const wallet = web3.eth.accounts.privateKeyToAccount(privateKey)
-    wallet.sign = function (data) {
+    wallet.sign = function (data, normalize = false) {
         const sign = require("eth-lib").account.sign
-        return sign(data, privateKey)
+        const hash = web3.utils.isHex(data)
+            ? data
+            : web3.utils.bytesToHex(data)
+
+        let sig = sign(hash, privateKey)
+
+        if (normalize) {
+            let sigBytes = web3.utils.hexToBytes(sig)
+            sigBytes[64] -= 27
+            sig = web3.utils.bytesToHex(sigBytes)
+        }
+
+        return sig
     }
     delete wallet.encrypt
     delete wallet.signTransaction

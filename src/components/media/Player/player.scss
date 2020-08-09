@@ -7,7 +7,7 @@ $bg-alpha-30-light: rgba($color: #fff, $alpha: 0.30);
 $bg-alpha-50-light: rgba($color: #fff, $alpha: 0.50);
 
 .player {
-    @apply relative my-6 bg-gray-200 overflow-hidden rounded shadow-lg;
+    @apply relative my-6 bg-gray-200 overflow-hidden shadow-lg;
 
     video {
         @apply min-h-md max-h-80vh w-full;
@@ -15,7 +15,7 @@ $bg-alpha-50-light: rgba($color: #fff, $alpha: 0.50);
 
     .controls {
         @apply opacity-0 absolute flex flex-wrap items-center inset-x-0 bottom-0 cursor-default
-            transition duration-100 px-4 pb-4 pt-12 rounded-b text-white;
+            transition duration-100 px-3 pb-2 pt-12 text-white;
         background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(20,20,20,0) 100%);
 
         .btn {

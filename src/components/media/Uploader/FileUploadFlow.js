@@ -3,40 +3,62 @@ import React, { useState, useEffect, useImperativeHandle } from "react"
 import FileDrag from "./FileDrag"
 import VideoEncoder from "./VideoEncoder"
 import SwarmFileUpload from "./SwarmFileUpload"
-import { getVideoDuration } from "@utils/media"
-import { isMimeFFMpegEncodable, isMimeImage, isMimeMedia } from "@utils/mimeTypes"
+import { getVideoDuration, getVideoResolution } from "@utils/media"
+import { isMimeFFMpegEncodable, isMimeMedia } from "@utils/mimeTypes"
 import { showError } from "@state/actions/modals"
 import { fileReaderPromise } from "@utils/swarm"
 
 const FileUploadFlow = ({
+    hash: previusHash,
     label,
     dragLabel,
     acceptTypes = ["mime"],
     sizeLimit = 100,
     pinContent = false,
+    manifest,
+    path,
     disabled,
+    canProcessFile = true,
+    showImagePreview = false,
+    onConfirmedProcessing,
     onHashUpdate,
-    onDurationUpdate
+    onQualityUpdate,
+    onDurationUpdate,
+    onProgressChange,
+    onCancel,
 }, ref) => {
     const [buffer, setBuffer] = useState(undefined)
     const [file, setFile] = useState(undefined)
-    const [hash, setHash] = useState(undefined)
+    const [hash, setHash] = useState(previusHash)
     const [duration, setDuration] = useState(undefined)
+    const [quality, setQuality] = useState(undefined)
+
+    const status = previusHash ? "preview"
+        : file === undefined ? "select"
+        : file !== undefined && buffer === undefined ? "encode"
+        : file !== undefined && buffer !== undefined ? "upload"
+        : ""
+
 
     useEffect(() => {
         onHashUpdate && onHashUpdate(hash)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [hash])
 
     useEffect(() => {
-        updateDuration()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        updateVideoMetadata()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [file, buffer])
 
     useEffect(() => {
         onDurationUpdate && onDurationUpdate(duration)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [duration])
+
+    useEffect(() => {
+        onQualityUpdate && onQualityUpdate(quality)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [quality])
 
     useImperativeHandle(ref, () => ({
         clear() {
@@ -78,9 +100,9 @@ const FileUploadFlow = ({
         setFile(file)
     }
 
-    const updateDuration = async () => {
+    const updateVideoMetadata = async () => {
         if (!file) return
-        if (!buffer && isMimeFFMpegEncodable(file.type)) return
+        if (!buffer && !isMimeFFMpegEncodable(file.type)) return
         if (!isMimeMedia(file.type)) return
 
         try {
@@ -90,6 +112,14 @@ const FileUploadFlow = ({
             console.error(error)
             showError("Metadata error", error.message || "Cannot retrieve video duration")
         }
+
+        try {
+            const quality = await getVideoResolution(buffer || file)
+            setQuality(`${quality}p`)
+        } catch (error) {
+            console.error(error)
+            showError("Metadata error", error.message || "Cannot retrieve video quality")
+        }
     }
 
     const handleCancel = () => {
@@ -97,12 +127,13 @@ const FileUploadFlow = ({
         setFile(undefined)
         setHash(undefined)
         setDuration(undefined)
+        onCancel && onCancel()
     }
 
     return (
         <>
             <label htmlFor="video">{label}</label>
-            {file === undefined && (
+            {status === "select" && (
                 <FileDrag
                     id={`${label}-input`}
                     label={dragLabel}
@@ -112,23 +143,32 @@ const FileUploadFlow = ({
                     uploadLimit={sizeLimit}
                 />
             )}
-            {file !== undefined && buffer === undefined && (
+            {status === "encode" && (
                 <VideoEncoder
                     file={file}
+                    canEncode={canProcessFile}
+                    onConfirmEncode={onConfirmedProcessing}
                     onEncodingComplete={buffer => setBuffer(buffer)}
                     onCancel={handleCancel}
                 />
             )}
-            {file !== undefined && buffer !== undefined && (
+            {(status === "upload" || status === "preview") && (
                 <SwarmFileUpload
+                    hash={hash}
                     buffer={buffer}
-                    filename={file.name}
-                    onFinishedUploading={hash => setHash(hash)}
-                    onRemoveFile={handleCancel}
-                    showConfirmation={!isMimeFFMpegEncodable(file.type)}
-                    showImagePreview={isMimeImage(file.type)}
+                    manifest={manifest}
+                    path={path}
+                    contentType={file && file.type}
+                    filename={file && file.name}
+                    showConfirmation={!isMimeFFMpegEncodable(file && file.type)}
+                    showImagePreview={showImagePreview}
                     disabled={disabled}
                     pinContent={pinContent}
+                    canUpload={canProcessFile}
+                    onConfirmUpload={onConfirmedProcessing}
+                    onProgressChange={onProgressChange}
+                    onFinishedUploading={hash => setHash(hash)}
+                    onRemoveFile={handleCancel}
                 />
             )}
         </>

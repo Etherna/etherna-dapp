@@ -62,6 +62,26 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
         update()
     }
 
+    const handleIndexUpdate = () => {
+        enviromentActions.updateIndexHost(indexHostValue, indexApiVersionValue)
+        window.location.reload()
+    }
+
+    const handleIndexReset = () => {
+        enviromentActions.resetIndexHost()
+        window.location.reload()
+    }
+
+    const handleGatewayUpdate = () => {
+        enviromentActions.updateGatewayHost(gatewayHostValue)
+        window.location.reload()
+    }
+
+    const handleGatewayReset = () => {
+        enviromentActions.resetGatewayHost()
+        window.location.reload()
+    }
+
     return (
         <>
             <DropDownMenu
@@ -93,9 +113,7 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
                         </div>
                     </div>
                     <Button
-                        action={() =>
-                            enviromentActions.updateIndexHost(indexHostValue, indexApiVersionValue)
-                        }
+                        action={handleIndexUpdate}
                         size="small"
                         className="mt-2 ml-auto"
                         disabled={
@@ -107,7 +125,7 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
                     </Button>
 
                     <Button
-                        action={() => enviromentActions.resetIndexHost()}
+                        action={handleIndexReset}
                         size="small"
                         aspect="link"
                         className="mt-2 ml-auto"
@@ -134,11 +152,7 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
                         onChange={e => setGatewayHostValue(e.target.value)}
                     />
                     <Button
-                        action={() =>
-                            enviromentActions.updateGatewayHost(
-                                gatewayHostValue
-                            )
-                        }
+                        action={handleGatewayUpdate}
                         size="small"
                         className="mt-2 ml-auto"
                         disabled={gatewayHostValue === gatewayHost}
@@ -147,7 +161,7 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
                     </Button>
 
                     <Button
-                        action={() => enviromentActions.resetGatewayHost()}
+                        action={handleGatewayReset}
                         size="small"
                         aspect="link"
                         className="mt-2 ml-auto"

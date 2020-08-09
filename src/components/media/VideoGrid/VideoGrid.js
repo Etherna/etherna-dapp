@@ -6,6 +6,14 @@ import "./video-grid.scss"
 import VideoPreview from "@components/media/VideoPreview"
 import VideoPreviewPlaceholder from "../VideoPreviewPlaceholder"
 
+/**
+ * @typedef VideoGridProps
+ * @property {string} label
+ * @property {import("@utils/video").VideoMetadata[]} videos
+ * @property {boolean} mini
+ *
+ * @param {VideoGridProps} param0
+ */
 const VideoGrid = ({ label, videos, mini }) => {
     const LabelTag = mini ? "h5" : "h3"
     return (

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
 import InfiniteScroller from "react-infinite-scroller"
 
-import { getVideos } from "@utils/ethernaResources/videosResources"
 import VideoGrid from "@components/media/VideoGrid"
+import { fetchVideoMeta } from "@utils/video"
 
 const FETCH_COUNT = 25
 
@@ -20,7 +20,7 @@ const ExploreView = () => {
         if (!hasMore) return
 
         try {
-            const fetchedVideos = await getVideos(page, FETCH_COUNT)
+            const fetchedVideos = await fetchVideoMeta(page, FETCH_COUNT)
             setVideos(page === 0 ? fetchedVideos : videos.concat(fetchVideos))
 
             if (fetchedVideos.length < FETCH_COUNT) {

@@ -1,30 +1,33 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import PropTypes from "prop-types"
 import { Link } from "react-router-dom"
 import moment from "moment"
 
 import "./video-preview.scss"
 import Time from "../Time"
-import Avatar from "@components/user/Avatar"
-import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
-import { getProfile } from "@utils/swarmProfile"
-import { getResourceUrl } from "@utils/swarm"
-import Routes from "@routes"
-import useSelector from "@state/useSelector"
 import VideoMenu from "../VideoMenu"
+import Avatar from "@components/user/Avatar"
+import SwarmImage from "@components/common/SwarmImage"
+import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
+import useSelector from "@state/useSelector"
+import Routes from "@routes"
 
+/**
+ * @typedef VideoGridProps
+ * @property {import("@utils/video").VideoMetadata} video
+ * @property {hideProfile} mini
+ *
+ * @param {VideoGridProps} param0
+ */
 const VideoPreview = ({ video, hideProfile }) => {
     const { address } = useSelector(state => state.user)
 
     const profileAddress = video.channelAddress
-    const thumbnail = video.thumbnailHash
-        ? getResourceUrl(video.thumbnailHash)
-        : undefined
-    const [profileName, setProfileName] = useState(
+    const profileName = useState(
         (video.profileData && video.profileData.name) ||
         shortenEthAddr(profileAddress)
     )
-    const [profileAvatar, setProfileAvatar] = useState(
+    const profileAvatar = useState(
         video.profileData && video.profileData.avatar
     )
 
@@ -32,21 +35,6 @@ const VideoPreview = ({ video, hideProfile }) => {
     const videoLink = Routes.getVideoLink(video.videoHash)
     const videoSearch = new URL(videoLink, document.baseURI).search
     const videoPath = videoLink.replace(videoSearch, "")
-
-    useEffect(() => {
-        if (!video.profileData) {
-            fetchProfile()
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    const fetchProfile = async () => {
-        const profile = await getProfile(video.channelAddress)
-        video.profileData = profile
-
-        setProfileName(profile.name || shortenEthAddr(profileAddress))
-        setProfileAvatar(profile.avatar)
-    }
 
     return (
         <div className="video-preview">
@@ -58,22 +46,13 @@ const VideoPreview = ({ video, hideProfile }) => {
                 }}
             >
                 <div className="video-thumbnail">
-                    {thumbnail && (
-                        <img
-                            src={thumbnail}
-                            alt=""
-                            className="h-full object-cover"
-                        />
-                    )}
-                    {!thumbnail && (
-                        <img
-                            src={require("@svg/backgrounds/thumb-placeholder.svg")}
-                            alt=""
-                            className="w-full h-full"
-                        />
-                    )}
+                    <SwarmImage
+                        hash={video.thumbnailHash}
+                        fallback={require("@svg/backgrounds/thumb-placeholder.svg")}
+                        className="w-full h-full object-cover"
+                    />
                     <div className="video-duration">
-                        <Time duration={video.lengthInSeconds} />
+                        <Time duration={video.duration} />
                     </div>
                 </div>
             </Link>
@@ -111,13 +90,10 @@ const VideoPreview = ({ video, hideProfile }) => {
                     )}
                     {video.creationDateTime && (
                         <div className="publish-time">
-                            {moment
-                                .duration(
-                                    moment(video.creationDateTime).diff(
-                                        moment()
-                                    )
-                                )
-                                .humanize(true)}
+                            {moment.duration(
+                                moment(video.creationDateTime).diff(moment())
+                            )
+                            .humanize(true)}
                         </div>
                     )}
                 </div>
@@ -130,18 +106,7 @@ const VideoPreview = ({ video, hideProfile }) => {
 }
 
 VideoPreview.propTypes = {
-    video: PropTypes.shape({
-        channelAddress: PropTypes.string.isRequired,
-        creationDateTime: PropTypes.string,
-        thumbnailHash: PropTypes.string,
-        title: PropTypes.string,
-        lengthInSeconds: PropTypes.number,
-        videoHash: PropTypes.string.isRequired,
-        profileData: PropTypes.shape({
-            name: PropTypes.string,
-            avatar: PropTypes.object,
-        }),
-    }).isRequired,
+    video: PropTypes.object.isRequired,
     hideProfile: PropTypes.bool,
 }
 

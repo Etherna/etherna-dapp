@@ -18,11 +18,12 @@ const AxiosPendingCache = {
      * @return {string}
      */
     configHash: config => {
-        return sha3(JSON.stringify({
+        return config ? sha3(JSON.stringify({
             method: config.method,
             url: config.url,
-            params: config.params
-        }))
+            params: config.params,
+            body: config.data || "",
+        })) : ""
     },
 
     /**
@@ -61,7 +62,7 @@ const AxiosPendingCache = {
                 } else {
                     checkResolve()
                 }
-            }, 500)
+            }, 200)
         }
         checkResolve()
     }),
@@ -105,6 +106,9 @@ const AxiosPendingCache = {
 const request = axios.create()
 
 request.interceptors.request.use(async config => {
+    // only cache get requests
+    if (!["GET", "get"].includes(config.method)) return config
+
     const shouldThrottle = AxiosPendingCache.shouldThrottle(config)
 
     AxiosPendingCache.pushPendingRequest(config)
@@ -132,7 +136,11 @@ request.interceptors.response.use(response => {
     // check if a pending request exists
     let pendingRequest = AxiosPendingCache.findPendingRequest(response.config)
     if (pendingRequest) {
-        pendingRequest.response = response
+        if (pendingRequest.count > 0) {
+            pendingRequest.response = response
+        } else {
+            AxiosPendingCache.popPendingRequest(response.config)
+        }
     }
     return response
 }, async error => {
@@ -154,9 +162,13 @@ request.interceptors.response.use(response => {
         }
     } else {
         // check if the first request throwed
-        let pendingRequest = AxiosPendingCache.findPendingRequest(error.request)
+        let pendingRequest = AxiosPendingCache.findPendingRequest(error.response && error.response.config)
         if (pendingRequest) {
-            pendingRequest.response = error
+            if (pendingRequest.count > 0) {
+                pendingRequest.response = error
+            } else {
+                AxiosPendingCache.popPendingRequest(error.response.config)
+            }
         }
     }
 

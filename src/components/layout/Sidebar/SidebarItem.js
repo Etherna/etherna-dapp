@@ -3,25 +3,30 @@ import PropTypes from "prop-types"
 import { NavLink } from "react-router-dom"
 
 import makeBlockies from "@utils/makeBlockies"
+import SwarmImage from "@components/common/SwarmImage"
 
-const SidebarItem = ({ imageUrl, fallbackAddress, name, link }) => {
-    const image = imageUrl || (fallbackAddress && makeBlockies(fallbackAddress))
+const SidebarItem = ({ image, fallbackAddress, name, link }) => {
     return (
         <NavLink to={link} activeClassName="active" className="sidebar-item">
-            <div
+            <SwarmImage
+                hash={image}
+                fallback={makeBlockies(fallbackAddress)}
                 className="sidebar-item-image"
-                style={{ backgroundImage: `url(${image})` }}
-            ></div>
+                style={{}}
+            />
             <div className="sidebar-item-title">{name}</div>
         </NavLink>
     )
 }
 
 SidebarItem.propTypes = {
-    imageUrl: PropTypes.string,
+    image: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object,
+    ]),
     fallbackAddress: PropTypes.string,
-    name: PropTypes.string,
-    link: PropTypes.string,
+    name: PropTypes.string.isRequired,
+    link: PropTypes.string.isRequired,
 }
 
 export default SidebarItem

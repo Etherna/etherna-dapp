@@ -38,7 +38,7 @@
                 }
 
                 .sidebar-item-image {
-                    @apply w-8 h-8 bg-no-repeat bg-center bg-cover rounded-full;
+                    @apply w-8 h-8 object-center object-cover rounded-full;
                 }
                 .sidebar-item-title {
                     @apply ml-1;
