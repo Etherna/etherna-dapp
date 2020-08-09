@@ -3,55 +3,75 @@ import PropTypes from "prop-types"
 import { Link, Redirect } from "react-router-dom"
 
 import "./video-editor.scss"
+import VideoDeleteModal from "./VideoDeleteModal"
+import Alert from "@common/Alert"
 import Button from "@common/Button"
+import PinContentField from "@components/media/Uploader/PinContentField"
+import { UploaderContextWrapper, useUploaderState } from "@components/media/Uploader/UploaderContext"
 import FileUploadFlow from "@components/media/Uploader/FileUploadFlow"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
 import { getResourceUrl, pinResource, unpinResource, isPinned } from "@utils/swarm"
 import { getVideo, updateVideo } from "@utils/ethernaResources/videosResources"
 import Routes from "@routes"
-import Alert from "@components/common/Alert"
-import VideoDeleteModal from "./VideoDeleteModal"
-import PinContentField from "../Uploader/PinContentField"
+import { fetchFullVideoInfo, updatedVideoMeta } from "@utils/video"
+import VideoSourcesUpload from "../Uploader/VideoSourcesUpload"
 
+/**
+ * @typedef VideoEditorProps
+ * @property {string} hash
+ * @property {import("@utils/video").VideoMetadata} video
+ *
+ * @param {VideoEditorProps} param0
+ */
 const VideoEditor = ({ hash, video }) => {
+    const { state, actions } = useUploaderState()
+    const { manifest, duration, originalQuality, queue } = state
+    const { updateManifest, loadInitialState } = actions
+    const hasQueuedProcesses = queue.filter(q => q.finished === false).length > 0
+
     const { isSignedIn, address } = useSelector(state => state.user)
     const [isSaving, setIsSaving] = useState(false)
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [saved, setSaved] = useState(false)
     const [deleted, setDeleted] = useState(false)
     const [pinContent, setPinContent] = useState(undefined)
+
+    const [videoMeta, setVideoMeta] = useState(video)
     const [videoOnIndex, setVideoOnIndex] = useState(undefined)
     const [videoOwner, setVideoOwner] = useState(video.channelAddress)
     const [title, setTitle] = useState(video.title)
     const [description, setDescription] = useState(video.description)
-    const [duration, setDuration] = useState(video.lengthInSeconds)
     const [thumbnail, setThumbnail] = useState(video.thumbnailHash)
 
     useEffect(() => {
-        if (Object.keys(video).length === 0) {
-            fetchVideo()
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+        const emptyVideo = Object.keys(videoMeta).length === 0
+        emptyVideo && fetchVideo()
+        !emptyVideo && loadContext()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [videoMeta])
 
     useEffect(() => {
         if (videoOwner) {
             loadPinning()
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [videoOwner])
+
+    const loadContext = () => {
+        loadInitialState(videoMeta.duration, videoMeta.originalQuality, videoMeta.sources)
+    }
 
     const fetchVideo = async () => {
         try {
-            const videoInfo = await getVideo(hash)
+            const videoInfo = await fetchFullVideoInfo(hash)
 
+            setVideoMeta(videoInfo)
             setVideoOwner(videoInfo.channelAddress)
             setTitle(videoInfo.title)
             setDescription(videoInfo.description)
-            setDuration(videoInfo.lengthInSeconds)
             setThumbnail(videoInfo.thumbnailHash)
-            setVideoOnIndex(true)
+            setVideoOnIndex(videoInfo.isVideoOnIndex || true)
         } catch (error) {
             console.error(error)
             setVideoOnIndex(false)
@@ -71,13 +91,22 @@ const VideoEditor = ({ hash, video }) => {
         setIsSaving(true)
 
         try {
-            await updateVideo(
-                hash,
+            const videoManifest = await updatedVideoMeta(manifest, {
                 title,
                 description,
+                originalQuality,
+                thumbnailHash: thumbnail,
+                channelAddress: address,
                 duration,
-                thumbnail
-            )
+                sources: queue.map(q => q.quality)
+            })
+
+            console.log(videoManifest);
+
+            updateManifest(videoManifest)
+
+            await updateVideo(hash, videoManifest)
+
             await updatePinning(pinContent)
 
             setSaved(true)
@@ -115,13 +144,14 @@ const VideoEditor = ({ hash, video }) => {
     }
 
     if (
-        (videoOnIndex === undefined && videoOwner === undefined) ||
+        videoOnIndex === undefined ||
+        videoMeta === undefined ||
         isSignedIn === undefined
     ) {
         return <div />
     }
 
-    if (videoOnIndex && address !== videoOwner) {
+    if (videoOnIndex && address !== videoMeta.channelAddress) {
         return <Redirect to={Routes.getHomeLink()} />
     }
 
@@ -137,29 +167,25 @@ const VideoEditor = ({ hash, video }) => {
                 <>
                     <div className="video-preview">
                         <div className="form-group">
-                            {thumbnail && (
-                                <>
-                                    <img src={getResourceUrl(thumbnail)} alt="" className="thumbnail" />
-                                    <Button
-                                        aspect="secondary"
-                                        size="small"
-                                        className="mt-3"
-                                        action={() => setThumbnail(null)}
-                                    >
-                                        Remove
-                                    </Button>
-                                </>
-                            )}
-                            {!thumbnail && (
-                                <FileUploadFlow
-                                    dragLabel={"Drag your thumbnail here"}
-                                    acceptTypes={["image"]}
-                                    sizeLimit={2}
-                                    pinContent={pinContent}
-                                    disabled={isSaving}
-                                    onHashUpdate={hash => setThumbnail(hash)}
-                                />
-                            )}
+                            <VideoSourcesUpload
+                                hash={hash}
+                                initialSources={videoMeta.sources}
+                                pinContent={pinContent}
+                                disabled={isSaving}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <FileUploadFlow
+                                hash={thumbnail}
+                                label={"Thumbnail"}
+                                dragLabel={"Drag your thumbnail here"}
+                                acceptTypes={["image"]}
+                                sizeLimit={2}
+                                showImagePreview={true}
+                                pinContent={pinContent}
+                                disabled={isSaving}
+                                onHashUpdate={hash => setThumbnail(hash)}
+                            />
                         </div>
                     </div>
                     {pinContent !== undefined && (
@@ -218,7 +244,7 @@ const VideoEditor = ({ hash, video }) => {
                             <>
                                 {
                                     !isSaving
-                                        ? <Button className="mr-4" action={handleUpdate}>Save</Button>
+                                        ? <Button className="mr-4" action={handleUpdate} disabled={!title || hasQueuedProcesses}>Save</Button>
                                         : <img src={require("@svg/animated/spinner.svg")} alt="" width={26} className="inline-block mr-4" />
                                 }
                                 <Button aspect="danger" disabled={isSaving} action={() => setShowDeleteModal(true)}>Delete Video</Button>
@@ -228,7 +254,6 @@ const VideoEditor = ({ hash, video }) => {
 
                     {showDeleteModal && (
                         <VideoDeleteModal
-                            channel={videoOwner}
                             hash={hash}
                             thumbnail={thumbnail}
                             title={title}
@@ -247,4 +272,12 @@ VideoEditor.propTypes = {
     video: PropTypes.object,
 }
 
-export default VideoEditor
+
+const VideoEditorWithContext = props => (
+    <UploaderContextWrapper>
+        <VideoEditor {...props} />
+    </UploaderContextWrapper>
+)
+
+
+export default VideoEditorWithContext

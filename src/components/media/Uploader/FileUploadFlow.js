@@ -4,11 +4,12 @@ import FileDrag from "./FileDrag"
 import VideoEncoder from "./VideoEncoder"
 import SwarmFileUpload from "./SwarmFileUpload"
 import { getVideoDuration, getVideoResolution } from "@utils/media"
-import { isMimeFFMpegEncodable, isMimeImage, isMimeMedia } from "@utils/mimeTypes"
+import { isMimeFFMpegEncodable, isMimeMedia } from "@utils/mimeTypes"
 import { showError } from "@state/actions/modals"
 import { fileReaderPromise } from "@utils/swarm"
 
 const FileUploadFlow = ({
+    hash: previusHash,
     label,
     dragLabel,
     acceptTypes = ["mime"],
@@ -18,6 +19,7 @@ const FileUploadFlow = ({
     path,
     disabled,
     canProcessFile = true,
+    showImagePreview = false,
     onConfirmedProcessing,
     onHashUpdate,
     onQualityUpdate,
@@ -27,9 +29,16 @@ const FileUploadFlow = ({
 }, ref) => {
     const [buffer, setBuffer] = useState(undefined)
     const [file, setFile] = useState(undefined)
-    const [hash, setHash] = useState(undefined)
+    const [hash, setHash] = useState(previusHash)
     const [duration, setDuration] = useState(undefined)
     const [quality, setQuality] = useState(undefined)
+
+    const status = previusHash ? "preview"
+        : file === undefined ? "select"
+        : file !== undefined && buffer === undefined ? "encode"
+        : file !== undefined && buffer !== undefined ? "upload"
+        : ""
+
 
     useEffect(() => {
         onHashUpdate && onHashUpdate(hash)
@@ -124,7 +133,7 @@ const FileUploadFlow = ({
     return (
         <>
             <label htmlFor="video">{label}</label>
-            {file === undefined && (
+            {status === "select" && (
                 <FileDrag
                     id={`${label}-input`}
                     label={dragLabel}
@@ -134,7 +143,7 @@ const FileUploadFlow = ({
                     uploadLimit={sizeLimit}
                 />
             )}
-            {file !== undefined && buffer === undefined && (
+            {status === "encode" && (
                 <VideoEncoder
                     file={file}
                     canEncode={canProcessFile}
@@ -143,15 +152,16 @@ const FileUploadFlow = ({
                     onCancel={handleCancel}
                 />
             )}
-            {file !== undefined && buffer !== undefined && (
+            {(status === "upload" || status === "preview") && (
                 <SwarmFileUpload
+                    hash={hash}
                     buffer={buffer}
                     manifest={manifest}
                     path={path}
-                    contentType={file.type}
-                    filename={file.name}
-                    showConfirmation={!isMimeFFMpegEncodable(file.type)}
-                    showImagePreview={isMimeImage(file.type)}
+                    contentType={file && file.type}
+                    filename={file && file.name}
+                    showConfirmation={!isMimeFFMpegEncodable(file && file.type)}
+                    showImagePreview={showImagePreview}
                     disabled={disabled}
                     pinContent={pinContent}
                     canUpload={canProcessFile}

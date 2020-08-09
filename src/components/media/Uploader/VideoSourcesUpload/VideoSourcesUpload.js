@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useState, createRef } from "react"
+import React, { useImperativeHandle, useState, createRef, useEffect } from "react"
 
 import FileUploadFlow from "../FileUploadFlow"
 import { useUploaderState } from "../UploaderContext"
@@ -6,7 +6,7 @@ import Tab, { TabContent } from "@common/Tab"
 import { showError } from "@state/actions/modals"
 import { deleteVideoSource } from "@utils/video"
 
-const VideoSourcesUpload = ({ pinContent, disabled }, ref) => {
+const VideoSourcesUpload = ({ hash, initialSources, pinContent, disabled }, ref) => {
     const { state, actions } = useUploaderState()
     const { manifest } = state
     const {
@@ -21,6 +21,15 @@ const VideoSourcesUpload = ({ pinContent, disabled }, ref) => {
     const currentQueue = state.queue.find(q => !q.finished)
     const defaultSource = { quality: null, ref: createRef() }
     const [sources, setSources] = useState([defaultSource])
+
+    useEffect(() => {
+        if (initialSources && initialSources.length) {
+            const sources = initialSources.map(source => ({
+                quality: source.quality, ref: createRef()
+            }))
+            setSources(sources)
+        }
+    }, [initialSources])
 
     useImperativeHandle(ref, () => ({
         clear() {
@@ -62,10 +71,14 @@ const VideoSourcesUpload = ({ pinContent, disabled }, ref) => {
     }
 
     const handleUpdateDuration = (duration, index) => {
+        if (!duration) return
+
         index === 0 && updateVideoDuration(duration)
     }
 
     const handleUpdateQuality = (quality, index) => {
+        if (!quality) return
+
         index === 0 && updateOriginalQuality(quality)
 
         const newSources = [...sources]
@@ -80,6 +93,8 @@ const VideoSourcesUpload = ({ pinContent, disabled }, ref) => {
 
     const handleReset = quality => {
         removeFromQueue(quality)
+        updateVideoDuration(null)
+        updateOriginalQuality(null)
     }
 
     return (
@@ -104,6 +119,7 @@ const VideoSourcesUpload = ({ pinContent, disabled }, ref) => {
                         >
                             <FileUploadFlow
                                 ref={source.ref}
+                                hash={hash}
                                 label={title}
                                 dragLabel={"Drag your video here"}
                                 acceptTypes={["video", "audio"]}

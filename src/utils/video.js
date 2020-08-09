@@ -120,7 +120,7 @@ export const fetchFullVideoInfo = async (hash, fetchProfile = true) => {
     return {
         ...meta,
         videoHash: hash,
-        channelAddress,
+        channelAddress: channelAddress || profileData.address,
         isVideoOnIndex,
         creationDateTime,
         encryptionKey,

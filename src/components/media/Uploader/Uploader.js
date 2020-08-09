@@ -156,6 +156,7 @@ const Uploader = () => {
                             dragLabel={"Drag your thumbnail here"}
                             acceptTypes={["image"]}
                             sizeLimit={2}
+                            showImagePreview={true}
                             pinContent={pinContent}
                             disabled={isSubmitting}
                             onHashUpdate={hash => setThumbnail(hash)}

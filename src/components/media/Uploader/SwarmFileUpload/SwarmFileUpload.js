@@ -14,6 +14,7 @@ import routes from "@routes"
 let uploadCancel
 
 const SwarmFileUpload = ({
+    hash: previusHash,
     buffer,
     filename,
     manifest,
@@ -31,8 +32,8 @@ const SwarmFileUpload = ({
 }) => {
     const [isUploading, setIsUploading] = useState(false)
     const [confirmed, setConfirmed] = useState(!showConfirmation && !isUploading)
-    const [uploadProgress, setUploadProgress] = useState(0)
-    const [hash, setHash] = useState(undefined)
+    const [uploadProgress, setUploadProgress] = useState(previusHash ? 100 : 0)
+    const [hash, setHash] = useState(previusHash)
     const [errorMessage, setErrorMessage] = useState()
 
     useEffect(() => {
@@ -212,11 +213,12 @@ const SwarmFileUpload = ({
 }
 
 SwarmFileUpload.propTypes = {
-    buffer: PropTypes.object.isRequired,
+    hash: PropTypes.string,
+    buffer: PropTypes.object,
     filename: PropTypes.string,
     manifest: PropTypes.string,
     path: PropTypes.string,
-    contentType: PropTypes.string.isRequired,
+    contentType: PropTypes.string,
     showImagePreview: PropTypes.bool,
     showConfirmation: PropTypes.bool,
     disabled: PropTypes.bool,

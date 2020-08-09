@@ -3,6 +3,7 @@ import React, { useContext, createContext, useReducer } from "react"
 const UploaderContext = createContext()
 
 const ActionTypes = {
+    LOAD_INITIAL_STATE: "LOAD_INITIAL_STATE",
     ADD_TO_QUEUE: "ADD_TO_QUEUE",
     REMOVE_FROM_QUEUE: "REMOVE_FROM_QUEUE",
     UPDATE_QUEUE_COMPLETION: "UPDATE_QUEUE_COMPLETION",
@@ -28,6 +29,16 @@ const ActionTypes = {
  */
 const reducer = (state, action) => {
     switch (action.type) {
+        case ActionTypes.LOAD_INITIAL_STATE: {
+            const { duration, originalQuality, sources } = action
+            const queue = sources.map(s => ({
+                quality: s,
+                completion: 100,
+                finished: true
+            }))
+
+            return {...state, duration, originalQuality, queue}
+        }
         case ActionTypes.UPDATE_MANIFEST:
             return {...state, manifest: action.manifest}
         case ActionTypes.ADD_TO_QUEUE: {
@@ -74,9 +85,9 @@ const reducer = (state, action) => {
     }
 }
 
-export const UploaderContextWrapper = ({ children }) => {
+export const UploaderContextWrapper = ({ children, manifest }) => {
     const store = useReducer(reducer, {
-        manifest: null,
+        manifest,
         queue: [],
         duration: null,
         originalQuality: null
@@ -91,6 +102,18 @@ export const UploaderContextWrapper = ({ children }) => {
 export const useUploaderState = () => {
     /** @type {[UploaderContextState]} */
     const [state, dispatch] = useContext(UploaderContext)
+
+    /**
+     * @param {number} duration
+     * @param {string} originalQuality
+     * @param {string[]} sources
+     */
+    const loadInitialState = (duration, originalQuality, sources) => {
+        dispatch({
+            type: ActionTypes.LOAD_INITIAL_STATE,
+            duration, originalQuality, sources
+        })
+    }
 
     /**
      * @param {string} manifest New video manifest
@@ -152,6 +175,7 @@ export const useUploaderState = () => {
     }
 
     const actions = {
+        loadInitialState,
         updateManifest,
         addToQueue,
         removeFromQueue,
