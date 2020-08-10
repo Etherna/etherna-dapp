@@ -60,7 +60,8 @@
     "readline": "^1.3.0",
     "redux-logger": "^3.0.6",
     "serve": "^11.3.2",
-    "tailwindcss": "^1.2.0"
+    "tailwindcss": "^1.2.0",
+    "typescript": "^3.9.7"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -68,6 +69,7 @@
     "serve": "serve -s build -l 4000",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",
+    "lint": "eslint src --ext .js",
     "format": "prettier --write \"**/*.{js,jsx,json,scss}\"",
     "buildeploy": "npm run build && node deploy",
     "buildeployswarm": "npm run build && node deploy --swarm",
@@ -79,11 +81,16 @@
     "rules": {
       "indent": [
         "error",
-        2
+        2, {
+          "SwitchCase": 1,
+          "ignoredNodes": ["ConditionalExpression"]
+        }
       ],
       "quotes": [
         "warn",
-        "double"
+        "double", {
+          "allowTemplateLiterals": true
+        }
       ]
     }
   },
