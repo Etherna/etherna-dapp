@@ -52,12 +52,11 @@ const ChannelsView = () => {
         {!channels && <div></div>}
         {channels &&
           channels.map((channel, index) => (
-            (
-              <ChannelPreview
-                channelAddress={channel.address}
-                key={`${channel.address}-${index}`}
-              />
-            )
+            <ChannelPreview
+              channelAddress={channel.address}
+              profileManifest={channel.identityManifest}
+              key={`${channel.address}-${index}`}
+            />
           ))}
       </InfiniteScroller>
     </div>

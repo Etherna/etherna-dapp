@@ -6,31 +6,22 @@ import { UserActionTypes } from "@state/reducers/userReducer"
  */
 const fetchIdentity = async () => {
   try {
-    const { oidcManager } = store.getState().user
-    await oidcManager.clearStaleState()
-    const user = await oidcManager.getUser()
+    const { indexClient } = store.getState().env
 
-    if (!user) {
-      return updateUserSignedOut()
-    }
-
-    const identity = user.profile
-
-    // in case user gets signout on the server directly.
-    // subscribe for changes and update redux store.
-    oidcManager.events.addUserSignedOut(() => signoutCallback(oidcManager))
+    const profile = await indexClient.users.fetchCurrentUser()
 
     store.dispatch({
       type: UserActionTypes.USER_UPDATE_IDENTITY,
-      address: identity.ether_address,
-      username: identity.username,
+      address: profile.address,
+      manifest: profile.identityManifest,
+      prevAddresses: profile.prevAddresses,
     })
     store.dispatch({
       type: UserActionTypes.USER_UPDATE_SIGNEDIN,
       isSignedIn: true,
     })
 
-    return true
+    return profile
   } catch (error) {
     console.error(error)
 
@@ -43,23 +34,7 @@ const updateUserSignedOut = () => {
     type: UserActionTypes.USER_UPDATE_SIGNEDIN,
     isSignedIn: false,
   })
-  return false
-}
-
-/**
- * Signout user and clear storage
- * @param {import('oidc-client').UserManager} oidcManager OIDC User Manager
- */
-const signoutCallback = async oidcManager => {
-  await oidcManager.removeUser()
-
-  store.dispatch({
-    type: UserActionTypes.USER_UPDATE_IDENTITY,
-  })
-  store.dispatch({
-    type: UserActionTypes.USER_UPDATE_SIGNEDIN,
-    isSignedIn: false,
-  })
+  return null
 }
 
 export default fetchIdentity

@@ -1,3 +1,5 @@
+import { Bzz } from "@erebos/bzz"
+
 import { baseKeymap } from "@keyboard"
 import lang from "@lang"
 import { loadDarkMode } from "@state/actions/enviroment/darkMode"
@@ -26,12 +28,14 @@ const gatewayHost = window.localStorage.getItem("gatewayHost") ||
   process.env.REACT_APP_GATEWAY_HOST ||
   "https://swarm-gateways.net"
 const indexClient = new IndexClient({ host: indexHost, apiPath: indexApiPath })
+const bzzClient = new Bzz({ url: gatewayHost })
 
 /** @type {import("..").EnvState} */
 const initialState = {
   indexHost,
   indexApiPath,
   indexClient,
+  bzzClient,
   gatewayHost,
   keymap: baseKeymap,
   darkMode: loadDarkMode(),
@@ -82,13 +86,15 @@ const enviromentReducer = (state = initialState, action) => {
       return {
         ...state,
         indexHost: action.indexHost,
-        indexApiPath: action.indexApiPath || "",
+        indexApiPath: action.apiPath || "",
+        indexClient: action.indexClient,
       }
 
     case EnvActionTypes.ENV_UPDATE_GATEWAY_HOST:
       return {
         ...state,
         gatewayHost: action.gatewayHost,
+        bzzClient: action.bzzClient
       }
 
     case EnvActionTypes.UPDATE_KEYMAP:

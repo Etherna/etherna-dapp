@@ -18,6 +18,10 @@ const ChannelEditor = ({ address }) => {
 
     try {
       await profileActions.updateProfile(profileInfo)
+
+      // clear prefetch
+      window.prefetchData = undefined
+
       setSavedProfile(true)
     } catch (error) {
       console.error(error)

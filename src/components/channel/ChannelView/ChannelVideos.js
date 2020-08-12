@@ -4,11 +4,11 @@ import InfiniteScroller from "react-infinite-scroller"
 
 import VideoGrid from "@components/media/VideoGrid"
 
-const ChannelVideos = ({ videos, hasChannel, isFetching, hasMoreVideos, onLoadMore }) => {
+const ChannelVideos = ({ videos, isFetching, hasMoreVideos, onLoadMore }) => {
   return (
     <>
-      {hasChannel && !isFetching && (videos || []).length === 0 && (
-        <p className="text-gray-500 text-center my-16">This channel has yet to upload a video</p>
+      {!isFetching && (videos || []).length === 0 && (
+        <p className="text-gray-500 text-center my-16">This profile has yet to upload a video</p>
       )}
       {videos === undefined && (
         <VideoGrid mini={true} />
@@ -29,7 +29,6 @@ const ChannelVideos = ({ videos, hasChannel, isFetching, hasMoreVideos, onLoadMo
 
 ChannelVideos.propTypes = {
   videos: PropTypes.array,
-  hasChannel: PropTypes.bool,
   isFetching: PropTypes.bool,
   hasMoreVideos: PropTypes.bool,
   onLoadMore: PropTypes.func,

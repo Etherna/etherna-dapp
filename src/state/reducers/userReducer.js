@@ -29,7 +29,8 @@ const userReducer = (state = {}, action) => {
       return {
         ...state,
         address: action.address,
-        username: action.username,
+        identityManifest: action.manifest,
+        prevAddresses: action.prevAddresses,
       }
 
     case UserActionTypes.USER_UPDATE_SIGNEDIN:

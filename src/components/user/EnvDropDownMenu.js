@@ -88,22 +88,19 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
         <li className="dropdown-content flex flex-col">
           <p>You can change the default Etherna Index here</p>
 
-          <div className="flex mt-3">
+          <div className="mt-3">
             <strong className="flex-1">Host</strong>
+            <input type="text" value={indexHostValue} onChange={handleIndexChange} />
+          </div>
+          <div className="mt-3">
             <strong className="w-auto text-right">Api path</strong>
+            <input
+              type="text"
+              value={indexApiPathValue}
+              onChange={e => setIndexApiPathValue(e.target.value)}
+            />
           </div>
-          <div className="flex">
-            <div className="flex-1">
-              <input type="text" value={indexHostValue} onChange={handleIndexChange} />
-            </div>
-            <div className="w-16">
-              <input
-                type="text"
-                value={indexApiPathValue}
-                onChange={e => setIndexApiPathValue(e.target.value)}
-              />
-            </div>
-          </div>
+
           <Button
             action={handleIndexUpdate}
             size="small"

@@ -8,7 +8,7 @@ export default class IndexClient {
    */
   constructor(options) {
     const host = options.host.replace(/\/?$/, "")
-    const apiPath = options.apiPath ? options.apiPath.replace(/\/?$/, "") : ""
+    const apiPath = options.apiPath ? options.apiPath.replace(/(^\/?|\/?$)/g, "") : ""
     const url = `${host}/${apiPath}`
 
     this.videos = new IndexVideosClient(url)

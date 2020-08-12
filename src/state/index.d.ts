@@ -3,6 +3,7 @@ import { Crop } from "react-image-crop"
 import Lang from "lang.js"
 import { Keymap } from "@keyboard"
 import IndexClient from "@utils/indexClient/client"
+import { Bzz } from "@erebos/bzz"
 
 export interface RootState {
   env: EnvState
@@ -15,6 +16,7 @@ export interface EnvState {
   indexHost: string
   indexApiPath: string
   indexClient: IndexClient
+  bzzClient: Bzz
   gatewayHost: string
   keymap: Keymap
   lang: Lang
@@ -62,7 +64,8 @@ export interface UIState {
 
 export interface UserState {
   address?: string
-  username?: string
+  identityManifest?: string
+  prevAddresses?: string[]
   ens?: string
   isSignedIn: boolean
 }
@@ -71,4 +74,5 @@ export interface UserState {
 interface SwarmImage {
   url: string
   hash: string
+  isRaw: boolean
 }

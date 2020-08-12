@@ -72,7 +72,9 @@ export default class IndexUsersClient {
   async fetchCurrentUser() {
     const endpoint = `${this.url}/users/current`
 
-    const resp = await axios.get(endpoint)
+    const resp = await axios.get(endpoint, {
+      withCredentials: true
+    })
 
     if (typeof resp.data !== "object") {
       throw new Error("Cannot fetch user")
@@ -113,7 +115,8 @@ export default class IndexUsersClient {
     await axios.put(endpoint, null, {
       params: {
         manifestHash: newManifest
-      }
+      },
+      withCredentials: true
     })
 
     return true

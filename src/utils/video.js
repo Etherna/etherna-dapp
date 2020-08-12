@@ -1,4 +1,3 @@
-import { Bzz } from "@erebos/bzz"
 import { pick } from "lodash"
 
 import { getVideoDuration } from "./media"
@@ -65,7 +64,7 @@ export const fetchFullVideosInfo = async (
     : await indexClient.videos.fetchVideos(page, take)
   const videoManifests = videos.map(video => fetchVideoMeta(video.manifestHash))
   const promises = videoManifests.concat(
-    fetchProfile ? videos.map(video => getProfile(video.channelAddress)) : []
+    fetchProfile ? videos.map(video => getProfile(video.ownerIdentityManifest, video.ownerAddress)) : []
   )
   const result = await Promise.all(promises)
   const videosWithMeta = videos.map((video, index) => {
@@ -96,6 +95,7 @@ export const fetchFullVideoInfo = async (hash, fetchProfile = true) => {
 
   let isVideoOnIndex = false
   let channelAddress = null
+  let profileManifest = null
   let creationDateTime = null
   let encryptionKey = null
   let encryptionType = null
@@ -103,7 +103,8 @@ export const fetchFullVideoInfo = async (hash, fetchProfile = true) => {
   try {
     const video = await indexClient.videos.fetchVideo(hash)
     isVideoOnIndex = true
-    channelAddress = video.channelAddress
+    channelAddress = video.ownerAddress
+    profileManifest = video.ownerIdentityManifest
     creationDateTime = video.creationDateTime
     encryptionKey = video.encryptionKey
     encryptionType = video.encryptionType
@@ -111,14 +112,14 @@ export const fetchFullVideoInfo = async (hash, fetchProfile = true) => {
 
   const result = await Promise.all(
     [fetchVideoMeta(hash)].concat(
-      fetchProfile && channelAddress ? [getProfile(channelAddress)] : []
+      fetchProfile && channelAddress ? [getProfile(profileManifest, channelAddress)] : []
     )
   )
 
   let [meta, profileData] = result
 
   if (!profileData && meta.channelAddress && fetchProfile) {
-    profileData = await getProfile(meta.channelAddress)
+    profileData = await getProfile(null, meta.channelAddress)
   }
 
   return {
@@ -140,17 +141,16 @@ export const fetchFullVideoInfo = async (hash, fetchProfile = true) => {
  * @returns {VideoResolvedMeta} Video metadata
  */
 export const fetchVideoMeta = async videoHash => {
-  const { gatewayHost } = store.getState().env
-  const bzz = new Bzz({ url: gatewayHost })
+  const { bzzClient } = store.getState().env
 
   const hash = videoHash.match(/^[0-9a-f]{64}/)[0]
-  const meta = await downloadMeta(bzz, hash)
+  const meta = await downloadMeta(bzzClient, hash)
 
   const source = meta
     ? videoHash.length > hash // probably a /source/... path
-      ? bzz.getDownloadURL(videoHash)
-      : bzz.getDownloadURL(`${hash}/sources/${meta.originalQuality}`)
-    : bzz.getDownloadURL(videoHash, { mode: "raw" }).replace(/\/$/, "")
+      ? bzzClient.getDownloadURL(videoHash)
+      : bzzClient.getDownloadURL(`${hash}/sources/${meta.originalQuality}`)
+    : bzzClient.getDownloadURL(videoHash, { mode: "raw" }).replace(/\/$/, "")
 
   const duration = await videoDuration(source)
 
@@ -160,10 +160,10 @@ export const fetchVideoMeta = async videoHash => {
 
   const sources = meta.sources.map(quality => ({
     quality,
-    source: bzz.getDownloadURL(`${hash}/sources/${quality}`),
+    source: bzzClient.getDownloadURL(`${hash}/sources/${quality}`),
   }))
   const thumbnailSource = meta.thumbnailHash
-    ? bzz.getDownloadURL(meta.thumbnailHash)
+    ? bzzClient.getDownloadURL(meta.thumbnailHash)
     : null
 
   return {
@@ -183,10 +183,9 @@ export const fetchVideoMeta = async videoHash => {
  * @returns {string} The new video manifest
  */
 export const updatedVideoMeta = async (manifest, meta) => {
-  const { gatewayHost } = store.getState().env
-  const bzz = new Bzz({ url: gatewayHost })
+  const { bzzClient } = store.getState().env
 
-  const newManifest = await bzz.uploadData(meta, {
+  const newManifest = await bzzClient.uploadData(meta, {
     manifestHash: manifest,
     contentType: "text/json",
   })
@@ -202,10 +201,9 @@ export const updatedVideoMeta = async (manifest, meta) => {
  * @returns {string} The new video manifest
  */
 export const deleteVideoSource = async (quality, manifest) => {
-  const { gatewayHost } = store.getState().env
-  const bzz = new Bzz({ url: gatewayHost })
+  const { bzzClient } = store.getState().env
 
-  const newManifest = await bzz.deleteResource(manifest, `sources/${quality}`)
+  const newManifest = await bzzClient.deleteResource(manifest, `sources/${quality}`)
 
   return newManifest
 }
@@ -217,7 +215,7 @@ export const deleteVideoSource = async (quality, manifest) => {
 /**
  * Get video meta if existing
  *
- * @param {Bzz} bzz Bzz Node
+ * @param {import("@erebos/bzz").Bzz} bzz Bzz Node
  * @param {string} hash Video hash
  * @returns {SwarmVideoMeta} Video metadata
  */

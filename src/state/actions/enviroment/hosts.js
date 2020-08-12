@@ -1,3 +1,5 @@
+import { Bzz } from "@erebos/bzz"
+
 import { store } from "@state/store"
 import { EnvActionTypes } from "@state/reducers/enviromentReducer"
 import IndexClient from "@utils/indexClient/client"
@@ -18,6 +20,7 @@ export const updateGatewayHost = host => {
   store.dispatch({
     type: EnvActionTypes.ENV_UPDATE_GATEWAY_HOST,
     gatewayHost: host,
+    bzzClient: new Bzz({ url: host })
   })
 }
 

@@ -65,6 +65,7 @@ const ProfileInfoEdit = ({ profileAddress, submitLabel, isSubmitting, onSubmit }
       const imgObj = {
         url: getResourceUrl(imgHash),
         hash: imgHash,
+        isRaw: false
       }
 
       if (type === "cover") {

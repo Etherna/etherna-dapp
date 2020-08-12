@@ -11,7 +11,7 @@ import { getProfile } from "@utils/swarmProfile"
 import { shortenEthAddr } from "@utils/ethFuncs"
 import { fetchFullVideosInfo } from "@utils/video"
 
-const ChannelPreview = ({ channelAddress }) => {
+const ChannelPreview = ({ channelAddress, profileManifest }) => {
   const [isFetchingChannel, setIsFetchingChannel] = useState(false)
   const [hasMappedVideosProfile, setHasMappedVideosProfile] = useState(false)
   const [profile, setProfile] = useState(undefined)
@@ -32,7 +32,7 @@ const ChannelPreview = ({ channelAddress }) => {
     setIsFetchingChannel(true)
 
     try {
-      const profile = await getProfile(channelAddress)
+      const profile = await getProfile(profileManifest, channelAddress)
       setProfile(profile)
     } catch (error) {
       console.error(error)
@@ -86,6 +86,7 @@ const ChannelPreview = ({ channelAddress }) => {
 }
 
 ChannelPreview.propTypes = {
+  profileManifest: PropTypes.string,
   channelAddress: PropTypes.string.isRequired,
 }
 

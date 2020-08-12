@@ -6,12 +6,9 @@ import "./channel.scss"
 
 import ChannelAbout from "./ChannelAbout"
 import ChannelVideos from "./ChannelVideos"
-import Alert from "@common/Alert"
-import Button from "@common/Button"
 import NavPills from "@common/NavPills"
 import SEO from "@components/layout/SEO"
 import ProfileInfo from "@components/profile/ProfileInfo"
-import { profileActions } from "@state/actions"
 import useSelector from "@state/useSelector"
 import { fetchFullVideosInfo } from "@utils/video"
 import Routes from "@routes"
@@ -23,17 +20,14 @@ const ChannelView = ({ channelAddress }) => {
   const prefetchVideos = window.prefetchData && window.prefetchData.videos
 
   const { address } = useSelector(state => state.user)
-  const { indexClient, isMobile } = useSelector(state => state.env)
+  const { isMobile } = useSelector(state => state.env)
 
   const [activeTab, setActiveTab] = useState("videos")
   const [isFetching, setIsFetching] = useState(false)
-  const [isCreatingChannel, setIsCreatingChannel] = useState(false)
-  const [hasChannel, setHasChannel] = useState(false)
   const [channelVideos, setChannelVideos] = useState([])
   const [profileInfo, setProfileInfo] = useState(null)
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
-  const [showChannelCreatedMessage, setShowChannelCreatedMessage] = useState(false)
 
   useEffect(() => {
     // fetch channel
@@ -50,27 +44,13 @@ const ChannelView = ({ channelAddress }) => {
   const fetchChannel = async () => {
     if (profileInfo && profileInfo.address !== channelAddress) {
       // reset
-      setHasChannel(false)
       setChannelVideos([])
       setProfileInfo(null)
       setPage(0)
       setHasMore(true)
     }
 
-    setIsFetching(true)
-
-    try {
-      const channel =
-        prefetchVideos && prefetchProfile.address === channelAddress
-          ? null
-          : await indexClient.users.fetchUser(channelAddress)
-
-      setHasChannel(!!channel)
-      fetchVideos()
-    } catch (error) {
-      console.error(error)
-      setIsFetching(false)
-    }
+    fetchVideos()
   }
 
   const fetchVideos = async () => {
@@ -111,16 +91,6 @@ const ChannelView = ({ channelAddress }) => {
     setChannelVideos(videos)
   }
 
-  const createChannel = async () => {
-    setIsCreatingChannel(true)
-
-    const created = await profileActions.createChannel(channelAddress)
-
-    setShowChannelCreatedMessage(created)
-    setHasChannel(created)
-    setIsCreatingChannel(false)
-  }
-
   const handleFetchedProfile = profile => {
     setProfileInfo(profile)
   }
@@ -142,40 +112,20 @@ const ChannelView = ({ channelAddress }) => {
         }
         actions={
           <div className="flex ml-auto">
-            {address === channelAddress &&
-              !hasChannel &&
-              (isCreatingChannel ? (
-                <img
-                  src={require("@svg/animated/spinner.svg")}
-                  className="self-center"
-                  width="30"
-                  alt=""
-                />
-              ) : (
-                <Button className="" action={createChannel} aspect="secondary">
-                  Create channel
-                </Button>
-              ))}
             {address === channelAddress && (
               <Link
                 to={Routes.getChannelEditingLink(channelAddress)}
                 className="btn btn-primary ml-2"
               >
-                {hasChannel ? "Customize channel" : "Customize profile"}
+                Customize profile
               </Link>
             )}
           </div>
         }
         onFetchedProfile={handleFetchedProfile}
       >
-        {showChannelCreatedMessage && (
-          <Alert title="Congratulation!" type="success">
-            Your channel has been created and you're now an Ethernaut!
-          </Alert>
-        )}
         {activeTab === "videos" && (
           <ChannelVideos
-            hasChannel={hasChannel}
             hasMoreVideos={hasMore}
             isFetching={isFetching}
             onLoadMore={fetchVideos}

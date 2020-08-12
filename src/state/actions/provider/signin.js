@@ -1,25 +1,25 @@
 import injectWeb3 from "./injectWeb3"
 import fetchIdentity from "./fetchIdentity"
 import loadProfile from "./loadProfile"
+import loginRedirect from "./loginRedirect"
 import { checkMobileWeb3, checkNetwork } from "./network"
-import ssoLogin from "./ssoLogin"
 
 /**
  * Sign in user and fetch profile
- * @param {boolean} forceSSO Whether to send user to the SSO login page
+ * @param {boolean} forceLogin Whether to send user to the Index login page
  */
-const signin = async (forceSSO = false) => {
-  if (forceSSO) {
-    // Launch SSO login
-    ssoLogin()
+const signin = async (forceLogin = false) => {
+  if (forceLogin) {
+    // Launch Index login
+    loginRedirect()
   } else {
     await checkMobileWeb3()
     await injectWeb3()
     await checkNetwork()
 
-    const signedIn = await fetchIdentity()
-    if (signedIn) {
-      await loadProfile()
+    const profile = await fetchIdentity()
+    if (profile) {
+      await loadProfile(profile)
     }
   }
 }

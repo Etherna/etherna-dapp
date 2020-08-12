@@ -3,15 +3,20 @@ import { ProfileActionTypes } from "@state/reducers/profileReducer"
 import { UIActionTypes } from "@state/reducers/uiReducer"
 import { getProfile } from "@utils/swarmProfile"
 
-const fetchProfile = async address => {
+/**
+ * Fetch profile info
+ *
+ * @param {string} manifest Manifest hash with profile data
+ * @param {string} address Profile address
+ */
+const fetchProfile = async (manifest, address) => {
   store.dispatch({
     type: UIActionTypes.UI_TOGGLE_LOADING_PROFILE,
     isLoadingProfile: true,
   })
 
   try {
-    const profile = await getProfile(address)
-    const channel = await getChannelOrNull(address)
+    const profile = await getProfile(manifest, address)
 
     store.dispatch({
       type: ProfileActionTypes.PROFILE_UPDATE,
@@ -22,7 +27,7 @@ const fetchProfile = async address => {
       location: profile.location,
       website: profile.website,
       birthday: profile.birthday,
-      existsOnIndex: channel !== null,
+      existsOnIndex: true,
     })
   } catch (error) {
     console.error(error)
@@ -32,17 +37,6 @@ const fetchProfile = async address => {
     type: UIActionTypes.UI_TOGGLE_LOADING_PROFILE,
     isLoadingProfile: false,
   })
-}
-
-const getChannelOrNull = async address => {
-  const { indexClient } = store.getState().env
-  try {
-    const channel = await indexClient.users.fetchUser(address)
-    return channel
-  } catch (error) {
-    console.error(error)
-    return null
-  }
 }
 
 export default fetchProfile

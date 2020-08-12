@@ -29,8 +29,14 @@ const NewChannels = () => {
     }
   }
 
+  /** @param {import("@utils/indexClient").IndexUser[]} fetchedChannels */
   const loadProfiles = async fetchedChannels => {
-    const profiles = await getProfiles(fetchedChannels.map(c => c.address))
+    const profiles = await getProfiles(fetchedChannels.map(c => {
+      return {
+        manifest: c.identityManifest,
+        address: c.address
+      }
+    }))
     setChannels(profiles)
   }
 
