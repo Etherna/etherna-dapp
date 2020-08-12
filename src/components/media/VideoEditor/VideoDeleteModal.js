@@ -9,7 +9,6 @@ import { getResourceUrl } from "@utils/swarm"
 
 /**
  * @param {object} props
- * @param {string} props.channel
  * @param {string} props.hash
  * @param {string} props.thumbnail
  * @param {string} props.title

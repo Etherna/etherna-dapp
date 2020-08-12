@@ -1,7 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 
-const ChannelAbout = ({ name, address, description }) => {
+const ProfileAbout = ({ name, address, description }) => {
   return (
     <div>
       {/* <h3>{name || shortenEthAddr(address)}</h3> */}
@@ -10,10 +10,10 @@ const ChannelAbout = ({ name, address, description }) => {
   )
 }
 
-ChannelAbout.propTypes = {
+ProfileAbout.propTypes = {
   name: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
   description: PropTypes.string,
 }
 
-export default ChannelAbout
+export default ProfileAbout

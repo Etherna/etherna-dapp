@@ -10,7 +10,7 @@ import { store } from "@state/store"
  * @property {string} description Description of the video
  * @property {string} originalQuality Quality of the original video
  * @property {string} thumbnailHash Hash for the thumbnail
- * @property {string} channelAddress Address of the channel owner of the video
+ * @property {string} ownerAddress Address of the owner of the video
  * @property {number} duration Duration of the video in seconds
  * @property {string[]} sources List of available qualities of the video
  *
@@ -22,7 +22,7 @@ import { store } from "@state/store"
  * @property {number} duration Duration of the video in seconds
  * @property {string} source Url of the original video
  * @property {string} thumbnailSource Url of the thumbnail
- * @property {string} channelAddress Address of the channel owner of the video
+ * @property {string} ownerAddress Address of the owner of the video
  * @property {{ source: string, quality: string }[]} sources All qualities of video
  *
  * @typedef {object} VideoMetadata
@@ -34,9 +34,8 @@ import { store } from "@state/store"
  * @property {number} duration Duration of the video in seconds
  * @property {string} source Url of the original video
  * @property {string} thumbnailSource Url of the thumbnail
- * @property {string} channelAddress Address of the channel owner of the video
+ * @property {string} ownerAddress Address of the owner of the video
  * @property {{ source: string, quality: string }[]} sources All qualities of video
- * @property {string} channelAddress
  * @property {string} creationDateTime
  * @property {boolean} isVideoOnIndex
  * @property {string} encryptionKey
@@ -48,19 +47,19 @@ import { store } from "@state/store"
  * Get a list of recent videos with meta info
  * @param {number} page Page offset (default = 0)
  * @param {number} take Count of videos to get (default = 25)
- * @param {boolean} fetchProfile Fetch channel profile info
- * @param {string} channelAddress Fetch videos by a channel
+ * @param {boolean} fetchProfile Fetch profile info
+ * @param {string} ownerAddress Fetch videos by a profile
  * @returns {VideoMetadata[]}
  */
 export const fetchFullVideosInfo = async (
   page = 0,
   take = 25,
   fetchProfile = true,
-  channelAddress
+  ownerAddress
 ) => {
   const { indexClient } = store.getState().env
-  const videos = channelAddress
-    ? await indexClient.users.fetchUserVideos(channelAddress, page, take)
+  const videos = ownerAddress
+    ? await indexClient.users.fetchUserVideos(ownerAddress, page, take)
     : await indexClient.videos.fetchVideos(page, take)
   const videoManifests = videos.map(video => fetchVideoMeta(video.manifestHash))
   const promises = videoManifests.concat(
@@ -73,7 +72,7 @@ export const fetchFullVideosInfo = async (
     return {
       ...meta,
       videoHash: video.manifestHash,
-      channelAddress: video.channelAddress,
+      ownerAddress: video.ownerAddress,
       creationDateTime: video.creationDateTime,
       encryptionKey: video.encryptionKey,
       encryptionType: video.encryptionType,
@@ -85,16 +84,16 @@ export const fetchFullVideosInfo = async (
 }
 
 /**
- * Get a video metadata and channel profile
+ * Get a video metadata and profile
  * @param {string} hash Manifest hash of the video
- * @param {boolean} fetchProfile Fetch channel profile info
+ * @param {boolean} fetchProfile Fetch profile info
  * @returns {VideoMetadata}
  */
 export const fetchFullVideoInfo = async (hash, fetchProfile = true) => {
   const { indexClient } = store.getState().env
 
   let isVideoOnIndex = false
-  let channelAddress = null
+  let ownerAddress = null
   let profileManifest = null
   let creationDateTime = null
   let encryptionKey = null
@@ -103,7 +102,7 @@ export const fetchFullVideoInfo = async (hash, fetchProfile = true) => {
   try {
     const video = await indexClient.videos.fetchVideo(hash)
     isVideoOnIndex = true
-    channelAddress = video.ownerAddress
+    ownerAddress = video.ownerAddress
     profileManifest = video.ownerIdentityManifest
     creationDateTime = video.creationDateTime
     encryptionKey = video.encryptionKey
@@ -112,20 +111,20 @@ export const fetchFullVideoInfo = async (hash, fetchProfile = true) => {
 
   const result = await Promise.all(
     [fetchVideoMeta(hash)].concat(
-      fetchProfile && channelAddress ? [getProfile(profileManifest, channelAddress)] : []
+      fetchProfile && ownerAddress ? [getProfile(profileManifest, ownerAddress)] : []
     )
   )
 
   let [meta, profileData] = result
 
-  if (!profileData && meta.channelAddress && fetchProfile) {
-    profileData = await getProfile(null, meta.channelAddress)
+  if (!profileData && meta.ownerAddress && fetchProfile) {
+    profileData = await getProfile(null, meta.ownerAddress)
   }
 
   return {
     ...meta,
     videoHash: hash,
-    channelAddress: channelAddress || profileData.address,
+    ownerAddress: ownerAddress || profileData.address,
     isVideoOnIndex,
     creationDateTime,
     encryptionKey,
@@ -246,7 +245,7 @@ const downloadMeta = async (bzz, hash) => {
     return pick({ ...defaultMeta, ...meta }, [
       "title",
       "description",
-      "channelAddress",
+      "ownerAddress",
       "thumbnailHash",
       "duration",
       "originalQuality",

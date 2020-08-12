@@ -25,7 +25,7 @@ const Uploader = () => {
   const { updateManifest } = actions
   const hasQueuedProcesses = queue.filter(q => q.finished === false).length > 0
 
-  const { name, avatar, existsOnIndex } = useSelector(state => state.profile)
+  const { name, avatar } = useSelector(state => state.profile)
   const { address } = useSelector(state => state.user)
   const { indexClient } = useSelector(state => state.env)
 
@@ -40,27 +40,12 @@ const Uploader = () => {
   const submitVideo = async () => {
     setIsSubmitting(true)
     try {
-      if (!existsOnIndex) {
-        const created = await profileActions.createChannel(address)
-
-        if (!created) {
-          showError(
-            "Cannot create channel",
-            `You first need to create a channel.
-                        This process is automated, but didn't work this time.
-                        Try again in your profile page.`
-          )
-          setIsSubmitting(false)
-          return
-        }
-      }
-
       const videoManifest = await updatedVideoMeta(manifest, {
         title,
         description,
         originalQuality,
         thumbnailHash: thumbnail,
-        channelAddress: address,
+        ownerAddress: address,
         duration,
         sources: queue.map(q => q.quality),
       })

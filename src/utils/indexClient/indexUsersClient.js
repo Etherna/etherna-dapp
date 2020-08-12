@@ -34,18 +34,18 @@ export default class IndexUsersClient {
    * @param {number} page Page offset (default = 0)
    * @param {number} take Count of users to get (default = 25)
    * @param {number} videosTake Count of videos to get (default = 5)
-   * @returns {import(".").IndexUserVideos[]} List of channels with videos
+   * @returns {import(".").IndexUserVideos[]} List of users with videos
    */
   async fetchUsersWithVideos(page = 0, take = 25, videosTake = 5) {
     /** @type {import(".").IndexUserVideos[]} */
-    const channels = await this.fetchUsers(page, take)
-    const channelsVideos = await Promise.all(
-      channels.map(channel => this.fetchUserVideos(channel.address, 0, videosTake))
+    const users = await this.fetchUsers(page, take)
+    const usersVideos = await Promise.all(
+      users.map(user => this.fetchUserVideos(user.address, 0, videosTake))
     )
-    channels.forEach((channel, i) => {
-      channel.videos = channelsVideos[i]
+    users.forEach((user, i) => {
+      user.videos = usersVideos[i]
     })
-    return channels
+    return users
   }
 
   /**

@@ -28,7 +28,7 @@ const NotFoundPage = () => {
             <h3 className="mt-12">Resources</h3>
             <nav className="flex flex-col">
               <Link to={Routes.getHomeLink()}>Explore videos →</Link>
-              <Link to={Routes.getChannelsLink()}>Channels →</Link>
+              <Link to={Routes.getProfilesLink()}>Profiles →</Link>
               <a href="https://etherna.io/blog" target="_blank" rel="noopener noreferrer">
                 Blog →
               </a>

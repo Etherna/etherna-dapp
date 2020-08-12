@@ -3,7 +3,7 @@ import { nullablePromise } from "@utils/promise"
 import { fetchFullVideosInfo } from "@utils/video"
 import { store } from "@state/store"
 
-const match = /\/channel\/([^/]+)/
+const match = /\/profile\/([^/]+)/
 
 const fetch = async () => {
   const { indexClient } = store.getState().env

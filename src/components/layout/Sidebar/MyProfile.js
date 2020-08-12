@@ -17,7 +17,7 @@ const MyProfile = () => {
         <small className="sidebar-text">Unlock your account</small>
       )}
       {isSignedIn && !identityManifest && (
-        <Link to={Routes.getChannelEditingLink(address)}>
+        <Link to={Routes.getProfileEditingLink(address)}>
           <small className="sidebar-text">Set up your profile</small>
         </Link>
       )}
@@ -26,7 +26,7 @@ const MyProfile = () => {
           name={checkIsEthAddress(name) ? shortenEthAddr(name) : name || shortenEthAddr(name)}
           image={avatar}
           fallbackAddress={address}
-          link={Routes.getChannelLink(address)}
+          link={Routes.getProfileLink(address)}
         />
       )}
     </div>

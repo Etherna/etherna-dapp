@@ -23,13 +23,13 @@ import Routes from "@routes"
 const VideoPreview = ({ video, hideProfile }) => {
   const { address } = useSelector(state => state.user)
 
-  const profileAddress = video.channelAddress
+  const profileAddress = video.ownerAddress
   const profileName = useState(
     (video.profileData && video.profileData.name) || shortenEthAddr(profileAddress)
   )
   const profileAvatar = useState(video.profileData && video.profileData.avatar)
 
-  const profileLink = Routes.getChannelLink(video.channelAddress)
+  const profileLink = Routes.getProfileLink(video.ownerAddress)
   const videoLink = Routes.getVideoLink(video.videoHash)
   const videoSearch = new URL(videoLink, document.baseURI).search
   const videoPath = videoLink.replace(videoSearch, "")

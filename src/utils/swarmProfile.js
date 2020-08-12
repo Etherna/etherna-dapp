@@ -25,8 +25,8 @@ const ProfileProperties = ["address", "name", "avatar", "cover", "description", 
  * @typedef {object} Profile
  * @property {string} address Profile address
  * @property {string} manifest Swarm manifest hash
- * @property {string} name Name of the Profile/Channel
- * @property {string} description Description of the Profile/Channel
+ * @property {string} name Name of the Profile
+ * @property {string} description Description of the Profile
  * @property {SwarmImage} avatar User's avatar
  * @property {SwarmImage} avatar User's cover
  *

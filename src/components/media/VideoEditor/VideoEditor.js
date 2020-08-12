@@ -40,7 +40,7 @@ const VideoEditor = ({ hash, video }) => {
 
   const [videoMeta, setVideoMeta] = useState(video)
   const [videoOnIndex, setVideoOnIndex] = useState(undefined)
-  const [videoOwner, setVideoOwner] = useState(video.channelAddress)
+  const [videoOwner, setVideoOwner] = useState(video.ownerAddress)
   const [title, setTitle] = useState(video.title)
   const [description, setDescription] = useState(video.description)
   const [thumbnail, setThumbnail] = useState(video.thumbnailHash)
@@ -68,7 +68,7 @@ const VideoEditor = ({ hash, video }) => {
       const videoInfo = await fetchFullVideoInfo(hash)
 
       setVideoMeta(videoInfo)
-      setVideoOwner(videoInfo.channelAddress)
+      setVideoOwner(videoInfo.ownerAddress)
       setTitle(videoInfo.title)
       setDescription(videoInfo.description)
       setThumbnail(videoInfo.thumbnailHash)
@@ -97,7 +97,7 @@ const VideoEditor = ({ hash, video }) => {
         description,
         originalQuality,
         thumbnailHash: thumbnail,
-        channelAddress: address,
+        ownerAddress: address,
         duration,
         sources: queue.map(q => q.quality),
       })
@@ -150,7 +150,7 @@ const VideoEditor = ({ hash, video }) => {
     return <div />
   }
 
-  if (videoOnIndex && address !== videoMeta.channelAddress) {
+  if (videoOnIndex && address !== videoMeta.ownerAddress) {
     return <Redirect to={Routes.getHomeLink()} />
   }
 
@@ -225,7 +225,7 @@ const VideoEditor = ({ hash, video }) => {
             {deleted && (
               <div className="mb-3">
                 <Alert type="warning" title="Video has been deleted">
-                  To go to your channel, <Link to={Routes.getChannelLink(address)}>click here</Link>
+                  To go to your profile, <Link to={Routes.getProfileLink(address)}>click here</Link>
                 </Alert>
               </div>
             )}

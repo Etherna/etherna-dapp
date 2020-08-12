@@ -2,19 +2,19 @@ import React, { useState } from "react"
 import PropTypes from "prop-types"
 import { Redirect } from "react-router-dom"
 
-import "./channel-editor.scss"
+import "./profile-editor.scss"
 
 import ProfileInfoEdit from "@components/profile/ProfileInfoEdit"
 import { profileActions } from "@state/actions"
 import { showError } from "@state/actions/modals"
 import Routes from "@routes"
 
-const ChannelEditor = ({ address }) => {
-  const [isSavingChannel, setSavingChannel] = useState(false)
+const ProfileEditor = ({ address }) => {
+  const [isSavingProfile, setSavingProfile] = useState(false)
   const [savedProfile, setSavedProfile] = useState(false)
 
   const handleSubmit = async profileInfo => {
-    setSavingChannel(true)
+    setSavingProfile(true)
 
     try {
       await profileActions.updateProfile(profileInfo)
@@ -28,24 +28,24 @@ const ChannelEditor = ({ address }) => {
       showError("Cannot save profile", error.message)
     }
 
-    setSavingChannel(false)
+    setSavingProfile(false)
   }
 
   if (savedProfile) {
-    return <Redirect to={Routes.getChannelLink(address)} />
+    return <Redirect to={Routes.getProfileLink(address)} />
   }
 
   return (
     <ProfileInfoEdit
       profileAddress={address}
-      isSubmitting={isSavingChannel}
+      isSubmitting={isSavingProfile}
       onSubmit={handleSubmit}
     />
   )
 }
 
-ChannelEditor.propTypes = {
+ProfileEditor.propTypes = {
   address: PropTypes.string.isRequired,
 }
 
-export default ChannelEditor
+export default ProfileEditor

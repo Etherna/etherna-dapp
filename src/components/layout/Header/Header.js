@@ -2,13 +2,14 @@ import React from "react"
 import { NavLink } from "react-router-dom"
 
 import "./header.scss"
+
 import UserMenu from "@components/user/UserMenu"
-import Routes from "@routes"
 import Logo from "@icons/Logo"
 import UploadIcon from "@icons/menu/UploadIcon"
 import useSelector from "@state/useSelector"
+import Routes from "@routes"
 
-const ChannelsMatches = [/^\/channel\//, /^\/channels/]
+const ProfilesMatches = [/^\/profile\//, /^\/profiles/]
 const ExploreMatches = [/^\/watch/]
 
 const anyMatch = (patterns, string) => {
@@ -36,25 +37,25 @@ const Header = () => {
             Explore
           </NavLink>
           <NavLink
-            to={Routes.getChannelsLink()}
+            to={Routes.getProfilesLink()}
             className="nav-item"
             activeClassName="active"
             isActive={(_, location) => {
-              if (anyMatch(ChannelsMatches, location.pathname)) {
+              if (anyMatch(ProfilesMatches, location.pathname)) {
                 return true
               }
               return false
             }}
           >
-            Channels
+            Profiles
           </NavLink>
           {/* <NavLink
-                        to={Routes.getHowItWorksLink()}
-                        className="nav-item"
-                        activeClassName="active"
-                    >
-                        How it works
-                    </NavLink> */}
+                to={Routes.getHowItWorksLink()}
+                className="nav-item"
+                activeClassName="active"
+              >
+                How it works
+              </NavLink> */}
         </div>
         <div className="logo">
           <NavLink to={Routes.getHomeLink()}>

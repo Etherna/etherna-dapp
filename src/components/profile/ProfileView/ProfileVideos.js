@@ -4,7 +4,7 @@ import InfiniteScroller from "react-infinite-scroller"
 
 import VideoGrid from "@components/media/VideoGrid"
 
-const ChannelVideos = ({ videos, isFetching, hasMoreVideos, onLoadMore }) => {
+const ProfileVideos = ({ videos, isFetching, hasMoreVideos, onLoadMore }) => {
   return (
     <>
       {!isFetching && (videos || []).length === 0 && (
@@ -27,11 +27,11 @@ const ChannelVideos = ({ videos, isFetching, hasMoreVideos, onLoadMore }) => {
   )
 }
 
-ChannelVideos.propTypes = {
+ProfileVideos.propTypes = {
   videos: PropTypes.array,
   isFetching: PropTypes.bool,
   hasMoreVideos: PropTypes.bool,
   onLoadMore: PropTypes.func,
 }
 
-export default ChannelVideos
+export default ProfileVideos

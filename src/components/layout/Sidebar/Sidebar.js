@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 import "./sidebar.scss"
 
 import MyProfile from "./MyProfile"
-import NewChannels from "./NewChannels"
+import NewProfiles from "./NewProfiles"
 import Routes from "@routes"
 
 const Sidebar = () => {
@@ -12,7 +12,7 @@ const Sidebar = () => {
     <aside className="sidebar">
       <div className="sidenav">
         <MyProfile />
-        <NewChannels />
+        <NewProfiles />
       </div>
       <small className="footer-notice">
         <nav className="footer-menu">

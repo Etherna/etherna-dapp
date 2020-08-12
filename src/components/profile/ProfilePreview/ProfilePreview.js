@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import { Link } from "react-router-dom"
 
-import "./channel-preview.scss"
+import "./profile-preview.scss"
 
 import Avatar from "@components/user/Avatar"
 import VideoGrid from "@components/media/VideoGrid"
@@ -11,8 +11,8 @@ import { getProfile } from "@utils/swarmProfile"
 import { shortenEthAddr } from "@utils/ethFuncs"
 import { fetchFullVideosInfo } from "@utils/video"
 
-const ChannelPreview = ({ channelAddress, profileManifest }) => {
-  const [isFetchingChannel, setIsFetchingChannel] = useState(false)
+const ProfilePreview = ({ profileAddress, profileManifest }) => {
+  const [isFetchingProfile, setIsFetchingProfile] = useState(false)
   const [hasMappedVideosProfile, setHasMappedVideosProfile] = useState(false)
   const [profile, setProfile] = useState(undefined)
   const [videos, setVideos] = useState([])
@@ -29,21 +29,21 @@ const ChannelPreview = ({ channelAddress, profileManifest }) => {
   }, [profile, videos])
 
   const fetchProfile = async () => {
-    setIsFetchingChannel(true)
+    setIsFetchingProfile(true)
 
     try {
-      const profile = await getProfile(profileManifest, channelAddress)
+      const profile = await getProfile(profileManifest, profileAddress)
       setProfile(profile)
     } catch (error) {
       console.error(error)
     }
 
-    setIsFetchingChannel(false)
+    setIsFetchingProfile(false)
   }
 
   const fetchVideos = async () => {
     try {
-      const videos = await fetchFullVideosInfo(0, 5, false, channelAddress)
+      const videos = await fetchFullVideosInfo(0, 5, false, profileAddress)
       setVideos(videos)
     } catch (error) {
       console.error(error)
@@ -63,16 +63,16 @@ const ChannelPreview = ({ channelAddress, profileManifest }) => {
     setHasMappedVideosProfile(true)
   }
 
-  if (isFetchingChannel || !profile) return null
+  if (isFetchingProfile || !profile) return null
 
   return (
-    <div className="channel-preview" key={channelAddress}>
-      <div className="channel-info">
-        <Link to={Routes.getChannelLink(channelAddress)}>
-          <Avatar image={profile.avatar} address={channelAddress} />
+    <div className="profile-preview" key={profileAddress}>
+      <div className="profile-info">
+        <Link to={Routes.getProfileLink(profileAddress)}>
+          <Avatar image={profile.avatar} address={profileAddress} />
         </Link>
-        <Link to={Routes.getChannelLink(channelAddress)}>
-          <h3>{profile.name || shortenEthAddr(channelAddress)}</h3>
+        <Link to={Routes.getProfileLink(profileAddress)}>
+          <h3>{profile.name || shortenEthAddr(profileAddress)}</h3>
         </Link>
       </div>
       {videos && hasMappedVideosProfile && (
@@ -85,9 +85,9 @@ const ChannelPreview = ({ channelAddress, profileManifest }) => {
   )
 }
 
-ChannelPreview.propTypes = {
+ProfilePreview.propTypes = {
   profileManifest: PropTypes.string,
-  channelAddress: PropTypes.string.isRequired,
+  profileAddress: PropTypes.string.isRequired,
 }
 
-export default ChannelPreview
+export default ProfilePreview

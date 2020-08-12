@@ -1,5 +1,5 @@
 const prefetchers = [
-  require("./prefetchers/channelPrefetcher").default,
+  require("./prefetchers/profilePrefetcher").default,
   require("./prefetchers/videoPrefetcher").default,
 ]
 
