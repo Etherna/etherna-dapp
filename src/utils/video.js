@@ -1,12 +1,9 @@
 import { Bzz } from "@erebos/bzz"
-import { BzzFeed } from "@erebos/bzz-feed"
 import { pick } from "lodash"
 
 import { getVideoDuration } from "./media"
-import { getVideos, getVideo } from "./ethernaResources/videosResources"
 import { getProfile } from "./swarmProfile"
 import { store } from "@state/store"
-import { getChannelVideos } from "./ethernaResources/channelResources"
 
 /**
  * @typedef SwarmVideoMeta
@@ -62,9 +59,10 @@ export const fetchFullVideosInfo = async (
   fetchProfile = true,
   channelAddress
 ) => {
+  const { indexClient } = store.getState().env
   const videos = channelAddress
-    ? await getChannelVideos(channelAddress, page, take)
-    : await getVideos(page, take)
+    ? await indexClient.users.fetchUserVideos(channelAddress, page, take)
+    : await indexClient.videos.fetchVideos(page, take)
   const videoManifests = videos.map(video => fetchVideoMeta(video.manifestHash))
   const promises = videoManifests.concat(
     fetchProfile ? videos.map(video => getProfile(video.channelAddress)) : []
@@ -94,6 +92,8 @@ export const fetchFullVideosInfo = async (
  * @returns {VideoMetadata}
  */
 export const fetchFullVideoInfo = async (hash, fetchProfile = true) => {
+  const { indexClient } = store.getState().env
+
   let isVideoOnIndex = false
   let channelAddress = null
   let creationDateTime = null
@@ -101,7 +101,7 @@ export const fetchFullVideoInfo = async (hash, fetchProfile = true) => {
   let encryptionType = null
 
   try {
-    const video = await getVideo(hash)
+    const video = await indexClient.videos.fetchVideo(hash)
     isVideoOnIndex = true
     channelAddress = video.channelAddress
     creationDateTime = video.creationDateTime
@@ -192,30 +192,6 @@ export const updatedVideoMeta = async (manifest, meta) => {
   })
 
   return newManifest
-}
-
-/**
- * Update video feed with a manifest containing the emtadata
- *
- * @param {string} feed Feed manifest (null to create a new one)
- * @param {string} videoManifest Video manifest with metadata
- * @returns {string} The fedd manifest hash
- */
-export const updateVideoFeed = async (feed, videoManifest) => {
-  const { gatewayHost, wallet } = store.getState().env
-  const { address: user } = store.getState().user
-  const signBytes = async bytes => wallet.sign(bytes, true)
-
-  const bzz = new Bzz({ url: gatewayHost })
-  const bzzFeed = new BzzFeed({ bzz, signBytes })
-
-  const resp = await bzzFeed.setContentHash(
-    feed ? feed : { user, name: `${+(new Date())}` },
-    videoManifest
-  )
-  const feedManifest = await resp.json()
-
-  return feedManifest
 }
 
 /**

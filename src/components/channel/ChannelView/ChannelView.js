@@ -13,7 +13,6 @@ import SEO from "@components/layout/SEO"
 import ProfileInfo from "@components/profile/ProfileInfo"
 import { profileActions } from "@state/actions"
 import useSelector from "@state/useSelector"
-import { getChannel } from "@utils/ethernaResources/channelResources"
 import { fetchFullVideosInfo } from "@utils/video"
 import Routes from "@routes"
 
@@ -24,7 +23,7 @@ const ChannelView = ({ channelAddress }) => {
   const prefetchVideos = window.prefetchData && window.prefetchData.videos
 
   const { address } = useSelector(state => state.user)
-  const { isMobile } = useSelector(state => state.env)
+  const { indexClient, isMobile } = useSelector(state => state.env)
 
   const [activeTab, setActiveTab] = useState("videos")
   const [isFetching, setIsFetching] = useState(false)
@@ -64,7 +63,7 @@ const ChannelView = ({ channelAddress }) => {
       const channel =
         prefetchVideos && prefetchProfile.address === channelAddress
           ? null
-          : await getChannel(channelAddress)
+          : await indexClient.users.fetchUser(channelAddress)
 
       setHasChannel(!!channel)
       fetchVideos()

@@ -1,6 +1,7 @@
 import { baseKeymap } from "@keyboard"
 import lang from "@lang"
 import { loadDarkMode } from "@state/actions/enviroment/darkMode"
+import IndexClient from "@utils/indexClient/client"
 
 export const EnvActionTypes = {
   ENV_UPDATE_PROVIDER: "ENV_UPDATE_PROVIDER",
@@ -17,17 +18,21 @@ export const EnvActionTypes = {
   UPDATE_IMAGE_CROP: "UPDATE_IMAGE_CROP",
 }
 
+const indexHost = window.localStorage.getItem("indexHost") || process.env.REACT_APP_INDEX_HOST
+const indexApiPath = window.localStorage.getItem("indexApiPath") != null
+  ? window.localStorage.getItem("indexApiPath")
+  : process.env.REACT_APP_INDEX_API_PATH
+const gatewayHost = window.localStorage.getItem("gatewayHost") ||
+  process.env.REACT_APP_GATEWAY_HOST ||
+  "https://swarm-gateways.net"
+const indexClient = new IndexClient({ host: indexHost, apiPath: indexApiPath })
+
 /** @type {import("..").EnvState} */
 const initialState = {
-  indexHost: window.localStorage.getItem("indexHost") || process.env.REACT_APP_INDEX_HOST,
-  indexApiVersion:
-    window.localStorage.getItem("indexApiVersion") != null
-      ? window.localStorage.getItem("indexApiVersion")
-      : process.env.REACT_APP_INDEX_API_VERSION,
-  gatewayHost:
-    window.localStorage.getItem("gatewayHost") ||
-    process.env.REACT_APP_GATEWAY_HOST ||
-    "https://swarm-gateways.net",
+  indexHost,
+  indexApiPath,
+  indexClient,
+  gatewayHost,
   keymap: baseKeymap,
   darkMode: loadDarkMode(),
   lang,
@@ -77,7 +82,7 @@ const enviromentReducer = (state = initialState, action) => {
       return {
         ...state,
         indexHost: action.indexHost,
-        indexApiVersion: action.indexApiVersion || "",
+        indexApiPath: action.indexApiPath || "",
       }
 
     case EnvActionTypes.ENV_UPDATE_GATEWAY_HOST:

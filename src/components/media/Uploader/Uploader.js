@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef } from "react"
 import classnames from "classnames"
 
 import "./uploader.scss"
+
 import { UploaderContextWrapper, useUploaderState } from "./UploaderContext"
 import VideoSourcesUpload from "./VideoSourcesUpload"
 import FileUploadFlow from "./FileUploadFlow"
@@ -11,9 +12,7 @@ import Button from "@common/Button"
 import Avatar from "@components/user/Avatar"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
-import { profileActions, providerActions } from "@state/actions"
-import { getIdentity } from "@utils/ethernaResources/identityResources"
-import { createVideo } from "@utils/ethernaResources/videosResources"
+import { profileActions } from "@state/actions"
 import { updatedVideoMeta } from "@utils/video"
 import Routes from "@routes"
 
@@ -28,6 +27,7 @@ const Uploader = () => {
 
   const { name, avatar, existsOnIndex } = useSelector(state => state.profile)
   const { address } = useSelector(state => state.user)
+  const { indexClient } = useSelector(state => state.env)
 
   const [thumbnail, setThumbnail] = useState(undefined)
   const [pinContent, setPinContent] = useState(false)
@@ -36,27 +36,6 @@ const Uploader = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [hasSubmitted, setHasSubmitted] = useState(false)
   const [videoLink, setVideoLink] = useState(false)
-
-  useEffect(() => {
-    loadWallet()
-
-    /**
-     * Remove the wallet from store when component is unmounted.
-     */
-    return () => providerActions.clearWallet()
-  }, [])
-
-  const loadWallet = async () => {
-    try {
-      const identity = await getIdentity()
-
-      providerActions.injectWallet("0x" + identity.etherManagedPrivateKey)
-    } catch (error) {
-      console.error(error)
-
-      showError("Cannot get your identity", error.message)
-    }
-  }
 
   const submitVideo = async () => {
     setIsSubmitting(true)
@@ -88,9 +67,7 @@ const Uploader = () => {
 
       updateManifest(videoManifest)
 
-      //const videoFeed = await updateVideoFeed(null, videoManifest)
-
-      await createVideo(videoManifest)
+      await indexClient.videos.createVideo(videoManifest)
       submitCompleted(videoManifest)
     } catch (error) {
       console.error(error)

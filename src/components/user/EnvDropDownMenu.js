@@ -10,10 +10,10 @@ import http from "@utils/request"
 
 const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
   const indexLastChangeRef = useRef({})
-  const { indexHost, indexApiVersion, gatewayHost } = useSelector(state => state.env)
+  const { indexHost, indexApiPath, gatewayHost } = useSelector(state => state.env)
 
   const [indexHostValue, setIndexHostValue] = useState(indexHost)
-  const [indexApiVersionValue, setIndexApiVersionValue] = useState(indexApiVersion)
+  const [indexApiPathValue, setIndexApiPathValue] = useState(indexApiPath)
   const [gatewayHostValue, setGatewayHostValue] = useState(gatewayHost)
 
   useEffect(() => {
@@ -51,10 +51,10 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
           const info = resp.data && resp.data.info
           const apiVersion = info && info.version
 
-          setIndexApiVersionValue(apiVersion || "")
+          setIndexApiPathValue(apiVersion ? `/api/v${apiVersion}` : ``)
           indexLastChangeRef.current = {}
         } catch (error) {
-          setIndexApiVersionValue("")
+          setIndexApiPathValue("")
           indexLastChangeRef.current = {}
         }
       }
@@ -63,7 +63,7 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
   }
 
   const handleIndexUpdate = () => {
-    enviromentActions.updateIndexHost(indexHostValue, indexApiVersionValue)
+    enviromentActions.updateIndexHost(indexHostValue, indexApiPathValue)
     window.location.reload()
   }
 
@@ -90,7 +90,7 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
 
           <div className="flex mt-3">
             <strong className="flex-1">Host</strong>
-            <strong className="w-auto text-right">Version</strong>
+            <strong className="w-auto text-right">Api path</strong>
           </div>
           <div className="flex">
             <div className="flex-1">
@@ -99,8 +99,8 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
             <div className="w-16">
               <input
                 type="text"
-                value={indexApiVersionValue}
-                onChange={e => setIndexApiVersionValue(e.target.value)}
+                value={indexApiPathValue}
+                onChange={e => setIndexApiPathValue(e.target.value)}
               />
             </div>
           </div>
@@ -108,7 +108,7 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
             action={handleIndexUpdate}
             size="small"
             className="mt-2 ml-auto"
-            disabled={indexHostValue === indexHost && indexApiVersionValue === indexApiVersion}
+            disabled={indexHostValue === indexHost && indexApiPathValue === indexApiPath}
           >
             Save
           </Button>
@@ -120,7 +120,7 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
             className="mt-2 ml-auto"
             disabled={
               indexHostValue === process.env.REACT_APP_INDEX_HOST &&
-              indexApiVersionValue === process.env.REACT_APP_INDEX_API_VERSION
+              indexApiPathValue === process.env.REACT_APP_INDEX_API_PATH
             }
           >
             Reset to default

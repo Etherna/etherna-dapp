@@ -2,7 +2,6 @@ import { store } from "@state/store"
 import { ProfileActionTypes } from "@state/reducers/profileReducer"
 import { UIActionTypes } from "@state/reducers/uiReducer"
 import { getProfile } from "@utils/swarmProfile"
-import { getChannel } from "@utils/ethernaResources/channelResources"
 
 const fetchProfile = async address => {
   store.dispatch({
@@ -36,8 +35,9 @@ const fetchProfile = async address => {
 }
 
 const getChannelOrNull = async address => {
+  const { indexClient } = store.getState().env
   try {
-    const channel = await getChannel(address)
+    const channel = await indexClient.users.fetchUser(address)
     return channel
   } catch (error) {
     console.error(error)

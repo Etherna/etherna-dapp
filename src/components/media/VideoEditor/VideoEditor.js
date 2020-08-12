@@ -10,14 +10,10 @@ import Alert from "@common/Alert"
 import Button from "@common/Button"
 import PinContentField from "@components/media/Uploader/PinContentField"
 import FileUploadFlow from "@components/media/Uploader/FileUploadFlow"
-import {
-  UploaderContextWrapper,
-  useUploaderState,
-} from "@components/media/Uploader/UploaderContext"
+import { UploaderContextWrapper, useUploaderState } from "@components/media/Uploader/UploaderContext"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
 import { pinResource, unpinResource, isPinned } from "@utils/swarm"
-import { updateVideo } from "@utils/ethernaResources/videosResources"
 import { fetchFullVideoInfo, updatedVideoMeta } from "@utils/video"
 import Routes from "@routes"
 
@@ -34,6 +30,7 @@ const VideoEditor = ({ hash, video }) => {
   const { updateManifest, loadInitialState } = actions
   const hasQueuedProcesses = queue.filter(q => q.finished === false).length > 0
 
+  const { indexClient } = useSelector(state => state.env)
   const { isSignedIn, address } = useSelector(state => state.user)
   const [isSaving, setIsSaving] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -107,7 +104,7 @@ const VideoEditor = ({ hash, video }) => {
 
       updateManifest(videoManifest)
 
-      await updateVideo(hash, videoManifest)
+      await indexClient.videos.updateVideo(hash, videoManifest)
 
       await updatePinning(pinContent)
 

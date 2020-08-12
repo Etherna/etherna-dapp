@@ -4,11 +4,12 @@ import PropTypes from "prop-types"
 import SidebarItem from "./SidebarItem"
 import SidebarItemPlaceholder from "./SidebarItemPlaceholder"
 import Routes from "@routes"
-import { getChannels } from "@utils/ethernaResources/channelResources"
+import useSelector from "@state/useSelector"
 import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import { getProfiles } from "@utils/swarmProfile"
 
 const NewChannels = () => {
+  const { indexClient } = useSelector(state => state.env)
   const [channels, setChannels] = useState(undefined)
 
   useEffect(() => {
@@ -18,7 +19,7 @@ const NewChannels = () => {
 
   const fetchChannels = async () => {
     try {
-      const fetchedChannels = await getChannels(0, 5)
+      const fetchedChannels = await indexClient.users.fetchUsers(0, 5)
       setChannels(fetchedChannels || [])
 
       loadProfiles(fetchedChannels)

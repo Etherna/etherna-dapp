@@ -1,13 +1,15 @@
 import { store } from "@state/store"
 import { EnvActionTypes } from "@state/reducers/enviromentReducer"
+import IndexClient from "@utils/indexClient/client"
 
-export const updateIndexHost = (host, version) => {
+export const updateIndexHost = (host, apiPath) => {
   window.localStorage.setItem("indexHost", host)
-  window.localStorage.setItem("indexApiVersion", version || "")
+  window.localStorage.setItem("indexApiPath", apiPath || "")
   store.dispatch({
     type: EnvActionTypes.ENV_UPDATE_INDEXHOST,
     indexHost: host,
-    indexApiVersion: version,
+    indexApiPath: apiPath,
+    indexClient: new IndexClient({ host, apiPath })
   })
 }
 
@@ -21,8 +23,8 @@ export const updateGatewayHost = host => {
 
 export const resetIndexHost = () => {
   const host = process.env.REACT_APP_INDEX_HOST
-  const version = process.env.REACT_APP_INDEX_API_VERSION
-  updateIndexHost(host, version)
+  const apiPath = process.env.REACT_APP_INDEX_API_PATH
+  updateIndexHost(host, apiPath)
 }
 
 export const resetGatewayHost = () => {

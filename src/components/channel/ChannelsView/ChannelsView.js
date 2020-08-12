@@ -5,11 +5,12 @@ import "./channels.scss"
 
 import ChannelPreview from "../ChannelPreview"
 import ChannelPreviewPlaceholder from "../ChannelPreviewPlaceholder"
-import { getChannels } from "@utils/ethernaResources/channelResources"
+import useSelector from "@state/useSelector"
 
 const FETCH_COUNT = 10
 
 const ChannelsView = () => {
+  const { indexClient } = useSelector(state => state.env)
   const [channels, setChannels] = useState(undefined)
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
@@ -24,7 +25,7 @@ const ChannelsView = () => {
     setPage(page + 1)
 
     try {
-      const fetchedChannels = await getChannels(page, FETCH_COUNT)
+      const fetchedChannels = await indexClient.users.fetchUsers(page, FETCH_COUNT)
 
       setChannels((channels || []).concat(fetchedChannels))
 
