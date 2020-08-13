@@ -26,7 +26,7 @@ const VideoView = ({ hash, video }) => {
   const [source, setSource] = useState(getResourceUrl(hash, true))
   const [videoOnIndex, setVideoOnIndex] = useState(null)
   const [isFetchingVideo, setIsFetchingVideo] = useState(false)
-  const [profileAddress, setProfileAddress] = useState(video.channelAddress)
+  const [profileAddress, setProfileAddress] = useState(video.ownerAddress)
   const [title, setTitle] = useState(video.title)
   const [description, setDescription] = useState(video.description)
   const [thumbnail, setThumbnail] = useState(video.thumbnailSource)
@@ -53,7 +53,7 @@ const VideoView = ({ hash, video }) => {
         : await fetchFullVideoInfo(hash, true)
 
       setSource(videoInfo.source)
-      setProfileAddress(videoInfo.channelAddress)
+      setProfileAddress(videoInfo.ownerAddress)
       setTitle(videoInfo.title)
       setDescription(videoInfo.description)
       setThumbnail(videoInfo.thumbnailSource)
@@ -78,7 +78,7 @@ const VideoView = ({ hash, video }) => {
       <div className="video-watch container">
         <Player source={source} thumbnail={thumbnail} />
         <div className="video-info">
-          <h1 className="video-title">{title || "Title"}</h1>
+          <h1 className="video-title">{title}</h1>
           {videoOnIndex === false && (
             <div className="badge-unindexed">
               <UnindexedIcon color="var(--color-orange-800)" />
@@ -100,13 +100,15 @@ const VideoView = ({ hash, video }) => {
 
           <hr />
 
-          <div className="video-channel-info">
-            <Link to={Routes.getChannelLink(profileAddress)}>
-              <div className="video-profile">
-                <Avatar image={profileAvatar} address={profileAddress || "0x0"} />
-                <h3 className="profile-name">{profileName || shortenEthAddr(profileAddress)}</h3>
-              </div>
-            </Link>
+          <div className="video-profile-info">
+            {profileAddress && (
+              <Link to={Routes.getProfileLink(profileAddress)}>
+                <div className="video-profile">
+                  <Avatar image={profileAvatar} address={profileAddress || "0x0"} />
+                  <h3 className="profile-name">{profileName || shortenEthAddr(profileAddress)}</h3>
+                </div>
+              </Link>
+            )}
           </div>
 
           <hr />

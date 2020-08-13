@@ -65,6 +65,7 @@ const ProfileInfoEdit = ({ profileAddress, submitLabel, isSubmitting, onSubmit }
       const imgObj = {
         url: getResourceUrl(imgHash),
         hash: imgHash,
+        isRaw: false
       }
 
       if (type === "cover") {
@@ -159,10 +160,10 @@ const ProfileInfoEdit = ({ profileAddress, submitLabel, isSubmitting, onSubmit }
           />
         </div>
         <div className="flex-1 p-4">
-          <label htmlFor="description">Channel description</label>
+          <label htmlFor="description">Profile description</label>
           <textarea
             className=""
-            placeholder="Something about you or your channel"
+            placeholder="Something about you or your profile"
             rows={8}
             value={profileDescription || ""}
             onChange={e => setProfileDescription(e.target.value || "")}

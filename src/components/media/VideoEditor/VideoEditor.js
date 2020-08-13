@@ -10,14 +10,10 @@ import Alert from "@common/Alert"
 import Button from "@common/Button"
 import PinContentField from "@components/media/Uploader/PinContentField"
 import FileUploadFlow from "@components/media/Uploader/FileUploadFlow"
-import {
-  UploaderContextWrapper,
-  useUploaderState,
-} from "@components/media/Uploader/UploaderContext"
+import { UploaderContextWrapper, useUploaderState } from "@components/media/Uploader/UploaderContext"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
 import { pinResource, unpinResource, isPinned } from "@utils/swarm"
-import { updateVideo } from "@utils/ethernaResources/videosResources"
 import { fetchFullVideoInfo, updatedVideoMeta } from "@utils/video"
 import Routes from "@routes"
 
@@ -34,6 +30,7 @@ const VideoEditor = ({ hash, video }) => {
   const { updateManifest, loadInitialState } = actions
   const hasQueuedProcesses = queue.filter(q => q.finished === false).length > 0
 
+  const { indexClient } = useSelector(state => state.env)
   const { isSignedIn, address } = useSelector(state => state.user)
   const [isSaving, setIsSaving] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -43,27 +40,35 @@ const VideoEditor = ({ hash, video }) => {
 
   const [videoMeta, setVideoMeta] = useState(video)
   const [videoOnIndex, setVideoOnIndex] = useState(undefined)
-  const [videoOwner, setVideoOwner] = useState(video.channelAddress)
+  const [videoOwner, setVideoOwner] = useState(video.ownerAddress)
   const [title, setTitle] = useState(video.title)
   const [description, setDescription] = useState(video.description)
   const [thumbnail, setThumbnail] = useState(video.thumbnailHash)
 
   useEffect(() => {
-    const emptyVideo = Object.keys(videoMeta).length === 0
-    emptyVideo && fetchVideo()
-    !emptyVideo && loadContext()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    Object.keys(video).length === 0 && fetchVideo()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [video])
+
+  useEffect(() => {
+    Object.keys(videoMeta).length > 0 && loadContext()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoMeta])
 
   useEffect(() => {
     if (videoOwner) {
       loadPinning()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoOwner])
 
   const loadContext = () => {
-    loadInitialState(videoMeta.duration, videoMeta.originalQuality, videoMeta.sources)
+    loadInitialState(
+      hash,
+      videoMeta.duration,
+      videoMeta.originalQuality,
+      videoMeta.sources
+    )
   }
 
   const fetchVideo = async () => {
@@ -71,7 +76,7 @@ const VideoEditor = ({ hash, video }) => {
       const videoInfo = await fetchFullVideoInfo(hash)
 
       setVideoMeta(videoInfo)
-      setVideoOwner(videoInfo.channelAddress)
+      setVideoOwner(videoInfo.ownerAddress)
       setTitle(videoInfo.title)
       setDescription(videoInfo.description)
       setThumbnail(videoInfo.thumbnailHash)
@@ -100,14 +105,14 @@ const VideoEditor = ({ hash, video }) => {
         description,
         originalQuality,
         thumbnailHash: thumbnail,
-        channelAddress: address,
+        ownerAddress: address,
         duration,
         sources: queue.map(q => q.quality),
       })
 
       updateManifest(videoManifest)
 
-      await updateVideo(hash, videoManifest)
+      await indexClient.videos.updateVideo(hash, videoManifest)
 
       await updatePinning(pinContent)
 
@@ -153,7 +158,7 @@ const VideoEditor = ({ hash, video }) => {
     return <div />
   }
 
-  if (videoOnIndex && address !== videoMeta.channelAddress) {
+  if (videoOnIndex && address !== videoMeta.ownerAddress) {
     return <Redirect to={Routes.getHomeLink()} />
   }
 
@@ -221,14 +226,14 @@ const VideoEditor = ({ hash, video }) => {
             {saved && (
               <div className="mb-3">
                 <Alert type="success" title="Video Saved!" onClose={() => setSaved(false)}>
-                  Checkout the video <Link to={Routes.getVideoLink(hash)}>here</Link>
+                  Checkout the video <Link to={Routes.getVideoLink(manifest)}>here</Link>
                 </Alert>
               </div>
             )}
             {deleted && (
               <div className="mb-3">
                 <Alert type="warning" title="Video has been deleted">
-                  To go to your channel, <Link to={Routes.getChannelLink(address)}>click here</Link>
+                  To go to your profile, <Link to={Routes.getProfileLink(address)}>click here</Link>
                 </Alert>
               </div>
             )}

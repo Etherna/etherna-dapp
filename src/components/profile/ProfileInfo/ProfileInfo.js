@@ -2,13 +2,20 @@ import React, { useEffect, useState } from "react"
 import PropTypes from "prop-types"
 
 import "./profile-info.scss"
+
+import SwarmImage from "@components/common/SwarmImage"
+import useSelector from "@state/useSelector"
+import profileActions from "@state/actions/profile"
 import makeBlockies from "@utils/makeBlockies"
 import { getProfile } from "@utils/swarmProfile"
 import { checkIsEthAddress, shortenEthAddr } from "@utils/ethFuncs"
-import SwarmImage from "@components/common/SwarmImage"
 
 const ProfileInfo = ({ children, nav, profileAddress, actions, onFetchedProfile }) => {
   const prefetchProfile = window.prefetchData && window.prefetchData.profile
+
+  const { indexClient } = useSelector(state => state.env)
+  const { address } = useSelector(state => state.user)
+  const isCurrentUser = address === profileAddress
 
   const [profileName, setProfileName] = useState("")
   const [profileAvatar, setProfileAvatar] = useState({})
@@ -31,9 +38,23 @@ const ProfileInfo = ({ children, nav, profileAddress, actions, onFetchedProfile 
     const hasPrefetch = prefetchProfile && prefetchProfile.address === profileAddress
 
     try {
-      const { name, description, avatar, cover } = hasPrefetch
-        ? prefetchProfile
-        : await getProfile(profileAddress)
+      let { name, description, avatar, cover } = hasPrefetch ? prefetchProfile : {}
+
+      if (!hasPrefetch) {
+        let swarmProfile = {}
+
+        if (isCurrentUser) {
+          swarmProfile = profileActions.getCurrentUserProfile()
+        } else {
+          const indexProfile = await indexClient.users.fetchUser(profileAddress)
+          swarmProfile = await getProfile(indexProfile.identityManifest, profileAddress)
+        }
+
+        name = swarmProfile.name
+        description = swarmProfile.description
+        avatar = swarmProfile.avatar
+        cover = swarmProfile.cover
+      }
       const fallbackName = name || profileAddress
 
       setProfileName(fallbackName)
@@ -57,7 +78,11 @@ const ProfileInfo = ({ children, nav, profileAddress, actions, onFetchedProfile 
     <div className="profile">
       <div className="cover">
         {profileCover.url && (
-          <SwarmImage hash={profileCover.hash} alt={profileName} className="cover-image" />
+          <SwarmImage
+            hash={profileCover.hash}
+            alt={profileName}
+            className="cover-image"
+          />
         )}
       </div>
 
@@ -65,7 +90,7 @@ const ProfileInfo = ({ children, nav, profileAddress, actions, onFetchedProfile 
         <div className="col md:max-w-xxs px-4">
           <div className="profile-avatar">
             <SwarmImage
-              hash={profileAvatar.hash ? profileAvatar.hash : makeBlockies(profileAddress)}
+              hash={profileAvatar.hash}
               fallback={makeBlockies(profileAddress)}
               alt={profileName}
             />

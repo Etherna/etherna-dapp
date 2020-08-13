@@ -1,9 +1,9 @@
-import createChannel from "./createChannel"
 import fetchProfile from "./fetchProfile"
 import updateProfile from "./updateProfile"
+import getCurrentUserProfile from "./getCurrentUserProfile"
 
 export default {
-  createChannel,
   fetchProfile,
   updateProfile,
+  getCurrentUserProfile
 }

@@ -83,14 +83,14 @@ const UserMenu = () => {
         <hr />
         {name && (
           <DropDownItem>
-            <Link to={Routes.getChannelLink(address)}>
+            <Link to={Routes.getProfileLink(address)}>
               <ProfileIcon />
               <span>View profile</span>
             </Link>
           </DropDownItem>
         )}
         <DropDownItem>
-          <Link to={Routes.getChannelEditingLink(address)}>
+          <Link to={Routes.getProfileEditingLink(address)}>
             <EditProfileIcon />
             <span>Edit profile</span>
           </Link>

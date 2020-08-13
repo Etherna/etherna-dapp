@@ -1,28 +1,32 @@
+import { pick } from "lodash"
 import web3 from "web3"
-import { mergeWith, omit } from "lodash"
+import { BzzFeed } from "@erebos/bzz-feed"
 
 import { checkIsEthAddress } from "./ethFuncs"
-import { readFeed, updatedFeed } from "./feedFuncs"
 import { getResourceUrl, isValidHash } from "./swarm"
-import http from "@utils/request"
+import { store } from "@state/store"
 
-const EthernaTopicName = "Etherna"
-const EthernaTopic = web3.utils.padRight(web3.utils.fromAscii(EthernaTopicName), 64)
-const EthernaVideoName = "EthernaVideo"
+const ProfileAuthority = "0x0"
+const ProfileTopic = web3.utils.padRight(web3.utils.fromAscii("EthernaUserIdentity"), 64)
+const ProfileProperties = ["address", "name", "avatar", "cover", "description", "location", "website", "birthday"]
 
 /**
  *
- * @typedef {object} SwarmObject
+ * @typedef {object} SwarmResource
+ * @property {string} "@type" Resource type
  * @property {string} value Hash of the resource
+ * @property {boolean} isRaw Is swarm raw resource
  *
  * @typedef {object} SwarmImage
  * @property {string} url Url of the resource
  * @property {string} hash Hash of the resource on Swarm
+ * @property {boolean} isRaw Is swarm raw resource
  *
  * @typedef {object} Profile
  * @property {string} address Profile address
- * @property {string} name Name of the Profile/Channel
- * @property {string} description Description of the Profile/Channel
+ * @property {string} manifest Swarm manifest hash
+ * @property {string} name Name of the Profile
+ * @property {string} description Description of the Profile
  * @property {SwarmImage} avatar User's avatar
  * @property {SwarmImage} avatar User's cover
  *
@@ -30,39 +34,33 @@ const EthernaVideoName = "EthernaVideo"
 
 /**
  * Get the profile information of a address
- * @param {string} address Address of the profile to retrieve
+ * @param {string} manifest Manifest with profile info
+ * @param {string} address Address for fallback feed
  *
  * @returns {Profile}
  */
-export const getProfile = async address => {
-  const [baseProfile, ethernaVideoProfile] = await Promise.all([
-    resolveProfile(EthernaTopic, null, address),
-    resolveProfile(EthernaTopic, EthernaVideoName, address),
-  ])
-
-  return mergeWith(
-    baseProfile,
-    ethernaVideoProfile,
-    (a, b) => (!b ? a : undefined)
-  )
+export const getProfile = async (manifest, address) => {
+  const profile = await resolveProfile(manifest, address)
+  return profile
 }
 
 /**
  * Get a list of profiles
- * @param {string[]} addresses Array of address
+ * @param {{ address: string, manifest: string }[]} identities Array of manifest hash
  * @returns {Profile[]}
  */
-export const getProfiles = async addresses => {
+export const getProfiles = async identities => {
   try {
-    const promises = addresses.map(address => getProfile(address))
+    const promises = identities.map(identity => getProfile(identity.manifest, identity.address))
     const profiles = await Promise.all(promises)
 
     return profiles
   } catch (error) {
     console.error(error)
 
-    return addresses.map(a => ({
-      address: a,
+    return identities.map(ide => ({
+      address: ide.address,
+      manifests: ide.manifest,
       name: null,
     }))
   }
@@ -71,60 +69,76 @@ export const getProfiles = async addresses => {
 /**
  * Update a user's feeds for the profile
  * @param {Profile} profile Profile information
+ * @returns {string} The new manifest hash
  */
 export const updateProfile = async profile => {
-  const address = profile.address
-
-  // Split profile data into "base profile" and "etherna video profile"
-  let baseProfile = {
-    address: profile.address,
-    name: profile.name,
-    avatar: profile.avatar,
-  }
-  let ethernaVideoProfile = omit(profile, "name", "avatar")
+  const { bzzClient } = store.getState().env
 
   // Get validated profiles
-  baseProfile = await validatedProfile(baseProfile)
-  ethernaVideoProfile = await validatedProfile(ethernaVideoProfile)
+  const baseProfile = pick(validatedProfile(profile), ProfileProperties)
 
-  // Update feed
-  await updatedFeed(EthernaTopic, undefined, address, JSON.stringify(baseProfile))
-  await updatedFeed(EthernaTopic, EthernaVideoName, address, JSON.stringify(ethernaVideoProfile))
+  // Upload json
+  const manifest = await bzzClient.uploadData(baseProfile, {
+    contentType: "text/json",
+  })
+
+  return manifest
 }
 
 // Private utils functions
 
 /**
  * Resolve a profile by fetching feeds and resolving images
- * @param {string} topic Hash of the feed topic
- * @param {string} name Name of feed
- * @param {string} address Owner of the feed
+ * @param {string} manifest Manifest with profile info
+ * @param {string} address Address for fallback feed
  * @returns {Profile}
  */
-const resolveProfile = async (topic, name, address) => {
-  const profile = await fetchFeedOrDefault(topic, name, address)
-  return {
+const resolveProfile = async (manifest, address) => {
+  const { bzzClient } = store.getState().env
+  let profile = {
     address,
     name: null,
+    description: null,
     location: null,
     website: null,
     birthday: null,
-
-    ...profile,
-
-    avatar: resolveImage(profile.avatar),
-    cover: resolveImage(profile.cover),
-    description: await resolveText(profile.description),
   }
+
+  try {
+    if (!manifest) throw new Error("No manifest!")
+
+    const resp = await bzzClient.download(manifest)
+    const manifestProfile = await resp.json()
+    profile = {...profile, ...manifestProfile}
+  } catch (error) {
+    const feedProfile = await fetchFeedOrDefault(bzzClient, {
+      topic: ProfileTopic,
+      name: address,
+      user: ProfileAuthority
+    })
+    profile = {...profile, ...feedProfile}
+  }
+
+  profile = pick(
+    {
+      ...profile,
+      avatar: resolveImage(profile.avatar),
+      cover: resolveImage(profile.cover),
+    },
+    ProfileProperties
+  )
+
+  return profile
 }
 
 /**
  * Resolve an image by parsing its url
- * @param {SwarmObject} imgObj
+ *
+ * @param {SwarmResource} imgObj
  * @returns {SwarmImage}
  */
-const resolveImage = imgObj => {
-  let url = null, hash = null
+export const resolveImage = imgObj => {
+  let url = null, hash = null, isRaw = false
   if (
     typeof imgObj === "object" &&
     "@type" in imgObj &&
@@ -132,41 +146,15 @@ const resolveImage = imgObj => {
     imgObj["@type"] === "image" &&
     isValidHash(imgObj.value)
   ) {
-    url = getResourceUrl(imgObj.value)
+    url = getResourceUrl(imgObj.value, imgObj.isRaw)
     hash = imgObj.value
+    isRaw = imgObj.isRaw || false
   }
   return {
     url,
     hash,
+    isRaw
   }
-}
-
-/**
- * Resolve a long text by fetching its content on Swarm
- * @param {SwarmObject|string} textObj
- * @returns {string}
- */
-const resolveText = async textObj => {
-  let text = ""
-
-  if (typeof textObj === "string") {
-    return textObj
-  }
-
-  if (
-    typeof textObj === "object" &&
-    "@type" in textObj &&
-    "value" in textObj &&
-    textObj["@type"] === "text" &&
-    isValidHash(textObj.value)
-  ) {
-    const url = getResourceUrl(textObj.value)
-    try {
-      text = (await http.get(url)).data
-    } catch {}
-  }
-
-  return text
 }
 
 /**
@@ -174,7 +162,7 @@ const resolveText = async textObj => {
  * @param {Profile} profile Profile to validate
  * @returns {Profile}
  */
-const validatedProfile = async profile => {
+export const validatedProfile = profile => {
   // Object validation
   if (typeof profile !== "object") {
     throw new Error("Profile must be an object")
@@ -208,9 +196,6 @@ const validatedProfile = async profile => {
     }
   }
 
-  // address is not necessary
-  delete profile.address
-
   // map fields with corrected values
   Object.keys(profile).forEach(key => {
     if (key === "name") {
@@ -219,7 +204,8 @@ const validatedProfile = async profile => {
 
     if (key === "avatar" || key === "cover") {
       const value = profile[key].hash
-      profile[key] = { "@type": "image", value }
+      const isRaw = profile[key].isRaw
+      profile[key] = { "@type": "image", value, isRaw }
     }
   })
 
@@ -231,17 +217,19 @@ const validatedProfile = async profile => {
   return profile
 }
 
+
 /**
  * Fetch the feed or a empty object if non existing
- * @param {string} topic Hash of the topic feed
- * @param {string} name Name of the feed
- * @param {string} address Owner address
+ * @param {import("@erebos/bzz").Bzz} bzz Bzz client
+ * @param {import("@erebos/bzz-feed").FeedParams} feed Feed props
  * @returns {object} Feed data
  */
-const fetchFeedOrDefault = async (topic, name, address) => {
+const fetchFeedOrDefault = async (bzz, feed) => {
+  const bzzFeed = new BzzFeed({ bzz })
   try {
-    const feed = await readFeed(topic, name, address)
-    return typeof feed === "string" ? JSON.parse(feed) : feed || {}
+    const meta = await bzzFeed.getContent(feed)
+
+    return typeof meta === "string" ? JSON.parse(meta) : meta || {}
   } catch (error) {
     return {}
   }

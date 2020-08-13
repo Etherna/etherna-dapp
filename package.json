@@ -5,6 +5,7 @@
   "version": "0.1.0",
   "author": "Mattia Dalzocchio",
   "dependencies": {
+    "@erebos/bzz": "^0.13.0",
     "@erebos/bzz-feed": "^0.13.2",
     "@erebos/secp256k1": "^0.10.0",
     "@erebos/swarm-node": "^0.13.0",
@@ -26,7 +27,6 @@
     "moment": "^2.24.0",
     "node-sass": "^4.13.1",
     "nprogress": "^0.2.0",
-    "oidc-client": "^1.10.1",
     "p-min-delay": "^3.1.0",
     "postcss-cli": "^7.1.0",
     "prop-types": "^15.7.2",
@@ -81,14 +81,18 @@
     "rules": {
       "indent": [
         "error",
-        2, {
+        2,
+        {
           "SwitchCase": 1,
-          "ignoredNodes": ["ConditionalExpression"]
+          "ignoredNodes": [
+            "ConditionalExpression"
+          ]
         }
       ],
       "quotes": [
         "warn",
-        "double", {
+        "double",
+        {
           "allowTemplateLiterals": true
         }
       ]

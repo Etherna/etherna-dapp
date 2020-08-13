@@ -4,12 +4,11 @@ import PropTypes from "prop-types"
 import Modal from "@common/Modal"
 import Button from "@common/Button"
 import { showError } from "@state/actions/modals"
+import useSelector from "@state/useSelector"
 import { getResourceUrl } from "@utils/swarm"
-import { deleteVideo } from "@utils/ethernaResources/videosResources"
 
 /**
  * @param {object} props
- * @param {string} props.channel
  * @param {string} props.hash
  * @param {string} props.thumbnail
  * @param {string} props.title
@@ -17,13 +16,14 @@ import { deleteVideo } from "@utils/ethernaResources/videosResources"
  * @param {Function} props.onDelete
  */
 const VideoDeleteModal = ({ hash, thumbnail, title, onCancel, onDelete }) => {
+  const { indexClient } = useSelector(state => state.env)
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDelete = async () => {
     setIsDeleting(true)
 
     try {
-      await deleteVideo(hash)
+      await indexClient.videos.deleteVideo(hash)
 
       onDelete()
     } catch (error) {

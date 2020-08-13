@@ -3,16 +3,16 @@ import { Link } from "react-router-dom"
 
 import "./sidebar.scss"
 
-import MyChannel from "./MyChannel"
-import NewChannels from "./NewChannels"
+import MyProfile from "./MyProfile"
+import NewProfiles from "./NewProfiles"
 import Routes from "@routes"
 
 const Sidebar = () => {
   return (
     <aside className="sidebar">
       <div className="sidenav">
-        <MyChannel />
-        <NewChannels />
+        <MyProfile />
+        <NewProfiles />
       </div>
       <small className="footer-notice">
         <nav className="footer-menu">

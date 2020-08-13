@@ -29,32 +29,7 @@ export const SignedInRoute = ({ path, exact, children }) => {
   )
 }
 
-export const HasChannelRoute = ({ path, exact, children }) => {
-  const { existsOnIndex } = useSelector(state => state.profile)
-
-  return (
-    <Route
-      path={path}
-      exact={exact}
-      render={({ location }) =>
-        existsOnIndex ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: Routes.getHomeLink(),
-              state: {
-                from: location,
-              },
-            }}
-          />
-        )
-      }
-    />
-  )
-}
-
-export const ChannelOwnerRoute = ({ path, exact, children }) => {
+export const ProfileOwnerRoute = ({ path, exact, children }) => {
   const { address } = useSelector(state => state.user)
 
   return (
@@ -67,7 +42,7 @@ export const ChannelOwnerRoute = ({ path, exact, children }) => {
         ) : (
           <Redirect
             to={{
-              pathname: Routes.getChannelLink(match.params.id),
+              pathname: Routes.getProfileLink(match.params.id),
               state: {
                 from: location,
               },

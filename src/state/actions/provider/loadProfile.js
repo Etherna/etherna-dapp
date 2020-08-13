@@ -5,18 +5,19 @@ import { UserActionTypes } from "@state/reducers/userReducer"
 import fetchProfile from "@state/actions/profile/fetchProfile"
 import { resolveEnsName } from "@utils/ethFuncs"
 
-const loadProfile = async () => {
-  const {
-    user: { address },
-    env: { web3 },
-  } = store.getState()
+/**
+ *
+ * @param {import("@utils/indexClient").IndexCurrentUser} profile
+ */
+const loadProfile = async (profile) => {
+  const { web3 } = store.getState().env
 
   try {
     // fetching address ens name
-    resolveEns(address, web3)
+    resolveEns(profile.address, web3)
 
     // fetching profile data
-    fetchProfile(address)
+    fetchProfile(profile.identityManifest, profile.address)
 
     // observe address change
     pollAddress()

@@ -5,7 +5,7 @@ import pMinDelay from "p-min-delay"
 
 import "./scss/theme.scss"
 
-import { ChannelOwnerRoute, SignedInRoute, WatchRoute } from "./ProtectedRoutes"
+import { ProfileOwnerRoute, SignedInRoute, WatchRoute } from "./ProtectedRoutes"
 import PageLoader from "@common/PageLoader"
 import Layout from "@components/layout/DefaultLayout"
 import { ShortcutWrapper } from "@keyboard"
@@ -18,20 +18,20 @@ const AsyncHome = loadable(
     fallback: <PageLoader />,
   }
 )
-const AsyncChannel = loadable(
-  () => pMinDelay(import(/* webpackChunkName: "channel" */ "@pages/channel"), 200),
+const AsyncProfile = loadable(
+  () => pMinDelay(import(/* webpackChunkName: "profile" */ "@pages/profile"), 200),
   {
     fallback: <PageLoader />,
   }
 )
-const AsyncChannelEdit = loadable(
-  () => pMinDelay(import(/* webpackChunkName: "channel-edit" */ "@pages/channelEdit"), 200),
+const AsyncProfileEdit = loadable(
+  () => pMinDelay(import(/* webpackChunkName: "profile-edit" */ "@pages/profileEdit"), 200),
   {
     fallback: <PageLoader />,
   }
 )
-const AsyncChannels = loadable(
-  () => pMinDelay(import(/* webpackChunkName: "channels" */ "@pages/channels"), 200),
+const AsyncProfiles = loadable(
+  () => pMinDelay(import(/* webpackChunkName: "profiles" */ "@pages/profiles"), 200),
   {
     fallback: <PageLoader />,
   }
@@ -76,9 +76,9 @@ const AsyncNotFound = loadable(
 const basename = getBasename()
 
 const Home = () => <AsyncHome />
-const Channel = () => <AsyncChannel />
-const ChannelEdit = () => <AsyncChannelEdit />
-const Channels = () => <AsyncChannels />
+const Profile = () => <AsyncProfile />
+const ProfileEdit = () => <AsyncProfileEdit />
+const Profiles = () => <AsyncProfiles />
 const Watch = () => <AsyncWatch />
 const VideoSettings = () => <AsyncVideoSettings />
 const Upload = () => <AsyncUpload />
@@ -96,15 +96,15 @@ const Root = () => {
               <Route path={"/"} exact>
                 <Home />
               </Route>
-              <Route path={"/channels"} exact>
-                <Channels />
+              <Route path={"/profiles"} exact>
+                <Profiles />
               </Route>
-              <Route path={"/channel/:id"} exact>
-                <Channel />
+              <Route path={"/profile/:id"} exact>
+                <Profile />
               </Route>
-              <ChannelOwnerRoute path={"/channel/:id/edit"} exact>
-                <ChannelEdit />
-              </ChannelOwnerRoute>
+              <ProfileOwnerRoute path={"/profile/:id/edit"} exact>
+                <ProfileEdit />
+              </ProfileOwnerRoute>
               <WatchRoute path={"/watch"}>
                 <Watch />
               </WatchRoute>

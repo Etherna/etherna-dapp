@@ -6,25 +6,25 @@ export const getHomeLink = () => {
 }
 
 /**
- * Channel routes
+ * Profile routes
  */
-export const getChannelsLink = () => {
-  return `/channels`
+export const getProfilesLink = () => {
+  return `/profiles`
 }
 
-export const getChannelLink = hash => {
-  return `/channel/${encodeURIComponent(hash)}`
+export const getProfileLink = hash => {
+  return `/profile/${encodeURIComponent(hash)}`
 }
 
-export const getChannelEditingLink = hash => {
-  return `/channel/${encodeURIComponent(hash)}/edit`
+export const getProfileEditingLink = hash => {
+  return `/profile/${encodeURIComponent(hash)}/edit`
 }
 
 /**
  * Video routes
  */
 export const getVideoLink = (hash, sourcePath) => {
-  return `/watch?v=${encodeURIComponent(hash + `/${sourcePath ? sourcePath : ""}`)}`
+  return `/watch?v=${hash}${encodeURIComponent(sourcePath ? `/${sourcePath}` : ``)}`
 }
 
 export const getVideoSettingsLink = hash => {

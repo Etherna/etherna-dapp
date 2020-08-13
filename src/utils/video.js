@@ -1,12 +1,8 @@
-import { Bzz } from "@erebos/bzz"
-import { BzzFeed } from "@erebos/bzz-feed"
 import { pick } from "lodash"
 
 import { getVideoDuration } from "./media"
-import { getVideos, getVideo } from "./ethernaResources/videosResources"
 import { getProfile } from "./swarmProfile"
 import { store } from "@state/store"
-import { getChannelVideos } from "./ethernaResources/channelResources"
 
 /**
  * @typedef SwarmVideoMeta
@@ -14,7 +10,7 @@ import { getChannelVideos } from "./ethernaResources/channelResources"
  * @property {string} description Description of the video
  * @property {string} originalQuality Quality of the original video
  * @property {string} thumbnailHash Hash for the thumbnail
- * @property {string} channelAddress Address of the channel owner of the video
+ * @property {string} ownerAddress Address of the owner of the video
  * @property {number} duration Duration of the video in seconds
  * @property {string[]} sources List of available qualities of the video
  *
@@ -26,7 +22,7 @@ import { getChannelVideos } from "./ethernaResources/channelResources"
  * @property {number} duration Duration of the video in seconds
  * @property {string} source Url of the original video
  * @property {string} thumbnailSource Url of the thumbnail
- * @property {string} channelAddress Address of the channel owner of the video
+ * @property {string} ownerAddress Address of the owner of the video
  * @property {{ source: string, quality: string }[]} sources All qualities of video
  *
  * @typedef {object} VideoMetadata
@@ -38,9 +34,8 @@ import { getChannelVideos } from "./ethernaResources/channelResources"
  * @property {number} duration Duration of the video in seconds
  * @property {string} source Url of the original video
  * @property {string} thumbnailSource Url of the thumbnail
- * @property {string} channelAddress Address of the channel owner of the video
+ * @property {string} ownerAddress Address of the owner of the video
  * @property {{ source: string, quality: string }[]} sources All qualities of video
- * @property {string} channelAddress
  * @property {string} creationDateTime
  * @property {boolean} isVideoOnIndex
  * @property {string} encryptionKey
@@ -52,22 +47,23 @@ import { getChannelVideos } from "./ethernaResources/channelResources"
  * Get a list of recent videos with meta info
  * @param {number} page Page offset (default = 0)
  * @param {number} take Count of videos to get (default = 25)
- * @param {boolean} fetchProfile Fetch channel profile info
- * @param {string} channelAddress Fetch videos by a channel
+ * @param {boolean} fetchProfile Fetch profile info
+ * @param {string} ownerAddress Fetch videos by a profile
  * @returns {VideoMetadata[]}
  */
 export const fetchFullVideosInfo = async (
   page = 0,
   take = 25,
   fetchProfile = true,
-  channelAddress
+  ownerAddress
 ) => {
-  const videos = channelAddress
-    ? await getChannelVideos(channelAddress, page, take)
-    : await getVideos(page, take)
+  const { indexClient } = store.getState().env
+  const videos = ownerAddress
+    ? await indexClient.users.fetchUserVideos(ownerAddress, page, take)
+    : await indexClient.videos.fetchVideos(page, take)
   const videoManifests = videos.map(video => fetchVideoMeta(video.manifestHash))
   const promises = videoManifests.concat(
-    fetchProfile ? videos.map(video => getProfile(video.channelAddress)) : []
+    fetchProfile ? videos.map(video => getProfile(video.ownerIdentityManifest, video.ownerAddress)) : []
   )
   const result = await Promise.all(promises)
   const videosWithMeta = videos.map((video, index) => {
@@ -76,7 +72,7 @@ export const fetchFullVideosInfo = async (
     return {
       ...meta,
       videoHash: video.manifestHash,
-      channelAddress: video.channelAddress,
+      ownerAddress: video.ownerAddress,
       creationDateTime: video.creationDateTime,
       encryptionKey: video.encryptionKey,
       encryptionType: video.encryptionType,
@@ -88,22 +84,26 @@ export const fetchFullVideosInfo = async (
 }
 
 /**
- * Get a video metadata and channel profile
+ * Get a video metadata and profile
  * @param {string} hash Manifest hash of the video
- * @param {boolean} fetchProfile Fetch channel profile info
+ * @param {boolean} fetchProfile Fetch profile info
  * @returns {VideoMetadata}
  */
 export const fetchFullVideoInfo = async (hash, fetchProfile = true) => {
+  const { indexClient } = store.getState().env
+
   let isVideoOnIndex = false
-  let channelAddress = null
+  let ownerAddress = null
+  let profileManifest = null
   let creationDateTime = null
   let encryptionKey = null
   let encryptionType = null
 
   try {
-    const video = await getVideo(hash)
+    const video = await indexClient.videos.fetchVideo(hash)
     isVideoOnIndex = true
-    channelAddress = video.channelAddress
+    ownerAddress = video.ownerAddress
+    profileManifest = video.ownerIdentityManifest
     creationDateTime = video.creationDateTime
     encryptionKey = video.encryptionKey
     encryptionType = video.encryptionType
@@ -111,20 +111,20 @@ export const fetchFullVideoInfo = async (hash, fetchProfile = true) => {
 
   const result = await Promise.all(
     [fetchVideoMeta(hash)].concat(
-      fetchProfile && channelAddress ? [getProfile(channelAddress)] : []
+      fetchProfile && ownerAddress ? [getProfile(profileManifest, ownerAddress)] : []
     )
   )
 
   let [meta, profileData] = result
 
-  if (!profileData && meta.channelAddress && fetchProfile) {
-    profileData = await getProfile(meta.channelAddress)
+  if (!profileData && meta.ownerAddress && fetchProfile) {
+    profileData = await getProfile(null, meta.ownerAddress)
   }
 
   return {
     ...meta,
     videoHash: hash,
-    channelAddress: channelAddress || profileData.address,
+    ownerAddress: ownerAddress || profileData.address,
     isVideoOnIndex,
     creationDateTime,
     encryptionKey,
@@ -140,17 +140,16 @@ export const fetchFullVideoInfo = async (hash, fetchProfile = true) => {
  * @returns {VideoResolvedMeta} Video metadata
  */
 export const fetchVideoMeta = async videoHash => {
-  const { gatewayHost } = store.getState().env
-  const bzz = new Bzz({ url: gatewayHost })
+  const { bzzClient } = store.getState().env
 
   const hash = videoHash.match(/^[0-9a-f]{64}/)[0]
-  const meta = await downloadMeta(bzz, hash)
+  const meta = await downloadMeta(bzzClient, hash)
 
   const source = meta
     ? videoHash.length > hash // probably a /source/... path
-      ? bzz.getDownloadURL(videoHash)
-      : bzz.getDownloadURL(`${hash}/sources/${meta.originalQuality}`)
-    : bzz.getDownloadURL(videoHash, { mode: "raw" }).replace(/\/$/, "")
+      ? bzzClient.getDownloadURL(videoHash)
+      : bzzClient.getDownloadURL(`${hash}/sources/${meta.originalQuality}`)
+    : bzzClient.getDownloadURL(videoHash, { mode: "raw" }).replace(/\/$/, "")
 
   const duration = await videoDuration(source)
 
@@ -160,10 +159,10 @@ export const fetchVideoMeta = async videoHash => {
 
   const sources = meta.sources.map(quality => ({
     quality,
-    source: bzz.getDownloadURL(`${hash}/sources/${quality}`),
+    source: bzzClient.getDownloadURL(`${hash}/sources/${quality}`),
   }))
   const thumbnailSource = meta.thumbnailHash
-    ? bzz.getDownloadURL(meta.thumbnailHash)
+    ? bzzClient.getDownloadURL(meta.thumbnailHash)
     : null
 
   return {
@@ -183,39 +182,14 @@ export const fetchVideoMeta = async videoHash => {
  * @returns {string} The new video manifest
  */
 export const updatedVideoMeta = async (manifest, meta) => {
-  const { gatewayHost } = store.getState().env
-  const bzz = new Bzz({ url: gatewayHost })
+  const { bzzClient } = store.getState().env
 
-  const newManifest = await bzz.uploadData(meta, {
+  const newManifest = await bzzClient.uploadData(meta, {
     manifestHash: manifest,
     contentType: "text/json",
   })
 
   return newManifest
-}
-
-/**
- * Update video feed with a manifest containing the emtadata
- *
- * @param {string} feed Feed manifest (null to create a new one)
- * @param {string} videoManifest Video manifest with metadata
- * @returns {string} The fedd manifest hash
- */
-export const updateVideoFeed = async (feed, videoManifest) => {
-  const { gatewayHost, wallet } = store.getState().env
-  const { address: user } = store.getState().user
-  const signBytes = async bytes => wallet.sign(bytes, true)
-
-  const bzz = new Bzz({ url: gatewayHost })
-  const bzzFeed = new BzzFeed({ bzz, signBytes })
-
-  const resp = await bzzFeed.setContentHash(
-    feed ? feed : { user, name: `${+(new Date())}` },
-    videoManifest
-  )
-  const feedManifest = await resp.json()
-
-  return feedManifest
 }
 
 /**
@@ -226,10 +200,9 @@ export const updateVideoFeed = async (feed, videoManifest) => {
  * @returns {string} The new video manifest
  */
 export const deleteVideoSource = async (quality, manifest) => {
-  const { gatewayHost } = store.getState().env
-  const bzz = new Bzz({ url: gatewayHost })
+  const { bzzClient } = store.getState().env
 
-  const newManifest = await bzz.deleteResource(manifest, `sources/${quality}`)
+  const newManifest = await bzzClient.deleteResource(manifest, `sources/${quality}`)
 
   return newManifest
 }
@@ -241,7 +214,7 @@ export const deleteVideoSource = async (quality, manifest) => {
 /**
  * Get video meta if existing
  *
- * @param {Bzz} bzz Bzz Node
+ * @param {import("@erebos/bzz").Bzz} bzz Bzz Node
  * @param {string} hash Video hash
  * @returns {SwarmVideoMeta} Video metadata
  */
@@ -272,7 +245,7 @@ const downloadMeta = async (bzz, hash) => {
     return pick({ ...defaultMeta, ...meta }, [
       "title",
       "description",
-      "channelAddress",
+      "ownerAddress",
       "thumbnailHash",
       "duration",
       "originalQuality",

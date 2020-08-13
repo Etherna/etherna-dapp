@@ -12,16 +12,15 @@ const HowItWorks = () => (
 
       <h2>Decentralized video platform</h2>
 
-      <h2>Login with a Wallet</h2>
-      <h3>MetaMask</h3>
-      <h3>WalletConnect</h3>
-      <h3>Portis</h3>
-      <h3>Fortmatic</h3>
-      <h3>Authereum</h3>
+      <h2>Users</h2>
+      <h3>Update your profile information</h3>
+      <h3>Upload videos</h3>
 
-      <h2>Create your channel</h2>
-
-      <h2>Upload videos</h2>
+      <h2>Cutomization</h2>
+      <h3>Change Index</h3>
+      <h3>Change Gateway</h3>
+      <h3>Customize shortcuts</h3>
+      <h3>Dark Mode</h3>
     </div>
   </LayoutWrapper>
 )

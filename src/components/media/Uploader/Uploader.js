@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef } from "react"
 import classnames from "classnames"
 
 import "./uploader.scss"
+
 import { UploaderContextWrapper, useUploaderState } from "./UploaderContext"
 import VideoSourcesUpload from "./VideoSourcesUpload"
 import FileUploadFlow from "./FileUploadFlow"
@@ -11,9 +12,6 @@ import Button from "@common/Button"
 import Avatar from "@components/user/Avatar"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
-import { profileActions, providerActions } from "@state/actions"
-import { getIdentity } from "@utils/ethernaResources/identityResources"
-import { createVideo } from "@utils/ethernaResources/videosResources"
 import { updatedVideoMeta } from "@utils/video"
 import Routes from "@routes"
 
@@ -26,8 +24,9 @@ const Uploader = () => {
   const { updateManifest } = actions
   const hasQueuedProcesses = queue.filter(q => q.finished === false).length > 0
 
-  const { name, avatar, existsOnIndex } = useSelector(state => state.profile)
+  const { name, avatar } = useSelector(state => state.profile)
   const { address } = useSelector(state => state.user)
+  const { indexClient } = useSelector(state => state.env)
 
   const [thumbnail, setThumbnail] = useState(undefined)
   const [pinContent, setPinContent] = useState(false)
@@ -37,60 +36,23 @@ const Uploader = () => {
   const [hasSubmitted, setHasSubmitted] = useState(false)
   const [videoLink, setVideoLink] = useState(false)
 
-  useEffect(() => {
-    loadWallet()
-
-    /**
-     * Remove the wallet from store when component is unmounted.
-     */
-    return () => providerActions.clearWallet()
-  }, [])
-
-  const loadWallet = async () => {
-    try {
-      const identity = await getIdentity()
-
-      providerActions.injectWallet("0x" + identity.etherManagedPrivateKey)
-    } catch (error) {
-      console.error(error)
-
-      showError("Cannot get your identity", error.message)
-    }
-  }
-
   const submitVideo = async () => {
     setIsSubmitting(true)
     try {
-      if (!existsOnIndex) {
-        const created = await profileActions.createChannel(address)
-
-        if (!created) {
-          showError(
-            "Cannot create channel",
-            `You first need to create a channel.
-                        This process is automated, but didn't work this time.
-                        Try again in your profile page.`
-          )
-          setIsSubmitting(false)
-          return
-        }
-      }
-
       const videoManifest = await updatedVideoMeta(manifest, {
         title,
         description,
         originalQuality,
         thumbnailHash: thumbnail,
-        channelAddress: address,
+        ownerAddress: address,
         duration,
         sources: queue.map(q => q.quality),
       })
 
       updateManifest(videoManifest)
 
-      //const videoFeed = await updateVideoFeed(null, videoManifest)
+      await indexClient.videos.createVideo(videoManifest)
 
-      await createVideo(videoManifest)
       submitCompleted(videoManifest)
     } catch (error) {
       console.error(error)
@@ -99,8 +61,8 @@ const Uploader = () => {
     setIsSubmitting(false)
   }
 
-  const submitCompleted = videoFeed => {
-    setVideoLink(Routes.getVideoLink(videoFeed))
+  const submitCompleted = videoManifest => {
+    setVideoLink(Routes.getVideoLink(videoManifest))
     setThumbnail(undefined)
     setTitle("")
     setDescription("")

@@ -4,10 +4,9 @@ import Switch from "react-switch"
 
 import Alert from "@common/Alert"
 import useSelector from "@state/useSelector"
-import { isPinningEnabled } from "@utils/swarm"
 
 const PinContentField = ({ pinningEnabled, onChange }) => {
-  const { gatewayHost } = useSelector(state => state.env)
+  const { bzzClient, gatewayHost } = useSelector(state => state.env)
 
   const [pinningAvailable, setPinningAvailable] = useState(undefined)
   const [pinContent, setPinContent] = useState(pinningEnabled)
@@ -20,7 +19,7 @@ const PinContentField = ({ pinningEnabled, onChange }) => {
 
   const checkPinningAvailability = async () => {
     try {
-      const available = await isPinningEnabled()
+      const available = await bzzClient.pinEnabled()
       setPinningAvailable(available)
       pinContent === undefined && handlePinChange(available === true)
     } catch (error) {
