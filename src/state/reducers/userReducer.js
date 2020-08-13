@@ -21,7 +21,6 @@ const userReducer = (state = {}, action) => {
 
     case UserActionTypes.USER_SIGNOUT:
       return {
-        oidcManager: state.oidcManager,
         isSignedIn: false,
       }
 

@@ -2,6 +2,7 @@ export interface IndexClientOptions {
   host: string
   apiPath?: string
   loginPath?: string
+  logoutPath?: string
 }
 
 export interface IndexUser {
