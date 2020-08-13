@@ -78,7 +78,7 @@ const VideoView = ({ hash, video }) => {
       <div className="video-watch container">
         <Player source={source} thumbnail={thumbnail} />
         <div className="video-info">
-          <h1 className="video-title">{title || "Title"}</h1>
+          <h1 className="video-title">{title}</h1>
           {videoOnIndex === false && (
             <div className="badge-unindexed">
               <UnindexedIcon color="var(--color-orange-800)" />
@@ -101,12 +101,14 @@ const VideoView = ({ hash, video }) => {
           <hr />
 
           <div className="video-profile-info">
-            <Link to={Routes.getProfileLink(profileAddress)}>
-              <div className="video-profile">
-                <Avatar image={profileAvatar} address={profileAddress || "0x0"} />
-                <h3 className="profile-name">{profileName || shortenEthAddr(profileAddress)}</h3>
-              </div>
-            </Link>
+            {profileAddress && (
+              <Link to={Routes.getProfileLink(profileAddress)}>
+                <div className="video-profile">
+                  <Avatar image={profileAvatar} address={profileAddress || "0x0"} />
+                  <h3 className="profile-name">{profileName || shortenEthAddr(profileAddress)}</h3>
+                </div>
+              </Link>
+            )}
           </div>
 
           <hr />

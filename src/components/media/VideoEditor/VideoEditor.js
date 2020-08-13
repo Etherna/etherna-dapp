@@ -46,21 +46,29 @@ const VideoEditor = ({ hash, video }) => {
   const [thumbnail, setThumbnail] = useState(video.thumbnailHash)
 
   useEffect(() => {
-    const emptyVideo = Object.keys(videoMeta).length === 0
-    emptyVideo && fetchVideo()
-    !emptyVideo && loadContext()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    Object.keys(video).length === 0 && fetchVideo()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [video])
+
+  useEffect(() => {
+    Object.keys(videoMeta).length > 0 && loadContext()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoMeta])
 
   useEffect(() => {
     if (videoOwner) {
       loadPinning()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoOwner])
 
   const loadContext = () => {
-    loadInitialState(videoMeta.duration, videoMeta.originalQuality, videoMeta.sources)
+    loadInitialState(
+      hash,
+      videoMeta.duration,
+      videoMeta.originalQuality,
+      videoMeta.sources
+    )
   }
 
   const fetchVideo = async () => {
@@ -218,7 +226,7 @@ const VideoEditor = ({ hash, video }) => {
             {saved && (
               <div className="mb-3">
                 <Alert type="success" title="Video Saved!" onClose={() => setSaved(false)}>
-                  Checkout the video <Link to={Routes.getVideoLink(hash)}>here</Link>
+                  Checkout the video <Link to={Routes.getVideoLink(manifest)}>here</Link>
                 </Alert>
               </div>
             )}

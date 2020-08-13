@@ -30,14 +30,13 @@ const ActionTypes = {
 const reducer = (state, action) => {
   switch (action.type) {
     case ActionTypes.LOAD_INITIAL_STATE: {
-      const { duration, originalQuality, sources } = action
+      const { manifest, duration, originalQuality, sources } = action
       const queue = sources.map(s => ({
         quality: s,
         completion: 100,
         finished: true,
       }))
-
-      return { ...state, duration, originalQuality, queue }
+      return { ...state, manifest, duration, originalQuality, queue }
     }
     case ActionTypes.UPDATE_MANIFEST:
       return { ...state, manifest: action.manifest }
@@ -104,13 +103,15 @@ export const useUploaderState = () => {
   const [state, dispatch] = useContext(UploaderContext)
 
   /**
+   * @param {string} manifest
    * @param {number} duration
    * @param {string} originalQuality
    * @param {string[]} sources
    */
-  const loadInitialState = (duration, originalQuality, sources) => {
+  const loadInitialState = (manifest, duration, originalQuality, sources) => {
     dispatch({
       type: ActionTypes.LOAD_INITIAL_STATE,
+      manifest,
       duration,
       originalQuality,
       sources,

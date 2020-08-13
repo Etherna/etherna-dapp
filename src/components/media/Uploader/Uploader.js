@@ -12,7 +12,6 @@ import Button from "@common/Button"
 import Avatar from "@components/user/Avatar"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
-import { profileActions } from "@state/actions"
 import { updatedVideoMeta } from "@utils/video"
 import Routes from "@routes"
 
@@ -53,6 +52,7 @@ const Uploader = () => {
       updateManifest(videoManifest)
 
       await indexClient.videos.createVideo(videoManifest)
+
       submitCompleted(videoManifest)
     } catch (error) {
       console.error(error)
@@ -61,8 +61,8 @@ const Uploader = () => {
     setIsSubmitting(false)
   }
 
-  const submitCompleted = videoFeed => {
-    setVideoLink(Routes.getVideoLink(videoFeed))
+  const submitCompleted = videoManifest => {
+    setVideoLink(Routes.getVideoLink(videoManifest))
     setThumbnail(undefined)
     setTitle("")
     setDescription("")

@@ -49,15 +49,16 @@ export default class IndexVideosClient {
    * Create a new video on the index
    * @param {number} hash Hash of the manifest/feed with the video metadata
    * @param {string} encryptionKey Encryption key
-   * @param {string} encryptionType Encryption type (default AES256)
    * @returns {import(".").IndexVideo} Video info
    */
-  async createVideo(hash, encryptionKey, encryptionType = "AES256") {
+  async createVideo(hash, encryptionKey) {
     const endpoint = `${this.url}/videos`
     const resp = await axios.post(endpoint, {
       manifestHash: hash,
       encryptionKey,
-      encryptionType,
+      encryptionType: encryptionKey ? "AES256" : "Plain",
+    }, {
+      withCredentials: true
     })
 
     if (typeof resp.data !== "object") {
@@ -79,6 +80,7 @@ export default class IndexVideosClient {
       params: {
         newHash,
       },
+      withCredentials: true
     })
 
     if (typeof resp.data !== "object") {
@@ -95,7 +97,9 @@ export default class IndexVideosClient {
    */
   async deleteVideo(hash) {
     const endpoint = `${this.url}/videos/${hash}`
-    await axios.delete(endpoint)
+    await axios.delete(endpoint, {
+      withCredentials: true
+    })
 
     return true
   }

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import PropTypes from "prop-types"
 import { Link } from "react-router-dom"
 import moment from "moment"
@@ -24,10 +24,8 @@ const VideoPreview = ({ video, hideProfile }) => {
   const { address } = useSelector(state => state.user)
 
   const profileAddress = video.ownerAddress
-  const profileName = useState(
-    (video.profileData && video.profileData.name) || shortenEthAddr(profileAddress)
-  )
-  const profileAvatar = useState(video.profileData && video.profileData.avatar)
+  const profileName = (video.profileData && video.profileData.name) || shortenEthAddr(profileAddress)
+  const profileAvatar = video.profileData && video.profileData.avatar
 
   const profileLink = Routes.getProfileLink(video.ownerAddress)
   const videoLink = Routes.getVideoLink(video.videoHash)
