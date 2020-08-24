@@ -18,11 +18,9 @@ import { fetchFullVideoInfo, updatedVideoMeta } from "@utils/video"
 import Routes from "@routes"
 
 /**
- * @typedef VideoEditorProps
- * @property {string} hash
- * @property {import("@utils/video").VideoMetadata} video
- *
- * @param {VideoEditorProps} param0
+ * @param {object} props
+ * @param {string} props.hash
+ * @param {import("@utils/video").VideoMetadata} props.video
  */
 const VideoEditor = ({ hash, video }) => {
   const { state, actions } = useUploaderState()
@@ -35,9 +33,9 @@ const VideoEditor = ({ hash, video }) => {
   const [isSaving, setIsSaving] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [saved, setSaved] = useState(false)
-  const [deleted, setDeleted] = useState(false)
   const [pinContent, setPinContent] = useState(undefined)
 
+  const [videoHash, setVideoHash] = useState(hash)
   const [videoMeta, setVideoMeta] = useState(video)
   const [videoOnIndex, setVideoOnIndex] = useState(undefined)
   const [videoOwner, setVideoOwner] = useState(video.ownerAddress)
@@ -64,23 +62,23 @@ const VideoEditor = ({ hash, video }) => {
 
   const loadContext = () => {
     loadInitialState(
-      hash,
+      videoHash,
       videoMeta.duration,
       videoMeta.originalQuality,
-      videoMeta.sources
+      videoMeta.sources.map(s => s.quality)
     )
   }
 
   const fetchVideo = async () => {
     try {
-      const videoInfo = await fetchFullVideoInfo(hash)
+      const videoInfo = await fetchFullVideoInfo(videoHash)
 
       setVideoMeta(videoInfo)
       setVideoOwner(videoInfo.ownerAddress)
       setTitle(videoInfo.title)
       setDescription(videoInfo.description)
       setThumbnail(videoInfo.thumbnailHash)
-      setVideoOnIndex(videoInfo.isVideoOnIndex || true)
+      setVideoOnIndex(typeof videoInfo.isVideoOnIndex === "boolean" ? videoInfo.isVideoOnIndex : true)
     } catch (error) {
       console.error(error)
       setVideoOnIndex(false)
@@ -88,7 +86,7 @@ const VideoEditor = ({ hash, video }) => {
   }
 
   const loadPinning = async () => {
-    let hashList = [hash]
+    let hashList = [videoHash]
     thumbnail && hashList.push(thumbnail)
 
     const pinned = await isPinned(hashList)
@@ -96,7 +94,7 @@ const VideoEditor = ({ hash, video }) => {
     setPinContent(pinned)
   }
 
-  const handleUpdate = async () => {
+  const handleUpdateVideo = async () => {
     setIsSaving(true)
 
     try {
@@ -112,9 +110,11 @@ const VideoEditor = ({ hash, video }) => {
 
       updateManifest(videoManifest)
 
-      await indexClient.videos.updateVideo(hash, videoManifest)
+      await indexClient.videos.updateVideo(videoHash, videoManifest)
 
       await updatePinning(pinContent)
+
+      setVideoHash(videoManifest)
 
       setSaved(true)
     } catch (error) {
@@ -132,19 +132,18 @@ const VideoEditor = ({ hash, video }) => {
       error(error)
     }
 
-    setDeleted(true)
-    setShowDeleteModal(false)
+    window.location.reload()
   }
 
   const updatePinning = async pin => {
     if (pin) {
       await Promise.all([
-        pinResource(hash, true),
+        pinResource(videoHash, true),
         pinResource(thumbnail, true)
       ])
     } else {
       await Promise.all([
-        unpinResource(hash),
+        unpinResource(videoHash),
         unpinResource(thumbnail)
       ])
     }
@@ -175,7 +174,7 @@ const VideoEditor = ({ hash, video }) => {
           <div className="video-preview">
             <div className="form-group">
               <VideoSourcesUpload
-                hash={hash}
+                hash={videoHash}
                 initialSources={videoMeta.sources}
                 pinContent={pinContent}
                 disabled={isSaving}
@@ -230,41 +229,31 @@ const VideoEditor = ({ hash, video }) => {
                 </Alert>
               </div>
             )}
-            {deleted && (
-              <div className="mb-3">
-                <Alert type="warning" title="Video has been deleted">
-                  To go to your profile, <Link to={Routes.getProfileLink(address)}>click here</Link>
-                </Alert>
-              </div>
+
+            {!isSaving ? (
+              <Button
+                className="mr-4"
+                action={handleUpdateVideo}
+                disabled={!title || hasQueuedProcesses}
+              >
+                Save
+              </Button>
+            ) : (
+              <img
+                src={require("@svg/animated/spinner.svg")}
+                alt=""
+                width={26}
+                className="inline-block mr-4"
+              />
             )}
-            {!deleted && (
-              <>
-                {!isSaving ? (
-                  <Button
-                    className="mr-4"
-                    action={handleUpdate}
-                    disabled={!title || hasQueuedProcesses}
-                  >
-                    Save
-                  </Button>
-                ) : (
-                  <img
-                    src={require("@svg/animated/spinner.svg")}
-                    alt=""
-                    width={26}
-                    className="inline-block mr-4"
-                  />
-                )}
-                <Button aspect="danger" disabled={isSaving} action={() => setShowDeleteModal(true)}>
-                  Delete Video
-                </Button>
-              </>
-            )}
+            <Button aspect="danger" disabled={isSaving} action={() => setShowDeleteModal(true)}>
+              Delete Video
+            </Button>
           </div>
 
           {showDeleteModal && (
             <VideoDeleteModal
-              hash={hash}
+              hash={videoHash}
               thumbnail={thumbnail}
               title={title}
               onCancel={() => setShowDeleteModal(false)}
