@@ -66,3 +66,6 @@ yarn-error.log
 
 # Deploy config
 deploy.config.js
+
+# Env
+.env.production
