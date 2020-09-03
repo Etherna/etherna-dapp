@@ -70,11 +70,7 @@
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",
     "lint": "eslint src --ext .js",
-    "format": "prettier --write \"**/*.{js,jsx,json,scss}\"",
-    "buildeploy": "npm run build && node deploy",
-    "buildeployswarm": "npm run build && node deploy --swarm",
-    "deploy": "node deploy",
-    "updatefeed": "node deploy --feed"
+    "format": "prettier --write \"**/*.{js,jsx,json,scss}\""
   },
   "eslintConfig": {
     "extends": "react-app",

@@ -40,3 +40,4 @@ jobs:
         defaultPath: index.html
         feedName: EthernaVideoDapp
         feedUserPrivateKey: ${{ secrets.PRIVATE_KEY }}
+        gateway: https://gateway.etherna.io
