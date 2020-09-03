@@ -11,21 +11,21 @@ jobs:
     env:
       REACT_APP_NAME: "Etherna"
       REACT_APP_TAGLINE: "A transparent video platform"
-      GENERATE_SOURCEMAP: false
       REACT_APP_INFURA_ID: ${{ secrets.INFURA_ID }}
       REACT_APP_INDEX_HOST: "https://index.etherna.io"
       REACT_APP_INDEX_API_PATH: "/api/v0.2"
       REACT_APP_GATEWAY_HOST: "https://gateway.etherna.io"
+      GENERATE_SOURCEMAP: false
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2.1.0
-    - uses: borales/actions-yarn@v2.0.0
+    - name: Build react app
+      uses: actions/setup-node@v2
       with:
-        cmd: install
-    - uses: borales/actions-yarn@v2.0.0
-      with:
-        cmd: build
-    - name: Upload ftp
+        node-version: '12.x'
+    - run: yarn install
+    - run: yarn build
+    - name: Upload to Host
       uses: sebastianpopp/ftp-action@releases/v2
       with:
         host: ${{ secrets.FTP_HOST }}
@@ -33,7 +33,7 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         localDir: build
         remoteDir: ${{ secrets.REMOTE_DIR }}
-    - name: Upload to swarm
+    - name: Upload to Swarm
       uses: Etherna/swarm-upload-action@0.2
       with:
         localRoot: build
