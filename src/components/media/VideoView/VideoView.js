@@ -23,7 +23,7 @@ import Routes from "@routes"
  * @param {VideoViewProps} param0
  */
 const VideoView = ({ hash, video }) => {
-  const [source, setSource] = useState(getResourceUrl(hash, true))
+  const [source, setSource] = useState((video && video.source) || getResourceUrl(hash, true))
   const [videoOnIndex, setVideoOnIndex] = useState(null)
   const [isFetchingVideo, setIsFetchingVideo] = useState(false)
   const [profileAddress, setProfileAddress] = useState(video.ownerAddress)
