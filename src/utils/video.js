@@ -11,6 +11,7 @@ import { store } from "@state/store"
  * @property {string} originalQuality Quality of the original video
  * @property {string} ownerAddress Address of the owner of the video
  * @property {number} duration Duration of the video in seconds
+ * @property {string} thumbnailHash Hash for the thumbnail
  * @property {string[]} sources List of available qualities of the video
  *
  * @typedef VideoResolvedMeta
@@ -160,8 +161,8 @@ export const fetchVideoMeta = async videoHash => {
     quality,
     source: bzzClient.getDownloadURL(`${hash}/sources/${quality}`),
   }))
-  const thumbnailHash = `${hash}/thumbnail`
-  const thumbnailSource = bzzClient.getDownloadURL(thumbnailHash)
+  const thumbnailHash = meta.thumbnailHash
+  const thumbnailSource = thumbnailHash && bzzClient.getDownloadURL(thumbnailHash)
 
   return {
     ...meta,
@@ -247,6 +248,8 @@ const downloadMeta = async (bzz, hash) => {
       throw new Error("The default entry is not a valid json")
     }
 
+    const thumbnailHash = entries.find(entry => entry.path === "thumbnail") && `${hash}/thumbnail`
+
     const resp = await bzz.download(hash)
     const meta = await resp.json()
 
@@ -254,6 +257,7 @@ const downloadMeta = async (bzz, hash) => {
       title: "",
       description: "",
       sources: [],
+      thumbnailHash
     }
     return pick({ ...defaultMeta, ...meta }, [
       "title",
@@ -262,6 +266,7 @@ const downloadMeta = async (bzz, hash) => {
       "duration",
       "originalQuality",
       "sources",
+      "thumbnailHash",
     ])
   } catch (error) {
     return null

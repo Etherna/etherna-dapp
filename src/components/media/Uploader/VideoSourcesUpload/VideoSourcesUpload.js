@@ -6,7 +6,7 @@ import Tab, { TabContent } from "@common/Tab"
 import { showError } from "@state/actions/modals"
 import { deleteVideoSource } from "@utils/video"
 
-const VideoSourcesUpload = ({ hash, initialSources, pinContent, disabled, onComplete }, ref) => {
+const VideoSourcesUpload = ({ initialSources, pinContent, disabled, onComplete }, ref) => {
   const { state, actions } = useUploaderState()
   const { manifest } = state
   const {
@@ -114,11 +114,13 @@ const VideoSourcesUpload = ({ hash, initialSources, pinContent, disabled, onComp
           const title = source.quality
             ? `${i === 0 ? `Original - ` : ``}${source.quality}`
             : `${i === 0 ? `Original` : `<add source>`}`
+          const queue = state.queue.find(q => q.name === `sources/${source.quality}`)
+          const finished = queue && queue.finished === true
           return (
             <TabContent tabKey={`quality-${i + 1}`} title={title} key={i}>
               <FileUploadFlow
                 ref={source.ref}
-                hash={hash}
+                hash={finished ? manifest : null}
                 label={title}
                 dragLabel={"Drag your video here"}
                 acceptTypes={["video", "audio"]}

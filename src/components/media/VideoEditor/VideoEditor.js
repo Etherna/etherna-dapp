@@ -6,10 +6,10 @@ import "./video-editor.scss"
 
 import VideoDeleteModal from "./VideoDeleteModal"
 import VideoSourcesUpload from "../Uploader/VideoSourcesUpload"
+import ThumbnailUpload from "../Uploader/ThumbnailUpload"
 import Alert from "@common/Alert"
 import Button from "@common/Button"
 import PinContentField from "@components/media/Uploader/PinContentField"
-import FileUploadFlow from "@components/media/Uploader/FileUploadFlow"
 import { UploaderContextWrapper, useUploaderState } from "@components/media/Uploader/UploaderContext"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
@@ -41,7 +41,7 @@ const VideoEditor = ({ hash, video }) => {
   const [videoOwner, setVideoOwner] = useState(video.ownerAddress)
   const [title, setTitle] = useState(video.title)
   const [description, setDescription] = useState(video.description)
-  const [thumbnail, setThumbnail] = useState(video.thumbnailHash)
+  const [isDeleted, setIsDeleted] = useState(false)
 
   useEffect(() => {
     Object.keys(video).length === 0 && fetchVideo()
@@ -77,7 +77,6 @@ const VideoEditor = ({ hash, video }) => {
       setVideoOwner(videoInfo.ownerAddress)
       setTitle(videoInfo.title)
       setDescription(videoInfo.description)
-      setThumbnail(videoInfo.thumbnailHash)
       setVideoOnIndex(typeof videoInfo.isVideoOnIndex === "boolean" ? videoInfo.isVideoOnIndex : true)
     } catch (error) {
       console.error(error)
@@ -86,11 +85,7 @@ const VideoEditor = ({ hash, video }) => {
   }
 
   const loadPinning = async () => {
-    let hashList = [videoHash]
-    thumbnail && hashList.push(thumbnail)
-
-    const pinned = await isPinned(hashList)
-
+    const pinned = await isPinned(videoHash)
     setPinContent(pinned)
   }
 
@@ -98,21 +93,21 @@ const VideoEditor = ({ hash, video }) => {
     setIsSaving(true)
 
     try {
+      const sourcePattern = /^sources\//
       const videoManifest = await updatedVideoMeta(manifest, {
         title,
         description,
         originalQuality,
-        thumbnailHash: thumbnail,
         ownerAddress: address,
         duration,
-        sources: queue.map(q => q.quality),
+        sources: queue.filter(q => sourcePattern.test(q.name)).map(q => q.name.replace(sourcePattern, "")),
       })
 
       updateManifest(videoManifest)
 
       await indexClient.videos.updateVideo(videoHash, videoManifest)
 
-      await updatePinning(pinContent)
+      await updatePinning(pinContent, videoManifest)
 
       setVideoHash(videoManifest)
 
@@ -127,25 +122,19 @@ const VideoEditor = ({ hash, video }) => {
 
   const handleDelete = async () => {
     try {
-      await updatePinning(false)
+      await updatePinning(false, hash)
+
+      setIsDeleted(true)
     } catch (error) {
       error(error)
     }
-
-    window.location.reload()
   }
 
-  const updatePinning = async pin => {
+  const updatePinning = async (pin, videoManifest) => {
     if (pin) {
-      await Promise.all([
-        pinResource(videoHash, true),
-        pinResource(thumbnail, true)
-      ])
+      await pinResource(videoManifest)
     } else {
-      await Promise.all([
-        unpinResource(videoHash),
-        unpinResource(thumbnail)
-      ])
+      await unpinResource(videoManifest)
     }
   }
 
@@ -159,6 +148,10 @@ const VideoEditor = ({ hash, video }) => {
 
   if (videoOnIndex && address !== videoMeta.ownerAddress) {
     return <Redirect to={Routes.getHomeLink()} />
+  }
+
+  if (isDeleted) {
+    return <Redirect to={Routes.getProfileLink(videoMeta.ownerAddress)} />
   }
 
   return (
@@ -181,16 +174,10 @@ const VideoEditor = ({ hash, video }) => {
               />
             </div>
             <div className="form-group">
-              <FileUploadFlow
-                hash={thumbnail}
-                label={"Thumbnail"}
-                dragLabel={"Drag your thumbnail here"}
-                acceptTypes={["image"]}
-                sizeLimit={2}
-                showImagePreview={true}
+              <ThumbnailUpload
+                hash={videoMeta.thumbnailHash ? hash : null}
                 pinContent={pinContent}
                 disabled={isSaving}
-                onHashUpdate={hash => setThumbnail(hash)}
               />
             </div>
           </div>
@@ -254,7 +241,6 @@ const VideoEditor = ({ hash, video }) => {
           {showDeleteModal && (
             <VideoDeleteModal
               hash={videoHash}
-              thumbnail={thumbnail}
               title={title}
               onCancel={() => setShowDeleteModal(false)}
               onDelete={handleDelete}

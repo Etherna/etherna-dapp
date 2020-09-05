@@ -32,7 +32,7 @@ const reducer = (state, action) => {
     case ActionTypes.LOAD_INITIAL_STATE: {
       const { manifest, duration, originalQuality, sources } = action
       const queue = sources.map(s => ({
-        quality: s,
+        name: `sources/${s}`,
         completion: 100,
         finished: true,
       }))
