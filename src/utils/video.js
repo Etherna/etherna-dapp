@@ -9,7 +9,6 @@ import { store } from "@state/store"
  * @property {string} title Title of the video
  * @property {string} description Description of the video
  * @property {string} originalQuality Quality of the original video
- * @property {string} thumbnailHash Hash for the thumbnail
  * @property {string} ownerAddress Address of the owner of the video
  * @property {number} duration Duration of the video in seconds
  * @property {string[]} sources List of available qualities of the video
@@ -161,14 +160,14 @@ export const fetchVideoMeta = async videoHash => {
     quality,
     source: bzzClient.getDownloadURL(`${hash}/sources/${quality}`),
   }))
-  const thumbnailSource = meta.thumbnailHash
-    ? bzzClient.getDownloadURL(meta.thumbnailHash)
-    : null
+  const thumbnailHash = `${hash}/thumbnail`
+  const thumbnailSource = bzzClient.getDownloadURL(thumbnailHash)
 
   return {
     ...meta,
     source,
     sources,
+    thumbnailHash,
     thumbnailSource,
     duration,
   }
@@ -203,6 +202,20 @@ export const deleteVideoSource = async (quality, manifest) => {
   const { bzzClient } = store.getState().env
 
   const newManifest = await bzzClient.deleteResource(manifest, `sources/${quality}`)
+
+  return newManifest
+}
+
+/**
+ * Delete a video thumbnail
+ *
+ * @param {string} manifest Current video manifest hash
+ * @returns {string} The new video manifest
+ */
+export const deleteThumbnail = async manifest => {
+  const { bzzClient } = store.getState().env
+
+  const newManifest = await bzzClient.deleteResource(manifest, `thumbnail`)
 
   return newManifest
 }
@@ -246,7 +259,6 @@ const downloadMeta = async (bzz, hash) => {
       "title",
       "description",
       "ownerAddress",
-      "thumbnailHash",
       "duration",
       "originalQuality",
       "sources",

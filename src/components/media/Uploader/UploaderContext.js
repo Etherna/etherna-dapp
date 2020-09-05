@@ -16,7 +16,7 @@ const ActionTypes = {
 /**
  * @typedef {object} UploaderContextState
  * @property {string} manifest Current manifest
- * @property {{ quality: string, completion: number, finished: boolean }[]} queue
+ * @property {{ name: string, completion: number, finished: boolean }[]} queue
  * @property {string} originalQuality Original video quality
  * @property {number} duration Video duration
  */
@@ -43,7 +43,7 @@ const reducer = (state, action) => {
     case ActionTypes.ADD_TO_QUEUE: {
       const queue = [...state.queue]
       queue.push({
-        quality: action.quality,
+        name: action.name,
         completion: null,
         finished: false,
       })
@@ -51,7 +51,7 @@ const reducer = (state, action) => {
     }
     case ActionTypes.REMOVE_FROM_QUEUE: {
       const queue = [...state.queue]
-      const index = queue.findIndex(e => e.quality === action.quality)
+      const index = queue.findIndex(e => e.name === action.name)
       if (index >= 0) {
         queue.splice(index, 1)
         return { ...state, queue }
@@ -60,7 +60,7 @@ const reducer = (state, action) => {
     }
     case ActionTypes.UPDATE_QUEUE_COMPLETION: {
       const queue = [...state.queue]
-      const index = queue.findIndex(e => e.quality === action.quality)
+      const index = queue.findIndex(e => e.name === action.name)
       if (index >= 0) {
         queue[index].completion = action.completion
         queue[index].finished = action.finished || false
@@ -126,33 +126,33 @@ export const useUploaderState = () => {
   }
 
   /**
-   * @param {string} quality Source quality
+   * @param {string} name Queue name
    */
-  const addToQueue = quality => {
-    dispatch({ type: ActionTypes.ADD_TO_QUEUE, quality })
+  const addToQueue = name => {
+    dispatch({ type: ActionTypes.ADD_TO_QUEUE, name })
   }
 
   /**
-   * @param {string} quality Source quality
+   * @param {string} name Queue name
    */
-  const removeFromQueue = quality => {
-    dispatch({ type: ActionTypes.REMOVE_FROM_QUEUE, quality })
+  const removeFromQueue = name => {
+    dispatch({ type: ActionTypes.REMOVE_FROM_QUEUE, name })
   }
 
   /**
-   * @param {string} quality Source quality
+   * @param {string} name Queue name
    * @param {number} completion Completion percentage [0-100]
    * @param {boolean} finished Whether the upload has finished (default false)
    */
-  const updateCompletion = (quality, completion, finished = false) => {
+  const updateCompletion = (name, completion, finished = false) => {
     let clampedValue = completion - (completion % 10) + 5
     clampedValue = clampedValue > 100 ? 100 : clampedValue
 
-    const queued = state.queue.find(q => q.quality === quality)
+    const queued = state.queue.find(q => q.name === name)
     if (finished || (queued && queued.completion !== clampedValue)) {
       dispatch({
         type: ActionTypes.UPDATE_QUEUE_COMPLETION,
-        quality,
+        name,
         completion: clampedValue,
         finished,
       })
