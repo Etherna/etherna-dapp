@@ -54,11 +54,13 @@ const VideoSourcesUpload = ({ initialSources, pinContent, disabled, onComplete }
       const hash = await deleteVideoSource(sources[index].quality, manifest)
       updateManifest(hash)
 
+      const queueName = `sources/${sources[index].quality}`
+
       const newSources = [...sources]
       newSources.splice(index, 1)
       setSources(newSources)
 
-      removeFromQueue()
+      removeFromQueue(queueName)
     } catch (error) {
       showError("Error", error.message)
     }
