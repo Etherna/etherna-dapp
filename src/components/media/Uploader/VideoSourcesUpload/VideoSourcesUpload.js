@@ -6,7 +6,7 @@ import Tab, { TabContent } from "@common/Tab"
 import { showError } from "@state/actions/modals"
 import { deleteVideoSource } from "@utils/video"
 
-const VideoSourcesUpload = ({ hash, initialSources, pinContent, disabled }, ref) => {
+const VideoSourcesUpload = ({ initialSources, pinContent, disabled, onComplete }, ref) => {
   const { state, actions } = useUploaderState()
   const { manifest } = state
   const {
@@ -54,20 +54,24 @@ const VideoSourcesUpload = ({ hash, initialSources, pinContent, disabled }, ref)
       const hash = await deleteVideoSource(sources[index].quality, manifest)
       updateManifest(hash)
 
+      const queueName = `sources/${sources[index].quality}`
+
       const newSources = [...sources]
       newSources.splice(index, 1)
       setSources(newSources)
 
-      removeFromQueue()
+      removeFromQueue(queueName)
     } catch (error) {
       showError("Error", error.message)
     }
   }
 
-  const handleHashUpdate = (hash, quality) => {
-    if (hash && quality) {
+  const handleHashUpdate = (hash, name) => {
+    if (hash && name) {
       updateManifest(hash)
-      updateCompletion(quality, 100, true)
+      updateCompletion(name, 100, true)
+
+      onComplete && onComplete()
     }
   }
 
@@ -89,11 +93,11 @@ const VideoSourcesUpload = ({ hash, initialSources, pinContent, disabled }, ref)
 
   const handleProgress = (progress, index) => {
     const quality = sources[index].quality
-    updateCompletion(quality, progress)
+    updateCompletion(`sources/${quality}`, progress)
   }
 
-  const handleReset = quality => {
-    removeFromQueue(quality)
+  const handleReset = name => {
+    removeFromQueue(name)
     updateVideoDuration(null)
     updateOriginalQuality(null)
   }
@@ -112,11 +116,13 @@ const VideoSourcesUpload = ({ hash, initialSources, pinContent, disabled }, ref)
           const title = source.quality
             ? `${i === 0 ? `Original - ` : ``}${source.quality}`
             : `${i === 0 ? `Original` : `<add source>`}`
+          const queue = state.queue.find(q => q.name === `sources/${source.quality}`)
+          const finished = queue && queue.finished === true
           return (
             <TabContent tabKey={`quality-${i + 1}`} title={title} key={i}>
               <FileUploadFlow
                 ref={source.ref}
-                hash={hash}
+                hash={finished ? manifest : null}
                 label={title}
                 dragLabel={"Drag your video here"}
                 acceptTypes={["video", "audio"]}
@@ -124,13 +130,13 @@ const VideoSourcesUpload = ({ hash, initialSources, pinContent, disabled }, ref)
                 pinContent={pinContent}
                 manifest={manifest}
                 path={`sources/${source.quality}`}
-                canProcessFile={currentQueue && currentQueue.quality === source.quality}
-                onConfirmedProcessing={() => addToQueue(source.quality)}
-                onHashUpdate={hash => handleHashUpdate(hash, source.quality)}
+                canProcessFile={currentQueue && currentQueue.name === `sources/${source.quality}`}
+                onConfirmedProcessing={() => addToQueue(`sources/${source.quality}`)}
+                onHashUpdate={hash => handleHashUpdate(hash, `sources/${source.quality}`)}
                 onQualityUpdate={quality => handleUpdateQuality(quality, i)}
                 onDurationUpdate={duration => handleUpdateDuration(duration, i)}
                 onProgressChange={progress => handleProgress(progress, i)}
-                onCancel={() => handleReset(source.quality)}
+                onCancel={() => handleReset(`sources/${source.quality}`)}
                 disabled={disabled}
                 key={i}
               />

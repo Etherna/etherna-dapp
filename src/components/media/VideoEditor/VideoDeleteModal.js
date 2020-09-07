@@ -5,7 +5,7 @@ import Modal from "@common/Modal"
 import Button from "@common/Button"
 import { showError } from "@state/actions/modals"
 import useSelector from "@state/useSelector"
-import { getResourceUrl } from "@utils/swarm"
+import SwarmImage from "@components/common/SwarmImage"
 
 /**
  * @param {object} props
@@ -15,7 +15,7 @@ import { getResourceUrl } from "@utils/swarm"
  * @param {Function} props.onCancel
  * @param {Function} props.onDelete
  */
-const VideoDeleteModal = ({ hash, thumbnail, title, onCancel, onDelete }) => {
+const VideoDeleteModal = ({ hash, title, onCancel, onDelete }) => {
   const { indexClient } = useSelector(state => state.env)
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -41,12 +41,9 @@ const VideoDeleteModal = ({ hash, thumbnail, title, onCancel, onDelete }) => {
       </div>
       <div className="flex my-4">
         <div className="col sm:w-1/4">
-          <img
-            src={
-              thumbnail
-                ? getResourceUrl(thumbnail)
-                : require("@svg/backgrounds/thumb-placeholder.svg")
-            }
+          <SwarmImage
+            hash={`${hash}/thumbnail`}
+            fallback={require("@svg/backgrounds/thumb-placeholder.svg")}
             className="rounded"
             alt=""
           />

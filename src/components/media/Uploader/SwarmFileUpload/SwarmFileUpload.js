@@ -122,7 +122,7 @@ const SwarmFileUpload = ({
           </Button>
         </>
       )}
-      {showConfirmation && buffer && !isUploading && uploadProgress === 0 && (
+      {showConfirmation && buffer && !isUploading && uploadProgress === 0 && !confirmed && (
         <>
           <p className="text-gray-700 mb-3">
             You selected <span className="text-black">{filename}</span>. Do you confirm to upload
@@ -155,7 +155,7 @@ const SwarmFileUpload = ({
       {uploadProgress === 100 && hash && (
         <>
           {showImagePreview ? (
-            <img src={getResourceUrl(hash)} alt="" />
+            <img src={getResourceUrl(`${hash}${path ? `/${path}` : ``}`)} alt="" />
           ) : (
             <>
               <p>Finished upload!</p>

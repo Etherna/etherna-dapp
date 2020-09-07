@@ -33,30 +33,35 @@ const FileUploadFlow = ({
   const [duration, setDuration] = useState(undefined)
   const [quality, setQuality] = useState(undefined)
 
-  const status = previusHash ? "preview"
+  const status = hash ? "preview"
     : file === undefined ? "select"
     : file !== undefined && buffer === undefined ? "encode"
     : file !== undefined && buffer !== undefined ? "upload"
     : ""
 
   useEffect(() => {
+    previusHash !== hash && setHash(previusHash)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [previusHash])
+
+  useEffect(() => {
     onHashUpdate && onHashUpdate(hash)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hash])
 
   useEffect(() => {
     updateVideoMetadata()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [file, buffer])
 
   useEffect(() => {
     onDurationUpdate && onDurationUpdate(duration)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [duration])
 
   useEffect(() => {
     onQualityUpdate && onQualityUpdate(quality)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quality])
 
   useImperativeHandle(ref, () => ({

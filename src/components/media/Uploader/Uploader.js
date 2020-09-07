@@ -5,7 +5,7 @@ import "./uploader.scss"
 
 import { UploaderContextWrapper, useUploaderState } from "./UploaderContext"
 import VideoSourcesUpload from "./VideoSourcesUpload"
-import FileUploadFlow from "./FileUploadFlow"
+import ThumbnailUpload from "./ThumbnailUpload"
 import PinContentField from "./PinContentField"
 import Alert from "@common/Alert"
 import Button from "@common/Button"
@@ -28,7 +28,8 @@ const Uploader = () => {
   const { address } = useSelector(state => state.user)
   const { indexClient } = useSelector(state => state.env)
 
-  const [thumbnail, setThumbnail] = useState(undefined)
+  const [hasVideo, setHasVideo] = useState(false)
+  const [hasThumbnail, setHasThumbnail] = useState(false)
   const [pinContent, setPinContent] = useState(false)
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
@@ -39,14 +40,14 @@ const Uploader = () => {
   const submitVideo = async () => {
     setIsSubmitting(true)
     try {
+      const sourcePattern = /^sources\//
       const videoManifest = await updatedVideoMeta(manifest, {
         title,
         description,
         originalQuality,
-        thumbnailHash: thumbnail,
         ownerAddress: address,
         duration,
-        sources: queue.map(q => q.quality),
+        sources: queue.filter(q => sourcePattern.test(q.name)).map(q => q.name.replace(sourcePattern, "")),
       })
 
       updateManifest(videoManifest)
@@ -63,7 +64,8 @@ const Uploader = () => {
 
   const submitCompleted = videoManifest => {
     setVideoLink(Routes.getVideoLink(videoManifest))
-    setThumbnail(undefined)
+    setHasVideo(false)
+    setHasThumbnail(false)
     setTitle("")
     setDescription("")
     setHasSubmitted(true)
@@ -104,19 +106,16 @@ const Uploader = () => {
               ref={videoFlow}
               pinContent={pinContent}
               disabled={isSubmitting}
+              onComplete={() => setHasVideo(true)}
             />
           </div>
           <div className="form-group">
-            <FileUploadFlow
+            <ThumbnailUpload
               ref={thumbFlow}
-              label={"Thumbnail"}
-              dragLabel={"Drag your thumbnail here"}
-              acceptTypes={["image"]}
-              sizeLimit={2}
-              showImagePreview={true}
               pinContent={pinContent}
               disabled={isSubmitting}
-              onHashUpdate={hash => setThumbnail(hash)}
+              onCancel={() => setHasThumbnail(false)}
+              onComplete={() => setHasThumbnail(true)}
             />
           </div>
           <PinContentField onChange={pin => setPinContent(pin)} />
@@ -147,7 +146,7 @@ const Uploader = () => {
           <ul className="upload-steps mb-4">
             <li
               className={classnames("upload-step", {
-                "step-done": manifest,
+                "step-done": hasVideo,
               })}
             >
               Upload a video
@@ -168,7 +167,7 @@ const Uploader = () => {
             </li>
             <li
               className={classnames("upload-step", {
-                "step-done": thumbnail,
+                "step-done": hasThumbnail,
               })}
             >
               Add a thumbnail (optional)

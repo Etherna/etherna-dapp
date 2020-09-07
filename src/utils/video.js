@@ -9,9 +9,9 @@ import { store } from "@state/store"
  * @property {string} title Title of the video
  * @property {string} description Description of the video
  * @property {string} originalQuality Quality of the original video
- * @property {string} thumbnailHash Hash for the thumbnail
  * @property {string} ownerAddress Address of the owner of the video
  * @property {number} duration Duration of the video in seconds
+ * @property {string} thumbnailHash Hash for the thumbnail
  * @property {string[]} sources List of available qualities of the video
  *
  * @typedef VideoResolvedMeta
@@ -161,14 +161,14 @@ export const fetchVideoMeta = async videoHash => {
     quality,
     source: bzzClient.getDownloadURL(`${hash}/sources/${quality}`),
   }))
-  const thumbnailSource = meta.thumbnailHash
-    ? bzzClient.getDownloadURL(meta.thumbnailHash)
-    : null
+  const thumbnailHash = meta.thumbnailHash
+  const thumbnailSource = thumbnailHash && bzzClient.getDownloadURL(thumbnailHash)
 
   return {
     ...meta,
     source,
     sources,
+    thumbnailHash,
     thumbnailSource,
     duration,
   }
@@ -207,6 +207,20 @@ export const deleteVideoSource = async (quality, manifest) => {
   return newManifest
 }
 
+/**
+ * Delete a video thumbnail
+ *
+ * @param {string} manifest Current video manifest hash
+ * @returns {string} The new video manifest
+ */
+export const deleteThumbnail = async manifest => {
+  const { bzzClient } = store.getState().env
+
+  const newManifest = await bzzClient.deleteResource(manifest, `thumbnail`)
+
+  return newManifest
+}
+
 //
 // Utils
 //
@@ -234,6 +248,8 @@ const downloadMeta = async (bzz, hash) => {
       throw new Error("The default entry is not a valid json")
     }
 
+    const thumbnailHash = entries.find(entry => entry.path === "thumbnail") && `${hash}/thumbnail`
+
     const resp = await bzz.download(hash)
     const meta = await resp.json()
 
@@ -241,15 +257,16 @@ const downloadMeta = async (bzz, hash) => {
       title: "",
       description: "",
       sources: [],
+      thumbnailHash
     }
     return pick({ ...defaultMeta, ...meta }, [
       "title",
       "description",
       "ownerAddress",
-      "thumbnailHash",
       "duration",
       "originalQuality",
       "sources",
+      "thumbnailHash",
     ])
   } catch (error) {
     return null
