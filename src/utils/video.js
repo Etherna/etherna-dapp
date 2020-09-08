@@ -179,14 +179,16 @@ export const fetchVideoMeta = async videoHash => {
  *
  * @param {string} manifest Current video manifest hash
  * @param {SwarmVideoMeta} meta Video meta
+ * @param {boolean} pinContent Pin content (default = false)
  * @returns {string} The new video manifest
  */
-export const updatedVideoMeta = async (manifest, meta) => {
+export const updatedVideoMeta = async (manifest, meta, pinContent = false) => {
   const { bzzClient } = store.getState().env
 
   const newManifest = await bzzClient.uploadData(meta, {
     manifestHash: manifest,
     contentType: "text/json",
+    pin: pinContent
   })
 
   return newManifest

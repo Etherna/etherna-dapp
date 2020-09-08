@@ -16,7 +16,7 @@ export interface EnvState {
   indexHost: string
   indexApiPath: string
   indexClient: IndexClient
-  bzzClient: Bzz
+  bzzClient: Bzz<any, Response<any>, any>
   gatewayHost: string
   keymap: Keymap
   lang: Lang

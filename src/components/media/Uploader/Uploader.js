@@ -38,17 +38,28 @@ const Uploader = () => {
   const [videoLink, setVideoLink] = useState(false)
 
   const submitVideo = async () => {
+    if (!duration || !originalQuality) {
+      showError(
+        "Metadata error",
+        "There was a problem loading the video metadata. Try to re-upload the original video."
+      )
+      return
+    }
+
     setIsSubmitting(true)
     try {
       const sourcePattern = /^sources\//
-      const videoManifest = await updatedVideoMeta(manifest, {
-        title,
-        description,
-        originalQuality,
-        ownerAddress: address,
-        duration,
-        sources: queue.filter(q => sourcePattern.test(q.name)).map(q => q.name.replace(sourcePattern, "")),
-      })
+      const videoManifest = await updatedVideoMeta(
+        manifest, {
+          title,
+          description,
+          originalQuality,
+          ownerAddress: address,
+          duration,
+          sources: queue.filter(q => sourcePattern.test(q.name)).map(q => q.name.replace(sourcePattern, "")),
+        },
+        pinContent
+      )
 
       updateManifest(videoManifest)
 
@@ -104,7 +115,6 @@ const Uploader = () => {
           <div className="form-group">
             <VideoSourcesUpload
               ref={videoFlow}
-              pinContent={pinContent}
               disabled={isSubmitting}
               onComplete={() => setHasVideo(true)}
             />
@@ -112,7 +122,6 @@ const Uploader = () => {
           <div className="form-group">
             <ThumbnailUpload
               ref={thumbFlow}
-              pinContent={pinContent}
               disabled={isSubmitting}
               onCancel={() => setHasThumbnail(false)}
               onComplete={() => setHasThumbnail(true)}
