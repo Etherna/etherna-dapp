@@ -187,7 +187,7 @@ const Uploader = () => {
           ) : (
             <Button
               action={submitVideo}
-              disabled={manifest == null || title === "" || hasQueuedProcesses}
+              disabled={manifest == null || title === "" || hasQueuedProcesses || !hasVideo}
             >
               Add video
             </Button>
