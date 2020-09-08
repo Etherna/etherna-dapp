@@ -94,20 +94,23 @@ const VideoEditor = ({ hash, video }) => {
 
     try {
       const sourcePattern = /^sources\//
-      const videoManifest = await updatedVideoMeta(manifest, {
-        title,
-        description,
-        originalQuality,
-        ownerAddress: address,
-        duration,
-        sources: queue.filter(q => sourcePattern.test(q.name)).map(q => q.name.replace(sourcePattern, "")),
-      })
+      const videoManifest = await updatedVideoMeta(
+        manifest, {
+          title,
+          description,
+          originalQuality,
+          ownerAddress: address,
+          duration,
+          sources: queue.filter(q => sourcePattern.test(q.name)).map(q => q.name.replace(sourcePattern, "")),
+        },
+        pinContent
+      )
 
       updateManifest(videoManifest)
 
       await indexClient.videos.updateVideo(videoHash, videoManifest)
 
-      await updatePinning(pinContent, videoManifest)
+      await updatePinning(false, hash)
 
       setVideoHash(videoManifest)
 
