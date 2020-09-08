@@ -67,6 +67,13 @@ const VideoEditor = ({ hash, video }) => {
       videoMeta.originalQuality,
       videoMeta.sources.map(s => s.quality)
     )
+
+    if (!videoMeta.duration || !videoMeta.originalQuality) {
+      showError(
+        "Metadata error",
+        "There was a problem loading the video metadata. Try to refresh the page."
+      )
+    }
   }
 
   const fetchVideo = async () => {
