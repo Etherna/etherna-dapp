@@ -67,6 +67,13 @@ const VideoEditor = ({ hash, video }) => {
       videoMeta.originalQuality,
       videoMeta.sources.map(s => s.quality)
     )
+
+    if (!videoMeta.duration || !videoMeta.originalQuality) {
+      showError(
+        "Metadata error",
+        "There was a problem loading the video metadata. Try to refresh the page."
+      )
+    }
   }
 
   const fetchVideo = async () => {
@@ -94,20 +101,23 @@ const VideoEditor = ({ hash, video }) => {
 
     try {
       const sourcePattern = /^sources\//
-      const videoManifest = await updatedVideoMeta(manifest, {
-        title,
-        description,
-        originalQuality,
-        ownerAddress: address,
-        duration,
-        sources: queue.filter(q => sourcePattern.test(q.name)).map(q => q.name.replace(sourcePattern, "")),
-      })
+      const videoManifest = await updatedVideoMeta(
+        manifest, {
+          title,
+          description,
+          originalQuality,
+          ownerAddress: address,
+          duration,
+          sources: queue.filter(q => sourcePattern.test(q.name)).map(q => q.name.replace(sourcePattern, "")),
+        },
+        pinContent
+      )
 
       updateManifest(videoManifest)
 
       await indexClient.videos.updateVideo(videoHash, videoManifest)
 
-      await updatePinning(pinContent, videoManifest)
+      await updatePinning(false, hash)
 
       setVideoHash(videoManifest)
 
