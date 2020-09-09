@@ -151,7 +151,7 @@ export const fetchVideoMeta = async videoHash => {
       : bzzClient.getDownloadURL(`${hash}/sources/${meta.originalQuality}`)
     : bzzClient.getDownloadURL(videoHash, { mode: "raw" }).replace(/\/$/, "")
 
-  const duration = await videoDuration(source)
+  const duration = meta.duration || await videoDuration(source)
 
   if (!meta) {
     return { source, duration }
