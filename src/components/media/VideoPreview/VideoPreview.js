@@ -32,15 +32,19 @@ const VideoPreview = ({ video, hideProfile }) => {
   const videoSearch = new URL(videoLink, document.baseURI).search
   const videoPath = videoLink.replace(videoSearch, "")
 
+  const VideoLink = ({ children }) => (
+    <Link
+      to={{
+        pathname: videoPath,
+        search: videoSearch,
+        state: video,
+      }}
+    >{children}</Link>
+  )
+
   return (
     <div className="video-preview">
-      <Link
-        to={{
-          pathname: videoPath,
-          search: videoSearch,
-          state: video,
-        }}
-      >
+      <VideoLink>
         <div className="video-thumbnail">
           <SwarmImage
             hash={video.thumbnailHash}
@@ -51,7 +55,7 @@ const VideoPreview = ({ video, hideProfile }) => {
             <Time duration={video.duration} />
           </div>
         </div>
-      </Link>
+      </VideoLink>
       <div className="video-info">
         {!hideProfile && (
           <Link to={profileLink}>
@@ -59,15 +63,9 @@ const VideoPreview = ({ video, hideProfile }) => {
           </Link>
         )}
         <div className="video-stats">
-          <Link
-            to={{
-              pathname: videoPath,
-              search: videoSearch,
-              state: video,
-            }}
-          >
+          <VideoLink>
             <h4 className="video-title">{video.title}</h4>
-          </Link>
+          </VideoLink>
           {!hideProfile && (
             <Link to={profileLink}>
               <div className="video-profile">
