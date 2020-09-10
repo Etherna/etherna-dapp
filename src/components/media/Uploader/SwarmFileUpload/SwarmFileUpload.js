@@ -8,8 +8,6 @@ import Alert from "@common/Alert"
 import Button from "@common/Button"
 import ProgressBar from "@common/ProgressBar"
 import { getResourceUrl, uploadManifestData } from "@utils/swarm"
-import { Link } from "react-router-dom"
-import routes from "@routes"
 
 // cancellation token function
 let uploadCancel
@@ -157,17 +155,7 @@ const SwarmFileUpload = ({
           {showImagePreview ? (
             <img src={getResourceUrl(`${hash}${path ? `/${path}` : ``}`)} alt="" />
           ) : (
-            <>
-              <p>Finished upload!</p>
-              <p className="text-gray-700 break-words">
-                <small>
-                  Preview: <br />
-                  <Link to={routes.getVideoLink(hash, path)} target="_blank">
-                    {routes.getVideoLink(hash, path)}
-                  </Link>
-                </small>
-              </p>
-            </>
+            <p><span role="img" aria-label="Completed">✅</span> Upload completed!</p>
           )}
           <Button
             size="small"
