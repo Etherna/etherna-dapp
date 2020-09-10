@@ -5,6 +5,7 @@ import "./sidebar.scss"
 
 import MyProfile from "./MyProfile"
 import NewProfiles from "./NewProfiles"
+import FeedbackButton from "./FeedbackButton"
 import Routes from "@routes"
 
 const Sidebar = () => {
@@ -19,9 +20,7 @@ const Sidebar = () => {
           <Link to={Routes.getHowItWorksLink()} className="footer-link">
             How it works
           </Link>
-          <button id="jira_feedback_btn" className="footer-link">
-            Feedback
-          </button>
+          <FeedbackButton />
           <a
             href="https://index.etherna.io/swagger"
             className="footer-link"

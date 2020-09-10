@@ -95,13 +95,10 @@
       }
     </script>
     <script type="text/javascript" src="https://etherna.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/-m454we/b/23/a44af77267a987a660377e5c46e0fb64/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=1c189ede"></script>
-
     <script type="text/javascript">
       window.ATL_JQ_PAGE_PROPS = {
         "triggerFunction": function(showCollectorDialog) {
-          document.getElementById('jira_feedback_btn').addEventListener('click', function () {
-            showCollectorDialog();
-          });
+          window.ATL_JQ_PAGE_PROPS.showCollectorDialog = showCollectorDialog;
       }};
     </script>
   </body>
