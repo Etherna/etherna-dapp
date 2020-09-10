@@ -11,8 +11,8 @@ const ProfileAbout = ({ name, address, description }) => {
 }
 
 ProfileAbout.propTypes = {
-  name: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
+  name: PropTypes.string,
   description: PropTypes.string,
 }
 

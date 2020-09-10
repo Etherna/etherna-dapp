@@ -133,8 +133,8 @@ const ProfileView = ({ profileAddress }) => {
         {activeTab === "about" && (
           <ProfileAbout
             address={profileAddress}
-            description={profileInfo.description}
-            name={profileInfo.name}
+            description={(profileInfo || {}).description}
+            name={(profileInfo || {}).name}
           />
         )}
       </ProfileInfo>
