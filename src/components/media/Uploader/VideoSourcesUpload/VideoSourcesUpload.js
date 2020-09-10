@@ -51,10 +51,13 @@ const VideoSourcesUpload = ({ initialSources, pinContent, disabled, onComplete }
 
   const removeSource = async index => {
     try {
-      const hash = await deleteVideoSource(sources[index].quality, manifest)
-      updateManifest(hash)
-
       const queueName = `sources/${sources[index].quality}`
+      const queue = state.queue.find(q => q.name === queueName)
+
+      if (queue && queue.finished) {
+        const hash = await deleteVideoSource(sources[index].quality, manifest)
+        updateManifest(hash)
+      }
 
       const newSources = [...sources]
       newSources.splice(index, 1)
@@ -67,7 +70,8 @@ const VideoSourcesUpload = ({ initialSources, pinContent, disabled, onComplete }
   }
 
   const handleHashUpdate = (hash, name) => {
-    if (hash && name) {
+    const queue = state.queue.find(q => q.name === name)
+    if (hash && queue) {
       updateManifest(hash)
       updateCompletion(name, 100, true)
 
