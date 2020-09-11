@@ -23,7 +23,7 @@ import Routes from "@routes"
  * @param {VideoViewProps} param0
  */
 const VideoView = ({ hash, video }) => {
-  const [source, setSource] = useState((video && video.source) || getResourceUrl(hash, true))
+  const [source, setSource] = useState(video && video.source)
   const [videoOnIndex, setVideoOnIndex] = useState(null)
   const [isFetchingVideo, setIsFetchingVideo] = useState(false)
   const [profileAddress, setProfileAddress] = useState(video.ownerAddress)
@@ -63,12 +63,13 @@ const VideoView = ({ hash, video }) => {
       setProfileAvatar(videoInfo.profileData && videoInfo.profileData.avatar)
     } catch (error) {
       console.error(error)
+      setSource(getResourceUrl(hash, true))
       setVideoOnIndex(false)
     }
     setIsFetchingVideo(false)
   }
 
-  if (isFetchingVideo) {
+  if (isFetchingVideo || !source) {
     return <div />
   }
 
