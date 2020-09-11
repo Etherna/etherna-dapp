@@ -19,6 +19,16 @@ export const isMimeMedia = mime => {
 }
 
 /**
+ * Check if a mime type is a video or an audio
+ *
+ * @param {string} mime Mime type
+ * @returns {boolean} Whether the mime is a video or an audio
+ */
+export const isMimeAudio = mime => {
+  return /(audio\/[a-z0-9.-]*$)/.test(mime || "")
+}
+
+/**
  * Check if a mime type is encodable with the FFMpeg coedc
  * @param {string} mime File mime type
  * @returns {boolean} Whether the mime is FFMpeg encodable

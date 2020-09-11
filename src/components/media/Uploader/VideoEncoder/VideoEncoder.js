@@ -6,7 +6,7 @@ import "./video-encoder.scss"
 
 import Button from "@components/common/Button"
 import { showError } from "@state/actions/modals"
-import { isMimeWebCompatible } from "@utils/mimeTypes"
+import { isMimeCompatible } from "@utils/mimeTypes"
 import { fileReaderPromise } from "@utils/swarm"
 
 const ffmpeg = createFFmpeg({
@@ -22,7 +22,7 @@ const ffmpeg = createFFmpeg({
 const VideoEncoder = ({ file, canEncode, onConfirmEncode, onEncodingComplete, onCancel }) => {
   const [confirmed, setConfirmed] = useState(false)
   const [isEncoding, setIsEncoding] = useState(false)
-  const isWebCompatible = isMimeWebCompatible(file.type)
+  const isMpegVideo = isMimeCompatible(file.type, ["video/mp4", "video/m4v"])
 
   useEffect(() => {
     // Clear previus cache
@@ -86,7 +86,7 @@ const VideoEncoder = ({ file, canEncode, onConfirmEncode, onEncodingComplete, on
           <Button size="small" className="ml-2" action={confirmEncode}>
             Encode and Upload
           </Button>
-          {isWebCompatible && (
+          {isMpegVideo && (
             <Button size="small" className="ml-2" action={upload}>
               Upload
             </Button>
