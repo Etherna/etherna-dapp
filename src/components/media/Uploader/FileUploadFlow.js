@@ -5,7 +5,7 @@ import VideoEncoder from "./VideoEncoder"
 import SwarmFileUpload from "./SwarmFileUpload"
 import { showError } from "@state/actions/modals"
 import { getVideoDuration, getVideoResolution } from "@utils/media"
-import { isMimeFFMpegEncodable, isMimeMedia } from "@utils/mimeTypes"
+import { isMimeFFMpegEncodable, isMimeMedia, isMimeAudio } from "@utils/mimeTypes"
 import { fileReaderPromise } from "@utils/swarm"
 
 const FileUploadFlow = ({
@@ -32,6 +32,7 @@ const FileUploadFlow = ({
   const [hash, setHash] = useState(previusHash)
   const [duration, setDuration] = useState(undefined)
   const [quality, setQuality] = useState(undefined)
+  const [contentType, setContentType] = useState(undefined)
 
   const status = hash ? "preview"
     : file === undefined ? "select"
@@ -96,9 +97,14 @@ const FileUploadFlow = ({
       return
     }
 
+    setContentType(file.type)
+
     if (!isMimeFFMpegEncodable(file.type)) {
       const buffer = await fileReaderPromise(file)
       setBuffer(buffer)
+    } else {
+      if (isMimeAudio(file.type)) setContentType("audio/mpeg")
+      else setContentType("video/mp4")
     }
 
     setFile(file)
@@ -131,6 +137,7 @@ const FileUploadFlow = ({
     setFile(undefined)
     setHash(undefined)
     setDuration(undefined)
+    setContentType(undefined)
     onCancel && onCancel()
   }
 
@@ -162,7 +169,7 @@ const FileUploadFlow = ({
           buffer={buffer}
           manifest={manifest}
           path={path}
-          contentType={file && file.type}
+          contentType={contentType}
           filename={file && file.name}
           showConfirmation={!isMimeFFMpegEncodable(file && file.type)}
           showImagePreview={showImagePreview}
