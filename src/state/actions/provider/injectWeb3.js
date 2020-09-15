@@ -9,6 +9,10 @@ const injectWeb3 = async () => {
       ? new Web3(window.web3.currentProvider)
       : new Web3(`wss://mainnet.infura.io/ws/v3/${process.env.REACT_APP_INFURA_ID}`)
 
+  if (window.ethereum) {
+    window.ethereum.autoRefreshOnNetworkChange = false
+  }
+
   store.dispatch({
     type: EnvActionTypes.ENV_UPDATE_PROVIDER,
     web3,

@@ -20,6 +20,19 @@
   &:hover {
     @apply border-2 border-primary-dark text-primary-dark bg-transparent rounded;
   }
+
+  &.btn-danger {
+    @apply border-red-500 text-red-500 bg-transparent;
+    &:hover {
+      @apply border-red-600 text-red-600 bg-transparent;
+    }
+  }
+  &.btn-warning {
+    @apply border-orange-500 text-orange-500 bg-transparent;
+    &:hover {
+      @apply border-orange-600 text-orange-600 bg-transparent;
+    }
+  }
 }
 
 .btn-secondary {
@@ -41,6 +54,13 @@
   @apply bg-red-500;
   &:hover {
     @apply bg-red-600;
+  }
+}
+
+.btn-warning {
+  @apply bg-orange-500;
+  &:hover {
+    @apply bg-orange-600;
   }
 }
 

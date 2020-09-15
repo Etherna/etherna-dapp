@@ -3,6 +3,7 @@ import { Crop } from "react-image-crop"
 import Lang from "lang.js"
 import { Keymap } from "@keyboard"
 import IndexClient from "@utils/indexClient/client"
+import GatewayClient from "@utils/gatewayClient/client"
 import { Bzz } from "@erebos/bzz"
 
 export interface RootState {
@@ -16,6 +17,7 @@ export interface EnvState {
   indexHost: string
   indexApiPath: string
   indexClient: IndexClient
+  gatewayClient: GatewayClient
   bzzClient: Bzz<any, Response<any>, any>
   gatewayHost: string
   keymap: Keymap
@@ -67,7 +69,9 @@ export interface UserState {
   identityManifest?: string
   prevAddresses?: string[]
   ens?: string
+  credit: number
   isSignedIn: boolean
+  isSignedInGateway: boolean
 }
 
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"
 import PropTypes from "prop-types"
+import classnames from "classnames"
 import moment from "moment"
 
 import { DropDownMenu } from "@common/DropDown"
@@ -10,7 +11,8 @@ import http from "@utils/request"
 
 const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
   const indexLastChangeRef = useRef({})
-  const { indexHost, indexApiPath, gatewayHost } = useSelector(state => state.env)
+  const { indexHost, indexApiPath, gatewayHost, indexClient, creditClient } = useSelector(state => state.env)
+  const { isSignedIn, isSignedInGateway } = useSelector(state => state.user)
 
   const [indexHostValue, setIndexHostValue] = useState(indexHost)
   const [indexApiPathValue, setIndexApiPathValue] = useState(indexApiPath)
@@ -122,6 +124,22 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
           >
             Reset to default
           </Button>
+
+          <hr/>
+
+          <div className="flex py-1">
+            Status: {isSignedIn ? `Signed in` : `Signed out`}
+            <span className={classnames("item-status", { [`item-status-active`]: isSignedIn })} />
+          </div>
+          <Button
+            action={() => indexClient.loginRedirect()}
+            aspect={isSignedIn ? "warning" : "primary"}
+            outline={true}
+            size="small"
+            className="mt-2"
+          >
+            {isSignedIn ? `Sign out` : `Sign in`}
+          </Button>
         </li>
       </DropDownMenu>
 
@@ -150,6 +168,22 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
             disabled={gatewayHostValue === process.env.REACT_APP_GATEWAY_HOST}
           >
             Reset to default
+          </Button>
+
+          <hr/>
+
+          <div className="flex py-1">
+            Status: {isSignedInGateway ? `Signed in` : `Signed out`}
+            <span className={classnames("item-status", { [`item-status-active`]: isSignedInGateway })} />
+          </div>
+          <Button
+            action={() => creditClient.loginRedirect()}
+            aspect={isSignedInGateway ? "warning" : "primary"}
+            outline={true}
+            size="small"
+            className="mt-2"
+          >
+            {isSignedInGateway ? `Sign out` : `Sign in`}
           </Button>
         </li>
       </DropDownMenu>

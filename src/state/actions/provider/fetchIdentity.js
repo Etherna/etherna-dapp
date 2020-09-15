@@ -5,9 +5,27 @@ import { UserActionTypes } from "@state/reducers/userReducer"
  * Fetch the current identity from the SSO server
  */
 const fetchIdentity = async () => {
-  try {
-    const { indexClient } = store.getState().env
+  const { indexClient, gatewayClient } = store.getState().env
 
+  const [profile, hasCredit] = await Promise.all([
+    fetchIndexCurrentUser(indexClient),
+    fetchCurrentUserCredit(gatewayClient)
+  ])
+
+  store.dispatch({
+    type: UserActionTypes.USER_UPDATE_SIGNEDIN,
+    isSignedIn: !!profile,
+    isSignedInGateway: hasCredit
+  })
+
+  return profile
+}
+
+/**
+ * @param {import("@utils/indexClient/client").default} indexClient
+ */
+const fetchIndexCurrentUser =  async indexClient => {
+  try {
     const profile = await indexClient.users.fetchCurrentUser()
 
     store.dispatch({
@@ -16,25 +34,29 @@ const fetchIdentity = async () => {
       manifest: profile.identityManifest,
       prevAddresses: profile.prevAddresses,
     })
-    store.dispatch({
-      type: UserActionTypes.USER_UPDATE_SIGNEDIN,
-      isSignedIn: true,
-    })
 
     return profile
-  } catch (error) {
-    console.error(error)
-
-    return updateUserSignedOut()
+  } catch {
+    return false
   }
 }
 
-const updateUserSignedOut = () => {
-  store.dispatch({
-    type: UserActionTypes.USER_UPDATE_SIGNEDIN,
-    isSignedIn: false,
-  })
-  return null
+/**
+ * @param {import("@utils/gatewayClient/client").default} gatewayClient
+ */
+const fetchCurrentUserCredit =  async gatewayClient => {
+  try {
+    const credit = await gatewayClient.user.fetchCredit()
+
+    store.dispatch({
+      type: UserActionTypes.USER_UPDATE_CREDIT,
+      credit,
+    })
+
+    return true
+  } catch {
+    return false
+  }
 }
 
 export default fetchIdentity

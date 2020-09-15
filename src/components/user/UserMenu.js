@@ -7,7 +7,7 @@ import EnvDropDownMenus from "./EnvDropDownMenu"
 import GuestMenu from "./GuestMenu"
 import ProfileLoadingPlaceholder from "./ProfileLoadingPlaceholder"
 import SigninButton from "./SigninButton"
-import { DropDown, DropDownItem, DropDownMenu, DropDownMenuToggle } from "@common/DropDown"
+import { DropDown, DropDownItem, DropDownItemContent, DropDownMenu, DropDownMenuToggle } from "@common/DropDown"
 import EditProfileIcon from "@icons/menu/EditProfileIcon"
 import ProfileIcon from "@icons/menu/ProfileIcon"
 import IndexIcon from "@icons/menu/IndexIcon"
@@ -26,7 +26,7 @@ import Routes from "@routes"
 const UserMenu = () => {
   const { currentWalletLogo, currentAddress, darkMode } = useSelector(state => state.env)
   const { name, avatar } = useSelector(state => state.profile)
-  const { isSignedIn, address } = useSelector(state => state.user)
+  const { isSignedIn, isSignedInGateway, address } = useSelector(state => state.user)
   const { isLoadingProfile } = useSelector(state => state.ui)
 
   const hasSwitchedAccount = currentAddress && address !== currentAddress
@@ -97,16 +97,14 @@ const UserMenu = () => {
         </DropDownItem>
         <hr />
         <DropDownMenuToggle menuRef={indexMenuRef} isMenuItem={true}>
-          <div className="flex">
-            <IndexIcon />
-            <span>Index</span>
-          </div>
+          <DropDownItemContent icon={<IndexIcon />} status={isSignedIn ? "active" : "inactive"}>
+            Index
+          </DropDownItemContent>
         </DropDownMenuToggle>
         <DropDownMenuToggle menuRef={gatewayMenuRef} isMenuItem={true}>
-          <div className="flex">
-            <GatewayIcon />
-            <span>Gateway</span>
-          </div>
+          <DropDownItemContent icon={<GatewayIcon />} status={isSignedInGateway ? "active" : "inactive"}>
+            Gateway
+          </DropDownItemContent>
         </DropDownMenuToggle>
 
         <hr />
