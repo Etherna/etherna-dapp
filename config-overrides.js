@@ -1,21 +1,11 @@
 const { override, addWebpackAlias, addPostcssPlugins } = require("customize-cra")
 const path = require("path")
-const purgecss = require("@fullhuman/postcss-purgecss")({
-  content: [
-    "./public/**/*.html",
-    "./src/app/**/*.js",
-    "./src/pages/**/*.js",
-    "./src/components/**/*.js",
-  ],
-  // Include any special characters you're using in this regular expression
-  defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || [],
-})
 
 module.exports = override(
   addPostcssPlugins([
     require("tailwindcss")("./tailwind.config.js"),
     require("autoprefixer"),
-    ...(process.env.NODE_ENV === "production" ? [purgecss] : []),
+    //...(process.env.NODE_ENV === "production" ? [purgecss] : []),
   ]),
 
   addWebpackAlias({
