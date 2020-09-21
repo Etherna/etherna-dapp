@@ -6,7 +6,7 @@ import Tab, { TabContent } from "@common/Tab"
 import { showError } from "@state/actions/modals"
 import { deleteVideoSource } from "@utils/video"
 
-const VideoSourcesUpload = ({ initialSources, pinContent, disabled, onComplete }, ref) => {
+const VideoSourcesUpload = ({ initialSources, pinContent, disabled, onComplete, onCancel }, ref) => {
   const { state, actions } = useUploaderState()
   const { manifest } = state
   const {
@@ -102,8 +102,8 @@ const VideoSourcesUpload = ({ initialSources, pinContent, disabled, onComplete }
 
   const handleReset = name => {
     removeFromQueue(name)
-    updateVideoDuration(null)
-    updateOriginalQuality(null)
+
+    onCancel && onCancel(name)
   }
 
   return (

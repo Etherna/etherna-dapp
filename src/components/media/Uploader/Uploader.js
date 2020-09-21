@@ -23,12 +23,12 @@ const Uploader = () => {
   const { manifest, duration, originalQuality, queue } = state
   const { updateManifest } = actions
   const hasQueuedProcesses = queue.filter(q => q.finished === false).length > 0
+  const hasOriginalVideo = queue.findIndex(q => q.name === `sources/${originalQuality}` && q.finished) >= 0
 
   const { name, avatar } = useSelector(state => state.profile)
   const { address } = useSelector(state => state.user)
   const { indexClient } = useSelector(state => state.env)
 
-  const [hasVideo, setHasVideo] = useState(false)
   const [hasThumbnail, setHasThumbnail] = useState(false)
   const [pinContent, setPinContent] = useState(false)
   const [title, setTitle] = useState("")
@@ -75,7 +75,6 @@ const Uploader = () => {
 
   const submitCompleted = videoManifest => {
     setVideoLink(Routes.getVideoLink(videoManifest))
-    setHasVideo(false)
     setHasThumbnail(false)
     setTitle("")
     setDescription("")
@@ -116,7 +115,6 @@ const Uploader = () => {
             <VideoSourcesUpload
               ref={videoFlow}
               disabled={isSubmitting}
-              onComplete={() => setHasVideo(true)}
             />
           </div>
           <div className="form-group">
@@ -155,7 +153,7 @@ const Uploader = () => {
           <ul className="upload-steps mb-4">
             <li
               className={classnames("upload-step", {
-                "step-done": hasVideo,
+                "step-done": hasOriginalVideo,
               })}
             >
               Upload a video
@@ -187,7 +185,7 @@ const Uploader = () => {
           ) : (
             <Button
               action={submitVideo}
-              disabled={manifest == null || title === "" || hasQueuedProcesses || !hasVideo}
+              disabled={manifest == null || title === "" || hasQueuedProcesses || !hasOriginalVideo}
             >
               Add video
             </Button>

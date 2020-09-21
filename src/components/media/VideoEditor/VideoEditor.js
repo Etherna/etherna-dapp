@@ -27,6 +27,7 @@ const VideoEditor = ({ hash, video }) => {
   const { manifest, duration, originalQuality, queue } = state
   const { updateManifest, loadInitialState } = actions
   const hasQueuedProcesses = queue.filter(q => q.finished === false).length > 0
+  const hasOriginalVideo = queue.findIndex(q => q.name === `sources/${originalQuality}` && q.finished) >= 0
 
   const { indexClient } = useSelector(state => state.env)
   const { isSignedIn, address } = useSelector(state => state.user)
@@ -231,7 +232,7 @@ const VideoEditor = ({ hash, video }) => {
               <Button
                 className="mr-4"
                 action={handleUpdateVideo}
-                disabled={!title || hasQueuedProcesses}
+                disabled={!title || hasQueuedProcesses || !hasOriginalVideo}
               >
                 Save
               </Button>
