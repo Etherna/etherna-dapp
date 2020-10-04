@@ -28,7 +28,7 @@ const indexApiPath = window.localStorage.getItem("indexApiPath") != null
 const creditHost = process.env.REACT_APP_CREDIT_HOST
 const creditApiPath = process.env.REACT_APP_CREDIT_API_PATH
 const gatewayHost = window.localStorage.getItem("gatewayHost") ||
-  process.env.REACT_APP_GATEWAY_HOST ||
+  process.env.REACT_APP_SWARM_HOST ||
   "https://swarm-gateways.net"
 const indexClient = new IndexClient({ host: indexHost, apiPath: indexApiPath })
 const gatewayClient = new GatewayClient({ host: creditHost, apiPath: creditApiPath })

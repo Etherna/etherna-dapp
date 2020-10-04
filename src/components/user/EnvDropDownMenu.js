@@ -165,7 +165,7 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }) => {
             size="small"
             aspect="link"
             className="mt-2 ml-auto"
-            disabled={gatewayHostValue === process.env.REACT_APP_GATEWAY_HOST}
+            disabled={gatewayHostValue === process.env.REACT_APP_SWARM_HOST}
           >
             Reset to default
           </Button>

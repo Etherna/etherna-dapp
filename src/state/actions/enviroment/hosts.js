@@ -31,6 +31,6 @@ export const resetIndexHost = () => {
 }
 
 export const resetGatewayHost = () => {
-  const host = process.env.REACT_APP_GATEWAY_HOST
+  const host = process.env.REACT_APP_SWARM_HOST
   updateGatewayHost(host)
 }
