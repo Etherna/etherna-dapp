@@ -47,17 +47,22 @@ async function handleRequest(proxyReq, req, res) {
       ? await handleValidatorRequest(req, res)
       : await forwardRequestToGateway(req)
 
+    const isText = /^text/.test(response.headers.get("Content-Type"))
+
+    // Return a stream response fo video sources
+    // end text response for anything else
     if (
-      isValidatorRequest &&
+      !isText &&
       response.status < 300 &&
       response.body &&
       typeof response.body.pipe === "function"
     ) {
-      res.status(response.status)
-
+      // Set response headers
       response.headers.forEach((value, name) => {
         res.setHeader(name, value)
       })
+
+      res.status(response.status)
       response.body.pipe(res)
     } else {
       res.status(response.status).send(await response.text())
