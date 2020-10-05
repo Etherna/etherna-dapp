@@ -32,11 +32,11 @@ module.exports.SwarmMiddleware = createProxyMiddleware(
 
 
 /**
-* Fetch and return the request body
-* @param {import("http").ClientRequest} proxyReq
-* @param {import("http-proxy-middleware/dist/types").Request} req
-* @param {import("http-proxy-middleware/dist/types").Response} res
-*/
+ * Fetch and return the request body
+ * @param {import("http").ClientRequest} proxyReq
+ * @param {import("http-proxy-middleware/dist/types").Request} req
+ * @param {import("http-proxy-middleware/dist/types").Response} res
+ */
 async function handleRequest(proxyReq, req, res) {
   // Wrap your script in a try/catch and return the error stack to view error information.
   try {
@@ -47,25 +47,28 @@ async function handleRequest(proxyReq, req, res) {
       ? await handleValidatorRequest(req, res)
       : await forwardRequestToGateway(req)
 
-    const isText = /^text/.test(response.headers.get("Content-Type"))
+    // Return error message
+    if (typeof response.body.pipe !== "function") {
+      res.status(response.status).send(await response.text())
+      return
+    }
 
-    // Return a stream response fo video sources
+    const isText = /^(text|application\/json)/.test(response.headers.get("Content-Type"))
+
+    // Return a stream response for media sources
     // end text response for anything else
-    if (
-      !isText &&
-      response.status < 300 &&
-      response.body &&
-      typeof response.body.pipe === "function"
-    ) {
+    if (!isText && response.status < 300) {
       // Set response headers
       response.headers.forEach((value, name) => {
-        res.setHeader(name, value)
+        res.set(name, value)
       })
 
       res.status(response.status)
       response.body.pipe(res)
     } else {
-      res.status(response.status).send(await response.text())
+      res.set("Content-Type", response.headers.get("Content-Type"))
+      res.status(response.status)
+      response.body.pipe(res)
     }
   } catch (e) {
     console.error(e)
@@ -74,10 +77,10 @@ async function handleRequest(proxyReq, req, res) {
 }
 
 /**
-* Validate and handle requests for gateway resources.
-* @param {import("http-proxy-middleware/dist/types").Request} req
-* @param {import("http-proxy-middleware/dist/types").Response} res
-*/
+ * Validate and handle requests for gateway resources.
+ * @param {import("http-proxy-middleware/dist/types").Request} req
+ * @param {import("http-proxy-middleware/dist/types").Response} res
+ */
 async function handleValidatorRequest(req, res) {
   // Run requests.
   const gatewayResponsePromise = forwardRequestToGateway(req) //start async request to gateway
@@ -116,10 +119,10 @@ async function handleValidatorRequest(req, res) {
 }
 
 /**
-* Execute a limited request, validate result, and report to validator consumed data ammount
-* @param {Promise<import("node-fetch").Response>} gatewayResponsePromise
-* @param {{id: string, maxBodySize: number, result: string}} validationData
-*/
+ * Execute a limited request, validate result, and report to validator consumed data ammount
+ * @param {Promise<import("node-fetch").Response>} gatewayResponsePromise
+ * @param {{id: string, maxBodySize: number, result: string}} validationData
+ */
 async function limitGatewayResponse(gatewayResponsePromise, validationData) {
   const maxBodySize = Math.min(validationData.maxBodySize, MaxBodySizeCap) //put an hard cap on body size
   const requestId = validationData.id
@@ -193,9 +196,9 @@ async function notifyEndOfLimitedRequest(requestId, bodySize, secret) {
 }
 
 /**
-* Build forward request to gateway as a reverse proxy.
-* @param {import("http-proxy-middleware/dist/types").Request} request
-*/
+ * Build forward request to gateway as a reverse proxy.
+ * @param {import("http-proxy-middleware/dist/types").Request} request
+ */
 async function forwardRequestToGateway(request) {
   // Strip cookies.
   const headers = {...request.headers}
@@ -210,10 +213,10 @@ async function forwardRequestToGateway(request) {
 }
 
 /**
-* Build forward request to validator as a reverse proxy.
-* @param {import("http-proxy-middleware/dist/types").Request} request
-* @param {boolean} forceHttps
-*/
+ * Build forward request to validator as a reverse proxy.
+ * @param {import("http-proxy-middleware/dist/types").Request} request
+ * @param {boolean} forceHttps
+ */
 async function forwardRequestToValidator(request, forceHttps) {
   // Create new url.
   const newRequestUrl = new URL(ValidatorHost + request.url)
