@@ -11,9 +11,13 @@
   @apply flex flex-wrap fixed w-full z-1 top-0 shadow-sm bg-background-secondary text-sm font-semibold;
 
   .nav-item {
-    @apply flex items-center px-6 pt-4 pb-3 whitespace-no-wrap;
+    @apply flex items-center px-4 py-2 whitespace-no-wrap;
     &.active {
       @apply text-primary;
+    }
+
+    @screen sm {
+      @apply px-6 pt-4 pb-3;
     }
   }
 
@@ -38,7 +42,7 @@
   }
 
   .right-nav {
-    @apply flex flex-1 justify-end items-center order-2 px-3;
+    @apply flex flex-1 justify-end items-center order-2 pr-3;
 
     @screen sm {
       @apply pr-2;
@@ -51,11 +55,18 @@
       &:hover {
         @apply text-black;
       }
+
+      &-hidden-mobile {
+        @apply hidden;
+        @screen sm {
+          @apply flex;
+        }
+      }
     }
   }
 
   .logo {
-    @apply mx-auto items-center py-4 order-1 px-3;
+    @apply mx-auto items-center py-4 order-1 pl-3;
   }
 
   @screen sm {

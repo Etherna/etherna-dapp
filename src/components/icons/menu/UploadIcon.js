@@ -6,7 +6,7 @@ const UploadIcon = () => {
       <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="square">
         <path
           d="M8.5,17 L16.5,17 M12.5,17 L12.5,7 M8.5,10 L12.5,6 M16.5,10 L12.5,6"
-          stroke="var(--color-dark)"
+          stroke="var(--color-gray-700)"
           strokeWidth="2"
         ></path>
       </g>

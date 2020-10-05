@@ -16,10 +16,11 @@ export interface RootState {
 export interface EnvState {
   indexHost: string
   indexApiPath: string
+  gatewayHost: string
+  gatewayApiPath: string
   indexClient: IndexClient
   gatewayClient: GatewayClient
   bzzClient: Bzz<any, Response<any>, any>
-  gatewayHost: string
   keymap: Keymap
   lang: Lang
   isMobile: boolean

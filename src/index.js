@@ -7,10 +7,14 @@ import ReactDOM from "react-dom"
 import Root from "./app/Root"
 import prefetch from "./prefetch"
 import * as serviceWorker from "./serviceWorker"
+import autoSigninSignout from "./utils/autoSigninSignout"
 
 const RenderDOM = () => {
   ReactDOM.render(<Root />, document.getElementById("root"))
 }
+
+// Automatically redirect to signin/signout page
+autoSigninSignout()
 
 // Prefetch data for SEO
 // Once the data has been set to a window variable call RenderDOM

@@ -6,12 +6,7 @@ export interface GatewayClientOptions {
 }
 
 export interface GatewayCurrentUser {
-  address: string
-}
-
-export interface GatewayTransaction {
-  ammount: number
-  author: string
-  creationDateTime: string
-  operationName: string
+  etherAddress: string
+  etherPreviousAddresses: string[]
+  username: string
 }

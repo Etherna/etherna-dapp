@@ -64,7 +64,7 @@ const Header = () => {
         </div>
         <div className="right-nav">
           {isSignedIn === true && (
-            <NavLink to={Routes.getVideoUploadLink()} className="nav-item" activeClassName="active">
+            <NavLink to={Routes.getVideoUploadLink()} className="nav-item nav-item-hidden-mobile" activeClassName="active">
               <UploadIcon />
               <span>Upload</span>
             </NavLink>

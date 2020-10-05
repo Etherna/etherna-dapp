@@ -17,11 +17,21 @@ export default class IndexClient {
     this.logoutPath = `${host}${options.logoutPath || "/account/logout"}`
   }
 
-  loginRedirect() {
-    window.location.href = this.loginPath + `?ReturnUrl=${window.location.href}`
+  /**
+   * Redirect to login page
+   * @param {string} returnUrl Redirect url after login (default = null)
+   */
+  loginRedirect(returnUrl = null) {
+    const retUrl = encodeURIComponent(returnUrl || window.location.href)
+    window.location.href = this.loginPath + `?ReturnUrl=${retUrl}`
   }
 
-  logoutRedirect() {
-    window.location.href = this.logoutPath + `?ReturnUrl=${window.location.href}`
+  /**
+   * Redirect to logout page
+   * @param {string} returnUrl Redirect url after logout (default = null)
+   */
+  logoutRedirect(returnUrl = null) {
+    const retUrl = encodeURIComponent(returnUrl || window.location.href)
+    window.location.href = this.logoutPath + `?ReturnUrl=${retUrl}`
   }
 }

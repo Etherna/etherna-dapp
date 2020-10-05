@@ -2,11 +2,11 @@ import React, { useRef } from "react"
 import { Link } from "react-router-dom"
 import Switch from "react-switch"
 
-import Avatar from "./Avatar"
 import EnvDropDownMenus from "./EnvDropDownMenu"
 import GuestMenu from "./GuestMenu"
 import ProfileLoadingPlaceholder from "./ProfileLoadingPlaceholder"
 import SigninButton from "./SigninButton"
+import Avatar from "../Avatar"
 import { DropDown, DropDownItem, DropDownItemContent, DropDownMenu, DropDownMenuToggle } from "@common/DropDown"
 import EditProfileIcon from "@icons/menu/EditProfileIcon"
 import ProfileIcon from "@icons/menu/ProfileIcon"
@@ -17,6 +17,7 @@ import SignoutIcon from "@icons/menu/SignoutIcon"
 import DarkModeIcon from "@icons/menu/DarkModeIcon"
 import LightModeIcon from "@icons/menu/LightModeIcon"
 import ShortcutsIcon from "@icons/menu/ShortcutsIcon"
+import UploadIcon from "@components/icons/menu/UploadIcon"
 import { toggleDarkMode } from "@state/actions/enviroment/darkMode"
 import { providerActions } from "@state/actions"
 import useSelector from "@state/useSelector"
@@ -93,6 +94,12 @@ const UserMenu = () => {
           <Link to={Routes.getProfileEditingLink(address)}>
             <EditProfileIcon />
             <span>Edit profile</span>
+          </Link>
+        </DropDownItem>
+        <DropDownItem>
+          <Link to={Routes.getProfileEditingLink(address)}>
+            <UploadIcon />
+            <span>Upload a video</span>
           </Link>
         </DropDownItem>
         <hr />

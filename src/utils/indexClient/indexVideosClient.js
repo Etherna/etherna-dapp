@@ -1,4 +1,4 @@
-import axios from "axios"
+import http from "@utils/request"
 
 export default class IndexVideosClient {
   /**
@@ -17,7 +17,7 @@ export default class IndexVideosClient {
    */
   async fetchVideos(page = 0, take = 25) {
     const endpoint = `${this.url}/videos`
-    const resp = await axios.get(endpoint, {
+    const resp = await http.get(endpoint, {
       params: { page, take },
     })
 
@@ -36,7 +36,7 @@ export default class IndexVideosClient {
    */
   async fetchVideo(hash) {
     const endpoint = `${this.url}/videos/${hash}`
-    const resp = await axios.get(endpoint)
+    const resp = await http.get(endpoint)
 
     if (typeof resp.data !== "object") {
       throw new Error("Cannot fetch the video")
@@ -53,7 +53,7 @@ export default class IndexVideosClient {
    */
   async createVideo(hash, encryptionKey) {
     const endpoint = `${this.url}/videos`
-    const resp = await axios.post(endpoint, {
+    const resp = await http.post(endpoint, {
       manifestHash: hash,
       encryptionKey,
       encryptionType: encryptionKey ? "AES256" : "Plain",
@@ -76,7 +76,7 @@ export default class IndexVideosClient {
    */
   async updateVideo(hash, newHash) {
     const endpoint = `${this.url}/videos/${hash}`
-    const resp = await axios.put(endpoint, null, {
+    const resp = await http.put(endpoint, null, {
       params: {
         newHash,
       },
@@ -97,7 +97,7 @@ export default class IndexVideosClient {
    */
   async deleteVideo(hash) {
     const endpoint = `${this.url}/videos/${hash}`
-    await axios.delete(endpoint, {
+    await http.delete(endpoint, {
       withCredentials: true
     })
 

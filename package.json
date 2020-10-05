@@ -72,7 +72,7 @@
   "scripts": {
     "start": "concurrently \"npm run dev\" \"npm run dev-proxy\"",
     "dev": "react-app-rewired start",
-    "dev-proxy": "node server/gateway-proxy.js",
+    "dev-proxy": "node --max-http-header-size=80000 server/gateway-proxy.js",
     "build": "react-app-rewired build",
     "serve": "serve -s build -l 4000",
     "test": "react-app-rewired test",

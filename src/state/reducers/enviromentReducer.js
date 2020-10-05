@@ -25,23 +25,26 @@ const indexHost = window.localStorage.getItem("indexHost") || process.env.REACT_
 const indexApiPath = window.localStorage.getItem("indexApiPath") != null
   ? window.localStorage.getItem("indexApiPath")
   : process.env.REACT_APP_INDEX_API_PATH
-const creditHost = process.env.REACT_APP_CREDIT_HOST
-const creditApiPath = process.env.REACT_APP_CREDIT_API_PATH
 const gatewayHost = window.localStorage.getItem("gatewayHost") ||
-  process.env.REACT_APP_SWARM_HOST ||
+  process.env.REACT_APP_GATEWAY_HOST ||
   "https://swarm-gateways.net"
+const gatewayApiPath = window.localStorage.getItem("gatewayApiPath") != null
+  ? window.localStorage.getItem("gatewayApiPath")
+  : process.env.REACT_APP_GATEWAY_API_PATH
+
 const indexClient = new IndexClient({ host: indexHost, apiPath: indexApiPath })
-const gatewayClient = new GatewayClient({ host: creditHost, apiPath: creditApiPath })
+const gatewayClient = new GatewayClient({ host: gatewayHost, apiPath: gatewayApiPath })
 const bzzClient = new Bzz({ url: gatewayHost })
 
 /** @type {import("..").EnvState} */
 const initialState = {
   indexHost,
   indexApiPath,
+  gatewayHost,
+  gatewayApiPath,
   indexClient,
   gatewayClient,
   bzzClient,
-  gatewayHost,
   keymap: baseKeymap,
   darkMode: loadDarkMode(),
   lang,

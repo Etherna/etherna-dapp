@@ -1,14 +1,18 @@
 import { store } from "@state/store"
+import logoutRedirect from "./logoutRedirect"
 
 const signout = async (clearStorage = true) => {
-  const { isSignedIn } = store.getState().user
-  const { indexClient } = store.getState().env
+  const { isSignedIn, isSignedInGateway } = store.getState().user
 
   if (isSignedIn) {
     if (clearStorage) {
       clearStore()
     }
-    indexClient.logoutRedirect()
+    logoutRedirect()
+  }
+
+  if (isSignedInGateway) {
+    logoutRedirect("gateway")
   }
 }
 

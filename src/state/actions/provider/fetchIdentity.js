@@ -46,7 +46,7 @@ const fetchIndexCurrentUser =  async indexClient => {
  */
 const fetchCurrentUserCredit =  async gatewayClient => {
   try {
-    const credit = await gatewayClient.user.fetchCredit()
+    const credit = await gatewayClient.users.fetchCredit()
 
     store.dispatch({
       type: UserActionTypes.USER_UPDATE_CREDIT,

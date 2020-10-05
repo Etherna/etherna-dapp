@@ -1,4 +1,4 @@
-import GatewayUserClient from "./gatewayUserClient"
+import GatewayUsersClient from "./gatewayUsersClient"
 
 export default class GatewayClient {
   /**
@@ -10,16 +10,26 @@ export default class GatewayClient {
     const apiPath = options.apiPath ? options.apiPath.replace(/(^\/?|\/?$)/g, "") : ""
     const url = `${host}/${apiPath}`
 
-    this.user = new GatewayUserClient(url)
+    this.users = new GatewayUsersClient(url)
     this.loginPath = `${host}${options.loginPath || "/account/login"}`
     this.logoutPath = `${host}${options.logoutPath || "/account/logout"}`
   }
 
-  loginRedirect() {
-    window.location.href = this.loginPath + `?ReturnUrl=${window.location.href}`
+  /**
+   * Redirect to login page
+   * @param {string} returnUrl Redirect url after login (default = null)
+   */
+  loginRedirect(returnUrl = null) {
+    const retUrl = encodeURIComponent(returnUrl || window.location.href)
+    window.location.href = this.loginPath + `?ReturnUrl=${retUrl}`
   }
 
-  logoutRedirect() {
-    window.location.href = this.logoutPath + `?ReturnUrl=${window.location.href}`
+  /**
+   * Redirect to logout page
+   * @param {string} returnUrl Redirect url after logout (default = null)
+   */
+  logoutRedirect(returnUrl = null) {
+    const retUrl = encodeURIComponent(returnUrl || window.location.href)
+    window.location.href = this.logoutPath + `?ReturnUrl=${retUrl}`
   }
 }
