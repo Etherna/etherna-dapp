@@ -44,7 +44,7 @@ const UserMenu = () => {
     toggleDarkMode(!darkMode)
   }
 
-  if (isSignedIn === undefined || isLoadingProfile) {
+  if (isSignedIn === undefined || isSignedInGateway === undefined || isLoadingProfile) {
     return (
       <>
         <GuestMenu />
@@ -97,7 +97,7 @@ const UserMenu = () => {
           </Link>
         </DropDownItem>
         <DropDownItem>
-          <Link to={Routes.getProfileEditingLink(address)}>
+          <Link to={Routes.getVideoUploadLink()}>
             <UploadIcon />
             <span>Upload a video</span>
           </Link>

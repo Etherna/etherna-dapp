@@ -18,6 +18,7 @@ export interface EnvState {
   indexApiPath: string
   gatewayHost: string
   gatewayApiPath: string
+  creditHost: string
   indexClient: IndexClient
   gatewayClient: GatewayClient
   bzzClient: Bzz<any, Response<any>, any>

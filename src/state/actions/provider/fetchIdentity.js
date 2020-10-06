@@ -55,6 +55,11 @@ const fetchCurrentUserCredit =  async gatewayClient => {
 
     return true
   } catch {
+    store.dispatch({
+      type: UserActionTypes.USER_UPDATE_CREDIT,
+      credit: 0,
+    })
+
     return false
   }
 }

@@ -31,6 +31,7 @@ const gatewayHost = window.localStorage.getItem("gatewayHost") ||
 const gatewayApiPath = window.localStorage.getItem("gatewayApiPath") != null
   ? window.localStorage.getItem("gatewayApiPath")
   : process.env.REACT_APP_GATEWAY_API_PATH
+const creditHost = window.localStorage.getItem("creditHost") || process.env.REACT_APP_CREDIT_HOST
 
 const indexClient = new IndexClient({ host: indexHost, apiPath: indexApiPath })
 const gatewayClient = new GatewayClient({ host: gatewayHost, apiPath: gatewayApiPath })
@@ -42,6 +43,7 @@ const initialState = {
   indexApiPath,
   gatewayHost,
   gatewayApiPath,
+  creditHost,
   indexClient,
   gatewayClient,
   bzzClient,

@@ -195,11 +195,16 @@ $color-pink-800: #97266d;
 $color-pink-800-dark: #97266d;
 $color-pink-900: #702459;
 $color-pink-900-dark: #702459;
+// R,G,B colors
+$color-shadow-rgb: 51, 51, 51;
+$color-shadow-dark-rgb: 180, 180, 180;
 
-.theme-light {
+:root {
   --color-primary: #{$color-primary};
   --color-primary-secondary: #{$color-primary-secondary};
   --color-primary-tertiary: #{$color-primary-tertiary};
+
+  --color-shadow-rgb: #{$color-shadow-rgb};
 
   --color-background: #{$color-background};
   --color-background-secondary: #{$color-background-secondary};
@@ -313,6 +318,8 @@ $color-pink-900-dark: #702459;
   --color-primary: #{$color-primary-dark};
   --color-primary-secondary: #{$color-primary-secondary-dark};
   --color-primary-tertiary: #{$color-primary-tertiary-dark};
+
+  --color-shadow-rgb: #{$color-shadow-dark-rgb};
 
   --color-background: #{$color-background-dark};
   --color-background-secondary: #{$color-background-secondary-dark};

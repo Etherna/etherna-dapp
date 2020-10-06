@@ -21,6 +21,10 @@
     }
   }
 
+  .user-credit-badge {
+    @apply ml-2 -mr-10 pr-12;
+  }
+
   .left-nav {
     @apply flex justify-start order-3 w-screen;
 

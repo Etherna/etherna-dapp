@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom"
 import "./header.scss"
 
 import UserMenu from "@components/user/UserMenu"
+import UserCredit from "@components/user/UserCredit"
 import Logo from "@icons/Logo"
 import UploadIcon from "@icons/menu/UploadIcon"
 import useSelector from "@state/useSelector"
@@ -18,6 +19,7 @@ const anyMatch = (patterns, string) => {
 
 const Header = () => {
   const { isSignedIn } = useSelector(state => state.user)
+  const { isLoadingProfile } = useSelector(state => state.ui)
 
   return (
     <header className="header">
@@ -49,13 +51,6 @@ const Header = () => {
           >
             Profiles
           </NavLink>
-          {/* <NavLink
-                to={Routes.getHowItWorksLink()}
-                className="nav-item"
-                activeClassName="active"
-              >
-                How it works
-              </NavLink> */}
         </div>
         <div className="logo">
           <NavLink to={Routes.getHomeLink()}>
@@ -63,11 +58,15 @@ const Header = () => {
           </NavLink>
         </div>
         <div className="right-nav">
-          {isSignedIn === true && (
-            <NavLink to={Routes.getVideoUploadLink()} className="nav-item nav-item-hidden-mobile" activeClassName="active">
-              <UploadIcon />
-              <span>Upload</span>
-            </NavLink>
+          {isSignedIn === true && !isLoadingProfile && (
+            <>
+              <NavLink to={Routes.getVideoUploadLink()} className="nav-item nav-item-hidden-mobile" activeClassName="active">
+                <UploadIcon />
+                <span>Upload</span>
+              </NavLink>
+
+              <UserCredit />
+            </>
           )}
           <UserMenu />
         </div>

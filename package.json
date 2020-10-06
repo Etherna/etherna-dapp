@@ -53,7 +53,6 @@
     "cors": "^2.8.5",
     "customize-cra": "^0.9.1",
     "dotenv": "^8.2.0",
-    "electron": "8.2.4",
     "express": "^4.17.1",
     "form-data": "^3.0.0",
     "ftp-deploy": "^2.3.6",
@@ -67,7 +66,7 @@
     "redux-logger": "^3.0.6",
     "serve": "^11.3.2",
     "tailwindcss": "^1.8.10",
-    "typescript": "^3.9.7"
+    "typescript": "^4.0.3"
   },
   "scripts": {
     "start": "concurrently \"npm run dev\" \"npm run dev-proxy\"",
