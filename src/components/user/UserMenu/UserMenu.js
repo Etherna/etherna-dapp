@@ -2,12 +2,12 @@ import React, { useRef } from "react"
 import { Link } from "react-router-dom"
 import Switch from "react-switch"
 
-import Avatar from "./Avatar"
 import EnvDropDownMenus from "./EnvDropDownMenu"
 import GuestMenu from "./GuestMenu"
 import ProfileLoadingPlaceholder from "./ProfileLoadingPlaceholder"
 import SigninButton from "./SigninButton"
-import { DropDown, DropDownItem, DropDownMenu, DropDownMenuToggle } from "@common/DropDown"
+import Avatar from "../Avatar"
+import { DropDown, DropDownItem, DropDownItemContent, DropDownMenu, DropDownMenuToggle } from "@common/DropDown"
 import EditProfileIcon from "@icons/menu/EditProfileIcon"
 import ProfileIcon from "@icons/menu/ProfileIcon"
 import IndexIcon from "@icons/menu/IndexIcon"
@@ -17,6 +17,7 @@ import SignoutIcon from "@icons/menu/SignoutIcon"
 import DarkModeIcon from "@icons/menu/DarkModeIcon"
 import LightModeIcon from "@icons/menu/LightModeIcon"
 import ShortcutsIcon from "@icons/menu/ShortcutsIcon"
+import UploadIcon from "@components/icons/menu/UploadIcon"
 import { toggleDarkMode } from "@state/actions/enviroment/darkMode"
 import { providerActions } from "@state/actions"
 import useSelector from "@state/useSelector"
@@ -26,7 +27,7 @@ import Routes from "@routes"
 const UserMenu = () => {
   const { currentWalletLogo, currentAddress, darkMode } = useSelector(state => state.env)
   const { name, avatar } = useSelector(state => state.profile)
-  const { isSignedIn, address } = useSelector(state => state.user)
+  const { isSignedIn, isSignedInGateway, address } = useSelector(state => state.user)
   const { isLoadingProfile } = useSelector(state => state.ui)
 
   const hasSwitchedAccount = currentAddress && address !== currentAddress
@@ -43,7 +44,7 @@ const UserMenu = () => {
     toggleDarkMode(!darkMode)
   }
 
-  if (isSignedIn === undefined || isLoadingProfile) {
+  if (isSignedIn === undefined || isSignedInGateway === undefined || isLoadingProfile) {
     return (
       <>
         <GuestMenu />
@@ -95,18 +96,22 @@ const UserMenu = () => {
             <span>Edit profile</span>
           </Link>
         </DropDownItem>
+        <DropDownItem>
+          <Link to={Routes.getVideoUploadLink()}>
+            <UploadIcon />
+            <span>Upload a video</span>
+          </Link>
+        </DropDownItem>
         <hr />
         <DropDownMenuToggle menuRef={indexMenuRef} isMenuItem={true}>
-          <div className="flex">
-            <IndexIcon />
-            <span>Index</span>
-          </div>
+          <DropDownItemContent icon={<IndexIcon />} status={isSignedIn ? "active" : "inactive"}>
+            Index
+          </DropDownItemContent>
         </DropDownMenuToggle>
         <DropDownMenuToggle menuRef={gatewayMenuRef} isMenuItem={true}>
-          <div className="flex">
-            <GatewayIcon />
-            <span>Gateway</span>
-          </div>
+          <DropDownItemContent icon={<GatewayIcon />} status={isSignedInGateway ? "active" : "inactive"}>
+            Gateway
+          </DropDownItemContent>
         </DropDownMenuToggle>
 
         <hr />

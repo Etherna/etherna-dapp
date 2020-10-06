@@ -67,6 +67,14 @@
       }
     }
   }
+
+  .item-status {
+    @apply w-2 h-2 rounded-full ml-auto my-auto mr-2 bg-gray-500;
+
+    &-active {
+      @apply bg-green-500;
+    }
+  }
 }
 
 .theme-dark {

@@ -2,6 +2,7 @@ export const UserActionTypes = {
   USER_ENS_UPDATE: "USER_ENS_UPDATE",
   USER_SIGNOUT: "USER_SIGNOUT",
   USER_UPDATE_IDENTITY: "USER_UPDATE_IDENTITY",
+  USER_UPDATE_CREDIT: "USER_UPDATE_CREDIT",
   USER_UPDATE_SIGNEDIN: "USER_UPDATE_SIGNEDIN",
 }
 
@@ -32,10 +33,17 @@ const userReducer = (state = {}, action) => {
         prevAddresses: action.prevAddresses,
       }
 
+    case UserActionTypes.USER_UPDATE_CREDIT:
+      return {
+        ...state,
+        credit: action.credit,
+      }
+
     case UserActionTypes.USER_UPDATE_SIGNEDIN:
       return {
         ...state,
         isSignedIn: action.isSignedIn,
+        isSignedInGateway: action.isSignedInGateway,
       }
 
     default:

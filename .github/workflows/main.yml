@@ -15,6 +15,8 @@ jobs:
       REACT_APP_INDEX_HOST: "https://index.etherna.io"
       REACT_APP_INDEX_API_PATH: "/api/v0.2"
       REACT_APP_GATEWAY_HOST: "https://gateway.etherna.io"
+      REACT_APP_GATEWAY_API_PATH: "/api/v0.2"
+      REACT_APP_CREDIT_HOST: "https://credit.etherna.io"
       GENERATE_SOURCEMAP: false
     runs-on: ubuntu-latest
     steps:

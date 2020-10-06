@@ -69,7 +69,7 @@
     }
 
     &:not(:last-child)::after {
-      content: "–";
+      content: "\2013";
       @apply inline-block px-2;
     }
   }

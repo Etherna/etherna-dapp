@@ -15,11 +15,13 @@ export const updateIndexHost = (host, apiPath) => {
   })
 }
 
-export const updateGatewayHost = host => {
+export const updateGatewayHost = (host, apiPath) => {
   window.localStorage.setItem("gatewayHost", host)
+  window.localStorage.setItem("gatewayApiPath", apiPath || "")
   store.dispatch({
     type: EnvActionTypes.ENV_UPDATE_GATEWAY_HOST,
     gatewayHost: host,
+    gatewayApiPath: apiPath,
     bzzClient: new Bzz({ url: host })
   })
 }
@@ -32,5 +34,6 @@ export const resetIndexHost = () => {
 
 export const resetGatewayHost = () => {
   const host = process.env.REACT_APP_GATEWAY_HOST
-  updateGatewayHost(host)
+  const apiPath = process.env.REACT_APP_INDEX_API_PATH
+  updateGatewayHost(host, apiPath)
 }

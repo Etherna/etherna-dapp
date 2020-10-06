@@ -3,6 +3,7 @@ import { Bzz } from "@erebos/bzz"
 import { baseKeymap } from "@keyboard"
 import lang from "@lang"
 import { loadDarkMode } from "@state/actions/enviroment/darkMode"
+import GatewayClient from "@utils/gatewayClient/client"
 import IndexClient from "@utils/indexClient/client"
 
 export const EnvActionTypes = {
@@ -18,6 +19,7 @@ export const EnvActionTypes = {
   TOGGLE_DARK_MODE: "TOGGLE_DARK_MODE",
   SET_CROP_IMAGE: "SET_CROP_IMAGE",
   UPDATE_IMAGE_CROP: "UPDATE_IMAGE_CROP",
+  UPDATE_BYTE_PRICE: "UPDATE_BYTE_PRICE",
 }
 
 const indexHost = window.localStorage.getItem("indexHost") || process.env.REACT_APP_INDEX_HOST
@@ -27,16 +29,25 @@ const indexApiPath = window.localStorage.getItem("indexApiPath") != null
 const gatewayHost = window.localStorage.getItem("gatewayHost") ||
   process.env.REACT_APP_GATEWAY_HOST ||
   "https://swarm-gateways.net"
+const gatewayApiPath = window.localStorage.getItem("gatewayApiPath") != null
+  ? window.localStorage.getItem("gatewayApiPath")
+  : process.env.REACT_APP_GATEWAY_API_PATH
+const creditHost = window.localStorage.getItem("creditHost") || process.env.REACT_APP_CREDIT_HOST
+
 const indexClient = new IndexClient({ host: indexHost, apiPath: indexApiPath })
+const gatewayClient = new GatewayClient({ host: gatewayHost, apiPath: gatewayApiPath })
 const bzzClient = new Bzz({ url: gatewayHost })
 
 /** @type {import("..").EnvState} */
 const initialState = {
   indexHost,
   indexApiPath,
-  indexClient,
-  bzzClient,
   gatewayHost,
+  gatewayApiPath,
+  creditHost,
+  indexClient,
+  gatewayClient,
+  bzzClient,
   keymap: baseKeymap,
   darkMode: loadDarkMode(),
   lang,
@@ -95,6 +106,12 @@ const enviromentReducer = (state = initialState, action) => {
         ...state,
         gatewayHost: action.gatewayHost,
         bzzClient: action.bzzClient
+      }
+
+    case EnvActionTypes.UPDATE_BYTE_PRICE:
+      return {
+        ...state,
+        bytePrice: action.bytePrice
       }
 
     case EnvActionTypes.UPDATE_KEYMAP:

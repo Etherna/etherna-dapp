@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import Switch from "react-switch"
 
 import EnvDropDownMenus from "./EnvDropDownMenu"
-import { DropDown, DropDownMenu, DropDownMenuToggle, DropDownItem } from "@common/DropDown"
+import { DropDown, DropDownMenu, DropDownMenuToggle, DropDownItem, DropDownItemContent } from "@common/DropDown"
 import Button from "@common/Button"
 import MenuIcon from "@icons/menu/MenuIcon"
 import IndexIcon from "@icons/menu/IndexIcon"
@@ -17,6 +17,7 @@ import Routes from "@routes"
 
 const GuestMenu = () => {
   const { darkMode } = useSelector(state => state.env)
+  const { isSignedIn, isSignedInGateway } = useSelector(state => state.user)
   const mainMenuRef = useRef()
   const indexMenuRef = useRef()
   const gatewayMenuRef = useRef()
@@ -34,16 +35,14 @@ const GuestMenu = () => {
       </DropDownMenuToggle>
       <DropDownMenu menuRef={mainMenuRef} alignRight={true}>
         <DropDownMenuToggle menuRef={indexMenuRef} isMenuItem={true}>
-          <div className="flex">
-            <IndexIcon />
-            <span>Index</span>
-          </div>
+          <DropDownItemContent icon={<IndexIcon />} status={isSignedIn ? "active" : "inactive"}>
+            Index
+          </DropDownItemContent>
         </DropDownMenuToggle>
         <DropDownMenuToggle menuRef={gatewayMenuRef} isMenuItem={true}>
-          <div className="flex">
-            <GatewayIcon />
-            <span>Gateway</span>
-          </div>
+          <DropDownItemContent icon={<GatewayIcon />} status={isSignedInGateway ? "active" : "inactive"}>
+            Gateway
+          </DropDownItemContent>
         </DropDownMenuToggle>
 
         <hr />

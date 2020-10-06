@@ -1,4 +1,4 @@
-import axios from "axios"
+import http from "@utils/request"
 
 export default class IndexUsersClient {
   /**
@@ -18,7 +18,7 @@ export default class IndexUsersClient {
   async fetchUsers(page = 0, take = 25) {
     const endpoint = `${this.url}/users`
 
-    const resp = await axios.get(endpoint, {
+    const resp = await http.get(endpoint, {
       params: { page, take },
     })
 
@@ -56,7 +56,7 @@ export default class IndexUsersClient {
   async fetchUser(address) {
     const endpoint = `${this.url}/users/${address}`
 
-    const resp = await axios.get(endpoint)
+    const resp = await http.get(endpoint)
 
     if (typeof resp.data !== "object") {
       throw new Error("Cannot fetch user")
@@ -72,7 +72,7 @@ export default class IndexUsersClient {
   async fetchCurrentUser() {
     const endpoint = `${this.url}/users/current`
 
-    const resp = await axios.get(endpoint, {
+    const resp = await http.get(endpoint, {
       withCredentials: true
     })
 
@@ -93,7 +93,7 @@ export default class IndexUsersClient {
   async fetchUserVideos(address, page = 0, take = 25) {
     const endpoint = `${this.url}/users/${address}/videos`
 
-    const resp = await axios.get(endpoint, {
+    const resp = await http.get(endpoint, {
       params: { page, take },
     })
 
@@ -112,7 +112,7 @@ export default class IndexUsersClient {
   async updateCurrentUser(newManifest) {
     const endpoint = `${this.url}/users/current`
 
-    await axios.put(endpoint, null, {
+    await http.put(endpoint, null, {
       params: {
         manifestHash: newManifest
       },

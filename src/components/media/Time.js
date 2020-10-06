@@ -15,7 +15,11 @@ const Time = ({ duration }) => {
 }
 
 Time.propTypes = {
-  duration: PropTypes.number.isRequired,
+  duration: PropTypes.number,
+}
+
+Time.defaultProps = {
+  duration: 0
 }
 
 export default Time
