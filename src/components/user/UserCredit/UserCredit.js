@@ -9,7 +9,7 @@ import useSelector from "@state/useSelector"
 import providerActions from "@state/actions/provider"
 
 const UserCredit = () => {
-  const { creditHost } = useSelector(state => state.env)
+  const { creditHost, bytePrice } = useSelector(state => state.env)
   const { credit, isSignedInGateway } = useSelector(state => state.user)
   const [isHover, setIsHover] = useState(false)
   const [showPopup, setShowPopup] = useState(false)
@@ -54,9 +54,14 @@ const UserCredit = () => {
         <div className="user-credit-popup">
           {isSignedInGateway ? (
             <>
-              <div className="text-xs mb-4">You current balance is:</div>
-              <div className="text-2xl font-bold break-all">{credit}</div>
+              <p className="text-xs mb-4">You current balance is:</p>
+              <p className="text-2xl font-bold break-all">{credit}</p>
               <span className="text-sm text-gray-600 tracking-tighter">EUSD</span>
+              {bytePrice && (
+                <p className="my-3 text-gray-600 text-sm">
+                  This is equivalent to <strong className="text-md">{+(credit / bytePrice * 0.000000001).toFixed(3)}</strong> GB of videos reprodution.
+                </p>
+              )}
               <div className="mt-8 mb-4">
                 <a href={creditHost} className="btn btn-secondary" rel="noreferrer noopener" target="_blank">Get more credit</a>
               </div>

@@ -22,6 +22,8 @@ export interface EnvState {
   indexClient: IndexClient
   gatewayClient: GatewayClient
   bzzClient: Bzz<any, Response<any>, any>
+  bytePrice?: number
+
   keymap: Keymap
   lang: Lang
   isMobile: boolean

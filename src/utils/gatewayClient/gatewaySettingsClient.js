@@ -10,8 +10,8 @@ export default class GatewaySettingsClient {
   }
 
   /**
-   * Get the current logged user's info
-   * @returns {import(".").GatewayCurrentUser}
+   * Get the current byte price
+   * @returns {number}
    */
   async fetchCurrentBytePrice() {
     const endpoint = `${this.url}/system/byteprice`

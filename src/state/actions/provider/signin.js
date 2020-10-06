@@ -14,9 +14,9 @@ const signin = async (forceLogin = false, service = null) => {
     // Launch login
     loginRedirect(service)
   } else {
-    await checkMobileWeb3()
-    await injectWeb3()
-    await checkNetwork()
+    checkMobileWeb3()
+    injectWeb3()
+    checkNetwork()
 
     const profile = await fetchIdentity()
     if (profile) {

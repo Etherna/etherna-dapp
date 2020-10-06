@@ -3,7 +3,7 @@ import Web3 from "web3"
 import { store } from "@state/store"
 import { EnvActionTypes } from "@state/reducers/enviromentReducer"
 
-const injectWeb3 = async () => {
+const injectWeb3 = () => {
   const web3 =
     window.web && window.web3.currentProvider
       ? new Web3(window.web3.currentProvider)

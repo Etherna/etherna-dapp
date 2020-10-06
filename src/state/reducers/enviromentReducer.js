@@ -19,6 +19,7 @@ export const EnvActionTypes = {
   TOGGLE_DARK_MODE: "TOGGLE_DARK_MODE",
   SET_CROP_IMAGE: "SET_CROP_IMAGE",
   UPDATE_IMAGE_CROP: "UPDATE_IMAGE_CROP",
+  UPDATE_BYTE_PRICE: "UPDATE_BYTE_PRICE",
 }
 
 const indexHost = window.localStorage.getItem("indexHost") || process.env.REACT_APP_INDEX_HOST
@@ -105,6 +106,12 @@ const enviromentReducer = (state = initialState, action) => {
         ...state,
         gatewayHost: action.gatewayHost,
         bzzClient: action.bzzClient
+      }
+
+    case EnvActionTypes.UPDATE_BYTE_PRICE:
+      return {
+        ...state,
+        bytePrice: action.bytePrice
       }
 
     case EnvActionTypes.UPDATE_KEYMAP:

@@ -1,4 +1,5 @@
 import GatewayUsersClient from "./gatewayUsersClient"
+import GatewaySettingsClient from "./gatewaySettingsClient"
 
 export default class GatewayClient {
   /**
@@ -11,6 +12,7 @@ export default class GatewayClient {
     const url = `${host}/${apiPath}`
 
     this.users = new GatewayUsersClient(url)
+    this.settings = new GatewaySettingsClient(url)
     this.loginPath = `${host}${options.loginPath || "/account/login"}`
     this.logoutPath = `${host}${options.logoutPath || "/account/logout"}`
   }

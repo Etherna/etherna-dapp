@@ -1,5 +1,6 @@
 import { store } from "@state/store"
 import { UserActionTypes } from "@state/reducers/userReducer"
+import { EnvActionTypes } from "@state/reducers/enviromentReducer"
 
 /**
  * Fetch the current identity from the SSO server
@@ -9,7 +10,8 @@ const fetchIdentity = async () => {
 
   const [profile, hasCredit] = await Promise.all([
     fetchIndexCurrentUser(indexClient),
-    fetchCurrentUserCredit(gatewayClient)
+    fetchCurrentUserCredit(gatewayClient),
+    fetchCurrentBytePrice(gatewayClient),
   ])
 
   store.dispatch({
@@ -60,6 +62,24 @@ const fetchCurrentUserCredit =  async gatewayClient => {
       credit: 0,
     })
 
+    return false
+  }
+}
+
+/**
+ * @param {import("@utils/gatewayClient/client").default} gatewayClient
+ */
+const fetchCurrentBytePrice =  async gatewayClient => {
+  try {
+    const bytePrice = await gatewayClient.settings.fetchCurrentBytePrice()
+
+    store.dispatch({
+      type: EnvActionTypes.UPDATE_BYTE_PRICE,
+      bytePrice,
+    })
+
+    return true
+  } catch {
     return false
   }
 }
