@@ -50,7 +50,7 @@
     "@babel/preset-react": "^7.9.4",
     "child_process": "^1.0.2",
     "customize-cra": "^0.9.1",
-    "electron": "8.2.4",
+    "electron": "8.5.1",
     "form-data": "^3.0.0",
     "ftp-deploy": "^2.3.6",
     "glob": "^7.1.6",
