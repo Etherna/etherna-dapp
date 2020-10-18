@@ -8,7 +8,6 @@ import "./video-view.scss"
 import SEO from "@components/layout/SEO"
 import Player from "@components/media/Player"
 import Avatar from "@components/user/Avatar"
-import DownloadIcon from "@icons/common/DownloadIcon"
 import UnindexedIcon from "@icons/common/UnindexedIcon"
 import { getResourceUrl } from "@utils/swarm"
 import { shortenEthAddr } from "@utils/ethFuncs"
@@ -23,7 +22,8 @@ import Routes from "@routes"
  * @param {VideoViewProps} param0
  */
 const VideoView = ({ hash, video }) => {
-  const [source, setSource] = useState(video && video.source)
+  const [sources, setSources] = useState(video && video.sources)
+  const [originalQuality, setOriginalQuality] = useState(video && video.originalQuality)
   const [videoOnIndex, setVideoOnIndex] = useState(null)
   const [isFetchingVideo, setIsFetchingVideo] = useState(false)
   const [profileAddress, setProfileAddress] = useState(video.ownerAddress)
@@ -36,7 +36,7 @@ const VideoView = ({ hash, video }) => {
 
   useEffect(() => {
     Object.keys(video).length === 0 && fetchVideo()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const fetchVideo = async () => {
@@ -52,7 +52,8 @@ const VideoView = ({ hash, video }) => {
         ? prefetch
         : await fetchFullVideoInfo(hash, true)
 
-      setSource(videoInfo.source)
+      setSources(videoInfo.sources)
+      setOriginalQuality(videoInfo.originalQuality)
       setProfileAddress(videoInfo.ownerAddress)
       setTitle(videoInfo.title)
       setDescription(videoInfo.description)
@@ -63,13 +64,17 @@ const VideoView = ({ hash, video }) => {
       setProfileAvatar(videoInfo.profileData && videoInfo.profileData.avatar)
     } catch (error) {
       console.error(error)
-      setSource(getResourceUrl(hash, true))
+      setSources([{
+        source: getResourceUrl(hash, true),
+        quality: null,
+        size: null
+      }])
       setVideoOnIndex(false)
     }
     setIsFetchingVideo(false)
   }
 
-  if (isFetchingVideo || !source) {
+  if (isFetchingVideo || !sources) {
     return <div />
   }
 
@@ -77,7 +82,7 @@ const VideoView = ({ hash, video }) => {
     <>
       <SEO title={title || hash} />
       <div className="video-watch container">
-        <Player source={source} thumbnail={thumbnail} />
+        <Player sources={sources} originalQuality={originalQuality} thumbnail={thumbnail} />
         <div className="video-info">
           <h1 className="video-title">{title}</h1>
           {videoOnIndex === false && (
@@ -93,9 +98,9 @@ const VideoView = ({ hash, video }) => {
               </span>
             </div>
             <div className="video-actions">
-              <a download href={source} className="btn btn-transparent btn-rounded">
+              {/* <a download href={source} className="btn btn-transparent btn-rounded">
                 <DownloadIcon />
-              </a>
+              </a> */}
             </div>
           </div>
 

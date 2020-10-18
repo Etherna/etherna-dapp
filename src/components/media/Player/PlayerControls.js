@@ -10,7 +10,7 @@ import VolumeControl from "./controls/VolumeControl"
 
 const PlayerControls = () => {
   return (
-    <div className="controls theme-light">
+    <div className="controls">
       {/* Progress */}
       <ProgressControl />
 

@@ -4,6 +4,9 @@ const PlayerContext = createContext()
 
 export const ReducerTypes = {
   SET_VIDEO_ELEMENT: "SET_VIDEO_ELEMENT",
+  SET_SOURCE: "SET_SOURCE",
+  SET_CURRENT_QUALITY: "SET_CURRENT_QUALITY",
+  SET_PLAYBACK_ERROR: "SET_PLAYBACK_ERROR",
   TOGGLE_PLAY: "TOGGLE_PLAY",
   RESET_PLAY: "RESET_PLAY",
   TOGGLE_FULLSCREEN: "TOGGLE_FULLSCREEN",
@@ -25,6 +28,31 @@ const reducer = (state, action) => {
       return {
         ...state,
         videoEl: action.videoEl,
+      }
+    }
+
+    case ReducerTypes.SET_SOURCE: {
+      return {
+        ...state,
+        source: action.source,
+        sourceSize: action.size
+      }
+    }
+    case ReducerTypes.SET_CURRENT_QUALITY: {
+      return {
+        ...state,
+        currentQuality: action.currentQuality,
+      }
+    }
+
+    case ReducerTypes.SET_PLAYBACK_ERROR: {
+      const { errorCode, errorMessage } = action
+      return {
+        ...state,
+        error: errorCode && errorMessage && {
+          code: errorCode,
+          message: errorMessage
+        },
       }
     }
 
@@ -179,6 +207,7 @@ export const PlayerContextProvider = ({ children }) => {
     volume: 1,
     muted: false,
     playbackRate: 1,
+    error: null
   })
   return <PlayerContext.Provider value={store}>{children}</PlayerContext.Provider>
 }

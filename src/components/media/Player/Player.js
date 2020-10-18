@@ -1,19 +1,49 @@
 import React, { useRef, useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import classnames from "classnames"
+import Axios from "axios"
 
 import "./player.scss"
 
 import { PlayerContextProvider, ReducerTypes, useStateValue } from "./PlayerContext"
 import PlayerControls from "./PlayerControls"
+import PlayerBytesCounter from "./PlayerBytesCounter"
 import PlayerShortcuts from "./PlayerShortcuts"
+import PlayerErrorBanner from "./PlayerErrorBanner"
+import http from "@utils/request"
 
-const InnerPlayer = ({ source, thumbnail }) => {
+/**
+ * @param {object} props
+ * @param {import("@utils/video").VideoSourceInfo[]} props.sources
+ * @param {string} props.originalQuality
+ * @param {string} props.thumbnail
+ */
+const InnerPlayer = ({ sources, originalQuality, thumbnail }) => {
   const [state, dispatch] = useStateValue()
-  const { isPlaying, currentTime } = state
+  const { source, currentQuality, isPlaying, currentTime, error } = state
 
   const [hiddenControls, setHiddenControls] = useState(false)
   const videoRef = useRef()
+
+  useEffect(() => {
+    dispatch({
+      type: ReducerTypes.SET_CURRENT_QUALITY,
+      source: originalQuality
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sources])
+
+  useEffect(() => {
+    if (!sources.length) return
+
+    const sourceInfo = sources.find(s => s.quality === currentQuality) || sources[0]
+    dispatch({
+      type: ReducerTypes.SET_SOURCE,
+      source: sourceInfo.source,
+      size: sourceInfo.size
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentQuality])
 
   useEffect(() => {
     if (videoRef && videoRef.current) {
@@ -71,6 +101,39 @@ const InnerPlayer = ({ source, thumbnail }) => {
     })
   }
 
+  const onPlaybackError = async e => {
+    // get error code
+    try {
+      let cancelToken
+      await http.get(source, {
+        withCredentials: true,
+        onDownloadProgress: p => {
+          // cancel large responses
+          if (p.total > 1000) {
+            cancelToken("Network Error")
+          }
+        },
+        cancelToken: new Axios.CancelToken(t => {
+          cancelToken = t
+        }),
+      })
+    } catch (error) {
+      if (error.response) {
+        renderError(error.response.status, error.response.data.message || error.response.data)
+      } else {
+        renderError(500, error.message)
+      }
+    }
+  }
+
+  const renderError = (code, message) => {
+    dispatch({
+      type: ReducerTypes.SET_PLAYBACK_ERROR,
+      errorCode: code,
+      errorMessage: message
+    })
+  }
+
   return (
     <PlayerShortcuts>
       <div className={classnames("player", { playing: isPlaying })}>
@@ -85,29 +148,38 @@ const InnerPlayer = ({ source, thumbnail }) => {
           onLoadedMetadata={onLoadMetadata}
           onProgress={onProgress}
           onTimeUpdate={onTimeUpdate}
+          onError={onPlaybackError}
         >
           <source src={source} />
           <p className="text-center block">
             It's time to upgrade your browser!!! <br />
-            <a href="https://www.google.com/chrome" target="blank">
+            <a href="https://www.google.com/chrome" target="_blank" rel="noopener noreferrer">
               Download Chrome
             </a>
           </p>
         </video>
-        {!hiddenControls && videoRef.current && <PlayerControls />}
+
+        {!hiddenControls && videoRef.current && !error && (
+          <PlayerControls />
+        )}
+
+        {error && (
+          <PlayerErrorBanner />
+        )}
       </div>
+      <PlayerBytesCounter />
     </PlayerShortcuts>
   )
 }
 
-const Player = ({ source, thumbnail }) => (
+const Player = ({ sources, originalQuality, thumbnail }) => (
   <PlayerContextProvider>
-    <InnerPlayer source={source} thumbnail={thumbnail} />
+    <InnerPlayer sources={sources} originalQuality={originalQuality} thumbnail={thumbnail} />
   </PlayerContextProvider>
 )
 
 Player.propTypes = {
-  source: PropTypes.string.isRequired,
+  sources: PropTypes.array.isRequired,
   thumbnail: PropTypes.string,
 }
 

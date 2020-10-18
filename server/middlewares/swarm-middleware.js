@@ -10,7 +10,6 @@ const FilterTransformStream = require("../classes/FilterTransformStream")
 
 // Consts
 const GatewayValidPathsRegex = /^\/bzz(-(raw|tag|pin|list))?:\/?.*/
-const GatewaySourceRegex = /^\/bzz:\/[A-Fa-f0-9]{64}\/sources\/[0-9]+p\/?$/
 const MaxBodySizeCap = 5000000 //5MB
 const ValidatorHost = process.env.GATEWAY_VALIDATOR_PROXY_HOST
 const SwarmHost = process.env.GATEWAY_SWARM_PROXY_HOST
@@ -40,12 +39,7 @@ module.exports.SwarmMiddleware = createProxyMiddleware(
 async function handleRequest(proxyReq, req, res) {
   // Wrap your script in a try/catch and return the error stack to view error information.
   try {
-    // Identify if it's a request for gateway validator.
-    const isValidatorRequest = GatewaySourceRegex.test(proxyReq.path)
-
-    const response = isValidatorRequest
-      ? await handleValidatorRequest(req, res)
-      : await forwardRequestToGateway(req)
+    const response = await handleValidatorRequest(req, res)
 
     // Return error message
     if (typeof response.body.pipe !== "function") {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import classnames from "classnames"
 
 import "./user-credit.scss"
@@ -36,15 +36,23 @@ const UserCredit = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creditRef])
 
+  const gbReproduction = useMemo(() => {
+    return +(credit / bytePrice * 0.000000001).toFixed(3)
+  }, [credit, bytePrice])
+
   return (
     <div className="user-credit-wrapper">
       <div
-        className={classnames("user-credit-badge", { expandable })}
+        className={classnames("user-credit-badge", {
+          expandable,
+          "user-credit-badge-warning": false, // gbReproduction < 1 && gbReproduction >= 0.1,
+          "user-credit-badge-danger": false, // gbReproduction < 0.1,
+        })}
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
         onClick={() => setShowPopup(!showPopup)}
       >
-        <span className="credit-text-sm">EUSD</span>
+        <span className="credit-text-sm">USD</span>
         <span className="credit-text-lg" style={{ width: `${currentWidth}px` }} ref={creditRef}>
           {fixedCredit}
         </span>
@@ -56,10 +64,10 @@ const UserCredit = () => {
             <>
               <p className="text-xs mb-4">You current balance is:</p>
               <p className="text-2xl font-bold break-all">{credit}</p>
-              <span className="text-sm text-gray-600 tracking-tighter">EUSD</span>
+              <span className="text-sm text-gray-600 tracking-tighter">USD</span>
               {bytePrice && (
                 <p className="my-3 text-gray-600 text-sm">
-                  This is equivalent to <strong className="text-md">{+(credit / bytePrice * 0.000000001).toFixed(3)}</strong> GB of videos reprodution.
+                  This is equivalent to <strong className="text-md">{gbReproduction}</strong> GB of videos reprodution.
                 </p>
               )}
               <div className="mt-8 mb-4">
