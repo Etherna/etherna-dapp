@@ -22,7 +22,7 @@ $bg-alpha-50-light: rgba(
 );
 
 .player {
-  @apply relative my-6 bg-gray-200 overflow-hidden shadow-lg;
+  @apply relative my-6 bg-gray-200 overflow-hidden;
 
   video {
     @apply min-h-md max-h-80vh w-full;
@@ -30,12 +30,15 @@ $bg-alpha-50-light: rgba(
 
   .controls {
     @apply opacity-0 absolute flex flex-wrap items-center inset-x-0 bottom-0 cursor-default
-            transition duration-100 px-3 pb-2 pt-12 text-white;
+            transition duration-100 px-3 pb-2 pt-12;
+    color: #fff;
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, rgba(20, 20, 20, 0) 100%);
 
     .btn {
-      @apply flex items-center rounded-full w-12 h-12 text-sm text-gray-100 tracking-wide font-bold uppercase leading-relaxed
+      @apply flex items-center rounded-full w-12 h-12 text-sm tracking-wide font-bold uppercase leading-relaxed
                 bg-transparent cursor-pointer text-center;
+      color: #fff;
+
       &:hover {
         backdrop-filter: blur(4px);
         background-color: $bg-alpha-30;
@@ -118,7 +121,8 @@ $bg-alpha-50-light: rgba(
     @apply flex flex-col;
 
     .tick-option {
-      @apply relative px-4 py-2 text-white text-center font-semibold cursor-pointer;
+      @apply relative px-4 py-2 text-center font-semibold cursor-pointer;
+      color: #fff;
 
       &:hover {
         background: $bg-alpha-30;
@@ -138,6 +142,23 @@ $bg-alpha-50-light: rgba(
       }
     }
   }
+
+  .player-error-banner {
+    @apply absolute flex flex-col justify-center inset-x-0 inset-y-0;
+    background-color: rgba(#000, 0.2);
+
+    .error-icon {
+      @apply mx-auto;
+    }
+    .error-description {
+      @apply text-3xl font-semibold text-center py-12;
+    }
+  }
+
+}
+
+.shortcuts-handler > * {
+  @apply outline-none;
 }
 
 /*! purgecss end ignore */

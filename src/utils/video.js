@@ -12,7 +12,12 @@ import { store } from "@state/store"
  * @property {string} ownerAddress Address of the owner of the video
  * @property {number} duration Duration of the video in seconds
  * @property {string} thumbnailHash Hash for the thumbnail
- * @property {string[]} sources List of available qualities of the video
+ * @property {string|{ path: string, size?: number}[]} sources List of available qualities of the video
+ *
+ * @typedef {object} VideoSourceInfo
+ * @property {string} source Source url
+ * @property {string} quality Source quality
+ * @property {number} size Source size
  *
  * @typedef VideoResolvedMeta
  * @property {string} title Title of the video
@@ -23,7 +28,7 @@ import { store } from "@state/store"
  * @property {string} source Url of the original video
  * @property {string} thumbnailSource Url of the thumbnail
  * @property {string} ownerAddress Address of the owner of the video
- * @property {{ source: string, quality: string }[]} sources All qualities of video
+ * @property {VideoSourceInfo[]} sources All qualities of video
  *
  * @typedef {object} VideoMetadata
  * @property {string} videoHash Manifest hash of the video
@@ -35,7 +40,7 @@ import { store } from "@state/store"
  * @property {string} source Url of the original video
  * @property {string} thumbnailSource Url of the thumbnail
  * @property {string} ownerAddress Address of the owner of the video
- * @property {{ source: string, quality: string }[]} sources All qualities of video
+ * @property {VideoSourceInfo[]} sources All qualities of video
  * @property {string} creationDateTime
  * @property {boolean} isVideoOnIndex
  * @property {string} encryptionKey
@@ -154,13 +159,26 @@ export const fetchVideoMeta = async videoHash => {
   const duration = (meta || {}).duration || await videoDuration(source)
 
   if (!meta) {
-    return { source, duration }
+    return {
+      duration,
+      source,
+      sources: [{
+        source: source,
+        quality: null,
+        size: null
+      }]
+    }
   }
 
-  const sources = meta.sources.map(quality => ({
-    quality,
-    source: bzzClient.getDownloadURL(`${hash}/sources/${quality}`),
-  }))
+  const sources = meta.sources.map(source => {
+    const quality = typeof source === "string" ? source : source.path
+    const size = source.size
+    return {
+      quality,
+      size,
+      source: bzzClient.getDownloadURL(`${hash}/sources/${quality}`),
+    }
+  })
   const thumbnailHash = meta.thumbnailHash
   const thumbnailSource = thumbnailHash && bzzClient.getDownloadURL(thumbnailHash)
 
@@ -236,7 +254,10 @@ export const deleteThumbnail = async manifest => {
  */
 const downloadMeta = async (bzz, hash) => {
   try {
-    const list = await bzz.list(hash)
+    const [list, sourceList] = await Promise.all([
+      bzz.list(hash),
+      bzz.list(`${hash}/sources`)
+    ])
 
     const prefixed = list.common_prefixes || []
     if (!prefixed.includes("sources/")) {
@@ -252,8 +273,17 @@ const downloadMeta = async (bzz, hash) => {
 
     const thumbnailHash = entries.find(entry => entry.path === "thumbnail") && `${hash}/thumbnail`
 
+    // Load metadata json
     const resp = await bzz.download(hash)
     const meta = await resp.json()
+
+    // Load sources infos (to get video sizes)
+    if (sourceList.entries) {
+      meta.sources = meta.sources.map(source => {
+        const entry = sourceList.entries.find(s => s.path === `sources/${source}`)
+        return { path: source, size: entry && entry.size }
+      })
+    }
 
     const defaultMeta = {
       title: "",

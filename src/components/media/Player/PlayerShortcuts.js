@@ -104,9 +104,11 @@ const PlayerShortcuts = ({ children }) => {
   }
 
   return (
-    <Shortcuts name="PLAYER" handler={handleShortcut} global={true} targetNodeSelector="body">
-      {children}
-    </Shortcuts>
+    <div className="shortcuts-handler">
+      <Shortcuts name="PLAYER" handler={handleShortcut} global={true} targetNodeSelector="body">
+        {children}
+      </Shortcuts>
+    </div>
   )
 }
 

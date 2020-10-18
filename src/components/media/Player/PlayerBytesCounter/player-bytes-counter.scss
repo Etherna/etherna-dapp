@@ -1,0 +1,54 @@
+$tick-width: 0.16rem;
+
+.player-bytes-counter {
+  @apply flex items-center mt-4 mb-6 text-xs text-gray-900 font-semibold;
+
+  .player-bytes-counter-progress {
+    @apply w-6 h-6 relative;
+
+    &-tick {
+      --transform-translate-x: #{$tick-width / 2};
+      width: $tick-width;
+      right: 50%;
+      @apply absolute h-3 transform origin-bottom scale-90 opacity-0;
+
+      &::after {
+        content: "";
+        height: 50%;
+        @apply absolute inset-x-0 top-0 bg-gray-900;
+      }
+
+      &:nth-child(2) {
+        @apply rotate-45;
+      }
+      &:nth-child(3) {
+        animation-delay: 0.4s;
+        @apply rotate-90;
+      }
+      &:nth-child(4) {
+        animation-delay: 0.6s;
+        @apply rotate-135;
+      }
+      &:nth-child(5) {
+        animation-delay: 0.8s;
+        @apply rotate-180;
+      }
+      &:nth-child(6) {
+        animation-delay: 1s;
+        @apply -rotate-135;
+      }
+      &:nth-child(7) {
+        animation-delay: 1.2s;
+        @apply -rotate-90;
+      }
+      &:nth-child(8) {
+        animation-delay: 1.4s;
+        @apply -rotate-45;
+      }
+    }
+  }
+
+  .player-bytes-counter-label {
+    @apply ml-1;
+  }
+}

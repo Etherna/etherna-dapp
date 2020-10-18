@@ -37,6 +37,7 @@ const creditHost = window.localStorage.getItem("creditHost") || process.env.REAC
 const indexClient = new IndexClient({ host: indexHost, apiPath: indexApiPath })
 const gatewayClient = new GatewayClient({ host: gatewayHost, apiPath: gatewayApiPath })
 const bzzClient = new Bzz({ url: gatewayHost })
+bzzClient.fetch = (input, init) => fetch(input, { ...(init || {}), credentials: "include" })
 
 /** @type {import("..").EnvState} */
 const initialState = {

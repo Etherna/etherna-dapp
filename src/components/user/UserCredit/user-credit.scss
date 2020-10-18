@@ -1,10 +1,10 @@
 /*! purgecss start ignore */
 
-$color-gray-300: #e2e8f0;
-$color-gray-400-dark: #242e3a;
+$color-gray-200: #edf2f7;
+$color-gray-300-dark: #1d242c;
 
 .user-credit-badge {
-  @apply flex items-baseline bg-gray-300 rounded-full h-10 px-4 py-2 cursor-pointer;
+  @apply flex items-baseline bg-gray-200 rounded-full h-10 px-4 py-2 cursor-pointer;
 
   .credit-text-sm {
     @apply text-xs text-gray-600 tracking-tighter;
@@ -17,8 +17,8 @@ $color-gray-400-dark: #242e3a;
     .credit-text-lg {
       &::after {
         content: "";
-        @apply absolute right-0 inset-y-0 w-6 bg-gray-300;
-        background: linear-gradient(90deg, rgba($color: $color-gray-300, $alpha: 0) 0%, rgba($color: $color-gray-300, $alpha: 1) 100%);
+        @apply absolute right-0 inset-y-0 w-6 bg-gray-200;
+        background: linear-gradient(90deg, rgba($color: $color-gray-200, $alpha: 0) 0%, rgba($color: $color-gray-200, $alpha: 1) 100%);
       }
     }
 
@@ -31,6 +31,24 @@ $color-gray-400-dark: #242e3a;
       }
     }
   }
+
+  &-warning {
+    .credit-text-sm {
+      @apply text-orange-500 text-opacity-50;
+    }
+    .credit-text-lg {
+      @apply text-orange-500;
+    }
+  }
+
+  &-danger {
+    .credit-text-sm {
+      @apply text-red-600;
+    }
+    .credit-text-lg {
+      @apply text-red-500;
+    }
+  }
 }
 
 .user-credit-popup {
@@ -39,14 +57,14 @@ $color-gray-400-dark: #242e3a;
 
 .theme-dark {
   .user-credit-badge {
-    @apply bg-gray-400;
+    @apply bg-gray-300;
 
     &.expandable {
       &:not(:hover) {
         .credit-text-lg {
           &::after {
-            @apply bg-gray-400;
-            background: linear-gradient(90deg, rgba($color: $color-gray-400-dark, $alpha: 0) 0%, rgba($color: $color-gray-400-dark, $alpha: 1) 100%);
+            @apply bg-gray-300;
+            background: linear-gradient(90deg, rgba($color: $color-gray-300-dark, $alpha: 0) 0%, rgba($color: $color-gray-300-dark, $alpha: 1) 100%);
           }
         }
       }
