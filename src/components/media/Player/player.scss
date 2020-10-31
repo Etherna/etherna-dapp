@@ -152,6 +152,7 @@ $bg-alpha-50-light: rgba(
     }
     .error-description {
       @apply text-3xl font-semibold text-center py-12;
+      color: #fff;
     }
   }
 

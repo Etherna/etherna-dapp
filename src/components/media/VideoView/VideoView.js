@@ -35,7 +35,6 @@ const VideoView = ({ hash, video }) => {
   const [profileName, setProfileName] = useState(video.profileData && video.profileData.name)
   const [profileAvatar, setProfileAvatar] = useState(video.profileData && video.profileData.avatar)
 
-
   useEffect(() => {
     Object.keys(video).length === 0 && fetchVideo()
   // eslint-disable-next-line react-hooks/exhaustive-deps

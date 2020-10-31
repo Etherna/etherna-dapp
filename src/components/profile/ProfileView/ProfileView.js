@@ -60,7 +60,8 @@ const ProfileView = ({ profileAddress }) => {
       const videos = hasPrefetch
         ? prefetchVideos
         : await fetchFullVideosInfo(page, FETCH_COUNT, false, profileAddress)
-      setProfileVideos(page === 0 ? videos : profileVideos.concat(videos))
+      const mappedVideos = videosWithProfileData(videos)
+      setProfileVideos(page === 0 ? mappedVideos : profileVideos.concat(mappedVideos))
 
       if (videos.length < FETCH_COUNT) {
         setHasMore(false)
@@ -78,15 +79,19 @@ const ProfileView = ({ profileAddress }) => {
   const mapVideosWithProfile = () => {
     if (!profileInfo || !profileVideos) return
 
-    const videos = profileVideos.map(v => ({
+    const videos = videosWithProfileData(profileVideos)
+    setProfileVideos(videos)
+  }
+
+  const videosWithProfileData = videos => {
+    return videos.map(v => ({
       ...v,
       profileData: {
-        name: profileInfo.name,
-        avatar: profileInfo.avatar,
-        address: profileInfo.address,
+        name: profileInfo && profileInfo.name,
+        avatar: profileInfo && profileInfo.avatar,
+        address: profileInfo && profileInfo.address,
       },
     }))
-    setProfileVideos(videos)
   }
 
   const handleFetchedProfile = profile => {
