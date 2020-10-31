@@ -6,7 +6,7 @@ import {
 } from "./hosts"
 import { finishCropping, cropImage } from "./cropImage"
 
-export default {
+const enviromentActions = {
   updateGatewayHost,
   updateIndexHost,
   resetGatewayHost,
@@ -14,3 +14,5 @@ export default {
   finishCropping,
   cropImage,
 }
+
+export default enviromentActions

@@ -26,7 +26,9 @@ const fetch = async () => {
   }
 }
 
-export default {
+const profilePrefetcher = {
   match,
   fetch,
 }
+
+export default profilePrefetcher

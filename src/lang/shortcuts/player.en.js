@@ -1,4 +1,4 @@
-export default {
+const PlayerShortcuts = {
   PLAYPAUSE: "Play/Pause",
   SKIP_BACKWARD: "Skip Backward",
   SKIP_FORWARD: "Skip Forward",
@@ -28,3 +28,5 @@ export default {
   SKIP_80_PERCENT: "Skip video at 80%",
   SKIP_90_PERCENT: "Skip video at 90%",
 }
+
+export default PlayerShortcuts

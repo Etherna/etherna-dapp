@@ -2,8 +2,10 @@ import fetchProfile from "./fetchProfile"
 import updateProfile from "./updateProfile"
 import getCurrentUserProfile from "./getCurrentUserProfile"
 
-export default {
+const profileActions = {
   fetchProfile,
   updateProfile,
   getCurrentUserProfile
 }
+
+export default profileActions
