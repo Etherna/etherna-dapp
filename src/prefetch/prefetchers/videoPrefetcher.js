@@ -17,7 +17,9 @@ const fetch = async () => {
   }
 }
 
-export default {
+const videoPrefetcher = {
   match,
   fetch,
 }
+
+export default videoPrefetcher
