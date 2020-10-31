@@ -11,6 +11,9 @@ import Alert from "@common/Alert"
 import Button from "@common/Button"
 import PinContentField from "@components/media/Uploader/PinContentField"
 import { UploaderContextWrapper, useUploaderState } from "@components/media/Uploader/UploaderContext"
+import MarkdownEditor from "@components/common/MarkdownEditor"
+import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
+import { ReactComponent as NotFoundImage } from "@svg/backgrounds/404-illustration.svg"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
 import { pinResource, unpinResource, isPinned } from "@utils/swarm"
@@ -169,7 +172,7 @@ const VideoEditor = ({ hash, video }) => {
     <div className="video-editor">
       {!videoOnIndex && (
         <div className="table mx-auto mt-32">
-          <img src={require("@svg/backgrounds/404-illustration.svg")} alt="" width={320} />
+          <NotFoundImage width={320} />
           <h2 className="text-center text-gray-800 mt-12">Video not found</h2>
         </div>
       )}
@@ -210,12 +213,10 @@ const VideoEditor = ({ hash, video }) => {
           </div>
           <div className="form-group">
             <label htmlFor="description">Description</label>
-            <textarea
-              id="description"
+            <MarkdownEditor
               placeholder="Description of the video"
               value={description}
-              rows={10}
-              onChange={e => setDescription(e.target.value)}
+              onChange={value => setDescription(value)}
               disabled={isSaving}
             />
           </div>
@@ -237,12 +238,7 @@ const VideoEditor = ({ hash, video }) => {
                 Save
               </Button>
             ) : (
-              <img
-                src={require("@svg/animated/spinner.svg")}
-                alt=""
-                width={26}
-                className="inline-block mr-4"
-              />
+              <Spinner width={26} className="inline-block mr-4" />
             )}
             <Button aspect="danger" disabled={isSaving} action={() => setShowDeleteModal(true)}>
               Delete Video

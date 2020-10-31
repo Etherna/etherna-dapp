@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 
 import SEO from "@components/layout/SEO"
 import LayoutWrapper from "@components/layout/DefaultLayout/LayoutWrapper"
+import { ReactComponent as NotFoundImage } from "@svg/backgrounds/404-illustration.svg"
 import Routes from "@routes"
 
 const NotFoundPage = () => {
@@ -12,11 +13,7 @@ const NotFoundPage = () => {
         <SEO title="404: Not found" />
         <div className="row text-gray-900 py-32">
           <div className="col md:w-1/2 px-20">
-            <img
-              src={require("@svg/backgrounds/404-illustration.svg")}
-              alt="Page not found"
-              className="mx-auto my-12"
-            />
+            <NotFoundImage className="mx-auto my-12" />
           </div>
           <div className="col md:w-1/2 px-20">
             <h2 className="leading-tight">

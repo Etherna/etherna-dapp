@@ -9,7 +9,9 @@ import ThumbnailUpload from "./ThumbnailUpload"
 import PinContentField from "./PinContentField"
 import Alert from "@common/Alert"
 import Button from "@common/Button"
+import MarkdownEditor from "@common/MarkdownEditor"
 import Avatar from "@components/user/Avatar"
+import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
 import { updatedVideoMeta } from "@utils/video"
@@ -139,12 +141,10 @@ const Uploader = () => {
           </div>
           <div className="form-group">
             <label htmlFor="description">Description</label>
-            <textarea
-              id="description"
+            <MarkdownEditor
               placeholder="Description of the video"
               value={description}
-              rows={10}
-              onChange={e => setDescription(e.target.value)}
+              onChange={value => setDescription(value)}
               disabled={isSubmitting}
             />
           </div>
@@ -181,7 +181,7 @@ const Uploader = () => {
             </li>
           </ul>
           {isSubmitting ? (
-            <img src={require("@svg/animated/spinner.svg")} width={30} alt="" />
+            <Spinner width={30} alt="" />
           ) : (
             <Button
               action={submitVideo}

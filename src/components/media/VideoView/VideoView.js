@@ -5,6 +5,7 @@ import moment from "moment"
 
 import "./video-view.scss"
 
+import MarkdownPreview from "@common/MarkdownPreview"
 import SEO from "@components/layout/SEO"
 import Player from "@components/media/Player"
 import Avatar from "@components/user/Avatar"
@@ -33,6 +34,7 @@ const VideoView = ({ hash, video }) => {
   const [publishDate, setPublishDate] = useState(video.creationDateTime)
   const [profileName, setProfileName] = useState(video.profileData && video.profileData.name)
   const [profileAvatar, setProfileAvatar] = useState(video.profileData && video.profileData.avatar)
+
 
   useEffect(() => {
     Object.keys(video).length === 0 && fetchVideo()
@@ -121,7 +123,7 @@ const VideoView = ({ hash, video }) => {
 
           <div className="video-description">
             {description && description !== "" ? (
-              <p className="text-gray-800">{description}</p>
+              <MarkdownPreview value={description} disableHeading={true} />
             ) : (
               <p className="text-gray-500">
                 <em>This video doesn't have a description</em>

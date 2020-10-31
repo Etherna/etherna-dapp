@@ -3,6 +3,8 @@ import PropTypes from "prop-types"
 
 import Modal from "../common/Modal"
 import Button from "../common/Button"
+import { ReactComponent as SignatureIcon } from "@svg/icons/signature-required-icon.svg"
+import { ReactComponent as ErrorIcon } from "@svg/icons/error-icon.svg"
 import { closeErrorModal } from "@state/actions/modals"
 
 const ErrorModal = ({ title, error }) => {
@@ -25,12 +27,9 @@ const ErrorModal = ({ title, error }) => {
     <Modal show={true} showCloseButton={false}>
       <div className="table mx-auto mb-3">
         {isMetaMaskSignError || isMozillaError ? (
-          <img
-            src={require("@svg/icons/signature-required-icon.svg")}
-            alt="Wallet signature required"
-          />
+          <SignatureIcon />
         ) : (
-          <img src={require("@svg/icons/error-icon.svg")} alt="Error" width={40} />
+          <ErrorIcon width={40} />
         )}
       </div>
       <div className="modal-header">

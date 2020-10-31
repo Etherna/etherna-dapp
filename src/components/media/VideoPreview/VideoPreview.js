@@ -48,7 +48,7 @@ const VideoPreview = ({ video, hideProfile }) => {
         <div className="video-thumbnail">
           <SwarmImage
             hash={video.thumbnailHash}
-            fallback={require("@svg/backgrounds/thumb-placeholder.svg")}
+            fallback={require("@svg/backgrounds/thumb-placeholder.svg").default}
             className="w-full h-full object-cover"
           />
           <div className="video-duration">

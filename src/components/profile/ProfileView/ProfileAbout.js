@@ -1,11 +1,13 @@
 import React from "react"
 import PropTypes from "prop-types"
 
+import MarkdownPreview from "@common/MarkdownPreview"
+
 const ProfileAbout = ({ name, address, description }) => {
   return (
     <div>
       {/* <h3>{name || shortenEthAddr(address)}</h3> */}
-      <p>{description || ""}</p>
+      <MarkdownPreview value={description || ""} disableHeading={true} />
     </div>
   )
 }

@@ -4,6 +4,7 @@ import Switch from "react-switch"
 
 import Alert from "@common/Alert"
 import useSelector from "@state/useSelector"
+import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 
 const PinContentField = ({ pinningEnabled, onChange }) => {
   const { bzzClient, gatewayHost } = useSelector(state => state.env)
@@ -45,7 +46,7 @@ const PinContentField = ({ pinningEnabled, onChange }) => {
         Pin Content
       </label>
       {pinningAvailable === undefined && (
-        <img src={require("@svg/animated/spinner.svg")} alt="" width="20" />
+        <Spinner width="20" />
       )}
       {pinningAvailable === false && (
         <Alert title="Pinning unavailable" type="warning">

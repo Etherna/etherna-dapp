@@ -4,6 +4,7 @@ import classnames from "classnames"
 import Modal from "../common/Modal"
 import Button from "../common/Button"
 import Kbd from "../common/Kbd"
+import { ReactComponent as WarningIcon } from "@svg/icons/warning-icon.svg"
 import { closeShortcutModal } from "@state/actions/modals"
 import { saveShortcut, shortcutExists } from "@state/actions/enviroment/shortcuts"
 import useSelector from "@state/useSelector"
@@ -59,7 +60,7 @@ const ShortcutModal = () => {
       </div>
       {existingShortcut && (
         <div className="flex items-center my-4">
-          <img className="mr-2" src={require("@svg/icons/warning-icon.svg")} alt="" width="16" />
+          <WarningIcon className="mr-2" width="16" />
           <span>
             Shortcut already set for: <strong>{lang.get(`player.${existingShortcut}`)}</strong>
           </span>

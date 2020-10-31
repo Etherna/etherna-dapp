@@ -1,10 +1,10 @@
 import React from "react"
 
 import { useStateValue, ReducerTypes } from "../PlayerContext"
+import { ReactComponent as FullScreenIcon } from "@svg/icons/fullscreen-icon.svg"
 
 const FullScreenButton = () => {
-  // eslint-disable-next-line no-unused-vars
-  const [state, dispatch] = useStateValue()
+  const [,dispatch] = useStateValue()
 
   const toggleFullscreen = () => {
     dispatch({
@@ -20,7 +20,7 @@ const FullScreenButton = () => {
       role="button"
       tabIndex={0}
     >
-      <img src={require("@svg/icons/fullscreen-icon.svg")} alt="" />
+      <FullScreenIcon />
     </div>
   )
 }

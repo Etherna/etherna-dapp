@@ -3,9 +3,10 @@ import PropTypes from "prop-types"
 
 import Modal from "@common/Modal"
 import Button from "@common/Button"
+import SwarmImage from "@components/common/SwarmImage"
+import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 import { showError } from "@state/actions/modals"
 import useSelector from "@state/useSelector"
-import SwarmImage from "@components/common/SwarmImage"
 
 /**
  * @param {object} props
@@ -43,7 +44,7 @@ const VideoDeleteModal = ({ hash, title, onCancel, onDelete }) => {
         <div className="col sm:w-1/4">
           <SwarmImage
             hash={`${hash}/thumbnail`}
-            fallback={require("@svg/backgrounds/thumb-placeholder.svg")}
+            fallback={require("@svg/backgrounds/thumb-placeholder.svg").default}
             className="rounded"
             alt=""
           />
@@ -69,7 +70,7 @@ const VideoDeleteModal = ({ hash, title, onCancel, onDelete }) => {
             </>
           )}
           {isDeleting && (
-            <img src={require("@svg/animated/spinner.svg")} width="30" alt="" />
+            <Spinner width="30" alt="" />
           )}
         </div>
       </div>
