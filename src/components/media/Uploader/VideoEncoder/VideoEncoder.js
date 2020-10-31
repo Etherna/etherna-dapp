@@ -5,6 +5,7 @@ import { createFFmpeg } from "@ffmpeg/ffmpeg"
 import "./video-encoder.scss"
 
 import Button from "@components/common/Button"
+import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 import { showError } from "@state/actions/modals"
 import { isMimeCompatible } from "@utils/mimeTypes"
 import { fileReaderPromise } from "@utils/swarm"
@@ -103,7 +104,7 @@ const VideoEncoder = ({ file, canEncode, onConfirmEncode, onEncodingComplete, on
             This process might take a while...
           </p>
           <div className="flex flex-col items-center mt-4">
-            <img src={require("@svg/animated/spinner.svg")} className="mx-auto" width="30" alt="" />
+            <Spinner className="mx-auto" width="30" alt="" />
             <Button size="small" aspect="secondary" className="mt-4" action={onCancel}>
               Cancel
             </Button>

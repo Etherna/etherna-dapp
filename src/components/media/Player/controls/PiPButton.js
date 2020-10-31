@@ -1,10 +1,10 @@
 import React from "react"
 
 import { useStateValue, ReducerTypes } from "../PlayerContext"
+import { ReactComponent as PipIcon } from "@svg/icons/pip-icon.svg"
 
 const PiPButton = () => {
-  // eslint-disable-next-line no-unused-vars
-  const [state, dispatch] = useStateValue()
+  const [,dispatch] = useStateValue()
 
   const togglePictureInPicture = () => {
     dispatch({
@@ -20,7 +20,7 @@ const PiPButton = () => {
       role="button"
       tabIndex={0}
     >
-      <img src={require("@svg/icons/pip-icon.svg")} alt="" />
+      <PipIcon />
     </div>
   )
 }

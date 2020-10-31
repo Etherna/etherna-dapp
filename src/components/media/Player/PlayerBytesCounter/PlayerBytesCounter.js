@@ -37,8 +37,9 @@ const CounterProgress = ({ ticksCount, percent }) => {
     <div className="player-bytes-counter-progress" ref={elRef}>
       {ticks.map((_, i) => {
         const tickPercent = 100 / ticksCount * i
-        const rangeLow = percent - percentTreshold
-        const rangeHigh = percent + percentTreshold
+        const fixedPercent = percent != null && !isNaN(percent) ? percent : 0
+        const rangeLow = fixedPercent - percentTreshold
+        const rangeHigh = fixedPercent + percentTreshold
         const opacity = tickPercent < rangeLow
           ? 1
           : tickPercent > rangeHigh
@@ -82,7 +83,7 @@ const PlayerBytesCounter = () => {
         {
           remainingPercent
             ? ` | With your credit you can only enjoy ${remainingPercent}% of this video`
-            : "We coudn't get an estimate for this video"
+            : " | We coudn't get an estimate for this video"
         }
       </span>
     </div>

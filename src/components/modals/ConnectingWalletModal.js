@@ -2,6 +2,7 @@ import React from "react"
 
 import Modal from "../common/Modal"
 import Button from "../common/Button"
+import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 import { closeConnectingWalletModal } from "@state/actions/modals"
 
 const ConnectingWalletModal = () => {
@@ -14,7 +15,7 @@ const ConnectingWalletModal = () => {
         Approve the message in your <br /> Web3 wallet to continue
       </p>
       <div className="flex my-6">
-        <img src={require("@svg/animated/spinner.svg")} className="mx-auto" width="60" alt="" />
+        <Spinner className="mx-auto" width="60" />
       </div>
       <div className="flex">
         <Button className="mx-auto" action={closeConnectingWalletModal} aspect="secondary">

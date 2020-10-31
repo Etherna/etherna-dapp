@@ -1,6 +1,5 @@
 const fetch = require("node-fetch").default
 const { Response } = require("node-fetch")
-const { Readable, pipeline } = require("stream")
 const { createProxyMiddleware } = require("http-proxy-middleware")
 
 require("../utils/env")
@@ -197,12 +196,13 @@ async function forwardRequestToGateway(request) {
   // Strip cookies.
   const headers = {...request.headers}
   headers.host = SwarmHost.replace(/^https?:\/\//, "")
-  headers.cookie = undefined
+  delete headers.cookie
 
   return await fetch(SwarmHost + request.url, {
     headers: headers,
     body: request.body,
     method: request.method,
+    timeout: 10000,
   })
 }
 

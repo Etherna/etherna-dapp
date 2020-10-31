@@ -6,10 +6,12 @@ import "./profile-info-edit.scss"
 
 import Button from "@common/Button"
 import Modal from "@common/Modal"
+import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 import EnvActions from "@state/actions/enviroment"
 import useSelector from "@state/useSelector"
 import { getResourceUrl, uploadResourceToSwarm } from "@utils/swarm"
 import makeBlockies from "@utils/makeBlockies"
+import MarkdownEditor from "@components/common/MarkdownEditor"
 
 const ProfileInfoEdit = ({ profileAddress, submitLabel, isSubmitting, onSubmit }) => {
   const { name, description, avatar, cover } = useSelector(state => state.profile)
@@ -146,7 +148,7 @@ const ProfileInfoEdit = ({ profileAddress, submitLabel, isSubmitting, onSubmit }
           </Button>
         )}
         {isSubmitting && (
-          <img src={require("@svg/animated/spinner.svg")} className="ml-auto" width="30" alt="" />
+          <Spinner className="ml-auto" width="30" />
         )}
       </div>
 
@@ -161,12 +163,10 @@ const ProfileInfoEdit = ({ profileAddress, submitLabel, isSubmitting, onSubmit }
         </div>
         <div className="flex-1 p-4">
           <label htmlFor="description">Profile description</label>
-          <textarea
-            className=""
+          <MarkdownEditor
             placeholder="Something about you or your profile"
-            rows={8}
             value={profileDescription || ""}
-            onChange={e => setProfileDescription(e.target.value || "")}
+            onChange={value => setProfileDescription(value)}
           />
         </div>
       </div>

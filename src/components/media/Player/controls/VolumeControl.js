@@ -2,6 +2,9 @@ import React from "react"
 
 import { useStateValue, ReducerTypes } from "../PlayerContext"
 import Slider from "@common/Slider"
+import { ReactComponent as MutedIcon } from "@svg/icons/muted-icon.svg"
+import { ReactComponent as VolumeLowIcon } from "@svg/icons/volume-low-icon.svg"
+import { ReactComponent as VolumeIcon } from "@svg/icons/volume-icon.svg"
 
 const VolumeControl = () => {
   const [state, dispatch] = useStateValue()
@@ -31,11 +34,11 @@ const VolumeControl = () => {
         tabIndex={0}
       >
         {muted === true ? (
-          <img src={require("@svg/icons/muted-icon.svg")} alt="" />
+          <MutedIcon />
         ) : volume < 0.25 ? (
-          <img src={require("@svg/icons/volume-low-icon.svg")} alt="" />
+          <VolumeLowIcon />
         ) : (
-          <img src={require("@svg/icons/volume-icon.svg")} alt="" />
+          <VolumeIcon />
         )}
       </div>
       <div className="option-menu">
