@@ -25,19 +25,17 @@ $bg-alpha-50-light: rgba(
   @apply relative my-6 bg-gray-200 overflow-hidden;
 
   video {
-    @apply min-h-md max-h-80vh w-full;
+    @apply min-h-120 max-h-80vh w-full;
   }
 
   .controls {
-    @apply opacity-0 absolute flex flex-wrap items-center inset-x-0 bottom-0 cursor-default
-            transition duration-100 px-3 pb-2 pt-12;
-    color: #fff;
+    @apply absolute flex flex-wrap items-center inset-x-0 bottom-0 cursor-default px-3 pb-2 pt-12;
+    @apply text-white opacity-0 transition duration-100;
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, rgba(20, 20, 20, 0) 100%);
 
     .btn {
-      @apply flex items-center rounded-full w-12 h-12 text-sm tracking-wide font-bold uppercase leading-relaxed
-                bg-transparent cursor-pointer text-center;
-      color: #fff;
+      @apply flex items-center rounded-full w-12 h-12 bg-transparent cursor-pointer;
+      @apply text-center text-white text-sm tracking-wide font-bold uppercase leading-relaxed;
 
       &:hover {
         backdrop-filter: blur(4px);
@@ -68,7 +66,7 @@ $bg-alpha-50-light: rgba(
         background-color: $bg-alpha-50-light;
       }
       .current-time {
-        @apply absolute left-0 h-full rounded-full bg-primary pointer-events-none;
+        @apply absolute left-0 h-full rounded-full bg-primary-500 pointer-events-none;
       }
     }
 

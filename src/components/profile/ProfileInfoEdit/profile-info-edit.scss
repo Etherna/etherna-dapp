@@ -5,6 +5,7 @@
 
   .cover {
     @apply w-full bg-gray-100 -mb-8;
+    @apply dark:bg-gray-300;
 
     .cover-image {
       @apply w-full h-auto;
@@ -25,10 +26,8 @@
 
         .btn {
           @apply h-8 py-1 rounded-full mx-2 normal-case cursor-pointer;
-          background-color: rgba($color: #000000, $alpha: 0.45);
-          &:hover {
-            background-color: rgba($color: #000000, $alpha: 0.45);
-          }
+          @apply bg-black bg-opacity-50;
+          @apply hover:bg-black;
         }
         .remove-button {
           @apply w-8 p-0;
@@ -38,19 +37,15 @@
   }
 
   .profile-avatar {
-    @apply relative w-40 h-40 border-4 border-white bg-gray-200
-            rounded-full overflow-hidden;
-
-    [type="file"] {
-      @apply hidden;
-    }
+    @apply relative w-40 h-40 border-4 rounded-full overflow-hidden;
+    @apply border-white bg-gray-200;
 
     &::after {
       content: attr(data-label);
-      background-color: rgba($color: #000000, $alpha: 0.45);
       line-height: theme("spacing.32");
-      @apply absolute left-0 top-0 w-full h-full cursor-pointer text-gray-200
-                text-center text-sm normal-case opacity-0 transition-all duration-200;
+      @apply absolute left-0 top-0 w-full h-full cursor-pointer opacity-0 transition-all duration-200;
+      @apply bg-black bg-opacity-50 text-gray-200 text-center text-sm normal-case;
+      @apply dark:text-gray-800;
     }
     &:hover {
       &::after {
@@ -58,32 +53,12 @@
       }
     }
 
+    [type="file"] {
+      @apply hidden;
+    }
+
     img {
       @apply w-full h-full object-cover;
-    }
-  }
-}
-
-.theme-dark {
-  .profile-info-edit {
-    .cover {
-      @apply bg-gray-300;
-
-      .cover-input {
-        .cover-actions {
-          .btn {
-            background-color: rgba($color: #fff, $alpha: 0.45);
-            &:hover {
-              background-color: rgba($color: #fff, $alpha: 0.45);
-            }
-          }
-        }
-      }
-    }
-    .profile-avatar {
-      &::after {
-        @apply text-gray-800;
-      }
     }
   }
 }

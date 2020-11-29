@@ -7,7 +7,7 @@ $tick-width: 0.16rem;
     @apply w-6 h-6 relative;
 
     &-tick {
-      --transform-translate-x: #{$tick-width / 2};
+      --tw-translate-x: #{$tick-width / 2};
       width: $tick-width;
       right: 50%;
       @apply absolute h-3 transform origin-bottom scale-90 opacity-0;

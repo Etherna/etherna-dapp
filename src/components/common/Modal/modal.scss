@@ -41,8 +41,10 @@
 
   &.show {
     @apply visible;
+
     .modal-dialog {
       @apply opacity-100 transition-all duration-200;
+      @apply dark:bg-gray-300;
       transform: translateX(-50%) translateY(-50%) scale(1);
     }
   }
@@ -60,14 +62,6 @@
     @apply visible z-10 pointer-events-auto;
     &::after {
       @apply opacity-50 transition-all duration-200;
-    }
-  }
-}
-
-.theme-dark {
-  .modal {
-    .modal-dialog {
-      @apply bg-gray-300;
     }
   }
 }

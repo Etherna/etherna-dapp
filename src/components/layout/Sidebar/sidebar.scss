@@ -13,7 +13,8 @@
 }
 
 .sidebar {
-  @apply hidden bg-background-secondary overflow-y-auto overflow-x-hidden fixed inset-y-0 left-0 pt-16;
+  @apply hidden bg-white overflow-y-auto overflow-x-hidden fixed inset-y-0 left-0 pt-16;
+  @apply dark:bg-gray-900;
 
   @screen sm {
     @apply flex flex-col w-48;

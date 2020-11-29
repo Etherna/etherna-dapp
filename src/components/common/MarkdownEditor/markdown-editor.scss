@@ -43,7 +43,7 @@
 
   select {
     &:focus {
-      @apply rounded-sm shadow-outline outline-none;
+      @apply rounded-sm ring outline-none;
     }
   }
 
@@ -59,10 +59,8 @@
   .public-DraftEditorPlaceholder-inner {
     @apply text-gray-500;
   }
-}
 
-.dark-theme {
-  .markdown-editor {
+  .dark & {
     [class*="IconButton__icon"] {
       filter: invert(1);
     }
