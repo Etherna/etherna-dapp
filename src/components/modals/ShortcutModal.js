@@ -11,11 +11,18 @@ import useSelector from "@state/useSelector"
 
 const key2string = require("key-event-to-string")()
 
-const ShortcutModal = () => {
+const ShortcutModal = ({ show = false }) => {
   const { shortcutNamespace, shortcutKey, keymap, lang } = useSelector(state => state.env)
-  const [shortcut, setShortcut] = useState(keymap[shortcutNamespace][shortcutKey])
+  const [shortcut, setShortcut] = useState()
   const [existingShortcut, setExistingShortcut] = useState(false)
   const editorRef = useRef()
+
+  useEffect(() => {
+    if (shortcutNamespace in keymap && shortcutKey in keymap[shortcutNamespace]) {
+      setShortcut(keymap[shortcutNamespace][shortcutKey])
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shortcutNamespace, shortcutKey])
 
   useEffect(() => {
     focusEditor()
@@ -46,7 +53,7 @@ const ShortcutModal = () => {
   }
 
   return (
-    <Modal show={true} showCloseButton={true} onClose={() => closeShortcutModal()}>
+    <Modal show={show} showCloseButton={true} onClose={() => closeShortcutModal()}>
       <div
         ref={editorRef}
         className={classnames("shortcut-preview-container", {

@@ -6,7 +6,7 @@ import Button from "@components/common/Button"
 import useSelector from "@state/useSelector"
 import { finishCropping } from "@state/actions/enviroment/cropImage"
 
-const ImageCropModal = () => {
+const ImageCropModal = ({ show = false }) => {
   const imgRef = useRef(null)
   const { imageType, image } = useSelector(state => state.env)
   const [crop, setCrop] = useState({
@@ -39,7 +39,7 @@ const ImageCropModal = () => {
   }
 
   return (
-    <Modal show={true} showCloseButton={false}>
+    <Modal show={show} showCloseButton={false}>
       <div className="modal-header">
         <h4 className="modal-title mx-auto">Crop the image</h4>
       </div>

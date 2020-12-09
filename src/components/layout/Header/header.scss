@@ -8,11 +8,13 @@
 }
 
 .navbar {
-  @apply flex flex-wrap fixed w-full z-1 top-0 shadow-sm bg-white text-sm font-semibold;
-  @apply dark:bg-gray-900;
+  @apply flex flex-wrap fixed w-full z-1 top-0 shadow-sm bg-navigation-light text-sm font-semibold;
+  @apply dark:bg-navigation-dark;
 
   .nav-item {
-    @apply flex items-center px-4 py-2 whitespace-nowrap;
+    @apply flex items-center text-gray-800 px-4 py-2 whitespace-nowrap;
+    @apply dark:text-gray-200;
+
     &.active {
       @apply text-primary-500;
     }
@@ -30,18 +32,12 @@
     @apply flex justify-start order-3 w-screen;
 
     .nav-item {
-      @apply block border-b-2 border-transparent text-gray-800 flex-grow text-center;
+      @apply block border-b-2 border-transparent flex-grow text-center;
+      @apply hover:text-primary-600;
       margin-top: 2px; //balance bottom border
-      &:hover {
-        @apply text-black;
-      }
 
       &.active {
         @apply border-primary-500 text-primary-500;
-      }
-
-      &:hover {
-        @apply text-primary-600;
       }
     }
   }
@@ -49,16 +45,10 @@
   .right-nav {
     @apply flex flex-1 justify-end items-center order-2 pr-3;
 
-    @screen sm {
-      @apply pr-2;
-    }
-
     .nav-item {
-      @apply text-gray-800;
-
       &.active,
       &:hover {
-        @apply text-black;
+        @apply text-black dark:text-gray-100;
       }
 
       &-hidden-mobile {
@@ -67,6 +57,10 @@
           @apply flex;
         }
       }
+    }
+
+    @screen sm {
+      @apply pr-2;
     }
   }
 

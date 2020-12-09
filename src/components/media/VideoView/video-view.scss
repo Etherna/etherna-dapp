@@ -27,6 +27,7 @@
 
       .publish-time {
         @apply text-gray-600 text-sm mb-4;
+        @apply dark:text-gray-400;
       }
     }
     .video-actions {
@@ -46,21 +47,25 @@
 
     .video-profile {
       @apply inline-flex items-center;
+
       .profile-name {
         @apply mb-0 ml-2 text-base font-semibold text-gray-800;
+        @apply dark:text-gray-300;
       }
     }
   }
   .video-description {
     @apply mt-4 text-gray-800;
+    @apply dark:text-gray-200;
 
     * {
       @apply text-gray-800 leading-normal;
+      @apply dark:text-gray-300;
     }
   }
 
   hr {
-    @apply border-gray-200;
+    @apply border-gray-200 dark:border-gray-700;
   }
 }
 

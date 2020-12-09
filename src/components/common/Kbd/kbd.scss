@@ -3,6 +3,7 @@
 kbd {
   @apply inline-block font-bold text-center px-2 rounded-sm border-b-2;
   @apply text-gray-600 bg-gray-200 border-gray-300;
+  @apply dark:text-gray-300 dark:bg-gray-800 dark:border-gray-700;
 }
 
 .shortcut-preview {

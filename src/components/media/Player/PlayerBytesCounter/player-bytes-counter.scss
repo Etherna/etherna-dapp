@@ -2,6 +2,7 @@ $tick-width: 0.16rem;
 
 .player-bytes-counter {
   @apply flex items-center mt-4 mb-6 text-xs text-gray-900 font-semibold;
+  @apply dark:text-gray-100;
 
   .player-bytes-counter-progress {
     @apply w-6 h-6 relative;
@@ -16,6 +17,7 @@ $tick-width: 0.16rem;
         content: "";
         height: 50%;
         @apply absolute inset-x-0 top-0 bg-gray-900;
+        @apply dark:bg-gray-200;
       }
 
       &:nth-child(2) {

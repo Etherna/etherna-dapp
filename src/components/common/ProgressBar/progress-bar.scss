@@ -2,6 +2,7 @@
 
 .progress {
   @apply block w-full h-1 rounded-full bg-gray-300;
+  @apply dark:bg-gray-700;
 
   .progress-bar {
     @apply rounded-full h-full bg-primary-500;

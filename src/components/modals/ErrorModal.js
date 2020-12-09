@@ -7,7 +7,7 @@ import { ReactComponent as SignatureIcon } from "@svg/icons/signature-required-i
 import { ReactComponent as ErrorIcon } from "@svg/icons/error-icon.svg"
 import { closeErrorModal } from "@state/actions/modals"
 
-const ErrorModal = ({ title, error }) => {
+const ErrorModal = ({ title, error, show = false }) => {
   let isMetaMaskSignError
   //let isMetaMaskFromError
   let isMozillaError
@@ -24,7 +24,7 @@ const ErrorModal = ({ title, error }) => {
   errorString = errorString || "There was an error logging in."
 
   return (
-    <Modal show={true} showCloseButton={false}>
+    <Modal show={show} showCloseButton={false}>
       <div className="table mx-auto mb-3">
         {isMetaMaskSignError || isMozillaError ? (
           <SignatureIcon />

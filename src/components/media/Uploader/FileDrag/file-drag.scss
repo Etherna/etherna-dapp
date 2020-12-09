@@ -2,6 +2,8 @@
 
 .drag-input {
   @apply p-10 border-2 border-gray-400 border-dashed bg-gray-200 normal-case rounded;
+  @apply dark:bg-gray-800 dark:border-gray-600;
+
   [type="file"] {
     @apply hidden;
   }
@@ -15,6 +17,7 @@
 
     .drag-info {
       @apply text-gray-600 mt-4;
+      @apply dark:text-gray-400;
     }
     .btn {
       @apply mt-4;

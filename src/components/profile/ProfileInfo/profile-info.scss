@@ -5,7 +5,7 @@
 
   .cover {
     @apply flex items-center w-full bg-gray-200 max-h-48 min-h-24 -mb-8 overflow-hidden;
-    @apply dark:bg-gray-300;
+    @apply dark:bg-gray-800;
 
     .cover-image {
       @apply w-full h-auto;
@@ -15,6 +15,7 @@
   .profile-avatar {
     @apply relative w-24 h-24 border-4 rounded-full overflow-hidden;
     @apply border-white bg-gray-200;
+    @apply dark:border-gray-900 dark:bg-gray-700;
 
     @screen sm {
       @apply w-32 h-32 mx-auto;
@@ -30,6 +31,7 @@
 
   .profile-name {
     @apply mb-0 text-gray-900 text-2xl font-semibold;
+    @apply dark:text-gray-100;
 
     @screen sm {
       @apply text-center;
@@ -38,6 +40,7 @@
 
   .profile-bio {
     @apply text-lg text-gray-700;
+    @apply dark:text-gray-300;
   }
 }
 
