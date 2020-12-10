@@ -4,10 +4,8 @@ module.exports = {
   purge: {
     content: [
       "./public/**/*.html",
-      "./src/app/**/*.js",
-      "./src/components/**/*.js",
-      "./src/pages/**/*.js",
-      "./src/svg/**/*.svg",
+      "./src/**/*.js",
+      "./src/**/*.svg",
     ],
   },
   presets: [],
