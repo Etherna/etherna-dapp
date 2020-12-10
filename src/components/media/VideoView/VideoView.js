@@ -90,7 +90,7 @@ const VideoView = ({ hash, video }) => {
               <h1 className="video-title">{title}</h1>
               {videoOnIndex === false && (
                 <div className="badge-unindexed">
-                  <UnindexedIcon color="fill-orange-800" />
+                  <UnindexedIcon color="#9a3412" />
                   Unindexed
                 </div>
               )}

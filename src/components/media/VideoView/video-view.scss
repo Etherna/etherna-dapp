@@ -9,7 +9,7 @@
   .badge-un {
     &listed,
     &indexed {
-      @apply inline-block my-1 px-2 rounded text-xs font-semibold text-gray-800 bg-gray-400;
+      @apply inline-block my-1 px-2 rounded-sm text-xs font-semibold text-gray-800 bg-gray-400;
       svg {
         @apply inline-block mr-1;
       }

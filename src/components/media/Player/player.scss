@@ -50,11 +50,7 @@ $bg-alpha-50-light: rgba(
 
     .btn-play {
       @apply rounded-full w-10 h-10 bg-center bg-no-repeat cursor-pointer;
-      background-image: url("data:image/svg+xml,%3Csvg width='26px' height='26px' viewBox='0 0 26 26' version='1.1' xmlns='http://www.w3.org/2000/svg'%3E%3Cg\20
-      stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpath d='M21.8546701,14.1738557 L6.60015037,23.7893872 C5.95728905,24.1946083\20
-      5.11043319,23.9975104 4.70864486,23.3491566 C4.57229662,23.1291355 4.5,22.8748982 4.5,22.6154389 L4.5,3.38437581 C4.5,2.61980616 5.11455556,2\20
-      5.87264825,2 C6.1299096,2 6.38199319,2.07291431 6.60015037,2.21042747 L21.8546701,11.825959 C22.4975315,12.2311801 22.6929597,13.0852713\20
-      22.2911714,13.7336251 C22.1806997,13.9118899 22.0314249,14.0624401 21.8546701,14.1738557 Z' fill='%23FFFFFF'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+      background-image: url(../../../svg/icons/play-icon.svg);
     }
 
     .time-progress {
@@ -114,11 +110,7 @@ $bg-alpha-50-light: rgba(
   &.playing {
     .controls {
       .btn-play {
-        background-image: url("data:image/svg+xml,%3Csvg width='26px' height='26px' viewBox='0 0 26 26' version='1.1' xmlns='http://www.w3.org/2000/svg'%3E%3Cg\20
-        stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpath d='M9,2 C9.82842712,2 10.5,2.61560847 10.5,3.375 L10.5,22.625 C10.5,23.3843915\20
-        9.82842712,24 9,24 L6,24 C5.17157288,24 4.5,23.3843915 4.5,22.625 L4.5,3.375 C4.5,2.61560847 5.17157288,2 6,2 L9,2 Z M20,2 C20.8284271,2 21.5,2.61560847\20
-        21.5,3.375 L21.5,22.625 C21.5,23.3843915 20.8284271,24 20,24 L17,24 C16.1715729,24 15.5,23.3843915 15.5,22.625 L15.5,3.375 C15.5,2.61560847 16.1715729,2\20
-        17,2 L20,2 Z' fill='%23FFFFFF'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+        background-image: url(../../../svg/icons/pause-icon.svg);
       }
     }
   }

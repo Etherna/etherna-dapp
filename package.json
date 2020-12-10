@@ -47,7 +47,7 @@
   "devDependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/preset-react": "~7.12.1",
-    "@craco/craco": "^5.8.0",
+    "@craco/craco": "^6.0.0",
     "autoprefixer": "9.8.6",
     "child_process": "^1.0.2",
     "concurrently": "^5.3.0",

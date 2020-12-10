@@ -174,6 +174,8 @@ const reducer = (state, action) => {
     }
 
     case ReducerTypes.REFRESH_BUFFERING: {
+      if (!state.videoEl) return state
+
       let buffering = state.buffering
       for (let i = 0; i < state.videoEl.buffered.length; i++) {
         if (
