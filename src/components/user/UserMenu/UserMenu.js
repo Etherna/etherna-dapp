@@ -8,6 +8,7 @@ import ProfileLoadingPlaceholder from "./ProfileLoadingPlaceholder"
 import SigninButton from "./SigninButton"
 import Avatar from "../Avatar"
 import { DropDown, DropDownItem, DropDownItemContent, DropDownMenu, DropDownMenuToggle } from "@common/DropDown"
+import { ReactComponent as DarkModeIconLg } from "@svg/icons/dark-mode-icon-lg.svg"
 import EditProfileIcon from "@icons/menu/EditProfileIcon"
 import ProfileIcon from "@icons/menu/ProfileIcon"
 import IndexIcon from "@icons/menu/IndexIcon"
@@ -118,13 +119,13 @@ const UserMenu = () => {
 
         <DropDownItem>
           <div className="flex w-full">
-            <DarkModeIcon />
+            <DarkModeIconLg />
             <span htmlFor="darkMode-field">Dark Mode</span>
             <Switch
               id="darkMode-field"
               className="ml-auto"
-              checkedIcon={<DarkModeIcon className="mx-1" color="#fff" />}
-              uncheckedIcon={<LightModeIcon className="mx-1" color="#333" />}
+              checkedIcon={<DarkModeIcon className="m-0.5 ml-1" color="#fff" />}
+              uncheckedIcon={<LightModeIcon className="m-0.5 ml-1" color="#333" />}
               height={24}
               width={50}
               handleDiameter={20}
