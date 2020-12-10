@@ -4,9 +4,9 @@ import Modal from "@common/Modal"
 import Button from "@common/Button"
 import { closeUnsupportedBrowserModal } from "@state/actions/modals"
 
-const UnsupportedBrowserModal = () => {
+const UnsupportedBrowserModal = ({ show = false }) => {
   return (
-    <Modal show={true} showCloseButton={false}>
+    <Modal show={show} showCloseButton={false}>
       <div className="modal-header">
         <h4 className="modal-title mx-auto">You must use Safari version 11.1 or higher</h4>
       </div>

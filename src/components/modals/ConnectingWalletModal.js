@@ -5,9 +5,9 @@ import Button from "../common/Button"
 import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 import { closeConnectingWalletModal } from "@state/actions/modals"
 
-const ConnectingWalletModal = () => {
+const ConnectingWalletModal = ({ show = false }) => {
   return (
-    <Modal show={true} showCloseButton={false}>
+    <Modal show={show} showCloseButton={false}>
       <div className="modal-header">
         <h4 className="modal-title mx-auto">Signing in into Etherna</h4>
       </div>

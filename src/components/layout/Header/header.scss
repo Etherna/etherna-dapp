@@ -8,12 +8,15 @@
 }
 
 .navbar {
-  @apply flex flex-wrap fixed w-full z-1 top-0 shadow-sm bg-background-secondary text-sm font-semibold;
+  @apply flex flex-wrap fixed w-full z-1 top-0 shadow-sm bg-navigation-light text-sm font-semibold;
+  @apply dark:bg-navigation-dark;
 
   .nav-item {
-    @apply flex items-center px-4 py-2 whitespace-no-wrap;
+    @apply flex items-center text-gray-800 px-4 py-2 whitespace-nowrap;
+    @apply dark:text-gray-200;
+
     &.active {
-      @apply text-primary;
+      @apply text-primary-500;
     }
 
     @screen sm {
@@ -29,18 +32,12 @@
     @apply flex justify-start order-3 w-screen;
 
     .nav-item {
-      @apply block border-b-2 border-transparent text-gray-800 flex-grow text-center;
+      @apply block border-b-2 border-transparent flex-grow text-center;
+      @apply hover:text-primary-600;
       margin-top: 2px; //balance bottom border
-      &:hover {
-        @apply text-black;
-      }
 
       &.active {
-        @apply border-primary text-primary;
-      }
-
-      &:hover {
-        @apply text-primary-dark;
+        @apply border-primary-500 text-primary-500;
       }
     }
   }
@@ -48,16 +45,10 @@
   .right-nav {
     @apply flex flex-1 justify-end items-center order-2 pr-3;
 
-    @screen sm {
-      @apply pr-2;
-    }
-
     .nav-item {
-      @apply text-gray-800;
-
       &.active,
       &:hover {
-        @apply text-black;
+        @apply text-black dark:text-gray-100;
       }
 
       &-hidden-mobile {
@@ -67,6 +58,10 @@
         }
       }
     }
+
+    @screen sm {
+      @apply pr-2;
+    }
   }
 
   .logo {
@@ -74,7 +69,7 @@
   }
 
   @screen sm {
-    @apply flex-no-wrap;
+    @apply flex-nowrap;
 
     .navbar {
       .nav-item {
@@ -94,12 +89,6 @@
     .right-nav {
       @apply order-3 px-2 flex-1;
     }
-  }
-}
-
-.theme-dark {
-  .navbar {
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.6);
   }
 }
 

@@ -64,9 +64,9 @@ const UserCredit = () => {
             <>
               <p className="text-xs mb-4">You current balance is:</p>
               <p className="text-2xl font-bold break-all">{credit}</p>
-              <span className="text-sm text-gray-600 tracking-tighter">USD</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400 tracking-tighter">USD</span>
               {bytePrice && (
-                <p className="my-3 text-gray-600 text-sm">
+                <p className="my-3 text-gray-600 dark:text-gray-400 text-sm">
                   This is equivalent to <strong className="text-md">{gbReproduction}</strong> GB of videos reprodution.
                 </p>
               )}

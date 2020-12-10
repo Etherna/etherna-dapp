@@ -122,8 +122,8 @@ const SwarmFileUpload = ({
       )}
       {showConfirmation && buffer && !isUploading && uploadProgress === 0 && !confirmed && (
         <>
-          <p className="text-gray-700 mb-3">
-            You selected <span className="text-black">{filename}</span>. Do you confirm to upload
+          <p className="text-gray-700 dark:text-gray-400 mb-3">
+            You selected <span className="text-black dark:text-white">{filename}</span>. Do you confirm to upload
             this file?
           </p>
           <Button size="small" aspect="secondary" action={handleCancel} disabled={disabled}>
@@ -134,7 +134,7 @@ const SwarmFileUpload = ({
           </Button>
         </>
       )}
-      {confirmed && !canUpload && <p className="text-gray-700 mb-3">Pending upload...</p>}
+      {confirmed && !canUpload && <p className="text-gray-700 dark:text-gray-400 mb-3">Pending upload...</p>}
       {isUploading && !hash && (
         <>
           {uploadProgress < 100 ? <p>Uploading ({uploadProgress}%)...</p> : <p>Processing...</p>}

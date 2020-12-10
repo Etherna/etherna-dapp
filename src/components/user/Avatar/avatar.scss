@@ -5,13 +5,14 @@
 
   img {
     @apply w-full h-full object-cover border-2 border-white rounded-full overflow-hidden;
+    @apply dark:border-gray-900;
   }
 
   &.badge {
     &::after {
       content: "";
-      @apply absolute right-0 top-0 w-3 h-3 border border-white bg-blue-600
-                rounded-full;
+      @apply absolute right-0 top-0 w-3 h-3 border border-white bg-blue-600 rounded-full;
+      @apply dark:border-gray-900;
     }
   }
 }

@@ -78,6 +78,10 @@ async function handleValidatorRequest(req, res) {
   // Run requests.
   const gatewayResponsePromise = forwardRequestToGateway(req) //start async request to gateway
 
+  if (process.env.DISABLE_REQUEST_VALIDATION) {
+    return await gatewayResponsePromise
+  }
+
   // Get Validator response.
   const validatorResponse = await forwardRequestToValidator(req) //get response from validator
 

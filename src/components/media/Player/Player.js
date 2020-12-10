@@ -6,6 +6,7 @@ import Axios from "axios"
 import "./player.scss"
 
 import { PlayerContextProvider, ReducerTypes, useStateValue } from "./PlayerContext"
+import PlayerPlaceholder from "./PlayerPlaceholder"
 import PlayerControls from "./PlayerControls"
 import PlayerBytesCounter from "./PlayerBytesCounter"
 import PlayerShortcuts from "./PlayerShortcuts"
@@ -132,6 +133,12 @@ const InnerPlayer = ({ sources, originalQuality, thumbnail }) => {
       errorCode: code,
       errorMessage: message
     })
+  }
+
+  if (!source) {
+    return (
+      <PlayerPlaceholder />
+    )
   }
 
   return (

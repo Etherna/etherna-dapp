@@ -1,54 +1,43 @@
 /*! purgecss start ignore */
 
 .placeholder {
-  background: linear-gradient(
-    270deg,
-    theme("colors.gray.200"),
-    theme("colors.gray.100"),
-    theme("colors.gray.200"),
-    theme("colors.gray.100")
-  );
-  background-size: 250% 250%;
-  animation: placeholder-animation 3s ease infinite;
-
-  &.rounded {
-    @apply rounded;
-  }
-  &.rounded-full {
-    @apply rounded-full;
-  }
-  &.rounded-sm {
-    @apply rounded-sm;
-  }
-  &.rounded-lg {
-    @apply rounded-lg;
-  }
+  @apply animate-pulse bg-gray-300 dark:bg-gray-600;
 }
 
-.theme-dark {
-  .placeholder {
-    background: linear-gradient(
-      270deg,
-      theme("colors.gray.400"),
-      theme("colors.gray.200"),
-      theme("colors.gray.400"),
-      theme("colors.gray.200")
-    );
-    background-size: 250% 250%;
-    animation: placeholder-animation 3s ease infinite;
-  }
-}
+// .placeholder {
+//   background: linear-gradient(
+//     270deg,
+//     theme("colors.gray.200"),
+//     theme("colors.gray.100"),
+//     theme("colors.gray.200"),
+//     theme("colors.gray.100")
+//   );
+//   background-size: 250% 250%;
+//   animation: placeholder-animation 3s ease infinite;
 
-@keyframes placeholder-animation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
+//   .dark & {
+//     background: linear-gradient(
+//       270deg,
+//       theme("colors.gray.600"),
+//       theme("colors.gray.500"),
+//       theme("colors.gray.600"),
+//       theme("colors.gray.500")
+//     );
+//     background-size: 250% 250%;
+//     animation: placeholder-animation 3s ease infinite;
+//   }
+// }
+
+// @keyframes placeholder-animation {
+//   0% {
+//     background-position: 0% 50%;
+//   }
+//   50% {
+//     background-position: 100% 50%;
+//   }
+//   100% {
+//     background-position: 0% 50%;
+//   }
+// }
 
 /*! purgecss end ignore */

@@ -2,12 +2,14 @@
   @apply fixed transform scale-y-0 origin-top transition duration-200 z-20;
 
   &-arrow {
-    @apply absolute w-6 h-5 bg-gray-200;
+    @apply absolute w-5 h-4 bg-white;
+    @apply dark:bg-gray-800;
     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
   }
 
   &-content {
-    @apply absolute inset-x-0 bottom-0 bg-gray-200 rounded shadow-xl;
+    @apply absolute inset-x-0 bottom-0 bg-white rounded shadow-xl;
+    @apply dark:bg-gray-800;
   }
 
   &-backdrop {

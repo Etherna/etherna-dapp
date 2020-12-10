@@ -1,8 +1,9 @@
 /*! purgecss start ignore */
 
 kbd {
-  @apply inline-block text-gray-600 font-bold text-center px-2 bg-gray-200 rounded-sm
-        border-b-2 border-gray-300;
+  @apply inline-block font-bold text-center px-2 rounded-sm border-b-2;
+  @apply text-gray-600 bg-gray-200 border-gray-300;
+  @apply dark:text-gray-300 dark:bg-gray-800 dark:border-gray-700;
 }
 
 .shortcut-preview {
@@ -30,7 +31,7 @@ kbd {
     @apply border-2 border-red-500;
   }
   &:focus {
-    @apply outline-none shadow-outline;
+    @apply outline-none ring;
   }
 
   * {

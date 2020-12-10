@@ -5,6 +5,7 @@ import Switch from "react-switch"
 import EnvDropDownMenus from "./EnvDropDownMenu"
 import { DropDown, DropDownMenu, DropDownMenuToggle, DropDownItem, DropDownItemContent } from "@common/DropDown"
 import Button from "@common/Button"
+import { ReactComponent as DarkModeIconLg } from "@svg/icons/dark-mode-icon-lg.svg"
 import MenuIcon from "@icons/menu/MenuIcon"
 import IndexIcon from "@icons/menu/IndexIcon"
 import GatewayIcon from "@icons/menu/GatewayIcon"
@@ -49,13 +50,13 @@ const GuestMenu = () => {
 
         <DropDownItem>
           <div className="flex w-full">
-            <DarkModeIcon />
+            <DarkModeIconLg />
             <span htmlFor="darkMode-field">Dark Mode</span>
             <Switch
               id="darkMode-field"
               className="ml-auto"
-              checkedIcon={<DarkModeIcon className="mx-1" color="#fff" />}
-              uncheckedIcon={<LightModeIcon className="mx-1" color="#333" />}
+              checkedIcon={<DarkModeIcon className="m-0.5 ml-1" color="#fff" />}
+              uncheckedIcon={<LightModeIcon className="m-0.5 ml-1" color="#333" />}
               height={24}
               width={50}
               handleDiameter={20}

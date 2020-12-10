@@ -1,19 +1,18 @@
 /*! purgecss start ignore */
 
-$color: theme("colors.primary");
+$color: theme("colors.primary.500");
 $bar-height: 2px;
 
 #nprogress {
   @apply pointer-events-none;
 
   .bar {
-    @apply fixed top-0 left-0 w-full bg-primary z-50;
+    @apply fixed top-0 left-0 w-full bg-primary-500 z-50;
     height: $bar-height;
   }
   .peg {
     @apply block absolute w-full h-full right-0 opacity-100;
     box-shadow: 0 0 10px $color, 0 0 5px $color;
-    transform: rotate(3deg) translate(0px, -4px);
   }
 }
 

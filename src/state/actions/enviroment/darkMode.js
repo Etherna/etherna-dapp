@@ -11,11 +11,9 @@ export const darkModeEnabled = () => {
 export const loadDarkMode = () => {
   const darkMode = darkModeEnabled()
   if (darkMode) {
-    window.document.body.classList.remove("theme-light")
-    window.document.body.classList.add("theme-dark")
+    window.document.documentElement.classList.add("dark")
   } else {
-    window.document.body.classList.remove("theme-dark")
-    window.document.body.classList.add("theme-light")
+    window.document.documentElement.classList.remove("dark")
   }
   return darkMode
 }

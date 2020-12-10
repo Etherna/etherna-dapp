@@ -24,17 +24,19 @@ const ModalsSection = () => {
 
   return (
     <section>
-      {isConnectingWallet && <ConnectingWalletModal />}
+      <ConnectingWalletModal show={isConnectingWallet} />
 
-      {showUnsupportedModal && <UnsupportedBrowserModal />}
+      <UnsupportedBrowserModal show={showUnsupportedModal} />
 
-      {errorMessage && !mustConsentError && (
-        <ErrorModal title={errorTitle} error={errorMessage} />
-      )}
+      <ErrorModal
+        title={errorTitle}
+        error={errorMessage}
+        show={errorMessage && !mustConsentError}
+      />
 
-      {isEditingShortcut && <ShortcutModal />}
+      <ShortcutModal show={isEditingShortcut} />
 
-      {isCroppingImage && <ImageCropModal />}
+      <ImageCropModal show={isCroppingImage} />
     </section>
   )
 }

@@ -13,7 +13,8 @@
 }
 
 .sidebar {
-  @apply hidden bg-background-secondary overflow-y-auto overflow-x-hidden fixed inset-y-0 left-0 pt-16;
+  @apply hidden bg-navigation-light overflow-y-auto overflow-x-hidden fixed inset-y-0 left-0 pt-16;
+  @apply dark:bg-navigation-dark;
 
   @screen sm {
     @apply flex flex-col w-48;
@@ -33,25 +34,28 @@
 
       .sidebar-item {
         @apply flex items-center text-gray-800 py-2 px-3 transition duration-200;
-        &:hover {
-          @apply text-black bg-gray-200 transition duration-200;
-        }
+        @apply hover:text-black hover:bg-gray-100;
+        @apply dark:text-gray-200;
+        @apply dark:hover:text-white dark:hover:bg-gray-800;
 
         .sidebar-item-image {
           @apply w-8 h-8 object-center object-cover rounded-full;
         }
         .sidebar-item-title {
-          @apply ml-1;
+          @apply ml-2;
         }
       }
     }
   }
 
   .sidebar-label {
-    @apply block uppercase tracking-wide text-gray-700 text-xs font-semibold mb-2 px-3;
+    @apply block mb-2 px-3;
+    @apply text-gray-500 uppercase tracking-wide text-xs font-semibold;
+    @apply dark:text-gray-400;
   }
   .sidebar-text {
     @apply mx-3 text-gray-500;
+    @apply dark:text-gray-400;
   }
 
   .text-muted {
@@ -63,10 +67,8 @@
   @apply my-3;
 
   .footer-link {
-    @apply text-gray-600;
-    &:hover {
-      @apply text-gray-800;
-    }
+    @apply text-gray-600 hover:text-gray-800;
+    @apply dark:text-gray-400 dark:hover:text-gray-200;
 
     &:not(:last-child)::after {
       content: "\2013";
@@ -77,6 +79,7 @@
 
 .footer-notice {
   @apply w-full text-gray-600 p-2;
+  @apply dark:text-gray-400;
 }
 
 /*! purgecss end ignore */

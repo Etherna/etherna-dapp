@@ -6,23 +6,22 @@ html {
 }
 
 body {
-  @apply font-sans antialiased bg-background text-dark;
+  @apply font-sans antialiased bg-gray-50 text-dark;
+  @apply dark:bg-gray-900 dark:text-light;
 }
 
 a {
   transition: color 0.25s;
-  @apply no-underline cursor-pointer text-primary;
+  @apply no-underline cursor-pointer text-primary-500;
 
   &:hover {
     transition: color 0.25s;
-    @apply no-underline text-primary-dark;
+    @apply no-underline text-primary-600;
   }
 }
 
 button {
-  &:focus {
-    @apply outline-none;
-  }
+  @apply focus:outline-none;
   &:disabled {
     @apply opacity-50 cursor-not-allowed;
   }
@@ -54,16 +53,9 @@ h4 {
 }
 
 [role="button"] {
-  &:focus {
-    outline: none;
-  }
+  @apply focus:outline-none;
 }
 
 hr {
-  @apply border-gray-300;
-}
-.theme-dark {
-  hr {
-    @apply border-gray-400;
-  }
+  @apply border-gray-300 dark:border-gray-600;
 }

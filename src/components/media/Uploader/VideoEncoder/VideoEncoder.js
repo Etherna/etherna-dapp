@@ -77,8 +77,8 @@ const VideoEncoder = ({ file, canEncode, onConfirmEncode, onEncodingComplete, on
     <>
       {file && !isEncoding && (
         <>
-          <p className="text-gray-700 mb-3">
-            You selected <span className="text-black">{file.name}</span>. Do you confirm to upload
+          <p className="text-gray-700 dark:text-gray-400 mb-3">
+            You selected <span className="text-black dark:text-white">{file.name}</span>. Do you confirm to upload
             this file?
           </p>
           <Button size="small" aspect="secondary" action={onCancel}>
@@ -95,7 +95,7 @@ const VideoEncoder = ({ file, canEncode, onConfirmEncode, onEncodingComplete, on
         </>
       )}
       {confirmed && !canEncode && (
-        <p className="text-gray-700 mb-3">Pending encoding...</p>
+        <p className="text-gray-700 dark:text-gray-400 mb-3">Pending encoding...</p>
       )}
       {isEncoding && (
         <div className="video-encoder">

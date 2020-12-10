@@ -83,52 +83,60 @@ const VideoView = ({ hash, video }) => {
     <>
       <SEO title={title || hash} />
       <div className="video-watch container">
-        <Player sources={sources} originalQuality={originalQuality} thumbnail={thumbnail} />
-        <div className="video-info">
-          <h1 className="video-title">{title}</h1>
-          {videoOnIndex === false && (
-            <div className="badge-unindexed">
-              <UnindexedIcon color="var(--color-orange-800)" />
-              Unindexed
-            </div>
-          )}
-          <div className="video-info-bar">
-            <div className="video-stats">
-              <span className="publish-time">
-                {publishDate && moment(publishDate).format("LLL")}
-              </span>
-            </div>
-            <div className="video-actions">
-              {/* <a download href={source} className="btn btn-transparent btn-rounded">
-                <DownloadIcon />
-              </a> */}
-            </div>
-          </div>
-
-          <hr />
-
-          <div className="video-profile-info">
-            {profileAddress && (
-              <Link to={Routes.getProfileLink(profileAddress)}>
-                <div className="video-profile">
-                  <Avatar image={profileAvatar} address={profileAddress || "0x0"} />
-                  <h3 className="profile-name">{profileName || shortenEthAddr(profileAddress)}</h3>
+        <div className="row justify-center">
+          <div className="col lg:w-3/4">
+            <Player sources={sources} originalQuality={originalQuality} thumbnail={thumbnail} />
+            <div className="video-info">
+              <h1 className="video-title">{title}</h1>
+              {videoOnIndex === false && (
+                <div className="badge-unindexed">
+                  <UnindexedIcon color="#9a3412" />
+                  Unindexed
                 </div>
-              </Link>
-            )}
+              )}
+              <div className="video-info-bar">
+                <div className="video-stats">
+                  <span className="publish-time">
+                    {publishDate && moment(publishDate).format("LLL")}
+                  </span>
+                </div>
+                <div className="video-actions">
+                  {/* <a download href={source} className="btn btn-transparent btn-rounded">
+                    <DownloadIcon />
+                  </a> */}
+                </div>
+              </div>
+
+              <div className="my-8">
+                <hr />
+                <div className="video-profile-info">
+                  {profileAddress && (
+                    <Link to={Routes.getProfileLink(profileAddress)}>
+                      <div className="video-profile">
+                        <Avatar image={profileAvatar} address={profileAddress || "0x0"} />
+                        <h3 className="profile-name">{profileName || shortenEthAddr(profileAddress)}</h3>
+                      </div>
+                    </Link>
+                  )}
+                </div>
+                <hr />
+              </div>
+
+              <div className="video-description">
+                {description && description !== "" ? (
+                  <MarkdownPreview value={description} disableHeading={true} />
+                ) : (
+                  <p className="text-gray-500">
+                    <em>This video doesn't have a description</em>
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
 
-          <hr />
-
-          <div className="video-description">
-            {description && description !== "" ? (
-              <MarkdownPreview value={description} disableHeading={true} />
-            ) : (
-              <p className="text-gray-500">
-                <em>This video doesn't have a description</em>
-              </p>
-            )}
-          </div>
+          <aside className="lg:w-1/4 hidden">
+            Eventually a sidebar
+          </aside>
         </div>
       </div>
     </>

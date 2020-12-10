@@ -1,16 +1,15 @@
 /*! purgecss start ignore */
 
 .modal {
-  @apply invisible fixed top-0 left-0 w-full h-full overflow-x-hidden
-        overflow-y-auto z-20 pointer-events-none;
+  @apply invisible fixed top-0 left-0 w-full h-full;
+  @apply overflow-x-hidden overflow-y-auto z-20 pointer-events-none;
 
   .modal-dialog {
-    @apply fixed max-w-xl min-w-xs w-1/2 bg-white p-6
-            border border-gray-100 rounded shadow-lg
-            transition-all duration-200 opacity-0 pointer-events-auto;
-    left: 50%;
-    top: 50%;
-    transform: translateX(-50%) translateY(-60%) scale(0.75);
+    @apply max-w-xl min-w-xs w-1/2 p-6 border rounded shadow-lg transition-all duration-200  pointer-events-auto;
+    @apply bg-white border-gray-100 opacity-0;
+    @apply fixed transform origin-top -translate-x-1/2 translate-y-1/3 scale-75;
+    @apply dark:bg-gray-800 dark:border-gray-700;
+    left: 50%; top: 50%;
 
     .modal-header {
       @apply flex;
@@ -21,19 +20,21 @@
     }
 
     .close {
-      @apply flex justify-around w-8 h-8 ml-auto rounded-full
-                cursor-pointer transition-all duration-200;
+      @apply flex justify-around w-8 h-8 ml-auto rounded-full cursor-pointer transition-all duration-200;
+
       &:focus {
         @apply outline-none;
       }
       &:after {
         content: "\d7";
         @apply text-xl text-gray-500 self-center;
+        @apply dark:text-gray-300;
       }
       &:hover {
         @apply bg-gray-100 transition-all duration-200;
+        @apply dark:bg-gray-700;
         &:after {
-          @apply text-gray-600;
+          @apply text-gray-600 dark:text-gray-300;
         }
       }
     }
@@ -41,33 +42,27 @@
 
   &.show {
     @apply visible;
+
     .modal-dialog {
-      @apply opacity-100 transition-all duration-200;
-      transform: translateX(-50%) translateY(-50%) scale(1);
+      @apply opacity-100 -translate-x-1/2 -translate-y-1/2 scale-100;
     }
   }
 }
 
 .modal-backdrop {
   @apply invisible fixed top-0 left-0 w-full h-full -z-1 pointer-events-none transition-all duration-200;
+  backdrop-filter: blur(3px);
 
   &::after {
     content: "";
     @apply block visible absolute inset-0 bg-white opacity-0 transition-all duration-200;
+    @apply dark:bg-black;
   }
 
   &.show {
     @apply visible z-10 pointer-events-auto;
     &::after {
       @apply opacity-50 transition-all duration-200;
-    }
-  }
-}
-
-.theme-dark {
-  .modal {
-    .modal-dialog {
-      @apply bg-gray-300;
     }
   }
 }
