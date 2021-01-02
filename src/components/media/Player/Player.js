@@ -21,7 +21,7 @@ import http from "@utils/request"
  */
 const InnerPlayer = ({ sources, originalQuality, thumbnail }) => {
   const [state, dispatch] = useStateValue()
-  const { source, currentQuality, isPlaying, currentTime, error } = state
+  const { source, currentQuality, isPlaying, currentTime, error, videoEl } = state
 
   const [hiddenControls, setHiddenControls] = useState(false)
   const videoRef = useRef()
@@ -64,7 +64,7 @@ const InnerPlayer = ({ sources, originalQuality, thumbnail }) => {
       })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [videoRef])
+  }, [videoRef.current])
 
   useEffect(() => {
     if (currentTime === 1) {
@@ -146,7 +146,11 @@ const InnerPlayer = ({ sources, originalQuality, thumbnail }) => {
       <div className={classnames("player", { playing: isPlaying })}>
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <video
-          ref={videoRef}
+          ref={v => {
+            if (v && v !== videoEl) {
+              videoRef.current = v
+            }
+          }}
           autoPlay={false}
           preload="metadata"
           poster={thumbnail}

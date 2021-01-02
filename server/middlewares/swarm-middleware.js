@@ -93,6 +93,8 @@ async function handleValidatorRequest(req, res) {
   // Decode data from validator response.
   const validationData = await validatorResponse.json()
 
+  console.log(validationData);
+
   // Elaborate result.
   switch (validationData.result) {
     case "AllowFree": //execute free request on gateway, as is
