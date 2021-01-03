@@ -58,7 +58,7 @@
     "form-data": "^3.0.0",
     "ftp-deploy": "^2.3.6",
     "glob": "^7.1.6",
-    "http-proxy-middleware": "^1.0.5",
+    "http-proxy-middleware": "^1.0.6",
     "https": "^1.0.0",
     "levenary": "^1.1.1",
     "node-fetch": "^2.6.1",
