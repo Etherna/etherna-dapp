@@ -41,11 +41,13 @@ const ThumbnailUpload = ({ hash, pinContent, disabled, onComplete, onCancel }, r
   const handleReset = async () => {
     removeFromQueue(`thumbnail`)
 
-    try {
-      const hash = await deleteThumbnail(manifest)
-      updateManifest(hash)
-    } catch (error) {
-      showError("Error", error.message)
+    if (manifest) {
+      try {
+        const hash = await deleteThumbnail(manifest)
+        updateManifest(hash)
+      } catch (error) {
+        showError("Error", error.message)
+      }
     }
 
     onCancel && onCancel()
