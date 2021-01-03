@@ -1,5 +1,6 @@
 const fs = require("fs")
 const express = require("express")
+const bodyParser = require("body-parser")
 const https = require("https")
 const cors = require("cors")
 
@@ -14,15 +15,24 @@ require("./utils/env")
 const app = express()
 const port = 44362
 
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.raw({
+  // verify: function (req, res, buf, encoding) {
+  //   if (buf && buf.length) {
+  //     req.rawBody = buf.toString(encoding || "utf8")
+  //   }
+  // },
+  type: "*/*",
+  limit: "100mb"
+}))
 app.use(
   cors({
     credentials: true,
     origin: true
   })
 )
-
 app.use(ValidatorMiddleware)
-
 app.use(SwarmMiddleware)
 
 const PrivateKeyPath = process.env.SSL_PRIVATE_KEY_PATH

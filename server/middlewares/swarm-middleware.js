@@ -78,7 +78,7 @@ async function handleValidatorRequest(req, res) {
   // Run requests.
   const gatewayResponsePromise = forwardRequestToGateway(req) //start async request to gateway
 
-  if (process.env.DISABLE_REQUEST_VALIDATION) {
+  if (process.env.DISABLE_REQUEST_VALIDATION && process.env.DISABLE_REQUEST_VALIDATION === "true") {
     return await gatewayResponsePromise
   }
 
@@ -92,8 +92,6 @@ async function handleValidatorRequest(req, res) {
 
   // Decode data from validator response.
   const validationData = await validatorResponse.json()
-
-  console.log(validationData);
 
   // Elaborate result.
   switch (validationData.result) {
@@ -208,7 +206,6 @@ async function forwardRequestToGateway(request) {
     headers: headers,
     body: request.body,
     method: request.method,
-    timeout: 10000,
   })
 }
 
