@@ -78,7 +78,7 @@ async function handleValidatorRequest(req, res) {
   // Run requests.
   const gatewayResponsePromise = forwardRequestToGateway(req) //start async request to gateway
 
-  if (process.env.DISABLE_REQUEST_VALIDATION) {
+  if (process.env.DISABLE_REQUEST_VALIDATION && process.env.DISABLE_REQUEST_VALIDATION === "true") {
     return await gatewayResponsePromise
   }
 
@@ -179,17 +179,18 @@ async function limitGatewayResponse(gatewayResponsePromise, validationData) {
 async function notifyEndOfLimitedRequest(requestId, bodySize, secret) {
   const closeEndpoint = ValidatorHost + "/api/v0.2/interceptor/request/close"
 
-  return await fetch(closeEndpoint, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      id: requestId,
-      bodySize: bodySize,
-      secret: secret
-    })
+  const method = "PUT"
+  const headers = {
+    "Content-Type": "application/json"
+  }
+  const body = JSON.stringify({
+    id: requestId,
+    bodySize: bodySize,
+    secret: secret
   })
+  const options = parseFetchOptions(headers, method, body)
+
+  return await fetch(closeEndpoint, options)
 }
 
 /**
@@ -202,12 +203,9 @@ async function forwardRequestToGateway(request) {
   headers.host = SwarmHost.replace(/^https?:\/\//, "")
   delete headers.cookie
 
-  return await fetch(SwarmHost + request.url, {
-    headers: headers,
-    body: request.body,
-    method: request.method,
-    timeout: 10000,
-  })
+  const options = parseFetchOptions(headers, request.method, request.body)
+
+  return await fetch(SwarmHost + request.url, options)
 }
 
 /**
@@ -230,9 +228,28 @@ async function forwardRequestToValidator(request, forceHttps) {
   headers.host = host
   headers["X-Forwarded-Host"] = host
 
-  return await fetch(newRequestUrl.toString(), {
-    headers: headers,
-    body: request.body,
-    method: request.method,
-  })
+  const options = parseFetchOptions(headers, request.method, request.body)
+
+  return await fetch(newRequestUrl.toString(), options)
+}
+
+/**
+ * Parse the options for a fetch request
+ * @param {import("node-fetch").HeadersInit} headers
+ * @param {string} method
+ * @param {import("node-fetch").BodyInit} body
+ */
+const parseFetchOptions = (headers, method, body) => {
+  /** @type {import("node-fetch").RequestInit} */
+  const options = {
+    headers,
+    body,
+    method: method,
+  }
+
+  if (["GET", "HEAD"].includes(method.toUpperCase())) {
+    delete options.body
+  }
+
+  return options
 }
