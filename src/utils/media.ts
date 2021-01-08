@@ -1,10 +1,10 @@
 /**
  * Get a video duration
- * @param {string|File|ArrayBuffer} videoObj Video file object or encoded buffer
- * @returns {number} Duration in seconds
+ * @param videoObj Video file object or encoded buffer
+ * @returns Duration in seconds
  */
-export const getVideoDuration = videoObj => {
-  return new Promise((resolve, reject) => {
+export const getVideoDuration = (videoObj: string|File|ArrayBuffer) => {
+  return new Promise<number>((resolve, reject) => {
     const video = document.createElement("video")
     video.preload = "metadata"
     video.onerror = error => {
@@ -13,7 +13,7 @@ export const getVideoDuration = videoObj => {
     video.onloadedmetadata = () => {
       try {
         window.URL.revokeObjectURL(video.src)
-        const duration = parseInt(video.duration)
+        const duration = video.duration
 
         resolve(duration)
       } catch (error) {
@@ -26,11 +26,11 @@ export const getVideoDuration = videoObj => {
 
 /**
  * Get a video resolution
- * @param {string|File|ArrayBuffer} videoObj Video file object or encoded buffer
- * @returns {number} Video resolution
+ * @param videoObj Video file object or encoded buffer
+ * @returns Video resolution
  */
-export const getVideoResolution = videoObj => {
-  return new Promise((resolve, reject) => {
+export const getVideoResolution = (videoObj: string|File|ArrayBuffer) => {
+  return new Promise<number>((resolve, reject) => {
     const video = document.createElement("video")
     video.preload = "metadata"
     video.onerror = error => {
@@ -39,7 +39,7 @@ export const getVideoResolution = videoObj => {
     video.onloadedmetadata = () => {
       try {
         window.URL.revokeObjectURL(video.src)
-        const resolution = parseInt(video.videoHeight)
+        const resolution = video.videoHeight
 
         resolve(resolution)
       } catch (error) {
@@ -51,12 +51,10 @@ export const getVideoResolution = videoObj => {
 }
 
 /**
- * Get video source
- *
- * @param {string|File|ArrayBuffer} videoObj Video source/buffer/file
- * @returns {string}
+ * Get video source *
+ * @param videoObj Video source/buffer/file
  */
-const videoSource = videoObj =>
+const videoSource = (videoObj: string|File|ArrayBuffer) =>
   typeof videoObj === "string" ? videoObj
     : videoObj instanceof File
       ? URL.createObjectURL(videoObj)

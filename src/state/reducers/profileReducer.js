@@ -5,9 +5,9 @@ export const ProfileActionTypes = {
 }
 
 /**
- * @param {import("..").ProfileState} state
+ * @param {import("../typings").ProfileState} state
  * @param {object} action
- * @returns {import("..").ProfileState}
+ * @returns {import("../typings").ProfileState}
  */
 const profileReducer = (state = {}, action) => {
   switch (action.type) {

@@ -1,10 +1,10 @@
 /**
  * Split an array into 2
- * @param {array} array Array to split
- * @param {number} limit Limit beyond which the split should take place
- * @returns {array} An array containing 1 or 2 arrays
+ * @param array Array to split
+ * @param limit Limit beyond which the split should take place
+ * @returns An array containing 1 or 2 arrays
  */
-export const splitArray = (array, limit) => {
+export const splitArray = <T>(array: Array<T>, limit: number): Array<Array<T>> => {
   if (array.length < limit || array.length < 2) {
     return [array]
   } else {

@@ -1,22 +1,25 @@
 import http from "@utils/request"
+import { GatewayCurrentUser } from "./typings"
 
 export default class GatewayUsersClient {
+  url: string
+
   /**
    * Init an gateway user client
    * @param {string} url Api host + api url
    */
-  constructor(url) {
+  constructor(url: string) {
     this.url = url
   }
 
   /**
    * Get the current logged user's info
-   * @returns {import(".").GatewayCurrentUser}
+   * @returns Gateway current user
    */
   async fetchCurrentUser() {
     const endpoint = `${this.url}/users/current`
 
-    const resp = await http.get(endpoint, {
+    const resp = await http.get<GatewayCurrentUser>(endpoint, {
       withCredentials: true
     })
 
@@ -29,12 +32,12 @@ export default class GatewayUsersClient {
 
   /**
    * Get current user's credit
-   * @returns {number} User's credit amount
+   * @returns User's credit amount
    */
   async fetchCredit() {
     const endpoint = `${this.url}/users/current/credit`
 
-    const resp = await http.get(endpoint, {
+    const resp = await http.get<number>(endpoint, {
       withCredentials: true
     })
 

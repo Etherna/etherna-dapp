@@ -1,22 +1,24 @@
 import http from "@utils/request"
 
 export default class GatewaySettingsClient {
+  url: string
+
   /**
    * Init an gateway settings client
-   * @param {string} url Api host + api url
+   * @param url Api host + api url
    */
-  constructor(url) {
+  constructor(url: string) {
     this.url = url
   }
 
   /**
    * Get the current byte price
-   * @returns {number}
+   * @returns Dollar price per single byte
    */
   async fetchCurrentBytePrice() {
     const endpoint = `${this.url}/system/byteprice`
 
-    const resp = await http.get(endpoint, {
+    const resp = await http.get<number>(endpoint, {
       withCredentials: true
     })
 

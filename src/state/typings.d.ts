@@ -1,19 +1,21 @@
 import Web3 from "web3"
 import { Crop } from "react-image-crop"
 import Lang from "lang.js"
+import { Bzz } from "@erebos/bzz"
+
 import { Keymap } from "@keyboard"
 import IndexClient from "@utils/indexClient/client"
 import GatewayClient from "@utils/gatewayClient/client"
-import { Bzz } from "@erebos/bzz"
+import { SwarmImage } from "@utils/swarmProfile"
 
-export interface RootState {
+export type AppState = {
   env: EnvState
   profile: ProfileState
   ui: UIState
   user: UserState
 }
 
-export interface EnvState {
+export type EnvState = {
   indexHost: string
   indexApiPath: string
   gatewayHost: string
@@ -44,7 +46,7 @@ export interface EnvState {
   image?: string
 }
 
-export interface ProfileState {
+export type ProfileState = {
   name?: string
   description?: string
   avatar?: SwarmImage
@@ -55,7 +57,7 @@ export interface ProfileState {
   existsOnIndex?: boolean
 }
 
-export interface UIState {
+export type UIState = {
   errorTitle?: string
   errorMessage?: string
   isConnectingWallet?: boolean
@@ -68,7 +70,7 @@ export interface UIState {
   isCroppingImage?: boolean
 }
 
-export interface UserState {
+export type UserState = {
   address?: string
   identityManifest?: string
   prevAddresses?: string[]
@@ -76,11 +78,4 @@ export interface UserState {
   credit: number
   isSignedIn: boolean
   isSignedInGateway: boolean
-}
-
-
-interface SwarmImage {
-  url: string
-  hash: string
-  isRaw: boolean
 }

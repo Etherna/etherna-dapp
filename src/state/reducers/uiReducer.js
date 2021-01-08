@@ -10,9 +10,9 @@ export const UIActionTypes = {
 }
 
 /**
- * @param {import("..").UIState} state
+ * @param {import("../typings").UIState} state
  * @param {object} action
- * @returns {import("..").UIState}
+ * @returns {import("../typings").UIState}
  */
 const uiReducer = (state = {}, action) => {
   switch (action.type) {

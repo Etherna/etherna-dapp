@@ -1,63 +1,66 @@
-import axios from "axios"
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios"
 import { sha3 } from "web3-utils"
 
-const AxiosPendingCache = {
-  /**
-   * Get the current pending axios requests
-   * @typedef {object} AxiosPendingRequest
-   * @property {string} hash Hash of the request config
-   * @property {number} count Number of waiting requests
-   * @property {import("axios").AxiosResponse<any>} response Response of the first request
-   * @var {AxiosPendingRequest[]}
-   */
+interface SkipXHRError extends AxiosError {
+  isSkipXHR?: boolean
+  request?: AxiosRequestConfig
+}
+
+type AxiosPendingRequest = {
+  /** Hash of the request config */
+  hash: string
+  /** Number of waiting requests */
+  count: number
+  /** Response of the first request */
+  response?: AxiosResponse | SkipXHRError
+}
+
+type PendingCache = {
+  /** Get the current pending axios requests */
+  pendingRequests: AxiosPendingRequest[]
+  /** Find the pending request related to an axios config */
+  findPendingRequest: (config: AxiosRequestConfig|undefined) => AxiosPendingRequest | undefined
+  /** Check if the same request has already been made, so it should wait for the first one instead */
+  shouldThrottle: (config: AxiosRequestConfig) => boolean
+  /** Promise waiting for the first request to finish */
+  waitPendingRequest: (config: AxiosRequestConfig) => Promise<unknown>
+  /** Create a pending request or increase the counter for an existing one */
+  pushPendingRequest: (config: AxiosRequestConfig) => void
+  /** Decrease pending request counter and delete it if empty */
+  popPendingRequest: (config: AxiosRequestConfig|undefined) => void
+}
+
+/**
+ * Convert a axios config to a sha3 hash
+ * @param config Axios config object
+ */
+const configHash = (config: AxiosRequestConfig|null|undefined) => {
+  return config
+    ? sha3(
+      JSON.stringify({
+        method: config.method,
+        url: config.url,
+        params: config.params,
+        body: config.data || "",
+      })
+    ) : ""
+}
+
+const AxiosPendingCache: PendingCache = {
   pendingRequests: [],
 
-  /**
-   * Convert a axios config to a sha3 hash
-   * @param {import("axios").AxiosRequestConfig} config Axios config object
-   * @return {string}
-   */
-  configHash: config => {
-    return config
-      ? sha3(
-        JSON.stringify({
-          method: config.method,
-          url: config.url,
-          params: config.params,
-          body: config.data || "",
-        })
-      )
-      : ""
-  },
-
-  /**
-   * Find the pending request related to an axios config
-   * @param {import("axios").AxiosRequestConfig} config Axios config
-   * @returns {AxiosPendingRequest|null} Pending request
-   */
   findPendingRequest: config => {
     return AxiosPendingCache.pendingRequests.find(
-      preq => preq.hash === AxiosPendingCache.configHash(config)
+      preq => preq.hash === configHash(config)
     )
   },
 
-  /**
-   * Check if the same request has already been
-   * made, so it should wait for the first one instead
-   * @param {import("axios").AxiosRequestConfig} config Axios config
-   * @returns {boolean} Whether it should throttle
-   */
   shouldThrottle: config => {
     return !!AxiosPendingCache.findPendingRequest(config)
   },
 
-  /**
-   * Promise waiting for the first request to finish
-   * @param {import("axios").AxiosRequestConfig} config Axios config
-   * @returns {Promise<any>} Whether it should throttle
-   */
-  waitPendingRequest: config =>
-    new Promise(resolve => {
+  waitPendingRequest: config => {
+    return new Promise(resolve => {
       const checkResolve = () => {
         setTimeout(() => {
           const pendingRequest = AxiosPendingCache.findPendingRequest(config)
@@ -71,32 +74,25 @@ const AxiosPendingCache = {
         }, 200)
       }
       checkResolve()
-    }),
+    })
+  },
 
-  /**
-   * Create a pending request or increase the counter for an existing one
-   * @param {import("axios").AxiosRequestConfig} config Axios config
-   */
   pushPendingRequest: config => {
     let pendingRequest = AxiosPendingCache.findPendingRequest(config)
     if (pendingRequest) {
       pendingRequest.count += 1
     } else {
       AxiosPendingCache.pendingRequests.push({
-        hash: AxiosPendingCache.configHash(config),
+        hash: configHash(config) || "",
         count: 0,
         response: undefined,
       })
     }
   },
 
-  /**
-   * Decrease pending request counter and delete it if empty
-   * @param {import("axios").AxiosRequestConfig} config Axios config
-   */
   popPendingRequest: config => {
     const pendingIndex = AxiosPendingCache.pendingRequests.findIndex(
-      preq => preq.hash === AxiosPendingCache.configHash(config)
+      preq => preq.hash === configHash(config)
     )
 
     if (pendingIndex === -1) return
@@ -115,7 +111,7 @@ const request = axios.create()
 request.interceptors.request.use(
   async config => {
     // only cache get requests
-    if (!["GET", "get"].includes(config.method)) return config
+    if (!["GET", "get"].includes(config.method || "")) return config
 
     const shouldThrottle = AxiosPendingCache.shouldThrottle(config)
 
@@ -129,7 +125,7 @@ request.interceptors.request.use(
       // wait the first request to finish
       await AxiosPendingCache.waitPendingRequest(config)
 
-      const skipXHRError = new Error("Skip request")
+      const skipXHRError = new Error("Skip request") as SkipXHRError
       skipXHRError.isSkipXHR = true
       skipXHRError.request = config
       throw skipXHRError
@@ -155,13 +151,13 @@ request.interceptors.response.use(
     }
     return response
   },
-  async error => {
+  async (error: SkipXHRError) => {
     if (error.isSkipXHR) {
-      const firstRequest = AxiosPendingCache.findPendingRequest(error.request)
-      const response = firstRequest && firstRequest.response
+      const firstRequest = AxiosPendingCache.findPendingRequest(error.request!)
+      const response = firstRequest?.response
       if (response) {
         // clear pending request
-        AxiosPendingCache.popPendingRequest(error.request)
+        AxiosPendingCache.popPendingRequest(error.request!)
 
         // return response
         if (response instanceof Error) {
@@ -174,14 +170,12 @@ request.interceptors.response.use(
       }
     } else {
       // check if the first request throwed
-      let pendingRequest = AxiosPendingCache.findPendingRequest(
-        error.response && error.response.config
-      )
+      let pendingRequest = AxiosPendingCache.findPendingRequest(error.response?.config)
       if (pendingRequest) {
         if (pendingRequest.count > 0) {
           pendingRequest.response = error
         } else {
-          AxiosPendingCache.popPendingRequest(error.response.config)
+          AxiosPendingCache.popPendingRequest(error.response?.config)
         }
       }
     }

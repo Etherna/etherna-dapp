@@ -39,7 +39,7 @@ const gatewayClient = new GatewayClient({ host: gatewayHost, apiPath: gatewayApi
 const bzzClient = new Bzz({ url: gatewayHost })
 bzzClient.fetch = (input, init) => fetch(input, { ...(init || {}), credentials: "include" })
 
-/** @type {import("..").EnvState} */
+/** @type {import("../typings").EnvState} */
 const initialState = {
   indexHost,
   indexApiPath,
@@ -55,9 +55,9 @@ const initialState = {
 }
 
 /**
- * @param {import("..").EnvState} state
+ * @param {import("../typings").EnvState} state
  * @param {object} action
- * @returns {import("..").EnvState}
+ * @returns {import("../typings").EnvState}
  */
 const enviromentReducer = (state = initialState, action) => {
   switch (action.type) {

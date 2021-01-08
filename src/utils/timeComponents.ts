@@ -1,18 +1,11 @@
 /**
  * Get the hours, minutes and seconds of a time in seconds
- *
- * @typedef {object} TimeComponents
- * @property {string} hours
- * @property {string} minutes
- * @property {string} seconds
- *
  * @param {number} time Time in seconds
- * @returns {TimeComponents}
  */
-const timeComponents = time => {
-  time = parseInt(time || 0)
+const timeComponents = (time: number|string|null|undefined) => {
+  time = parseInt(`${time || 0}`)
 
-  let hours = Math.floor(time / 3600)
+  let hours: number|null = Math.floor(time / 3600)
   if (hours >= 1) {
     time = time - hours * 3600
   } else {
@@ -23,17 +16,16 @@ const timeComponents = time => {
 
   return {
     hours: stringPadLeft(hours),
-    minutes: stringPadLeft(minutes),
-    seconds: stringPadLeft(seconds),
+    minutes: stringPadLeft(minutes)!,
+    seconds: stringPadLeft(seconds)!,
   }
 }
 
 /**
  * Add 0 to the left to make a number always a fixed length
- * @param {number} value
- * @returns {string}
+ * @param value
  */
-const stringPadLeft = value => {
+const stringPadLeft = (value: number|null) => {
   if (typeof value !== "number") {
     return null
   }

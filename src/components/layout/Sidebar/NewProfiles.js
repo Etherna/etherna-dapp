@@ -29,7 +29,7 @@ const NewProfiles = () => {
     }
   }
 
-  /** @param {import("@utils/indexClient").IndexUser[]} fetchedProfiles */
+  /** @param {import("@utils/indexClient/typings").IndexUser[]} fetchedProfiles */
   const loadProfiles = async fetchedProfiles => {
     const profiles = await getProfiles(fetchedProfiles.map(c => {
       return {

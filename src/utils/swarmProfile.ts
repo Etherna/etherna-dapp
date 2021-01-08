@@ -1,55 +1,70 @@
-import { pick } from "lodash"
+import pick from "lodash/pick"
 import web3 from "web3"
-import { BzzFeed } from "@erebos/bzz-feed"
+import { BzzFeed, FeedParams } from "@erebos/bzz-feed"
 
 import { checkIsEthAddress } from "./ethFuncs"
 import { getResourceUrl, isValidHash } from "./swarm"
 import { store } from "@state/store"
+import { Bzz, Response } from "@erebos/bzz"
 
 const ProfileAuthority = "0x0"
 const ProfileTopic = web3.utils.padRight(web3.utils.fromAscii("EthernaUserIdentity"), 64)
 const ProfileProperties = ["address", "name", "avatar", "cover", "description", "location", "website", "birthday"]
 
-/**
- *
- * @typedef {object} SwarmResource
- * @property {string} "@type" Resource type
- * @property {string} value Hash of the resource
- * @property {boolean} isRaw Is swarm raw resource
- *
- * @typedef {object} SwarmImage
- * @property {string} url Url of the resource
- * @property {string} hash Hash of the resource on Swarm
- * @property {boolean} isRaw Is swarm raw resource
- *
- * @typedef {object} Profile
- * @property {string} address Profile address
- * @property {string} manifest Swarm manifest hash
- * @property {string} name Name of the Profile
- * @property {string} description Description of the Profile
- * @property {SwarmImage} avatar User's avatar
- * @property {SwarmImage} avatar User's cover
- *
- */
+export type SwarmResource = {
+  /**  Resource type */
+  "@type": string
+  /**  Hash of the resource */
+  value: string
+  /**  Is swarm raw resource */
+  isRaw: boolean
+}
+
+export type SwarmImage = {
+  /**  Url of the resource */
+  url: string
+  /**  Hash of the resource on Swarm */
+  hash: string
+  /**  Is swarm raw resource */
+  isRaw: boolean
+}
+
+export type Profile = {
+  /**  Profile address */
+  address: string
+  /**  Swarm manifest hash */
+  manifest?: string|null
+  /**  Name of the Profile */
+  name: string|null
+  /**  Description of the Profile */
+  description?: string|null
+  /**  User's avatar */
+  avatar?: SwarmImage|SwarmResource
+  /**  User's cover */
+  cover?: SwarmImage|SwarmResource
+  /** User's location */
+  location?: string
+  /** User's website */
+  website?: string
+  /** User's birthday */
+  birthday?: string
+}
 
 /**
  * Get the profile information of a address
- * @param {string} manifest Manifest with profile info
- * @param {string} address Address for fallback feed
- *
- * @returns {Profile}
+ * @param manifest Manifest with profile info
+ * @param address Address for fallback feed
  */
-export const getProfile = async (manifest, address) => {
+export const getProfile = async (manifest: string|null|undefined, address: string) => {
   const profile = await resolveProfile(manifest, address)
   return profile
 }
 
 /**
  * Get a list of profiles
- * @param {{ address: string, manifest: string }[]} identities Array of manifest hash
- * @returns {Profile[]}
+ * @param identities Array of manifest hash
  */
-export const getProfiles = async identities => {
+export const getProfiles = async (identities: { address: string, manifest: string }[]) => {
   try {
     const promises = identities.map(identity => getProfile(identity.manifest, identity.address))
     const profiles = await Promise.all(promises)
@@ -60,25 +75,26 @@ export const getProfiles = async identities => {
 
     return identities.map(ide => ({
       address: ide.address,
-      manifests: ide.manifest,
+      manifest: ide.manifest,
       name: null,
-    }))
+      description: null
+    } as Profile))
   }
 }
 
 /**
  * Update a user's feeds for the profile
- * @param {Profile} profile Profile information
- * @returns {string} The new manifest hash
+ * @param profile Profile information
+ * @returns The new manifest hash
  */
-export const updateProfile = async profile => {
+export const updateProfile = async (profile: Profile) => {
   const { bzzClient } = store.getState().env
 
   // Get validated profiles
   const baseProfile = pick(validatedProfile(profile), ProfileProperties)
 
   // Upload json
-  const manifest = await bzzClient.uploadData(baseProfile, {
+  const manifest: string = await bzzClient.uploadData(baseProfile, {
     contentType: "text/json",
   })
 
@@ -89,19 +105,16 @@ export const updateProfile = async profile => {
 
 /**
  * Resolve a profile by fetching feeds and resolving images
- * @param {string} manifest Manifest with profile info
- * @param {string} address Address for fallback feed
- * @returns {Profile}
+ * @param manifest Manifest with profile info
+ * @param address Address for fallback feed
  */
-const resolveProfile = async (manifest, address) => {
+const resolveProfile = async (manifest: string|null|undefined, address: string) => {
   const { bzzClient } = store.getState().env
-  let profile = {
+  let profile: Profile = {
     address,
-    name: null,
-    description: null,
-    location: null,
-    website: null,
-    birthday: null,
+    manifest,
+    name: "",
+    description: "",
   }
 
   try {
@@ -122,22 +135,20 @@ const resolveProfile = async (manifest, address) => {
   profile = pick(
     {
       ...profile,
-      avatar: resolveImage(profile.avatar),
-      cover: resolveImage(profile.cover),
+      avatar: resolveImage(profile.avatar as SwarmResource|undefined),
+      cover: resolveImage(profile.cover as SwarmResource|undefined),
     },
     ProfileProperties
-  )
+  ) as Profile
 
   return profile
 }
 
 /**
  * Resolve an image by parsing its url
- *
- * @param {SwarmResource} imgObj
- * @returns {SwarmImage}
+ * @param imgObj
  */
-export const resolveImage = imgObj => {
+export const resolveImage = (imgObj: SwarmResource|undefined) => {
   let url = null, hash = null, isRaw = false
   if (
     typeof imgObj === "object" &&
@@ -154,15 +165,14 @@ export const resolveImage = imgObj => {
     url,
     hash,
     isRaw
-  }
+  } as SwarmImage
 }
 
 /**
  * Validate a profile by checking its props are in the correct format
- * @param {Profile} profile Profile to validate
- * @returns {Profile}
+ * @param profile Profile to validate
  */
-export const validatedProfile = profile => {
+export const validatedProfile = (profile: Profile) => {
   // Object validation
   if (typeof profile !== "object") {
     throw new Error("Profile must be an object")
@@ -203,14 +213,15 @@ export const validatedProfile = profile => {
     }
 
     if (key === "avatar" || key === "cover") {
-      const value = profile[key].hash
-      const isRaw = profile[key].isRaw
-      profile[key] = { "@type": "image", value, isRaw }
+      const value = (profile[key] as SwarmImage)!.hash
+      const isRaw = (profile[key] as SwarmImage)!.isRaw
+      const image: SwarmResource = { "@type": "image", value, isRaw }
+      profile[key] = image
     }
   })
 
   // Validate payload size
-  if (new TextEncoder().encode(profile).length > 3963) {
+  if (new TextEncoder().encode(JSON.stringify(profile)).length > 3963) {
     throw new Error("Data exceed max length of 3963 bytes")
   }
 
@@ -220,11 +231,11 @@ export const validatedProfile = profile => {
 
 /**
  * Fetch the feed or a empty object if non existing
- * @param {import("@erebos/bzz").Bzz} bzz Bzz client
- * @param {import("@erebos/bzz-feed").FeedParams} feed Feed props
- * @returns {object} Feed data
+ * @param bzz Bzz client
+ * @param feed Feed props
+ * @returns Feed data
  */
-const fetchFeedOrDefault = async (bzz, feed) => {
+const fetchFeedOrDefault = async (bzz: Bzz<unknown, Response<unknown>>, feed: FeedParams) => {
   const bzzFeed = new BzzFeed({ bzz })
   try {
     const meta = await bzzFeed.getContent(feed)

@@ -1,31 +1,33 @@
-export interface IndexClientOptions {
+export type IndexClientOptions = {
   host: string
   apiPath?: string
   loginPath?: string
   logoutPath?: string
 }
 
-export interface IndexUser {
+export type IndexUser = {
   address: string
   creationDateTime: string
   identityManifest: string
 }
 
-export interface IndexCurrentUser {
+export type IndexCurrentUser = {
   address: string
   identityManifest: string
   prevAddresses: string[]
 }
 
-export interface IndexUserVideos extends IndexUser {
+export type IndexUserVideos = IndexUser & {
   videos: IndexVideo[]
 }
 
-export interface IndexVideo {
+export type IndexVideo = {
   creationDateTime: string
   encryptionKey: string
-  encryptionType: string
+  encryptionType: IndexEncryptionType
   manifestHash: string
   ownerAddress: string
   ownerIdentityManifest: string
 }
+
+export type IndexEncryptionType = "AES256" | "Plain"

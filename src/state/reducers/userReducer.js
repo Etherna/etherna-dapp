@@ -8,9 +8,9 @@ export const UserActionTypes = {
 
 
 /**
- * @param {import("..").UserState} state
+ * @param {import("../typings").UserState} state
  * @param {object} action
- * @returns {import("..").UserState}
+ * @returns {import("../typings").UserState}
  */
 const userReducer = (state = {}, action) => {
   switch (action.type) {

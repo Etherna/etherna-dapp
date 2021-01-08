@@ -7,7 +7,7 @@ import { resolveEnsName } from "@utils/ethFuncs"
 
 /**
  *
- * @param {import("@utils/indexClient").IndexCurrentUser} profile
+ * @param {import("@utils/indexClient/typings").IndexCurrentUser} profile
  */
 const loadProfile = async (profile) => {
   const { web3 } = store.getState().env

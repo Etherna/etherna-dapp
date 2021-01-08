@@ -2,7 +2,7 @@ import { store } from "@state/store"
 
 /**
  * Redirect to the service login page
- * @param {"index"|"gateway"} service Service to signin
+ * @param {string} service Service to signin
  */
 const logoutRedirect = (service = null) => {
   const { indexClient, gatewayClient } = store.getState().env

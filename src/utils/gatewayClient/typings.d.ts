@@ -1,11 +1,11 @@
-export interface GatewayClientOptions {
+export type GatewayClientOptions = {
   host: string
   apiPath?: string
   loginPath?: string
   logoutPath?: string
 }
 
-export interface GatewayCurrentUser {
+export type GatewayCurrentUser = {
   etherAddress: string
   etherPreviousAddresses: string[]
   username: string
