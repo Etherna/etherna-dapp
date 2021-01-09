@@ -14,7 +14,7 @@ export const pollAddress = async () => {
 
         if (newAddress !== currentAddress) {
           store.dispatch({
-            type: EnvActionTypes.ENV_CURRENT_ADDRESS,
+            type: EnvActionTypes.ENV_SET_CURRENT_ADDRESS,
             currentAddress: newAddress,
             previusAddress: currentAddress,
           })

@@ -6,6 +6,8 @@
       "@components/*": ["components/*"],
       "@common/*": ["components/common/*"],
       "@keyboard": ["keyboard"],
+      "@keyboard/*": ["keyboard/*"],
+      "@lang": ["lang"],
       "@lang/*": ["lang/*"],
       "@icons/*": ["components/icons/*"],
       "@pages/*": ["pages/*"],

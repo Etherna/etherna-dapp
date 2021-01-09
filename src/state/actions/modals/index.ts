@@ -1,7 +1,7 @@
 import { store } from "@state/store"
 import { UIActionTypes } from "@state/reducers/uiReducer"
 
-export const showError = (title, message) => {
+export const showError = (title: string, message: string) => {
   store.dispatch({
     type: UIActionTypes.UI_SHOW_ERROR,
     errorTitle: title,

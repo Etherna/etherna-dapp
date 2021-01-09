@@ -1,15 +1,14 @@
 import { store } from "@state/store"
 import { ProfileActionTypes } from "@state/reducers/profileReducer"
 import { UIActionTypes } from "@state/reducers/uiReducer"
-import { getProfile } from "@utils/swarmProfile"
+import { getProfile, SwarmImage } from "@utils/swarmProfile"
 
 /**
  * Fetch profile info
- *
- * @param {string} manifest Manifest hash with profile data
- * @param {string} address Profile address
+ * @param manifest Manifest hash with profile data
+ * @param address Profile address
  */
-const fetchProfile = async (manifest, address) => {
+const fetchProfile = async (manifest: string, address: string) => {
   store.dispatch({
     type: UIActionTypes.UI_TOGGLE_LOADING_PROFILE,
     isLoadingProfile: true,
@@ -20,10 +19,10 @@ const fetchProfile = async (manifest, address) => {
 
     store.dispatch({
       type: ProfileActionTypes.PROFILE_UPDATE,
-      name: profile.name,
-      description: profile.description,
-      avatar: profile.avatar,
-      cover: profile.cover,
+      name: profile.name || "",
+      description: profile.description || "",
+      avatar: profile.avatar as SwarmImage,
+      cover: profile.cover as SwarmImage,
       location: profile.location,
       website: profile.website,
       birthday: profile.birthday,

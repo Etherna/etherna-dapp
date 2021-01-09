@@ -3,7 +3,11 @@ import { Provider } from "react-redux"
 
 import { store } from "./store"
 
-const StateProviderWrapper = ({ children }) => (
+type WrapperProps = {
+  children: React.ReactNode
+}
+
+const StateProviderWrapper = ({ children }: WrapperProps) => (
   <Provider store={store}>{children}</Provider>
 )
 

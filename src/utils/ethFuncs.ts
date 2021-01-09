@@ -79,7 +79,9 @@ export const resolveEnsName = async (address: string, web3?: Web3) => {
  * Get the network name from the id
  * @param networkId Id of the networks
  */
-export const getNetworkName = (networkId: number|string) => {
+export const getNetworkName = (networkId: number|string|undefined) => {
+  if (!networkId) return ""
+
   switch (+networkId) {
     case 1:
       return "Main"

@@ -3,7 +3,7 @@ import { Crop } from "react-image-crop"
 import Lang from "lang.js"
 import { Bzz } from "@erebos/bzz"
 
-import { Keymap } from "@keyboard"
+import { AnyShortcut, Keymap, KeymapNamespace } from "@keyboard/typings"
 import IndexClient from "@utils/indexClient/client"
 import GatewayClient from "@utils/gatewayClient/client"
 import { SwarmImage } from "@utils/swarmProfile"
@@ -38,8 +38,8 @@ export type EnvState = {
   currentAddress?: string
   previusAddress?: string
 
-  shortcutNamespace?: string
-  shortcutKey?: string
+  shortcutNamespace?: KeymapNamespace
+  shortcutKey?: AnyShortcut
 
   imageCrop?: Crop
   imageType?: string
@@ -75,7 +75,7 @@ export type UserState = {
   identityManifest?: string
   prevAddresses?: string[]
   ens?: string
-  credit: number
-  isSignedIn: boolean
-  isSignedInGateway: boolean
+  credit?: number
+  isSignedIn?: boolean
+  isSignedInGateway?: boolean
 }

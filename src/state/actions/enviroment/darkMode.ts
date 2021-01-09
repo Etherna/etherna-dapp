@@ -18,12 +18,12 @@ export const loadDarkMode = () => {
   return darkMode
 }
 
-export const toggleDarkMode = darkMode => {
+export const toggleDarkMode = (darkMode: boolean) => {
   window.localStorage.setItem("darkMode", darkMode ? "true" : "false")
   loadDarkMode()
 
   store.dispatch({
-    type: EnvActionTypes.TOGGLE_DARK_MODE,
+    type: EnvActionTypes.ENV_TOGGLE_DARK_MODE,
     darkMode,
   })
 }

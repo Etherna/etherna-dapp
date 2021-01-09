@@ -2,9 +2,9 @@ import { store } from "@state/store"
 
 /**
  * Redirect to the service login page
- * @param {string} service Service to signin
+ * @param service Service to signin
  */
-const logoutRedirect = (service = null) => {
+const loginRedirect = (service: string|null = null) => {
   const { indexClient, gatewayClient } = store.getState().env
 
   // strip query params
@@ -12,18 +12,18 @@ const logoutRedirect = (service = null) => {
 
   switch (service) {
     case "index":
-      indexClient.logoutRedirect(redirectUrl)
+      indexClient.loginRedirect(redirectUrl)
       break;
     case "gateway":
-      gatewayClient.logoutRedirect(redirectUrl)
+      gatewayClient.loginRedirect(redirectUrl)
       break;
     case null:
     case undefined:
-      indexClient.logoutRedirect(redirectUrl + "?signout=gateway")
+      indexClient.loginRedirect(redirectUrl + "?signin=gateway")
       break;
     default:
       break;
   }
 }
 
-export default logoutRedirect
+export default loginRedirect

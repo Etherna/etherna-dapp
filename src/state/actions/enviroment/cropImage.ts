@@ -1,19 +1,21 @@
+import { Crop } from "react-image-crop"
+
 import { store } from "@state/store"
 import { UIActionTypes } from "@state/reducers/uiReducer"
 import { EnvActionTypes } from "@state/reducers/enviromentReducer"
 
-export const finishCropping = cropData => {
+export const finishCropping = (cropData: Crop) => {
   store.dispatch({
-    type: EnvActionTypes.UPDATE_IMAGE_CROP,
+    type: EnvActionTypes.ENV_UPDATE_IMAGE_CROP,
     imageCrop: cropData,
   })
 }
 
-export const cropImage = async (file, type) => {
+export const cropImage = async (file: File, type: string) => {
   const img = await toBase64(file)
 
   store.dispatch({
-    type: EnvActionTypes.SET_CROP_IMAGE,
+    type: EnvActionTypes.ENV_SET_CROP_IMAGE,
     imageType: type,
     image: img,
   })
@@ -29,13 +31,15 @@ export const cropImage = async (file, type) => {
     isCroppingImage: false,
   })
   store.dispatch({
-    type: EnvActionTypes.SET_CROP_IMAGE,
+    type: EnvActionTypes.ENV_SET_CROP_IMAGE,
+    imageType: type,
+    image: img,
   })
 
   return image
 }
 
-const getCroppedImage = async src => {
+const getCroppedImage = async (src: string) => {
   const cropData = await waitCropData()
   if (cropData) {
     const image = await applyImageCropping(src, cropData)
@@ -45,13 +49,13 @@ const getCroppedImage = async src => {
 }
 
 const waitCropData = () =>
-  new Promise(resolve => {
+  new Promise<Crop>(resolve => {
     const waitFunc = () => {
       setTimeout(() => {
         const { imageCrop } = store.getState().env
         if (imageCrop !== undefined) {
           store.dispatch({
-            type: EnvActionTypes.UPDATE_IMAGE_CROP,
+            type: EnvActionTypes.ENV_UPDATE_IMAGE_CROP,
           })
           resolve(imageCrop)
         } else {
@@ -62,8 +66,8 @@ const waitCropData = () =>
     waitFunc()
   })
 
-const applyImageCropping = (src, cropData) =>
-  new Promise(resolve => {
+const applyImageCropping = (src: string, cropData: Crop) =>
+  new Promise<Blob|null>(resolve => {
     let image = new Image()
     image.src = src
     image.onload = async () => {
@@ -72,22 +76,29 @@ const applyImageCropping = (src, cropData) =>
     }
   })
 
-const getCroppedBlob = (image, crop, fileName = "image") => {
+const getCroppedBlob = (image: CanvasImageSource, crop: Crop, fileName = "image") => {
   const canvas = document.createElement("canvas")
-  canvas.width = crop.width
-  canvas.height = crop.height
-  const ctx = canvas.getContext("2d")
+  canvas.width = crop.width || 0
+  canvas.height = crop.height || 0
+  const ctx = canvas.getContext("2d")!
 
-  ctx.drawImage(image, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height)
+  const x = crop.x || 0
+  const y = crop.y || 0
+  const width = crop.width || 0
+  const height = crop.height || 0
+
+  ctx.drawImage(image, x, y, width, height, 0, 0, width, height)
 
   // As Base64 string
   // const base64Image = canvas.toDataURL('image/jpeg')
 
   // As a blob
-  return new Promise(resolve => {
+  return new Promise<Blob|null>(resolve => {
     canvas.toBlob(
       blob => {
-        blob.name = fileName
+        if (blob) {
+          (blob as any).name = fileName
+        }
         resolve(blob)
       },
       "image/jpeg",
@@ -96,10 +107,10 @@ const getCroppedBlob = (image, crop, fileName = "image") => {
   })
 }
 
-const toBase64 = file =>
-  new Promise((resolve, reject) => {
+const toBase64 = (file: File) =>
+  new Promise<string>((resolve, reject) => {
     const reader = new FileReader()
     reader.readAsDataURL(file)
-    reader.onload = () => resolve(reader.result)
+    reader.onload = () => resolve(reader.result as string)
     reader.onerror = error => reject(error)
   })

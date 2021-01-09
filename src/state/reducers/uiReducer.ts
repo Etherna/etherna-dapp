@@ -1,3 +1,5 @@
+import { UIState } from "@state/typings"
+
 export const UIActionTypes = {
   UI_SHOW_ERROR: "UI_SHOW_ERROR",
   UI_HIDE_ERROR: "UI_HIDE_ERROR",
@@ -7,14 +9,57 @@ export const UIActionTypes = {
   UI_TOGGLE_NETWORK_CHANGE: "UI_TOGGLE_NETWORK_CHANGE",
   UI_TOGGLE_EDITING_SHORTCUT: "UI_TOGGLE_EDITING_SHORTCUT",
   UI_TOGGLE_IMAGE_CROPPER: "UI_TOGGLE_IMAGE_CROPPER",
+} as const
+
+
+// Export dispatch actions
+type ShowErrorAction = {
+  type: typeof UIActionTypes.UI_SHOW_ERROR
+  errorMessage?: string
+  errorTitle?: string
+}
+type HideErrorAction = {
+  type: typeof UIActionTypes.UI_HIDE_ERROR
+}
+type ToggleConnectingWalletAction = {
+  type: typeof UIActionTypes.UI_TOGGLE_CONNECTING_WALLET
+  isConnectingWallet: boolean
+}
+type ToggleLoadingProfileAction = {
+  type: typeof UIActionTypes.UI_TOGGLE_LOADING_PROFILE
+  isLoadingProfile: boolean
+}
+type ToggleBrowserSupportAction = {
+  type: typeof UIActionTypes.UI_TOGGLE_BROWSER_SUPPORT
+  showUnsupportedModal: boolean
+}
+type ToggleNetworkChangeAction = {
+  type: typeof UIActionTypes.UI_TOGGLE_NETWORK_CHANGE
+  showNetwokChangeModal: boolean
+}
+type ToggleEditingShortcutAction = {
+  type: typeof UIActionTypes.UI_TOGGLE_EDITING_SHORTCUT
+  isEditingShortcut: boolean
+}
+type ToggleImageCropperAction = {
+  type: typeof UIActionTypes.UI_TOGGLE_IMAGE_CROPPER
+  isCroppingImage: boolean
 }
 
-/**
- * @param {import("../typings").UIState} state
- * @param {object} action
- * @returns {import("../typings").UIState}
- */
-const uiReducer = (state = {}, action) => {
+export type UIActions = (
+  ShowErrorAction |
+  HideErrorAction |
+  ToggleConnectingWalletAction |
+  ToggleLoadingProfileAction |
+  ToggleBrowserSupportAction |
+  ToggleNetworkChangeAction |
+  ToggleEditingShortcutAction |
+  ToggleImageCropperAction
+)
+
+
+// Init reducer
+const uiReducer = (state: UIState = {}, action: UIActions): UIState => {
   switch (action.type) {
     case UIActionTypes.UI_SHOW_ERROR:
       return {

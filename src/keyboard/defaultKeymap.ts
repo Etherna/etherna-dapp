@@ -1,8 +1,9 @@
 import { PlayerKeymap } from "./keymaps/player"
+import { Keymap } from "./typings"
 
 const KEYMAP_OVERRIDE_NAME = "keymapOverride"
 
-const defaultKeymap = {
+const defaultKeymap: Keymap = {
   PLAYER: {
     ...PlayerKeymap,
   },

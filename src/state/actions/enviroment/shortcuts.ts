@@ -1,11 +1,12 @@
 import { defaultKeymap, KEYMAP_OVERRIDE_NAME } from "@keyboard"
+import { AnyShortcut, Keymap, KeymapNamespace } from "@keyboard/typings"
 import { store } from "@state/store"
 import { EnvActionTypes } from "@state/reducers/enviromentReducer"
 import { UIActionTypes } from "@state/reducers/uiReducer"
 
-export const editShortcut = (namespace, key) => {
+export const editShortcut = (namespace: KeymapNamespace, key: AnyShortcut) => {
   store.dispatch({
-    type: EnvActionTypes.EDIT_SHORTCUT,
+    type: EnvActionTypes.ENV_EDIT_SHORTCUT,
     shortcutNamespace: namespace,
     shortcutKey: key,
   })
@@ -15,9 +16,9 @@ export const editShortcut = (namespace, key) => {
   })
 }
 
-export const resetShortcut = (namespace, key) => {
+export const resetShortcut = (namespace: KeymapNamespace, key: AnyShortcut) => {
   store.dispatch({
-    type: EnvActionTypes.EDIT_SHORTCUT,
+    type: EnvActionTypes.ENV_EDIT_SHORTCUT,
     shortcutNamespace: namespace,
     shortcutKey: key,
   })
@@ -25,22 +26,23 @@ export const resetShortcut = (namespace, key) => {
   saveShortcut(null)
 }
 
-export const hasCustomShortcut = (namespace, key) => {
+export const hasCustomShortcut = (namespace: string, key: string) => {
   const keymap = localKeymap()
   return namespace in keymap && key in keymap[namespace]
 }
 
-export const saveShortcut = newShortcut => {
+export const saveShortcut = (newShortcut: string|null|undefined) => {
   const { keymap, shortcutNamespace, shortcutKey } = store.getState().env
+
+  if (!shortcutNamespace || !shortcutKey) return
 
   // Create keymap in redux store
   let newKeymap = {
     ...keymap,
   }
-  newKeymap[shortcutNamespace][shortcutKey] =
-    newShortcut || defaultKeymap[shortcutNamespace][shortcutKey]
+  newKeymap[shortcutNamespace][shortcutKey] = newShortcut || defaultKeymap[shortcutNamespace][shortcutKey]
   store.dispatch({
-    type: EnvActionTypes.UPDATE_KEYMAP,
+    type: EnvActionTypes.ENV_UPDATE_KEYMAP,
     keymap: newKeymap,
   })
 
@@ -56,7 +58,7 @@ export const saveShortcut = newShortcut => {
 
   // Finish editing
   store.dispatch({
-    type: EnvActionTypes.EDIT_SHORTCUT,
+    type: EnvActionTypes.ENV_EDIT_SHORTCUT,
     shortcutNamespace: undefined,
     shortcutKey: undefined,
   })
@@ -66,11 +68,11 @@ export const saveShortcut = newShortcut => {
   })
 }
 
-export const shortcutExists = shortcut => {
+export const shortcutExists = (shortcut: string) => {
   const { keymap } = store.getState().env
-  for (let namespace in keymap) {
-    for (let shortcutKey in keymap[namespace]) {
-      if (keymap[namespace][shortcutKey] === shortcut) {
+  for (const namespace in keymap) {
+    for (const shortcutKey in keymap[namespace as KeymapNamespace]) {
+      if (keymap[namespace as KeymapNamespace][shortcutKey as AnyShortcut] === shortcut) {
         return shortcutKey
       }
     }
@@ -84,6 +86,6 @@ const localKeymap = () => {
   return JSON.parse(window.localStorage.getItem(KEYMAP_OVERRIDE_NAME) || "{}")
 }
 
-const saveKeymap = keymap => {
+const saveKeymap = (keymap: Keymap) => {
   window.localStorage.setItem(KEYMAP_OVERRIDE_NAME, JSON.stringify(keymap))
 }

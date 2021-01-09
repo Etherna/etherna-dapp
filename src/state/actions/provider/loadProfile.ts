@@ -1,15 +1,17 @@
+import Web3 from "web3"
+
 import pollAddress from "./pollAddress"
 import { store } from "@state/store"
 import { UIActionTypes } from "@state/reducers/uiReducer"
 import { UserActionTypes } from "@state/reducers/userReducer"
 import fetchProfile from "@state/actions/profile/fetchProfile"
 import { resolveEnsName } from "@utils/ethFuncs"
+import { IndexCurrentUser } from "@utils/indexClient/typings"
 
 /**
- *
- * @param {import("@utils/indexClient/typings").IndexCurrentUser} profile
+ * Load profile info
  */
-const loadProfile = async (profile) => {
+const loadProfile = async (profile: IndexCurrentUser) => {
   const { web3 } = store.getState().env
 
   try {
@@ -31,7 +33,7 @@ const loadProfile = async (profile) => {
   }
 }
 
-const resolveEns = async (address, web3) => {
+const resolveEns = async (address: string, web3?: Web3) => {
   const ens = await resolveEnsName(address, web3)
   store.dispatch({
     type: UserActionTypes.USER_ENS_UPDATE,

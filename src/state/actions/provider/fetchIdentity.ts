@@ -1,6 +1,8 @@
 import { store } from "@state/store"
 import { UserActionTypes } from "@state/reducers/userReducer"
 import { EnvActionTypes } from "@state/reducers/enviromentReducer"
+import IndexClient from "@utils/indexClient/client"
+import GatewayClient from "@utils/gatewayClient/client"
 
 /**
  * Fetch the current identity from the SSO server
@@ -23,10 +25,7 @@ const fetchIdentity = async () => {
   return profile
 }
 
-/**
- * @param {import("@utils/indexClient/client").default} indexClient
- */
-const fetchIndexCurrentUser =  async indexClient => {
+const fetchIndexCurrentUser =  async (indexClient: IndexClient) => {
   try {
     const profile = await indexClient.users.fetchCurrentUser()
 
@@ -43,10 +42,7 @@ const fetchIndexCurrentUser =  async indexClient => {
   }
 }
 
-/**
- * @param {import("@utils/gatewayClient/client").default} gatewayClient
- */
-const fetchCurrentUserCredit =  async gatewayClient => {
+const fetchCurrentUserCredit =  async (gatewayClient: GatewayClient) => {
   try {
     const credit = await gatewayClient.users.fetchCredit()
 
@@ -66,15 +62,12 @@ const fetchCurrentUserCredit =  async gatewayClient => {
   }
 }
 
-/**
- * @param {import("@utils/gatewayClient/client").default} gatewayClient
- */
-const fetchCurrentBytePrice =  async gatewayClient => {
+const fetchCurrentBytePrice =  async (gatewayClient: GatewayClient) => {
   try {
     const bytePrice = await gatewayClient.settings.fetchCurrentBytePrice()
 
     store.dispatch({
-      type: EnvActionTypes.UPDATE_BYTE_PRICE,
+      type: EnvActionTypes.ENV_UPDATE_BYTE_PRICE,
       bytePrice,
     })
 

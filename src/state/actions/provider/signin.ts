@@ -6,10 +6,10 @@ import { checkMobileWeb3, checkNetwork } from "./network"
 
 /**
  * Sign in user and fetch profile
- * @param {boolean} forceLogin Whether to send user to the Index login page
- * @param {"index"|"gateway"} service Service to signin. `null` will propagate all services (default = null)
+ * @param forceLogin Whether to send user to the Index login page
+ * @param service Service to signin. `null` will propagate all services (default = null)
  */
-const signin = async (forceLogin = false, service = null) => {
+const signin = async (forceLogin = false, service: "index"|"gateway"|null = null) => {
   if (forceLogin) {
     // Launch login
     loginRedirect(service)
