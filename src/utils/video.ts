@@ -4,9 +4,9 @@ import { getVideoDuration } from "./media"
 import { getProfile, Profile } from "./swarmProfile"
 import { store } from "@state/store"
 import { Bzz, Response } from "@erebos/bzz"
-import { IndexEncryptionType } from "./indexClient/typings"
+import { IndexEncryptionType, IndexVideo } from "./indexClient/typings"
 
-type SwarmVideoMeta = {
+export type SwarmVideoMeta = {
   /**  Title of the video */
   title: string
   /**  Description of the video */
@@ -23,12 +23,12 @@ type SwarmVideoMeta = {
   sources: (string|SwarmVideoSource)[]
 }
 
-type SwarmVideoSource = {
+export type SwarmVideoSource = {
   path: string
   size?: number
 }
 
-type VideoSourceInfo = {
+export type VideoSourceInfo = {
   /**  Source url */
   source: string
   /**  Source quality */
@@ -37,7 +37,7 @@ type VideoSourceInfo = {
   size: number|null
 }
 
-type VideoResolvedMeta = {
+export type VideoResolvedMeta = {
   /**  Title of the video */
   title?: string
   /**  Description of the video */
@@ -58,7 +58,7 @@ type VideoResolvedMeta = {
   sources: VideoSourceInfo[]
 }
 
-type VideoMetadata = VideoResolvedMeta & {
+export type VideoMetadata = VideoResolvedMeta & {
   /** Manifest hash of the video */
   videoHash: string
   /** Whether the video is indexed */
@@ -73,6 +73,7 @@ type VideoMetadata = VideoResolvedMeta & {
   profileData?: Profile
 }
 
+export type IndexVideoFullMeta = IndexVideo & VideoMetadata
 
 /**
  * Get a list of recent videos with meta info
@@ -108,7 +109,7 @@ export const fetchFullVideosInfo = async (
       encryptionType: video.encryptionType,
       isVideoOnIndex: true,
       profileData,
-    }
+    } as unknown as IndexVideoFullMeta
   })
   return videosWithMeta
 }
@@ -118,7 +119,7 @@ export const fetchFullVideosInfo = async (
  * @param hash Manifest hash of the video
  * @param fetchProfile Fetch profile info
  */
-export const fetchFullVideoInfo = async (hash: string, fetchProfile = true): Promise<VideoMetadata> => {
+export const fetchFullVideoInfo = async (hash: string, fetchProfile = true) => {
   const { indexClient } = store.getState().env
 
   let isVideoOnIndex = false
@@ -159,7 +160,7 @@ export const fetchFullVideoInfo = async (hash: string, fetchProfile = true): Pro
     encryptionKey,
     encryptionType,
     profileData,
-  }
+  } as VideoMetadata
 }
 
 /**

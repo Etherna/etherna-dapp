@@ -1,9 +1,11 @@
 import Lang from "lang.js"
 
+import PlayerEn from "./shortcuts/player.en"
+
 // Define all paths to translations
 const paths = [
   {
-    messages: require("../lang/shortcuts/player.en").default,
+    messages: PlayerEn,
     namespace: "en.player",
   },
 ]

@@ -1,7 +1,8 @@
-import { getProfile } from "@utils/swarmProfile"
+import { getProfile, Profile } from "@utils/swarmProfile"
 import { nullablePromise } from "@utils/promise"
-import { fetchFullVideosInfo } from "@utils/video"
+import { fetchFullVideosInfo, IndexVideoFullMeta } from "@utils/video"
 import { store } from "@state/store"
+import { WindowPrefetchData } from "typings/window"
 
 const match = /\/profile\/([^/]+)/
 
@@ -20,15 +21,21 @@ const fetch = async () => {
     ])
 
     // set prefetch data
-    window.prefetchData = {}
-    window.prefetchData.profile = profile
-    window.prefetchData.videos = videos
+    const windowPrefetch = window as WindowPrefetchData
+    windowPrefetch.prefetchData = {}
+    windowPrefetch.prefetchData.profile = profile
+    windowPrefetch.prefetchData.videos = videos
   }
 }
 
 const profilePrefetcher = {
   match,
   fetch,
+}
+
+export type ProfilePrefetch = {
+  profile?: Profile | null
+  videos?: IndexVideoFullMeta[] | null
 }
 
 export default profilePrefetcher
