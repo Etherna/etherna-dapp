@@ -2,7 +2,7 @@ import { matchPath } from "react-router-dom"
 
 import getBasename from "./getBasename"
 
-const isMatch = (path, exact = false) => {
+const isMatch = (path: string, exact = false) => {
   return (
     matchPath(window.location.pathname, {
       exact,

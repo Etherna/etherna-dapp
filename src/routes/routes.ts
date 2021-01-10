@@ -12,22 +12,22 @@ export const getProfilesLink = () => {
   return `/profiles`
 }
 
-export const getProfileLink = hash => {
+export const getProfileLink = (hash: string) => {
   return `/profile/${encodeURIComponent(hash)}`
 }
 
-export const getProfileEditingLink = hash => {
+export const getProfileEditingLink = (hash: string) => {
   return `/profile/${encodeURIComponent(hash)}/edit`
 }
 
 /**
  * Video routes
  */
-export const getVideoLink = (hash, sourcePath) => {
+export const getVideoLink = (hash: string, sourcePath?: string) => {
   return `/watch?v=${hash}${encodeURIComponent(sourcePath ? `/${sourcePath}` : ``)}`
 }
 
-export const getVideoSettingsLink = hash => {
+export const getVideoSettingsLink = (hash: string) => {
   return `/videoSettings?v=${encodeURIComponent(hash)}`
 }
 
