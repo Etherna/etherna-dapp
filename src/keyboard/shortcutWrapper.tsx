@@ -3,8 +3,16 @@ import PropTypes from "prop-types"
 import { connect } from "react-redux"
 import { ShortcutManager } from "react-shortcuts"
 
+import { AppState } from "@state/typings"
+
 class ShortcutWrapper extends React.Component {
-  constructor(props) {
+  shortcutManager: ShortcutManager
+
+  static childContextTypes = {
+    shortcuts: PropTypes.object.isRequired,
+  }
+
+  constructor(props: any) {
     super(props)
     this.shortcutManager = new ShortcutManager(props.keymap)
   }
@@ -18,11 +26,7 @@ class ShortcutWrapper extends React.Component {
   }
 }
 
-ShortcutWrapper.childContextTypes = {
-  shortcuts: PropTypes.object.isRequired,
-}
-
-const mapState = state => {
+const mapState = (state: AppState) => {
   return {
     keymap: state.env.keymap,
   }
