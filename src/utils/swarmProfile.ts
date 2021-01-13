@@ -39,15 +39,22 @@ export type Profile = {
   /**  Description of the Profile */
   description?: string|null
   /**  User's avatar */
-  avatar?: SwarmImage|SwarmResource
+  avatar?: SwarmImage
   /**  User's cover */
-  cover?: SwarmImage|SwarmResource
+  cover?: SwarmImage
   /** User's location */
   location?: string
   /** User's website */
   website?: string
   /** User's birthday */
   birthday?: string
+}
+
+export type ProfileSwarm = Omit<Profile, "avatar" | "cover"> & {
+  /**  User's avatar */
+  avatar?: SwarmResource
+  /**  User's cover */
+  cover?: SwarmResource
 }
 
 /**
@@ -110,7 +117,7 @@ export const updateProfile = async (profile: Profile) => {
  */
 const resolveProfile = async (manifest: string|null|undefined, address: string) => {
   const { bzzClient } = store.getState().env
-  let profile: Profile = {
+  let profile: ProfileSwarm = {
     address,
     manifest,
     name: "",
@@ -120,8 +127,8 @@ const resolveProfile = async (manifest: string|null|undefined, address: string) 
   try {
     if (!manifest) throw new Error("No manifest!")
 
-    const resp = await bzzClient.download(manifest)
-    const manifestProfile = await resp.json()
+    const resp: Response = await bzzClient.download(manifest)
+    const manifestProfile = await resp.json<ProfileSwarm>()
     profile = {...profile, ...manifestProfile}
   } catch (error) {
     const feedProfile = await fetchFeedOrDefault(bzzClient, {
@@ -132,7 +139,7 @@ const resolveProfile = async (manifest: string|null|undefined, address: string) 
     profile = {...profile, ...feedProfile}
   }
 
-  profile = pick(
+  const parsedProfile = pick(
     {
       ...profile,
       avatar: resolveImage(profile.avatar as SwarmResource|undefined),
@@ -141,7 +148,7 @@ const resolveProfile = async (manifest: string|null|undefined, address: string) 
     ProfileProperties
   ) as Profile
 
-  return profile
+  return parsedProfile
 }
 
 /**
@@ -173,6 +180,8 @@ export const resolveImage = (imgObj: SwarmResource|undefined) => {
  * @param profile Profile to validate
  */
 export const validatedProfile = (profile: Profile) => {
+  const validatedProfile = {...profile} as ProfileSwarm
+
   // Object validation
   if (typeof profile !== "object") {
     throw new Error("Profile must be an object")
@@ -207,25 +216,25 @@ export const validatedProfile = (profile: Profile) => {
   }
 
   // map fields with corrected values
-  Object.keys(profile).forEach(key => {
+  Object.keys(validatedProfile).forEach(key => {
     if (key === "name") {
-      profile[key] = profile[key] || ""
+      validatedProfile[key] = validatedProfile[key] || ""
     }
 
     if (key === "avatar" || key === "cover") {
       const value = (profile[key] as SwarmImage)!.hash
       const isRaw = (profile[key] as SwarmImage)!.isRaw
       const image: SwarmResource = { "@type": "image", value, isRaw }
-      profile[key] = image
+      validatedProfile[key] = image
     }
   })
 
   // Validate payload size
-  if (new TextEncoder().encode(JSON.stringify(profile)).length > 3963) {
+  if (new TextEncoder().encode(JSON.stringify(validatedProfile)).length > 3963) {
     throw new Error("Data exceed max length of 3963 bytes")
   }
 
-  return profile
+  return validatedProfile
 }
 
 

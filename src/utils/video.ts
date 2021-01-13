@@ -18,7 +18,7 @@ export type SwarmVideoMeta = {
   /**  Duration of the video in seconds */
   duration: number
   /**  Hash for the thumbnail */
-  thumbnailHash: string
+  thumbnailHash?: string
   /**  List of available qualities of the video */
   sources: (string|SwarmVideoSource)[]
 }
@@ -86,7 +86,7 @@ export const fetchFullVideosInfo = async (
   page = 0,
   take = 25,
   fetchProfile = true,
-  ownerAddress: string
+  ownerAddress?: string
 ) => {
   const { indexClient } = store.getState().env
   const videos = ownerAddress
@@ -243,7 +243,10 @@ export const updatedVideoMeta = async (manifest: string, meta: SwarmVideoMeta, p
  * @param manifest Current video manifest hash
  * @returns The new video manifest
  */
-export const deleteVideoSource = async (quality: string, manifest: string) => {
+export const deleteVideoSource = async (quality?: string|null, manifest?: string|null) => {
+  if (!manifest) return undefined
+  if (!quality) return manifest
+
   const { bzzClient } = store.getState().env
 
   const newManifest: string = await bzzClient.deleteResource(manifest, `sources/${quality}`)

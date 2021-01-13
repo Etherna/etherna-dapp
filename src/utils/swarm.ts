@@ -4,7 +4,7 @@ import isArray from "lodash/isArray"
 import { store } from "@state/store"
 import http from "@utils/request"
 
-type SwarmObject = {
+export type SwarmObject = {
   hash: string
   url: string
 }
@@ -68,9 +68,9 @@ export const uploadResourceToSwarm = async (file: File) => {
  * @returns The file manifest
  */
 export const uploadManifestData = async (
-  manifest: string,
-  path: string,
-  buffer: Buffer,
+  manifest: string|undefined,
+  path: string|undefined,
+  buffer: ArrayBuffer,
   type: string,
   options: {
     pinContent: boolean

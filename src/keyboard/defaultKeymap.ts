@@ -4,6 +4,7 @@ import { Keymap, KeymapNamespace } from "./typings"
 const KEYMAP_OVERRIDE_NAME = "keymapOverride"
 
 const defaultKeymap: Keymap = {
+  APP: {},
   PLAYER: {
     ...PlayerKeymap,
   },

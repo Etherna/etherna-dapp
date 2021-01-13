@@ -4,7 +4,7 @@ import { compose } from "redux"
 import Web3 from "web3"
 
 export type WindowPrefetchData = Window & {
-  prefetchData?: ProfilePrefetch | VideoPrefetch
+  prefetchData?: ProfilePrefetch & VideoPrefetch
 }
 
 export type WindowWeb3 = Window & {
@@ -25,4 +25,10 @@ export type WindowWeb3 = Window & {
 
 export type WindowReduxDev = Window & {
   __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose
+}
+
+export type WindowAtlassian = Window & {
+  ATL_JQ_PAGE_PROPS?: {
+    showCollectorDialog?: () => void
+  }
 }

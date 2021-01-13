@@ -36,6 +36,6 @@ const profilePrefetcher = {
 export type ProfilePrefetch = {
   profile?: Profile | null
   videos?: IndexVideoFullMeta[] | null
-}
+} | undefined
 
 export default profilePrefetcher

@@ -27,7 +27,7 @@ export const PlayerActions = {
   SKIP_70_PERCENT: "SKIP_70_PERCENT",
   SKIP_80_PERCENT: "SKIP_80_PERCENT",
   SKIP_90_PERCENT: "SKIP_90_PERCENT",
-}
+} as const
 
 export const PlayerKeymap = {
   [PlayerActions.PLAYPAUSE]: "space", //["space", "k"]
@@ -58,4 +58,4 @@ export const PlayerKeymap = {
   [PlayerActions.SKIP_70_PERCENT]: "alt+7",
   [PlayerActions.SKIP_80_PERCENT]: "alt+8",
   [PlayerActions.SKIP_90_PERCENT]: "alt+9",
-}
+} as const

@@ -4,7 +4,7 @@ import { store } from "@state/store"
 import { UIActionTypes } from "@state/reducers/uiReducer"
 import { EnvActionTypes } from "@state/reducers/enviromentReducer"
 
-export const finishCropping = (cropData: Crop) => {
+export const finishCropping = (cropData: Crop|undefined) => {
   store.dispatch({
     type: EnvActionTypes.ENV_UPDATE_IMAGE_CROP,
     imageCrop: cropData,

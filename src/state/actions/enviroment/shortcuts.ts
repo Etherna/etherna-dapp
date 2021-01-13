@@ -1,10 +1,10 @@
 import { defaultKeymap, KEYMAP_OVERRIDE_NAME } from "@keyboard"
-import { AnyShortcut, Keymap, KeymapNamespace } from "@keyboard/typings"
+import { Keymap, KeymapNamespace } from "@keyboard/typings"
 import { store } from "@state/store"
 import { EnvActionTypes } from "@state/reducers/enviromentReducer"
 import { UIActionTypes } from "@state/reducers/uiReducer"
 
-export const editShortcut = (namespace: KeymapNamespace, key: AnyShortcut) => {
+export const editShortcut = (namespace: KeymapNamespace, key: string) => {
   store.dispatch({
     type: EnvActionTypes.ENV_EDIT_SHORTCUT,
     shortcutNamespace: namespace,
@@ -16,7 +16,7 @@ export const editShortcut = (namespace: KeymapNamespace, key: AnyShortcut) => {
   })
 }
 
-export const resetShortcut = (namespace: KeymapNamespace, key: AnyShortcut) => {
+export const resetShortcut = (namespace: KeymapNamespace, key: string) => {
   store.dispatch({
     type: EnvActionTypes.ENV_EDIT_SHORTCUT,
     shortcutNamespace: namespace,
@@ -72,7 +72,7 @@ export const shortcutExists = (shortcut: string) => {
   const { keymap } = store.getState().env
   for (const namespace in keymap) {
     for (const shortcutKey in keymap[namespace as KeymapNamespace]) {
-      if (keymap[namespace as KeymapNamespace][shortcutKey as AnyShortcut] === shortcut) {
+      if (keymap[namespace as KeymapNamespace][shortcutKey] === shortcut) {
         return shortcutKey
       }
     }

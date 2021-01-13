@@ -12,7 +12,8 @@ const fetch = async () => {
       const video = await fetchFullVideoInfo(hash, true)
       // set prefetch data
       const windowPrefetch = window as WindowPrefetchData
-      windowPrefetch.prefetchData = video
+      windowPrefetch.prefetchData = {}
+      windowPrefetch.prefetchData.video = video
     } catch (error) {
       console.error(error)
     }
@@ -24,6 +25,8 @@ const videoPrefetcher = {
   fetch,
 }
 
-export type VideoPrefetch = VideoMetadata
+export type VideoPrefetch = {
+  video?: VideoMetadata
+} | undefined
 
 export default videoPrefetcher

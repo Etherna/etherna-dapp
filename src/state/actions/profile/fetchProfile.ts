@@ -1,7 +1,7 @@
 import { store } from "@state/store"
 import { ProfileActionTypes } from "@state/reducers/profileReducer"
 import { UIActionTypes } from "@state/reducers/uiReducer"
-import { getProfile, SwarmImage } from "@utils/swarmProfile"
+import { getProfile } from "@utils/swarmProfile"
 
 /**
  * Fetch profile info
@@ -21,8 +21,8 @@ const fetchProfile = async (manifest: string, address: string) => {
       type: ProfileActionTypes.PROFILE_UPDATE,
       name: profile.name || "",
       description: profile.description || "",
-      avatar: profile.avatar as SwarmImage,
-      cover: profile.cover as SwarmImage,
+      avatar: profile.avatar,
+      cover: profile.cover,
       location: profile.location,
       website: profile.website,
       birthday: profile.birthday,

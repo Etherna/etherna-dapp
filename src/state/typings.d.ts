@@ -3,7 +3,7 @@ import { Crop } from "react-image-crop"
 import Lang from "lang.js"
 import { Bzz } from "@erebos/bzz"
 
-import { AnyShortcut, Keymap, KeymapNamespace } from "@keyboard/typings"
+import { Keymap, KeymapNamespace } from "@keyboard/typings"
 import IndexClient from "@utils/indexClient/client"
 import GatewayClient from "@utils/gatewayClient/client"
 import { SwarmImage } from "@utils/swarmProfile"
@@ -34,12 +34,12 @@ export type EnvState = {
   web3?: Web3
   currentWallet?: string
   currentWalletLogo?: string
-  network?: string
+  network?: string | null
   currentAddress?: string
   previusAddress?: string
 
   shortcutNamespace?: KeymapNamespace
-  shortcutKey?: AnyShortcut
+  shortcutKey?: string
 
   imageCrop?: Crop
   imageType?: string
@@ -62,7 +62,6 @@ export type UIState = {
   errorMessage?: string
   isConnectingWallet?: boolean
   isLoadingProfile?: boolean
-  isConnectingWallet?: boolean
   isLoadingProfile?: boolean
   showUnsupportedModal?: boolean
   showNetwokChangeModal?: boolean
@@ -74,7 +73,7 @@ export type UserState = {
   address?: string
   identityManifest?: string
   prevAddresses?: string[]
-  ens?: string
+  ens?: string | null
   credit?: number
   isSignedIn?: boolean
   isSignedInGateway?: boolean

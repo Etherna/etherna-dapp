@@ -1,7 +1,7 @@
 import { Bzz, Response } from "@erebos/bzz"
 
 import { baseKeymap } from "@keyboard"
-import { AnyShortcut, Keymap, KeymapNamespace } from "@keyboard/typings"
+import { Keymap, KeymapNamespace } from "@keyboard/typings"
 import lang from "@lang"
 import { loadDarkMode } from "@state/actions/enviroment/darkMode"
 import { EnvState } from "@state/typings"
@@ -64,7 +64,7 @@ type UpdateKeymapAction = {
 type EditShortcutsAction = {
   type: typeof EnvActionTypes.ENV_EDIT_SHORTCUT
   shortcutNamespace?: KeymapNamespace
-  shortcutKey?: AnyShortcut
+  shortcutKey?: string
 }
 type ToggleDarkModeAction = {
   type: typeof EnvActionTypes.ENV_TOGGLE_DARK_MODE

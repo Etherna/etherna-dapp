@@ -7,8 +7,8 @@ import Web3 from "web3"
  * Check if a string a valid eth address
  * @param address Address string value
  */
-export const checkIsEthAddress = (address: string) => {
-  const isEthereumAddress = /^(0x)?[0-9a-f]{40}$/i.test(address)
+export const checkIsEthAddress = (address: string|null|undefined) => {
+  const isEthereumAddress = /^(0x)?[0-9a-f]{40}$/i.test(address || "")
   return isEthereumAddress
 }
 

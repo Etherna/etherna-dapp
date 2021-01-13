@@ -2,7 +2,7 @@ import { store } from "@state/store"
 import { ProfileActionTypes } from "@state/reducers/profileReducer"
 import { UserActionTypes } from "@state/reducers/userReducer"
 
-import { updateProfile as updateSwarmProfile, resolveImage, Profile, SwarmResource } from "@utils/swarmProfile"
+import { updateProfile as updateSwarmProfile, Profile } from "@utils/swarmProfile"
 
 const updateProfile = async (profile: Profile) => {
   const { indexClient } = store.getState().env
@@ -15,8 +15,8 @@ const updateProfile = async (profile: Profile) => {
     type: ProfileActionTypes.PROFILE_SAVE,
     name: profile.name || "",
     description: profile.description || "",
-    avatar: resolveImage(profile.avatar as SwarmResource),
-    cover: resolveImage(profile.cover as SwarmResource),
+    avatar: profile.avatar,
+    cover: profile.cover,
   })
   store.dispatch({
     type: UserActionTypes.USER_UPDATE_IDENTITY,

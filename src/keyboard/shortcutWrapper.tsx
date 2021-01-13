@@ -1,20 +1,31 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { connect } from "react-redux"
-import { ShortcutManager } from "react-shortcuts"
+import { connect, MapStateToPropsParam } from "react-redux"
+import { ShortcutManager, ShortcutsKeymap } from "react-shortcuts"
 
 import { AppState } from "@state/typings"
+import { Keymap } from "./typings"
 
-class ShortcutWrapper extends React.Component {
+type ShortcutWrapperProps = {
+  children: JSX.Element
+}
+
+type ShortcutWrapperMap = {
+  keymap: Keymap
+}
+
+type Props = ShortcutWrapperProps & ShortcutWrapperMap
+
+class ShortcutWrapper extends React.PureComponent<Props> {
   shortcutManager: ShortcutManager
 
   static childContextTypes = {
     shortcuts: PropTypes.object.isRequired,
   }
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props)
-    this.shortcutManager = new ShortcutManager(props.keymap)
+    this.shortcutManager = new ShortcutManager(props.keymap as ShortcutsKeymap)
   }
 
   getChildContext() {
@@ -22,14 +33,14 @@ class ShortcutWrapper extends React.Component {
   }
 
   render() {
-    return this.props.children
+    return <div>{this.props.children}</div>
   }
 }
 
-const mapState = (state: AppState) => {
+const mapState: MapStateToPropsParam<ShortcutWrapperMap, ShortcutWrapperProps, AppState> = (state: AppState) => {
   return {
     keymap: state.env.keymap,
   }
 }
 
-export default connect(mapState)(ShortcutWrapper)
+export default connect<ShortcutWrapperMap, {}, ShortcutWrapperProps, AppState>(mapState)(ShortcutWrapper)
