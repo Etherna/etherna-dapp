@@ -52,6 +52,7 @@ const ProfileInfoEdit = ({
   }
 
   const handleRemoveImage = (e: React.SyntheticEvent, type: ImageType = "cover") => {
+    e.preventDefault()
     e.stopPropagation()
 
     if (type === "cover") {

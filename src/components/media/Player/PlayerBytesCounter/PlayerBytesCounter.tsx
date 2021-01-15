@@ -69,8 +69,8 @@ const PlayerBytesCounter = () => {
   const { credit } = useSelector(state => state.user)
 
   const remainingBytes = useMemo(() => {
-    if (!sourceSize) return null
-    return Math.min(sourceSize, bytePrice! > 0 ? credit || 0 / bytePrice! : 0)
+    if (!sourceSize || !bytePrice) return null
+    return Math.min(sourceSize, bytePrice > 0 ? (credit || 0) / bytePrice : 0)
   }, [credit, bytePrice, sourceSize])
 
   const remainingPercent = remainingBytes && sourceSize ? remainingBytes / sourceSize * 100 : 0

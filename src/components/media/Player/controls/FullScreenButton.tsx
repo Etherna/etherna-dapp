@@ -16,7 +16,6 @@ const FullScreenButton = () => {
     <div
       className="btn btn-option"
       onClick={toggleFullscreen}
-      onKeyDown={toggleFullscreen}
       role="button"
       tabIndex={0}
     >

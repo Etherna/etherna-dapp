@@ -46,7 +46,7 @@ const ProfileView = ({ profileAddress }: ProfileViewProps) => {
   }, [profileInfo])
 
   const fetchProfile = async () => {
-    if (profileInfo?.address !== profileAddress) {
+    if (profileInfo && profileInfo.address !== profileAddress) {
       // reset
       setProfileVideos([])
       setProfileInfo(undefined)

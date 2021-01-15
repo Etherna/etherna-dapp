@@ -16,7 +16,6 @@ const PiPButton = () => {
     <div
       className="btn btn-option"
       onClick={togglePictureInPicture}
-      onKeyDown={togglePictureInPicture}
       role="button"
       tabIndex={0}
     >

@@ -17,7 +17,6 @@ const PlayButton = () => {
     <div
       className="btn btn-play"
       onClick={togglePlay}
-      onKeyDown={togglePlay}
       role="button"
       tabIndex={0}
     />

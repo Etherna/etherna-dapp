@@ -29,7 +29,6 @@ const VolumeControl = () => {
       <div
         className="btn btn-option"
         onClick={toggleMute}
-        onKeyDown={toggleMute}
         role="button"
         tabIndex={0}
       >

@@ -1,6 +1,5 @@
 import Web3 from "web3"
 
-import pollAddress from "./pollAddress"
 import { store } from "@state/store"
 import { UIActionTypes } from "@state/reducers/uiReducer"
 import { UserActionTypes } from "@state/reducers/userReducer"
@@ -22,7 +21,7 @@ const loadProfile = async (profile: IndexCurrentUser) => {
     fetchProfile(profile.identityManifest, profile.address)
 
     // observe address change
-    pollAddress()
+    //pollAddress()
   } catch (error) {
     console.error(error)
     store.dispatch({

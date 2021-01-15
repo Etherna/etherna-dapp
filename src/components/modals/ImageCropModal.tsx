@@ -58,11 +58,11 @@ const ImageCropModal = ({ show = false }: ImageCropModalProps) => {
         />
       </div>
       <div className="flex">
-        <div className="ml-auto">
+        <div className="ml-auto flex space-x-3">
           <Button action={handleCancel} aspect="secondary" size="small">
             Cancel
           </Button>
-          <Button action={handleContinue} size="small" className="ml-3">
+          <Button action={handleContinue} size="small">
             Done
           </Button>
         </div>

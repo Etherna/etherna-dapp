@@ -28,7 +28,6 @@ const PlaybackRateControl = () => {
                 active: t === playbackRate,
               })}
               onClick={() => updatePlaybackRate(t)}
-              onKeyDown={() => updatePlaybackRate(t)}
               role="button"
               tabIndex={0}
               key={t}

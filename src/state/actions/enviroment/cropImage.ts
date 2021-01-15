@@ -9,6 +9,13 @@ export const finishCropping = (cropData: Crop|undefined) => {
     type: EnvActionTypes.ENV_UPDATE_IMAGE_CROP,
     imageCrop: cropData,
   })
+
+  if (!cropData) {
+    store.dispatch({
+      type: UIActionTypes.UI_TOGGLE_IMAGE_CROPPER,
+      isCroppingImage: false,
+    })
+  }
 }
 
 export const cropImage = async (file: File, type: string) => {

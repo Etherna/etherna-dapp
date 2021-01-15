@@ -326,6 +326,7 @@ const downloadMeta = async (bzz: Bzz<any, Response<any>>, hash: string) => {
       "sources",
       "thumbnailHash",
     ])
+
     return videoMetadata
   } catch (error) {
     return null

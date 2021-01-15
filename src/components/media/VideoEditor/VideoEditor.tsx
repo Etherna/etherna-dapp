@@ -40,6 +40,7 @@ const VideoEditor = ({ hash, video }: VideoEditorProps) => {
 
   const [videoHash, setVideoHash] = useState(hash)
   const [videoMeta, setVideoMeta] = useState(video)
+  const [thumbnailHash, setThumbnailHash] = useState(video?.thumbnailHash ? hash : undefined)
   const [videoOnIndex, setVideoOnIndex] = useState<boolean>()
   const [videoOwner, setVideoOwner] = useState(video?.ownerAddress)
   const [title, setTitle] = useState(video?.title || "")
@@ -88,6 +89,7 @@ const VideoEditor = ({ hash, video }: VideoEditorProps) => {
       setTitle(videoInfo.title || "")
       setDescription(videoInfo.description || "")
       setVideoOnIndex(typeof videoInfo.isVideoOnIndex === "boolean" ? videoInfo.isVideoOnIndex : true)
+      setThumbnailHash(videoInfo?.thumbnailHash ? hash : undefined)
     } catch (error) {
       console.error(error)
       setVideoOnIndex(false)
@@ -111,7 +113,7 @@ const VideoEditor = ({ hash, video }: VideoEditorProps) => {
           originalQuality: originalQuality!,
           ownerAddress: address!,
           duration: duration!,
-          sources: queue.filter(q => sourcePattern.test(q.name)).map(q => q.name.replace(sourcePattern, "")),
+          sources: queue.filter(q => sourcePattern.test(q.name)).map(q => q.name.replace(sourcePattern, ""))
         },
         pinContent
       )
@@ -123,6 +125,7 @@ const VideoEditor = ({ hash, video }: VideoEditorProps) => {
       await updatePinning(false, hash)
 
       setVideoHash(videoManifest)
+      thumbnailHash && setThumbnailHash(videoManifest)
 
       setSaved(true)
     } catch (error) {
@@ -187,7 +190,9 @@ const VideoEditor = ({ hash, video }: VideoEditorProps) => {
             </div>
             <div className="form-group">
               <ThumbnailUpload
+                hash={thumbnailHash}
                 pinContent={pinContent}
+                onCancel={() => setThumbnailHash(undefined)}
                 disabled={isSaving}
               />
             </div>

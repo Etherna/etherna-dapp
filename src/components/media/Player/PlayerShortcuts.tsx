@@ -12,7 +12,9 @@ const PlayerShortcuts = ({ children }: PlayerShortcutsProps) => {
   const [state, dispatch] = useStateValue()
   const { isPlaying, muted } = state
 
-  const handleShortcut = (action: string) => {
+  const handleShortcut = (action: string, event: Event) => {
+    event.preventDefault()
+    event.stopPropagation()
     // eslint-disable-next-line default-case
     switch (action) {
       case PlayerActions.PLAYPAUSE:
@@ -22,10 +24,10 @@ const PlayerShortcuts = ({ children }: PlayerShortcutsProps) => {
         })
         break
       case PlayerActions.SKIP_BACKWARD:
-        dispatch({ type: ReducerTypes.UPDATE_PROGRESS, bySec: 5 })
+        dispatch({ type: ReducerTypes.UPDATE_PROGRESS, bySec: -5 })
         break
       case PlayerActions.SKIP_FORWARD:
-        dispatch({ type: ReducerTypes.UPDATE_PROGRESS, bySec: -5 })
+        dispatch({ type: ReducerTypes.UPDATE_PROGRESS, bySec: 5 })
         break
       // TODO: Enable when captions available
       // case PlayerActions.CAPTIONS:
