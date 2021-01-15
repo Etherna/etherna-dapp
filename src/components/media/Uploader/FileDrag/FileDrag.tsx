@@ -3,8 +3,9 @@ import classnames from "classnames"
 
 import "./file-drag.scss"
 
+import { ReactComponent as UploadLargeIcon } from "@svg/icons/upload-icon-lg.svg"
+
 import Alert from "@components/common/Alert"
-import UploadLargeIcon from "@icons/common/UploadLargeIcon"
 import { showError } from "@state/actions/modals"
 import { isMimeCompatible } from "@utils/mimeTypes"
 

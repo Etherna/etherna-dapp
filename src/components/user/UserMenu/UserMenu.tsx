@@ -2,23 +2,24 @@ import React, { useRef } from "react"
 import { Link } from "react-router-dom"
 import Switch from "react-switch"
 
+import { ReactComponent as DarkModeIconLg } from "@svg/icons/dark-mode-icon-lg.svg"
+import { ReactComponent as EditProfileIcon } from "@svg/icons/edit-profile-icon.svg"
+import { ReactComponent as ProfileIcon } from "@svg/icons/profile-icon.svg"
+import { ReactComponent as IndexIcon } from "@svg/icons/index-icon.svg"
+import { ReactComponent as GatewayIcon } from "@svg/icons/gateway-icon.svg"
+import { ReactComponent as SwitchIcon } from "@svg/icons/switch-icon.svg"
+import { ReactComponent as SignoutIcon } from "@svg/icons/signout-icon.svg"
+import { ReactComponent as DarkModeIcon } from "@svg/icons/dark-mode-icon.svg"
+import { ReactComponent as LightModeIcon } from "@svg/icons/light-mode-icon.svg"
+import { ReactComponent as ShortcutsIcon } from "@svg/icons/shortcuts-icon.svg"
+import { ReactComponent as UploadIcon } from "@svg/icons/upload-icon.svg"
+
 import EnvDropDownMenus from "./EnvDropDownMenu"
 import GuestMenu from "./GuestMenu"
 import ProfileLoadingPlaceholder from "./ProfileLoadingPlaceholder"
 import SigninButton from "./SigninButton"
 import Avatar from "../Avatar"
 import { DropDown, DropDownItem, DropDownItemContent, DropDownMenu, DropDownMenuToggle } from "@common/DropDown"
-import { ReactComponent as DarkModeIconLg } from "@svg/icons/dark-mode-icon-lg.svg"
-import EditProfileIcon from "@icons/menu/EditProfileIcon"
-import ProfileIcon from "@icons/menu/ProfileIcon"
-import IndexIcon from "@icons/menu/IndexIcon"
-import GatewayIcon from "@icons/menu/GatewayIcon"
-import SwitchIcon from "@icons/menu/SwitchIcon"
-import SignoutIcon from "@icons/menu/SignoutIcon"
-import DarkModeIcon from "@icons/menu/DarkModeIcon"
-import LightModeIcon from "@icons/menu/LightModeIcon"
-import ShortcutsIcon from "@icons/menu/ShortcutsIcon"
-import UploadIcon from "@components/icons/menu/UploadIcon"
 import { toggleDarkMode } from "@state/actions/enviroment/darkMode"
 import { providerActions } from "@state/actions"
 import useSelector from "@state/useSelector"
@@ -124,8 +125,8 @@ const UserMenu = () => {
             <Switch
               id="darkMode-field"
               className="ml-auto"
-              checkedIcon={<DarkModeIcon className="m-0.5 ml-1" color="#fff" />}
-              uncheckedIcon={<LightModeIcon className="m-0.5 ml-1" color="#333" />}
+              checkedIcon={<DarkModeIcon className="m-0.5 ml-1 fill-white" />}
+              uncheckedIcon={<LightModeIcon className="m-0.5 ml-1 fill-gray-800" />}
               height={24}
               width={50}
               handleDiameter={20}

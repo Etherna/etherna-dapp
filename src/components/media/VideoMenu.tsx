@@ -1,9 +1,10 @@
 import React, { useRef } from "react"
 import { Link } from "react-router-dom"
 
+import { ReactComponent as MoreIcon } from "@svg/icons/more-icon.svg"
+
 import { DropDown, DropDownMenuToggle, DropDownItem, DropDownMenu } from "@common/DropDown"
 import Button from "@common/Button"
-import MoreIcon from "@components/icons/common/MoreIcon"
 import Routes from "@routes"
 
 type VideoMenuProps = {

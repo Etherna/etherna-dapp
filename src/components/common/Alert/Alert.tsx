@@ -1,5 +1,4 @@
 import React from "react"
-import PropTypes from "prop-types"
 import classnames from "classnames"
 
 import "./alert.scss"
@@ -32,16 +31,6 @@ const Alert = ({ children, type = "info", title, onClose }: AlertProps) => {
       <p>{children}</p>
     </div>
   )
-}
-
-Alert.propTypes = {
-  type: PropTypes.string,
-  title: PropTypes.string,
-  onClose: PropTypes.func,
-}
-
-Alert.defaultProps = {
-  type: "success",
 }
 
 export default Alert

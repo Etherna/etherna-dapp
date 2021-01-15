@@ -2,10 +2,11 @@ import React from "react"
 
 import "./shortcuts.scss"
 
+import { ReactComponent as EditIcon } from "@svg/icons/edit-icon.svg"
+import { ReactComponent as ResetIcon } from "@svg/icons/reset-icon.svg"
+
 import Button from "@common/Button"
 import Kbd from "@common/Kbd"
-import EditIcon from "@icons/common/EditIcon"
-import ResetIcon from "@icons/common/ResetIcon"
 import { KeymapNamespace } from "@keyboard/typings"
 import { editShortcut, resetShortcut, hasCustomShortcut } from "@state/actions/enviroment/shortcuts"
 import useSelector from "@state/useSelector"

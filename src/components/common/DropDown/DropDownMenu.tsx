@@ -1,8 +1,9 @@
 import React from "react"
 import classnames from "classnames"
 
+import { ReactComponent as BackIcon } from "@svg/icons/back-icon.svg"
+
 import { useStateValue, ReducerTypes } from "./DropDownContext"
-import BackIcon from "@icons/menu/BackIcon"
 
 type DropDownMenuProps = {
   children: React.ReactNode

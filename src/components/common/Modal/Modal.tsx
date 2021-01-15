@@ -1,5 +1,4 @@
 import React from "react"
-import PropTypes from "prop-types"
 import classnames from "classnames"
 
 import "./modal.scss"
@@ -63,19 +62,6 @@ const Modal = ({
       />
     </>
   )
-}
-
-Modal.propTypes = {
-  show: PropTypes.bool.isRequired,
-  setShow: PropTypes.func,
-  title: PropTypes.string,
-  titleTag: PropTypes.string,
-  showCloseButton: PropTypes.bool,
-  onClose: PropTypes.func,
-}
-
-Modal.defaultProps = {
-  titleTag: "h5",
 }
 
 export default Modal

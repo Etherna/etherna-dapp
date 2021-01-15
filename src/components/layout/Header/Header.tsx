@@ -3,10 +3,11 @@ import { NavLink } from "react-router-dom"
 
 import "./header.scss"
 
+import { ReactComponent as Logo } from "@svg/logo.svg"
+import { ReactComponent as UploadIcon } from "@svg/icons/upload-icon.svg"
+
 import UserMenu from "@components/user/UserMenu"
 import UserCredit from "@components/user/UserCredit"
-import Logo from "@icons/Logo"
-import UploadIcon from "@icons/menu/UploadIcon"
 import useSelector from "@state/useSelector"
 import Routes from "@routes"
 

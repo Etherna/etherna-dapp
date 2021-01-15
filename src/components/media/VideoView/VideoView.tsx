@@ -4,11 +4,12 @@ import moment from "moment"
 
 import "./video-view.scss"
 
+import { ReactComponent as UnindexedIcon } from "@svg/icons/unindexed-icon.svg"
+
 import MarkdownPreview from "@common/MarkdownPreview"
 import SEO from "@components/layout/SEO"
 import Player from "@components/media/Player"
 import Avatar from "@components/user/Avatar"
-import UnindexedIcon from "@icons/common/UnindexedIcon"
 import Routes from "@routes"
 import { getResourceUrl } from "@utils/swarm"
 import { shortenEthAddr } from "@utils/ethFuncs"
@@ -86,7 +87,7 @@ const VideoView = ({ hash, video }: VideoViewProps) => {
               <h1 className="video-title">{title}</h1>
               {videoOnIndex === false && (
                 <div className="badge-unindexed">
-                  <UnindexedIcon color="#9a3412" />
+                  <UnindexedIcon className="fill-orange-800" />
                   Unindexed
                 </div>
               )}

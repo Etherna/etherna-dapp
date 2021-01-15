@@ -2,16 +2,17 @@ import React, { useRef } from "react"
 import { Link } from "react-router-dom"
 import Switch from "react-switch"
 
+import { ReactComponent as DarkModeIconLg } from "@svg/icons/dark-mode-icon-lg.svg"
+import { ReactComponent as MenuIcon } from "@svg/icons/menu-icon.svg"
+import { ReactComponent as IndexIcon } from "@svg/icons/index-icon.svg"
+import { ReactComponent as GatewayIcon } from "@svg/icons/gateway-icon.svg"
+import { ReactComponent as ShortcutsIcon } from "@svg/icons/shortcuts-icon.svg"
+import { ReactComponent as DarkModeIcon } from "@svg/icons/dark-mode-icon.svg"
+import { ReactComponent as LightModeIcon } from "@svg/icons/light-mode-icon.svg"
+
 import EnvDropDownMenus from "./EnvDropDownMenu"
 import { DropDown, DropDownMenu, DropDownMenuToggle, DropDownItem, DropDownItemContent } from "@common/DropDown"
 import Button from "@common/Button"
-import { ReactComponent as DarkModeIconLg } from "@svg/icons/dark-mode-icon-lg.svg"
-import MenuIcon from "@icons/menu/MenuIcon"
-import IndexIcon from "@icons/menu/IndexIcon"
-import GatewayIcon from "@icons/menu/GatewayIcon"
-import ShortcutsIcon from "@icons/menu/ShortcutsIcon"
-import DarkModeIcon from "@icons/menu/DarkModeIcon"
-import LightModeIcon from "@icons/menu/LightModeIcon"
 import { toggleDarkMode } from "@state/actions/enviroment/darkMode"
 import useSelector from "@state/useSelector"
 import Routes from "@routes"
@@ -55,8 +56,8 @@ const GuestMenu = () => {
             <Switch
               id="darkMode-field"
               className="ml-auto"
-              checkedIcon={<DarkModeIcon className="m-0.5 ml-1" color="#fff" />}
-              uncheckedIcon={<LightModeIcon className="m-0.5 ml-1" color="#333" />}
+              checkedIcon={<DarkModeIcon className="m-0.5 ml-1 fill-white" />}
+              uncheckedIcon={<LightModeIcon className="m-0.5 ml-1 fill-gray-800" />}
               height={24}
               width={50}
               handleDiameter={20}
