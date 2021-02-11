@@ -4,9 +4,12 @@ module.exports = {
   purge: {
     content: [
       "./public/**/*.html",
-      "./src/**/*.js",
+      "./src/**/*.tsx",
       "./src/**/*.svg",
     ],
+    options: {
+      safelist: ["dark"]
+    },
   },
   presets: [],
   darkMode: "class", // or false or 'media' or 'class'
