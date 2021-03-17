@@ -65,4 +65,8 @@ yarn-error.log
 deploy.config.js
 
 # Env
-.env.production
+.env.*
+!.env.example
+
+# Test files
+test*.js
