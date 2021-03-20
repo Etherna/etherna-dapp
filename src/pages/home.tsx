@@ -2,7 +2,7 @@ import React from "react"
 
 import LayoutWrapper from "@components/layout/DefaultLayout/LayoutWrapper"
 import SEO from "@components/layout/SEO"
-import ExploreView from "@components/videos/ExploreView"
+import ExploreView from "@components/video/ExploreView"
 
 const HomePage = () => (
   <LayoutWrapper>

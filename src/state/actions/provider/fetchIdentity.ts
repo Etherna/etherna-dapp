@@ -1,8 +1,8 @@
 import { store } from "@state/store"
 import { UserActionTypes } from "@state/reducers/userReducer"
 import { EnvActionTypes } from "@state/reducers/enviromentReducer"
-import IndexClient from "@utils/indexClient/client"
-import GatewayClient from "@utils/gatewayClient/client"
+import EthernaIndexClient from "@classes/EthernaIndexClient"
+import EthernaGatewayClient from "@classes/EthernaGatewayClient"
 
 /**
  * Fetch the current identity from the SSO server
@@ -25,7 +25,7 @@ const fetchIdentity = async () => {
   return profile
 }
 
-const fetchIndexCurrentUser =  async (indexClient: IndexClient) => {
+const fetchIndexCurrentUser =  async (indexClient: EthernaIndexClient) => {
   try {
     const profile = await indexClient.users.fetchCurrentUser()
 
@@ -42,7 +42,7 @@ const fetchIndexCurrentUser =  async (indexClient: IndexClient) => {
   }
 }
 
-const fetchCurrentUserCredit =  async (gatewayClient: GatewayClient) => {
+const fetchCurrentUserCredit =  async (gatewayClient: EthernaGatewayClient) => {
   try {
     const credit = await gatewayClient.users.fetchCredit()
 
@@ -62,7 +62,7 @@ const fetchCurrentUserCredit =  async (gatewayClient: GatewayClient) => {
   }
 }
 
-const fetchCurrentBytePrice =  async (gatewayClient: GatewayClient) => {
+const fetchCurrentBytePrice =  async (gatewayClient: EthernaGatewayClient) => {
   try {
     const bytePrice = await gatewayClient.settings.fetchCurrentBytePrice()
 

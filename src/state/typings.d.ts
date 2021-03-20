@@ -1,12 +1,12 @@
 import Web3 from "web3"
-import { Crop } from "react-image-crop"
 import Lang from "lang.js"
-import { Bzz } from "@erebos/bzz"
+import { Crop } from "react-image-crop"
 
 import { Keymap, KeymapNamespace } from "@keyboard/typings"
-import IndexClient from "@utils/indexClient/client"
-import GatewayClient from "@utils/gatewayClient/client"
-import { SwarmImage } from "@utils/swarmProfile"
+import EthernaGatewayClient from "@classes/EthernaGatewayClient"
+import EthernaIndexClient from "@classes/EthernaIndexClient"
+import SwarmBeeClient from "@classes/SwarmBeeClient"
+import SwarmImage from "@classes/SwarmImage"
 
 export type AppState = {
   env: EnvState
@@ -21,9 +21,9 @@ export type EnvState = {
   gatewayHost: string
   gatewayApiPath: string
   creditHost: string
-  indexClient: IndexClient
-  gatewayClient: GatewayClient
-  bzzClient: Bzz<any, Response<any>, any>
+  indexClient: EthernaIndexClient
+  gatewayClient: EthernaGatewayClient
+  beeClient: SwarmBeeClient
   bytePrice?: number
 
   keymap: Keymap

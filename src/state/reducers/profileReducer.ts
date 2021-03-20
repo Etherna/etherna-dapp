@@ -1,5 +1,5 @@
+import SwarmImage from "@classes/SwarmImage"
 import { ProfileState } from "@state/typings"
-import { SwarmImage } from "@utils/swarmProfile"
 
 export const ProfileActionTypes = {
   PROFILE_UPDATE: "PROFILE_UPDATE",

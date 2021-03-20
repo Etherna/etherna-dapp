@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { Link } from "react-router-dom"
 
 import "./profile.scss"
@@ -8,105 +8,34 @@ import ProfileVideos from "./ProfileVideos"
 import NavPills from "@common/NavPills"
 import SEO from "@components/layout/SEO"
 import ProfileInfo from "@components/profile/ProfileInfo"
-import useSelector from "@state/useSelector"
-import { fetchFullVideosInfo, IndexVideoFullMeta } from "@utils/video"
 import Routes from "@routes"
-import { WindowPrefetchData } from "typings/window"
-import { Profile } from "@utils/swarmProfile"
-
-const FETCH_COUNT = 50
+import { Profile } from "@classes/SwarmProfile/types"
+import useSelector from "@state/useSelector"
+import useSwarmVideos from "@hooks/useSwarmVideos"
 
 type ProfileViewProps = {
   profileAddress: string
 }
 
-const ProfileView = ({ profileAddress }: ProfileViewProps) => {
-  const windowPrefetch = window as WindowPrefetchData
-  const prefetchProfile = windowPrefetch.prefetchData?.profile
-  const prefetchVideos = windowPrefetch.prefetchData?.videos
+const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
+  const [profile, setProfile] = useState<Profile>()
+  const { videos, hasMore, isFetching, loadMore } = useSwarmVideos({
+    ownerAddress: profileAddress,
+    profileData: profile
+  })
 
   const { address } = useSelector(state => state.user)
   const { isMobile } = useSelector(state => state.env)
 
   const [activeTab, setActiveTab] = useState("videos")
-  const [isFetching, setIsFetching] = useState(false)
-  const [profileVideos, setProfileVideos] = useState<IndexVideoFullMeta[]>([])
-  const [profileInfo, setProfileInfo] = useState<Profile>()
-  const [page, setPage] = useState(0)
-  const [hasMore, setHasMore] = useState(true)
-
-  useEffect(() => {
-    fetchProfile()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileAddress])
-
-  useEffect(() => {
-    mapVideosWithProfile()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileInfo])
-
-  const fetchProfile = async () => {
-    if (profileInfo && profileInfo.address !== profileAddress) {
-      // reset
-      setProfileVideos([])
-      setProfileInfo(undefined)
-      setPage(0)
-      setHasMore(true)
-    }
-
-    fetchVideos()
-  }
-
-  const fetchVideos = async () => {
-    setIsFetching(true)
-
-    const hasPrefetch = prefetchVideos && prefetchProfile?.address === profileAddress
-
-    try {
-      const videos = hasPrefetch
-        ? prefetchVideos!
-        : await fetchFullVideosInfo(page, FETCH_COUNT, false, profileAddress)
-      const mappedVideos = videosWithProfileData(videos)
-      setProfileVideos(page === 0 ? mappedVideos : profileVideos.concat(mappedVideos))
-
-      if (videos.length < FETCH_COUNT) {
-        setHasMore(false)
-      } else {
-        setPage(page + 1)
-      }
-    } catch (error) {
-      console.error(error)
-      setHasMore(false)
-    }
-
-    setIsFetching(false)
-  }
-
-  const mapVideosWithProfile = () => {
-    if (!profileInfo || !profileVideos) return
-
-    const videos = videosWithProfileData(profileVideos)
-    setProfileVideos(videos)
-  }
-
-  const videosWithProfileData = (videos: IndexVideoFullMeta[]) => {
-    return videos.map(v => ({
-      ...v,
-      profileData: {
-        name: profileInfo?.name,
-        avatar: profileInfo?.avatar,
-        address: profileInfo?.address,
-      },
-    } as IndexVideoFullMeta))
-  }
 
   const handleFetchedProfile = (profile: Profile) => {
-    setProfileInfo(profile)
+    setProfile(profile)
   }
 
   return (
     <>
-      <SEO title={(profileInfo || {}).name || profileAddress} />
+      <SEO title={profile?.name ?? profileAddress} />
       <ProfileInfo
         profileAddress={profileAddress}
         nav={
@@ -137,15 +66,15 @@ const ProfileView = ({ profileAddress }: ProfileViewProps) => {
           <ProfileVideos
             hasMoreVideos={hasMore}
             isFetching={isFetching}
-            onLoadMore={fetchVideos}
-            videos={profileVideos}
+            onLoadMore={loadMore}
+            videos={videos ?? []}
           />
         )}
         {activeTab === "about" && (
           <ProfileAbout
             address={profileAddress}
-            description={profileInfo?.description}
-            name={profileInfo?.name}
+            description={profile?.description}
+            name={profile?.name}
           />
         )}
       </ProfileInfo>

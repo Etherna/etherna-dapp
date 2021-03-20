@@ -1,0 +1,13 @@
+/*! purgecss start ignore */
+
+.video-update {
+  @apply max-w-screen-md p-10;
+
+  .video-preview {
+    .thumbnail {
+      @apply rounded max-h-48 h-auto;
+    }
+  }
+}
+
+/*! purgecss end ignore */

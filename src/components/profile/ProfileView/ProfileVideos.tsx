@@ -1,17 +1,17 @@
 import React from "react"
 import InfiniteScroller from "react-infinite-scroller"
 
-import VideoGrid from "@components/media/VideoGrid"
-import { VideoMetadata } from "@utils/video"
+import VideoGrid from "@components/video/VideoGrid"
+import { Video } from "@classes/SwarmVideo/types"
 
 type ProfileVideosProps = {
-  videos: VideoMetadata[]
+  videos: Video[]
   isFetching: boolean
   hasMoreVideos: boolean
   onLoadMore: (page: number) => void
 }
 
-const ProfileVideos = ({ videos, isFetching, hasMoreVideos, onLoadMore }: ProfileVideosProps) => {
+const ProfileVideos: React.FC<ProfileVideosProps> = ({ videos, isFetching, hasMoreVideos, onLoadMore }) => {
   return (
     <>
       {!isFetching && (videos || []).length === 0 && (

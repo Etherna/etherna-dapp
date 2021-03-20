@@ -8,7 +8,7 @@ type ProfileAboutProps = {
   description?: string | null
 }
 
-const ProfileAbout = ({ name, address, description }: ProfileAboutProps) => {
+const ProfileAbout: React.FC<ProfileAboutProps> = ({ name, address, description }) => {
   return (
     <div>
       {/* <h3>{name || shortenEthAddr(address)}</h3> */}

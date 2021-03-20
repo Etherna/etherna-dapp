@@ -3,9 +3,11 @@
     "baseUrl": "./src",
     "paths": {
       "@app/*": ["app/*"],
+      "@classes/*": ["classes/*"],
       "@components/*": ["components/*"],
       "@common/*": ["components/common/*"],
       "@keyboard": ["keyboard"],
+      "@hooks/*": ["hooks/*"],
       "@keyboard/*": ["keyboard/*"],
       "@lang": ["lang"],
       "@lang/*": ["lang/*"],

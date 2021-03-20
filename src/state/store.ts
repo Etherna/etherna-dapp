@@ -6,14 +6,12 @@ import enviromentReducer from "./reducers/enviromentReducer"
 import profileReducer from "./reducers/profileReducer"
 import uiReducer from "./reducers/uiReducer"
 import userReducer from "./reducers/userReducer"
-import { WindowReduxDev } from "typings/window"
 
 /**
  * Configure a new redux store
  */
 function configureStore() {
-  const reduxDevWindow = window as WindowReduxDev
-  const composeEnhancers = reduxDevWindow.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
   const middleware: Middleware[] = [thunkMiddleware]
 
   if (process.env.NODE_ENV !== "production") {

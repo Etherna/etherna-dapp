@@ -1,9 +1,9 @@
 import React from "react"
 import { NavLink } from "react-router-dom"
 
-import { default as SwarmImg } from "@components/common/SwarmImage"
+import SwarmImg from "@components/common/SwarmImg"
 import makeBlockies from "@utils/makeBlockies"
-import { SwarmImage } from "@utils/swarmProfile"
+import SwarmImage from "@classes/SwarmImage"
 
 type SidebarItemProps = {
   image: string | SwarmImage | undefined
@@ -16,7 +16,7 @@ const SidebarItem = ({ image, fallbackAddress, name, link }: SidebarItemProps) =
   return (
     <NavLink to={link} activeClassName="active" className="sidebar-item">
       <SwarmImg
-        hash={image}
+        image={image}
         fallback={makeBlockies(fallbackAddress)}
         className="sidebar-item-image"
         style={{}}

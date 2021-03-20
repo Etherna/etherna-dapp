@@ -10,16 +10,16 @@ import PlayerControls from "./PlayerControls"
 import PlayerBytesCounter from "./PlayerBytesCounter"
 import PlayerShortcuts from "./PlayerShortcuts"
 import PlayerErrorBanner from "./PlayerErrorBanner"
+import { VideoSource } from "@classes/SwarmVideo/types"
 import http from "@utils/request"
-import { VideoSourceInfo } from "@utils/video"
 
 type PlayerProps = {
-  sources: VideoSourceInfo[]
+  sources: VideoSource[]
   originalQuality?: string
   thumbnail?: string
 }
 
-const InnerPlayer = ({ sources, originalQuality, thumbnail }: PlayerProps) => {
+const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnail }) => {
   const [state, dispatch] = useStateValue()
   const { source, currentQuality, isPlaying, currentTime, error, videoEl } = state
 

@@ -2,13 +2,19 @@ import { store } from "@state/store"
 import { ProfileActionTypes } from "@state/reducers/profileReducer"
 import { UserActionTypes } from "@state/reducers/userReducer"
 
-import { updateProfile as updateSwarmProfile, Profile } from "@utils/swarmProfile"
+import { Profile } from "@classes/SwarmProfile/types"
+import SwarmProfile from "@classes/SwarmProfile"
 
 const updateProfile = async (profile: Profile) => {
-  const { indexClient } = store.getState().env
+  const { beeClient, indexClient } = store.getState().env
   const { address, prevAddresses } = store.getState().user
 
-  const manifest = await updateSwarmProfile(profile)
+  const profileHandler = new SwarmProfile({
+    beeClient,
+    address: profile.address,
+    fetchFromCache: false
+  })
+  const manifest = await profileHandler.updateProfile(profile)
   await indexClient.users.updateCurrentUser(manifest)
 
   store.dispatch({

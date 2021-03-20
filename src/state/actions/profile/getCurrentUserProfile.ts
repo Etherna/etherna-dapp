@@ -1,5 +1,5 @@
+import { Profile } from "@classes/SwarmProfile/types"
 import { store } from "@state/store"
-import { Profile } from "@utils/swarmProfile"
 
 /**
  * Get current user profile

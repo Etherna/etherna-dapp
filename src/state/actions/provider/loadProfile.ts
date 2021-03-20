@@ -4,8 +4,8 @@ import { store } from "@state/store"
 import { UIActionTypes } from "@state/reducers/uiReducer"
 import { UserActionTypes } from "@state/reducers/userReducer"
 import fetchProfile from "@state/actions/profile/fetchProfile"
+import { IndexCurrentUser } from "@classes/EthernaIndexClient/types"
 import { resolveEnsName } from "@utils/ethFuncs"
-import { IndexCurrentUser } from "@utils/indexClient/typings"
 
 /**
  * Load profile info

@@ -2,16 +2,17 @@ import React, { useRef, useState } from "react"
 import classnames from "classnames"
 
 import "./profile-info-edit.scss"
+import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 
 import Button from "@common/Button"
 import Modal from "@common/Modal"
-import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
+import MarkdownEditor from "@common/MarkdownEditor"
+import { Profile } from "@classes/SwarmProfile/types"
+import SwarmImage from "@classes/SwarmImage"
+import SwarmProfile from "@classes/SwarmProfile"
 import EnvActions from "@state/actions/enviroment"
 import useSelector from "@state/useSelector"
-import { getResourceUrl, uploadResourceToSwarm } from "@utils/swarm"
 import makeBlockies from "@utils/makeBlockies"
-import MarkdownEditor from "@components/common/MarkdownEditor"
-import { Profile, SwarmImage } from "@utils/swarmProfile"
 
 type ImageType = "avatar" | "cover"
 
@@ -22,12 +23,13 @@ type ProfileInfoEditProps = {
   onSubmit?: (profile: Profile) => void
 }
 
-const ProfileInfoEdit = ({
+const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
   profileAddress,
   submitLabel = "Save",
   isSubmitting,
   onSubmit
-}: ProfileInfoEditProps) => {
+}) => {
+  const { beeClient } = useSelector(state => state.env)
   const { name, description, avatar, cover } = useSelector(state => state.profile)
   const avatarRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
@@ -78,17 +80,19 @@ const ProfileInfoEdit = ({
     type === "cover" && setUploadingCover(true)
 
     try {
-      const imgHash = await uploadResourceToSwarm(file)
-      const imgObj: SwarmImage = {
-        url: getResourceUrl(imgHash)!,
-        hash: imgHash,
-        isRaw: false
-      }
+      const responsiveImage = new SwarmImage(undefined, {
+        beeClient,
+        isResponsive: true,
+        responsiveSizes: type === "avatar" ? SwarmProfile.avatarResponsiveSizes : SwarmProfile.coverResponsiveSizes
+      })
+      responsiveImage.setImageData(file)
+
+      await responsiveImage.upload()
 
       if (type === "cover") {
-        setProfileCover(imgObj)
+        setProfileCover(responsiveImage)
       } else if (type === "avatar") {
-        setProfileAvatar(imgObj)
+        setProfileAvatar(responsiveImage)
       }
     } catch (error) {
       console.error(error)
@@ -108,12 +112,12 @@ const ProfileInfoEdit = ({
       <div className="cover">
         <label
           className={classnames("cover-input", {
-            active: !!profileCover?.url,
+            active: !!profileCover?.originalSource,
           })}
           htmlFor="cover-input"
         >
-          {profileCover?.url && (
-            <img src={profileCover.url} alt={profileName} className="cover-image" />
+          {profileCover?.originalSource && (
+            <img src={profileCover.originalSource} alt={profileName} className="cover-image" />
           )}
           {isUploadingCover && (
             <div className="absolute inset-x-0 top-0 mt-24 text-center">Uploading...</div>
@@ -127,7 +131,7 @@ const ProfileInfoEdit = ({
             onChange={e => handleImageChange(e, "cover")}
           />
           <div className="cover-actions">
-            {profileCover?.url && (
+            {profileCover?.originalSource && (
               <Button className="remove-button" type="button" action={e => handleRemoveImage(e, "cover")}>
                 &#10005;
               </Button>
@@ -141,7 +145,7 @@ const ProfileInfoEdit = ({
         <label htmlFor="avatar-input">
           <div className="profile-avatar" data-label="Change Avatar">
             <img
-              src={profileAvatar?.url || makeBlockies(profileAddress)}
+              src={profileAvatar?.originalSource || makeBlockies(profileAddress)}
               alt={profileName}
             />
             {isUploadingAvatar && (

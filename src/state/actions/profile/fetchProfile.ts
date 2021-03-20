@@ -1,21 +1,24 @@
 import { store } from "@state/store"
 import { ProfileActionTypes } from "@state/reducers/profileReducer"
 import { UIActionTypes } from "@state/reducers/uiReducer"
-import { getProfile } from "@utils/swarmProfile"
+import SwarmProfile from "@classes/SwarmProfile"
 
 /**
  * Fetch profile info
- * @param manifest Manifest hash with profile data
+ * @param hash Manifest hash with profile data
  * @param address Profile address
  */
-const fetchProfile = async (manifest: string, address: string) => {
+const fetchProfile = async (hash: string, address: string) => {
   store.dispatch({
     type: UIActionTypes.UI_TOGGLE_LOADING_PROFILE,
     isLoadingProfile: true,
   })
 
   try {
-    const profile = await getProfile(manifest, address)
+    const { beeClient } = store.getState().env
+    const profile = await (new SwarmProfile({ beeClient, address, hash })).downloadProfile()
+
+    if (!profile) throw new Error("Cannot fetch profile")
 
     store.dispatch({
       type: ProfileActionTypes.PROFILE_UPDATE,

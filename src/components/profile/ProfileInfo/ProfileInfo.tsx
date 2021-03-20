@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 
 import "./profile-info.scss"
 
-import { default as SwarmImg } from "@components/common/SwarmImage"
-import useSelector from "@state/useSelector"
-import profileActions from "@state/actions/profile"
+import SwarmImg from "@components/common/SwarmImg"
+import { Profile } from "@classes/SwarmProfile/types"
+import useSwarmProfile from "@hooks/useSwarmProfile"
+import { showError } from "@state/actions/modals"
 import makeBlockies from "@utils/makeBlockies"
-import { getProfile, Profile, SwarmImage } from "@utils/swarmProfile"
 import { checkIsEthAddress, shortenEthAddr } from "@utils/ethFuncs"
-import { WindowPrefetchData } from "@typings/window"
 
 type ProfileInfoProps = {
   children: React.ReactNode
@@ -18,73 +17,40 @@ type ProfileInfoProps = {
   onFetchedProfile: (profile: Profile) => void
 }
 
-const ProfileInfo = ({
+const ProfileInfo: React.FC<ProfileInfoProps> = ({
   children,
   profileAddress,
   nav,
   actions,
   onFetchedProfile
-}: ProfileInfoProps) => {
-  const windowPrefetch = window as WindowPrefetchData
-  const prefetchProfile = windowPrefetch.prefetchData?.profile
-
-  const { indexClient } = useSelector(state => state.env)
-  const { address } = useSelector(state => state.user)
-  const isCurrentUser = address === profileAddress
-
-  const [profileName, setProfileName] = useState("")
-  const [profileAvatar, setProfileAvatar] = useState<SwarmImage>()
-  const [profileCover, setProfileCover] = useState<SwarmImage>()
+}) => {
+  const [profile, loadProfile] = useSwarmProfile({ address: profileAddress })
+  const profileName = profile.name ? profile.name : profileAddress
 
   useEffect(() => {
-    // reset data
-    setProfileName("")
-    setProfileAvatar(undefined)
-    setProfileCover(undefined)
-    // fetch data
     fetchProfile()
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileAddress])
+
+  useEffect(() => {
+    if (profile) {
+      onFetchedProfile({
+        name: profile.name,
+        avatar: profile.avatar,
+        description: profile.description,
+        address: profile.address,
+      })
+    }
+  }, [onFetchedProfile, profile])
 
   const fetchProfile = async () => {
     //setIsFetchingProfile(true)
 
-    const hasPrefetch = prefetchProfile && prefetchProfile.address === profileAddress
-
     try {
-      const defaultProfile = hasPrefetch ? prefetchProfile! : {} as Profile
-      let { name, description, avatar, cover } = defaultProfile
-
-      if (!hasPrefetch) {
-        let swarmProfile: Profile = {} as Profile
-
-        if (isCurrentUser) {
-          swarmProfile = profileActions.getCurrentUserProfile()
-        } else {
-          const indexProfile = await indexClient.users.fetchUser(profileAddress)
-          swarmProfile = await getProfile(indexProfile.identityManifest, profileAddress)
-        }
-
-        name = swarmProfile.name
-        description = swarmProfile.description
-        avatar = swarmProfile.avatar
-        cover = swarmProfile.cover
-      }
-      const fallbackName = name || profileAddress
-
-      setProfileName(fallbackName)
-      setProfileAvatar(avatar)
-      setProfileCover(cover)
-
-      onFetchedProfile({
-        name: fallbackName,
-        avatar,
-        description,
-        address: profileAddress,
-      })
+      await loadProfile()
     } catch (error) {
       console.error(error)
+      showError("Error", "Failed to fetch the profile information")
     }
 
     //setIsFetchingProfile(false)
@@ -93,9 +59,9 @@ const ProfileInfo = ({
   return (
     <div className="profile">
       <div className="cover">
-        {profileCover?.url && (
+        {profile?.cover && (
           <SwarmImg
-            hash={profileCover?.hash}
+            image={profile.cover}
             alt={profileName}
             className="cover-image"
           />
@@ -106,7 +72,7 @@ const ProfileInfo = ({
         <div className="col md:max-w-xxs px-4">
           <div className="profile-avatar">
             <SwarmImg
-              hash={profileAvatar?.hash}
+              image={profile.avatar}
               fallback={makeBlockies(profileAddress)}
               alt={profileName}
             />

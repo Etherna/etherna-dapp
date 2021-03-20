@@ -1,7 +1,5 @@
-import React from "react"
 import loadable from "@loadable/component"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
-import pMinDelay from "p-min-delay"
 
 import "./scss/theme.scss"
 
@@ -13,61 +11,55 @@ import StateWrapper from "@state/wrapper"
 import { getBasename } from "@routes"
 
 const AsyncHome = loadable(
-  () => pMinDelay(import(/* webpackChunkName: "home" */ "@pages/home"), 200),
+  () => import(/* webpackChunkName: "home" */ "@pages/home"),
   {
     fallback: <PageLoader />,
   }
 )
 const AsyncProfile = loadable(
-  () => pMinDelay(import(/* webpackChunkName: "profile" */ "@pages/profile"), 200),
+  () => import(/* webpackChunkName: "profile" */ "@pages/profile"),
   {
     fallback: <PageLoader />,
   }
 )
 const AsyncProfileEdit = loadable(
-  () => pMinDelay(import(/* webpackChunkName: "profile-edit" */ "@pages/profileEdit"), 200),
+  () => import(/* webpackChunkName: "profile-edit" */ "@pages/profileEdit"),
   {
     fallback: <PageLoader />,
   }
 )
 const AsyncProfiles = loadable(
-  () => pMinDelay(import(/* webpackChunkName: "profiles" */ "@pages/profiles"), 200),
+  () => import(/* webpackChunkName: "profiles" */ "@pages/profiles"),
   {
     fallback: <PageLoader />,
   }
 )
 const AsyncWatch = loadable(
-  () => pMinDelay(import(/* webpackChunkName: "watch" */ "@pages/watch"), 200),
+  () => import(/* webpackChunkName: "watch" */ "@pages/watch"),
   {
     fallback: <PageLoader />,
   }
 )
 const AsyncVideoSettings = loadable(
-  () => pMinDelay(import(/* webpackChunkName: "videoSettings" */ "@pages/videoSettings"), 200),
+  () => import(/* webpackChunkName: "videoSettings" */ "@pages/videoSettings"),
   {
     fallback: <PageLoader />,
   }
 )
 const AsyncUpload = loadable(
-  () => pMinDelay(import(/* webpackChunkName: "upload" */ "@pages/upload"), 200),
-  {
-    fallback: <PageLoader />,
-  }
-)
-const AsyncHowItWorks = loadable(
-  () => pMinDelay(import(/* webpackChunkName: "how-it-works" */ "@pages/how-it-works"), 200),
+  () => import(/* webpackChunkName: "upload" */ "@pages/upload"),
   {
     fallback: <PageLoader />,
   }
 )
 const AsyncShortcuts = loadable(
-  () => pMinDelay(import(/* webpackChunkName: "shortcuts" */ "@pages/shortcuts"), 200),
+  () => import(/* webpackChunkName: "shortcuts" */ "@pages/shortcuts"),
   {
     fallback: <PageLoader />,
   }
 )
 const AsyncNotFound = loadable(
-  () => pMinDelay(import(/* webpackChunkName: "404" */ "@pages/404"), 200),
+  () => import(/* webpackChunkName: "404" */ "@pages/404"),
   {
     fallback: <PageLoader />,
   }
@@ -82,7 +74,6 @@ const Profiles = () => <AsyncProfiles />
 const Watch = () => <AsyncWatch />
 const VideoSettings = () => <AsyncVideoSettings />
 const Upload = () => <AsyncUpload />
-const HowItWorks = () => <AsyncHowItWorks />
 const Shortcuts = () => <AsyncShortcuts />
 const NotFound = () => <AsyncNotFound />
 
@@ -114,9 +105,6 @@ const Root = () => {
               <SignedInRoute path={"/upload"}>
                 <Upload />
               </SignedInRoute>
-              <Route path={"/how-it-works"}>
-                <HowItWorks />
-              </Route>
               <Route path={"/shortcuts"}>
                 <Shortcuts />
               </Route>

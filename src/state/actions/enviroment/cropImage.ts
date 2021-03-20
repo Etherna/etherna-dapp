@@ -97,7 +97,7 @@ const getCroppedBlob = (image: CanvasImageSource, crop: Crop, fileName = "image"
   ctx.drawImage(image, x, y, width, height, 0, 0, width, height)
 
   // As Base64 string
-  // const base64Image = canvas.toDataURL('image/jpeg')
+  // const base64Image = canvas.toDataURL("image/jpeg")
 
   // As a blob
   return new Promise<Blob|null>(resolve => {

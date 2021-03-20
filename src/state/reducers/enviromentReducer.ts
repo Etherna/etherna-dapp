@@ -1,14 +1,15 @@
-import { Bzz, Response } from "@erebos/bzz"
+import Web3 from "web3"
+import { Crop } from "react-image-crop"
 
 import { baseKeymap } from "@keyboard"
 import { Keymap, KeymapNamespace } from "@keyboard/typings"
 import lang from "@lang"
+import EthernaGatewayClient from "@classes/EthernaGatewayClient"
+import EthernaIndexClient from "@classes/EthernaIndexClient"
+import SwarmBeeClient from "@classes/SwarmBeeClient"
 import { loadDarkMode } from "@state/actions/enviroment/darkMode"
 import { EnvState } from "@state/typings"
-import GatewayClient from "@utils/gatewayClient/client"
-import IndexClient from "@utils/indexClient/client"
-import { Crop } from "react-image-crop"
-import Web3 from "web3"
+import { checkIsMobile } from "@utils/browser"
 
 export const EnvActionTypes = {
   ENV_UPDATE_PROVIDER: "ENV_UPDATE_PROVIDER",
@@ -49,13 +50,13 @@ type UpdateIndexHostAction = {
   type: typeof EnvActionTypes.ENV_UPDATE_INDEXHOST
   indexHost: string
   apiPath: string | null | undefined
-  indexClient: IndexClient
+  indexClient: EthernaIndexClient
 }
 type UpdateGatewayHostAction = {
   type: typeof EnvActionTypes.ENV_UPDATE_GATEWAY_HOST
   gatewayHost: string
   apiPath: string | null | undefined
-  bzzClient: Bzz<any, Response<any>, any>
+  beeClient: SwarmBeeClient
 }
 type UpdateKeymapAction = {
   type: typeof EnvActionTypes.ENV_UPDATE_KEYMAP
@@ -100,41 +101,23 @@ export type EnvActions = (
 )
 
 // Init reducer
-
-const indexHost = window.localStorage.getItem("indexHost") || process.env.REACT_APP_INDEX_HOST!
-const indexApiPath = window.localStorage.getItem("indexApiPath") != null
-  ? window.localStorage.getItem("indexApiPath")!
-  : process.env.REACT_APP_INDEX_API_PATH!
-const gatewayHost = window.localStorage.getItem("gatewayHost") ||
-  process.env.REACT_APP_GATEWAY_HOST ||
-  "https://swarm-gateways.net"
-const gatewayApiPath = window.localStorage.getItem("gatewayApiPath") != null
-  ? window.localStorage.getItem("gatewayApiPath")!
-  : process.env.REACT_APP_GATEWAY_API_PATH!
-const creditHost = window.localStorage.getItem("creditHost") || process.env.REACT_APP_CREDIT_HOST!
-
-const indexClient = new IndexClient({ host: indexHost, apiPath: indexApiPath })
-const gatewayClient = new GatewayClient({ host: gatewayHost, apiPath: gatewayApiPath })
-const bzzClient = new Bzz({ url: gatewayHost })
-
-// update fetch to include credentials
-const credentialsFetch = (input: RequestInfo, init?: RequestInit | undefined) => {
-  return fetch(input, { ...(init || {}), credentials: "include" })
-}
-(bzzClient as any).fetch = credentialsFetch
+const creditHost = window.localStorage.getItem("creditHost") || process.env.REACT_APP_CREDIT_HOST
+const indexClient = new EthernaIndexClient({ host: EthernaIndexClient.defaultHost, apiPath: EthernaIndexClient.defaultApiPath })
+const gatewayClient = new EthernaGatewayClient({ host: EthernaGatewayClient.defaultHost, apiPath: EthernaGatewayClient.defaultApiPath })
+const beeClient = new SwarmBeeClient(EthernaGatewayClient.defaultHost)
 
 const initialState: EnvState = {
-  indexHost,
-  indexApiPath,
-  gatewayHost,
-  gatewayApiPath,
+  indexHost: EthernaIndexClient.defaultHost,
+  indexApiPath: EthernaIndexClient.defaultApiPath,
+  gatewayHost: EthernaGatewayClient.defaultHost,
+  gatewayApiPath: EthernaGatewayClient.defaultApiPath,
   creditHost,
   indexClient,
   gatewayClient,
-  bzzClient,
+  beeClient,
   keymap: baseKeymap,
   darkMode: loadDarkMode(),
-  isMobile: false,
+  isMobile: checkIsMobile(),
   lang,
 }
 
@@ -180,7 +163,7 @@ const enviromentReducer = (state: EnvState = initialState, action: EnvActions): 
         ...state,
         gatewayHost: action.gatewayHost,
         gatewayApiPath: action.apiPath || "",
-        bzzClient: action.bzzClient
+        beeClient: action.beeClient
       }
 
     case EnvActionTypes.ENV_UPDATE_BYTE_PRICE:

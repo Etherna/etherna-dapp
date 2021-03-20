@@ -1,73 +1,29 @@
-import React, { useState, useEffect } from "react"
+import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 
 import "./profile-preview.scss"
 
 import Avatar from "@components/user/Avatar"
-import VideoGrid from "@components/media/VideoGrid"
+import VideoGrid from "@components/video/VideoGrid"
 import Routes from "@routes"
-import { getProfile, Profile } from "@utils/swarmProfile"
+import useSwarmProfile from "@hooks/useSwarmProfile"
+import useSwarmVideos from "@hooks/useSwarmVideos"
 import { shortenEthAddr } from "@utils/ethFuncs"
-import { fetchFullVideosInfo, IndexVideoFullMeta } from "@utils/video"
 
 type ProfilePreviewProps = {
   profileAddress: string
   profileManifest?: string
 }
 
-const ProfilePreview = ({ profileAddress, profileManifest }: ProfilePreviewProps) => {
-  const [isFetchingProfile, setIsFetchingProfile] = useState(false)
-  const [hasMappedVideosProfile, setHasMappedVideosProfile] = useState(false)
-  const [profile, setProfile] = useState<Profile>()
-  const [videos, setVideos] = useState<IndexVideoFullMeta[]>([])
+const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress, profileManifest }) => {
+  const [profile, loadProfile] = useSwarmProfile({ address: profileAddress, hash: profileManifest })
+  const { videos } = useSwarmVideos({ ownerAddress: profileAddress, profileData: profile, seedLimit: 5 })
 
   useEffect(() => {
-    fetchProfile()
-    fetchVideos()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    loadProfile()
+  }, [profileAddress, loadProfile])
 
-  useEffect(() => {
-    mapVideosProfile()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile, videos])
-
-  const fetchProfile = async () => {
-    setIsFetchingProfile(true)
-
-    try {
-      const profile = await getProfile(profileManifest, profileAddress)
-      setProfile(profile)
-    } catch (error) {
-      console.error(error)
-    }
-
-    setIsFetchingProfile(false)
-  }
-
-  const fetchVideos = async () => {
-    try {
-      const videos = await fetchFullVideosInfo(0, 5, false, profileAddress)
-      setVideos(videos)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const mapVideosProfile = () => {
-    if (!profile || hasMappedVideosProfile || !videos.length) return
-
-    const mappedVideos = videos.map(v => ({
-      ...v,
-      profileData: profile,
-    }))
-
-    setVideos(mappedVideos)
-
-    setHasMappedVideosProfile(true)
-  }
-
-  if (isFetchingProfile || !profile) return null
+  if (!profile) return null
 
   return (
     <div className="profile-preview" key={profileAddress}>
@@ -79,7 +35,7 @@ const ProfilePreview = ({ profileAddress, profileManifest }: ProfilePreviewProps
           <h3>{profile.name || shortenEthAddr(profileAddress)}</h3>
         </Link>
       </div>
-      {videos && hasMappedVideosProfile && (
+      {videos && (
         <VideoGrid videos={videos} mini={true} />
       )}
       {videos && !videos.length && (
