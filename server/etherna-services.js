@@ -3,7 +3,7 @@ const path = require("path")
 const waitOn = require("wait-on")
 const chalk = require("chalk")
 const url = require("url")
-const { exec,  } = require("child_process")
+const { exec, } = require("child_process")
 
 require("./utils/env")
 
@@ -105,8 +105,13 @@ const execBee = () => {
   const endpoint = process.env.BEE_PORT ? `--api-addr=:${process.env.BEE_PORT}` : ``
   const pinning = process.env.BEE_ENABLE_PIN ? `--global-pinning-enable=${process.env.BEE_ENABLE_PIN}` : ``
   const dbCapacity = process.env.BEE_DB_CAPACITY ? `--db-capacity=${process.env.BEE_DB_CAPACITY}` : ``
-  const otherArgs = `--cors-allowed-origins=[*] --swap-enable=false --standalone=true --gateway-mode=true`
-  const execCms = `bee start ${pwd} ${endpoint} ${pinning} ${dbCapacity} ${otherArgs}`.trim()
+  const otherArgs = [
+    `--cors-allowed-origins=[*]`,
+    `--swap-enable=false`,
+    `--standalone=true`,
+    `--gateway-mode=true`
+  ]
+  const execCms = `bee start ${pwd} ${endpoint} ${pinning} ${dbCapacity} ${otherArgs.join(" ")}`.trim()
   return exec(execCms, execCallback)
 }
 

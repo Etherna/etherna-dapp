@@ -2,7 +2,7 @@ const fs = require("fs")
 const https = require("https")
 const express = require("express")
 const cors = require("cors")
-const { json, raw, urlencoded} = require("body-parser")
+const { json, raw, urlencoded } = require("body-parser")
 
 const { ValidatorMiddleware } = require("./middlewares/validator-middleware")
 const { SwarmMiddleware } = require("./middlewares/swarm-middleware")
@@ -27,11 +27,11 @@ app.use(
     origin: true
   })
 )
-app.use(ValidatorMiddleware)
 app.use(SwarmMiddleware)
+app.use(ValidatorMiddleware)
 
-const PrivateKeyPath = process.env.SSL_PRIVATE_KEY_PATH
-const CertificatePath = process.env.SSL_CERTIFICATE_PATH
+const PrivateKeyPath = process.env.SSL_KEY_FILE
+const CertificatePath = process.env.SSL_CRT_FILE
 
 if (fs.existsSync(PrivateKeyPath) && fs.existsSync(CertificatePath)) {
   const privateKey = fs.readFileSync(PrivateKeyPath, "utf8")

@@ -1,19 +1,48 @@
 # Instruction to generate an SSL certificate
 
-Link: https://stackoverflow.com/questions/21397809/create-a-trusted-self-signed-ssl-cert-for-localhost-for-use-with-express-node
+## Using `mkcert`
 
-## 1. cd to the sslcert folder
-`cd server/sslcert`
+### 1. Install mkcert
 
-## 2. Run this script
-`openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout cert.key -out cert.pem -config req.cnf -sha256`
+```
+brew install mkcert
+brew install nss # if you use Firefox
+```
 
-## 3. Trust certificate (macOS)
-  a. Open the proxy web page
-  b. Open the web inspector and go to the 'Security' tab
-  c. Click on 'View Certificate'
-  d. Drag the Certificate picture on the Desktop
-  e. Double Click and save it in the System
-  f. Open the keychain program, find the certificate and double click it
-  g. Under the 'Trust' section, in the 'When using this certificate' option, select 'Always Trust'
-  h. Restart server and refresh page
+### 2. Global install (one time)
+
+```
+mkcert -install
+```
+
+### 3. Generate localhost cert
+
+```
+cd /path/to/your/project
+mkdir ssl # if it doesn't exist
+mkcert -key-file sslcert/key.pem -cert-file sslcert/cert.pem localhost
+```
+
+### 2. Update .env
+
+- Copy '.env.example' and rename it '.env'
+- Set value of HTTPS to 'true'
+- Set value of SSL_KEY_FILE to 'server/sslcert/key.pem'
+- Set value of SSL_CRT_FILE to 'server/sslcert/cert.pem'
+
+## Using `openssl`
+
+### 1. Generate localhost cert
+
+```
+cd /path/to/your/project
+mkdir ssl # if it doesn't exist
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/localhost.key -out ssl/localhost.crt
+```
+
+### 2. Update .env
+
+- Copy '.env.example' and rename it '.env'
+- Set value of HTTPS to 'true'
+- Set value of SSL_KEY_FILE to 'server/sslcert/localhost.key'
+- Set value of SSL_CRT_FILE to 'server/sslcert/localhost.crt'

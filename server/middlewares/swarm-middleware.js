@@ -8,7 +8,7 @@ const FilterTransformStream = require("../classes/FilterTransformStream")
 
 
 // Consts
-const GatewayValidPathsRegex = /^\/bzz(-(raw|tag|pin|list))?:\/?.*/
+const GatewayValidPathsRegex = /^\/(bytes|chunks|files|dirs|tags|pin|soc|feeds|pss)\/?.*/
 const MaxBodySizeCap = 5000000 //5MB
 const ValidatorHost = process.env.GATEWAY_VALIDATOR_PROXY_HOST
 const SwarmHost = process.env.GATEWAY_SWARM_PROXY_HOST
@@ -18,7 +18,8 @@ const SwarmHost = process.env.GATEWAY_SWARM_PROXY_HOST
 module.exports.SwarmMiddleware = createProxyMiddleware(
   (pathname, req) => {
     return GatewayValidPathsRegex.test(pathname)
-  }, {
+  },
+  {
     target: SwarmHost,
     changeOrigin: true,
     secure: false,
@@ -78,7 +79,10 @@ async function handleValidatorRequest(req, res) {
   // Run requests.
   const gatewayResponsePromise = forwardRequestToGateway(req) //start async request to gateway
 
-  if (process.env.DISABLE_REQUEST_VALIDATION && process.env.DISABLE_REQUEST_VALIDATION === "true") {
+  // Check if request should not be validated
+  const disableRequestValidation = process.env.DISABLE_REQUEST_VALIDATION === "true" || req.method !== "GET"
+
+  if (disableRequestValidation) {
     return await gatewayResponsePromise
   }
 
@@ -199,7 +203,7 @@ async function notifyEndOfLimitedRequest(requestId, bodySize, secret) {
  */
 async function forwardRequestToGateway(request) {
   // Strip cookies.
-  const headers = {...request.headers}
+  const headers = { ...request.headers }
   headers.host = SwarmHost.replace(/^https?:\/\//, "")
   delete headers.cookie
 
@@ -224,7 +228,7 @@ async function forwardRequestToValidator(request, forceHttps) {
   const host = ValidatorHost.replace(/^https?:\/\//, "")
 
   // Create new headers.
-  const headers = {...request.headers}
+  const headers = { ...request.headers }
   headers.host = host
   headers["X-Forwarded-Host"] = host
 
