@@ -9,6 +9,7 @@ module.exports = {
           "variants",
           "responsive",
           "screen",
+          "layer",
           "mixin",
           "for",
           "include",

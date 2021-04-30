@@ -1,0 +1,33 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jest": true
+  },
+  "extends": ["react-app", "react-app/jest"],
+  "rules": {
+    "max-len": [
+      "warn",
+      {
+        "code": 120
+      }
+    ],
+    "semi": ["error", "never"],
+    "react/react-in-jsx-scope": "off",
+    "indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1,
+        "ignoredNodes": ["ConditionalExpression"]
+      }
+    ],
+    "quotes": [
+      "warn",
+      "double",
+      {
+        "allowTemplateLiterals": true
+      }
+    ]
+  }
+}
