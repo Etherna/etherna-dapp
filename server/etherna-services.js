@@ -156,23 +156,33 @@ const run = async () => {
     })
   })
 
-  const ssoProcess = execProject(process.env.ETHERNA_SSO_PROJECT_PATH)
-  processes.push(ssoProcess)
-  await waitService(process.env.ETHERNA_SSO_PROJECT_PATH, "Etherna SSO")
+  const args = process.argv.slice(2, process.argv.length)
 
-  const indexProcess = execProject(process.env.ETHERNA_INDEX_PROJECT_PATH)
-  processes.push(indexProcess)
-  await waitService(process.env.ETHERNA_INDEX_PROJECT_PATH, "Etherna Index")
+  if (args.length === 0 || args.includes("--sso")) {
+    const ssoProcess = execProject(process.env.ETHERNA_SSO_PROJECT_PATH)
+    processes.push(ssoProcess)
+    await waitService(process.env.ETHERNA_SSO_PROJECT_PATH, "Etherna SSO")
+  }
 
-  const creditProcess = execProject(process.env.ETHERNA_CREDIT_PROJECT_PATH)
-  processes.push(creditProcess)
-  await waitService(process.env.ETHERNA_CREDIT_PROJECT_PATH, "Etherna Credit")
+  if (args.length === 0 || args.includes("--index")) {
+    const indexProcess = execProject(process.env.ETHERNA_INDEX_PROJECT_PATH)
+    processes.push(indexProcess)
+    await waitService(process.env.ETHERNA_INDEX_PROJECT_PATH, "Etherna Index")
+  }
 
-  const validatorProcess = execProject(process.env.ETHERNA_GATEWAY_VALIDATOR_PROJECT_PATH)
-  processes.push(validatorProcess)
-  await waitService(process.env.ETHERNA_GATEWAY_VALIDATOR_PROJECT_PATH, "Etherna Gateway Validator")
+  if (args.length === 0 || args.includes("--credit")) {
+    const creditProcess = execProject(process.env.ETHERNA_CREDIT_PROJECT_PATH)
+    processes.push(creditProcess)
+    await waitService(process.env.ETHERNA_CREDIT_PROJECT_PATH, "Etherna Credit")
+  }
 
-  if (process.env.BEE_LOCAL_INSTANCE === "true") {
+  if (args.length === 0 || args.includes("--val")) {
+    const validatorProcess = execProject(process.env.ETHERNA_GATEWAY_VALIDATOR_PROJECT_PATH)
+    processes.push(validatorProcess)
+    await waitService(process.env.ETHERNA_GATEWAY_VALIDATOR_PROJECT_PATH, "Etherna Gateway Validator")
+  }
+
+  if (process.env.BEE_LOCAL_INSTANCE === "true" && (args.length === 0 || args.includes("--bee"))) {
     const beeProcess = execBee()
     processes.push(beeProcess)
     await waitService(process.env.BEE_ENDPOINT, "Bee Node")

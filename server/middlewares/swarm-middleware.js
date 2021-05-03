@@ -86,12 +86,20 @@ async function handleValidatorRequest(req, res) {
     return await gatewayResponsePromise
   }
 
+  // FIXME:
+  // Gateway filter validator is yet to be updated to the new
+  // bee api.
+  // So we must return the un-filtered response in the meantime.
+  return await gatewayResponsePromise
+
+
   // Get Validator response.
   const validatorResponse = await forwardRequestToValidator(req) //get response from validator
 
   // Verify validator response.
   if (validatorResponse.status !== 200) {
-    return new Response("Invalid response from validator", { status: 500 })
+    const msg = `Invalid response from validator ${validatorResponse.status}: ${validatorResponse.statusText}`
+    return new Response(msg, { status: validatorResponse.status })
   }
 
   // Decode data from validator response.
