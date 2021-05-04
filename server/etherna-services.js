@@ -106,7 +106,7 @@ const execBee = () => {
   const pinning = process.env.BEE_ENABLE_PIN ? `--global-pinning-enable=${process.env.BEE_ENABLE_PIN}` : ``
   const dbCapacity = process.env.BEE_DB_CAPACITY ? `--db-capacity=${process.env.BEE_DB_CAPACITY}` : ``
   const otherArgs = [
-    `--cors-allowed-origins=[*]`,
+    `--cors-allowed-origins=*`,
     `--swap-enable=false`,
     `--standalone=true`,
     `--gateway-mode=true`

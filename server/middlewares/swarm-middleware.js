@@ -47,23 +47,8 @@ async function handleRequest(proxyReq, req, res) {
       return
     }
 
-    const isText = /^(text|application\/json)/.test(response.headers.get("Content-Type"))
-
-    // Return a stream response for media sources
-    // end text response for anything else
-    if (!isText && response.status < 300) {
-      // Set response headers
-      response.headers.forEach((value, name) => {
-        res.set(name, value)
-      })
-
-      res.status(response.status)
-      response.body.pipe(res)
-    } else {
-      res.set("Content-Type", response.headers.get("Content-Type"))
-      res.status(response.status)
-      response.body.pipe(res)
-    }
+    // Return response
+    response.body.pipe(res.status(response.status))
   } catch (e) {
     console.error(e)
     res.status(500).send(e)
@@ -214,6 +199,13 @@ async function forwardRequestToGateway(request) {
   const headers = { ...request.headers }
   headers.host = SwarmHost.replace(/^https?:\/\//, "")
   delete headers.cookie
+
+  // Fix decoding error
+  if (headers["content-encoding"]) {
+    // delete headers["content-encoding"]
+    // delete headers["vary"]
+    // headers["content-length"] = headers["decompressed-content-length"] ?? headers["content-length"]
+  }
 
   const options = parseFetchOptions(headers, request.method, request.body)
 
