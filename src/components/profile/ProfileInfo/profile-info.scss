@@ -4,7 +4,7 @@
   @apply flex flex-wrap;
 
   .cover {
-    @apply flex items-center w-full bg-gray-200 max-h-48 min-h-24 -mb-8 overflow-hidden;
+    @apply flex items-center w-full bg-gray-200 min-h-24 -mb-8 overflow-hidden;
     @apply dark:bg-gray-800;
 
     .cover-image {

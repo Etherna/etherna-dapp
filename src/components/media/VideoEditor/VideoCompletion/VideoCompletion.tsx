@@ -20,14 +20,14 @@ const VideoCompletion = () => {
       </li>
       <li
         className={classnames("upload-step", {
-          "step-done": video.title !== "",
+          "step-done": video.title,
         })}
       >
         Add a title
       </li>
       <li
         className={classnames("upload-step", {
-          "step-done": video.description !== "",
+          "step-done": video.description,
         })}
       >
         Add a description (optional)

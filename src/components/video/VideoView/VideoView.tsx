@@ -29,7 +29,7 @@ const VideoView: React.FC<VideoViewProps> = ({ hash, routeState }) => {
     if (!video?.hash) {
       fetchVideo()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [video])
 
   const fetchVideo = async () => {
@@ -91,7 +91,9 @@ const VideoView: React.FC<VideoViewProps> = ({ hash, routeState }) => {
                     <Link to={Routes.getProfileLink(video.owner.ownerAddress)}>
                       <div className="video-profile">
                         <Avatar image={video.owner.profileData?.avatar} address={video.owner.ownerAddress} />
-                        <h3 className="profile-name">{video.owner.profileData?.name || shortenEthAddr(video.owner.ownerAddress)}</h3>
+                        <h3 className="profile-name">
+                          {video.owner.profileData?.name || shortenEthAddr(video.owner.ownerAddress)}
+                        </h3>
                       </div>
                     </Link>
                   )}

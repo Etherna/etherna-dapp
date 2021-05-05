@@ -24,12 +24,12 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   actions,
   onFetchedProfile
 }) => {
-  const [profile, loadProfile] = useSwarmProfile({ address: profileAddress })
+  const { profile, loadProfile } = useSwarmProfile({ address: profileAddress })
   const profileName = profile.name ? profile.name : profileAddress
 
   useEffect(() => {
     fetchProfile()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileAddress])
 
   useEffect(() => {
@@ -41,7 +41,8 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
         address: profile.address,
       })
     }
-  }, [onFetchedProfile, profile])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile])
 
   const fetchProfile = async () => {
     //setIsFetchingProfile(true)
@@ -55,6 +56,9 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
 
     //setIsFetchingProfile(false)
   }
+
+  console.log("profile avatar", profile.avatar)
+
 
   return (
     <div className="profile">

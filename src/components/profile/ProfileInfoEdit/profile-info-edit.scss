@@ -11,7 +11,7 @@
       @apply w-full h-auto;
     }
     .cover-input {
-      @apply relative w-full h-32 m-0;
+      @apply relative w-full min-h-32 m-0 overflow-hidden;
 
       &.active {
         @apply h-auto;
@@ -30,7 +30,7 @@
           @apply hover:bg-black;
         }
         .remove-button {
-          @apply w-8 p-0;
+          @apply w-8 p-0 justify-center;
         }
       }
     }
@@ -43,14 +43,13 @@
 
     &::after {
       content: attr(data-label);
-      line-height: theme("spacing.32");
       @apply absolute left-0 top-0 w-full h-full cursor-pointer opacity-0 transition-all duration-200;
       @apply bg-black bg-opacity-50 text-gray-200 text-center text-sm normal-case;
-      @apply dark:text-gray-800;
+      line-height: theme("spacing.32");
     }
     &:hover {
       &::after {
-        @apply opacity-100 transition-all duration-200;
+        @apply opacity-100 transition-all duration-200 text-gray-200;
       }
     }
 

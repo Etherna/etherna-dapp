@@ -1,7 +1,14 @@
 import Axios from "axios"
 import omit from "lodash/omit"
 
-import { SwarmVideoDownloadOptions, SwarmVideoMeta, SwarmVideoRaw, SwarmVideoUploadOptions, Video, VideoSource } from "./types"
+import {
+  SwarmVideoDownloadOptions,
+  SwarmVideoMeta,
+  SwarmVideoRaw,
+  SwarmVideoUploadOptions,
+  Video,
+  VideoSource
+} from "./types"
 import EthernaIndexClient from "@classes/EthernaIndexClient"
 import { IndexVideo } from "@classes/EthernaIndexClient/types"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
@@ -41,7 +48,7 @@ export default class SwarmVideo {
   private profileData?: Profile
   private tempHash?: string
 
-  constructor(hash: string|undefined, opts: SwarmVideoOptions) {
+  constructor(hash: string | undefined, opts: SwarmVideoOptions) {
     this.hash = hash
     this.beeClient = opts.beeClient
     this.indexClient = opts.indexClient
@@ -265,14 +272,14 @@ export default class SwarmVideo {
     })
     this.video.thumbnail.setImageData(buffer)
 
-    this.tempHash = await this.video.thumbnail.upload({
+    await this.video.thumbnail.upload({
       reference: this.tempHash,
       path: "thumbnail",
       onUploadProgress: opts?.onUploadProgress,
       onCancelToken: opts?.onCancelToken,
     })
 
-    return this.tempHash
+    return this.tempHash ?? ""
   }
 
   async removeVideoSource(quality: string) {
@@ -304,7 +311,7 @@ export default class SwarmVideo {
     return this.tempHash
   }
 
-  static getSourcePath(quality: string|number|null) {
+  static getSourcePath(quality: string | number | null) {
     const name = parseInt(`${quality}`).toString().replace(/p?$/, "p")
     return `sources/${name}`
   }
@@ -338,12 +345,12 @@ export default class SwarmVideo {
       const meta: SwarmVideoRaw = JSON.parse(new TextDecoder().decode(retrievedData))
 
       return this.resolveRawVideo(meta)
-    } catch {}
+    } catch { }
 
     return this.resolveRawVideo(null)
   }
 
-  private resolveRawVideo(rawVideo: SwarmVideoRaw|null) {
+  private resolveRawVideo(rawVideo: SwarmVideoRaw | null) {
     let resolvedMeta: SwarmVideoMeta = {
       hash: this.hash!,
       ownerAddress: "0x0",
@@ -362,7 +369,9 @@ export default class SwarmVideo {
       resolvedMeta.originalQuality = rawVideo.originalQuality
       resolvedMeta.ownerAddress = rawVideo.ownerAddress
       resolvedMeta.duration = rawVideo.duration
-      resolvedMeta.thumbnail = rawVideo.thumbnail ? new SwarmImage(rawVideo.thumbnail, { beeClient: this.beeClient }) : undefined
+      resolvedMeta.thumbnail = rawVideo.thumbnail
+        ? new SwarmImage(rawVideo.thumbnail, { beeClient: this.beeClient })
+        : undefined
       resolvedMeta.source = this.beeClient.getBzzUrl(this.hash!, `/sources/${resolvedMeta.originalQuality}`)
       resolvedMeta.sources = rawVideo.sources.map(source => ({
         quality: source.quality,
@@ -377,7 +386,7 @@ export default class SwarmVideo {
     return resolvedMeta
   }
 
-  private async fetchOwnerProfile(address: string, manifest: string|undefined) {
+  private async fetchOwnerProfile(address: string, manifest: string | undefined) {
     try {
       const profile = new SwarmProfile({
         address,

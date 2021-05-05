@@ -6,14 +6,15 @@ import "./profile-editor.scss"
 import ProfileInfoEdit from "@components/profile/ProfileInfoEdit"
 import { Profile } from "@classes/SwarmProfile/types"
 import Routes from "@routes"
-import { profileActions } from "@state/actions"
 import { showError } from "@state/actions/modals"
+import useProfileUpdate from "@state/hooks/profile/useProfileUpdate"
 
 type ProfileEditorProps = {
   address: string
 }
 
 const ProfileEditor: React.FC<ProfileEditorProps> = ({ address }) => {
+  const updateProfile = useProfileUpdate(address)
   const [isSavingProfile, setSavingProfile] = useState(false)
   const [savedProfile, setSavedProfile] = useState(false)
 
@@ -21,7 +22,7 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ address }) => {
     setSavingProfile(true)
 
     try {
-      await profileActions.updateProfile(profileInfo)
+      await updateProfile(profileInfo)
 
       // clear prefetch
       window.prefetchData = undefined

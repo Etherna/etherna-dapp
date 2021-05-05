@@ -1,0 +1,18 @@
+.swarm-image {
+  @apply relative w-full;
+
+  &-preview {
+    @apply absolute inset-0;
+    @apply w-full h-full;
+  }
+
+  &-preview + &-picture {
+    @apply -z-1;
+  }
+
+  &-picture {
+    img {
+      @apply w-full;
+    }
+  }
+}

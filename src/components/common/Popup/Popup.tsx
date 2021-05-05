@@ -54,7 +54,12 @@ const Popup = ({ children, show = false, center, onClose }: PopupProps) => {
     <>
       <div
         className={classnames("popup", { show })}
-        style={{ left: `${popupOrigin[0]}px`, top: `${popupOrigin[1]}px`, width: `${popupSize[0]}px`, height: `${popupSize[1]}px` }}
+        style={{
+          left: `${popupOrigin[0]}px`,
+          top: `${popupOrigin[1]}px`,
+          width: `${popupSize[0]}px`,
+          height: `${popupSize[1]}px`
+        }}
       >
         <div
           className="popup-arrow"

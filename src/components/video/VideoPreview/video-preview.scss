@@ -10,33 +10,26 @@
   }
 
   .video-thumbnail {
-    @apply w-full rounded relative;
+    @apply w-full relative;
+    @apply flex;
 
     &::before {
       content: "";
-      float: left;
       padding-bottom: 62%;
     }
-    &::after {
-      content: "";
-      display: table;
-      clear: both;
-    }
 
-    img {
-      @apply absolute top-0 left-0 w-full h-full object-cover object-center bg-gray-200;
+    > * {
+      @apply absolute inset-0;
+      @apply bg-gray-200;
       @apply dark:bg-gray-700;
     }
 
     .video-duration {
-      @apply absolute right-0 bottom-0 m-2 px-1.5 py-0.5 leading-none rounded-sm text-2xs font-semibold;
-      // Disable dark mode
-      background-color: #111;
-      color: #fefefe;
-
-      @screen sm {
-        @apply text-xs;
-      }
+      @apply absolute right-0 bottom-0 left-auto top-auto;
+      @apply m-2 px-1.5 py-0.5 rounded-sm;
+      @apply leading-none text-2xs font-semibold;
+      @apply bg-gray-900 text-gray-100;
+      @apply sm:text-xs;
     }
   }
 

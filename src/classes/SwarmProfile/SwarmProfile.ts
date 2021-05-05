@@ -1,4 +1,3 @@
-import Web3 from "web3"
 import pick from "lodash/pick"
 
 import { Profile, ProfileRaw } from "./types"
@@ -7,7 +6,6 @@ import { SwarmImageRaw } from "@classes/SwarmImage/types"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
 import { checkIsEthAddress } from "@utils/ethFuncs"
 
-const ProfileTopic = Web3.utils.padRight(Web3.utils.fromAscii("EthernaUserProfile"), 64)
 const ProfileProperties = ["address", "name", "avatar", "cover", "description", "location", "website", "birthday"]
 
 type SwarmProfileOptions = {
@@ -33,6 +31,7 @@ export default class SwarmProfile {
 
   static avatarResponsiveSizes = [128, 256, 512]
   static coverResponsiveSizes = SwarmImage.defaultResponsiveSizes
+  static topicName = "EthernaProfile"
 
   constructor(opts: SwarmProfileOptions) {
     this.hash = opts.hash
@@ -50,31 +49,31 @@ export default class SwarmProfile {
   }
 
   // Props
-  get name(): string|null {
+  get name(): string | null {
     return this.profile.name
   }
-  set name(value: string|null) {
+  set name(value: string | null) {
     this.profile.name = value
   }
 
-  get description(): string|null|undefined {
+  get description(): string | null | undefined {
     return this.profile.description
   }
-  set description(value: string|null|undefined) {
+  set description(value: string | null | undefined) {
     this.profile.description = value
   }
 
-  get avatar(): SwarmImage|undefined {
+  get avatar(): SwarmImage | undefined {
     return this.profile.avatar
   }
-  set avatar(value: SwarmImage|undefined) {
+  set avatar(value: SwarmImage | undefined) {
     this.profile.avatar = value
   }
 
-  get cover(): SwarmImage|undefined {
+  get cover(): SwarmImage | undefined {
     return this.profile.cover
   }
-  set cover(value: SwarmImage|undefined) {
+  set cover(value: SwarmImage | undefined) {
     this.profile.cover = value
   }
 
@@ -84,6 +83,7 @@ export default class SwarmProfile {
   }
 
   get hasCache(): boolean {
+    // TODO
     return false
   }
 
@@ -105,16 +105,18 @@ export default class SwarmProfile {
 
       // Default hash profile data
       const resp = await this.beeClient.downloadData(this.hash)
-      const hashProfile = JSON.parse(resp.toString()) as ProfileRaw
-      profile = {...profile, ...hashProfile}
+      const rawProfile = resp.json() as ProfileRaw
+
+      profile = { ...profile, ...rawProfile }
     } catch (error) {
       // Fetch profile from feed
       try {
-        const feedReader = await this.beeClient.makeFeedReader("sequence", ProfileTopic, this.address)
-        const resp = await feedReader.download()
-        const feedProfile = await this.fetchFeedOrDefault(resp.reference)
-        profile = {...profile, ...feedProfile}
-      } catch {}
+        const topic = this.beeClient.makeFeedTopic(SwarmProfile.topicName)
+        const feedReader = this.beeClient.makeFeedReader("sequence", topic, this.address)
+        const feedUpdate = await feedReader.download()
+        const feedProfile = await this.fetchFeedOrDefault(feedUpdate.reference)
+        profile = { ...profile, ...feedProfile }
+      } catch { }
     }
 
     const parsedProfile = pick(
@@ -145,9 +147,17 @@ export default class SwarmProfile {
     const baseProfile = pick(this.validatedProfile(profile), ProfileProperties)
 
     // Upload json
-    const manifest = await this.beeClient.uploadData(JSON.stringify(baseProfile))
+    const serializedJson = new TextEncoder().encode(JSON.stringify(baseProfile))
+    const reference = await this.beeClient.uploadData(serializedJson)
 
-    return manifest
+    // update feed
+    if (this.beeClient.signer) {
+      const topic = this.beeClient.makeFeedTopic(SwarmProfile.topicName)
+      const writer = this.beeClient.makeFeedWriter("sequence", topic)
+      await writer.upload(reference)
+    }
+
+    return reference
   }
 
   /**
@@ -173,13 +183,13 @@ export default class SwarmProfile {
 
   /**
    * Fetch the profile from a feed or return empty object
-   * @param hash Reference string
+   * @param reference Reference string
    * @returns The profile object
    */
-  private async fetchFeedOrDefault(hash: string): Promise<object> {
+  private async fetchFeedOrDefault(reference: string): Promise<object> {
     try {
-      const meta = await this.beeClient.downloadData(hash)
-      return JSON.parse(meta.toString())
+      const data = await this.beeClient.downloadData(reference)
+      return data.json()
     } catch (error) {
       return {}
     }
@@ -196,7 +206,7 @@ export default class SwarmProfile {
       throw new Error("Profile must be an object")
     }
 
-    const validatedProfile = {...profile} as ProfileRaw
+    const validatedProfile = { ...profile } as ProfileRaw
 
     delete validatedProfile.manifest
 
@@ -240,7 +250,7 @@ export default class SwarmProfile {
    * @param imageRaw The image object
    * @returns The parsed Swarm Image
    */
-  private parseImage = (imageRaw: SwarmImageRaw|undefined, responsiveSizes: number[]) => {
+  private parseImage = (imageRaw: SwarmImageRaw | undefined, responsiveSizes: number[]) => {
     if (imageRaw) {
       return new SwarmImage(imageRaw, {
         beeClient: this.beeClient,

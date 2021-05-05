@@ -1,4 +1,5 @@
-import { UIState } from "@state/typings"
+import { UIState } from "@state/types"
+import { Crop } from "react-image-crop"
 
 export const UIActionTypes = {
   UI_SHOW_ERROR: "UI_SHOW_ERROR",
@@ -9,6 +10,8 @@ export const UIActionTypes = {
   UI_TOGGLE_NETWORK_CHANGE: "UI_TOGGLE_NETWORK_CHANGE",
   UI_TOGGLE_EDITING_SHORTCUT: "UI_TOGGLE_EDITING_SHORTCUT",
   UI_TOGGLE_IMAGE_CROPPER: "UI_TOGGLE_IMAGE_CROPPER",
+  UI_SET_CROP_IMAGE: "UI_SET_CROP_IMAGE",
+  UI_UPDATE_IMAGE_CROP: "UI_UPDATE_IMAGE_CROP",
 } as const
 
 
@@ -45,6 +48,15 @@ type ToggleImageCropperAction = {
   type: typeof UIActionTypes.UI_TOGGLE_IMAGE_CROPPER
   isCroppingImage: boolean
 }
+type SetCropImageAction = {
+  type: typeof UIActionTypes.UI_SET_CROP_IMAGE
+  imageType: "avatar" | "cover"
+  image: string
+}
+type UpdateImageCropAction = {
+  type: typeof UIActionTypes.UI_UPDATE_IMAGE_CROP
+  imageCrop?: Crop
+}
 
 export type UIActions = (
   ShowErrorAction |
@@ -54,7 +66,9 @@ export type UIActions = (
   ToggleBrowserSupportAction |
   ToggleNetworkChangeAction |
   ToggleEditingShortcutAction |
-  ToggleImageCropperAction
+  ToggleImageCropperAction |
+  SetCropImageAction |
+  UpdateImageCropAction
 )
 
 
@@ -111,6 +125,19 @@ const uiReducer = (state: UIState = {}, action: UIActions): UIState => {
       return {
         ...state,
         isCroppingImage: action.isCroppingImage,
+      }
+
+    case UIActionTypes.UI_UPDATE_IMAGE_CROP:
+      return {
+        ...state,
+        imageCrop: action.imageCrop,
+      }
+
+    case UIActionTypes.UI_SET_CROP_IMAGE:
+      return {
+        ...state,
+        imageType: action.imageType,
+        image: action.image,
       }
 
     default:

@@ -5,6 +5,7 @@ import { Crop } from "react-image-crop"
 import { Keymap, KeymapNamespace } from "@keyboard/typings"
 import EthernaGatewayClient from "@classes/EthernaGatewayClient"
 import EthernaIndexClient from "@classes/EthernaIndexClient"
+import EthernaAuthClient from "@classes/EthernaAuthClient"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
 import SwarmImage from "@classes/SwarmImage"
 
@@ -23,6 +24,7 @@ export type EnvState = {
   creditHost: string
   indexClient: EthernaIndexClient
   gatewayClient: EthernaGatewayClient
+  authClient: EthernaAuthClient
   beeClient: SwarmBeeClient
   bytePrice?: number
 
@@ -40,10 +42,6 @@ export type EnvState = {
 
   shortcutNamespace?: KeymapNamespace
   shortcutKey?: string
-
-  imageCrop?: Crop
-  imageType?: string
-  image?: string
 }
 
 export type ProfileState = {
@@ -62,11 +60,14 @@ export type UIState = {
   errorMessage?: string
   isConnectingWallet?: boolean
   isLoadingProfile?: boolean
-  isLoadingProfile?: boolean
   showUnsupportedModal?: boolean
   showNetwokChangeModal?: boolean
   isEditingShortcut?: boolean
   isCroppingImage?: boolean
+
+  imageCrop?: Crop
+  imageType?: "avatar" | "cover"
+  image?: string
 }
 
 export type UserState = {

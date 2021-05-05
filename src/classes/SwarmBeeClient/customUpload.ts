@@ -1,7 +1,7 @@
 import { Collection, UploadHeaders, UploadOptions } from "@ethersphere/bee-js"
-import { prepareData } from "@ethersphere/bee-js/dist/utils/data"
-import { extractUploadHeaders } from "@ethersphere/bee-js/dist/utils/headers"
-import { makeTar } from "@ethersphere/bee-js/dist/utils/tar"
+import { prepareData } from "@ethersphere/bee-js/dist/src/utils/data"
+import { makeTar } from "@ethersphere/bee-js/dist/src/utils/tar"
+import { extractUploadHeaders } from "@ethersphere/bee-js/dist/src/utils/headers"
 
 import http from "@utils/request"
 

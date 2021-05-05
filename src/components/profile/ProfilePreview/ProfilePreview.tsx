@@ -16,7 +16,7 @@ type ProfilePreviewProps = {
 }
 
 const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress, profileManifest }) => {
-  const [profile, loadProfile] = useSwarmProfile({ address: profileAddress, hash: profileManifest })
+  const { profile, loadProfile } = useSwarmProfile({ address: profileAddress, hash: profileManifest })
   const { videos } = useSwarmVideos({ ownerAddress: profileAddress, profileData: profile, seedLimit: 5 })
 
   useEffect(() => {

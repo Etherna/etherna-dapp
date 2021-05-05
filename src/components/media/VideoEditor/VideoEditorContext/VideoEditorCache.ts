@@ -15,8 +15,8 @@ export default class VideoEditorCache {
     const value = window.localStorage.getItem(STORAGE_KEY)
     if (value) {
       try {
-        JSON.parse(value)
-        return true
+        const { manifest } = JSON.parse(value) as CacheState
+        return !!manifest
       } catch {}
     }
     return false

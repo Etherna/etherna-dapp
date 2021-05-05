@@ -48,6 +48,9 @@ async function handleRequest(proxyReq, req, res) {
     }
 
     // Return response
+    response.headers.forEach((value, name) => {
+      res.setHeader(name, value)
+    })
     response.body.pipe(res.status(response.status))
   } catch (e) {
     console.error(e)
@@ -200,14 +203,8 @@ async function forwardRequestToGateway(request) {
   headers.host = SwarmHost.replace(/^https?:\/\//, "")
   delete headers.cookie
 
-  // Fix decoding error
-  if (headers["content-encoding"]) {
-    // delete headers["content-encoding"]
-    // delete headers["vary"]
-    // headers["content-length"] = headers["decompressed-content-length"] ?? headers["content-length"]
-  }
-
   const options = parseFetchOptions(headers, request.method, request.body)
+  options.compress = false
 
   return await fetch(SwarmHost + request.url, options)
 }

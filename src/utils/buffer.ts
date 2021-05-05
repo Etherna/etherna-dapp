@@ -33,9 +33,19 @@ export const fileToDataURL = (file: File) => {
 }
 
 /**
+ * Convert a buffer to a File object
+ * @param buffer Buffer to convert
+ * @param contentType Mime type of the array buffer
+ * @returns The file object
+ */
+export const bufferToFile = (buffer: ArrayBuffer, contentType?: string) => {
+  return new Blob([buffer], { type: contentType }) as File
+}
+
+/**
  * Convert a buffer to a data URL string
  * @param buffer Buffer to convert
  * @returns The base64 data URL
  */
 export const bufferToDataURL = (buffer: ArrayBuffer) =>
-  fileToDataURL(new Blob([buffer]) as File)
+  fileToDataURL(bufferToFile(buffer))

@@ -1,14 +1,14 @@
 import Web3 from "web3"
-import { Crop } from "react-image-crop"
 
 import { baseKeymap } from "@keyboard"
 import { Keymap, KeymapNamespace } from "@keyboard/typings"
 import lang from "@lang"
 import EthernaGatewayClient from "@classes/EthernaGatewayClient"
 import EthernaIndexClient from "@classes/EthernaIndexClient"
+import EthernaAuthClient from "@classes/EthernaAuthClient"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
 import { loadDarkMode } from "@state/actions/enviroment/darkMode"
-import { EnvState } from "@state/typings"
+import { EnvState } from "@state/types"
 import { checkIsMobile } from "@utils/browser"
 
 export const EnvActionTypes = {
@@ -18,11 +18,10 @@ export const EnvActionTypes = {
   ENV_SET_IS_MOBILE: "ENV_SET_IS_MOBILE",
   ENV_UPDATE_INDEXHOST: "ENV_UPDATE_INDEXHOST",
   ENV_UPDATE_GATEWAY_HOST: "ENV_UPDATE_GATEWAY_HOST",
+  ENV_UPDATE_BEE_CLIENT: "ENV_UPDATE_BEE_CLIENT",
   ENV_UPDATE_KEYMAP: "ENV_UPDATE_KEYMAP",
   ENV_EDIT_SHORTCUT: "ENV_EDIT_SHORTCUT",
   ENV_TOGGLE_DARK_MODE: "ENV_TOGGLE_DARK_MODE",
-  ENV_SET_CROP_IMAGE: "ENV_SET_CROP_IMAGE",
-  ENV_UPDATE_IMAGE_CROP: "ENV_UPDATE_IMAGE_CROP",
   ENV_UPDATE_BYTE_PRICE: "ENV_UPDATE_BYTE_PRICE",
 } as const
 
@@ -35,7 +34,7 @@ type UpdateProviderAction = {
 }
 type UpdateNetworkAction = {
   type: typeof EnvActionTypes.ENV_UPDATE_NETWORK
-  network?: string|null
+  network?: string | null
 }
 type SetCurrentAddressAction = {
   type: typeof EnvActionTypes.ENV_SET_CURRENT_ADDRESS
@@ -58,6 +57,10 @@ type UpdateGatewayHostAction = {
   apiPath: string | null | undefined
   beeClient: SwarmBeeClient
 }
+type UpdateBeeClientAction = {
+  type: typeof EnvActionTypes.ENV_UPDATE_BEE_CLIENT
+  beeClient: SwarmBeeClient
+}
 type UpdateKeymapAction = {
   type: typeof EnvActionTypes.ENV_UPDATE_KEYMAP
   keymap: Keymap
@@ -71,15 +74,6 @@ type ToggleDarkModeAction = {
   type: typeof EnvActionTypes.ENV_TOGGLE_DARK_MODE
   darkMode: boolean
 }
-type SetCropImageAction = {
-  type: typeof EnvActionTypes.ENV_SET_CROP_IMAGE
-  imageType: string
-  image: string
-}
-type UpdateImageCropAction = {
-  type: typeof EnvActionTypes.ENV_UPDATE_IMAGE_CROP
-  imageCrop?: Crop
-}
 type UpdateBytePriceAction = {
   type: typeof EnvActionTypes.ENV_UPDATE_BYTE_PRICE
   bytePrice: number
@@ -92,18 +86,27 @@ export type EnvActions = (
   SetIsMobileAction |
   UpdateIndexHostAction |
   UpdateGatewayHostAction |
+  UpdateBeeClientAction |
   UpdateKeymapAction |
   EditShortcutsAction |
   ToggleDarkModeAction |
-  SetCropImageAction |
-  UpdateImageCropAction |
   UpdateBytePriceAction
 )
 
 // Init reducer
 const creditHost = window.localStorage.getItem("creditHost") || process.env.REACT_APP_CREDIT_HOST
-const indexClient = new EthernaIndexClient({ host: EthernaIndexClient.defaultHost, apiPath: EthernaIndexClient.defaultApiPath })
-const gatewayClient = new EthernaGatewayClient({ host: EthernaGatewayClient.defaultHost, apiPath: EthernaGatewayClient.defaultApiPath })
+const indexClient = new EthernaIndexClient({
+  host: EthernaIndexClient.defaultHost,
+  apiPath: EthernaIndexClient.defaultApiPath
+})
+const gatewayClient = new EthernaGatewayClient({
+  host: EthernaGatewayClient.defaultHost,
+  apiPath: EthernaGatewayClient.defaultApiPath
+})
+const authClient = new EthernaAuthClient({
+  host: EthernaAuthClient.defaultHost,
+  apiPath: EthernaAuthClient.defaultApiPath
+})
 const beeClient = new SwarmBeeClient(EthernaGatewayClient.defaultHost)
 
 const initialState: EnvState = {
@@ -114,6 +117,7 @@ const initialState: EnvState = {
   creditHost,
   indexClient,
   gatewayClient,
+  authClient,
   beeClient,
   keymap: baseKeymap,
   darkMode: loadDarkMode(),
@@ -166,6 +170,12 @@ const enviromentReducer = (state: EnvState = initialState, action: EnvActions): 
         beeClient: action.beeClient
       }
 
+    case EnvActionTypes.ENV_UPDATE_BEE_CLIENT:
+      return {
+        ...state,
+        beeClient: action.beeClient
+      }
+
     case EnvActionTypes.ENV_UPDATE_BYTE_PRICE:
       return {
         ...state,
@@ -189,19 +199,6 @@ const enviromentReducer = (state: EnvState = initialState, action: EnvActions): 
       return {
         ...state,
         darkMode: action.darkMode,
-      }
-
-    case EnvActionTypes.ENV_UPDATE_IMAGE_CROP:
-      return {
-        ...state,
-        imageCrop: action.imageCrop,
-      }
-
-    case EnvActionTypes.ENV_SET_CROP_IMAGE:
-      return {
-        ...state,
-        imageType: action.imageType,
-        image: action.image,
       }
 
     default:

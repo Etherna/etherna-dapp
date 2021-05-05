@@ -1,4 +1,4 @@
-import { UserState } from "@state/typings"
+import { UserState } from "@state/types"
 
 export const UserActionTypes = {
   USER_ENS_UPDATE: "USER_ENS_UPDATE",

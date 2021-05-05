@@ -9,6 +9,8 @@ declare namespace NodeJS {
     REACT_APP_INDEX_API_PATH: string
     REACT_APP_GATEWAY_HOST: string
     REACT_APP_GATEWAY_API_PATH: string
+    REACT_APP_AUTH_HOST: string
+    REACT_APP_AUTH_API_PATH: string
     REACT_APP_CREDIT_HOST: string
   }
 }

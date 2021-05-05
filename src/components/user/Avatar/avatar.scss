@@ -1,10 +1,13 @@
 /*! purgecss start ignore */
 
 .avatar {
+  @apply flex;
   @apply relative w-10 h-10;
 
-  img {
-    @apply w-full h-full object-cover border-2 border-white rounded-full overflow-hidden;
+  > * {
+    @apply w-full h-full object-cover overflow-hidden;
+    @apply border-2 border-white rounded-full;
+    @apply flex-grow;
     @apply dark:border-gray-900;
   }
 

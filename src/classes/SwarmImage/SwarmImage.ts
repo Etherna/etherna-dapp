@@ -1,9 +1,7 @@
-import Axios, { AxiosRequestConfig } from "axios"
-import { Collection } from "@ethersphere/bee-js"
 import imageResize from "image-resizer-js"
 
 import { SwarmImageRaw, SwarmImageUploadOptions } from "./types"
-import SwarmBeeClient from "@classes/SwarmBeeClient"
+import SwarmBeeClient, { MultipleFileUpload } from "@classes/SwarmBeeClient"
 import { bufferToDataURL, fileToBuffer } from "@utils/buffer"
 
 type SwarmImageOptions = {
@@ -22,16 +20,20 @@ export default class SwarmImage {
   imageRaw?: SwarmImageRaw
   blurredBase64?: string
   originalSource: string
+  originalImageSize?: [width: number, height: number]
   responsiveSources?: { [size: string]: string }
   filePreview?: string
 
   static defaultResponsiveSizes = [480, 768, 1024, 1536]
 
   private beeClient: SwarmBeeClient
+
+  // temp data
   private originalImageData?: ArrayBuffer
   private responsiveSourcesData?: { [size: string]: ArrayBuffer }
+  private contentType?: string
 
-  constructor(image: SwarmImageRaw|undefined, opts: SwarmImageOptions) {
+  constructor(image: SwarmImageRaw | undefined, opts: SwarmImageOptions) {
     this.beeClient = opts.beeClient
     this.responsiveSizes = opts.responsiveSizes ?? SwarmImage.defaultResponsiveSizes
     this.isResponsive = opts.isResponsive ?? false
@@ -41,30 +43,38 @@ export default class SwarmImage {
       this.imageRaw = image
       this.isResponsive = image["@type"] === "responsiveImage"
       this.blurredBase64 = image.blurredBase64
-      this.originalSource = this.isResponsive && image.sources
-        ? this.beeClient.getBzzUrl(image.sources.original)
-        : this.beeClient.getFileUrl(image.value)
-      this.responsiveSources = this.isResponsive && image.sources
-        ? Object.keys(image.sources).reduce((obj, size) => ({
-          ...obj,
-          [size]: this.beeClient.getBzzUrl(image.sources![size])
-        }), {})
-        : undefined
+      this.originalSource = this.beeClient.getFileUrl(image.value)
+      this.originalImageSize = image.originalSize
+
+      const responsiveUrls =
+        this.isResponsive && image.sources
+          ? Object.keys(image.sources).reduce(
+            (obj, size) => ({
+              ...obj,
+              [size]: this.beeClient.getFileUrl(image.sources![size]),
+            }),
+            {}
+          )
+          : undefined
+      this.responsiveSources = responsiveUrls
     }
   }
 
-
   // Props
   get responsivePaths(): string[] {
-    return Object.keys(this.responsiveSources ?? []).concat("original")
+    return Object.keys(this.responsiveSources ?? [])
   }
 
-  get srcset(): string | null {
-    if (!this.responsiveSources) return null
+  get srcset(): string | undefined {
+    if (!this.responsiveSources) return undefined
 
-    return Object.keys(this.responsiveSources).reduce((srcset, size) => `${srcset} ${size},`, "")
+    const responsiveSources = this.responsiveSources
+    const resposiveSizes = Object.keys(responsiveSources)
+
+    return resposiveSizes.reduce(
+      (srcset, size) => `${srcset ? srcset + "," : ""} ${size} ${responsiveSources[size]}`, ""
+    )
   }
-
 
   // Public methods
 
@@ -72,11 +82,15 @@ export default class SwarmImage {
    * Set the file of the image
    * @param image File of the image to upload
    */
-  async setImageData(image: File|ArrayBuffer) {
-    if (image instanceof File) {
-      this.originalImageData = await fileToBuffer(image)
-    } else {
+  async setImageData(image: File | Blob | ArrayBuffer) {
+    if (image instanceof File || image instanceof Blob) {
+      this.originalImageData = await fileToBuffer(image as File)
+      this.contentType = image.type
+    } else if (image instanceof ArrayBuffer) {
       this.originalImageData = image
+      this.contentType = undefined
+    } else {
+      throw new Error("Input image must be a File, Blob or Array Buffer")
     }
   }
 
@@ -84,15 +98,21 @@ export default class SwarmImage {
    * Generate the preview, base64 and responsive images from the selected file
    */
   async generateImages() {
-    if (!this.originalImageData) throw new Error("Load a file to upload before")
+    const imageSize = await this.getFileImageSize(this.originalImageData!)
 
-    const maxWidth = await this.getFileImageWidth(this.originalImageData)
+    this.filePreview = await bufferToDataURL(this.originalImageData!)
+    this.blurredBase64 = await this.imageToBlurredBase64(this.originalImageData!)
+    this.originalImageSize = [imageSize.width, imageSize.height]
 
-    this.filePreview = await bufferToDataURL(this.originalImageData)
-    this.responsiveSourcesData = this.responsiveSizes.filter(size => size < maxWidth).reduce(async (obj, size) => ({
-      ...obj,
-      [`${size}w`]: await this.imageToResponsiveSize(this.originalImageData!, size)
-    }), {})
+    const responsiveSourcesData: { [key: string]: ArrayBuffer } = {}
+    const inferiorSizes = this.responsiveSizes.filter(size => size < imageSize.width)
+
+    for (const size of inferiorSizes) {
+      const data = await this.imageToResponsiveSize(this.originalImageData!, size)
+      responsiveSourcesData[`${size}w`] = data
+    }
+
+    this.responsiveSourcesData = { [`${imageSize.width}w`]: this.originalImageData!, ...responsiveSourcesData }
   }
 
   /**
@@ -101,7 +121,7 @@ export default class SwarmImage {
   clear() {
     this.originalImageData = undefined
     this.responsiveSourcesData = undefined
-    this.filePreview = undefined
+    this.contentType = undefined
   }
 
   /**
@@ -114,81 +134,81 @@ export default class SwarmImage {
 
     await this.generateImages()
 
-    const { reference, path, onUploadProgress, onCancelToken } = options ?? {}
-
     const imageRaw: SwarmImageRaw = {
       "@type": this.isResponsive ? "responsiveImage" : "image",
       blurredBase64: this.blurredBase64,
-      value: "TBD"
+      value: "",
     }
 
-    const axiosOptions: AxiosRequestConfig = {
-      onUploadProgress: e => {
-        if (onUploadProgress) {
-          const progress = Math.round((e.loaded * 100) / e.total)
-          onUploadProgress(progress)
-        }
-      },
-      cancelToken: new Axios.CancelToken(function executor(c) {
-        if (onCancelToken) {
-          onCancelToken(c)
-        }
-      }),
-    }
-
-    let newReference = reference
-
-    if (reference || this.isResponsive) {
+    if (this.isResponsive) {
       // dir setup
       const sizes = Object.keys(this.responsiveSourcesData!)
-      const uploads: Collection<Uint8Array> = sizes.concat(["original"]).map(size => ({
-        path: size,
-        data: new Uint8Array(size === "original" ? this.originalImageData! : this.responsiveSourcesData![size])
+      const uploads: MultipleFileUpload = sizes.map(size => ({
+        buffer: new Uint8Array(this.responsiveSourcesData![size]),
+        type: this.contentType
       }))
 
       // upload files and retrieve the new reference
-      newReference = await this.beeClient.uploadToDir(uploads, { reference })
+      const references = await this.beeClient.uploadMultipleFiles(uploads)
 
       // update raw image object
-      imageRaw.value = `${newReference}${path ? `/${path}` : ``}/original`
-      imageRaw.sources = {
-        original: imageRaw.value
-      }
-      imageRaw.sources = sizes.reduce((obj, size) => ({
-        ...obj,
-        [size]: `${newReference}${path ? `/${path}` : ``}/${size}`
-      }), imageRaw.sources)
+      imageRaw.value = references[0]
+      imageRaw.originalSize = this.originalImageSize
+      imageRaw.sources = sizes.reduce(
+        (obj, size, i) => ({
+          ...obj,
+          [size]: references[i],
+        }),
+        imageRaw.sources
+      )
     } else {
       // upload file and retrieve the new reference
-      newReference = await this.beeClient.uploadFile(new Uint8Array(this.originalImageData!), undefined, {
-        axiosOptions
-      })
+      const reference = await this.beeClient.uploadFile(
+        new Uint8Array(this.originalImageData!),
+        undefined,
+        { contentType: this.contentType }
+      )
 
       // update raw image object
-      imageRaw.value = newReference
+      imageRaw.value = reference
+      imageRaw.originalSize = this.originalImageSize
     }
 
     this.clear()
 
     this.imageRaw = imageRaw
-
-    return newReference
   }
 
+  getOptimizedSrc(size?: number): string {
+    if (!this.responsiveSources || !size) return this.originalSource
+
+    const screenSize = size * (window.devicePixelRatio ?? 1)
+    const sizes = Object.keys(this.responsiveSources).map(size => +size.replace(/w$/, "")).sort()
+    const largest = sizes[sizes.length - 1]
+
+    if (size > largest) return this.responsiveSources[largest + "w"]
+
+    const optimized = sizes.find(size => size > screenSize)
+    const optimizedSrc = optimized ? this.responsiveSources[optimized + "w"] : this.responsiveSources[largest + "w"]
+
+    return optimizedSrc
+  }
 
   // Private methods
 
-  getFileImageWidth(buffer: ArrayBuffer) {
-    return new Promise<number>(async (resolve, reject) => {
+  getFileImageSize(buffer: ArrayBuffer) {
+    return new Promise<{ width: number, height: number }>(async (resolve, reject) => {
       try {
         const dataURL = await bufferToDataURL(buffer)
         const img = new Image()
-        img.onload = function() {
-          resolve(img.width)
+        img.onload = function () {
+          resolve({
+            width: img.width,
+            height: img.height
+          })
         }
         img.onerror = reject
         img.src = dataURL
-
       } catch (error) {
         reject(error)
       }
@@ -198,7 +218,7 @@ export default class SwarmImage {
   async imageToBlurredBase64(image: ArrayBuffer) {
     const data = await imageResize(image, {
       maxWidth: 10,
-      quality: 50,
+      quality: 25,
     })
     return await bufferToDataURL(data)
   }
@@ -209,5 +229,4 @@ export default class SwarmImage {
       quality: 99,
     })
   }
-
 }

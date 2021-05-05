@@ -36,24 +36,28 @@ export const SignedInRoute = ({ path, exact, children }: RouteProps) => {
 }
 
 export const ProfileOwnerRoute = ({ path, exact, children }: RouteProps) => {
-  const { address } = useSelector(state => state.user)
+  const { address, isSignedIn } = useSelector(state => state.user)
 
   return (
     <Route
       path={path}
       exact={exact}
       render={({ location, match }) =>
-        address && match.params.id === address ? (
-          children
+        isSignedIn === undefined ? (
+          null
         ) : (
-          <Redirect
-            to={{
-              pathname: Routes.getProfileLink(match.params.id!),
-              state: {
-                from: location,
-              },
-            }}
-          />
+          address && match.params.id === address ? (
+            children
+          ) : (
+            <Redirect
+              to={{
+                pathname: Routes.getProfileLink(match.params.id!),
+                state: {
+                  from: location,
+                },
+              }}
+            />
+          )
         )
       }
     />

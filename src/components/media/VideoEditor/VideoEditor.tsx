@@ -80,7 +80,13 @@ const VideoEditor = () => {
       ) : (
         <Button
           action={submitVideo}
-          disabled={manifest == null || !videoHandler.title || hasQueuedProcesses || !hasOriginalVideo || isDeleting}
+          disabled={
+            manifest == null ||
+            !videoHandler.title ||
+            hasQueuedProcesses ||
+            !hasOriginalVideo ||
+            isDeleting
+          }
         >
           {reference ? "Update video" : "Add video"}
         </Button>
@@ -89,7 +95,11 @@ const VideoEditor = () => {
   )
 
   const DeleteButton = () => (
-    <Button aspect="danger" disabled={isSubmitting} action={() => setShowDeleteModal(true)}>
+    <Button
+      aspect="danger"
+      disabled={isSubmitting}
+      action={() => setShowDeleteModal(true)}
+    >
       Delete Video
     </Button>
   )

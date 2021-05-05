@@ -1,7 +1,9 @@
-import { Bee, Collection } from "@ethersphere/bee-js"
+import { Bee, Collection, Reference } from "@ethersphere/bee-js"
 
 import { CustomUploadOptions } from "./customUpload"
 import http from "@utils/request"
+
+export type MultipleFileUpload = { buffer: Uint8Array, type?: string }[]
 
 /**
  * Extend default Bee client with more functionalities and endpoints
@@ -25,6 +27,18 @@ export default class SwarmBeeClient extends Bee {
    */
   deleteFromDir(reference: string, path: string): Promise<string> {
     throw new Error("Not implemented yet")
+  }
+
+  /**
+   * Add content to a directory returning the new hash
+   * @param data List of files to upload
+   * @param opts Upload options
+   * @returns The new manifest hash
+   */
+  async uploadMultipleFiles(data: MultipleFileUpload, opts?: CustomUploadOptions): Promise<Reference[]> {
+    return await Promise.all(
+      data.map(data => this.uploadFile(data.buffer, undefined, { contentType: data.type }))
+    )
   }
 
   /**

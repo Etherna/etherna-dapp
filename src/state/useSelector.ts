@@ -1,6 +1,6 @@
 import { createSelectorHook } from "react-redux"
 
-import { AppState } from "./typings"
+import { AppState } from "./types"
 
 const useSelector = createSelectorHook<AppState>()
 
