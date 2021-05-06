@@ -12,7 +12,6 @@ import { UIActions, UIActionTypes } from "@state/reducers/uiReducer"
 import useSelector from "@state/useSelector"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
 import { IndexCurrentUser } from "@classes/EthernaIndexClient/types"
-import { Bee } from "@ethersphere/bee-js"
 
 type AutoSigninOpts = {
   forceSignin?: boolean
