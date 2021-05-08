@@ -1,7 +1,7 @@
 import React, { useImperativeHandle, useRef, useState } from "react"
 import { Canceler } from "axios"
 
-import { useVideoEditorState } from "../VideoEditorContext"
+import { useVideoEditorState } from "../context"
 import FileUploadFlow, { FileUploadFlowHandlers } from "@components/media/FileUploadFlow"
 import FileUploadProgress from "@components/media/FileUploadProgress"
 import { showError } from "@state/actions/modals"
@@ -16,77 +16,83 @@ export type ThumbnailUploadHandlers = {
   clear: () => void
 }
 
-const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploadProps>(
-  ({ disabled, onComplete, onCancel }, ref) => {
-    const flowRef = useRef<FileUploadFlowHandlers>(null)
-    const [canceler, setCanceler] = useState<Canceler>()
-    const { state, actions } = useVideoEditorState()
-    const { manifest, queue, videoHandler } = state
-    const { updateManifest, addToQueue, removeFromQueue, updateCompletion, resetState } = actions
-    const currentQueue = queue.find(q => !q.finished)
-    const thumbnailQueue = queue.find(q => q.name === `thumbnail`)
-    const uploadProgress = thumbnailQueue?.completion
+const QUEUE_NAME = "thumbnail"
 
-    useImperativeHandle(ref, () => ({
-      clear() {
-        flowRef.current?.clear()
-        resetState()
-      },
-    }))
+const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploadProps>(({
+  disabled,
+  onComplete,
+  onCancel
+}, ref) => {
+  const flowRef = useRef<FileUploadFlowHandlers>(null)
+  const [canceler, setCanceler] = useState<Canceler>()
+  const [contentType, setContentType] = useState<string>("image/*")
 
-    const uploadThumbnail = async (buffer: ArrayBuffer) => {
-      const newManifest = await videoHandler.addThumbnail(buffer, {
-        onCancelToken: c => setCanceler(c),
-        onUploadProgress: p => updateCompletion(`thumbnail`, p),
-      })
-      updateManifest(newManifest)
-      updateCompletion(`thumbnail`, 100, true)
+  const { state, actions } = useVideoEditorState()
+  const { queue, videoHandler } = state
+  const { addToQueue, removeFromQueue, updateCompletion, resetState } = actions
 
-      onComplete?.()
+  const currentQueue = queue.find(q => !q.reference)
+  const thumbnailQueue = queue.find(q => q.name === QUEUE_NAME)
+  const uploadProgress = thumbnailQueue?.completion
 
-      return newManifest
-    }
+  useImperativeHandle(ref, () => ({
+    clear() {
+      flowRef.current?.clear()
+      resetState()
+    },
+  }))
 
-    const handleReset = async () => {
-      removeFromQueue(`thumbnail`)
+  const uploadThumbnail = async (buffer: ArrayBuffer) => {
+    const reference = await videoHandler.addThumbnail(buffer, contentType, {
+      onCancelToken: c => setCanceler(c),
+      onUploadProgress: p => updateCompletion(QUEUE_NAME, p),
+    })
+    updateCompletion(QUEUE_NAME, 100, reference)
 
-      if (manifest) {
-        try {
-          const newManifest = await videoHandler.removeThumbnail()
-          updateManifest(newManifest)
-        } catch (error) {
-          showError("Error", error.message)
-        }
-      }
+    onComplete?.()
 
-      onCancel?.()
-    }
-
-    return (
-      <>
-        {uploadProgress && !thumbnailQueue?.finished && (
-          <FileUploadProgress
-            progress={uploadProgress}
-            canceler={canceler}
-            disabled={disabled}
-            onCancelUpload={handleReset}
-          />
-        )}
-        <FileUploadFlow
-          ref={flowRef}
-          label={"Thumbnail"}
-          dragLabel={"Drag your thumbnail here"}
-          acceptTypes={["image"]}
-          sizeLimit={2}
-          canProcessFile={currentQueue && currentQueue.name === `thumbnail`}
-          uploadHandler={uploadThumbnail}
-          onConfirmedProcessing={() => addToQueue(`thumbnail`)}
-          onCancel={handleReset}
-          disabled={disabled}
-        />
-      </>
-    )
+    return reference
   }
+
+  const handleReset = async () => {
+    removeFromQueue(QUEUE_NAME)
+
+    try {
+      await videoHandler.removeThumbnail()
+    } catch (error) {
+      showError("Error", error.message)
+    }
+
+    onCancel?.()
+  }
+
+  return (
+    <>
+      {uploadProgress && !thumbnailQueue?.reference && (
+        <FileUploadProgress
+          progress={uploadProgress}
+          canceler={canceler}
+          disabled={disabled}
+          onCancelUpload={handleReset}
+        />
+      )}
+      <FileUploadFlow
+        ref={flowRef}
+        reference={thumbnailQueue?.reference}
+        label={"Thumbnail"}
+        dragLabel={"Drag your thumbnail here"}
+        acceptTypes={["image"]}
+        sizeLimit={2}
+        canProcessFile={currentQueue?.name === QUEUE_NAME}
+        uploadHandler={uploadThumbnail}
+        onFileSelected={file => setContentType(file.type)}
+        onConfirmedProcessing={() => addToQueue(QUEUE_NAME)}
+        onCancel={handleReset}
+        disabled={disabled}
+      />
+    </>
+  )
+}
 )
 
 export default ThumbnailUpload

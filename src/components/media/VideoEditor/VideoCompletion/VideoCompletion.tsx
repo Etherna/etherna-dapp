@@ -3,14 +3,14 @@ import classnames from "classnames"
 
 import "./video-completion.scss"
 
-import { useVideoEditorState } from "../VideoEditorContext"
+import { useVideoEditorState } from "../context"
 
 const VideoCompletion = () => {
   const { state } = useVideoEditorState()
   const { videoHandler: { video } } = state
 
   return (
-    <ul className="upload-steps mb-4">
+    <ul className="upload-steps">
       <li
         className={classnames("upload-step", {
           "step-done": video.sources.length > 0,

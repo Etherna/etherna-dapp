@@ -8,7 +8,7 @@ import { ReactComponent as NotFoundImage } from "@svg/backgrounds/404-illustrati
 import { Video } from "@classes/SwarmVideo/types"
 import useSelector from "@state/useSelector"
 import Routes from "@routes"
-import VideoEditorContextWrapper from "@components/media/VideoEditor/VideoEditorContext/VideoEditorContextWrapper"
+import VideoEditorContextWrapper from "@components/media/VideoEditor/context/ContextWrapper"
 import VideoEditor from "@components/media/VideoEditor"
 import useSwarmVideo from "@hooks/useSwarmVideo"
 
@@ -31,7 +31,7 @@ const VideoUpdate: React.FC<VideoUpdateProps> = ({ hash, routeState }) => {
     if (!video) {
       loadVideo()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [video])
 
   if (

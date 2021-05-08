@@ -53,19 +53,22 @@ export type Video = SwarmVideoMeta & {
   encryptionType?: IndexEncryptionType
 
   /** Owner info */
-  owner?: {
-    /** Owner ETH address */
-    ownerAddress?: string
-    /** Owner manifest hash of the profile */
-    ownerIdentityManifest?: string
-    /** Profile data of the owner */
-    profileData?: Profile
-  }
+  owner?: SwarmVideoOwner
+}
+
+export type SwarmVideoOwner = {
+  /** Owner ETH address */
+  ownerAddress?: string
+  /** Owner manifest hash of the profile */
+  ownerIdentityManifest?: string
+  /** Profile data of the owner */
+  profileData?: Profile
 }
 
 export type SwarmVideoSourceRaw = {
   quality: string
-  path: string
+  reference: string
+  referenceProtocol: "files" | "bytes" | "bzz"
   size?: number
   bitrate?: number
   contentType?: string

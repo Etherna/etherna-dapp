@@ -4,16 +4,15 @@ import SwarmVideo from "@classes/SwarmVideo"
 
 // Actions
 export const ActionTypes = {
-  ADD_TO_QUEUE: "ADD_TO_QUEUE",
-  REMOVE_FROM_QUEUE: "REMOVE_FROM_QUEUE",
-  UPDATE_QUEUE_COMPLETION: "UPDATE_QUEUE_COMPLETION",
-  UPDATE_MANIFEST: "UPDATE_MANIFEST",
-  UPDATE_ORIGINAL_QUALITY: "UPDATE_ORIGINAL_QUALITY",
-  UPDATE_DURATION: "UPDATE_DURATION",
-  UPDATE_TITLE: "UPDATE_TITLE",
-  UPDATE_DESCRIPTION: "UPDATE_DESCRIPTION",
-  UPDATE_PIN_CONTENT: "UPDATE_PIN_CONTENT",
-  RESET: "RESET",
+  ADD_TO_QUEUE: "videoeditor/add-to-queue",
+  REMOVE_FROM_QUEUE: "videoeditor/remove-from-queue",
+  UPDATE_QUEUE_COMPLETION: "videoeditor/update-queue-completion",
+  UPDATE_ORIGINAL_QUALITY: "videoeditor/update-original-quality",
+  UPDATE_DURATION: "videoeditor/update-duration",
+  UPDATE_TITLE: "videoeditor/update-title",
+  UPDATE_DESCRIPTION: "videoeditor/update-description",
+  UPDATE_PIN_CONTENT: "videoeditor/update-pin-content",
+  RESET: "videoeditor/reset",
 } as const
 
 type AddToQueueAction = {
@@ -28,11 +27,7 @@ type UpdateQueueCompletionAction = {
   type: typeof ActionTypes.UPDATE_QUEUE_COMPLETION
   name: string
   completion: number
-  finished?: boolean
-}
-type UpdateManifestAction = {
-  type: typeof ActionTypes.UPDATE_MANIFEST
-  manifest?: string
+  reference?: string
 }
 type UpdateOriginalQualityAction = {
   type: typeof ActionTypes.UPDATE_ORIGINAL_QUALITY
@@ -61,7 +56,6 @@ export type AnyAction = (
   AddToQueueAction |
   RemoveFromQueueAction |
   UpdateQueueCompletionAction |
-  UpdateManifestAction |
   UpdateOriginalQualityAction |
   UpdateDurationAction |
   UpdatePinContentAction |
@@ -75,15 +69,12 @@ export const reducer = (state: VideoEditorContextState, action: AnyAction): Vide
   let newState = state
 
   switch (action.type) {
-    case ActionTypes.UPDATE_MANIFEST:
-      newState = { ...state, manifest: action.manifest }
-      break
     case ActionTypes.ADD_TO_QUEUE: {
       const queue = [...state.queue]
       queue.push({
         name: action.name,
         completion: null,
-        finished: false,
+        reference: undefined,
       })
       newState = { ...state, queue }
       break
@@ -104,7 +95,7 @@ export const reducer = (state: VideoEditorContextState, action: AnyAction): Vide
       const index = queue.findIndex(e => e.name === action.name)
       if (index >= 0) {
         queue[index].completion = action.completion
-        queue[index].finished = action.finished || false
+        queue[index].reference = action.reference
         newState = { ...state, queue }
       } else {
         newState = state
@@ -133,7 +124,6 @@ export const reducer = (state: VideoEditorContextState, action: AnyAction): Vide
     case ActionTypes.RESET:
       newState = {
         reference: undefined,
-        manifest: undefined,
         queue: [],
         pinContent: state.pinContent,
         videoHandler: new SwarmVideo(undefined, {
@@ -142,6 +132,7 @@ export const reducer = (state: VideoEditorContextState, action: AnyAction): Vide
           fetchFromCache: state.videoHandler.fetchFromCache,
           updateCache: state.videoHandler.updateCache,
           fetchProfile: state.videoHandler.fetchProfile,
+          profileData: state.videoHandler.owner
         })
       }
       break

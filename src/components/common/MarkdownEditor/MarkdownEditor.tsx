@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Editor, { EditorValue, ToolbarConfig } from "react-rte"
 
 import "./markdown-editor.scss"
@@ -17,6 +17,12 @@ const MarkdownEditor = ({
   onChange,
 }: MarkdownEditorProps) => {
   const [state, setState] = useState(Editor.createValueFromString(value, "markdown"))
+
+  useEffect(() => {
+    if (value === "") {
+      setState(Editor.createValueFromString(value, "markdown"))
+    }
+  }, [value])
 
   const handleChange = (newValue?: EditorValue) => {
     if (!newValue) return

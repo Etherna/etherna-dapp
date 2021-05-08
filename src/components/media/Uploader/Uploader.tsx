@@ -1,7 +1,7 @@
 import "./uploader.scss"
 
 import VideoEditor from "../VideoEditor"
-import VideoEditorContextWrapper from "../VideoEditor/VideoEditorContext/VideoEditorContextWrapper"
+import VideoEditorContextWrapper from "../VideoEditor/context/ContextWrapper"
 import Avatar from "@components/user/Avatar"
 import useSelector from "@state/useSelector"
 

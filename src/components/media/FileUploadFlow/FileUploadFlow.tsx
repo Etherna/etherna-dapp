@@ -7,6 +7,7 @@ import VideoEncoder from "../VideoEncoder"
 import { showError } from "@state/actions/modals"
 import { isMimeFFMpegEncodable, isMimeAudio } from "@utils/mimeTypes"
 import { fileToBuffer } from "@utils/buffer"
+import useSelector from "@state/useSelector"
 
 type FileUploadFlowProps = {
   reference?: string
@@ -45,11 +46,13 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
   const [file, setFile] = useState<File>()
   const [contentType, setContentType] = useState<string>()
 
+  const { beeClient } = useSelector(state => state.env)
+
   const status = reference ? "preview"
     : file === undefined ? "select"
-    : file !== undefined && buffer === undefined ? "encode"
-    : file !== undefined && buffer !== undefined ? "upload"
-    : ""
+      : file !== undefined && buffer === undefined ? "encode"
+        : file !== undefined && buffer !== undefined ? "upload"
+          : ""
 
   useImperativeHandle(ref, () => ({
     clear() {
@@ -72,7 +75,19 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
     return mime.join(",")
   }
 
-  const handleSelectFile = async (file: File|null|undefined) => {
+  const getFallbackMime = () => {
+    if (acceptTypes.indexOf("video") >= 0) {
+      return "video/mp4"
+    }
+    if (acceptTypes.indexOf("image") >= 0) {
+      return "image/jpeg"
+    }
+    if (acceptTypes.indexOf("audio") >= 0) {
+      return "audio/mp3"
+    }
+  }
+
+  const handleSelectFile = async (file: File | null | undefined) => {
     if (!file) {
       showError("Error", "The file selected is not supported")
       return
@@ -136,7 +151,8 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
       )}
       {status === "preview" && (
         <FilePreview
-          contentType={contentType}
+          contentType={contentType ?? getFallbackMime()}
+          previewUrl={beeClient.getFileUrl(reference ?? "")}
         />
       )}
     </>

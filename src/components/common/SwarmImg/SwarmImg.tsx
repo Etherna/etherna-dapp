@@ -10,10 +10,11 @@ type SwarmImgProps = {
   fallback?: string
   className?: string
   alt?: string
+  preserveAspectRatio?: boolean
   style?: React.CSSProperties
 }
 
-const SwarmImg: React.FC<SwarmImgProps> = ({ image, fallback, className, alt, style }) => {
+const SwarmImg: React.FC<SwarmImgProps> = ({ image, fallback, className, alt, preserveAspectRatio, style }) => {
   const [src, setSrc] = useState<string>()
   const [size, setSize] = useState<number>()
   const [imgLoaded, setImgLoaded] = useState(typeof image === "string")
@@ -51,6 +52,13 @@ const SwarmImg: React.FC<SwarmImgProps> = ({ image, fallback, className, alt, st
           src={imagePreload}
           alt={alt}
           style={style}
+          ref={el => {
+            if (el && preserveAspectRatio && size && image instanceof SwarmImage) {
+              const [width, height] = image.originalImageSize ?? [1, 1]
+              const aspectRatio = height / width
+              el.style.height = `${el.clientWidth * aspectRatio} px`
+            }
+          }}
         />
       )}
       {src && (

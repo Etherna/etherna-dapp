@@ -2,8 +2,9 @@ import { useState } from "react"
 import { Redirect } from "react-router"
 
 import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
+import { ReactComponent as TrashIcon } from "@svg/icons/trash.svg"
 
-import { useVideoEditorState } from "./VideoEditorContext"
+import { useVideoEditorState } from "./context"
 import VideoCompletion from "./VideoCompletion"
 import VideoProperties from "./VideoProperties"
 import VideoDeleteModal from "./VideoDeleteModal"
@@ -14,9 +15,10 @@ import { showError } from "@state/actions/modals"
 
 const VideoEditor = () => {
   const { address } = useSelector(state => state.user)
-  const { state } = useVideoEditorState()
-  const { reference, manifest, queue, videoHandler } = state
-  const hasQueuedProcesses = queue.filter(q => q.finished === false).length > 0
+  const { state, actions } = useVideoEditorState()
+  const { reference, queue, videoHandler } = state
+  const { resetState } = actions
+  const hasQueuedProcesses = queue.filter(q => !q.reference).length > 0
   const hasOriginalVideo = videoHandler.originalQuality && videoHandler.sources.length > 0
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -39,9 +41,10 @@ const VideoEditor = () => {
     setIsSubmitting(true)
 
     try {
-      const manifest = await videoHandler.updateVideo()
+      const reference = await videoHandler.updateVideo()
 
-      setVideoLink(Routes.getVideoLink(manifest))
+      resetState()
+      setVideoLink(Routes.getVideoLink(reference))
       setSaved(true)
     } catch (error) {
       console.error(error)
@@ -66,10 +69,10 @@ const VideoEditor = () => {
   }
 
   if (saved) {
-    return reference ? (
-      <Redirect to={Routes.getProfileLink(address!)} />
-    ) : (
+    return videoLink ? (
       <Redirect to={videoLink!} />
+    ) : (
+      <Redirect to={Routes.getProfileLink(address!)} />
     )
   }
 
@@ -81,7 +84,6 @@ const VideoEditor = () => {
         <Button
           action={submitVideo}
           disabled={
-            manifest == null ||
             !videoHandler.title ||
             hasQueuedProcesses ||
             !hasOriginalVideo ||
@@ -91,6 +93,10 @@ const VideoEditor = () => {
           {reference ? "Update video" : "Add video"}
         </Button>
       )}
+
+      <div className="mt-5">
+        <Button aspect="link-secondary" action={resetState}><TrashIcon /> Clear all</Button>
+      </div>
     </>
   )
 

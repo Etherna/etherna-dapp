@@ -46,7 +46,6 @@ export default class SwarmVideo {
 
   private indexData?: IndexVideo
   private profileData?: Profile
-  private tempHash?: string
 
   constructor(hash: string | undefined, opts: SwarmVideoOptions) {
     this.hash = hash
@@ -58,6 +57,13 @@ export default class SwarmVideo {
     this.fetchFromCache = opts.fetchFromCache || true
     this.updateCache = opts.updateCache || true
     this.video = opts.videoData ?? this.defaultVideo()
+    this.video.owner = opts.videoData?.owner ?? (
+      opts.profileData && {
+        ownerAddress: opts.profileData.address,
+        ownerIdentityManifest: opts.profileData.manifest,
+        profileData: opts.profileData
+      }
+    )
 
     if (this.hasPrefetch) {
       this.loadVideoFromPrefetch()
@@ -94,6 +100,18 @@ export default class SwarmVideo {
   }
   set duration(value: number) {
     this.video.duration = value
+  }
+
+  get owner(): Profile | undefined {
+    return this.video.owner?.profileData
+  }
+  set owner(value: Profile | undefined) {
+    this.video.ownerAddress = value?.address ?? "0x0"
+    this.video.owner = {
+      ownerAddress: value?.address ?? "0x0",
+      ownerIdentityManifest: value?.manifest,
+      profileData: value,
+    }
   }
 
   get thumbnail(): SwarmImage | undefined {
@@ -169,25 +187,19 @@ export default class SwarmVideo {
    * Update video meta on swarm & manifest on index
    */
   async updateVideo() {
-    if (!this.tempHash) throw new Error("Please add at least 1 video source")
+    if (!this.video.sources.length) throw new Error("Please add at least 1 video source")
 
     // update meta
     const meta = this.validatedMetadata()
-    const newManifest = await this.beeClient.uploadToDir([{
-      path: "meta",
-      data: new TextEncoder().encode(JSON.stringify(meta))
-    }], {
-      defaultIndexPath: "meta",
-      reference: this.tempHash,
-    })
+    const metaData = new TextEncoder().encode(JSON.stringify(meta))
+    const videoReference = await this.beeClient.uploadFile(metaData, undefined, { contentType: "text/json" })
 
-    this.tempHash = newManifest
-
-    // update manifest on index
     if (this.hash) {
-      await this.indexClient.videos.updateVideo(this.hash, this.tempHash)
+      // update manifest on index
+      await this.indexClient.videos.updateVideo(this.hash, videoReference)
     } else {
-      const indexVideo = await this.indexClient.videos.createVideo(this.tempHash)
+      // create video on index
+      const indexVideo = await this.indexClient.videos.createVideo(videoReference)
       this.video.owner = {
         ownerAddress: indexVideo.ownerAddress,
         ownerIdentityManifest: indexVideo.ownerIdentityManifest,
@@ -200,8 +212,7 @@ export default class SwarmVideo {
       }
     }
 
-    this.hash = this.tempHash
-    this.tempHash = undefined
+    this.hash = videoReference
 
     if (this.updateCache) {
       this.updateVideoCache(this.video)
@@ -228,32 +239,33 @@ export default class SwarmVideo {
     const duration = await getVideoDuration(video)
     const size = video.byteLength
     const bitrate = Math.round(size * 8 / duration)
-    const path = SwarmVideo.getSourcePath(quality)
 
-    this.tempHash = await this.beeClient.uploadToDir([{
-      path,
-      data: new Uint8Array(video)
-    }], {
-      reference: this.tempHash,
-      axiosOptions: {
-        onUploadProgress: e => {
-          if (opts?.onUploadProgress) {
-            const progress = Math.round((e.loaded * 100) / e.total)
-            opts.onUploadProgress(progress)
-          }
-        },
-        cancelToken: new Axios.CancelToken(function executor(c) {
-          if (opts?.onCancelToken) {
-            opts.onCancelToken(c)
-          }
-        }),
+    const reference = await this.beeClient.uploadFile(
+      new Uint8Array(video),
+      undefined,
+      {
+        contentType,
+        axiosOptions: {
+          onUploadProgress: e => {
+            if (opts?.onUploadProgress) {
+              const progress = Math.round((e.loaded * 100) / e.total)
+              opts.onUploadProgress(progress)
+            }
+          },
+          cancelToken: new Axios.CancelToken(function executor(c) {
+            if (opts?.onCancelToken) {
+              opts.onCancelToken(c)
+            }
+          }),
+        }
       }
-    })
+    )
 
     const videoSource: VideoSource = {
-      source: this.beeClient.getBzzUrl(this.tempHash, path),
+      source: this.beeClient.getFileUrl(reference),
       quality,
-      path,
+      reference,
+      referenceProtocol: "files",
       contentType,
       size,
       bitrate
@@ -261,59 +273,44 @@ export default class SwarmVideo {
 
     this.video.sources.push(videoSource)
 
-    return this.tempHash
+    return reference
   }
 
-  async addThumbnail(buffer: ArrayBuffer, opts?: SwarmVideoUploadOptions) {
+  async addThumbnail(buffer: ArrayBuffer, contentType: string, opts?: SwarmVideoUploadOptions) {
     this.video.thumbnail = new SwarmImage(undefined, {
       beeClient: this.beeClient,
       isResponsive: true,
       responsiveSizes: SwarmVideo.thumbnailResponsiveSizes
     })
-    this.video.thumbnail.setImageData(buffer)
+    const imageBlob = new Blob([buffer], { type: contentType })
+    await this.video.thumbnail.setImageData(imageBlob)
 
-    await this.video.thumbnail.upload({
-      reference: this.tempHash,
-      path: "thumbnail",
+    return await this.video.thumbnail.upload({
       onUploadProgress: opts?.onUploadProgress,
       onCancelToken: opts?.onCancelToken,
     })
-
-    return this.tempHash ?? ""
   }
 
   async removeVideoSource(quality: string) {
-    if (!this.tempHash) throw new Error("Please add at least 1 video source")
-
-    if (!this.video.sources.find(source => source.quality === quality)) {
+    const sourceIndex = this.video.sources.findIndex(source => source.quality === quality)
+    if (sourceIndex === -1) {
       throw new Error("There is no video source with this quality")
     }
 
-    const path = SwarmVideo.getSourcePath(quality)
-
-    this.tempHash = await this.beeClient.deleteFromDir(this.tempHash!, path)
-
-    return this.tempHash
+    this.video.sources.splice(sourceIndex, 1)
   }
 
   async removeThumbnail() {
-    if (!this.tempHash) throw new Error("Please add at least 1 video source")
-
     if (!this.video.thumbnail) {
-      throw new Error("There is no video source with this quality")
+      throw new Error("There is no thumbnail to remove")
     }
 
-    const paths = this.video.thumbnail.responsivePaths
-    for (const path of paths) {
-      this.tempHash = await this.beeClient.deleteFromDir(this.tempHash!, path)
-    }
-
-    return this.tempHash
+    this.video.thumbnail = undefined
   }
 
-  static getSourcePath(quality: string | number | null) {
+  static getSourceName(quality: string | number | null) {
     const name = parseInt(`${quality}`).toString().replace(/p?$/, "p")
-    return `sources/${name}`
+    return name
   }
 
 
@@ -341,8 +338,8 @@ export default class SwarmVideo {
 
   private async fetchVideoMetadata() {
     try {
-      const retrievedData = await this.beeClient.resolveBzz(this.hash!)
-      const meta: SwarmVideoRaw = JSON.parse(new TextDecoder().decode(retrievedData))
+      const resp = await this.beeClient.downloadFile(this.hash!)
+      const meta = resp.data.json() as SwarmVideoRaw
 
       return this.resolveRawVideo(meta)
     } catch { }
@@ -359,7 +356,8 @@ export default class SwarmVideo {
       sources: [{
         quality: "",
         source: this.beeClient.getFileUrl(this.hash!),
-        path: ""
+        reference: "",
+        referenceProtocol: "files"
       }]
     }
 
@@ -372,15 +370,18 @@ export default class SwarmVideo {
       resolvedMeta.thumbnail = rawVideo.thumbnail
         ? new SwarmImage(rawVideo.thumbnail, { beeClient: this.beeClient })
         : undefined
-      resolvedMeta.source = this.beeClient.getBzzUrl(this.hash!, `/sources/${resolvedMeta.originalQuality}`)
       resolvedMeta.sources = rawVideo.sources.map(source => ({
         quality: source.quality,
-        path: source.path,
-        source: this.beeClient.getBzzUrl(this.hash!, `/sources/${source.quality}`),
+        reference: source.reference,
+        referenceProtocol: source.referenceProtocol,
+        source: this.beeClient.getFileUrl(source.reference),
         size: source.size,
         bitrate: source.bitrate,
         contentType: source.contentType
       }))
+
+      const originalSource = resolvedMeta.sources.find(source => source.quality === rawVideo.originalQuality)
+      resolvedMeta.source = originalSource?.source ?? resolvedMeta.source
     }
 
     return resolvedMeta

@@ -1,6 +1,6 @@
 import React, { useRef } from "react"
 
-import { useVideoEditorState } from "../VideoEditorContext"
+import { useVideoEditorState } from "../context"
 import ThumbnailUpload, { ThumbnailUploadHandlers } from "../ThumbnailUpload"
 import VideoSourcesUpload, { VideoSourcesUploadHandlers } from "../VideoSourcesUpload"
 import PinContentField from "../PinContentField"
@@ -41,7 +41,7 @@ const VideoProperties: React.FC<VideoPropertiesProps> = ({
           type="text"
           id="title"
           placeholder="Title of the video"
-          value={videoHandler.title}
+          value={videoHandler.title ?? ""}
           onChange={e => updateTitle(e.target.value)}
           disabled={isSubmitting}
         />

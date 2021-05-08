@@ -3,16 +3,6 @@ import { Dispatch } from "react"
 import { VideoEditorContextState } from "."
 import { ActionTypes, AnyAction } from "./videoEditorReducer"
 
-export const updateManifest = (state: VideoEditorContextState, dispatch: Dispatch<AnyAction>) => (
-  /**
-   * Update the video manifest
-   * @param manifest The new video manifest hash
-   */
-  (manifest: string) => {
-    dispatch({ type: ActionTypes.UPDATE_MANIFEST, manifest })
-  }
-)
-
 export const addToQueue = (state: VideoEditorContextState, dispatch: Dispatch<AnyAction>) => (
   /**
    * Add a queue instance
@@ -50,17 +40,17 @@ export const updateCompletion = (state: VideoEditorContextState, dispatch: Dispa
    * @param completion Completion percentage [0-100]
    * @param finished Whether the upload has finished (default false)
    */
-  (name: string, completion: number, finished = false) => {
+  (name: string, completion: number, reference?: string) => {
     let clampedValue = completion - (completion % 10) + 5
     clampedValue = clampedValue > 100 ? 100 : clampedValue
 
     const queued = state.queue.find(q => q.name === name)
-    if (finished || (queued && queued.completion !== clampedValue)) {
+    if (reference || (queued && queued.completion !== clampedValue)) {
       dispatch({
         type: ActionTypes.UPDATE_QUEUE_COMPLETION,
         name,
         completion: clampedValue,
-        finished,
+        reference,
       })
     }
   }

@@ -101,9 +101,10 @@ const execProject = (projectPath) => {
  * Run the bee instance
  */
 const execBee = () => {
+  const boolVal = (val) => val === "true" || val === "1"
   const pwd = process.env.BEE_PWD ? `--password=${process.env.BEE_PWD}` : ``
   const endpoint = process.env.BEE_PORT ? `--api-addr=:${process.env.BEE_PORT}` : ``
-  const pinning = process.env.BEE_ENABLE_PIN ? `--global-pinning-enable=${process.env.BEE_ENABLE_PIN}` : ``
+  const pinning = boolVal(process.env.BEE_ENABLE_PIN) ? `--global-pinning-enable=true` : ``
   const dbCapacity = process.env.BEE_DB_CAPACITY ? `--db-capacity=${process.env.BEE_DB_CAPACITY}` : ``
   const otherArgs = [
     `--cors-allowed-origins=*`,

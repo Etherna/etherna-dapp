@@ -140,6 +140,8 @@ export default class SwarmImage {
       value: "",
     }
 
+    let imgReference = ""
+
     if (this.isResponsive) {
       // dir setup
       const sizes = Object.keys(this.responsiveSourcesData!)
@@ -150,6 +152,7 @@ export default class SwarmImage {
 
       // upload files and retrieve the new reference
       const references = await this.beeClient.uploadMultipleFiles(uploads)
+      imgReference = references[0]
 
       // update raw image object
       imageRaw.value = references[0]
@@ -163,20 +166,23 @@ export default class SwarmImage {
       )
     } else {
       // upload file and retrieve the new reference
-      const reference = await this.beeClient.uploadFile(
+      imgReference = await this.beeClient.uploadFile(
         new Uint8Array(this.originalImageData!),
         undefined,
         { contentType: this.contentType }
       )
 
       // update raw image object
-      imageRaw.value = reference
+      imageRaw.value = imgReference
       imageRaw.originalSize = this.originalImageSize
     }
 
     this.clear()
 
     this.imageRaw = imageRaw
+
+    // return original image reference for preview
+    return imgReference
   }
 
   getOptimizedSrc(size?: number): string {

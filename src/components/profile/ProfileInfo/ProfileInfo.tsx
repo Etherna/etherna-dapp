@@ -57,9 +57,6 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
     //setIsFetchingProfile(false)
   }
 
-  console.log("profile avatar", profile.avatar)
-
-
   return (
     <div className="profile">
       <div className="cover">
@@ -68,6 +65,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
             image={profile.cover}
             alt={profileName}
             className="cover-image"
+            preserveAspectRatio
           />
         )}
       </div>

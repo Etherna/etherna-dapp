@@ -12,7 +12,8 @@
 
   &-picture {
     img {
-      @apply w-full;
+      @apply w-full h-full;
+      @apply object-cover object-center;
     }
   }
 }

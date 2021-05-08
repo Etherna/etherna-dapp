@@ -59,7 +59,7 @@ export default class SwarmBeeClient extends Bee {
    * @returns The resource url
    */
   getFileUrl(reference: string) {
-    const hash = reference.replaceAll(/(^\/|\/$)/ig, "")
+    const hash = reference?.replaceAll(/(^\/|\/$)/ig, "")
     return `${this.url}/files/${hash}`
   }
 

@@ -15,28 +15,27 @@ export default class VideoEditorCache {
     const value = window.localStorage.getItem(STORAGE_KEY)
     if (value) {
       try {
-        const { manifest } = JSON.parse(value) as CacheState
-        return !!manifest
-      } catch {}
+        JSON.parse(value) as CacheState
+        return true
+      } catch { }
     }
     return false
   }
 
   static loadState(beeClient: SwarmBeeClient, indexClient: EthernaIndexClient) {
     const value = window.localStorage.getItem(STORAGE_KEY)!
-    const { reference, manifest, queue, videoRaw, pinContent } = JSON.parse(value) as CacheState
+    const { reference, queue, videoRaw, pinContent } = JSON.parse(value) as CacheState
     const videoHandler = new SwarmVideo(reference, {
       beeClient,
       indexClient,
       fetchFromCache: false,
       fetchProfile: false
     })
-    videoHandler.hash = manifest
+    videoHandler.hash = reference
     videoHandler.videoRaw = videoRaw
 
     const state: VideoEditorContextState = {
       reference,
-      manifest,
       queue,
       videoHandler,
       pinContent
@@ -46,11 +45,11 @@ export default class VideoEditorCache {
   }
 
   static saveState(state: VideoEditorContextState) {
-    const { reference, manifest, queue, videoHandler, pinContent } = state
+    const { reference, queue, videoHandler, pinContent } = state
     const videoRaw = videoHandler.videoRaw
+
     const cacheState: CacheState = {
       reference,
-      manifest,
       queue,
       videoRaw,
       pinContent

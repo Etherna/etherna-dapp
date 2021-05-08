@@ -1,5 +1,6 @@
 .upload-step {
-  @apply flex items-center py-2 text-gray-600;
+  @apply flex items-center text-gray-600;
+  @apply py-2 mb-4;
   @apply dark:text-gray-400;
 
   &::before {

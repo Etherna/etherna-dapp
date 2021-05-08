@@ -7,6 +7,10 @@
   &:not(:disabled) {
     @apply hover:bg-primary-600 hover:text-white;
   }
+
+  svg {
+    @apply h-4 mr-1;
+  }
 }
 
 .btn-sm {
@@ -79,6 +83,19 @@
 
   &:not(:disabled) {
     @apply hover:no-underline hover:text-primary-600 hover:bg-transparent;
+  }
+
+  &:disabled {
+    @apply text-gray-500;
+  }
+}
+
+.btn-link-secondary {
+  @apply no-underline cursor-pointer text-gray-500 transition duration-300;
+  @apply text-gray-500 bg-transparent px-0;
+
+  &:not(:disabled) {
+    @apply hover:no-underline hover:text-gray-600 hover:bg-transparent;
   }
 
   &:disabled {

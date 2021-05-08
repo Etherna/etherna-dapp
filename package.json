@@ -6,7 +6,7 @@
   "author": "Mattia Dalzocchio",
   "dependencies": {
     "@ethersphere/bee-js": "^0.8.1",
-    "@ffmpeg/ffmpeg": "^0.9.7",
+    "@ffmpeg/ffmpeg": "^0.9.8",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -37,6 +37,7 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "remark-gfm": "^1.0.0",
+    "use-reducer-logger": "^1.0.2",
     "web3": "^1.2.6"
   },
   "devDependencies": {
@@ -87,7 +88,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "start:proxy": "nodemon --max-http-header-size=80000 server/gateway-proxy.js",
+    "start:proxy": "nodemon --max-http-header-size=80000 --watch server server/gateway-proxy.js",
     "start:services": "concurrently \"node server/etherna-services.js\" \"npm run start:proxy\"",
     "start:bee": "node server/etherna-services.js --bee",
     "build": "craco build",

@@ -19,7 +19,8 @@
       2,
       {
         "SwitchCase": 1,
-        "ignoredNodes": ["ConditionalExpression"]
+        "ignoredNodes": ["ConditionalExpression"],
+        "ignoreComments": true
       }
     ],
     "quotes": [

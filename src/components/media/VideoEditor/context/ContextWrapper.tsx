@@ -1,4 +1,5 @@
 import React, { useReducer } from "react"
+import logger from "use-reducer-logger"
 
 import { VideoEditorContext } from "."
 import { reducer } from "./videoEditorReducer"
@@ -6,6 +7,7 @@ import VideoEditorCache from "./VideoEditorCache"
 import SwarmVideo from "@classes/SwarmVideo"
 import { Video } from "@classes/SwarmVideo/types"
 import useSelector from "@state/useSelector"
+import { Profile } from "@classes/SwarmProfile/types"
 
 type VideoEditorContextWrapperProps = {
   children: React.ReactNode
@@ -18,7 +20,21 @@ export const VideoEditorContextWrapper: React.FC<VideoEditorContextWrapperProps>
   reference,
   videoData
 }) => {
+  const profile = useSelector(state => state.profile)
+  const { address, identityManifest } = useSelector(state => state.user)
   const { beeClient, indexClient } = useSelector(state => state.env)
+
+  const videoProfileData: Profile = {
+    address: address!,
+    manifest: identityManifest,
+    name: profile.name ?? null,
+    description: profile.description ?? null,
+    birthday: profile.birthday,
+    location: profile.location,
+    website: profile.website,
+    avatar: profile.avatar,
+    cover: profile.cover,
+  }
 
   let initialState = VideoEditorCache.hasCache ? VideoEditorCache.loadState(beeClient, indexClient) : null
 
@@ -28,19 +44,21 @@ export const VideoEditorContextWrapper: React.FC<VideoEditorContextWrapperProps>
       indexClient,
       fetchFromCache: false,
       fetchProfile: false,
-      videoData
+      videoData,
     })
 
     initialState = {
       reference,
-      manifest: reference,
       queue: [],
       videoHandler,
       pinContent: undefined
     }
   }
 
-  const store = useReducer(reducer, initialState)
+  initialState.videoHandler.owner = videoProfileData
+
+  const stateReducer = process.env.NODE_ENV === "development" ? logger(reducer) : reducer
+  const store = useReducer(stateReducer, initialState)
 
   return (
     <VideoEditorContext.Provider value={store}>

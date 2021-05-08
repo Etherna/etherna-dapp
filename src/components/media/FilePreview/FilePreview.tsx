@@ -16,7 +16,6 @@ const FilePreview: React.FC<FilePreviewProps> = ({
   disabled,
   onRemoveFile
 }) => {
-
   const askToRemoveFile = () => {
     if (window.confirm("Remove the upload file?")) {
       onRemoveFile?.()

@@ -16,5 +16,6 @@
   },
   "[scss]": {
     "tailwindCSS.validate": true
-  }
+  },
+  "svg.preview.background": "transparent"
 }

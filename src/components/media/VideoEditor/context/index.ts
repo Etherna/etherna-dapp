@@ -5,7 +5,7 @@ import * as videoEditorActions from "./videoEditorActions"
 import SwarmVideo from "@classes/SwarmVideo"
 
 // Context
-export const VideoEditorContext = createContext<VideoEditorContextStore|undefined>(undefined)
+export const VideoEditorContext = createContext<VideoEditorContextStore | undefined>(undefined)
 
 // Types
 export type VideoEditorContextStore = [state: VideoEditorContextState, dispatch: Dispatch<AnyAction>]
@@ -13,12 +13,10 @@ export type VideoEditorContextStore = [state: VideoEditorContextState, dispatch:
 export type VideoEditorContextState = {
   /** Initial video reference (if editing a video) */
   reference: string | undefined
-  /** Current video manifest (continuesly updating) */
-  manifest: string | undefined
   /** Video instance */
   videoHandler: SwarmVideo
   /** Upload queue */
-  queue: { name: string, completion: number|null, finished: boolean }[]
+  queue: { name: string, completion: number | null, reference?: string }[]
   /** Pin content on Swarm */
   pinContent: boolean | undefined
 }
@@ -29,7 +27,6 @@ export const useVideoEditorState = () => {
 
   const actions = useMemo(() => {
     return {
-      updateManifest: videoEditorActions.updateManifest(state, dispatch),
       addToQueue: videoEditorActions.addToQueue(state, dispatch),
       removeFromQueue: videoEditorActions.removeFromQueue(state, dispatch),
       updateCompletion: videoEditorActions.updateCompletion(state, dispatch),
