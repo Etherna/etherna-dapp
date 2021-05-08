@@ -22,7 +22,7 @@ type VideoViewProps = {
 }
 
 const VideoView: React.FC<VideoViewProps> = ({ hash, routeState }) => {
-  const [video, loadVideo] = useSwarmVideo({ hash, routeState })
+  const { video, loadVideo } = useSwarmVideo({ hash, routeState })
   const [isFetchingVideo, setIsFetchingVideo] = useState(false)
 
   useEffect(() => {

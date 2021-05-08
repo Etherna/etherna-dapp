@@ -1,17 +1,18 @@
 import React, { useRef } from "react"
-import { Link } from "react-router-dom"
 
 import { ReactComponent as MoreIcon } from "@svg/icons/more-icon.svg"
 
 import { DropDown, DropDownMenuToggle, DropDownItem, DropDownMenu } from "@common/DropDown"
 import Button from "@common/Button"
+import StateLink from "@common/StateLink"
 import Routes from "@routes"
+import { Video } from "@classes/SwarmVideo/types"
 
 type VideoMenuProps = {
-  hash: string
+  video: Video
 }
 
-const VideoMenu = ({ hash }: VideoMenuProps) => {
+const VideoMenu = ({ video }: VideoMenuProps) => {
   const menuRef = useRef<HTMLDivElement>(null)
 
   return (
@@ -23,7 +24,7 @@ const VideoMenu = ({ hash }: VideoMenuProps) => {
       </DropDownMenuToggle>
       <DropDownMenu menuRef={menuRef}>
         <DropDownItem>
-          <Link to={Routes.getVideoSettingsLink(hash)}>Video Settings</Link>
+          <StateLink to={Routes.getVideoSettingsLink(video.hash)} state={video}>Video Settings</StateLink>
         </DropDownItem>
       </DropDownMenu>
     </DropDown>

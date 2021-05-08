@@ -18,7 +18,7 @@ type VideoUpdateProps = {
 }
 
 const VideoUpdate: React.FC<VideoUpdateProps> = ({ hash, routeState }) => {
-  const [video, loadVideo] = useSwarmVideo({
+  const { video, loadVideo } = useSwarmVideo({
     hash,
     fetchProfile: false,
     fetchFromCache: false,

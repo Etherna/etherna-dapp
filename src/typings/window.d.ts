@@ -24,6 +24,9 @@ declare global {
     // prefetch
     prefetchData?: ProfilePrefetch & VideoPrefetch
 
+    // route state
+    routeState?: any
+
     // redux
     __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose
 

@@ -62,8 +62,6 @@ const useSwarmProfile = (opts: SwarmProfileOptions): UseProfile => {
 
   // Returns
   const loadProfile = async () => {
-    console.log("load profile", profileHandler)
-
     if (!opts.hash && !profileHandler.loadedFromPrefetch) {
       // fetch hash if missing
       const user = await indexClient.users.fetchUser(address)
@@ -81,14 +79,8 @@ const useSwarmProfile = (opts: SwarmProfileOptions): UseProfile => {
     // save profile data on swarm
     const newReference = await profileHandler.updateProfile(profile)
 
-    console.log("new ref", newReference)
-
-
     // update index
     await indexClient.users.updateCurrentUser(newReference)
-
-    console.log("index update")
-
 
     return newReference
   }

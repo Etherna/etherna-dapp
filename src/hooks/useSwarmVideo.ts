@@ -11,40 +11,49 @@ type SwarmVideoOptions = {
   fetchFromCache?: boolean
 }
 
-type UseVideo = [
+type UseVideo = {
   /** Video object */
   video: Video | undefined,
   /** Download video info  */
-  loadVideo: () => Promise<Video|undefined>
-]
+  loadVideo: () => Promise<Video | undefined>
+}
 
 const useSwarmVideo = (opts: SwarmVideoOptions): UseVideo => {
-  const [hash, setHash] = useState(opts.hash)
-  const [videoHandler, setVideoHandler] = useState<SwarmVideo>()
   const { beeClient, indexClient } = useSelector(state => state.env)
+  const [hash, setHash] = useState(opts.hash)
+  const [videoHandler, setVideoHandler] = useState<SwarmVideo>(
+    new SwarmVideo(hash, { beeClient, indexClient, fetchFromCache: opts.fetchFromCache })
+  )
+  const [video, setVideo] = useState<Video | undefined>(opts.routeState)
 
   useEffect(() => {
     if (hash !== opts.hash) {
+      console.log("different hash", hash, opts.hash)
+
       setHash(opts.hash)
     }
-  }, [hash, opts.hash])
-
-  useEffect(() => {
-    const { hash, fetchFromCache } = opts
-    if (beeClient) {
-      setVideoHandler(new SwarmVideo(hash, { beeClient, indexClient, fetchFromCache }))
+    if (videoHandler.hash !== opts.hash) {
+      console.log("different handler hash", hash, opts.hash)
+      setVideoHandler(new SwarmVideo(hash, { beeClient, indexClient, fetchFromCache: opts.fetchFromCache }))
     }
-  }, [beeClient, indexClient, hash, opts])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [opts.hash])
 
   // Returns
-  const video = opts.routeState ?? videoHandler?.video
-  const load = async () => {
+  const loadVideo = async () => {
     if (!videoHandler) return
 
-    return videoHandler.downloadVideo({ fetchProfile: opts.fetchProfile })
+    const video = await videoHandler.downloadVideo({ fetchProfile: opts.fetchProfile })
+
+    setVideo(video)
+
+    return video
   }
 
-  return [video, load]
+  return {
+    video,
+    loadVideo
+  }
 }
 
 export default useSwarmVideo

@@ -4,9 +4,10 @@ import moment from "moment"
 
 import "./video-preview.scss"
 
-import Time from "@components/media/Time"
 import VideoMenu from "../VideoMenu"
-import SwarmImg from "@components/common/SwarmImg"
+import StateLink from "@common/StateLink"
+import SwarmImg from "@common/SwarmImg"
+import Time from "@components/media/Time"
 import Avatar from "@components/user/Avatar"
 import { Video } from "@classes/SwarmVideo/types"
 import Routes from "@routes"
@@ -18,7 +19,7 @@ type VideoPreviewProps = {
   hideProfile?: boolean
 }
 
-const VideoPreview = ({ video, hideProfile }: VideoPreviewProps) => {
+const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile }) => {
   const { address } = useSelector(state => state.user)
 
   const profileAddress = video.ownerAddress
@@ -30,14 +31,16 @@ const VideoPreview = ({ video, hideProfile }: VideoPreviewProps) => {
   const videoSearch = new URL(videoLink, document.baseURI).search
   const videoPath = videoLink.replace(videoSearch, "")
 
-  const VideoLink = ({ children }: { children: React.ReactNode }) => (
-    <Link
+  const VideoLink: React.FC = ({ children }) => (
+    <StateLink
       to={{
         pathname: videoPath,
         search: videoSearch,
-        state: video,
       }}
-    >{children}</Link>
+      state={video}
+    >
+      {children}
+    </StateLink>
   )
 
   return (
@@ -82,7 +85,7 @@ const VideoPreview = ({ video, hideProfile }: VideoPreviewProps) => {
           )}
         </div>
         {address === profileAddress && (
-          <VideoMenu hash={video.hash} />
+          <VideoMenu video={video} />
         )}
       </div>
     </div>
