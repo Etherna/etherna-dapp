@@ -43,6 +43,9 @@ const VideoEditor = () => {
     try {
       const reference = await videoHandler.updateVideo()
 
+      // update route state for redirect
+      window.routeState = videoHandler.video
+
       resetState()
       setVideoLink(Routes.getVideoLink(reference))
       setSaved(true)

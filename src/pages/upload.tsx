@@ -1,11 +1,11 @@
 import LayoutWrapper from "@components/layout/DefaultLayout/LayoutWrapper"
 import SEO from "@components/layout/SEO"
-import Uploader from "@components/media/Uploader"
+import VideoCreate from "@components/video/VideoCreate"
 
 const UploadPage = () => (
   <LayoutWrapper>
     <SEO title="Upload a video" />
-    <Uploader />
+    <VideoCreate />
   </LayoutWrapper>
 )
 
