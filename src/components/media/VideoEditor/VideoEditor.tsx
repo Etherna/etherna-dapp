@@ -97,9 +97,11 @@ const VideoEditor = () => {
         </Button>
       )}
 
-      <div className="mt-5">
-        <Button aspect="link-secondary" action={resetState}><TrashIcon /> Clear all</Button>
-      </div>
+      {!videoHandler.video.isVideoOnIndex && (
+        <div className="mt-5">
+          <Button aspect="link-secondary" action={resetState}><TrashIcon /> Clear all</Button>
+        </div>
+      )}
     </>
   )
 

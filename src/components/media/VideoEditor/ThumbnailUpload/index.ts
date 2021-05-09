@@ -1,5 +1,5 @@
-import ThumbnailUpload, { ThumbnailUploadHandlers as Handlers } from "./ThumbnailUpload"
+import ThumbnailUpload from "./ThumbnailUpload"
 
-export type ThumbnailUploadHandlers = Handlers
+export * from "./ThumbnailUpload"
 
 export default ThumbnailUpload

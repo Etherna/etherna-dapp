@@ -4,6 +4,7 @@ import logger from "use-reducer-logger"
 import { VideoEditorContext } from "."
 import { reducer } from "./videoEditorReducer"
 import VideoEditorCache from "./VideoEditorCache"
+import { THUMBNAIL_QUEUE_NAME } from "../ThumbnailUpload"
 import SwarmVideo from "@classes/SwarmVideo"
 import { Video } from "@classes/SwarmVideo/types"
 import useSelector from "@state/useSelector"
@@ -36,7 +37,9 @@ export const VideoEditorContextWrapper: React.FC<VideoEditorContextWrapperProps>
     cover: profile.cover,
   }
 
-  let initialState = VideoEditorCache.hasCache ? VideoEditorCache.loadState(beeClient, indexClient) : null
+  let initialState = VideoEditorCache.hasCache && !reference
+    ? VideoEditorCache.loadState(beeClient, indexClient)
+    : null
 
   if (!initialState) {
     const videoHandler = new SwarmVideo(reference, {
@@ -49,7 +52,15 @@ export const VideoEditorContextWrapper: React.FC<VideoEditorContextWrapperProps>
 
     initialState = {
       reference,
-      queue: [],
+      queue: videoHandler.video.sources.map(source => ({
+        completion: 100,
+        name: SwarmVideo.getSourceName(source.quality),
+        reference: source.reference
+      })).concat(videoHandler.thumbnail ? [{
+        completion: 100,
+        reference: videoHandler.thumbnail.originalReference!,
+        name: THUMBNAIL_QUEUE_NAME
+      }] : []),
       videoHandler,
       pinContent: undefined
     }

@@ -16,7 +16,7 @@ export type ThumbnailUploadHandlers = {
   clear: () => void
 }
 
-const QUEUE_NAME = "thumbnail"
+export const THUMBNAIL_QUEUE_NAME = "thumbnail"
 
 const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploadProps>(({
   disabled,
@@ -32,7 +32,7 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
   const { addToQueue, removeFromQueue, updateCompletion, resetState } = actions
 
   const currentQueue = queue.find(q => !q.reference)
-  const thumbnailQueue = queue.find(q => q.name === QUEUE_NAME)
+  const thumbnailQueue = queue.find(q => q.name === THUMBNAIL_QUEUE_NAME)
   const uploadProgress = thumbnailQueue?.completion
 
   useImperativeHandle(ref, () => ({
@@ -45,9 +45,9 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
   const uploadThumbnail = async (buffer: ArrayBuffer) => {
     const reference = await videoHandler.addThumbnail(buffer, contentType, {
       onCancelToken: c => setCanceler(c),
-      onUploadProgress: p => updateCompletion(QUEUE_NAME, p),
+      onUploadProgress: p => updateCompletion(THUMBNAIL_QUEUE_NAME, p),
     })
-    updateCompletion(QUEUE_NAME, 100, reference)
+    updateCompletion(THUMBNAIL_QUEUE_NAME, 100, reference)
 
     onComplete?.()
 
@@ -55,7 +55,7 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
   }
 
   const handleReset = async () => {
-    removeFromQueue(QUEUE_NAME)
+    removeFromQueue(THUMBNAIL_QUEUE_NAME)
 
     try {
       await videoHandler.removeThumbnail()
@@ -83,16 +83,15 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
         dragLabel={"Drag your thumbnail here"}
         acceptTypes={["image"]}
         sizeLimit={2}
-        canProcessFile={currentQueue?.name === QUEUE_NAME}
+        canProcessFile={currentQueue?.name === THUMBNAIL_QUEUE_NAME}
         uploadHandler={uploadThumbnail}
         onFileSelected={file => setContentType(file.type)}
-        onConfirmedProcessing={() => addToQueue(QUEUE_NAME)}
+        onConfirmedProcessing={() => addToQueue(THUMBNAIL_QUEUE_NAME)}
         onCancel={handleReset}
         disabled={disabled}
       />
     </>
   )
-}
-)
+})
 
 export default ThumbnailUpload

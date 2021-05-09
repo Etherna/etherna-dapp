@@ -20,6 +20,7 @@ export default class SwarmImage {
   imageRaw?: SwarmImageRaw
   blurredBase64?: string
   originalSource: string
+  originalReference?: string
   originalImageSize?: [width: number, height: number]
   responsiveSources?: { [size: string]: string }
   filePreview?: string
@@ -43,6 +44,7 @@ export default class SwarmImage {
       this.imageRaw = image
       this.isResponsive = image["@type"] === "responsiveImage"
       this.blurredBase64 = image.blurredBase64
+      this.originalReference = image.value
       this.originalSource = this.beeClient.getFileUrl(image.value)
       this.originalImageSize = image.originalSize
 
@@ -180,6 +182,7 @@ export default class SwarmImage {
     this.clear()
 
     this.imageRaw = imageRaw
+    this.originalReference = imgReference
 
     // return original image reference for preview
     return imgReference
