@@ -5,9 +5,10 @@ import FilePreview from "../FilePreview"
 import FileUpload from "../FileUpload"
 import VideoEncoder from "../VideoEncoder"
 import { showError } from "@state/actions/modals"
-import { isMimeFFMpegEncodable, isMimeAudio } from "@utils/mimeTypes"
-import { fileToBuffer } from "@utils/buffer"
 import useSelector from "@state/useSelector"
+import { fileToBuffer } from "@utils/buffer"
+import { isMimeFFMpegEncodable, isMimeAudio, isMimeWebCompatible } from "@utils/mimeTypes"
+import { getVideoDuration, getVideoResolution } from "@utils/media"
 
 type FileUploadFlowProps = {
   reference?: string
@@ -21,6 +22,7 @@ type FileUploadFlowProps = {
   onConfirmedProcessing?: () => void
   onManifestUpdate?: (manifest?: string) => void
   onFileSelected?: (file: File) => void
+  onEncodingComplete?: (contentType: string, duration: number, quality: number) => void
   onCancel?: () => void
 }
 
@@ -38,6 +40,7 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
   canProcessFile = true,
   uploadHandler,
   onConfirmedProcessing,
+  onEncodingComplete,
   onManifestUpdate,
   onFileSelected,
   onCancel,
@@ -98,7 +101,9 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
     if (!isMimeFFMpegEncodable(file.type)) {
       const buffer = await fileToBuffer(file)
       setBuffer(buffer)
-    } else {
+    }
+
+    if (!isMimeWebCompatible(file.type)) {
       if (isMimeAudio(file.type)) setContentType("audio/mpeg")
       else setContentType("video/mp4")
     }
@@ -112,6 +117,15 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
     setFile(undefined)
     setContentType(undefined)
     onCancel?.()
+  }
+
+  const handleCompleteEncoding = async (buffer: ArrayBuffer) => {
+    setBuffer(buffer)
+
+    const duration = await getVideoDuration(buffer)
+    const quality = await getVideoResolution(buffer)
+
+    onEncodingComplete?.(contentType!, duration, quality)
   }
 
   return (
@@ -132,7 +146,7 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
           file={file!}
           canEncode={canProcessFile}
           onConfirmEncode={onConfirmedProcessing}
-          onEncodingComplete={buffer => setBuffer(buffer)}
+          onEncodingComplete={handleCompleteEncoding}
           onCancel={handleCancel}
         />
       )}

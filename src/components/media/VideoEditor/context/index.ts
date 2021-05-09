@@ -29,6 +29,7 @@ export const useVideoEditorState = () => {
     return {
       addToQueue: videoEditorActions.addToQueue(state, dispatch),
       removeFromQueue: videoEditorActions.removeFromQueue(state, dispatch),
+      updateQueueName: videoEditorActions.updateQueueName(state, dispatch),
       updateCompletion: videoEditorActions.updateCompletion(state, dispatch),
       updateTitle: videoEditorActions.updateTitle(state, dispatch),
       updateDescription: videoEditorActions.updateDescription(state, dispatch),

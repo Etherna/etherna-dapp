@@ -9,7 +9,7 @@ import SwarmVideo from "@classes/SwarmVideo"
 import { VideoSource } from "@classes/SwarmVideo/types"
 import { showError } from "@state/actions/modals"
 import { getVideoDuration, getVideoResolution } from "@utils/media"
-import { isMimeAudio, isMimeFFMpegEncodable } from "@utils/mimeTypes"
+import { isMimeAudio, isMimeFFMpegEncodable, isMimeWebCompatible } from "@utils/mimeTypes"
 
 type QueueSource = {
   quality: string | null
@@ -37,10 +37,11 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
   onCancel
 }, ref) => {
   const { state, actions } = useVideoEditorState()
-  const { videoHandler } = state
+  const { videoHandler, queue } = state
   const {
     updateOriginalQuality,
     updateVideoDuration,
+    updateQueueName,
     addToQueue,
     removeFromQueue,
     updateCompletion,
@@ -64,6 +65,14 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    if (!queue.length) {
+      // empty queue = reset
+      setSources([defaultSource])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queue])
+
   useImperativeHandle(ref, () => ({
     clear() {
       sources.forEach(s => s.ref.current?.clear())
@@ -86,11 +95,17 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
     const source = sources[index]
     const queueName = SwarmVideo.getSourceName(source.quality)
 
+    console.log("SOURCE", source)
+
+
     const reference = await videoHandler.addVideoSource(buffer, source.contentType!, {
       onCancelToken: c => {
-        const newSources = [...sources]
-        newSources[index].canceler = c
-        setSources(newSources)
+        setSources(sources => {
+          const newSources = [...sources]
+          newSources[index].canceler = c
+
+          return newSources
+        })
       },
       onUploadProgress: p => updateCompletion(queueName, p)
     })
@@ -120,17 +135,41 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
   const handleFileSelected = async (file: File, index: number) => {
     if (index !== 0) return
 
-    const duration = await getVideoDuration(file)
-    const quality = await getVideoResolution(file)
+    let duration = 0
+    let quality = 0
 
-    updateVideoDuration(duration)
-    updateOriginalQuality(`${quality}p`)
+    if (isMimeWebCompatible(file.type)) {
+      duration = await getVideoDuration(file)
+      quality = await getVideoResolution(file)
+
+      updateVideoDuration(duration)
+      updateOriginalQuality(`${quality}p`)
+    }
 
     const newSources = [...sources]
     newSources[index].quality = `${quality}p`
     newSources[index].contentType = isMimeFFMpegEncodable(file.type)
       ? isMimeAudio(file.type) ? "audio/mpeg" : "video/mp4"
       : file.type
+    setSources(newSources)
+  }
+
+  const handleFileEncoded = (contentType: string, duration: number, quality: number, index: number) => {
+    if (index !== 0) return
+
+    const originalQueueName = videoHandler.video.originalQuality ?? "0p"
+    const queueName = `${quality}p`
+
+    if (originalQueueName !== queueName) {
+      updateQueueName(originalQueueName, queueName)
+    }
+
+    updateVideoDuration(duration)
+    updateOriginalQuality(queueName)
+
+    const newSources = [...sources]
+    newSources[index].quality = queueName
+    newSources[index].contentType = contentType
     setSources(newSources)
   }
 
@@ -176,6 +215,9 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
                 canProcessFile={queue?.name === queueName}
                 uploadHandler={buffer => uploadSource(buffer, i)}
                 onFileSelected={file => handleFileSelected(file, i)}
+                onEncodingComplete={
+                  (contentType, duration, quality) => handleFileEncoded(contentType, duration, quality, i)
+                }
                 onConfirmedProcessing={() => addToQueue(queueName)}
                 onCancel={() => handleReset(queueName)}
                 disabled={disabled}

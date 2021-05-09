@@ -23,6 +23,17 @@ export const removeFromQueue = (state: VideoEditorContextState, dispatch: Dispat
   }
 )
 
+export const updateQueueName = (state: VideoEditorContextState, dispatch: Dispatch<AnyAction>) => (
+  /**
+   * change a queue name
+   * @param oldName Current Queue name
+   * @param newName New Queue name
+   */
+  (oldName: string, newName: string) => {
+    dispatch({ type: ActionTypes.UPDATE_QUEUE_NAME, oldName, newName })
+  }
+)
+
 export const updatePinContent = (state: VideoEditorContextState, dispatch: Dispatch<AnyAction>) => (
   /**
    * Update pinning

@@ -6,6 +6,7 @@ import SwarmVideo from "@classes/SwarmVideo"
 export const ActionTypes = {
   ADD_TO_QUEUE: "videoeditor/add-to-queue",
   REMOVE_FROM_QUEUE: "videoeditor/remove-from-queue",
+  UPDATE_QUEUE_NAME: "videoeditor/update-queue-name",
   UPDATE_QUEUE_COMPLETION: "videoeditor/update-queue-completion",
   UPDATE_ORIGINAL_QUALITY: "videoeditor/update-original-quality",
   UPDATE_DURATION: "videoeditor/update-duration",
@@ -22,6 +23,11 @@ type AddToQueueAction = {
 type RemoveFromQueueAction = {
   type: typeof ActionTypes.REMOVE_FROM_QUEUE
   name: string
+}
+type UpdateQueueNameAction = {
+  type: typeof ActionTypes.UPDATE_QUEUE_NAME
+  oldName: string
+  newName: string
 }
 type UpdateQueueCompletionAction = {
   type: typeof ActionTypes.UPDATE_QUEUE_COMPLETION
@@ -55,6 +61,7 @@ type ResetAction = {
 export type AnyAction = (
   AddToQueueAction |
   RemoveFromQueueAction |
+  UpdateQueueNameAction |
   UpdateQueueCompletionAction |
   UpdateOriginalQualityAction |
   UpdateDurationAction |
@@ -87,6 +94,15 @@ export const reducer = (state: VideoEditorContextState, action: AnyAction): Vide
         newState = { ...state, queue }
       } else {
         newState = state
+      }
+      break
+    }
+    case ActionTypes.UPDATE_QUEUE_NAME: {
+      const queue = [...state.queue]
+      const index = queue.findIndex(e => e.name === action.oldName)
+      if (index >= 0) {
+        queue[index].name = action.newName
+        newState = { ...state, queue }
       }
       break
     }

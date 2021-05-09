@@ -14,6 +14,15 @@ export const fileToBuffer = (file: File) => {
     fr.readAsArrayBuffer(file)
   })
 }
+/**
+ * Get the array buffer of a file
+ * @param file File to convert
+ * @returns The array buffer data
+ */
+export const fileToUint8Array = async (file: File) => {
+  const buffer = await fileToBuffer(file)
+  return new Uint8Array(buffer)
+}
 
 /**
  * Convert a file to a data URL string

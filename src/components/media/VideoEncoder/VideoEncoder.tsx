@@ -7,7 +7,7 @@ import Button from "@components/common/Button"
 import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 import { showError } from "@state/actions/modals"
 import { isMimeCompatible } from "@utils/mimeTypes"
-import { fileToBuffer } from "@utils/buffer"
+import { fileToBuffer, fileToUint8Array } from "@utils/buffer"
 
 const ffmpeg = createFFmpeg({
   log: process.env.NODE_ENV !== "production",
@@ -17,7 +17,7 @@ type VideoEncoderProps = {
   file: File
   canEncode: boolean
   onConfirmEncode?: () => void
-  onEncodingComplete: (buffer: ArrayBuffer) => void
+  onEncodingComplete: (buffer: ArrayBuffer) => Promise<void>
   onCancel?: () => void
 }
 
@@ -35,14 +35,14 @@ const VideoEncoder: React.FC<VideoEncoderProps> = ({
   useEffect(() => {
     // Clear previus cache
     try {
-      ffmpeg.remove("output.mp4")
-    } catch {}
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+      ffmpeg.FS("unlink", "output.mp4")
+    } catch { }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     confirmed && canEncode && startEncoding()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [confirmed, canEncode])
 
   const startEncoding = async () => {
@@ -51,11 +51,23 @@ const VideoEncoder: React.FC<VideoEncoderProps> = ({
     const ext = file.name.match(/\.[a-z0-9]*$/)![0]
 
     try {
-      await ffmpeg.load()
-      await ffmpeg.write(`input${ext}`, file)
-      await ffmpeg.transcode(`input${ext}`, "output.mp4", "-threads 2")
-      const data = ffmpeg.read("output.mp4")
-      ffmpeg.remove("output.mp4")
+      if (!ffmpeg.isLoaded()) {
+        await ffmpeg.load()
+      }
+
+      const inputPath = `input${ext}`
+
+      // copy input file
+      ffmpeg.FS("writeFile", inputPath, await fileToUint8Array(file))
+
+      // run ecoder
+      await ffmpeg.run("-i", inputPath, "output.mp4")
+
+      // get output buffer
+      const data = ffmpeg.FS("readFile", "output.mp4")
+
+      // clear cache
+      ffmpeg.FS("unlink", "output.mp4")
 
       setIsEncoding(false)
       onEncodingComplete(data.buffer)
@@ -63,20 +75,20 @@ const VideoEncoder: React.FC<VideoEncoderProps> = ({
       console.error(error)
 
       showError("Encoding Error", error.message)
-      onCancel && onCancel()
+      onCancel?.()
     }
   }
 
   const confirmEncode = () => {
     setConfirmed(true)
-    onConfirmEncode && onConfirmEncode()
+    onConfirmEncode?.()
   }
 
   const upload = async () => {
     const buffer = await fileToBuffer(file)
-    onEncodingComplete(buffer)
+    await onEncodingComplete(buffer)
 
-    onConfirmEncode && onConfirmEncode()
+    onConfirmEncode?.()
   }
 
   return (
