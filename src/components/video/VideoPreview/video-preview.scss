@@ -26,10 +26,10 @@
 
     .video-duration {
       @apply absolute right-0 bottom-0 left-auto top-auto;
-      @apply m-2 px-1.5 py-0.5 rounded-sm;
+      @apply m-2 px-1.5 py-1 rounded-sm;
       @apply leading-none text-2xs font-semibold;
       @apply bg-gray-900 text-gray-100;
-      @apply sm:text-xs;
+      @apply sm:text-xs sm:py-0.5;
     }
   }
 
@@ -43,7 +43,7 @@
       @apply flex flex-col flex-1;
 
       .video-title {
-        @apply font-semibold mb-0 leading-tight text-md text-gray-900;
+        @apply font-semibold mb-0 leading-tight text-base text-gray-900;
         @apply dark:text-gray-100;
       }
       .profile-name {
