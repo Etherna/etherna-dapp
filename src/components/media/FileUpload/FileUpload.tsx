@@ -7,7 +7,7 @@ import Alert from "@common/Alert"
 import Button from "@common/Button"
 
 // cancellation token function
-let uploadCancel: Canceler|undefined
+let uploadCancel: Canceler | undefined
 
 type FileUploadProps = {
   buffer: ArrayBuffer
@@ -40,7 +40,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
     if (confirmed && canUpload) {
       handleStartUpload()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [confirmed, canUpload])
 
 
@@ -50,10 +50,13 @@ const FileUpload: React.FC<FileUploadProps> = ({
     try {
       const hash = await uploadHandler(buffer)
 
-      onFinishedUploading(hash)
+      setIsUploading(false)
       setConfirmed(false)
+      onFinishedUploading(hash)
     } catch (error) {
       console.error(error)
+
+      setIsUploading(false)
 
       if (!axios.isCancel(error)) {
         if (error && error.message === "Network Error") {
@@ -63,8 +66,6 @@ const FileUpload: React.FC<FileUploadProps> = ({
         }
       }
     }
-
-    setIsUploading(false)
   }
 
   const confirmUpload = () => {

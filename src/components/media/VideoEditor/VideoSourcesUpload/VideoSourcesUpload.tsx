@@ -95,9 +95,6 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
     const source = sources[index]
     const queueName = SwarmVideo.getSourceName(source.quality)
 
-    console.log("SOURCE", source)
-
-
     const reference = await videoHandler.addVideoSource(buffer, source.contentType!, {
       onCancelToken: c => {
         setSources(sources => {
@@ -133,8 +130,6 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
   }
 
   const handleFileSelected = async (file: File, index: number) => {
-    if (index !== 0) return
-
     let duration = 0
     let quality = 0
 
@@ -142,8 +137,10 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
       duration = await getVideoDuration(file)
       quality = await getVideoResolution(file)
 
-      updateVideoDuration(duration)
-      updateOriginalQuality(`${quality}p`)
+      if (index === 0) {
+        updateVideoDuration(duration)
+        updateOriginalQuality(`${quality}p`)
+      }
     }
 
     const newSources = [...sources]

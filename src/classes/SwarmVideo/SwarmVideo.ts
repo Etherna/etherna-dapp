@@ -230,7 +230,7 @@ export default class SwarmVideo {
   }
 
   async addVideoSource(video: ArrayBuffer, contentType: string, opts?: SwarmVideoUploadOptions) {
-    const quality = (await getVideoResolution(video)).toString()
+    const quality = SwarmVideo.getSourceName(await getVideoResolution(video))
 
     if (this.video.sources.find(source => source.quality === quality)) {
       throw new Error("There is another video source with the same quality")
