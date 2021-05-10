@@ -4,8 +4,6 @@ import moment from "moment"
 
 import "./video-view.scss"
 
-import { ReactComponent as UnindexedIcon } from "@svg/icons/unindexed-icon.svg"
-
 import MarkdownPreview from "@common/MarkdownPreview"
 import SEO from "@components/layout/SEO"
 import Player from "@components/media/Player"
@@ -15,6 +13,7 @@ import { Video } from "@classes/SwarmVideo/types"
 import useSwarmVideo from "@hooks/useSwarmVideo"
 import { showError } from "@state/actions/modals"
 import { shortenEthAddr } from "@utils/ethFuncs"
+import VideoStatusBadge from "../VideoStatusBadge"
 
 type VideoViewProps = {
   hash: string
@@ -68,12 +67,7 @@ const VideoView: React.FC<VideoViewProps> = ({ hash, routeState }) => {
 
             <div className="video-info">
               <h1 className="video-title">{video.title ?? ""}</h1>
-              {video.isVideoOnIndex === false && (
-                <div className="badge-unindexed">
-                  <UnindexedIcon className="fill-orange-800" />
-                  Unindexed
-                </div>
-              )}
+              <VideoStatusBadge status={video.isVideoOnIndex ? "available" : "unindexed"} />
               <div className="video-info-bar">
                 <div className="video-stats">
                   {video.creationDateTime && (

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import classnames from "classnames"
 
 import { useStateValue } from "./PlayerContext"
 
@@ -41,7 +42,10 @@ const PlayerErrorBanner = () => {
 
   return (
     <div className="player-error-banner">
-      <div className="error-icon">
+      <div className={classnames("error-icon", {
+        "warning": error?.code === 402,
+        "danger": error?.code === 500,
+      })}>
         <ErrorIcon />
       </div>
       <div className="error-description">{description}</div>

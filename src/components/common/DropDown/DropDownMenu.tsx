@@ -34,7 +34,7 @@ const DropDownMenu = ({ children, alignRight, menuRef, title }: DropDownMenuProp
     >
       {history.length > 1 && (
         <div className="dropdown-header">
-          <button className="btn-back" onClick={pop}>
+          <button className="dropdown-back-btn" onClick={pop}>
             <BackIcon />
           </button>
           <span className="ml-3">{title}</span>

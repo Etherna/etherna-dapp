@@ -1,26 +1,5 @@
 /*! purgecss start ignore */
 
-$bg-alpha-15: rgba(
-  $color: #333,
-  $alpha: 0.15,
-);
-$bg-alpha-30: rgba(
-  $color: #333,
-  $alpha: 0.3,
-);
-$bg-alpha-60: rgba(
-  $color: #333,
-  $alpha: 0.6,
-);
-$bg-alpha-30-light: rgba(
-  $color: #fff,
-  $alpha: 0.3,
-);
-$bg-alpha-50-light: rgba(
-  $color: #fff,
-  $alpha: 0.5,
-);
-
 .player {
   @apply relative my-6 bg-gray-200 overflow-hidden;
   @apply dark:bg-gray-700;
@@ -49,8 +28,11 @@ $bg-alpha-50-light: rgba(
     }
 
     .btn-play {
-      @apply rounded-full w-10 h-10 bg-center bg-no-repeat cursor-pointer;
-      background-image: url(../../../svg/icons/play-icon.svg);
+      @apply rounded-full w-10 h-10 p-1 cursor-pointer;
+
+      svg {
+        @apply w-6 h-6;
+      }
     }
 
     .time-progress {
@@ -107,48 +89,46 @@ $bg-alpha-50-light: rgba(
     }
   }
 
-  &.playing {
-    .controls {
-      .btn-play {
-        background-image: url(../../../svg/icons/pause-icon.svg);
-      }
-    }
-  }
-
   .tick-menu {
     @apply flex flex-col;
 
     .tick-option {
       @apply relative text-white px-4 py-2 text-center font-semibold cursor-pointer;
-      @apply hover:bg-gray-700 hover:bg-opacity-10;
+      @apply hover:bg-gray-800 hover:bg-opacity-10;
 
       &:not(:last-child) {
-        @apply border-b;
-        border-color: $bg-alpha-15;
+        @apply border-b border-gray-200 border-opacity-10;
       }
       &.active {
         @apply text-blue-400;
         &::after {
           @apply block absolute left-0 ml-2 w-1 h-1 rounded bg-blue-400;
-          @apply transform top-1/2 translate-y-1/2;
+          @apply transform top-1/2 -translate-y-1/2;
           content: "";
         }
       }
     }
   }
+}
 
-  .player-error-banner {
-    @apply absolute flex flex-col justify-center inset-x-0 inset-y-0;
-    @apply bg-gray-900 bg-opacity-5;
+.player-error-banner {
+  @apply absolute flex flex-col justify-center inset-x-0 inset-y-0;
+  @apply bg-gray-900 bg-opacity-5;
 
-    .error-icon {
-      @apply mx-auto;
+  .error-icon {
+    @apply mx-auto w-16 h-16;
+    @apply text-gray-50;
+
+    &.danger {
+      @apply text-red-500;
     }
-    .error-description {
-      @apply text-white text-3xl font-semibold text-center py-12;
+    &.warning {
+      @apply text-orange-400;
     }
   }
-
+  .error-description {
+    @apply text-white text-3xl font-semibold text-center py-6;
+  }
 }
 
 .shortcuts-handler > * {

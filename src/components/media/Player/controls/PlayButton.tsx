@@ -1,6 +1,8 @@
 import React from "react"
 
 import { useStateValue, ReducerTypes } from "../PlayerContext"
+import { ReactComponent as PlayIcon } from "@svg/icons/player/play-icon.svg"
+import { ReactComponent as PauseIcon } from "@svg/icons/player/pause-icon.svg"
 
 const PlayButton = () => {
   const [state, dispatch] = useStateValue()
@@ -19,7 +21,13 @@ const PlayButton = () => {
       onClick={togglePlay}
       role="button"
       tabIndex={0}
-    />
+    >
+      {isPlaying ? (
+        <PauseIcon />
+      ) : (
+        <PlayIcon />
+      )}
+    </div>
   )
 }
 

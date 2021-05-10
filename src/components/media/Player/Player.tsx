@@ -33,7 +33,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
         currentQuality: originalQuality
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sources])
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
       source: sourceInfo.source,
       size: sourceInfo.size || undefined
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuality])
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
         videoEl: video,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoRef.current])
 
   useEffect(() => {
@@ -111,7 +111,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
 
     // get error code
     try {
-      let cancelToken: Canceler|undefined
+      let cancelToken: Canceler | undefined
       await http.get(source, {
         withCredentials: true,
         onDownloadProgress: p => {
@@ -159,7 +159,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
           }}
           autoPlay={false}
           preload="metadata"
-          poster={thumbnail}
+          poster={!error ? thumbnail : undefined}
           controls={false}
           onClick={togglePlay}
           onLoadedMetadata={onLoadMetadata}

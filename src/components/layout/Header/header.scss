@@ -13,14 +13,15 @@
 
   .nav-item {
     @apply flex items-center text-gray-800 px-4 py-2 whitespace-nowrap;
+    @apply sm:px-6 sm:pt-4 sm:pb-3;
     @apply dark:text-gray-200;
 
     &.active {
       @apply text-primary-500;
     }
 
-    @screen sm {
-      @apply px-6 pt-4 pb-3;
+    svg {
+      @apply w-5 h-5 mr-1;
     }
   }
 
@@ -44,6 +45,7 @@
 
   .right-nav {
     @apply flex flex-1 justify-end items-center order-2 pr-3;
+    @apply sm:pr-2;
 
     .nav-item {
       &.active,
@@ -53,19 +55,19 @@
 
       &-hidden-mobile {
         @apply hidden;
-        @screen sm {
-          @apply flex;
-        }
+        @apply sm:flex;
       }
-    }
-
-    @screen sm {
-      @apply pr-2;
     }
   }
 
   .logo {
-    @apply mx-auto items-center py-4 order-1 pl-3;
+    @apply mx-auto items-center;
+    @apply py-4 order-1 pl-3;
+
+    svg {
+      @apply h-5;
+      @apply text-gray-800 dark:text-gray-100;
+    }
   }
 
   @screen sm {

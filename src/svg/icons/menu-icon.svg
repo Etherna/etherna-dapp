@@ -1,9 +1,0 @@
-<div class="mx-auto">
-  <svg width="20px" height="20px" viewBox="0 0 20 20">
-    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-      <circle class="fill-gray-700 dark:fill-gray-300" cx="10" cy="4" r="2"></circle>
-      <circle class="fill-gray-700 dark:fill-gray-300" cx="10" cy="10" r="2"></circle>
-      <circle class="fill-gray-700 dark:fill-gray-300" cx="10" cy="16" r="2"></circle>
-    </g>
-  </svg>
-</div>

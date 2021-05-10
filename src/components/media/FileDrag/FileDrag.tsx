@@ -3,7 +3,7 @@ import classnames from "classnames"
 
 import "./file-drag.scss"
 
-import { ReactComponent as UploadLargeIcon } from "@svg/icons/upload-icon-lg.svg"
+import { ReactComponent as UploadIcon } from "@svg/icons/upload-icon.svg"
 
 import Alert from "@components/common/Alert"
 import { showError } from "@state/actions/modals"
@@ -15,7 +15,7 @@ type FileDragProps = {
   mimeTypes?: string
   disabled?: boolean
   uploadLimit?: number
-  onSelectFile: (file: File|null|undefined) => void
+  onSelectFile: (file: File | null | undefined) => void
 }
 
 const FileDrag: React.FC<FileDragProps> = ({
@@ -120,7 +120,7 @@ const FileDrag: React.FC<FileDragProps> = ({
             disabled={disabled}
           />
           <div className="drag-content">
-            <UploadLargeIcon />
+            <UploadIcon />
             <span className="drag-info text-lg">{label || "Drag here"}</span>
             <span className="drag-info text-sm font-normal">or</span>
             <div className="btn btn-outline">Select</div>

@@ -7,9 +7,9 @@
   .modal-dialog {
     @apply max-w-xl min-w-xs w-1/2 p-6 border rounded shadow-lg transition-all duration-200  pointer-events-auto;
     @apply bg-white border-gray-100 opacity-0;
-    @apply fixed transform origin-top -translate-x-1/2 translate-y-1/3 scale-75;
+    @apply fixed left-1/2 top-1/2;
+    @apply transform origin-top -translate-x-1/2 translate-y-1/3 scale-75;
     @apply dark:bg-gray-800 dark:border-gray-700;
-    left: 50%; top: 50%;
 
     .modal-header {
       @apply flex;

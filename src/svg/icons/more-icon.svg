@@ -1,7 +1,3 @@
-<svg width="18px" height="18px" viewBox="0 0 18 18">
-  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-    <circle class="fill-gray-700 dark:fill-gray-300" cx="9" cy="5" r="1.5"></circle>
-    <circle class="fill-gray-700 dark:fill-gray-300" cx="9" cy="9.5" r="1.5"></circle>
-    <circle class="fill-gray-700 dark:fill-gray-300" cx="9" cy="14" r="1.5"></circle>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+  <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
 </svg>

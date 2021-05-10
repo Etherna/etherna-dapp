@@ -2,8 +2,7 @@ import React, { useRef } from "react"
 import { Link } from "react-router-dom"
 import Switch from "react-switch"
 
-import { ReactComponent as DarkModeIconLg } from "@svg/icons/dark-mode-icon-lg.svg"
-import { ReactComponent as EditProfileIcon } from "@svg/icons/edit-profile-icon.svg"
+import { ReactComponent as EditIcon } from "@svg/icons/edit-icon.svg"
 import { ReactComponent as ProfileIcon } from "@svg/icons/profile-icon.svg"
 import { ReactComponent as IndexIcon } from "@svg/icons/index-icon.svg"
 import { ReactComponent as GatewayIcon } from "@svg/icons/gateway-icon.svg"
@@ -88,7 +87,7 @@ const UserMenu = () => {
         )}
         <DropDownItem>
           <Link to={Routes.getProfileEditingLink(address!)}>
-            <EditProfileIcon />
+            <EditIcon />
             <span>Edit profile</span>
           </Link>
         </DropDownItem>
@@ -114,13 +113,13 @@ const UserMenu = () => {
 
         <DropDownItem>
           <div className="flex w-full">
-            <DarkModeIconLg />
+            <DarkModeIcon />
             <span>Dark Mode</span>
             <Switch
               id="darkMode-field"
               className="ml-auto"
-              checkedIcon={<DarkModeIcon className="m-0.5 ml-1 fill-white" />}
-              uncheckedIcon={<LightModeIcon className="m-0.5 ml-1 fill-gray-800" />}
+              checkedIcon={<DarkModeIcon className="ml-1.5 p-0.5" />}
+              uncheckedIcon={<LightModeIcon className="ml-1.5 p-0.5" />}
               height={24}
               width={50}
               handleDiameter={20}

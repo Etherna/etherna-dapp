@@ -1,5 +1,4 @@
-<svg width="60px" height="60px" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <path d="M30,3.5 C44.6355459,3.5 56.5,15.3644541 56.5,30 C56.5,44.6355459 44.6355459,56.5 30,56.5 C15.3644541,56.5 3.5,44.6355459 3.5,30 C3.5,15.3644541 15.3644541,3.5 30,3.5 Z M30,8.5 C18.1258779,8.5 8.5,18.1258779 8.5,30 C8.5,41.8741221 18.1258779,51.5 30,51.5 C41.8741221,51.5 51.5,41.8741221 51.5,30 C51.5,18.1258779 41.8741221,8.5 30,8.5 Z M32,38.5714286 L32,42 L28,42 L28,38.5714286 L32,38.5714286 Z M32,18 L32,35.1428571 L28,35.1428571 L28,18 L32,18 Z" fill="#E04520" fill-rule="nonzero"></path>
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
 </svg>

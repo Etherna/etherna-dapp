@@ -1,10 +1,10 @@
 import React from "react"
 
 import { useStateValue, ReducerTypes } from "../PlayerContext"
-import { ReactComponent as PipIcon } from "@svg/icons/pip-icon.svg"
+import { ReactComponent as PipIcon } from "@svg/icons/player/pip-icon.svg"
 
 const PiPButton = () => {
-  const [,dispatch] = useStateValue()
+  const [, dispatch] = useStateValue()
 
   const togglePictureInPicture = () => {
     dispatch({

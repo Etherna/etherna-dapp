@@ -71,6 +71,7 @@ const SwarmImg: React.FC<SwarmImgProps> = ({ image, fallback, className, alt, pr
             src={src}
             alt={alt}
             style={style}
+            loading="lazy"
           />
         </picture>
       )}
