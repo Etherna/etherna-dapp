@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import moment from "moment"
 
 import "./video-view.scss"
 
+import VideoStatusBadge from "../VideoStatusBadge"
 import MarkdownPreview from "@common/MarkdownPreview"
 import SEO from "@components/layout/SEO"
 import Player from "@components/media/Player"
 import Avatar from "@components/user/Avatar"
-import Routes from "@routes"
 import { Video } from "@classes/SwarmVideo/types"
 import useSwarmVideo from "@hooks/useSwarmVideo"
+import Routes from "@routes"
 import { showError } from "@state/actions/modals"
 import { shortenEthAddr } from "@utils/ethFuncs"
-import VideoStatusBadge from "../VideoStatusBadge"
+import dayjs from "@utils/dayjs"
 
 type VideoViewProps = {
   hash: string
@@ -72,7 +72,7 @@ const VideoView: React.FC<VideoViewProps> = ({ hash, routeState }) => {
                 <div className="video-stats">
                   {video.creationDateTime && (
                     <span className="publish-time">
-                      {moment(video.creationDateTime).format("LLL")}
+                      {dayjs(video.creationDateTime).format("LLL")}
                     </span>
                   )}
                 </div>

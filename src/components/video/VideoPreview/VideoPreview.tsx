@@ -1,6 +1,5 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import moment from "moment"
 
 import "./video-preview.scss"
 
@@ -13,6 +12,7 @@ import { Video } from "@classes/SwarmVideo/types"
 import Routes from "@routes"
 import useSelector from "@state/useSelector"
 import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
+import dayjs from "@utils/dayjs"
 
 type VideoPreviewProps = {
   video: Video
@@ -80,7 +80,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile }) => {
           )}
           {video.creationDateTime && (
             <div className="publish-time">
-              {moment.duration(moment(video.creationDateTime).diff(moment())).humanize(true)}
+              {dayjs.duration(dayjs(video.creationDateTime).diff(dayjs())).humanize(true)}
             </div>
           )}
         </div>
