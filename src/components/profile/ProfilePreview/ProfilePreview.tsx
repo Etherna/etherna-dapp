@@ -21,7 +21,8 @@ const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress, profile
 
   useEffect(() => {
     loadProfile()
-  }, [profileAddress, loadProfile])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profileAddress])
 
   if (!profile) return null
 
