@@ -1,5 +1,17 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios"
-import { sha3 } from "web3-utils"
+
+const hashCode = (value: string) => {
+  let hash = 0
+  let i: number
+  let chr: number
+  if (value.length === 0) return hash.toString()
+  for (i = 0; i < value.length; i++) {
+    chr = value.charCodeAt(i)
+    hash = ((hash << 5) - hash) + chr
+    hash |= 0 // Convert to 32bit integer
+  }
+  return hash.toString()
+}
 
 interface SkipXHRError extends AxiosError {
   isSkipXHR?: boolean
@@ -19,7 +31,7 @@ type PendingCache = {
   /** Get the current pending axios requests */
   pendingRequests: AxiosPendingRequest[]
   /** Find the pending request related to an axios config */
-  findPendingRequest: (config: AxiosRequestConfig|undefined) => AxiosPendingRequest | undefined
+  findPendingRequest: (config: AxiosRequestConfig | undefined) => AxiosPendingRequest | undefined
   /** Check if the same request has already been made, so it should wait for the first one instead */
   shouldThrottle: (config: AxiosRequestConfig) => boolean
   /** Promise waiting for the first request to finish */
@@ -27,16 +39,16 @@ type PendingCache = {
   /** Create a pending request or increase the counter for an existing one */
   pushPendingRequest: (config: AxiosRequestConfig) => void
   /** Decrease pending request counter and delete it if empty */
-  popPendingRequest: (config: AxiosRequestConfig|undefined) => void
+  popPendingRequest: (config: AxiosRequestConfig | undefined) => void
 }
 
 /**
  * Convert a axios config to a sha3 hash
  * @param config Axios config object
  */
-const configHash = (config: AxiosRequestConfig|null|undefined) => {
+const configHash = (config: AxiosRequestConfig | null | undefined) => {
   return config
-    ? sha3(
+    ? hashCode(
       JSON.stringify({
         method: config.method,
         url: config.url,

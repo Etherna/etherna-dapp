@@ -1,10 +1,10 @@
-import Web3 from "web3"
+import { providers } from "ethers/lib.esm/ethers"
 
 /**
  * Check if a string a valid eth address
  * @param address Address string value
  */
-export const checkIsEthAddress = (address: string|null|undefined) => {
+export const checkIsEthAddress = (address: string | null | undefined) => {
   const isEthereumAddress = /^(0x)?[0-9a-f]{40}$/i.test(address || "")
   return isEthereumAddress
 }
@@ -13,7 +13,7 @@ export const checkIsEthAddress = (address: string|null|undefined) => {
  * Get the shorten string of a address
  * @param address Address string value
  */
-export const shortenEthAddr = (address: string|null|undefined) => {
+export const shortenEthAddr = (address: string | null | undefined) => {
   if (address) {
     return `${address.substring(0, 5)}...${address.substring(address.length - 5, address.length)}`
   }
@@ -35,47 +35,18 @@ export const checkUsingInjectedProvider = (provider: any) => {
  * Fetch the wallet accounts
  * @param web3 Web3 instance
  */
-export const fetchAccounts = async (web3: Web3) => {
-  let accounts: string[] = []
+export const fetchAccounts = async (provider?: providers.Web3Provider) => {
+  if (!provider && !window.web3?.currentProvider) return []
 
-  if (!web3) {
-    throw new Error("Web3 instance is null")
-  }
-
-  const provider = web3.currentProvider
-
-  if (provider && (provider as any).enable) {
-    accounts = await (provider as any).enable()
-  } else {
-    accounts = await web3.eth.getAccounts()
-  }
-
-  accounts = accounts.map(a => web3.utils.toChecksumAddress(a))
-  return accounts
-}
-
-/**
- * Resolve the ens of a eth address
- * @param address Address of the ens to fetch
- * @param web3 Web3 instance
- */
-export const resolveEnsName = async (address: string, web3?: Web3) => {
-  const currentProvider = web3 ? web3.currentProvider : window.web3?.currentProvider
-
-  if (currentProvider && address) {
-    const web3 = new Web3(currentProvider)
-    const name = await web3.eth.ens.getAddress(address)
-    return name
-  }
-
-  return undefined
+  const web3Provider = provider ?? new providers.Web3Provider(window.web3!.currentProvider)
+  return await web3Provider.listAccounts()
 }
 
 /**
  * Get the network name from the id
  * @param networkId Id of the networks
  */
-export const getNetworkName = (networkId: number|string|undefined) => {
+export const getNetworkName = (networkId: number | string | undefined) => {
   if (!networkId) return ""
 
   switch (+networkId) {
