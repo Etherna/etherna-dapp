@@ -1,0 +1,40 @@
+label {
+  @apply block uppercase tracking-wide text-gray-700 text-xs font-semibold mb-2;
+  @apply dark:text-gray-400;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="date"],
+input[type="password"],
+textarea {
+  @apply appearance-none block w-full border py-3 px-4 leading-tight rounded-sm;
+  @apply bg-gray-900 bg-opacity-5 text-gray-700 border-gray-200 placeholder-gray-400;
+  @apply focus:outline-none focus:bg-white focus:border-primary-500;
+  @apply dark:text-gray-200 dark:bg-gray-100 dark:bg-opacity-5 dark:border-gray-800 dark:placeholder-gray-500;
+  @apply dark:focus:bg-black dark:focus:border-primary-500 dark:focus:text-gray-200;
+
+  &:disabled {
+    @apply text-gray-500 cursor-not-allowed;
+  }
+}
+
+.form-group {
+  @apply mb-6;
+}
+
+.input-group {
+  @apply flex;
+
+  > :first-child {
+    @apply rounded-r-none;
+  }
+  > :last-child {
+    @apply rounded-r-none;
+  }
+
+  &-vertical {
+    @apply flex-col;
+  }
+}

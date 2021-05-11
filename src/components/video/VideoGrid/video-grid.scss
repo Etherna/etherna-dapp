@@ -1,0 +1,48 @@
+/*! purgecss start ignore */
+
+.video-grid-header {
+  @apply mt-4 mb-2;
+
+  h1, h2, h3, h4 {
+    @apply mb-1;
+  }
+}
+
+.video-grid {
+  $video-size: 200px;
+  $video-size-mini: 120px;
+
+  @apply grid grid-flow-row-dense gap-4;
+  grid-template-columns: repeat(auto-fill, minmax($video-size, 1fr));
+
+  @screen lg {
+    grid-template-columns: repeat(auto-fill, minmax($video-size + 40px, 1fr));
+  }
+  @screen xl {
+    grid-template-columns: repeat(auto-fill, minmax($video-size + 80px, 1fr));
+  }
+
+  &.mini {
+    @apply grid grid-flow-row-dense gap-4;
+    grid-template-columns: repeat(auto-fill, minmax($video-size-mini, 1fr));
+
+    @screen lg {
+      grid-template-columns: repeat(auto-fill, minmax($video-size-mini + 40px, 1fr));
+    }
+    @screen xl {
+      grid-template-columns: repeat(auto-fill, minmax($video-size-mini + 80px, 1fr));
+    }
+
+    .video-preview {
+      .video-info {
+        .video-stats {
+          .video-title {
+            @apply text-sm;
+          }
+        }
+      }
+    }
+  }
+}
+
+/*! purgecss end ignore */

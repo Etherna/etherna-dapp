@@ -1,124 +1,138 @@
-$bg-alpha-15: rgba($color: #333, $alpha: 0.15);
-$bg-alpha-30: rgba($color: #333, $alpha: 0.30);
-$bg-alpha-60: rgba($color: #333, $alpha: 0.60);
-$bg-alpha-30-light: rgba($color: #fff, $alpha: 0.30);
-$bg-alpha-50-light: rgba($color: #fff, $alpha: 0.50);
+/*! purgecss start ignore */
 
 .player {
-    @apply relative my-6 bg-gray-200 overflow-hidden rounded shadow-lg;
+  @apply relative my-6 bg-gray-200 overflow-hidden;
+  @apply dark:bg-gray-700;
 
-    video {
-        @apply min-h-md w-full;
+  video {
+    @apply min-h-120 max-h-80vh w-full;
+  }
+
+  .controls {
+    @apply absolute flex flex-wrap items-center inset-x-0 bottom-0 cursor-default px-3 pb-2 pt-12;
+    @apply text-white opacity-0 transition duration-100;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, rgba(20, 20, 20, 0) 100%);
+
+    .btn {
+      @apply flex items-center rounded-full w-12 h-12 bg-transparent cursor-pointer;
+      @apply text-center text-white text-sm tracking-wide font-bold uppercase leading-relaxed;
+
+      &:hover {
+        @apply bg-gray-700 bg-opacity-30;
+        backdrop-filter: blur(4px);
+      }
+
+      * {
+        @apply mx-auto;
+      }
     }
 
+    .btn-play {
+      @apply rounded-full w-10 h-10 p-1 cursor-pointer;
+
+      svg {
+        @apply w-6 h-6;
+      }
+    }
+
+    .time-progress {
+      @apply font-semibold ml-2;
+    }
+
+    .video-progress {
+      @apply relative w-full h-1 rounded mb-2 mt-4 cursor-pointer;
+      @apply bg-white bg-opacity-30;
+      backdrop-filter: blur(4px);
+
+      .video-buffering {
+        @apply absolute left-0 h-full rounded-full pointer-events-none;
+        @apply bg-white bg-opacity-50;
+      }
+      .current-time {
+        @apply absolute left-0 h-full rounded-full bg-primary-500 pointer-events-none;
+      }
+    }
+
+    .options-group {
+      @apply flex ml-auto;
+
+      .option-group {
+        @apply relative;
+
+        .option-menu {
+          @apply hidden absolute rounded-full overflow-hidden min-w-full;
+          @apply bg-gray-700 bg-opacity-60 border border-gray-700;
+          backdrop-filter: blur(4px);
+        }
+
+        &:hover {
+          .option-menu {
+            @apply block bottom-0 mb-12 border-gray-500;
+            @apply transform left-1/2 -translate-x-1/2;
+          }
+        }
+      }
+
+      .btn-option {
+        @apply px-2 text-center align-middle;
+        &:not(:last-child) {
+          @apply mr-1;
+        }
+      }
+    }
+  }
+
+  &:not(.playing),
+  &:hover {
     .controls {
-        @apply opacity-0 absolute flex flex-wrap items-center inset-x-0 bottom-0 cursor-default
-            transition duration-100 px-4 pb-4 pt-12 rounded-b;
-        background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(20,20,20,0) 100%);
-
-        .btn {
-            @apply flex items-center rounded-full w-12 h-12 text-sm text-gray-100 tracking-wide font-bold uppercase leading-relaxed
-                bg-transparent cursor-pointer text-center;
-            &:hover {
-                backdrop-filter: blur(4px);
-                background-color: $bg-alpha-30;
-            }
-
-            * {
-                @apply mx-auto;
-            }
-        }
-
-        .btn-play {
-            @apply rounded-full w-10 h-10 bg-center bg-no-repeat cursor-pointer;
-            background-image: url("data:image/svg+xml,%3Csvg width='26px' height='26px' viewBox='0 0 26 26' version='1.1' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpath d='M21.8546701,14.1738557 L6.60015037,23.7893872 C5.95728905,24.1946083 5.11043319,23.9975104 4.70864486,23.3491566 C4.57229662,23.1291355 4.5,22.8748982 4.5,22.6154389 L4.5,3.38437581 C4.5,2.61980616 5.11455556,2 5.87264825,2 C6.1299096,2 6.38199319,2.07291431 6.60015037,2.21042747 L21.8546701,11.825959 C22.4975315,12.2311801 22.6929597,13.0852713 22.2911714,13.7336251 C22.1806997,13.9118899 22.0314249,14.0624401 21.8546701,14.1738557 Z' fill='%23FFFFFF'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
-        }
-
-        .time-progress {
-            @apply text-white font-semibold ml-2;
-        }
-
-        .video-progress {
-            @apply relative w-full h-1 rounded mb-2 mt-4 cursor-pointer;
-            background-color: $bg-alpha-30-light;
-            backdrop-filter: blur(4px);
-
-            .video-buffering {
-                @apply absolute left-0 h-full rounded-full pointer-events-none;
-                background-color: $bg-alpha-50-light;
-            }
-            .current-time {
-                @apply absolute left-0 h-full rounded-full bg-primary pointer-events-none;
-            }
-        }
-
-        .options-group {
-            @apply flex ml-auto;
-
-            .option-group {
-                @apply relative;
-
-                .option-menu {
-                    @apply hidden absolute rounded-full overflow-hidden min-w-full;
-                    background-color: $bg-alpha-60;
-                    backdrop-filter: blur(4px);
-                }
-
-                &:hover {
-                    .option-menu {
-                        @apply block bottom-0 mb-12;
-                        left: 50%;
-                        transform: translate(-50%, 0);
-                    }
-                }
-            }
-
-            .btn-option {
-                @apply px-2 text-center align-middle;
-                &:not(:last-child) {
-                    @apply mr-1;
-                }
-            }
-        }
+      @apply opacity-100 transition duration-100;
     }
+  }
 
-    &:not(.playing),
-    &:hover {
-        .controls {
-            @apply opacity-100 transition duration-100;
+  .tick-menu {
+    @apply flex flex-col;
+
+    .tick-option {
+      @apply relative text-white px-4 py-2 text-center font-semibold cursor-pointer;
+      @apply hover:bg-gray-800 hover:bg-opacity-10;
+
+      &:not(:last-child) {
+        @apply border-b border-gray-200 border-opacity-10;
+      }
+      &.active {
+        @apply text-blue-400;
+        &::after {
+          @apply block absolute left-0 ml-2 w-1 h-1 rounded bg-blue-400;
+          @apply transform top-1/2 -translate-y-1/2;
+          content: "";
         }
+      }
     }
-
-    &.playing {
-        .controls {
-            .btn-play {
-                background-image: url("data:image/svg+xml,%3Csvg width='26px' height='26px' viewBox='0 0 26 26' version='1.1' xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpath d='M9,2 C9.82842712,2 10.5,2.61560847 10.5,3.375 L10.5,22.625 C10.5,23.3843915 9.82842712,24 9,24 L6,24 C5.17157288,24 4.5,23.3843915 4.5,22.625 L4.5,3.375 C4.5,2.61560847 5.17157288,2 6,2 L9,2 Z M20,2 C20.8284271,2 21.5,2.61560847 21.5,3.375 L21.5,22.625 C21.5,23.3843915 20.8284271,24 20,24 L17,24 C16.1715729,24 15.5,23.3843915 15.5,22.625 L15.5,3.375 C15.5,2.61560847 16.1715729,2 17,2 L20,2 Z' fill='%23FFFFFF'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
-            }
-        }
-    }
-
-    .tick-menu {
-        @apply flex flex-col;
-
-        .tick-option {
-            @apply relative px-4 py-2 text-white text-center font-semibold cursor-pointer;
-
-            &:hover {
-                background: $bg-alpha-30;
-            }
-            &:not(:last-child) {
-                @apply border-b;
-                border-color: $bg-alpha-15;
-            }
-            &.active {
-                @apply text-blue-400;
-                &::after {
-                    @apply block absolute left-0 ml-2 w-1 h-1 rounded bg-blue-400;
-                    content: "";
-                    top: 50%;
-                    transform: translate(0, -50%);
-                }
-            }
-        }
-    }
+  }
 }
+
+.player-error-banner {
+  @apply absolute flex flex-col justify-center inset-x-0 inset-y-0;
+  @apply bg-gray-900 bg-opacity-5;
+
+  .error-icon {
+    @apply mx-auto w-16 h-16;
+    @apply text-gray-50;
+
+    &.danger {
+      @apply text-red-500;
+    }
+    &.warning {
+      @apply text-orange-400;
+    }
+  }
+  .error-description {
+    @apply text-white text-3xl font-semibold text-center py-6;
+  }
+}
+
+.shortcuts-handler > * {
+  @apply outline-none;
+}
+
+/*! purgecss end ignore */

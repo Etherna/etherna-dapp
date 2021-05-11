@@ -2,30 +2,34 @@
  * This injects Tailwind's base styles, which is a combination of
  * Normalize.css and some additional base styles.
  */
- @tailwind base;
+@tailwind base;
 
- /**
-  * This injects any component classes registered by plugins.
-  */
- @tailwind components;
+/**
+ * This injects any component classes registered by plugins.
+ */
+@tailwind components;
 
- /**
-  * Here you would add any of your custom component classes; stuff that you'd
-  * want loaded *before* the utilities so that the utilities could still
-  * override them.
-  */
- @import './reset.scss';
- @import './form.scss';
- @import './grid.scss';
+/**
+ * Here you would add any of your custom component classes; stuff that you'd
+ * want loaded *before* the utilities so that the utilities could still
+ * override them.
+ */
 
+/*! purgecss start ignore */
+@import "~react-image-crop/lib/ReactCrop.scss";
+@import "./reset";
+@import "./typography";
+@import "./form";
+@import "./grid";
+/*! purgecss end ignore */
 
- /**
-  * This injects all of Tailwind's utility classes, generated based on your
-  * config file.
-  */
- @tailwind utilities;
+/**
+ * This injects all of Tailwind's utility classes, generated based on your
+ * config file.
+ */
+@tailwind utilities;
 
- /**
-  * Here you would add any custom utilities you need that don't come out of the
-  * box with Tailwind.
-  */
+/**
+ * Here you would add any custom utilities you need that don't come out of the
+ * box with Tailwind.
+ */

@@ -1,0 +1,22 @@
+.popup {
+  @apply fixed transform scale-y-0 origin-top transition duration-200 z-20;
+
+  &-arrow {
+    @apply absolute w-5 h-4 bg-white;
+    @apply dark:bg-gray-800;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  }
+
+  &-content {
+    @apply absolute inset-x-0 bottom-0 bg-white rounded shadow-xl;
+    @apply dark:bg-gray-800;
+  }
+
+  &-backdrop {
+    @apply fixed inset-x-0 inset-y-0 bg-transparent z-10;
+  }
+
+  &.show {
+    @apply scale-y-100;
+  }
+}

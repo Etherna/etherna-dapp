@@ -1,0 +1,77 @@
+/*! purgecss start ignore */
+
+.markdown-editor {
+  [class*="RichTextEditor__root"] {
+    @apply bg-gray-900 bg-opacity-5 text-gray-700 border border-gray-200 rounded-sm font-sans leading-tight;
+    @apply dark:bg-gray-100 dark:bg-opacity-5 dark:text-gray-200 dark:border-gray-800;
+
+    &:focus-within {
+      @apply outline-none bg-white border-primary-500;
+      @apply dark:bg-gray-900;
+    }
+    &:disabled {
+      @apply text-gray-500 cursor-not-allowed;
+    }
+  }
+
+  [class*="RichTextEditor__editor"] {
+    @apply h-48 overflow-y-auto py-3 px-4;
+  }
+
+  [class*="EditorToolbar__root"] {
+    @apply border-gray-300 dark:border-gray-700;
+  }
+
+  [class*="ButtonGroup__root"] {
+    > div:first-child {
+      > button {
+        @apply rounded-l-sm;
+      }
+    }
+    > div:last-child {
+      > button {
+        @apply rounded-r-sm;
+      }
+    }
+  }
+
+  [class*="Button__root"] {
+    background: none;
+    @apply bg-gray-200 border-gray-300;
+    @apply dark:bg-gray-800 dark:border-gray-700;
+  }
+
+  [class*="Dropdown__root"] {
+    [class*="Dropdown__value"] {
+      @apply rounded-sm bg-gray-200 border-gray-300;
+      @apply dark:bg-gray-800 dark:border-gray-700;
+    }
+  }
+
+  select {
+    &:focus {
+      @apply rounded-sm ring outline-none;
+    }
+  }
+
+  .DraftEditor-editorContainer {
+    @apply border-0;
+  }
+
+  .public-DraftEditor-content,
+  .public-DraftEditorPlaceholder-root {
+    @apply p-0;
+  }
+
+  .public-DraftEditorPlaceholder-inner {
+    @apply text-gray-400 dark:text-gray-500;
+  }
+
+  .dark & {
+    [class*="IconButton__icon"] {
+      filter: invert(1);
+    }
+  }
+}
+
+/*! purgecss end ignore */

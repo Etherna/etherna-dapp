@@ -1,0 +1,31 @@
+/*! purgecss start ignore */
+
+.nav-pills {
+  @apply flex;
+
+  &.nav-vertical {
+    @apply flex-col;
+
+    .nav-pill {
+      &:not(:last-child) {
+        @apply mb-2 w-full;
+      }
+    }
+  }
+
+  .nav-pill {
+    @apply text-center text-gray-500 px-4 py-1 rounded-full border-2 border-transparent;
+    @apply cursor-pointer transition duration-200;
+    @apply hover:bg-gray-200;
+    @apply dark:text-gray-400 dark:hover:bg-gray-800;
+
+    &:not(:last-child) {
+      @apply mr-2;
+    }
+    &.active {
+      @apply border-primary-400 text-primary-500;
+    }
+  }
+}
+
+/*! purgecss end ignore */

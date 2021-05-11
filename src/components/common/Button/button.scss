@@ -1,59 +1,116 @@
+/*! purgecss start ignore */
+
 .btn {
-    @apply bg-primary text-white font-medium py-2 px-5 text-sm rounded transition duration-300;
-    &:hover {
-        @apply bg-primary-dark text-white transition duration-300;
-    }
+  @apply inline-flex items-center justify-center rounded;
+  @apply py-2 px-5 space-x-1;
+  @apply transition duration-300;
+  @apply bg-primary-500 text-white font-semibold text-sm text-center;
+
+  &:not(:disabled) {
+    @apply hover:bg-primary-600 hover:text-white;
+  }
+
+  svg {
+    @apply h-4;
+  }
 }
 
 .btn-sm {
-    @apply py-1 px-3 text-xs rounded-sm;
+  @apply py-1 px-3 text-xs rounded-sm;
 }
 
 .btn-lg {
-    @apply py-3 px-8 text-base rounded-md;
+  @apply py-3 px-8 text-base rounded-md;
 }
 
 .btn-outline {
-    @apply border border-primary text-primary bg-transparent rounded;
-    &:hover {
-        @apply border border-primary-dark text-primary-dark bg-transparent rounded;
+  @apply border-2 border-primary-500 text-primary-500 bg-primary-500 bg-opacity-0 rounded;
+
+  &:not(:disabled) {
+    @apply hover:border-primary-600 hover:text-primary-600 hover:bg-primary-500 hover:bg-opacity-5;
+  }
+
+  &.btn-danger {
+    @apply border-red-500 text-red-500 bg-red-500 bg-opacity-0;
+
+    &:not(:disabled) {
+      @apply hover:border-red-600 hover:text-red-600 hover:bg-red-500 hover:bg-opacity-5;
     }
+  }
+  &.btn-warning {
+    @apply border-orange-500 text-orange-500 bg-red-500 bg-opacity-0;
+
+    &:not(:disabled) {
+      @apply hover:border-orange-600 hover:text-orange-600 hover:bg-red-500 hover:bg-opacity-5;
+    }
+  }
 }
 
 .btn-secondary {
-    @apply bg-gray-500;
-    &:hover {
-        @apply bg-gray-600;
-    }
+  @apply bg-gray-500 dark:bg-gray-300 dark:text-gray-700;
+
+  &:not(:disabled) {
+    @apply hover:bg-gray-600;
+    @apply dark:hover:bg-gray-400 dark:hover:text-gray-800;
+  }
+}
+
+.btn-danger {
+  @apply bg-red-500;
+
+  &:not(:disabled) {
+    @apply hover:bg-red-600;
+  }
+}
+
+.btn-warning {
+  @apply bg-orange-500;
+
+  &:not(:disabled) {
+    @apply hover:bg-orange-600;
+  }
 }
 
 .btn-transparent {
-    @apply bg-transparent;
-    &:hover {
-        @apply bg-gray-200;
-    }
+  @apply bg-transparent;
+
+  &:not(:disabled) {
+    @apply hover:bg-gray-200 dark:hover:bg-gray-700;
+  }
 }
 
 .btn-link {
-    @apply text-primary bg-transparent px-0;
-    &:hover {
-        @apply text-primary-dark bg-transparent;
-        &:disabled {
-            @apply text-gray-500;
-        }
-    }
-    &:disabled {
-        @apply text-gray-500;
-    }
+  @apply no-underline cursor-pointer text-primary-500 transition duration-300;
+  @apply text-primary-500 bg-transparent px-0;
+
+  &:not(:disabled) {
+    @apply hover:no-underline hover:text-primary-600 hover:bg-transparent;
+  }
+
+  &:disabled {
+    @apply text-gray-500;
+  }
+}
+
+.btn-link-secondary {
+  @apply no-underline cursor-pointer text-gray-500 transition duration-300;
+  @apply text-gray-500 bg-transparent px-0;
+
+  &:not(:disabled) {
+    @apply hover:no-underline hover:text-gray-600 hover:bg-transparent;
+  }
+
+  &:disabled {
+    @apply text-gray-500;
+  }
 }
 
 .btn-rounded {
-    @apply w-10 h-10 rounded-full p-0 flex items-center;
+  @apply w-10 h-10 rounded-full p-0 flex items-center;
+
+  &.btn-sm {
+    @apply w-6 h-6;
+  }
 }
 
-.btn-link {
-    @apply no-underline cursor-pointer text-primary transition duration-300;
-    &:hover {
-        @apply no-underline text-primary-dark transition duration-300;
-    }
-}
+/*! purgecss end ignore */

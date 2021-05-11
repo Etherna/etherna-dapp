@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@app/*": ["app/*"],
+      "@classes/*": ["classes/*"],
+      "@components/*": ["components/*"],
+      "@common/*": ["components/common/*"],
+      "@keyboard": ["keyboard"],
+      "@hooks/*": ["hooks/*"],
+      "@keyboard/*": ["keyboard/*"],
+      "@lang": ["lang"],
+      "@lang/*": ["lang/*"],
+      "@prefetch": ["prefetch"],
+      "@prefetch/*": ["prefetch/*"],
+      "@icons/*": ["components/icons/*"],
+      "@pages/*": ["pages/*"],
+      "@routes": ["routes"],
+      "@state/*": ["state/*"],
+      "@typings/*": ["typings/*"],
+      "@utils/*": ["utils/*"],
+      "@svg/*": ["svg/*"]
+    }
+  }
+}

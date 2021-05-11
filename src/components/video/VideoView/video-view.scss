@@ -1,0 +1,59 @@
+/*! purgecss start ignore */
+
+.video-watch {
+  @apply mb-16;
+
+  .video-title {
+    @apply mb-1 font-semibold text-2xl;
+  }
+  .video-info-bar {
+    @apply flex items-center py-1;
+
+    .video-stats {
+      @apply flex-1;
+
+      .publish-time {
+        @apply text-gray-600 text-sm mb-4;
+        @apply dark:text-gray-400;
+      }
+    }
+    .video-actions {
+      @apply w-auto ml-auto;
+
+      .btn {
+        @apply flex;
+        > svg {
+          @apply m-auto;
+        }
+      }
+    }
+  }
+
+  .video-profile-info {
+    @apply my-4;
+
+    .video-profile {
+      @apply inline-flex items-center;
+
+      .profile-name {
+        @apply mb-0 ml-2 text-base font-semibold text-gray-800;
+        @apply dark:text-gray-300;
+      }
+    }
+  }
+  .video-description {
+    @apply mt-4 text-gray-800;
+    @apply dark:text-gray-200;
+
+    * {
+      @apply text-gray-800 leading-normal;
+      @apply dark:text-gray-300;
+    }
+  }
+
+  hr {
+    @apply border-gray-200 dark:border-gray-700;
+  }
+}
+
+/*! purgecss end ignore */

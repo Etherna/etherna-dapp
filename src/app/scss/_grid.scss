@@ -1,0 +1,23 @@
+.container {
+  @apply px-4 mx-auto;
+
+  @screen sm {
+    @apply px-2;
+  }
+
+  @screen md {
+    @apply px-1;
+  }
+
+  @screen lg {
+    @apply px-0;
+  }
+}
+
+.row {
+  @apply flex flex-wrap w-full;
+}
+
+.col {
+  @apply w-full;
+}
