@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react"
 import classnames from "classnames"
-import moment, { Moment } from "moment"
 
 import Button from "@common/Button"
 import http from "@utils/request"
+import dayjs from "@utils/dayjs"
 
 type EnvExtensionPanelProps = {
   description?: string
@@ -30,7 +30,7 @@ const EnvExtensionPanel = ({
   onSignin,
   onSignout
 }: EnvExtensionPanelProps) => {
-  const hostLastChangeRef = useRef<{ host?: string, lastChange?: Moment }>({})
+  const hostLastChangeRef = useRef<{ host?: string, lastChange?: dayjs.Dayjs }>({})
   const [hostValue, setHostValue] = useState("")
   const [apiPathValue, setApiPathValue] = useState("")
 
@@ -48,9 +48,9 @@ const EnvExtensionPanel = ({
 
     if ("lastChange" in hostLastChangeRef.current) {
       hostLastChangeRef.current.host = host
-      hostLastChangeRef.current.lastChange = moment()
+      hostLastChangeRef.current.lastChange = dayjs()
     } else {
-      hostLastChangeRef.current.lastChange = moment()
+      hostLastChangeRef.current.lastChange = dayjs()
       hostLastChangeRef.current.host = host
       updateApiPath()
     }
@@ -59,7 +59,7 @@ const EnvExtensionPanel = ({
   const updateApiPath = () => {
     const update = async () => {
       const { lastChange, host } = hostLastChangeRef.current
-      if (moment.duration(moment().diff(lastChange)).seconds() < 0.75) {
+      if (lastChange && dayjs.duration(dayjs().diff(lastChange)).seconds() < 0.75) {
         setTimeout(() => {
           update()
         }, 250)
@@ -119,7 +119,7 @@ const EnvExtensionPanel = ({
         Reset to default
       </Button>
 
-      <hr/>
+      <hr />
 
       <div className="flex py-1">
         Status: {isSignedIn ? `Signed in` : `Signed out`}
