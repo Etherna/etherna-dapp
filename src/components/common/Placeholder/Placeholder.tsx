@@ -7,7 +7,7 @@ type PlaceholderProps = {
   width?: string
   height?: string
   ratio?: number
-  round?: "" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full" | "none" | boolean
+  round?: "" | "sm" | "default" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full" | "none" | boolean
   className?: string
 }
 
@@ -21,7 +21,7 @@ const Placeholder = ({
   return (
     <div
       className={classnames("placeholder", className, {
-        "rounded": round === true,
+        "rounded": round === "default" || round === true,
         "rounded-none": round === "none",
         "rounded-sm": round === "sm",
         "rounded-md": round === "md",
