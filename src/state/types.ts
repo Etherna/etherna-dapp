@@ -1,4 +1,3 @@
-import Web3 from "web3"
 import Lang from "lang.js"
 import { Crop } from "react-image-crop"
 
@@ -33,10 +32,8 @@ export type EnvState = {
   isMobile: boolean
   darkMode: boolean
 
-  web3?: Web3
   currentWallet?: string
   currentWalletLogo?: string
-  network?: string | null
   currentAddress?: string
   previusAddress?: string
 

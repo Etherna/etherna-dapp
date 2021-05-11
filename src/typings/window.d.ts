@@ -1,13 +1,15 @@
-import Web3 from "web3"
 import { compose } from "redux"
+import { providers } from "ethers/lib.esm/ethers"
 
 import { ProfilePrefetch } from "prefetch/prefetchers/profilePrefetcher"
 import { VideoPrefetch } from "prefetch/prefetchers/videoPrefetcher"
 
 declare global {
   interface Window {
-    // web3
-    web3?: Web3
+    // ethereum
+    web3?: {
+      currentProvider: providers.ExternalProvider
+    }
     ethereum?: {
       autoRefreshOnNetworkChange: boolean
       chainId: number

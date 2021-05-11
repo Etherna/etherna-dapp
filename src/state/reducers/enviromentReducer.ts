@@ -1,5 +1,3 @@
-import Web3 from "web3"
-
 import { baseKeymap } from "@keyboard"
 import { Keymap, KeymapNamespace } from "@keyboard/typings"
 import lang from "@lang"
@@ -12,9 +10,6 @@ import { EnvState } from "@state/types"
 import { checkIsMobile } from "@utils/browser"
 
 export const EnvActionTypes = {
-  ENV_UPDATE_PROVIDER: "ENV_UPDATE_PROVIDER",
-  ENV_UPDATE_NETWORK: "ENV_UPDATE_NETWORK",
-  ENV_SET_CURRENT_ADDRESS: "ENV_SET_CURRENT_ADDRESS",
   ENV_SET_IS_MOBILE: "ENV_SET_IS_MOBILE",
   ENV_UPDATE_INDEXHOST: "ENV_UPDATE_INDEXHOST",
   ENV_UPDATE_GATEWAY_HOST: "ENV_UPDATE_GATEWAY_HOST",
@@ -26,21 +21,6 @@ export const EnvActionTypes = {
 } as const
 
 // Export dispatch actions
-type UpdateProviderAction = {
-  type: typeof EnvActionTypes.ENV_UPDATE_PROVIDER
-  web3?: Web3
-  currentWallet?: string
-  currentWalletLogo?: string
-}
-type UpdateNetworkAction = {
-  type: typeof EnvActionTypes.ENV_UPDATE_NETWORK
-  network?: string | null
-}
-type SetCurrentAddressAction = {
-  type: typeof EnvActionTypes.ENV_SET_CURRENT_ADDRESS
-  currentAddress?: string
-  previusAddress?: string
-}
 type SetIsMobileAction = {
   type: typeof EnvActionTypes.ENV_SET_IS_MOBILE
   isMobile: boolean
@@ -80,9 +60,6 @@ type UpdateBytePriceAction = {
 }
 
 export type EnvActions = (
-  UpdateProviderAction |
-  UpdateNetworkAction |
-  SetCurrentAddressAction |
   SetIsMobileAction |
   UpdateIndexHostAction |
   UpdateGatewayHostAction |
@@ -127,27 +104,6 @@ const initialState: EnvState = {
 
 const enviromentReducer = (state: EnvState = initialState, action: EnvActions): EnvState => {
   switch (action.type) {
-    case EnvActionTypes.ENV_UPDATE_PROVIDER:
-      return {
-        ...state,
-        web3: action.web3,
-        currentWallet: action.currentWallet,
-        currentWalletLogo: action.currentWalletLogo,
-      }
-
-    case EnvActionTypes.ENV_UPDATE_NETWORK:
-      return {
-        ...state,
-        network: action.network,
-      }
-
-    case EnvActionTypes.ENV_SET_CURRENT_ADDRESS:
-      return {
-        ...state,
-        currentAddress: action.currentAddress,
-        previusAddress: action.previusAddress,
-      }
-
     case EnvActionTypes.ENV_SET_IS_MOBILE:
       return {
         ...state,
