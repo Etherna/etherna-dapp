@@ -14,8 +14,8 @@ const VideoPreviewPlaceholder = () => {
           <div className="flex items-top mt-2">
             <Placeholder width="2.5rem" height="2.5rem" round="full" />
             <div className="flex flex-col flex-1 ml-2 mt-1">
-              <Placeholder width="100%" height="1rem" round="xs" />
-              <Placeholder className="mt-1.5" width="60%" height="0.75rem" round="xs" />
+              <Placeholder width="100%" height="1rem" round="sm" />
+              <Placeholder className="mt-1.5" width="60%" height="0.75rem" round="sm" />
             </div>
           </div>
         </div>
