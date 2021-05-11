@@ -61,7 +61,11 @@ const Header = () => {
         <div className="right-nav">
           {isSignedIn === true && !isLoadingProfile && (
             <>
-              <NavLink to={Routes.getVideoUploadLink()} className="nav-item nav-item-hidden-mobile" activeClassName="active">
+              <NavLink
+                to={Routes.getVideoUploadLink()}
+                className="nav-item nav-item-hidden-mobile"
+                activeClassName="active"
+              >
                 <UploadIcon />
                 <span>Upload</span>
               </NavLink>

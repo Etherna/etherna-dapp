@@ -1,11 +1,17 @@
 /*! purgecss start ignore */
 
 .btn {
-  @apply inline-flex items-center py-2 px-5 rounded transition duration-300;
-  @apply bg-primary-500 text-white font-semibold text-sm;
+  @apply inline-flex items-center justify-center rounded;
+  @apply py-2 px-5 space-x-1;
+  @apply transition duration-300;
+  @apply bg-primary-500 text-white font-semibold text-sm text-center;
 
   &:not(:disabled) {
     @apply hover:bg-primary-600 hover:text-white;
+  }
+
+  svg {
+    @apply h-4;
   }
 }
 
@@ -79,6 +85,19 @@
 
   &:not(:disabled) {
     @apply hover:no-underline hover:text-primary-600 hover:bg-transparent;
+  }
+
+  &:disabled {
+    @apply text-gray-500;
+  }
+}
+
+.btn-link-secondary {
+  @apply no-underline cursor-pointer text-gray-500 transition duration-300;
+  @apply text-gray-500 bg-transparent px-0;
+
+  &:not(:disabled) {
+    @apply hover:no-underline hover:text-gray-600 hover:bg-transparent;
   }
 
   &:disabled {

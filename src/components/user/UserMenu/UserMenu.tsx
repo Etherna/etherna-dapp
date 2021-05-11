@@ -2,12 +2,10 @@ import React, { useRef } from "react"
 import { Link } from "react-router-dom"
 import Switch from "react-switch"
 
-import { ReactComponent as DarkModeIconLg } from "@svg/icons/dark-mode-icon-lg.svg"
-import { ReactComponent as EditProfileIcon } from "@svg/icons/edit-profile-icon.svg"
+import { ReactComponent as EditIcon } from "@svg/icons/edit-icon.svg"
 import { ReactComponent as ProfileIcon } from "@svg/icons/profile-icon.svg"
 import { ReactComponent as IndexIcon } from "@svg/icons/index-icon.svg"
 import { ReactComponent as GatewayIcon } from "@svg/icons/gateway-icon.svg"
-import { ReactComponent as SwitchIcon } from "@svg/icons/switch-icon.svg"
 import { ReactComponent as SignoutIcon } from "@svg/icons/signout-icon.svg"
 import { ReactComponent as DarkModeIcon } from "@svg/icons/dark-mode-icon.svg"
 import { ReactComponent as LightModeIcon } from "@svg/icons/light-mode-icon.svg"
@@ -21,26 +19,21 @@ import SigninButton from "./SigninButton"
 import Avatar from "../Avatar"
 import { DropDown, DropDownItem, DropDownItemContent, DropDownMenu, DropDownMenuToggle } from "@common/DropDown"
 import { toggleDarkMode } from "@state/actions/enviroment/darkMode"
-import { providerActions } from "@state/actions"
 import useSelector from "@state/useSelector"
+import useSignout from "@state/hooks/user/useSignout"
 import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import Routes from "@routes"
 
 const UserMenu = () => {
-  const { currentWalletLogo, currentAddress, darkMode } = useSelector(state => state.env)
+  const { currentWalletLogo, darkMode } = useSelector(state => state.env)
   const { name, avatar } = useSelector(state => state.profile)
   const { isSignedIn, isSignedInGateway, address } = useSelector(state => state.user)
   const { isLoadingProfile } = useSelector(state => state.ui)
-
-  const hasSwitchedAccount = currentAddress !== undefined && address !== currentAddress
+  const { signout } = useSignout()
 
   const mainMenuRef = useRef<HTMLDivElement>(null)
   const indexMenuRef = useRef<HTMLDivElement>(null)
   const gatewayMenuRef = useRef<HTMLDivElement>(null)
-
-  const signOut = async () => {
-    await providerActions.signout()
-  }
 
   const handleDarkModeChange = () => {
     toggleDarkMode(!darkMode)
@@ -67,7 +60,7 @@ const UserMenu = () => {
   return (
     <DropDown>
       <DropDownMenuToggle menuRef={mainMenuRef}>
-        <Avatar image={avatar} address={address} showBadge={hasSwitchedAccount} />
+        <Avatar image={avatar} address={address} />
       </DropDownMenuToggle>
 
       <DropDownMenu menuRef={mainMenuRef} alignRight={true}>
@@ -94,7 +87,7 @@ const UserMenu = () => {
         )}
         <DropDownItem>
           <Link to={Routes.getProfileEditingLink(address!)}>
-            <EditProfileIcon />
+            <EditIcon />
             <span>Edit profile</span>
           </Link>
         </DropDownItem>
@@ -120,13 +113,13 @@ const UserMenu = () => {
 
         <DropDownItem>
           <div className="flex w-full">
-            <DarkModeIconLg />
+            <DarkModeIcon />
             <span>Dark Mode</span>
             <Switch
               id="darkMode-field"
               className="ml-auto"
-              checkedIcon={<DarkModeIcon className="m-0.5 ml-1 fill-white" />}
-              uncheckedIcon={<LightModeIcon className="m-0.5 ml-1 fill-gray-800" />}
+              checkedIcon={<DarkModeIcon className="ml-1.5 p-0.5" />}
+              uncheckedIcon={<LightModeIcon className="ml-1.5 p-0.5" />}
               height={24}
               width={50}
               handleDiameter={20}
@@ -147,16 +140,7 @@ const UserMenu = () => {
         <hr />
 
         <li className="dropdown-footer">
-          {hasSwitchedAccount && (
-            <DropDownItem action={providerActions.switchAccount}>
-              <SwitchIcon />
-              <div className="inline-flex flex-col">
-                <span>Switch Account</span>
-                <small className="text-gray-600">{shortenEthAddr(currentAddress)}</small>
-              </div>
-            </DropDownItem>
-          )}
-          <DropDownItem action={signOut}>
+          <DropDownItem action={signout}>
             <SignoutIcon />
             <span>Sign out</span>
           </DropDownItem>

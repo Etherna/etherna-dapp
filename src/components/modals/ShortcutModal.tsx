@@ -25,7 +25,7 @@ const ShortcutModal = ({ show = false }) => {
       const shortcut = namespace[shortcutKey]
       setShortcut(shortcut)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shortcutNamespace, shortcutKey])
 
   useEffect(() => {
@@ -77,13 +77,13 @@ const ShortcutModal = ({ show = false }) => {
           </span>
         </div>
       )}
-      <div className="flex">
-        <Button aspect="danger" className="flex-1 mr-1" action={deleteShortcut}>
+      <div className="flex space-x-2">
+        <Button aspect="danger" className="flex-1" action={deleteShortcut}>
           Delete
         </Button>
         <Button
           aspect="secondary"
-          className="flex-1 ml-1"
+          className="flex-1"
           action={overrideShortcut}
           disabled={!!existingShortcut}
         >

@@ -6,6 +6,11 @@
   .dropdown-toggle {
     @apply cursor-pointer z-1;
   }
+
+  .dropdown-back-btn {
+    @apply w-5 h-5;
+  }
+
   .dropdown-menu {
     @apply hidden absolute top-0 left-0 bg-white border border-transparent rounded shadow-xl z-1 overflow-hidden min-w-xs max-w-xs;
     @apply dark:bg-gray-800 dark:border-gray-700;
@@ -62,12 +67,13 @@
 
         a,
         a:hover {
+          @apply flex items-center;
           @apply text-gray-700 dark:text-gray-100;
         }
       }
 
       svg {
-        @apply inline-block mr-2;
+        @apply inline-block mr-2 w-5 h-5;
       }
     }
 

@@ -10,16 +10,16 @@ import PlayerControls from "./PlayerControls"
 import PlayerBytesCounter from "./PlayerBytesCounter"
 import PlayerShortcuts from "./PlayerShortcuts"
 import PlayerErrorBanner from "./PlayerErrorBanner"
+import { VideoSource } from "@classes/SwarmVideo/types"
 import http from "@utils/request"
-import { VideoSourceInfo } from "@utils/video"
 
 type PlayerProps = {
-  sources: VideoSourceInfo[]
+  sources: VideoSource[]
   originalQuality?: string
   thumbnail?: string
 }
 
-const InnerPlayer = ({ sources, originalQuality, thumbnail }: PlayerProps) => {
+const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnail }) => {
   const [state, dispatch] = useStateValue()
   const { source, currentQuality, isPlaying, currentTime, error, videoEl } = state
 
@@ -33,7 +33,7 @@ const InnerPlayer = ({ sources, originalQuality, thumbnail }: PlayerProps) => {
         currentQuality: originalQuality
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sources])
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const InnerPlayer = ({ sources, originalQuality, thumbnail }: PlayerProps) => {
       source: sourceInfo.source,
       size: sourceInfo.size || undefined
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuality])
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const InnerPlayer = ({ sources, originalQuality, thumbnail }: PlayerProps) => {
         videoEl: video,
       })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoRef.current])
 
   useEffect(() => {
@@ -111,7 +111,7 @@ const InnerPlayer = ({ sources, originalQuality, thumbnail }: PlayerProps) => {
 
     // get error code
     try {
-      let cancelToken: Canceler|undefined
+      let cancelToken: Canceler | undefined
       await http.get(source, {
         withCredentials: true,
         onDownloadProgress: p => {
@@ -159,7 +159,7 @@ const InnerPlayer = ({ sources, originalQuality, thumbnail }: PlayerProps) => {
           }}
           autoPlay={false}
           preload="metadata"
-          poster={thumbnail}
+          poster={!error ? thumbnail : undefined}
           controls={false}
           onClick={togglePlay}
           onLoadedMetadata={onLoadMetadata}

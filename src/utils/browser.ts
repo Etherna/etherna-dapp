@@ -1,5 +1,3 @@
-import { WindowWeb3 } from "typings/window"
-
 /**
  * Check if current browser is a mobile browser.
  */
@@ -21,10 +19,9 @@ export const checkIsMobileWithoutWeb3 = () => {
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
   )
-  const windowWeb3: WindowWeb3 = window
   const hasWeb3 =
-    typeof windowWeb3.web3 !== "undefined" ||
-    typeof windowWeb3.ethereum !== "undefined"
+    typeof window.web3 !== "undefined" ||
+    typeof window.ethereum !== "undefined"
   if (isMobile && !hasWeb3) isMobileWithWeb3 = true
   return isMobileWithWeb3
 }

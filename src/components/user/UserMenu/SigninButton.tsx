@@ -1,14 +1,10 @@
 import React from "react"
 
-import { providerActions } from "@state/actions"
+import loginRedirect from "@state/actions/user/loginRedirect"
 
-type SigninButtonProps = {
-  children: React.ReactNode
-}
-
-const SigninButton = ({ children }: SigninButtonProps) => {
+const SigninButton: React.FC = ({ children }) => {
   return (
-    <button className="btn btn-outline" type="button" onClick={() => providerActions.signin(true)}>
+    <button className="btn btn-outline" type="button" onClick={() => loginRedirect()}>
       {children}
     </button>
   )

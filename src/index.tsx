@@ -20,10 +20,6 @@ autoSigninSignout()
 // Once the data has been set to a window variable call RenderDOM
 prefetch(RenderDOM)
 
-// Load bootstrap.
-// This will inject usefull packages.
-require("./app/bootstrap")
-
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA

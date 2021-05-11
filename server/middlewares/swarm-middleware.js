@@ -8,7 +8,7 @@ const FilterTransformStream = require("../classes/FilterTransformStream")
 
 
 // Consts
-const GatewayValidPathsRegex = /^\/bzz(-(raw|tag|pin|list))?:\/?.*/
+const GatewayValidPathsRegex = /^\/(bytes|chunks|files|dirs|tags|pin|soc|feeds|pss)\/?.*/
 const MaxBodySizeCap = 5000000 //5MB
 const ValidatorHost = process.env.GATEWAY_VALIDATOR_PROXY_HOST
 const SwarmHost = process.env.GATEWAY_SWARM_PROXY_HOST
@@ -18,7 +18,8 @@ const SwarmHost = process.env.GATEWAY_SWARM_PROXY_HOST
 module.exports.SwarmMiddleware = createProxyMiddleware(
   (pathname, req) => {
     return GatewayValidPathsRegex.test(pathname)
-  }, {
+  },
+  {
     target: SwarmHost,
     changeOrigin: true,
     secure: false,
@@ -46,23 +47,11 @@ async function handleRequest(proxyReq, req, res) {
       return
     }
 
-    const isText = /^(text|application\/json)/.test(response.headers.get("Content-Type"))
-
-    // Return a stream response for media sources
-    // end text response for anything else
-    if (!isText && response.status < 300) {
-      // Set response headers
-      response.headers.forEach((value, name) => {
-        res.set(name, value)
-      })
-
-      res.status(response.status)
-      response.body.pipe(res)
-    } else {
-      res.set("Content-Type", response.headers.get("Content-Type"))
-      res.status(response.status)
-      response.body.pipe(res)
-    }
+    // Return response
+    response.headers.forEach((value, name) => {
+      res.setHeader(name, value)
+    })
+    response.body.pipe(res.status(response.status))
   } catch (e) {
     console.error(e)
     res.status(500).send(e)
@@ -78,16 +67,27 @@ async function handleValidatorRequest(req, res) {
   // Run requests.
   const gatewayResponsePromise = forwardRequestToGateway(req) //start async request to gateway
 
-  if (process.env.DISABLE_REQUEST_VALIDATION && process.env.DISABLE_REQUEST_VALIDATION === "true") {
+  // Check if request should not be validated
+  const disableRequestValidation = process.env.DISABLE_REQUEST_VALIDATION === "true" || req.method !== "GET"
+
+  if (disableRequestValidation) {
     return await gatewayResponsePromise
   }
+
+  // FIXME:
+  // Gateway filter validator is yet to be updated to the new
+  // bee api.
+  // So we must return the un-filtered response in the meantime.
+  return await gatewayResponsePromise
+
 
   // Get Validator response.
   const validatorResponse = await forwardRequestToValidator(req) //get response from validator
 
   // Verify validator response.
   if (validatorResponse.status !== 200) {
-    return new Response("Invalid response from validator", { status: 500 })
+    const msg = `Invalid response from validator ${validatorResponse.status}: ${validatorResponse.statusText}`
+    return new Response(msg, { status: validatorResponse.status })
   }
 
   // Decode data from validator response.
@@ -199,11 +199,12 @@ async function notifyEndOfLimitedRequest(requestId, bodySize, secret) {
  */
 async function forwardRequestToGateway(request) {
   // Strip cookies.
-  const headers = {...request.headers}
+  const headers = { ...request.headers }
   headers.host = SwarmHost.replace(/^https?:\/\//, "")
   delete headers.cookie
 
   const options = parseFetchOptions(headers, request.method, request.body)
+  options.compress = false
 
   return await fetch(SwarmHost + request.url, options)
 }
@@ -224,7 +225,7 @@ async function forwardRequestToValidator(request, forceHttps) {
   const host = ValidatorHost.replace(/^https?:\/\//, "")
 
   // Create new headers.
-  const headers = {...request.headers}
+  const headers = { ...request.headers }
   headers.host = host
   headers["X-Forwarded-Host"] = host
 

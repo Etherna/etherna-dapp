@@ -1,0 +1,30 @@
+
+body {
+  @apply font-sans antialiased bg-gray-50 text-dark;
+  @apply dark:bg-gray-900 dark:text-light;
+}
+
+a {
+  transition: color 0.25s;
+  @apply no-underline cursor-pointer text-primary-500;
+
+  &:hover {
+    transition: color 0.25s;
+    @apply no-underline text-primary-600;
+  }
+}
+
+button {
+  @apply focus:outline-none;
+  &:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+}
+
+[role="button"] {
+  @apply focus:outline-none;
+}
+
+hr {
+  @apply border-gray-300 dark:border-gray-600;
+}

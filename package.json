@@ -5,35 +5,30 @@
   "version": "0.1.0",
   "author": "Mattia Dalzocchio",
   "dependencies": {
-    "@erebos/bzz": "^0.13.0",
-    "@erebos/bzz-feed": "^0.13.2",
-    "@erebos/secp256k1": "^0.10.0",
-    "@erebos/swarm-node": "^0.13.0",
-    "@ffmpeg/ffmpeg": "^0.8.3",
-    "@loadable/component": "^5.12.0",
+    "@ethersphere/bee-js": "^0.8.1",
+    "@ffmpeg/core": "^0.9.0",
+    "@ffmpeg/ffmpeg": "^0.9.8",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.21.1",
     "classnames": "^2.2.6",
-    "detect-browser": "^5.2.0",
-    "eth-lib": "^0.2.8",
     "ethereum-blockies-base64": "^1.0.2",
-    "ethers": "^4.0.46",
+    "ethers": "^5.1.4",
+    "image-resizer-js": "^1.2.1",
     "key-event-to-string": "^1.2.0",
     "lang.js": "^1.1.14",
-    "lodash": "^4.17.15",
-    "moment": "^2.24.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "nprogress": "^0.2.0",
-    "p-min-delay": "^3.1.0",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
-    "react-image-crop": "^8.6.2",
+    "react-image-crop": "^8.6.9",
     "react-infinite-scroller": "^1.2.4",
-    "react-markdown": "^5.0.2",
-    "react-redux": "^7.2.2",
-    "react-router-dom": "^5.1.2",
+    "react-markdown": "^6.0.2",
+    "react-redux": "^7.2.4",
+    "react-router-dom": "^5.2.0",
     "react-rte": "^0.16.3",
     "react-shortcuts": "^2.1.0",
     "react-slider": "^1.0.3",
@@ -41,14 +36,15 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "remark-gfm": "^1.0.0",
+    "use-reducer-logger": "^1.0.2",
     "web3": "^1.2.6"
   },
   "devDependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/preset-react": "~7.12.1",
-    "@craco/craco": "^6.0.0",
+    "@craco/craco": "^6.1.1",
+    "@tailwindcss/jit": "^0.1.3",
     "@types/classnames": "^2.2.11",
-    "@types/loadable__component": "^5.13.1",
     "@types/lodash": "^4.14.167",
     "@types/nprogress": "^0.2.0",
     "@types/react": "^17.0.0",
@@ -61,62 +57,40 @@
     "@types/redux-logger": "^3.0.8",
     "autoprefixer": "9.8.6",
     "body-parser": "^1.19.0",
+    "chalk": "^4.1.0",
     "child_process": "^1.0.2",
     "concurrently": "^5.3.0",
     "cors": "^2.8.5",
-    "craco-alias": "^2.1.1",
+    "craco-alias": "^2.2.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "form-data": "^3.0.0",
     "ftp-deploy": "^2.3.6",
-    "glob": "^7.1.6",
     "http-proxy-middleware": "^1.0.6",
     "https": "^1.0.0",
-    "levenary": "^1.1.1",
     "node-fetch": "^2.6.1",
     "node-sass": "^4.13.1",
-    "postcss": "^8.1.10",
-    "postcss-cli": "^7.1.0",
-    "prettier": "^1.19.1",
-    "react-scripts": "^4.0.1",
+    "nodemon": "^2.0.7",
+    "postcss": "^8.2.8",
+    "postcss-cli": "^8.3.1",
+    "react-scripts": "^4.0.3",
     "readline": "^1.3.0",
     "redux-logger": "^3.0.6",
     "serve": "^11.3.2",
-    "tailwindcss": "^2.0.3",
-    "typescript": "^4.1.3"
+    "tailwindcss": "^2.1.2",
+    "tar-js": "^0.3.0",
+    "typescript": "^4.2.3",
+    "wait-on": "^5.2.1"
   },
   "scripts": {
-    "start": "concurrently \"npm run dev\" \"npm run dev-proxy\"",
-    "dev": "craco start",
-    "dev-proxy": "node --max-http-header-size=80000 server/gateway-proxy.js",
+    "start": "craco start",
+    "start:proxy": "nodemon --max-http-header-size=80000 --watch server server/gateway-proxy.js",
+    "start:services": "concurrently \"node server/etherna-services.js\" \"npm run start:proxy\"",
+    "start:bee": "node server/etherna-services.js --bee",
     "build": "craco build",
     "serve": "serve -s build -l 4000",
     "test": "craco test",
     "eject": "craco eject",
-    "lint": "eslint src --ext .js",
-    "format": "prettier --write \"**/*.{js,jsx,json,scss}\""
-  },
-  "eslintConfig": {
-    "extends": "react-app",
-    "rules": {
-      "indent": [
-        "error",
-        2,
-        {
-          "SwitchCase": 1,
-          "ignoredNodes": [
-            "ConditionalExpression"
-          ]
-        }
-      ],
-      "quotes": [
-        "warn",
-        "double",
-        {
-          "allowTemplateLiterals": true
-        }
-      ]
-    }
+    "lint": "eslint src --ext .tsx?"
   },
   "browserslist": {
     "production": [
@@ -125,9 +99,9 @@
       "not op_mini all"
     ],
     "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
+      "last 2 chrome version",
+      "last 2 firefox version",
+      "last 2 safari version"
     ]
   }
 }

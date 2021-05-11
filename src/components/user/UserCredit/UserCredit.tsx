@@ -6,7 +6,7 @@ import "./user-credit.scss"
 import Button from "@common/Button"
 import Popup from "@common/Popup"
 import useSelector from "@state/useSelector"
-import providerActions from "@state/actions/provider"
+import loginRedirect from "@state/actions/user/loginRedirect"
 
 const UserCredit = () => {
   const { creditHost, bytePrice } = useSelector(state => state.env)
@@ -33,7 +33,7 @@ const UserCredit = () => {
     const x = creditBounds.right - width / 2
     const y = creditBounds.bottom + 10
     setPopupCenter([x, y])
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creditRef])
 
   const gbReproduction = useMemo(() => {
@@ -72,14 +72,26 @@ const UserCredit = () => {
                 </p>
               )}
               <div className="mt-8 mb-4">
-                <a href={creditHost} className="btn btn-secondary" rel="noreferrer noopener" target="_blank">Get more credit</a>
+                <a
+                  href={creditHost}
+                  className="btn btn-secondary"
+                  rel="noreferrer noopener"
+                  target="_blank"
+                >
+                  Get more credit
+                </a>
               </div>
             </>
           ) : (
             <>
               <div className="text-xs mb-4">You are not signed in the gateway</div>
               <div className="mt-8 mb-4">
-                <Button size="small" outline={true} className="w-full" action={() => providerActions.signin(true, "gateway")}>
+                <Button
+                  size="small"
+                  outline={true}
+                  className="w-full"
+                  action={() => loginRedirect("gateway")}
+                >
                   Sign in
                 </Button>
               </div>

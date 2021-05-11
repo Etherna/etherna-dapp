@@ -3,9 +3,9 @@ import classnames from "classnames"
 
 import "./avatar.scss"
 
-import { default as SwarmImg } from "@components/common/SwarmImage"
+import SwarmImg from "@components/common/SwarmImg"
 import makeBlockies from "@utils/makeBlockies"
-import { SwarmImage } from "@utils/swarmProfile"
+import SwarmImage from "@classes/SwarmImage"
 
 type AvatarProps = {
   image?: string | SwarmImage
@@ -14,13 +14,13 @@ type AvatarProps = {
   showBadge?: boolean
 }
 
-const Avatar = ({ image, address, size, showBadge }: AvatarProps) => {
+const Avatar: React.FC<AvatarProps> = ({ image, address, size, showBadge }) => {
   const blockie = address ? makeBlockies(address) : undefined
 
   return (
     <div className={classnames("avatar", { badge: showBadge })}>
       <SwarmImg
-        hash={image}
+        image={image}
         fallback={blockie}
         style={{
           width: size ? `${size}px` : undefined,

@@ -6,7 +6,7 @@ import "./profiles.scss"
 import ProfilePreview from "../ProfilePreview"
 import ProfilePreviewPlaceholder from "../ProfilePreviewPlaceholder"
 import useSelector from "@state/useSelector"
-import { IndexUser } from "@utils/indexClient/typings"
+import { IndexUser } from "@classes/EthernaIndexClient/types"
 
 const FETCH_COUNT = 10
 
@@ -18,7 +18,7 @@ const ProfilesView = () => {
 
   useEffect(() => {
     fetchProfiles()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const fetchProfiles = async () => {
@@ -50,15 +50,17 @@ const ProfilesView = () => {
         initialLoad={false}
         threshold={30}
       >
-        {!profiles && <div></div>}
-        {profiles &&
+        {profiles ? (
           profiles.map((profile, index) => (
             <ProfilePreview
               profileAddress={profile.address}
               profileManifest={profile.identityManifest}
               key={`${profile.address}-${index}`}
             />
-          ))}
+          ))
+        ) : (
+          <div></div>
+        )}
       </InfiniteScroller>
     </div>
   )

@@ -1,5 +1,5 @@
-import loginRedirect from "@state/actions/provider/loginRedirect"
-import logoutRedirect from "@state/actions/provider/logoutRedirect"
+import loginRedirect from "@state/actions/user/loginRedirect"
+import logoutRedirect from "@state/actions/user/logoutRedirect"
 
 const autoSigninSignout = () => {
   const searchParams = new URLSearchParams(window.location.search)

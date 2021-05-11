@@ -1,8 +1,8 @@
 const fs = require("fs")
-const express = require("express")
-const bodyParser = require("body-parser")
 const https = require("https")
+const express = require("express")
 const cors = require("cors")
+const { json, raw, urlencoded } = require("body-parser")
 
 const { ValidatorMiddleware } = require("./middlewares/validator-middleware")
 const { SwarmMiddleware } = require("./middlewares/swarm-middleware")
@@ -13,16 +13,11 @@ require("./utils/env")
  * Setup node server
  */
 const app = express()
-const port = 44362
+const port = process.env.GATEWAY_PORT || 44362
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.raw({
-  // verify: function (req, res, buf, encoding) {
-  //   if (buf && buf.length) {
-  //     req.rawBody = buf.toString(encoding || "utf8")
-  //   }
-  // },
+app.use(json())
+app.use(urlencoded({ extended: true }))
+app.use(raw({
   type: "*/*",
   limit: "100mb"
 }))
@@ -32,11 +27,11 @@ app.use(
     origin: true
   })
 )
-app.use(ValidatorMiddleware)
 app.use(SwarmMiddleware)
+app.use(ValidatorMiddleware)
 
-const PrivateKeyPath = process.env.SSL_PRIVATE_KEY_PATH
-const CertificatePath = process.env.SSL_CERTIFICATE_PATH
+const PrivateKeyPath = process.env.SSL_KEY_FILE
+const CertificatePath = process.env.SSL_CRT_FILE
 
 if (fs.existsSync(PrivateKeyPath) && fs.existsSync(CertificatePath)) {
   const privateKey = fs.readFileSync(PrivateKeyPath, "utf8")

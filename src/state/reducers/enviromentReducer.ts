@@ -1,14 +1,15 @@
-import { Bzz, Response } from "@erebos/bzz"
+import Web3 from "web3"
 
 import { baseKeymap } from "@keyboard"
 import { Keymap, KeymapNamespace } from "@keyboard/typings"
 import lang from "@lang"
+import EthernaGatewayClient from "@classes/EthernaGatewayClient"
+import EthernaIndexClient from "@classes/EthernaIndexClient"
+import EthernaAuthClient from "@classes/EthernaAuthClient"
+import SwarmBeeClient from "@classes/SwarmBeeClient"
 import { loadDarkMode } from "@state/actions/enviroment/darkMode"
-import { EnvState } from "@state/typings"
-import GatewayClient from "@utils/gatewayClient/client"
-import IndexClient from "@utils/indexClient/client"
-import { Crop } from "react-image-crop"
-import Web3 from "web3"
+import { EnvState } from "@state/types"
+import { checkIsMobile } from "@utils/browser"
 
 export const EnvActionTypes = {
   ENV_UPDATE_PROVIDER: "ENV_UPDATE_PROVIDER",
@@ -17,11 +18,10 @@ export const EnvActionTypes = {
   ENV_SET_IS_MOBILE: "ENV_SET_IS_MOBILE",
   ENV_UPDATE_INDEXHOST: "ENV_UPDATE_INDEXHOST",
   ENV_UPDATE_GATEWAY_HOST: "ENV_UPDATE_GATEWAY_HOST",
+  ENV_UPDATE_BEE_CLIENT: "ENV_UPDATE_BEE_CLIENT",
   ENV_UPDATE_KEYMAP: "ENV_UPDATE_KEYMAP",
   ENV_EDIT_SHORTCUT: "ENV_EDIT_SHORTCUT",
   ENV_TOGGLE_DARK_MODE: "ENV_TOGGLE_DARK_MODE",
-  ENV_SET_CROP_IMAGE: "ENV_SET_CROP_IMAGE",
-  ENV_UPDATE_IMAGE_CROP: "ENV_UPDATE_IMAGE_CROP",
   ENV_UPDATE_BYTE_PRICE: "ENV_UPDATE_BYTE_PRICE",
 } as const
 
@@ -34,7 +34,7 @@ type UpdateProviderAction = {
 }
 type UpdateNetworkAction = {
   type: typeof EnvActionTypes.ENV_UPDATE_NETWORK
-  network?: string|null
+  network?: string | null
 }
 type SetCurrentAddressAction = {
   type: typeof EnvActionTypes.ENV_SET_CURRENT_ADDRESS
@@ -49,13 +49,17 @@ type UpdateIndexHostAction = {
   type: typeof EnvActionTypes.ENV_UPDATE_INDEXHOST
   indexHost: string
   apiPath: string | null | undefined
-  indexClient: IndexClient
+  indexClient: EthernaIndexClient
 }
 type UpdateGatewayHostAction = {
   type: typeof EnvActionTypes.ENV_UPDATE_GATEWAY_HOST
   gatewayHost: string
   apiPath: string | null | undefined
-  bzzClient: Bzz<any, Response<any>, any>
+  beeClient: SwarmBeeClient
+}
+type UpdateBeeClientAction = {
+  type: typeof EnvActionTypes.ENV_UPDATE_BEE_CLIENT
+  beeClient: SwarmBeeClient
 }
 type UpdateKeymapAction = {
   type: typeof EnvActionTypes.ENV_UPDATE_KEYMAP
@@ -70,15 +74,6 @@ type ToggleDarkModeAction = {
   type: typeof EnvActionTypes.ENV_TOGGLE_DARK_MODE
   darkMode: boolean
 }
-type SetCropImageAction = {
-  type: typeof EnvActionTypes.ENV_SET_CROP_IMAGE
-  imageType: string
-  image: string
-}
-type UpdateImageCropAction = {
-  type: typeof EnvActionTypes.ENV_UPDATE_IMAGE_CROP
-  imageCrop?: Crop
-}
 type UpdateBytePriceAction = {
   type: typeof EnvActionTypes.ENV_UPDATE_BYTE_PRICE
   bytePrice: number
@@ -91,50 +86,42 @@ export type EnvActions = (
   SetIsMobileAction |
   UpdateIndexHostAction |
   UpdateGatewayHostAction |
+  UpdateBeeClientAction |
   UpdateKeymapAction |
   EditShortcutsAction |
   ToggleDarkModeAction |
-  SetCropImageAction |
-  UpdateImageCropAction |
   UpdateBytePriceAction
 )
 
 // Init reducer
-
-const indexHost = window.localStorage.getItem("indexHost") || process.env.REACT_APP_INDEX_HOST!
-const indexApiPath = window.localStorage.getItem("indexApiPath") != null
-  ? window.localStorage.getItem("indexApiPath")!
-  : process.env.REACT_APP_INDEX_API_PATH!
-const gatewayHost = window.localStorage.getItem("gatewayHost") ||
-  process.env.REACT_APP_GATEWAY_HOST ||
-  "https://swarm-gateways.net"
-const gatewayApiPath = window.localStorage.getItem("gatewayApiPath") != null
-  ? window.localStorage.getItem("gatewayApiPath")!
-  : process.env.REACT_APP_GATEWAY_API_PATH!
-const creditHost = window.localStorage.getItem("creditHost") || process.env.REACT_APP_CREDIT_HOST!
-
-const indexClient = new IndexClient({ host: indexHost, apiPath: indexApiPath })
-const gatewayClient = new GatewayClient({ host: gatewayHost, apiPath: gatewayApiPath })
-const bzzClient = new Bzz({ url: gatewayHost })
-
-// update fetch to include credentials
-const credentialsFetch = (input: RequestInfo, init?: RequestInit | undefined) => {
-  return fetch(input, { ...(init || {}), credentials: "include" })
-}
-(bzzClient as any).fetch = credentialsFetch
+const creditHost = window.localStorage.getItem("creditHost") || process.env.REACT_APP_CREDIT_HOST
+const indexClient = new EthernaIndexClient({
+  host: EthernaIndexClient.defaultHost,
+  apiPath: EthernaIndexClient.defaultApiPath
+})
+const gatewayClient = new EthernaGatewayClient({
+  host: EthernaGatewayClient.defaultHost,
+  apiPath: EthernaGatewayClient.defaultApiPath
+})
+const authClient = new EthernaAuthClient({
+  host: EthernaAuthClient.defaultHost,
+  apiPath: EthernaAuthClient.defaultApiPath
+})
+const beeClient = new SwarmBeeClient(EthernaGatewayClient.defaultHost)
 
 const initialState: EnvState = {
-  indexHost,
-  indexApiPath,
-  gatewayHost,
-  gatewayApiPath,
+  indexHost: EthernaIndexClient.defaultHost,
+  indexApiPath: EthernaIndexClient.defaultApiPath,
+  gatewayHost: EthernaGatewayClient.defaultHost,
+  gatewayApiPath: EthernaGatewayClient.defaultApiPath,
   creditHost,
   indexClient,
   gatewayClient,
-  bzzClient,
+  authClient,
+  beeClient,
   keymap: baseKeymap,
   darkMode: loadDarkMode(),
-  isMobile: false,
+  isMobile: checkIsMobile(),
   lang,
 }
 
@@ -180,7 +167,13 @@ const enviromentReducer = (state: EnvState = initialState, action: EnvActions): 
         ...state,
         gatewayHost: action.gatewayHost,
         gatewayApiPath: action.apiPath || "",
-        bzzClient: action.bzzClient
+        beeClient: action.beeClient
+      }
+
+    case EnvActionTypes.ENV_UPDATE_BEE_CLIENT:
+      return {
+        ...state,
+        beeClient: action.beeClient
       }
 
     case EnvActionTypes.ENV_UPDATE_BYTE_PRICE:
@@ -206,19 +199,6 @@ const enviromentReducer = (state: EnvState = initialState, action: EnvActions): 
       return {
         ...state,
         darkMode: action.darkMode,
-      }
-
-    case EnvActionTypes.ENV_UPDATE_IMAGE_CROP:
-      return {
-        ...state,
-        imageCrop: action.imageCrop,
-      }
-
-    case EnvActionTypes.ENV_SET_CROP_IMAGE:
-      return {
-        ...state,
-        imageType: action.imageType,
-        image: action.image,
       }
 
     default:

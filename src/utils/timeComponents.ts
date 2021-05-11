@@ -2,10 +2,10 @@
  * Get the hours, minutes and seconds of a time in seconds
  * @param {number} time Time in seconds
  */
-const timeComponents = (time: number|string|null|undefined) => {
+const timeComponents = (time: number | string | null | undefined) => {
   time = parseInt(`${time || 0}`)
 
-  let hours: number|null = Math.floor(time / 3600)
+  let hours: number | null = Math.floor(time / 3600)
   if (hours >= 1) {
     time = time - hours * 3600
   } else {
@@ -25,7 +25,7 @@ const timeComponents = (time: number|string|null|undefined) => {
  * Add 0 to the left to make a number always a fixed length
  * @param value
  */
-const stringPadLeft = (value: number|null) => {
+const stringPadLeft = (value: number | null) => {
   if (typeof value !== "number") {
     return null
   }

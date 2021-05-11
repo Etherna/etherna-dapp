@@ -4,17 +4,17 @@ import { Redirect } from "react-router-dom"
 import "./profile-editor.scss"
 
 import ProfileInfoEdit from "@components/profile/ProfileInfoEdit"
-import { profileActions } from "@state/actions"
-import { showError } from "@state/actions/modals"
+import { Profile } from "@classes/SwarmProfile/types"
 import Routes from "@routes"
-import { Profile } from "@utils/swarmProfile"
-import { WindowPrefetchData } from "@typings/window"
+import { showError } from "@state/actions/modals"
+import useProfileUpdate from "@state/hooks/profile/useProfileUpdate"
 
 type ProfileEditorProps = {
   address: string
 }
 
-const ProfileEditor = ({ address }: ProfileEditorProps) => {
+const ProfileEditor: React.FC<ProfileEditorProps> = ({ address }) => {
+  const updateProfile = useProfileUpdate(address)
   const [isSavingProfile, setSavingProfile] = useState(false)
   const [savedProfile, setSavedProfile] = useState(false)
 
@@ -22,11 +22,10 @@ const ProfileEditor = ({ address }: ProfileEditorProps) => {
     setSavingProfile(true)
 
     try {
-      await profileActions.updateProfile(profileInfo)
+      await updateProfile(profileInfo)
 
       // clear prefetch
-      const windowPrefetch = window as WindowPrefetchData
-      windowPrefetch.prefetchData = undefined
+      window.prefetchData = undefined
 
       setSavedProfile(true)
     } catch (error) {

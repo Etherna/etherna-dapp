@@ -51,9 +51,6 @@ jspm_packages/
 # Mac files
 .DS_Store
 
-# VS Code folder
-.vscode/
-
 # Yarn
 yarn-error.log
 .pnp/
@@ -65,4 +62,8 @@ yarn-error.log
 deploy.config.js
 
 # Env
-.env.production
+.env.*
+!.env.example
+
+# Test files
+test*.js

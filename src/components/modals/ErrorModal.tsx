@@ -14,13 +14,12 @@ type ErrorModalProps = {
 
 const ErrorModal = ({ title, error = "", show = false }: ErrorModalProps) => {
   const isMetaMaskSignError = error.substring(0, 65) === "Web3 Wallet Signature Error: User denied message signature."
-  //const isMetaMaskFromError = error.substring(0, 58) === 'Web3 Wallet Signature Error: from field is required.'
   const isMozillaError = error.substring(0, 26) === "value/</<@moz-extension://"
   const errorString = error.substring(0, 200)
 
   return (
     <Modal show={show} showCloseButton={false}>
-      <div className="table mx-auto mb-3">
+      <div className="flex justify-center text-orange-500 mb-3">
         {isMetaMaskSignError || isMozillaError ? (
           <SignatureIcon />
         ) : (

@@ -2,9 +2,9 @@ import React from "react"
 
 import { useStateValue, ReducerTypes } from "../PlayerContext"
 import Slider from "@common/Slider"
-import { ReactComponent as MutedIcon } from "@svg/icons/muted-icon.svg"
-import { ReactComponent as VolumeLowIcon } from "@svg/icons/volume-low-icon.svg"
-import { ReactComponent as VolumeIcon } from "@svg/icons/volume-icon.svg"
+import { ReactComponent as MutedIcon } from "@svg/icons/player/muted-icon.svg"
+import { ReactComponent as VolumeLowIcon } from "@svg/icons/player/volume-low-icon.svg"
+import { ReactComponent as VolumeIcon } from "@svg/icons/player/volume-icon.svg"
 
 const VolumeControl = () => {
   const [state, dispatch] = useStateValue()

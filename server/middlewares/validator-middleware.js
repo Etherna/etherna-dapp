@@ -4,7 +4,7 @@ require("../utils/env")
 
 
 // Consts
-const GatewayValidPathsRegex = /^\/bzz(-(raw|tag|pin|list))?:\/?.*/
+const GatewayValidPathsRegex = /^\/(bytes|chunks|files|dirs|tags|pin|soc|feeds|pss)\/?.*/
 const ValidatorHost = process.env.GATEWAY_VALIDATOR_PROXY_HOST
 
 
@@ -12,7 +12,8 @@ const ValidatorHost = process.env.GATEWAY_VALIDATOR_PROXY_HOST
 module.exports.ValidatorMiddleware = createProxyMiddleware(
   (pathname, req) => {
     return !GatewayValidPathsRegex.test(pathname)
-  }, {
+  },
+  {
     target: ValidatorHost,
     changeOrigin: true,
     secure: false,

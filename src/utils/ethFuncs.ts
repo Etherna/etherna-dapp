@@ -1,6 +1,3 @@
-import { ethers } from "ethers"
-import { AsyncSendable } from "ethers/providers"
-import { WindowWeb3 } from "typings/window"
 import Web3 from "web3"
 
 /**
@@ -63,12 +60,11 @@ export const fetchAccounts = async (web3: Web3) => {
  * @param web3 Web3 instance
  */
 export const resolveEnsName = async (address: string, web3?: Web3) => {
-  const windowWeb3: WindowWeb3 = window
-  const currentProvider = web3 ? web3.currentProvider : windowWeb3.web3?.currentProvider
+  const currentProvider = web3 ? web3.currentProvider : window.web3?.currentProvider
 
   if (currentProvider && address) {
-    const provider = new ethers.providers.Web3Provider(currentProvider as AsyncSendable)
-    const name = await provider.lookupAddress(address)
+    const web3 = new Web3(currentProvider)
+    const name = await web3.eth.ens.getAddress(address)
     return name
   }
 

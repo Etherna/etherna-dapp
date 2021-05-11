@@ -39,7 +39,11 @@
         @apply dark:hover:text-white dark:hover:bg-gray-800;
 
         .sidebar-item-image {
-          @apply w-8 h-8 object-center object-cover rounded-full;
+          @apply w-8 h-8 rounded-full overflow-hidden;
+
+          img {
+            @apply object-center object-cover;
+          }
         }
         .sidebar-item-title {
           @apply ml-2;

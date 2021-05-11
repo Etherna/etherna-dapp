@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react"
 
 import SidebarItem from "./SidebarItem"
 import SidebarItemPlaceholder from "./SidebarItemPlaceholder"
-import useSelector from "@state/useSelector"
+import { IndexUser } from "@classes/EthernaIndexClient/types"
+import { Profile } from "@classes/SwarmProfile/types"
 import Routes from "@routes"
+import useSelector from "@state/useSelector"
 import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
-import { getProfiles, Profile } from "@utils/swarmProfile"
-import { IndexUser } from "@utils/indexClient/typings"
+import SwarmProfile from "@classes/SwarmProfile"
 
 const NewProfiles = () => {
-  const { indexClient } = useSelector(state => state.env)
+  const { beeClient, indexClient } = useSelector(state => state.env)
   const [profiles, setProfiles] = useState<Profile[]>()
 
   useEffect(() => {
@@ -23,16 +24,17 @@ const NewProfiles = () => {
       loadProfiles(fetchedProfiles)
     } catch (error) {
       console.error(error)
+      setProfiles([])
     }
   }
 
   const loadProfiles = async (fetchedProfiles: IndexUser[]) => {
-    const profiles = await getProfiles(fetchedProfiles.map(c => {
-      return {
-        manifest: c.identityManifest,
-        address: c.address
-      }
-    }))
+    const promises = fetchedProfiles.map(profile => (new SwarmProfile({
+      address: profile.address,
+      hash: profile.identityManifest,
+      beeClient,
+    }).downloadProfile()))
+    const profiles = await Promise.all(promises)
     setProfiles(profiles)
   }
 

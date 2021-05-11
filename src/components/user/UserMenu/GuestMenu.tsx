@@ -2,8 +2,7 @@ import React, { useRef } from "react"
 import { Link } from "react-router-dom"
 import Switch from "react-switch"
 
-import { ReactComponent as DarkModeIconLg } from "@svg/icons/dark-mode-icon-lg.svg"
-import { ReactComponent as MenuIcon } from "@svg/icons/menu-icon.svg"
+import { ReactComponent as MoreIcon } from "@svg/icons/more-icon.svg"
 import { ReactComponent as IndexIcon } from "@svg/icons/index-icon.svg"
 import { ReactComponent as GatewayIcon } from "@svg/icons/gateway-icon.svg"
 import { ReactComponent as ShortcutsIcon } from "@svg/icons/shortcuts-icon.svg"
@@ -32,7 +31,7 @@ const GuestMenu = () => {
     <DropDown>
       <DropDownMenuToggle menuRef={mainMenuRef}>
         <Button aspect="transparent" className="btn-rounded mr-2">
-          <MenuIcon />
+          <MoreIcon />
         </Button>
       </DropDownMenuToggle>
       <DropDownMenu menuRef={mainMenuRef} alignRight={true}>
@@ -50,14 +49,14 @@ const GuestMenu = () => {
         <hr />
 
         <DropDownItem>
-          <div className="flex w-full">
-            <DarkModeIconLg />
+          <div className="flex w-full items-center">
+            <DarkModeIcon />
             <span>Dark Mode</span>
             <Switch
               id="darkMode-field"
               className="ml-auto"
-              checkedIcon={<DarkModeIcon className="m-0.5 ml-1 fill-white" />}
-              uncheckedIcon={<LightModeIcon className="m-0.5 ml-1 fill-gray-800" />}
+              checkedIcon={<DarkModeIcon className="ml-1.5 p-0.5" />}
+              uncheckedIcon={<LightModeIcon className="ml-1.5 p-0.5" />}
               height={24}
               width={50}
               handleDiameter={20}
