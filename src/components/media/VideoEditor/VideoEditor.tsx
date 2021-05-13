@@ -122,10 +122,10 @@ const VideoEditor = () => {
           <div className="col sm:w-1/2 lg:w-2/3">
             <VideoProperties isSubmitting={isSubmitting} />
             {reference && (
-              <>
+              <div className="flex items-center justify-between">
                 <SaveButton />
                 <DeleteButton />
-              </>
+              </div>
             )}
           </div>
           <div className="col step-col sm:w-1/2 lg:w-1/3">
