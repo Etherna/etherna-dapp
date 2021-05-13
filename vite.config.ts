@@ -22,14 +22,10 @@ export default defineConfig({
       cert: fs.readFileSync("server/sslcert/cert.pem"),
     },
   },
-  optimizeDeps: {
-    //exclude: ["ethers"]
-  },
   define: {
     global: "window",
   },
   plugins: [
-    // polyfillNode(),
     tsconfigPaths({ root: "." }),
     reactRefresh(),
     svgr(),

@@ -32,7 +32,7 @@
     "react-router-dom": "^5.2.0",
     "react-shortcuts": "^2.1.0",
     "react-slider": "^1.0.3",
-    "react-switch": "^5.0.1",
+    "react-switch": "^6.0.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "remark-gfm": "^1.0.0",
@@ -88,8 +88,8 @@
     "start:proxy": "nodemon --max-http-header-size=80000 --watch server server/gateway-proxy.js",
     "start:services": "concurrently \"node server/etherna-services.js\" \"npm run start:proxy\"",
     "start:bee": "node server/etherna-services.js --bee",
-    "build": "vite build",
-    "serve": "serve -s build -l 4000",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
     "lint": "eslint src --ext .tsx?"
   },
   "browserslist": {

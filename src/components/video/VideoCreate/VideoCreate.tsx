@@ -1,3 +1,5 @@
+import React from "react"
+
 import "./video-create.scss"
 
 import VideoEditor from "@components/media/VideoEditor"
