@@ -18,7 +18,6 @@
     "ethereum-blockies-base64": "^1.0.2",
     "ethers": "^5.1.4",
     "image-resizer-js": "^1.2.1",
-    "key-event-to-string": "^1.2.0",
     "lang.js": "^1.1.14",
     "lodash": "^4.17.21",
     "markdown-draft-js": "^2.2.1",
@@ -27,6 +26,7 @@
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
     "react-image-crop": "^8.6.9",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-markdown": "^6.0.2",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
@@ -72,7 +72,6 @@
     "postcss-cli": "^8.3.1",
     "readline": "^1.3.0",
     "redux-logger": "^3.0.6",
-    "rollup-plugin-polyfill-node": "^0.6.2",
     "sass": "^1.32.13",
     "serve": "^11.3.2",
     "tailwindcss": "^2.1.2",
@@ -85,7 +84,7 @@
     "wait-on": "^5.2.1"
   },
   "scripts": {
-    "start": "vite",
+    "dev": "vite",
     "start:proxy": "nodemon --max-http-header-size=80000 --watch server server/gateway-proxy.js",
     "start:services": "concurrently \"node server/etherna-services.js\" \"npm run start:proxy\"",
     "start:bee": "node server/etherna-services.js --bee",

@@ -27,7 +27,7 @@ export default class EthernaIndexClient {
    * Redirect to login page
    * @param returnUrl Redirect url after login (default = null)
    */
-  loginRedirect(returnUrl: string|null = null) {
+  loginRedirect(returnUrl: string | null = null) {
     const retUrl = encodeURIComponent(returnUrl || window.location.href)
     window.location.href = this.loginPath + `?ReturnUrl=${retUrl}`
   }
@@ -36,16 +36,16 @@ export default class EthernaIndexClient {
    * Redirect to logout page
    * @param returnUrl Redirect url after logout (default = null)
    */
-  logoutRedirect(returnUrl: string|null = null) {
+  logoutRedirect(returnUrl: string | null = null) {
     const retUrl = encodeURIComponent(returnUrl || window.location.href)
     window.location.href = this.logoutPath + `?ReturnUrl=${retUrl}`
   }
 
   static get defaultHost(): string {
-    return window.localStorage.getItem("indexHost") || process.env.REACT_APP_INDEX_HOST
+    return window.localStorage.getItem("indexHost") || import.meta.env.VITE_APP_INDEX_HOST
   }
 
   static get defaultApiPath(): string {
-    return window.localStorage.getItem("indexApiPath") || process.env.REACT_APP_INDEX_API_PATH
+    return window.localStorage.getItem("indexApiPath") || import.meta.env.VITE_APP_INDEX_API_PATH
   }
 }

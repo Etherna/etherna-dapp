@@ -4,7 +4,6 @@ import reactRefresh from "@vitejs/plugin-react-refresh"
 import svgr from "vite-plugin-svgr"
 import tsconfigPaths from "vite-tsconfig-paths"
 import { getAliases } from "vite-aliases"
-import polyfillNode from "rollup-plugin-polyfill-node"
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -30,9 +29,9 @@ export default defineConfig({
     global: "window",
   },
   plugins: [
-    //polyfillNode(),
+    // polyfillNode(),
     tsconfigPaths({ root: "." }),
     reactRefresh(),
-    svgr()
+    svgr(),
   ],
 })

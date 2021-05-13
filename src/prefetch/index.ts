@@ -1,6 +1,9 @@
+import profilePrefetcher from "./prefetchers/profilePrefetcher"
+import videoPrefetcher from "./prefetchers/videoPrefetcher"
+
 const prefetchers = [
-  require("./prefetchers/profilePrefetcher").default,
-  require("./prefetchers/videoPrefetcher").default,
+  profilePrefetcher,
+  videoPrefetcher,
 ]
 
 const prefetch = async (renderCallback: () => void) => {

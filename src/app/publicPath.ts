@@ -1,6 +1,6 @@
-import { getBasename } from "@routes"
+// import { getBasename } from "@routes"
 
-const basename = getBasename()
+// const basename = getBasename()
 
-// @ts-ignore
-__webpack_public_path__ = basename + "/"
+// // @ts-ignore
+// __webpack_public_path__ = basename + "/"

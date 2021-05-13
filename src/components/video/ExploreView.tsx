@@ -1,4 +1,5 @@
-import InfiniteScroller from "react-infinite-scroller"
+import React from "react"
+import InfiniteScroller from "react-infinite-scroll-component"
 
 import VideoGrid from "@components/video/VideoGrid"
 import useSwarmVideos from "@hooks/useSwarmVideos"
@@ -8,10 +9,11 @@ const ExploreView = () => {
 
   return (
     <InfiniteScroller
-      loadMore={loadMore}
+      dataLength={videos?.length ?? 0}
+      next={loadMore}
       hasMore={hasMore}
-      initialLoad={false}
-      threshold={30}
+      scrollThreshold={30}
+      loader={<div />}
     >
       <VideoGrid label="New videos" videos={videos} />
     </InfiniteScroller>

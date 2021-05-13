@@ -16,8 +16,8 @@ function SEO({
   title,
   tagline
 }: SEOProps) {
-  const siteTitle = process.env.REACT_APP_NAME
-  const siteTagline = process.env.REACT_APP_TAGLINE
+  const siteTitle = import.meta.env.VITE_APP_NAME
+  const siteTagline = import.meta.env.VITE_APP_TAGLINE
 
   const metaDescription = description || siteTagline
 
