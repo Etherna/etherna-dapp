@@ -2,20 +2,20 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="shortcut icon" href="%PUBLIC_URL%/images/icon.png" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/images/icon-192.png" />
+    <link rel="shortcut icon" href="/images/icon.png" />
+    <link rel="apple-touch-icon" href="/images/icon-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#34BA9C" />
     <meta name="description" content="A transparent video platform" />
     <meta http-equiv="Cache-control" content="public, max-age=3600, must-revalidate">
     <meta http-equiv="Expires" content="public, max-age=3600, must-revalidate">
     <meta http-equiv="Last-Modified" content="public, max-age=3600, must-revalidate">
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="manifest" href="/manifest.json" />
     <title>Etherna</title>
     <script>
       /// Define basepath
       var path = window.location.pathname;
-      var bzzPattern = /\/bzz:\/([^/]+)/;
+      var bzzPattern = /\/bzz\/([^/]+)/;
       window.__basename__ = bzzPattern.test(path)
         ? path.match(bzzPattern)[0]
         : null;
@@ -24,6 +24,7 @@
   <body class="">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
 
     <script>
       /// don't run if __basename__ is empty

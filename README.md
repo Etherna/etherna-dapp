@@ -88,9 +88,9 @@ Then set the following keys in the .env:
 
 ```
 // to run the web app
-npm run start
+npm run dev
 // or
-yarn start
+yarn dev
 
 // to run the gateway proxy (no etherna services)
 npm run start:proxy
