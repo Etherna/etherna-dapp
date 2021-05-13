@@ -1,14 +1,11 @@
 import React, { useRef } from "react"
 import { Link } from "react-router-dom"
-import Switch from "react-switch"
 
 import { ReactComponent as EditIcon } from "@svg/icons/edit-icon.svg"
 import { ReactComponent as ProfileIcon } from "@svg/icons/profile-icon.svg"
 import { ReactComponent as IndexIcon } from "@svg/icons/index-icon.svg"
 import { ReactComponent as GatewayIcon } from "@svg/icons/gateway-icon.svg"
 import { ReactComponent as SignoutIcon } from "@svg/icons/signout-icon.svg"
-import { ReactComponent as DarkModeIcon } from "@svg/icons/dark-mode-icon.svg"
-import { ReactComponent as LightModeIcon } from "@svg/icons/light-mode-icon.svg"
 import { ReactComponent as ShortcutsIcon } from "@svg/icons/shortcuts-icon.svg"
 import { ReactComponent as UploadIcon } from "@svg/icons/upload-icon.svg"
 
@@ -23,6 +20,7 @@ import useSelector from "@state/useSelector"
 import useSignout from "@state/hooks/user/useSignout"
 import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import Routes from "@routes"
+import DarkModeToggle from "./DarkModeToggle"
 
 const UserMenu = () => {
   const { currentWalletLogo, darkMode } = useSelector(state => state.env)
@@ -112,23 +110,7 @@ const UserMenu = () => {
         <hr />
 
         <DropDownItem>
-          <div className="flex w-full">
-            <DarkModeIcon />
-            <span>Dark Mode</span>
-            <Switch
-              id="darkMode-field"
-              className="ml-auto"
-              checkedIcon={<DarkModeIcon className="ml-1.5 p-0.5" />}
-              uncheckedIcon={<LightModeIcon className="ml-1.5 p-0.5" />}
-              height={24}
-              width={50}
-              handleDiameter={20}
-              offColor={darkMode ? "#333" : "#ccc"}
-              onColor="#34BA9C"
-              checked={darkMode}
-              onChange={handleDarkModeChange}
-            />
-          </div>
+          <DarkModeToggle enabled={darkMode} onChange={handleDarkModeChange} />
         </DropDownItem>
         <DropDownItem>
           <Link to={Routes.getShortcutsLink()}>

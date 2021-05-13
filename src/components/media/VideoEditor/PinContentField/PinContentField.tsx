@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react"
-import Switch from "react-switch"
+
+import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 
 import Alert from "@common/Alert"
+import Toggle from "@common/Toggle"
 import useSelector from "@state/useSelector"
-import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 
 type PinContentFieldProps = {
   pinningEnabled?: boolean
@@ -13,13 +14,13 @@ type PinContentFieldProps = {
 const PinContentField = ({ pinningEnabled, onChange }: PinContentFieldProps) => {
   const { beeClient, gatewayHost } = useSelector(state => state.env)
 
-  const [pinningAvailable, setPinningAvailable] = useState<boolean|null|undefined>(undefined)
+  const [pinningAvailable, setPinningAvailable] = useState<boolean | null | undefined>(undefined)
   const [pinContent, setPinContent] = useState(pinningEnabled)
   const [errorMessage, setErrorMessage] = useState(undefined)
 
   useEffect(() => {
     checkPinningAvailability()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const checkPinningAvailability = async () => {
@@ -63,25 +64,11 @@ const PinContentField = ({ pinningEnabled, onChange }: PinContentFieldProps) => 
         </Alert>
       )}
       {pinningAvailable === true && pinContent !== undefined && (
-        <>
-          <label className="flex items-center" htmlFor="pinContent-field">
-            <Switch
-              id="pinContent-field"
-              checkedIcon={false}
-              uncheckedIcon={false}
-              height={22}
-              width={46}
-              handleDiameter={18}
-              offColor="#ccc"
-              onColor="#34BA9C"
-              checked={pinContent}
-              onChange={handlePinChange}
-            />
-            <span className="ml-2">
-              {pinContent ? "Pinning enabled" : "Pinning disabled"}
-            </span>
-          </label>
-        </>
+        <Toggle
+          label={pinContent ? "Pinning enabled" : "Pinning disabled"}
+          checked={pinContent}
+          onChange={handlePinChange}
+        />
       )}
     </div>
   )
