@@ -1,24 +1,30 @@
 import React, { useEffect, useRef, useState } from "react"
 import classnames from "classnames"
 
+import "./extension-panel.scss"
+import { ReactComponent as BackIcon } from "@svg/icons/back-icon.svg"
+
 import Button from "@common/Button"
 import http from "@utils/request"
 import dayjs from "@utils/dayjs"
 
-type EnvExtensionPanelProps = {
+type ExtensionPanelProps = {
+  title: string
   description?: string
   host: string
   defaultHost: string
   apiPath: string
   defaultApiPath: string
   isSignedIn?: boolean
-  onSave: (hostValue: string, apiPathValue: string) => void
-  onReset: () => void
-  onSignin: () => void
-  onSignout: () => void
+  onSave(hostValue: string, apiPathValue: string): void
+  onReset(): void
+  onSignin(): void
+  onSignout(): void
+  onBack(): void
 }
 
-const EnvExtensionPanel = ({
+const ExtensionPanel = ({
+  title,
   description,
   host,
   defaultHost,
@@ -28,8 +34,9 @@ const EnvExtensionPanel = ({
   onSave,
   onReset,
   onSignin,
-  onSignout
-}: EnvExtensionPanelProps) => {
+  onSignout,
+  onBack
+}: ExtensionPanelProps) => {
   const hostLastChangeRef = useRef<{ host?: string, lastChange?: dayjs.Dayjs }>({})
   const [hostValue, setHostValue] = useState("")
   const [apiPathValue, setApiPathValue] = useState("")
@@ -81,15 +88,22 @@ const EnvExtensionPanel = ({
   }
 
   return (
-    <li className="dropdown-content flex flex-col">
-      <p>{description}</p>
+    <div className="extension-panel">
+      <div className="extension-panel-header">
+        <Button aspect="transparent" size="small" action={onBack}>
+          <BackIcon />
+        </Button>
+        <strong>{title}</strong>
+      </div>
 
-      <div className="mt-3">
+      <small>{description}</small>
+
+      <div className="extension-panel-group">
         <strong className="flex-1">Host</strong>
         <input type="text" value={hostValue} onChange={handleHostChange} />
       </div>
-      <div className="mt-3">
-        <strong className="w-auto text-right">Api path</strong>
+      <div className="extension-panel-group">
+        <strong className="flex-1">Api path</strong>
         <input
           type="text"
           value={apiPathValue}
@@ -121,9 +135,9 @@ const EnvExtensionPanel = ({
 
       <hr />
 
-      <div className="flex py-1">
+      <div className="extension-panel-status-group">
         Status: {isSignedIn ? `Signed in` : `Signed out`}
-        <span className={classnames("item-status", { [`item-status-active`]: isSignedIn })} />
+        <span className={classnames("extension-panel-status", { active: isSignedIn })} />
       </div>
       <Button
         action={() => isSignedIn ? onSignout() : onSignin()}
@@ -134,8 +148,8 @@ const EnvExtensionPanel = ({
       >
         {isSignedIn ? `Sign out` : `Sign in`}
       </Button>
-    </li>
+    </div>
   )
 }
 
-export default EnvExtensionPanel
+export default ExtensionPanel

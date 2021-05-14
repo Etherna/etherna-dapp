@@ -1,0 +1,28 @@
+.extension-panel {
+  @apply flex flex-col;
+  @apply p-4 pt-2;
+}
+
+.extension-panel-header {
+  @apply flex items-center;
+  @apply mb-3;
+  @apply space-x-2;
+}
+
+.extension-panel-group {
+  @apply mt-3;
+}
+
+.extension-panel-status-group {
+  @apply flex items-center py-1;
+}
+
+.extension-panel-status {
+  @apply w-2 h-2 rounded-full;
+  @apply ml-auto;
+  @apply bg-gray-500;
+
+  &.active {
+    @apply bg-green-500;
+  }
+}

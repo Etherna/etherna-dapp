@@ -1,48 +1,28 @@
-import React from "react"
+import React, { Fragment } from "react"
 import classnames from "classnames"
+import { Menu, Transition } from "@headlessui/react"
 
-import { ReactComponent as BackIcon } from "@svg/icons/back-icon.svg"
-
-import { useStateValue, ReducerTypes } from "./DropDownContext"
-
-type DropDownMenuProps = {
-  children: React.ReactNode
-  title?: string
-  menuRef: React.RefObject<HTMLDivElement>
-  alignRight?: boolean
+export type DropdownMenuProps = {
+  open?: boolean
 }
 
-const DropDownMenu = ({ children, alignRight, menuRef, title }: DropDownMenuProps) => {
-  const [state, dispatch] = useStateValue()
-  const { history } = state
-  const isDropDownOpen = state.current === menuRef
-
-  const pop = () => {
-    dispatch({
-      type: ReducerTypes.POP_MENU,
-      index: history.length - 1,
-    })
-  }
-
+const DropdownMenu: React.FC<DropdownMenuProps> = ({ children, open }) => {
   return (
-    <div
-      ref={menuRef}
-      className={classnames("dropdown-menu", {
-        "menu-right": alignRight,
-        open: isDropDownOpen,
-      })}
+    <Transition
+      show={open}
+      as={Fragment}
+      enter="transition ease-out duration-100"
+      enterFrom="transform opacity-0 scale-95"
+      enterTo="transform opacity-100 scale-100"
+      leave="transition ease-in duration-75"
+      leaveFrom="transform opacity-100 scale-100"
+      leaveTo="transform opacity-0 scale-95"
     >
-      {history.length > 1 && (
-        <div className="dropdown-header">
-          <button className="dropdown-back-btn" onClick={pop}>
-            <BackIcon />
-          </button>
-          <span className="ml-3">{title}</span>
-        </div>
-      )}
-      {children}
-    </div>
+      <Menu.Items className={classnames("dropdown-menu", { open })} static>
+        {children}
+      </Menu.Items>
+    </Transition>
   )
 }
 
-export default DropDownMenu
+export default DropdownMenu

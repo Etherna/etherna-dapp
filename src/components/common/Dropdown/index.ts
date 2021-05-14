@@ -1,7 +1,11 @@
-import DropDown from "./DropDown"
-import DropDownItem from "./DropDownItem"
-import DropDownItemContent from "./DropDownItemContent"
-import DropDownMenu from "./DropDownMenu"
-import DropDownMenuToggle from "./DropDownMenuToggle"
+import Dropdown from "./Dropdown"
+import DropdownMenu from "./DropdownMenu"
+import DropdownItem from "./DropdownItem"
+import DropdownToggle from "./DropdownToggle"
 
-export { DropDown, DropDownItem, DropDownItemContent, DropDownMenu, DropDownMenuToggle }
+export {
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+  DropdownToggle
+}

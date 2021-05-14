@@ -1,21 +1,27 @@
 import React from "react"
+import { Menu } from "@headlessui/react"
 
 import "./dropdown.scss"
 
-import { DropDownContextProvider } from "./DropDownContext"
-import DropDownBackdrop from "./DropDownBackdrop"
+import DropdownMenu from "./DropdownMenu"
 
-type DropDownProps = {
-  children: React.ReactNode
+type DropdownProps = {
+  forceOpen?: boolean
 }
 
-const DropDown = ({ children }: DropDownProps) => {
+const Dropdown: React.FC<DropdownProps> = ({ children, forceOpen }) => {
   return (
-    <DropDownContextProvider>
-      <div className="dropdown">{children}</div>
-      <DropDownBackdrop />
-    </DropDownContextProvider>
+    <Menu as="div" className="dropdown">
+      {({ open }) => {
+        return React.Children.map(children, child => {
+          if (React.isValidElement(child) && (child as React.ReactElement).type === DropdownMenu) {
+            return React.cloneElement(child, { open: forceOpen || open })
+          }
+          return child
+        })
+      }}
+    </Menu>
   )
 }
 
-export default DropDown
+export default Dropdown

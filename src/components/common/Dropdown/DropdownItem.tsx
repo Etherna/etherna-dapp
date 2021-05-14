@@ -1,38 +1,85 @@
 import React from "react"
+import { Menu } from "@headlessui/react"
 import classnames from "classnames"
+import { Link } from "react-router-dom"
 
-type DropDownItemProps = {
-  children: React.ReactNode
+type DropdownItemProps = {
+  href?: string
+  icon?: React.ReactNode
+  suffix?: React.ReactNode
   disabled?: boolean
   inactive?: boolean
-  action?: () => void
+  btnAs?: React.ElementType
+  action?(): void
 }
 
-const DropDownItem = ({ children, disabled, inactive, action }: DropDownItemProps) => {
-  const handleAction = () => {
-    action && action()
-  }
+const DropdownItem: React.FC<DropdownItemProps> = ({
+  children,
+  href = "#",
+  icon,
+  suffix,
+  disabled,
+  inactive,
+  btnAs: BtnAs = "button",
+  action
+}) => {
+  const handleAction = (e: MouseEvent) => {
+    if (action || href === "#") {
+      e.preventDefault()
+      e.stopPropagation()
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleAction()
+      action?.()
+
+      return false
     }
   }
 
   return (
-    <div
-      className={classnames("dropdown-item", {
-        disabled: disabled,
-        inactive: inactive,
-      })}
-      role="button"
-      tabIndex={0}
-      onClick={handleAction}
-      onKeyDown={handleKeyDown}
-    >
-      {children}
-    </div>
+    <Menu.Item as="div" disabled={disabled || inactive}>
+      {({ active }) => {
+        const className = classnames("dropdown-item", {
+          active: active && !inactive,
+          disabled,
+          inactive,
+        })
+
+        const content = (
+          <>
+            {icon && (
+              <div className="dropdown-item-icon">
+                {icon}
+              </div>
+            )}
+
+            {children}
+
+            {suffix && (
+              <div className="dropdown-item-suffix">
+                {suffix}
+              </div>
+            )}
+          </>
+        )
+
+        if (href === "#") {
+          return <BtnAs
+            className={className}
+            onClick={(e: React.MouseEvent) => handleAction(e.nativeEvent)}>
+            {content}
+          </BtnAs>
+        }
+
+        return (
+          <Link
+            to={href}
+            className={className}
+            onClick={e => handleAction(e.nativeEvent)}>
+            {content}
+          </Link>
+        )
+      }}
+    </Menu.Item>
   )
 }
 
-export default DropDownItem
+export default DropdownItem

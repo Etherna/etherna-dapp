@@ -13,12 +13,12 @@ type DarkModeToggleProps = {
 const DarkModeToggle: React.FC<DarkModeToggleProps> = ({ enabled, onChange }) => {
   return (
     <div className="flex w-full items-center">
-      <DarkModeIcon />
-      <span>Dark Mode</span>
+      Dark Mode
+
       <Toggle
         className="ml-auto"
-        checkedIcon={<DarkModeIcon className="ml-1.5 p-0.5" />}
-        uncheckedIcon={<LightModeIcon className="ml-1.5 p-0.5" />}
+        checkedIcon={<DarkModeIcon />}
+        uncheckedIcon={<LightModeIcon />}
         checked={enabled}
         onChange={onChange}
       />
