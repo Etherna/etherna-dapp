@@ -50,10 +50,18 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ show = false }) => {
   }
 
   return (
-    <Modal show={show} showCloseButton={false}>
-      <div className="modal-header">
-        <h4 className="modal-title mx-auto">Crop the image</h4>
-      </div>
+    <Modal
+      show={show}
+      showCloseButton={false}
+      showCancelButton={true}
+      title="Crop the image"
+      footerButtons={
+        <Button action={handleContinue}>
+          Done
+        </Button>
+      }
+      onClose={handleCancel}
+    >
       <div className="flex justify-center my-6">
         <ReactCrop
           src={image!}
@@ -61,16 +69,6 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ show = false }) => {
           crop={crop}
           onChange={crop => setCrop(crop)}
         />
-      </div>
-      <div className="flex">
-        <div className="ml-auto flex space-x-3">
-          <Button action={handleCancel} aspect="secondary" size="small">
-            Cancel
-          </Button>
-          <Button action={handleContinue} size="small">
-            Done
-          </Button>
-        </div>
       </div>
     </Modal>
   )
