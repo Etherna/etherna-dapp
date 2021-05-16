@@ -1,33 +1,28 @@
-import React, { useRef } from "react"
+import React from "react"
 
 import { ReactComponent as MoreIcon } from "@svg/icons/more-icon.svg"
 
-import { DropDown, DropDownMenuToggle, DropDownItem, DropDownMenu } from "@common/DropDown"
-import Button from "@common/Button"
+import { Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from "@common/Dropdown"
 import StateLink from "@common/StateLink"
-import Routes from "@routes"
 import { Video } from "@classes/SwarmVideo/types"
+import Routes from "@routes"
 
 type VideoMenuProps = {
   video: Video
 }
 
-const VideoMenu = ({ video }: VideoMenuProps) => {
-  const menuRef = useRef<HTMLDivElement>(null)
-
+const VideoMenu: React.FC<VideoMenuProps> = ({ video }) => {
   return (
-    <DropDown>
-      <DropDownMenuToggle menuRef={menuRef}>
-        <Button aspect="transparent" rounded={true} size="small" className="w-2 h-2">
-          <MoreIcon className="m-auto" />
-        </Button>
-      </DropDownMenuToggle>
-      <DropDownMenu menuRef={menuRef}>
-        <DropDownItem>
+    <Dropdown>
+      <DropdownToggle className="btn btn-rounded btn-transparent btn-sm w-2 h-2">
+        <MoreIcon className="m-auto" />
+      </DropdownToggle>
+      <DropdownMenu>
+        <DropdownItem>
           <StateLink to={Routes.getVideoSettingsLink(video.hash)} state={video}>Video Settings</StateLink>
-        </DropDownItem>
-      </DropDownMenu>
-    </DropDown>
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
   )
 }
 

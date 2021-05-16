@@ -3,7 +3,7 @@ import classnames from "classnames"
 
 import "./avatar.scss"
 
-import SwarmImg from "@components/common/SwarmImg"
+import SwarmImg from "@common/SwarmImg"
 import makeBlockies from "@utils/makeBlockies"
 import SwarmImage from "@classes/SwarmImage"
 

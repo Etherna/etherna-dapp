@@ -1,7 +1,7 @@
 import React from "react"
 import { NavLink } from "react-router-dom"
 
-import SwarmImg from "@components/common/SwarmImg"
+import SwarmImg from "@common/SwarmImg"
 import makeBlockies from "@utils/makeBlockies"
 import SwarmImage from "@classes/SwarmImage"
 

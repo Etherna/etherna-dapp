@@ -16,8 +16,7 @@ const ModalsSection = () => {
   } = useSelector(state => state.ui)
   const mustConsentError =
     errorMessage &&
-    errorMessage.substring(0, 65) ===
-      "Error: Web3 Wallet Message Signature: User denied message signature."
+    errorMessage.substring(0, 65) === "Error: Web3 Wallet Message Signature: User denied message signature."
 
   return (
     <section>

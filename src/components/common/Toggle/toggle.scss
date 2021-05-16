@@ -1,0 +1,41 @@
+.toggle {
+  @apply flex items-center;
+}
+
+.toggle-label {
+  @apply mr-4;
+}
+
+.toggle-control {
+  @apply relative;
+  @apply inline-flex items-center;
+  @apply h-4 w-11 rounded-full;
+  @apply bg-gray-200 dark:bg-gray-700;
+  @apply transition-colors;
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500;
+
+  &.on {
+    @apply bg-green-500;
+  }
+}
+
+.toggle-knob {
+  @apply inline-block;
+  @apply flex items-center justify-center;
+  @apply w-6 h-6 bg-white rounded-full;
+  @apply border border-gray-200 dark:border-gray-700;
+  @apply text-gray-500;
+  @apply transform translate-x-0;
+  @apply transition-transform ease-in-out duration-200;
+
+  &.on {
+    @apply translate-x-5;
+  }
+
+  &:not([hidden]) svg {
+    &:not([hidden]) {
+      @apply w-4 h-4;
+      @apply m-0;
+    }
+  }
+}
