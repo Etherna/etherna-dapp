@@ -4,8 +4,8 @@
     "paths": {
       "@app/*": ["app/*"],
       "@classes/*": ["classes/*"],
-      "@components/*": ["components/*"],
       "@common/*": ["components/common/*"],
+      "@components/*": ["components/*"],
       "@keyboard": ["keyboard"],
       "@hooks/*": ["hooks/*"],
       "@keyboard/*": ["keyboard/*"],

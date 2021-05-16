@@ -5,7 +5,7 @@ import "./file-drag.scss"
 
 import { ReactComponent as UploadIcon } from "@svg/icons/upload-icon.svg"
 
-import Alert from "@components/common/Alert"
+import Alert from "@common/Alert"
 import { showError } from "@state/actions/modals"
 import { isMimeCompatible } from "@utils/mimeTypes"
 

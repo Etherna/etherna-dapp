@@ -56,7 +56,25 @@ const ShortcutModal = ({ show = false }) => {
   }
 
   return (
-    <Modal show={show} showCloseButton={true} onClose={() => closeShortcutModal()}>
+    <Modal
+      show={show}
+      showCloseButton={true}
+      footerButtons={
+        <>
+          <Button aspect="danger" action={deleteShortcut}>
+            Delete
+          </Button>
+          <Button
+            aspect="secondary"
+            action={overrideShortcut}
+            disabled={!!existingShortcut}
+          >
+            Save
+          </Button>
+        </>
+      }
+      onClose={() => closeShortcutModal()}
+    >
       <div
         ref={editorRef}
         className={classnames("shortcut-preview-container", {
@@ -76,19 +94,6 @@ const ShortcutModal = ({ show = false }) => {
           </span>
         </div>
       )}
-      <div className="flex space-x-2">
-        <Button aspect="danger" className="flex-1" action={deleteShortcut}>
-          Delete
-        </Button>
-        <Button
-          aspect="secondary"
-          className="flex-1"
-          action={overrideShortcut}
-          disabled={!!existingShortcut}
-        >
-          Save
-        </Button>
-      </div>
     </Modal>
   )
 }

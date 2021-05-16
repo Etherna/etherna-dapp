@@ -4,7 +4,7 @@ import { useVideoEditorState } from "../context"
 import ThumbnailUpload, { ThumbnailUploadHandlers } from "../ThumbnailUpload"
 import VideoSourcesUpload, { VideoSourcesUploadHandlers } from "../VideoSourcesUpload"
 import PinContentField from "../PinContentField"
-import MarkdownEditor from "@components/common/MarkdownEditor"
+import MarkdownEditor from "@common/MarkdownEditor"
 
 type VideoPropertiesProps = {
   isSubmitting?: boolean

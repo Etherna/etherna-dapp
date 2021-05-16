@@ -1,16 +1,17 @@
 import React from "react"
 
-import EnvExtensionPanel from "./EnvExtensionPanel"
-import { DropDownMenu } from "@common/DropDown"
+import ExtensionPanel from "./ExtensionPanel"
 import { enviromentActions } from "@state/actions"
 import useSelector from "@state/useSelector"
 
+export type PanelType = "index" | "gateway"
+
 type EnvDropDownMenusProps = {
-  indexMenuRef: React.RefObject<HTMLDivElement>
-  gatewayMenuRef: React.RefObject<HTMLDivElement>
+  panel: PanelType
+  onBack(): void
 }
 
-const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }: EnvDropDownMenusProps) => {
+const ExtensionPanelMenuItems: React.FC<EnvDropDownMenusProps> = ({ panel, onBack }) => {
   const { isSignedIn, isSignedInGateway } = useSelector(state => state.user)
   const {
     indexHost,
@@ -43,8 +44,9 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }: EnvDropDownMenusProp
 
   return (
     <>
-      <DropDownMenu title="Etherna Index" menuRef={indexMenuRef} alignRight={true}>
-        <EnvExtensionPanel
+      {panel === "index" && (
+        <ExtensionPanel
+          title="Etherna Index"
           description={"You can change the default Etherna Index here"}
           host={indexHost}
           apiPath={indexApiPath}
@@ -55,11 +57,13 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }: EnvDropDownMenusProp
           onSave={handleIndexUpdate}
           onSignin={() => indexClient.loginRedirect()}
           onSignout={() => indexClient.logoutRedirect()}
+          onBack={onBack}
         />
-      </DropDownMenu>
+      )}
 
-      <DropDownMenu title="Swarm Gateway" menuRef={gatewayMenuRef} alignRight={true}>
-        <EnvExtensionPanel
+      {panel === "gateway" && (
+        <ExtensionPanel
+          title="Swarm Gateway"
           description={"Here you can specify a different Swarm Gateway"}
           host={gatewayHost}
           apiPath={gatewayApiPath}
@@ -70,10 +74,11 @@ const EnvDropDownMenus = ({ indexMenuRef, gatewayMenuRef }: EnvDropDownMenusProp
           onSave={handleGatewayUpdate}
           onSignin={() => gatewayClient.loginRedirect()}
           onSignout={() => gatewayClient.logoutRedirect()}
+          onBack={onBack}
         />
-      </DropDownMenu>
+      )}
     </>
   )
 }
 
-export default EnvDropDownMenus
+export default ExtensionPanelMenuItems
