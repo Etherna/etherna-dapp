@@ -1,8 +1,8 @@
 import React, { useState, useRef, useCallback, useEffect } from "react"
 import ReactCrop, { Crop } from "react-image-crop"
 
-import Modal from "@components/common/Modal"
-import Button from "@components/common/Button"
+import Modal from "@common/Modal"
+import Button from "@common/Button"
 import useSelector from "@state/useSelector"
 import { useImageCrop } from "@state/hooks/ui"
 

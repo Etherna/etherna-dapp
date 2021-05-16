@@ -4,7 +4,7 @@ import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 
 import Modal from "@common/Modal"
 import Button from "@common/Button"
-import SwarmImg from "@components/common/SwarmImg"
+import SwarmImg from "@common/SwarmImg"
 import { showError } from "@state/actions/modals"
 
 type VideoDeleteModalProps = {

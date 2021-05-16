@@ -3,7 +3,7 @@ import { createFFmpeg } from "@ffmpeg/ffmpeg"
 
 import "./video-encoder.scss"
 
-import Button from "@components/common/Button"
+import Button from "@common/Button"
 import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 import { showError } from "@state/actions/modals"
 import { isMimeCompatible } from "@utils/mimeTypes"

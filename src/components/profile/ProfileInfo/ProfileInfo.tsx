@@ -2,7 +2,7 @@ import React, { useEffect } from "react"
 
 import "./profile-info.scss"
 
-import SwarmImg from "@components/common/SwarmImg"
+import SwarmImg from "@common/SwarmImg"
 import { Profile } from "@classes/SwarmProfile/types"
 import useSwarmProfile from "@hooks/useSwarmProfile"
 import { showError } from "@state/actions/modals"
