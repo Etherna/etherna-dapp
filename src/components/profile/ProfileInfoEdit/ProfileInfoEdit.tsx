@@ -5,7 +5,6 @@ import "./profile-info-edit.scss"
 import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 
 import Button from "@common/Button"
-import Modal from "@common/Modal"
 import MarkdownEditor from "@common/MarkdownEditor"
 import { Profile } from "@classes/SwarmProfile/types"
 import SwarmImage from "@classes/SwarmImage"
@@ -13,6 +12,7 @@ import SwarmProfile from "@classes/SwarmProfile"
 import useSelector from "@state/useSelector"
 import { useImageCrop } from "@state/hooks/ui"
 import makeBlockies from "@utils/makeBlockies"
+import { showError } from "@state/actions/modals"
 
 type ImageType = "avatar" | "cover"
 
@@ -48,7 +48,6 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
   const [profileCover, setProfileCover] = useState(cover)
   const [isUploadingCover, setUploadingCover] = useState(false)
   const [isUploadingAvatar, setUploadingAvatar] = useState(false)
-  const [showUploadErrorModal, setShowUploadErrorModal] = useState(false)
 
   const imagesUtils: ImagesUtils = {
     avatar: {
@@ -108,7 +107,7 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
       imagesUtils[type].updateImage(responsiveImage)
     } catch (error) {
       console.error(error)
-      setShowUploadErrorModal(true)
+      showError("Cannot upload the image", error.message)
     }
 
     // reset inputs
@@ -204,12 +203,6 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
           />
         </div>
       </div>
-
-      <Modal show={showUploadErrorModal} setShow={setShowUploadErrorModal} showCloseButton={true}>
-        <div className="flex">
-          <p>There was an error trying to upload the image. Try again later.</p>
-        </div>
-      </Modal>
     </div>
   )
 }

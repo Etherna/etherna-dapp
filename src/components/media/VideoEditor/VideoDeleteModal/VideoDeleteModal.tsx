@@ -40,10 +40,26 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
   }
 
   return (
-    <Modal show={show} showCloseButton={false}>
-      <div className="modal-header">
-        <h4 className="modal-title mx-auto">Delete Video</h4>
-      </div>
+    <Modal
+      show={show}
+      showCancelButton={!isDeleting}
+      title="Delete Video"
+      footerButtons={
+        <>
+          {!isDeleting && (
+            <>
+              <Button aspect="danger" action={handleDelete}>
+                Yes, Delete
+              </Button>
+            </>
+          )}
+          {isDeleting && (
+            <Spinner width="30" />
+          )}
+        </>
+      }
+      onClose={onCancel}
+    >
       <div className="flex my-4">
         <div className="col sm:w-1/4">
           <SwarmImg
@@ -57,27 +73,10 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
           <h4 className="ml-2 mt-3">{title}</h4>
         </div>
       </div>
-      <p className="text-gray-600 my-6">
+      <p>
         Do you confirm to delete this video? <br />
         This operation cannot be undone.
       </p>
-      <div className="flex">
-        <div className="ml-auto">
-          {!isDeleting && (
-            <>
-              <Button action={onCancel} aspect="secondary" size="small">
-                Cancel
-              </Button>
-              <Button aspect="danger" size="small" className="ml-3" action={handleDelete}>
-                Yes, Delete
-              </Button>
-            </>
-          )}
-          {isDeleting && (
-            <Spinner width="30" />
-          )}
-        </div>
-      </div>
     </Modal>
   )
 }
