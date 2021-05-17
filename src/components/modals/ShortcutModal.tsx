@@ -8,8 +8,8 @@ import { ReactComponent as WarningIcon } from "@svg/icons/warning-icon.svg"
 import { closeShortcutModal } from "@state/actions/modals"
 import { saveShortcut, shortcutExists } from "@state/actions/enviroment/shortcuts"
 import useSelector from "@state/useSelector"
+import { keyEventToString } from "@utils/keyboard"
 
-const key2string = require("key-event-to-string")()
 
 const ShortcutModal = ({ show = false }) => {
   const { shortcutNamespace, shortcutKey, keymap, lang } = useSelector(state => state.env)
@@ -50,9 +50,8 @@ const ShortcutModal = ({ show = false }) => {
     e.stopPropagation()
     e.preventDefault()
 
-    const shortcut = key2string(e).toLowerCase()
+    const shortcut = keyEventToString(e.nativeEvent)
     setShortcut(shortcut)
-
     setExistingShortcut(!!shortcutExists(shortcut))
   }
 

@@ -1,6 +1,3 @@
-// set dynamic app url before any imports
-import "./app/publicPath"
-
 import React from "react"
 import ReactDOM from "react-dom"
 

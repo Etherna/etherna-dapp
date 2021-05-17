@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import InfiniteScroller from "react-infinite-scroller"
+import InfiniteScroller from "react-infinite-scroll-component"
 
 import "./profiles.scss"
 
@@ -45,10 +45,11 @@ const ProfilesView = () => {
       {profiles === undefined && <ProfilePreviewPlaceholder />}
 
       <InfiniteScroller
-        loadMore={fetchProfiles}
+        dataLength={profiles?.length ?? 0}
+        next={fetchProfiles}
         hasMore={hasMore}
-        initialLoad={false}
-        threshold={30}
+        scrollThreshold={30}
+        loader={<div />}
       >
         {profiles ? (
           profiles.map((profile, index) => (

@@ -1,3 +1,4 @@
+import React from "react"
 import { useLocation } from "react-router-dom"
 
 import LayoutWrapper from "@components/layout/DefaultLayout/LayoutWrapper"

@@ -71,7 +71,7 @@ export type EnvActions = (
 )
 
 // Init reducer
-const creditHost = window.localStorage.getItem("creditHost") || process.env.REACT_APP_CREDIT_HOST
+const creditHost = window.localStorage.getItem("creditHost") || import.meta.env.VITE_APP_CREDIT_HOST
 const indexClient = new EthernaIndexClient({
   host: EthernaIndexClient.defaultHost,
   apiPath: EthernaIndexClient.defaultApiPath

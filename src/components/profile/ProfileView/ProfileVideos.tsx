@@ -1,5 +1,5 @@
 import React from "react"
-import InfiniteScroller from "react-infinite-scroller"
+import InfiniteScroller from "react-infinite-scroll-component"
 
 import VideoGrid from "@components/video/VideoGrid"
 import { Video } from "@classes/SwarmVideo/types"
@@ -8,7 +8,7 @@ type ProfileVideosProps = {
   videos: Video[]
   isFetching: boolean
   hasMoreVideos: boolean
-  onLoadMore: (page: number) => void
+  onLoadMore(): void
 }
 
 const ProfileVideos: React.FC<ProfileVideosProps> = ({ videos, isFetching, hasMoreVideos, onLoadMore }) => {
@@ -22,10 +22,11 @@ const ProfileVideos: React.FC<ProfileVideosProps> = ({ videos, isFetching, hasMo
       )}
       {videos && videos.length > 0 && (
         <InfiniteScroller
-          loadMore={onLoadMore}
+          dataLength={videos?.length ?? 0}
+          next={onLoadMore}
           hasMore={hasMoreVideos}
-          initialLoad={false}
-          threshold={30}
+          scrollThreshold={30}
+          loader={<div />}
         >
           <VideoGrid videos={videos} mini={true} />
         </InfiniteScroller>

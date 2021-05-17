@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react"
+import React, { lazy, Suspense } from "react"
 import { Switch, Route, useLocation } from "react-router-dom"
 
 import { ProfileOwnerRoute, SignedInRoute, WatchRoute } from "./ProtectedRoutes"

@@ -1,3 +1,5 @@
+import React from "react"
+
 const FeedbackButton = () => {
   const handleFeedback = () => {
     const atl = window.ATL_JQ_PAGE_PROPS || {}

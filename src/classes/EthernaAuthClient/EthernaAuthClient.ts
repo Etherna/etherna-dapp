@@ -39,10 +39,10 @@ export default class EthernaAuthClient {
   }
 
   static get defaultHost(): string {
-    return window.localStorage.getItem("authHost") ?? process.env.REACT_APP_AUTH_HOST
+    return window.localStorage.getItem("authHost") ?? import.meta.env.VITE_APP_AUTH_HOST
   }
 
   static get defaultApiPath(): string {
-    return window.localStorage.getItem("authApiPath") ?? process.env.REACT_APP_AUTH_API_PATH
+    return window.localStorage.getItem("authApiPath") ?? import.meta.env.VITE_APP_AUTH_API_PATH
   }
 }

@@ -9,16 +9,16 @@ jobs:
   build:
     name: Deploy
     env:
-      REACT_APP_NAME: "Etherna"
-      REACT_APP_TAGLINE: "A transparent video platform"
-      REACT_APP_INFURA_ID: ${{ secrets.INFURA_ID }}
-      REACT_APP_INDEX_HOST: "https://index.etherna.io"
-      REACT_APP_INDEX_API_PATH: "/api/v0.2"
-      REACT_APP_GATEWAY_HOST: "https://gateway.etherna.io"
-      REACT_APP_GATEWAY_API_PATH: "/api/v0.2"
-      REACT_APP_CREDIT_HOST: "https://credit.etherna.io"
-      REACT_APP_AUTH_HOST: "https://sso.etherna.io"
-      REACT_APP_AUTH_API_PATH: "/api/v0.2"
+      VITE_APP_NAME: "Etherna"
+      VITE_APP_TAGLINE: "A transparent video platform"
+      VITE_APP_INFURA_ID: ${{ secrets.INFURA_ID }}
+      VITE_APP_INDEX_HOST: "https://index.etherna.io"
+      VITE_APP_INDEX_API_PATH: "/api/v0.2"
+      VITE_APP_GATEWAY_HOST: "https://gateway.etherna.io"
+      VITE_APP_GATEWAY_API_PATH: "/api/v0.2"
+      VITE_APP_CREDIT_HOST: "https://credit.etherna.io"
+      VITE_APP_AUTH_HOST: "https://sso.etherna.io"
+      VITE_APP_AUTH_API_PATH: "/api/v0.2"
       GENERATE_SOURCEMAP: false
     runs-on: ubuntu-latest
     steps:

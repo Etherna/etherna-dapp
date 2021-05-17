@@ -2,6 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import "./video-preview.scss"
+import thumbPlaceholder from "@svg/backgrounds/thumb-placeholder.svg?url"
 
 import VideoMenu from "../VideoMenu"
 import StateLink from "@common/StateLink"
@@ -49,8 +50,8 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile }) => {
         <div className="video-thumbnail">
           <SwarmImg
             image={video.thumbnail}
-            fallback={require("@svg/backgrounds/thumb-placeholder.svg").default}
-            className="w-full h-full object-cover"
+            fallback={thumbPlaceholder}
+            className="w-full h-full"
           />
           <div className="video-duration">
             <Time duration={video.duration} />

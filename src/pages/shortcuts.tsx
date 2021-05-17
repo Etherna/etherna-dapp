@@ -1,3 +1,5 @@
+import React from "react"
+
 import LayoutWrapper from "@components/layout/DefaultLayout/LayoutWrapper"
 import SEO from "@components/layout/SEO"
 import ShortcutsEditor from "@components/settings/ShortcutsEditor"

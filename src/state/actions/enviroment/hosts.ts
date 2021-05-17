@@ -26,13 +26,13 @@ export const updateGatewayHost = (host: string, apiPath?: string) => {
 }
 
 export const resetIndexHost = () => {
-  const host = process.env.REACT_APP_INDEX_HOST
-  const apiPath = process.env.REACT_APP_INDEX_API_PATH
+  const host = import.meta.env.VITE_APP_INDEX_HOST
+  const apiPath = import.meta.env.VITE_APP_INDEX_API_PATH
   updateIndexHost(host, apiPath)
 }
 
 export const resetGatewayHost = () => {
-  const host = process.env.REACT_APP_GATEWAY_HOST
-  const apiPath = process.env.REACT_APP_INDEX_API_PATH
+  const host = import.meta.env.VITE_APP_GATEWAY_HOST
+  const apiPath = import.meta.env.VITE_APP_INDEX_API_PATH
   updateGatewayHost(host, apiPath)
 }
