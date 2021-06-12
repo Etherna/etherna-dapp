@@ -16,7 +16,7 @@ const WatchPage = () => {
   if (!hash) return null
 
   return (
-    <LayoutWrapper hideSidebar={true}>
+    <LayoutWrapper hideSidebar floatingSidebar>
       <SEO title="Watch" />
       <VideoView hash={hash} routeState={routeState} />
     </LayoutWrapper>

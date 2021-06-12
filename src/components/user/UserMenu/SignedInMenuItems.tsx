@@ -18,7 +18,7 @@ const SignedInMenuItems: React.FC = () => {
     <>
       <DropdownItem disabled>
         <Avatar image={avatar} address={address} />
-        <div className="flex flex-col flex-1 ml-2">
+        <div className="flex flex-col flex-1 items-start ml-2">
           <span>
             {checkIsEthAddress(name) ? shortenEthAddr(name) : name || shortenEthAddr(address)}
           </span>

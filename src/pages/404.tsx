@@ -9,9 +9,9 @@ import Routes from "@routes"
 const NotFoundPage = () => {
   return (
     <LayoutWrapper emptyLayout={true} hideSidebar>
-      <div className="bg-gray-100 h-screen">
+      <div className="bg-gray-100 dark:bg-gray-800 h-screen">
         <SEO title="404: Not found" />
-        <div className="row text-gray-900 py-32">
+        <div className="row text-gray-900 dark:text-gray-100 py-32">
           <div className="col md:w-1/2 px-20">
             <NotFoundImage className="mx-auto my-12" />
           </div>
@@ -20,7 +20,7 @@ const NotFoundPage = () => {
               Oops! <br />
               Page not found
             </h2>
-            <p className="text-gray-700">The page you are looking for doesn't exist</p>
+            <p className="text-gray-700 dark:text-gray-300">The page you are looking for doesn't exist</p>
 
             <h3 className="mt-12">Resources</h3>
             <nav className="flex flex-col">
