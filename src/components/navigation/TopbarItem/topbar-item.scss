@@ -1,0 +1,38 @@
+.topbar-item {
+  @apply flex items-center justify-items-center;
+  @apply space-x-2 mx-2.5 py-1.5;
+  @apply rounded;
+  @apply cursor-pointer;
+  @apply transition-colors duration-300;
+  @apply text-gray-800 dark:text-gray-200;
+
+  @screen lg {
+    @apply justify-items-stretch;
+  }
+
+  &:not(.topbar-item-static) {
+    @apply px-3.5;
+    @apply active:bg-opacity-50 active:text-gray-900;
+    @apply hover:bg-gray-200 hover:text-gray-900;
+    @apply dark:active:text-gray-100;
+    @apply dark:hover:bg-gray-800 dark:hover:text-gray-100;
+  }
+
+  &.active {
+    @apply text-gray-100;
+  }
+
+  &-icon {
+    @apply w-6 h-6;
+    @screen lg {
+      @apply w-5 h-5;
+    }
+  }
+
+  &-title {
+    @apply hidden;
+    @screen lg {
+      @apply inline font-semibold text-sm;
+    }
+  }
+}

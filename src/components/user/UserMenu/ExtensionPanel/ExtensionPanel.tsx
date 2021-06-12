@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react"
 import classnames from "classnames"
 
 import "./extension-panel.scss"
-import { ReactComponent as BackIcon } from "@svg/icons/back-icon.svg"
+import { ReactComponent as BackIcon } from "@svg/icons/navigation/back.svg"
 
 import Button from "@common/Button"
 import http from "@utils/request"

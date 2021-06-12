@@ -15,7 +15,7 @@ const ExploreView = () => {
       scrollThreshold={30}
       loader={<div />}
     >
-      <VideoGrid label="New videos" videos={videos} />
+      <VideoGrid videos={videos} />
     </InfiniteScroller>
   )
 }

@@ -1,0 +1,25 @@
+.tabbar-item {
+  @apply flex flex-col flex-1 items-center justify-items-center rounded space-y-0.5 px-4 py-2;
+  @apply cursor-pointer transition-colors duration-300;
+  @apply active:bg-gray-200 active:text-gray-800;
+  @apply hover:bg-gray-200 hover:text-gray-800;
+  @apply text-gray-800 dark:text-gray-200;
+  @apply dark:active:bg-gray-800 dark:active:text-gray-100;
+  @apply dark:hover:bg-gray-800 dark:hover:text-gray-100;
+
+  &.active {
+    @apply text-green-500;
+  }
+
+  &-icon {
+    @apply w-5 h-5;
+    svg {
+      @apply fill-current;
+    }
+  }
+
+  &-title {
+    @apply font-semibold;
+    font-size: 10px;
+  }
+}

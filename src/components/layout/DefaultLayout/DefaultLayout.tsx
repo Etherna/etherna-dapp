@@ -3,8 +3,9 @@ import React from "react"
 import "./layout.scss"
 
 import { LayoutContextProvider, useStateValue } from "./LayoutContext"
-import Header from "@components/layout/Header"
-import Sidebar from "@components/layout/Sidebar"
+import SidebarNavigation from "@components/layout/SidebarNavigation"
+import TopbarNavigation from "@components/layout/TopbarNavigation"
+import TabbarNavigation from "@components/layout/TabbarNavigation"
 import Modals from "@components/modals/ModalsSection"
 
 const Layout: React.FC = ({ children }) => {
@@ -25,9 +26,21 @@ const LayoutContent: React.FC = ({ children }) => {
 
   return (
     <>
-      <Header />
-      {!hideSidebar && <Sidebar />}
-      <main>{children}</main>
+      <div className="app-layout">
+
+        <SidebarNavigation />
+
+        <main>
+          <TopbarNavigation />
+          <TabbarNavigation />
+
+          <div className="container-fluid main">
+            {children}
+          </div>
+        </main>
+
+      </div>
+
       <Modals />
     </>
   )

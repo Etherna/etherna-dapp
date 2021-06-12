@@ -3,6 +3,7 @@ import classnames from "classnames"
 
 import "./user-credit.scss"
 
+import UserCreditBadge from "./UserCreditBadge"
 import Button from "@common/Button"
 import Popup from "@common/Popup"
 import useSelector from "@state/useSelector"
@@ -11,30 +12,6 @@ import loginRedirect from "@state/actions/user/loginRedirect"
 const UserCredit = () => {
   const { creditHost, bytePrice } = useSelector(state => state.env)
   const { credit, isSignedInGateway } = useSelector(state => state.user)
-  const [isHover, setIsHover] = useState(false)
-  const [showPopup, setShowPopup] = useState(false)
-  const [popupCenter, setPopupCenter] = useState<[number, number]>([0, 0])
-  const [creditWidth, setCreditWidth] = useState(0)
-  const creditRef = useRef<HTMLSpanElement>(null)
-
-  const maxWidth = 60
-  const expandable = creditWidth > maxWidth
-  const currentWidth = !expandable || isHover ? creditWidth : maxWidth
-  const fixedCredit = `${+(credit || 0).toFixed(12)}`
-
-  useEffect(() => {
-    if (!creditRef.current) return
-
-    const fullWidth = creditRef.current.scrollWidth || 0
-    setCreditWidth(fullWidth)
-
-    const creditBounds = creditRef.current.getBoundingClientRect()
-    const width = creditBounds.width || (fullWidth < maxWidth ? fullWidth : maxWidth)
-    const x = creditBounds.right - width / 2
-    const y = creditBounds.bottom + 10
-    setPopupCenter([x, y])
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [creditRef])
 
   const gbReproduction = useMemo(() => {
     if (!credit || !bytePrice || bytePrice === 0) return "0.000"
@@ -43,23 +20,12 @@ const UserCredit = () => {
 
   return (
     <div className="user-credit-wrapper">
-      <div
-        className={classnames("user-credit-badge", {
-          expandable,
-          "user-credit-badge-warning": false, // gbReproduction < 1 && gbReproduction >= 0.1,
-          "user-credit-badge-danger": false, // gbReproduction < 0.1,
-        })}
-        onMouseEnter={() => setIsHover(true)}
-        onMouseLeave={() => setIsHover(false)}
-        onClick={() => setShowPopup(!showPopup)}
+      <Popup
+        toggle={
+          <UserCreditBadge credit={credit} />
+        }
+        placement="bottom"
       >
-        <span className="credit-text-sm">USD</span>
-        <span className="credit-text-lg" style={{ width: `${currentWidth}px` }} ref={creditRef}>
-          {fixedCredit}
-        </span>
-      </div>
-
-      <Popup show={showPopup} center={popupCenter} onClose={() => setShowPopup(false)}>
         <div className="user-credit-popup">
           {isSignedInGateway ? (
             <>

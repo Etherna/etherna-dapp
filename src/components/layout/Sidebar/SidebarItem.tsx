@@ -8,7 +8,7 @@ import SwarmImage from "@classes/SwarmImage"
 type SidebarItemProps = {
   image: string | SwarmImage | undefined
   fallbackAddress?: string
-  name: string
+  name?: string
   link: string
 }
 
@@ -21,7 +21,9 @@ const SidebarItem = ({ image, fallbackAddress, name, link }: SidebarItemProps) =
         className="sidebar-item-image"
         style={{}}
       />
-      <div className="sidebar-item-title">{name}</div>
+      {name && (
+        <div className="sidebar-item-title">{name}</div>
+      )}
     </NavLink>
   )
 }

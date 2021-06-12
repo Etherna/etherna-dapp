@@ -1,0 +1,19 @@
+.topbar {
+  @apply fixed flex items-center top-0 inset-x-0;
+  @apply h-14 px-1 py-2.5;
+  @apply bg-gray-50 bg-opacity-90;
+  @apply dark:bg-gray-900;
+  @apply z-10;
+  backdrop-filter: blur(8px);
+
+  @screen lg {
+    @apply h-16 py-3.5;
+  }
+}
+
+.topbar ~ .main {
+  @apply mt-16;
+  @screen lg {
+    @apply mt-20;
+  }
+}

@@ -1,0 +1,19 @@
+.tabbar {
+  @apply fixed flex items-center justify-around bottom-0 inset-x-0;
+  @apply h-16 px-1 py-2.5;
+  @apply bg-gray-50 bg-opacity-90;
+  @apply dark:bg-gray-900;
+  @apply z-10;
+  backdrop-filter: blur(8px);
+
+  @screen sm {
+    @apply hidden;
+  }
+}
+
+.tabbar ~ .main {
+  @apply mb-20;
+  @screen lg {
+    @apply mb-0;
+  }
+}

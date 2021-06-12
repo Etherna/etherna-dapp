@@ -1,22 +1,113 @@
 .popup {
-  @apply fixed transform scale-y-0 origin-top transition duration-200 z-20;
+}
 
-  &-arrow {
-    @apply absolute w-5 h-4 bg-white;
-    @apply dark:bg-gray-800;
-    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+.popup-toggle {
+  @apply appearance-none;
+  @apply bg-transparent;
+}
+
+.popup-panel {
+  @apply absolute;
+  @apply opacity-0 pointer-events-none;
+  @apply transition-opacity duration-75;
+  @apply z-20;
+
+  &[data-popper-placement^=top] {
+    @apply mb-4;
+
+    .popup-content {
+      @apply mb-2.5;
+    }
+    .popup-arrow {
+      @apply bottom-0;
+      @apply mb-0.5;
+    }
+  }
+  &[data-popper-placement^=bottom] {
+    @apply mt-4;
+
+    .popup-content {
+      @apply mt-2.5;
+    }
+    .popup-arrow {
+      @apply top-0;
+      @apply mt-0.5;
+
+      &::after {
+        @apply transform rotate-45 scale-150 translate-y-[7px] translate-x-1/2 origin-top;
+        margin-top: -0.5px;
+      }
+    }
+  }
+  &[data-popper-placement^=left] {
+    @apply mr-4;
+
+    .popup-content {
+      @apply mr-2.5;
+    }
+    .popup-arrow {
+      @apply right-0;
+      @apply mr-0.5;
+    }
+  }
+  &[data-popper-placement^=right] {
+    @apply ml-4;
+
+    .popup-content {
+      @apply ml-2.5;
+    }
+    .popup-arrow {
+      @apply top-0;
+      @apply ml-0.5;
+
+      &::after {
+        @apply transform rotate-45 scale-150 translate-x-[7px] -translate-y-1/2 origin-left;
+        margin-top: -0.5px;
+      }
+    }
   }
 
-  &-content {
-    @apply absolute inset-x-0 bottom-0 bg-white rounded shadow-xl;
-    @apply dark:bg-gray-800;
+  &.open {
+    @apply visible pointer-events-auto;
+    @apply opacity-100;
+  }
+}
+
+.popup-content {
+  @apply p-4;
+  @apply rounded-md;
+  @apply min-w-[240px];
+}
+
+.popup-arrow {
+  @apply absolute;
+
+  &::before {
+    content: '';
+    @apply absolute;
+    @apply visible;
+    @apply transform rotate-45;
+    @apply w-4 h-4;
   }
 
-  &-backdrop {
-    @apply fixed inset-x-0 inset-y-0 bg-transparent z-10;
+  &::after {
+    content: '';
+    @apply absolute;
+    @apply visible;
+    @apply w-4 h-4;
   }
+}
 
-  &.show {
-    @apply scale-y-100;
-  }
+.popup-arrow::before,
+.popup-arrow::after,
+.popup-content {
+  @apply bg-white;
+  @apply dark:bg-gray-800;
+}
+
+.popup-arrow::before,
+.popup-content {
+  @apply border;
+  @apply border-gray-100;
+  @apply dark:border-gray-700;
 }

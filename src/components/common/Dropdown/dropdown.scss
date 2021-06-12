@@ -4,6 +4,7 @@
 
 .dropdown-toggle {
   @apply cursor-pointer z-1;
+  @apply text-gray-800 dark:text-gray-100;
 }
 
 .dropdown-menu {

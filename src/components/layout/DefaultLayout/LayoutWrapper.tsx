@@ -10,8 +10,7 @@ type LayoutWrapperProps = {
 }
 
 const LayoutWrapper = ({ children, hideSidebar = false, emptyLayout = false }: LayoutWrapperProps) => {
-  // eslint-disable-next-line no-unused-vars
-  const [,dispatch] = useStateValue()
+  const [, dispatch] = useStateValue()
 
   useEffect(() => {
     dispatch({

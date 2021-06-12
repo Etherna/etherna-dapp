@@ -7,11 +7,11 @@ $color-gray-800: #262626;
   @apply flex items-baseline bg-gray-100 rounded-full h-10 px-4 py-2 cursor-pointer;
   @apply dark:bg-gray-800;
 
-  .credit-text-sm {
+  .credit-currency {
     @apply text-xs text-gray-600 tracking-tighter;
     @apply dark:text-gray-400;
   }
-  .credit-text-lg {
+  .credit-value {
     @apply relative text-gray-900 text-xl font-bold ml-1 overflow-hidden transition-all duration-300;
     @apply dark:text-gray-200;
   }

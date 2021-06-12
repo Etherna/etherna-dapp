@@ -1,0 +1,35 @@
+.sidebar {
+  @apply hidden px-2.5 py-3;
+  @apply bg-gray-100 dark:bg-gray-800;
+  @apply z-1;
+
+  @screen sm {
+    @apply fixed left-0 inset-y-0 flex w-20;
+  }
+  @screen lg {
+    @apply w-64;
+  }
+
+  &-container {
+    @apply flex flex-col w-full space-y-3;
+  }
+}
+
+
+.sidebar + main {
+  @screen sm {
+    @apply pl-20;
+  }
+  @screen lg {
+    @apply pl-64;
+  }
+
+  > .topbar {
+    @screen sm {
+      @apply left-20;
+    }
+    @screen lg {
+      @apply left-64;
+    }
+  }
+}
