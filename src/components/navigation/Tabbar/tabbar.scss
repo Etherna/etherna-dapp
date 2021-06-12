@@ -1,5 +1,6 @@
 .tabbar {
-  @apply fixed flex items-center justify-around bottom-0 inset-x-0;
+  @apply fixed flex items-center justify-center;
+  @apply bottom-0 inset-x-0;
   @apply h-16 px-1 py-2.5;
   @apply bg-gray-50 bg-opacity-90;
   @apply dark:bg-gray-900;

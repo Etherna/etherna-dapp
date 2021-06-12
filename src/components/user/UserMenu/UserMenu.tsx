@@ -39,7 +39,7 @@ const UserMenu: React.FC = () => {
   return (
     <>
       <Dropdown forceOpen={selectedPanel !== undefined}>
-        <DropdownToggle className="btn btn-rounded btn-transparent mr-2">
+        <DropdownToggle className="btn btn-rounded btn-transparent">
           {isSignedIn === false ? (
             <MoreIcon />
           ) : (
