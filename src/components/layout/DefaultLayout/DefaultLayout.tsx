@@ -18,7 +18,7 @@ const Layout: React.FC = ({ children }) => {
 
 const LayoutContent: React.FC = ({ children }) => {
   const [state] = useStateValue()
-  const { emptyLayout, hideSidebar } = state
+  const { emptyLayout } = state
 
   if (emptyLayout) {
     return <main>{children}</main>

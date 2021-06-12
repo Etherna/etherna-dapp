@@ -1,7 +1,7 @@
 .sidebar {
   @apply hidden px-2.5 py-3;
   @apply bg-gray-100 dark:bg-gray-800;
-  @apply z-1;
+  @apply z-20;
 
   @screen sm {
     @apply fixed left-0 inset-y-0 flex w-20;
@@ -10,13 +10,27 @@
     @apply w-64;
   }
 
-  &-container {
-    @apply flex flex-col w-full space-y-3;
+  &.floating {
+    @apply transform -translate-x-full;
+    @apply transition-transform duration-300;
+  }
+
+  &.show {
+    @apply translate-x-0;
   }
 }
 
+.sidebar-container {
+  @apply flex flex-col w-full space-y-3;
+}
 
-.sidebar + main {
+.sidebar-backdrop {
+  @apply fixed inset-0;
+  @apply bg-gray-900 bg-opacity-30;
+  @apply z-20;
+}
+
+.sidebar:not(.floating) + main {
   @screen sm {
     @apply pl-20;
   }

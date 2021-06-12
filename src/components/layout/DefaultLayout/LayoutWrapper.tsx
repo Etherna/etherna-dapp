@@ -6,10 +6,11 @@ import { useStateValue, ReducerTypes } from "./LayoutContext"
 type LayoutWrapperProps = {
   children: React.ReactNode
   hideSidebar?: boolean
+  floatingSidebar?: boolean
   emptyLayout?: boolean
 }
 
-const LayoutWrapper = ({ children, hideSidebar = false, emptyLayout = false }: LayoutWrapperProps) => {
+const LayoutWrapper = ({ children, hideSidebar = false, floatingSidebar = false, emptyLayout = false }: LayoutWrapperProps) => {
   const [, dispatch] = useStateValue()
 
   useEffect(() => {
@@ -20,6 +21,10 @@ const LayoutWrapper = ({ children, hideSidebar = false, emptyLayout = false }: L
     dispatch({
       type: ReducerTypes.SET_HIDE_SIDEBAR,
       hideSidebar,
+    })
+    dispatch({
+      type: ReducerTypes.SET_FLOATING_SIDEBAR,
+      floatingSidebar,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

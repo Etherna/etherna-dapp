@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer } from "react"
 
-const LayoutContext = createContext<LayoutContextStore|undefined>(undefined)
+const LayoutContext = createContext<LayoutContextStore | undefined>(undefined)
 
 // Types
 type LayoutContextStore = [state: LayoutContextState, dispatch: React.Dispatch<AnyAction>]
@@ -8,12 +8,14 @@ type LayoutContextStore = [state: LayoutContextState, dispatch: React.Dispatch<A
 type LayoutContextState = {
   emptyLayout: boolean
   hideSidebar: boolean
+  floatingSidebar: boolean
 }
 
 // Actions
 export const ReducerTypes = {
   SET_EMPTY_LAYOUT: "SET_EMPTY_LAYOUT",
   SET_HIDE_SIDEBAR: "SET_HIDE_SIDEBAR",
+  SET_FLOATING_SIDEBAR: "SET_FLOATING_SIDEBAR",
 } as const
 
 type SetEmptyLayoutAction = {
@@ -24,7 +26,11 @@ type SetHideSidebarAction = {
   type: typeof ReducerTypes.SET_HIDE_SIDEBAR,
   hideSidebar: boolean
 }
-type AnyAction = SetEmptyLayoutAction | SetHideSidebarAction
+type SetFloatingSidebarAction = {
+  type: typeof ReducerTypes.SET_FLOATING_SIDEBAR,
+  floatingSidebar: boolean
+}
+type AnyAction = SetEmptyLayoutAction | SetHideSidebarAction | SetFloatingSidebarAction
 
 // Reducer
 const reducer = (state: LayoutContextState, action: AnyAction): LayoutContextState => {
@@ -41,6 +47,12 @@ const reducer = (state: LayoutContextState, action: AnyAction): LayoutContextSta
         hideSidebar: action.hideSidebar,
       }
     }
+    case ReducerTypes.SET_FLOATING_SIDEBAR: {
+      return {
+        ...state,
+        floatingSidebar: action.floatingSidebar,
+      }
+    }
     default:
       return state
   }
@@ -54,6 +66,7 @@ export const LayoutContextProvider = ({ children }: LayoutContextProviderProps) 
   const store = useReducer(reducer, {
     emptyLayout: false,
     hideSidebar: false,
+    floatingSidebar: false,
   })
   return (
     <LayoutContext.Provider value={store}>

@@ -9,12 +9,23 @@ import { ReactComponent as BookmarkIcon } from "@svg/icons/navigation/bookmark.s
 import Sidebar from "@components/navigation/Sidebar"
 import SidebarItem from "@components/navigation/SidebarItem"
 import SidebarSpace from "@components/navigation/SidebarSpace"
-import routes from "@routes"
 import SidebarLinks from "@components/navigation/SidebarLinks"
+import routes from "@routes"
+import { ReducerTypes, useStateValue } from "./DefaultLayout/LayoutContext"
 
 const SidebarNavigation: React.FC = () => {
+  const [state, dispatch] = useStateValue()
+  const { hideSidebar, floatingSidebar } = state
+
+  const hodeSidebar = () => {
+    dispatch({
+      type: ReducerTypes.SET_HIDE_SIDEBAR,
+      hideSidebar: true
+    })
+  }
+
   return (
-    <Sidebar>
+    <Sidebar floating={floatingSidebar} show={!hideSidebar} onClose={hodeSidebar}>
       <SidebarItem
         title="Home"
         to="/"
