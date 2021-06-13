@@ -1,0 +1,15 @@
+.comment-form {
+  @apply flex flex-wrap items-start;
+  @apply space-x-2;
+  @apply mt-8;
+}
+
+.comment-form-input {
+  @apply flex-1;
+}
+
+.comment-form-actions {
+  @apply w-full;
+  @apply flex items-center justify-end;
+  @apply mt-2 space-x-2;
+}

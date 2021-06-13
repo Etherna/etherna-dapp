@@ -8,10 +8,11 @@ import MarkdownPreview from "@common/MarkdownPreview"
 import SEO from "@components/layout/SEO"
 import Player from "@components/media/Player"
 import Avatar from "@components/user/Avatar"
+import VideoComments from "@components/video/VideoComments"
 import { Video } from "@classes/SwarmVideo/types"
-import useSwarmVideo from "@hooks/useSwarmVideo"
 import Routes from "@routes"
 import { showError } from "@state/actions/modals"
+import useSwarmVideo from "@hooks/useSwarmVideo"
 import { shortenEthAddr } from "@utils/ethFuncs"
 import dayjs from "@utils/dayjs"
 
@@ -110,6 +111,8 @@ const VideoView: React.FC<VideoViewProps> = ({ hash, routeState }) => {
                 )}
               </div>
             </div>
+
+            <VideoComments videoHash={hash} videoAuthorAddress={video.ownerAddress} />
           </div>
 
           <aside className="lg:w-1/4 hidden">

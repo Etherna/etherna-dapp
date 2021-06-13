@@ -1,0 +1,59 @@
+.video-comments-container {
+  @apply mt-12;
+}
+
+.video-comments {
+  @apply mt-8;
+}
+
+.video-comment {
+  @apply flex items-start;
+  @apply mb-3;
+
+  &-avatar {
+    @apply w-10 h-10 rounded-full;
+    @apply bg-graycool-300 dark:bg-gray-700;
+
+    > * {
+      @apply w-full h-full;
+    }
+  }
+
+  &-content {
+    @apply flex-1;
+    @apply ml-2;
+  }
+
+  &-author {
+    @apply text-sm font-semibold;
+    @apply text-gray-800 hover:text-black;
+    @apply dark:text-gray-300 dark:hover:text-gray-100;
+
+    &.is-video-author {
+      @apply px-2 py-0.5;
+      @apply rounded-full;
+      @apply bg-gray-200 text-gray-800;
+      @apply dark:bg-gray-700 dark:text-gray-200;
+    }
+  }
+
+  &-time {
+    @apply text-xs;
+    @apply text-gray-400 dark:text-gray-500;
+    @apply ml-2;
+  }
+
+  &-text {
+    @apply mt-1;
+  }
+}
+
+.video-comments-stats {
+  @apply my-4;
+  @apply text-md font-semibold;
+}
+
+.video-comments-empty {
+  @apply text-gray-500 dark:text-gray-500;
+  @apply text-sm;
+}
