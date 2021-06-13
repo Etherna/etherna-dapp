@@ -30,4 +30,14 @@ export type IndexVideo = {
   ownerIdentityManifest: string
 }
 
+export type IndexVideoComment = {
+  creationDateTime: string
+  ownerAddress: string
+  ownerIdentityManifest?: string
+  text: string
+  videoManifestHash: string
+}
+
+export type VoteValue = "Up" | "Down" | "Neutral"
+
 export type IndexEncryptionType = "AES256" | "Plain"
