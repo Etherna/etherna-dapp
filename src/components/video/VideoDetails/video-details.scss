@@ -1,5 +1,14 @@
+.video-details-titlebar {
+  @apply flex flex-col;
+  @apply sm:flex-row;
+}
+
 .video-details-title {
   @apply mb-1 font-semibold text-2xl;
+}
+
+.video-details-actions {
+  @apply ml-auto;
 }
 
 .video-details-info-bar {
@@ -12,17 +21,6 @@
   .video-details-publish-time {
     @apply text-gray-600 text-sm mb-4;
     @apply dark:text-gray-400;
-  }
-
-  .video-details-actions {
-    @apply w-auto ml-auto;
-
-    .btn {
-      @apply flex;
-      > svg {
-        @apply m-auto;
-      }
-    }
   }
 }
 

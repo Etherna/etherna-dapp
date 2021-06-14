@@ -16,12 +16,6 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ creationDateT
           </span>
         )}
       </div>
-
-      <div className="video-details-actions">
-        {/* <a download href={source} className="btn btn-transparent btn-rounded">
-          <DownloadIcon />
-        </a> */}
-      </div>
     </div>
   )
 }
