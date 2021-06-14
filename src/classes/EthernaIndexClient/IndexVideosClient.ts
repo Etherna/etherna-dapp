@@ -1,5 +1,5 @@
 import http from "@utils/request"
-import { IndexVideo } from "./types"
+import { IndexVideo, IndexVideoComment, VoteValue } from "./types"
 
 export default class IndexVideosClient {
   url: string
@@ -15,7 +15,7 @@ export default class IndexVideosClient {
   /**
    * Get a list of recent videos uploaded on the platform
    * @param page Page offset (default = 0)
-   * @param take Count of videos to get (default = 25)
+   * @param take Number of videos to fetch (default = 25)
    */
   async fetchVideos(page = 0, take = 25) {
     const endpoint = `${this.url}/videos`
@@ -103,5 +103,62 @@ export default class IndexVideosClient {
     })
 
     return true
+  }
+
+  /**
+   * Fetch the video comments
+   * @param hash Hash of the video
+   * @param page Page offset (default = 0)
+   * @param take Number of comments to fetch (default = 25)
+   * @returns The list of comments
+   */
+  async fetchComments(hash: string, page = 0, take = 25) {
+    const endpoint = `${this.url}/videos/${hash}/comments`
+    const resp = await http.get<IndexVideoComment[]>(endpoint, {
+      params: { page, take },
+      withCredentials: true
+    })
+
+    if (!Array.isArray(resp.data)) {
+      throw new Error("Cannot fetch comments")
+    }
+
+    return resp.data
+  }
+
+  /**
+   * Post a new comment to a video
+   * @param hash Hash of the video
+   * @param message Message string with markdown
+   * @returns The comment object
+   */
+  async postComment(hash: string, message: string) {
+    const endpoint = `${this.url}/videos/${hash}/comments`
+    const resp = await http.post<IndexVideoComment>(endpoint, `"${message}"`, {
+      withCredentials: true,
+      headers: {
+        'accept': 'text/plain',
+        'content-type': 'application/json',
+      }
+    })
+
+    return resp.data
+  }
+
+  /**
+   * Give a up/down vote to the video
+   * @param hash Hash of the video
+   * @param vote Up / Down / Neutral vote
+   */
+  async vote(hash: string, vote: VoteValue) {
+    const endpoint = `${this.url}/videos/${hash}/votes`
+    const resp = await http.post<IndexVideoComment>(endpoint, null, {
+      params: {
+        value: vote
+      },
+      withCredentials: true
+    })
+
+    return resp.data
   }
 }

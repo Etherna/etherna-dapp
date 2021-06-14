@@ -28,6 +28,18 @@ export type IndexVideo = {
   manifestHash: string
   ownerAddress: string
   ownerIdentityManifest: string
+  totDownvotes: number
+  totUpvotes: number
 }
+
+export type IndexVideoComment = {
+  creationDateTime: string
+  ownerAddress: string
+  ownerIdentityManifest?: string
+  text: string
+  videoManifestHash: string
+}
+
+export type VoteValue = "Up" | "Down" | "Neutral"
 
 export type IndexEncryptionType = "AES256" | "Plain"
