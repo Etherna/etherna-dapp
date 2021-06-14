@@ -173,6 +173,8 @@ export default class SwarmVideo {
       creationDateTime: indexData?.creationDateTime,
       encryptionKey: indexData?.encryptionKey,
       encryptionType: indexData?.encryptionType,
+      totUpvotes: indexData?.totUpvotes,
+      totDownvotes: indexData?.totDownvotes,
       owner: {
         ownerAddress,
         ownerIdentityManifest: indexData?.ownerIdentityManifest,

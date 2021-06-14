@@ -28,6 +28,8 @@ export type IndexVideo = {
   manifestHash: string
   ownerAddress: string
   ownerIdentityManifest: string
+  totDownvotes: number
+  totUpvotes: number
 }
 
 export type IndexVideoComment = {

@@ -51,6 +51,10 @@ export type Video = SwarmVideoMeta & {
   encryptionKey?: string
   /** Video encryption type */
   encryptionType?: IndexEncryptionType
+  /** Number of down votes */
+  totDownvotes?: number
+  /** Number of up votes */
+  totUpvotes?: number
 
   /** Owner info */
   owner?: SwarmVideoOwner
