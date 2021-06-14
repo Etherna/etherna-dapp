@@ -5,6 +5,7 @@ import { Keymap, KeymapNamespace } from "@keyboard/typings"
 import EthernaGatewayClient from "@classes/EthernaGatewayClient"
 import EthernaIndexClient from "@classes/EthernaIndexClient"
 import EthernaAuthClient from "@classes/EthernaAuthClient"
+import FairosClient from "@classes/FairosClient"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
 import SwarmImage from "@classes/SwarmImage"
 
@@ -24,6 +25,7 @@ export type EnvState = {
   indexClient: EthernaIndexClient
   gatewayClient: EthernaGatewayClient
   authClient: EthernaAuthClient
+  fairosClient: FairosClient
   beeClient: SwarmBeeClient
   bytePrice?: number
 
@@ -75,4 +77,5 @@ export type UserState = {
   credit?: number
   isSignedIn?: boolean
   isSignedInGateway?: boolean
+  isSignedInFairdrive?: boolean
 }

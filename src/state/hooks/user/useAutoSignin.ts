@@ -20,7 +20,7 @@ type AutoSigninOpts = {
 }
 
 const useAutoSignin = (opts: AutoSigninOpts = {}) => {
-  const { indexClient, gatewayClient, authClient, beeClient } = useSelector(state => state.env)
+  const { indexClient, gatewayClient, authClient, beeClient, fairosClient } = useSelector(state => state.env)
   const dispatch = useDispatch<Dispatch<UserActions | EnvActions | UIActions | ProfileActions>>()
 
   useEffect(() => {
@@ -38,8 +38,9 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
   }, [])
 
   const fetchIdentity = async () => {
-    const [identity, currentUser, hasCredit] = await Promise.all([
+    const [identity, loggedFairdrive, currentUser, hasCredit] = await Promise.all([
       fetchAuthIdentity(),
+      fetchFairdriveIdentity(),
       fetchIndexCurrentUser(),
       fetchCurrentUserCredit(),
       fetchCurrentBytePrice(),
@@ -48,7 +49,8 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
     dispatch({
       type: UserActionTypes.USER_UPDATE_SIGNEDIN,
       isSignedIn: !!currentUser,
-      isSignedInGateway: hasCredit
+      isSignedInGateway: hasCredit,
+      isSignedInFairdrive: loggedFairdrive
     })
 
     if (currentUser) {
@@ -62,6 +64,15 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
       return identity
     } catch {
       return undefined
+    }
+  }
+
+  const fetchFairdriveIdentity = async () => {
+    try {
+      const username = localStorage.getItem("fairdriveUsername") ?? ""
+      return await fairosClient.user.isLoggedIn(username)
+    } catch {
+      return false
     }
   }
 

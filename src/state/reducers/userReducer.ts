@@ -11,7 +11,7 @@ export const UserActionTypes = {
 // Export dispatch actions
 type UpdateEnsAction = {
   type: typeof UserActionTypes.USER_ENS_UPDATE
-  ens: string|null|undefined
+  ens: string | null | undefined
 }
 type UserSignoutAction = {
   type: typeof UserActionTypes.USER_SIGNOUT
@@ -30,6 +30,7 @@ type UpdateSignedInAction = {
   type: typeof UserActionTypes.USER_UPDATE_SIGNEDIN
   isSignedIn: boolean
   isSignedInGateway: boolean
+  isSignedInFairdrive: boolean
 }
 
 export type UserActions = (
@@ -74,6 +75,7 @@ const userReducer = (state: UserState = {}, action: UserActions): UserState => {
         ...state,
         isSignedIn: action.isSignedIn,
         isSignedInGateway: action.isSignedInGateway,
+        isSignedInFairdrive: action.isSignedInFairdrive,
       }
 
     default:

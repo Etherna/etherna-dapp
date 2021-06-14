@@ -41,21 +41,15 @@ export default class IndexUsersClient {
    * @param username Username
    */
   isLoggedIn = async (username: string) => {
-    try {
-      const requestBody = {
-        user: username,
-      }
+    const endpoint = `${this.url}/user/isloggedin`
+    const { data } = await http.get<{ loggedin: boolean }>(endpoint, {
+      params: {
+        user: username
+      },
+      withCredentials: true,
+    })
 
-      const endpoint = `${this.url}/user/isloggedin`
-      const response = await http.get(endpoint, {
-        params: qs.stringify(requestBody, "brackets"),
-        withCredentials: true,
-      })
-
-      return response
-    } catch (error) {
-      throw error
-    }
+    return data.loggedin
   }
 
   private async openDefaultPod(password: string) {

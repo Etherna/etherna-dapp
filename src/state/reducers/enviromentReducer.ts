@@ -5,6 +5,7 @@ import EthernaGatewayClient from "@classes/EthernaGatewayClient"
 import EthernaIndexClient from "@classes/EthernaIndexClient"
 import EthernaAuthClient from "@classes/EthernaAuthClient"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
+import FairosClient from "@classes/FairosClient"
 import { loadDarkMode } from "@state/actions/enviroment/darkMode"
 import { EnvState } from "@state/types"
 import { checkIsMobile } from "@utils/browser"
@@ -84,6 +85,10 @@ const authClient = new EthernaAuthClient({
   host: EthernaAuthClient.defaultHost,
   apiPath: EthernaAuthClient.defaultApiPath
 })
+const fairosClient = new FairosClient({
+  host: FairosClient.defaultHost,
+  apiPath: FairosClient.defaultApiPath
+})
 const beeClient = new SwarmBeeClient(EthernaGatewayClient.defaultHost)
 
 const initialState: EnvState = {
@@ -96,6 +101,7 @@ const initialState: EnvState = {
   gatewayClient,
   authClient,
   beeClient,
+  fairosClient,
   keymap: baseKeymap,
   darkMode: loadDarkMode(),
   isMobile: checkIsMobile(),
