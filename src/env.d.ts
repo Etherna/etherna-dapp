@@ -9,4 +9,7 @@ interface ImportMetaEnv {
   VITE_APP_AUTH_HOST: string
   VITE_APP_AUTH_API_PATH: string
   VITE_APP_CREDIT_HOST: string
+  VITE_APP_FAIROS_HOST: string
+  VITE_APP_FAIROS_API_PATH: string
+  VITE_APP_FAIRDRIVE_PODNAME: string
 }
