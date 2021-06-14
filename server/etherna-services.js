@@ -89,6 +89,15 @@ const serviceHost = projectPath => {
 }
 
 /**
+ * Run a node service
+ * @param {string} cmd
+ */
+const execNode = (cmd) => {
+  const execCms = `node ${cmd}`
+  return exec(execCms, execCallback)
+}
+
+/**
  * Run the service
  * @param {string} projectPath The service project path
  */
@@ -187,6 +196,12 @@ const run = async () => {
     const beeProcess = execBee()
     processes.push(beeProcess)
     await waitService(process.env.BEE_ENDPOINT, "Bee Node")
+  }
+
+  if (process.env.ENABLE_CORS === "true") {
+    const corsProcess = execNode("server/cors-proxy.js")
+    processes.push(corsProcess)
+    await waitService("https://localhost:5555", "CORS")
   }
 
   console.log(`✅ All done!`)
