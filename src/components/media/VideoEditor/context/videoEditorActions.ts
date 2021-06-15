@@ -3,6 +3,16 @@ import { Dispatch } from "react"
 import { VideoEditorContextState } from "."
 import { ActionTypes, AnyAction } from "./videoEditorReducer"
 
+export const changeDriver = (state: VideoEditorContextState, dispatch: Dispatch<AnyAction>) => (
+  /**
+   * Change driver
+   * @param driver Choosen driver
+   */
+  (driver: "swarm" | "fairos") => {
+    dispatch({ type: ActionTypes.CHANGE_DRIVER, driver })
+  }
+)
+
 export const addToQueue = (state: VideoEditorContextState, dispatch: Dispatch<AnyAction>) => (
   /**
    * Add a queue instance

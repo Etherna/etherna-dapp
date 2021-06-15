@@ -8,6 +8,7 @@ import { useVideoEditorState } from "./context"
 import VideoCompletion from "./VideoCompletion"
 import VideoProperties from "./VideoProperties"
 import VideoDeleteModal from "./VideoDeleteModal"
+import DriverSelector from "./DriverSelector"
 import Button from "@common/Button"
 import Routes from "@routes"
 import useSelector from "@state/useSelector"
@@ -120,7 +121,10 @@ const VideoEditor = () => {
       <div className="video-editor">
         <div className="row">
           <div className="col sm:w-1/2 lg:w-2/3">
+            <DriverSelector />
+
             <VideoProperties isSubmitting={isSubmitting} />
+
             {reference && (
               <div className="flex items-center justify-between">
                 <SaveButton />

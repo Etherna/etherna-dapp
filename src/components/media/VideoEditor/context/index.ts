@@ -19,6 +19,8 @@ export type VideoEditorContextState = {
   queue: { name: string, completion: number | null, reference?: string }[]
   /** Pin content on Swarm */
   pinContent: boolean | undefined
+  /** Driver */
+  driver: "swarm" | "fairos"
 }
 
 // Hooks
@@ -27,6 +29,7 @@ export const useVideoEditorState = () => {
 
   const actions = useMemo(() => {
     return {
+      changeDriver: videoEditorActions.changeDriver(state, dispatch),
       addToQueue: videoEditorActions.addToQueue(state, dispatch),
       removeFromQueue: videoEditorActions.removeFromQueue(state, dispatch),
       updateQueueName: videoEditorActions.updateQueueName(state, dispatch),

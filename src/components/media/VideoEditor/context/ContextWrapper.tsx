@@ -51,6 +51,7 @@ export const VideoEditorContextWrapper: React.FC<VideoEditorContextWrapperProps>
     })
 
     initialState = {
+      driver: "swarm",
       reference,
       queue: videoHandler.video.sources.map(source => ({
         completion: 100,

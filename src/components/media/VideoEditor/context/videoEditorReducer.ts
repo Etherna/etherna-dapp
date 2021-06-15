@@ -6,6 +6,7 @@ import SwarmVideo from "@classes/SwarmVideo"
 export const ActionTypes = {
   ADD_TO_QUEUE: "videoeditor/add-to-queue",
   REMOVE_FROM_QUEUE: "videoeditor/remove-from-queue",
+  CHANGE_DRIVER: "videoeditor/change-driver",
   UPDATE_QUEUE_NAME: "videoeditor/update-queue-name",
   UPDATE_QUEUE_COMPLETION: "videoeditor/update-queue-completion",
   UPDATE_ORIGINAL_QUALITY: "videoeditor/update-original-quality",
@@ -16,6 +17,10 @@ export const ActionTypes = {
   RESET: "videoeditor/reset",
 } as const
 
+type ChangeDriverAction = {
+  type: typeof ActionTypes.CHANGE_DRIVER
+  driver: "swarm" | "fairos"
+}
 type AddToQueueAction = {
   type: typeof ActionTypes.ADD_TO_QUEUE
   name: string
@@ -59,6 +64,7 @@ type ResetAction = {
   type: typeof ActionTypes.RESET
 }
 export type AnyAction = (
+  ChangeDriverAction |
   AddToQueueAction |
   RemoveFromQueueAction |
   UpdateQueueNameAction |
@@ -76,6 +82,11 @@ export const reducer = (state: VideoEditorContextState, action: AnyAction): Vide
   let newState = state
 
   switch (action.type) {
+    case ActionTypes.CHANGE_DRIVER: {
+      const driver = action.driver
+      newState = { ...state, driver }
+      break
+    }
     case ActionTypes.ADD_TO_QUEUE: {
       const queue = [...state.queue]
       queue.push({
@@ -139,6 +150,7 @@ export const reducer = (state: VideoEditorContextState, action: AnyAction): Vide
       break
     case ActionTypes.RESET:
       newState = {
+        driver: "swarm",
         reference: undefined,
         queue: [],
         pinContent: state.pinContent,
