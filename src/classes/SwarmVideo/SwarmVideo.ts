@@ -1,4 +1,4 @@
-import Axios from "axios"
+import Axios, { AxiosRequestConfig } from "axios"
 import omit from "lodash/omit"
 
 import {
@@ -7,18 +7,22 @@ import {
   SwarmVideoRaw,
   SwarmVideoUploadOptions,
   Video,
-  VideoSource
+  VideoSource,
+  VideoSourceDriver
 } from "./types"
 import EthernaIndexClient from "@classes/EthernaIndexClient"
-import { IndexVideo } from "@classes/EthernaIndexClient/types"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
+import FairosClient from "@classes/FairosClient"
 import SwarmImage from "@classes/SwarmImage"
 import SwarmProfile from "@classes/SwarmProfile"
+import { IndexVideo } from "@classes/EthernaIndexClient/types"
 import { Profile } from "@classes/SwarmProfile/types"
 import { getVideoDuration, getVideoResolution } from "@utils/media"
 
 type SwarmVideoOptions = {
   beeClient: SwarmBeeClient
+  fairosClient?: FairosClient
+  driver?: VideoSourceDriver
   indexClient: EthernaIndexClient
   videoData?: Video
   indexData?: IndexVideo
@@ -37,10 +41,12 @@ export default class SwarmVideo {
   loadedFromPrefetch: boolean = false
 
   beeClient: SwarmBeeClient
+  fairosClient?: FairosClient
   indexClient: EthernaIndexClient
   fetchProfile: boolean
   fetchFromCache: boolean
   updateCache: boolean
+  driver: VideoSourceDriver
 
   static thumbnailResponsiveSizes = [480, 960, 1440, 2400]
 
@@ -50,7 +56,9 @@ export default class SwarmVideo {
   constructor(hash: string | undefined, opts: SwarmVideoOptions) {
     this.hash = hash
     this.beeClient = opts.beeClient
+    this.fairosClient = opts.fairosClient
     this.indexClient = opts.indexClient
+    this.driver = opts.driver ?? "swarm"
     this.indexData = opts.indexData
     this.profileData = opts.profileData
     this.fetchProfile = opts.fetchProfile || true
@@ -242,29 +250,14 @@ export default class SwarmVideo {
     const size = video.byteLength
     const bitrate = Math.round(size * 8 / duration)
 
-    const reference = await this.beeClient.uploadFile(
-      new Uint8Array(video),
-      undefined,
-      {
-        contentType,
-        axiosOptions: {
-          onUploadProgress: e => {
-            if (opts?.onUploadProgress) {
-              const progress = Math.round((e.loaded * 100) / e.total)
-              opts.onUploadProgress(progress)
-            }
-          },
-          cancelToken: new Axios.CancelToken(function executor(c) {
-            if (opts?.onCancelToken) {
-              opts.onCancelToken(c)
-            }
-          }),
-        }
-      }
-    )
+    const reference = await this.uploadVideo(video, contentType, opts)
+
+    const source = this.driver === "swarm"
+      ? this.beeClient.getFileUrl(reference)
+      : `fairos://${reference}`
 
     const videoSource: VideoSource = {
-      source: this.beeClient.getFileUrl(reference),
+      source,
       quality,
       reference,
       referenceProtocol: "files",
@@ -276,6 +269,41 @@ export default class SwarmVideo {
     this.video.sources.push(videoSource)
 
     return reference
+  }
+
+  async uploadVideo(videoData: ArrayBuffer, contentType: string, opts?: SwarmVideoUploadOptions) {
+    const axiosOptions: AxiosRequestConfig = {
+      onUploadProgress: e => {
+        if (opts?.onUploadProgress) {
+          const progress = Math.round((e.loaded * 100) / e.total)
+          opts.onUploadProgress(progress)
+        }
+      },
+      cancelToken: new Axios.CancelToken(function executor(c) {
+        if (opts?.onCancelToken) {
+          opts.onCancelToken(c)
+        }
+      }),
+    }
+
+    if (this.driver === "swarm") {
+      return await this.beeClient.uploadFile(
+        new Uint8Array(videoData),
+        undefined,
+        {
+          contentType,
+          axiosOptions
+        }
+      )
+    } else {
+      const name = Math.random().toString(36).substring(2) + ".mp4"
+      const blob = new Blob([videoData], { type: contentType })
+      const file = new File([blob], name, { type: contentType })
+
+      await this.fairosClient!.files.upload(file, "root", axiosOptions)
+
+      return name
+    }
   }
 
   async addThumbnail(buffer: ArrayBuffer, contentType: string, opts?: SwarmVideoUploadOptions) {
@@ -343,13 +371,13 @@ export default class SwarmVideo {
       const resp = await this.beeClient.downloadFile(this.hash!)
       const meta = resp.data.json() as SwarmVideoRaw
 
-      return this.resolveRawVideo(meta)
+      return await this.resolveRawVideo(meta)
     } catch { }
 
-    return this.resolveRawVideo(null)
+    return await this.resolveRawVideo(null)
   }
 
-  private resolveRawVideo(rawVideo: SwarmVideoRaw | null) {
+  private async resolveRawVideo(rawVideo: SwarmVideoRaw | null) {
     let resolvedMeta: SwarmVideoMeta = {
       hash: this.hash!,
       ownerAddress: "0x0",
@@ -372,21 +400,35 @@ export default class SwarmVideo {
       resolvedMeta.thumbnail = rawVideo.thumbnail
         ? new SwarmImage(rawVideo.thumbnail, { beeClient: this.beeClient })
         : undefined
-      resolvedMeta.sources = rawVideo.sources.map(source => ({
+      resolvedMeta.sources = await Promise.all(rawVideo.sources.map(async source => ({
         quality: source.quality,
         reference: source.reference,
         referenceProtocol: source.referenceProtocol,
-        source: this.beeClient.getFileUrl(source.reference),
+        source: await this.resolveRawSource(source.reference),
         size: source.size,
         bitrate: source.bitrate,
         contentType: source.contentType
-      }))
+      })))
 
       const originalSource = resolvedMeta.sources.find(source => source.quality === rawVideo.originalQuality)
       resolvedMeta.source = originalSource?.source ?? resolvedMeta.source
     }
 
     return resolvedMeta
+  }
+
+  private async resolveRawSource(source: string) {
+    if (this.driver === "swarm") {
+      return this.beeClient.getFileUrl(source)
+    } else {
+      return await this.resolveFairosSource(source)
+    }
+  }
+
+  private async resolveFairosSource(path: string) {
+    return window.URL.createObjectURL(
+      await this.fairosClient!.files.download(path, "")
+    )
   }
 
   private async fetchOwnerProfile(address: string, manifest: string | undefined) {

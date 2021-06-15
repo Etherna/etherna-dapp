@@ -23,7 +23,7 @@ export const VideoEditorContextWrapper: React.FC<VideoEditorContextWrapperProps>
 }) => {
   const profile = useSelector(state => state.profile)
   const { address, identityManifest } = useSelector(state => state.user)
-  const { beeClient, indexClient } = useSelector(state => state.env)
+  const { beeClient, indexClient, fairosClient } = useSelector(state => state.env)
 
   const videoProfileData: Profile = {
     address: address!,
@@ -38,13 +38,14 @@ export const VideoEditorContextWrapper: React.FC<VideoEditorContextWrapperProps>
   }
 
   let initialState = VideoEditorCache.hasCache && !reference
-    ? VideoEditorCache.loadState(beeClient, indexClient)
+    ? VideoEditorCache.loadState(beeClient, indexClient, fairosClient)
     : null
 
   if (!initialState) {
     const videoHandler = new SwarmVideo(reference, {
       beeClient,
       indexClient,
+      fairosClient,
       fetchFromCache: false,
       fetchProfile: false,
       videoData,

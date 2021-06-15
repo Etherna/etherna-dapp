@@ -76,7 +76,10 @@ export type SwarmVideoSourceRaw = {
   size?: number
   bitrate?: number
   contentType?: string
+  driver?: VideoSourceDriver
 }
+
+export type VideoSourceDriver = "swarm" | "fairos"
 
 export type VideoSource = SwarmVideoSourceRaw & {
   /**  Source url */

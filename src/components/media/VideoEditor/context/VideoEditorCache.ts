@@ -3,6 +3,7 @@ import SwarmVideo from "@classes/SwarmVideo"
 import { SwarmVideoRaw } from "@classes/SwarmVideo/types"
 import EthernaIndexClient from "@classes/EthernaIndexClient"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
+import FairosClient from "@classes/FairosClient"
 
 const STORAGE_KEY = "videoEditorState"
 
@@ -22,12 +23,13 @@ export default class VideoEditorCache {
     return false
   }
 
-  static loadState(beeClient: SwarmBeeClient, indexClient: EthernaIndexClient) {
+  static loadState(beeClient: SwarmBeeClient, indexClient: EthernaIndexClient, fairosClient: FairosClient | undefined) {
     const value = window.localStorage.getItem(STORAGE_KEY)!
     const { reference, queue, videoRaw, pinContent, driver } = JSON.parse(value) as CacheState
     const videoHandler = new SwarmVideo(reference, {
       beeClient,
       indexClient,
+      fairosClient,
       fetchFromCache: false,
       fetchProfile: false
     })

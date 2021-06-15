@@ -84,6 +84,7 @@ export const reducer = (state: VideoEditorContextState, action: AnyAction): Vide
   switch (action.type) {
     case ActionTypes.CHANGE_DRIVER: {
       const driver = action.driver
+      state.videoHandler.driver = driver
       newState = { ...state, driver }
       break
     }

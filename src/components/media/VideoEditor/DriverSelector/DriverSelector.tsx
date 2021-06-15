@@ -25,9 +25,9 @@ const DriverSelector: React.FC<DriverSelectorProps> = ({ }) => {
     <div className="driver-selector-wrapper">
       <label htmlFor="driver">Driver</label>
       <label htmlFor="driver" className="driver-selector">
-        <select className="driver-selector-input" id="driver" onChange={e => onChange(e.target.value)}>
+        <select className="driver-selector-input" id="driver" value={driver} onChange={e => onChange(e.target.value)}>
           {Object.keys(DriverOptions).map((value) => (
-            <option value={value} selected={driver === value}>{DriverOptions[value]}</option>
+            <option value={value} key={value}>{DriverOptions[value]}</option>
           ))}
         </select>
       </label>
