@@ -3,8 +3,9 @@ import React from "react"
 import ExtensionPanel from "./ExtensionPanel"
 import { enviromentActions } from "@state/actions"
 import useSelector from "@state/useSelector"
+import FairdriveExtensionPanel from "./FairdriveExtensionPanel"
 
-export type PanelType = "index" | "gateway"
+export type PanelType = "index" | "gateway" | "fairdrive"
 
 type EnvDropDownMenusProps = {
   panel: PanelType
@@ -76,6 +77,10 @@ const ExtensionPanelMenuItems: React.FC<EnvDropDownMenusProps> = ({ panel, onBac
           onSignout={() => gatewayClient.logoutRedirect()}
           onBack={onBack}
         />
+      )}
+
+      {panel === "fairdrive" && (
+        <FairdriveExtensionPanel onBack={onBack} />
       )}
     </>
   )

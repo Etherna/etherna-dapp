@@ -29,7 +29,7 @@ export default class IndexUsersClient {
     }
 
     const endpoint = `${this.url}/user/login`
-    await http.post(endpoint, qs.stringify(requestBody), {
+    const resp = await http.post(endpoint, qs.stringify(requestBody), {
       withCredentials: true
     })
 
@@ -53,23 +53,27 @@ export default class IndexUsersClient {
   }
 
   private async openDefaultPod(password: string) {
-    const podsEndpoint = `${this.url}/pod/ls`
-    const { data: pods } = await http.get<FairosPodsLS>(podsEndpoint, {
-      withCredentials: true
-    })
+    try {
+      const podsEndpoint = `${this.url}/pod/ls`
+      const { data: pods } = await http.get<FairosPodsLS>(podsEndpoint, {
+        withCredentials: true
+      })
 
-    if (!pods.pod_name.includes(POD_NAME)) {
-      const podEndpoint = `${this.url}/pod/new`
-      await http.post(podEndpoint, qs.stringify({ password: password, pod: POD_NAME }), {
+      if (!pods.pod_name.includes(POD_NAME)) {
+        const podEndpoint = `${this.url}/pod/new`
+        await http.post(podEndpoint, qs.stringify({ password: password, pod: POD_NAME }), {
+          withCredentials: true,
+        })
+      }
+
+      const podOpenEndpoint = `${this.url}/pod/open`
+      const { data: openPod } = await http.post(podOpenEndpoint, qs.stringify({ password: password, pod: POD_NAME }), {
         withCredentials: true,
       })
+
+      return openPod
+    } catch (error) {
+      return null
     }
-
-    const podOpenEndpoint = `${this.url}/pod/open`
-    const { data: openPod } = await http.post(podOpenEndpoint, qs.stringify({ password: password, pod: POD_NAME }), {
-      withCredentials: true,
-    })
-
-    return openPod
   }
 }

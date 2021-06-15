@@ -19,7 +19,7 @@ type SharedMenuItemsProps = {
 
 const SharedMenuItems: React.FC<SharedMenuItemsProps> = ({ onPanelSelect }) => {
   const darkMode = useSelector(state => state.env.darkMode)
-  const { isSignedIn, isSignedInGateway } = useSelector(state => state.user)
+  const { isSignedIn, isSignedInGateway, isSignedInFairdrive } = useSelector(state => state.user)
 
   const handleDarkModeChange = () => {
     toggleDarkMode(!darkMode)
@@ -40,6 +40,13 @@ const SharedMenuItems: React.FC<SharedMenuItemsProps> = ({ onPanelSelect }) => {
         suffix={<ExtensionPanelSuffix active={isSignedInGateway === true} />}
       >
         Gateway
+      </DropdownItem>
+      <DropdownItem
+        action={() => onPanelSelect("fairdrive")}
+        icon={<GatewayIcon />}
+        suffix={<ExtensionPanelSuffix active={isSignedInFairdrive === true} />}
+      >
+        Fairdrive
       </DropdownItem>
 
       <hr />
