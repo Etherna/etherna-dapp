@@ -28,7 +28,7 @@ const DEFAULT_SEED_LIMIT = 50
 const DEFAULT_FETCH_LIMIT = 20
 
 const useSwarmVideos = (opts: SwarmVideosOptions = {}): UseVideos => {
-  const { beeClient, indexClient } = useSelector(state => state.env)
+  const { beeClient, indexClient, fairosClient } = useSelector(state => state.env)
   const [videos, setVideos] = useState<Video[]>()
   const [page, setPage] = useState(0)
   const [isFetching, setIsFetching] = useState(false)
@@ -42,7 +42,7 @@ const useSwarmVideos = (opts: SwarmVideosOptions = {}): UseVideos => {
 
   useEffect(() => {
     fetchVideos()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
 
   useEffect(() => {
@@ -68,6 +68,7 @@ const useSwarmVideos = (opts: SwarmVideosOptions = {}): UseVideos => {
     const swarmVideo = new SwarmVideo(indexData.manifestHash, {
       beeClient,
       indexClient,
+      fairosClient,
       indexData,
       profileData,
       fetchProfile

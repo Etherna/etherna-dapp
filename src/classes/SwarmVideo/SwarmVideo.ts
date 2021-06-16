@@ -401,6 +401,8 @@ export default class SwarmVideo {
     }
 
     if (rawVideo) {
+      console.log('resolve raw');
+
       resolvedMeta.title = rawVideo.title
       resolvedMeta.description = rawVideo.description
       resolvedMeta.originalQuality = rawVideo.originalQuality
@@ -431,6 +433,8 @@ export default class SwarmVideo {
       try {
         return await this.resolveFairosSource(source)
       } catch (error) {
+        console.log('Fairos resolve error', error)
+
         return "fairos://" + source
       }
     } else {

@@ -5,7 +5,7 @@ import { store } from "@state/store"
 const match = /\/watch/
 
 const fetch = async () => {
-  const { beeClient, indexClient } = store.getState().env
+  const { beeClient, indexClient, fairosClient } = store.getState().env
 
   const searchParams = new URLSearchParams(window.location.search)
   if (searchParams && searchParams.has("v")) {
@@ -14,7 +14,8 @@ const fetch = async () => {
     try {
       const swarmVideo = new SwarmVideo(hash, {
         beeClient,
-        indexClient
+        indexClient,
+        fairosClient
       })
       const video = await swarmVideo.downloadVideo({
         fetchProfile: true,

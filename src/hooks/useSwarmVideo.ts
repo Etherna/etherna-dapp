@@ -19,10 +19,10 @@ type UseVideo = {
 }
 
 const useSwarmVideo = (opts: SwarmVideoOptions): UseVideo => {
-  const { beeClient, indexClient } = useSelector(state => state.env)
+  const { beeClient, indexClient, fairosClient } = useSelector(state => state.env)
   const [hash, setHash] = useState(opts.hash)
   const [videoHandler, setVideoHandler] = useState<SwarmVideo>(
-    new SwarmVideo(hash, { beeClient, indexClient, fetchFromCache: opts.fetchFromCache })
+    new SwarmVideo(hash, { beeClient, indexClient, fairosClient, fetchFromCache: opts.fetchFromCache })
   )
   const [video, setVideo] = useState<Video | undefined>(opts.routeState)
 

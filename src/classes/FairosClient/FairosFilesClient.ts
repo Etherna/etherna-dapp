@@ -63,7 +63,7 @@ export default class IndexUsersClient {
    * @returns The blob
    */
   download = async (path: string, filename: string, opts?: FairosUploadOptions) => {
-    const file = writePath(path) + filename
+    const file = (writePath(path) + filename).replace(/\/?$/, "")
     const endpoint = `${this.url}/file/download`
     const { data: blob } = await http.post(endpoint, qs.stringify({ file }), {
       withCredentials: true,
