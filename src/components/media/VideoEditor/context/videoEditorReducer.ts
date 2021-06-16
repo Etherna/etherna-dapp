@@ -158,6 +158,7 @@ export const reducer = (state: VideoEditorContextState, action: AnyAction): Vide
         videoHandler: new SwarmVideo(undefined, {
           beeClient: state.videoHandler.beeClient,
           indexClient: state.videoHandler.indexClient,
+          fairosClient: state.videoHandler.fairosClient,
           fetchFromCache: state.videoHandler.fetchFromCache,
           updateCache: state.videoHandler.updateCache,
           fetchProfile: state.videoHandler.fetchProfile,

@@ -74,12 +74,14 @@ export type SwarmVideoOwner = {
 export type SwarmVideoSourceRaw = {
   quality: string
   reference: string
-  referenceProtocol: "files" | "bytes" | "bzz"
+  referenceProtocol: ReferenceProtocol
   size?: number
   bitrate?: number
   contentType?: string
   driver?: VideoSourceDriver
 }
+
+export type ReferenceProtocol = "files" | "bytes" | "bzz" | "fairos"
 
 export type VideoSourceDriver = "swarm" | "fairos"
 

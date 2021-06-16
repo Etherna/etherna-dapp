@@ -2,6 +2,7 @@ import Axios, { AxiosRequestConfig } from "axios"
 import omit from "lodash/omit"
 
 import {
+  ReferenceProtocol,
   SwarmVideoDownloadOptions,
   SwarmVideoMeta,
   SwarmVideoRaw,
@@ -256,22 +257,21 @@ export default class SwarmVideo {
 
     const source = this.driver === "swarm"
       ? this.beeClient.getFileUrl(reference)
-      : `fairos://${reference}`
+      : await this.resolveRawSource(reference, "fairos")
 
     const videoSource: VideoSource = {
       source,
       quality,
       reference,
-      referenceProtocol: "files",
+      referenceProtocol: this.driver === "swarm" ? "files" : "fairos",
       contentType,
       size,
       bitrate
     }
 
+    console.log('NEW VIDEO SOURCE', videoSource)
+
     this.video.sources.push(videoSource)
-
-    console.log('UPDATE', this.validatedMetadata());
-
 
     return reference
   }
@@ -413,7 +413,7 @@ export default class SwarmVideo {
         quality: source.quality,
         reference: source.reference,
         referenceProtocol: source.referenceProtocol,
-        source: await this.resolveRawSource(source.reference),
+        source: await this.resolveRawSource(source.reference, source.referenceProtocol),
         size: source.size,
         bitrate: source.bitrate,
         contentType: source.contentType
@@ -426,11 +426,15 @@ export default class SwarmVideo {
     return resolvedMeta
   }
 
-  private async resolveRawSource(source: string) {
-    if (this.driver === "swarm") {
-      return this.beeClient.getFileUrl(source)
+  private async resolveRawSource(source: string, protocol: ReferenceProtocol) {
+    if (this.driver === "fairos" || protocol === "fairos") {
+      try {
+        return await this.resolveFairosSource(source)
+      } catch (error) {
+        return "fairos://" + source
+      }
     } else {
-      return await this.resolveFairosSource(source)
+      return this.beeClient.getFileUrl(source)
     }
   }
 
