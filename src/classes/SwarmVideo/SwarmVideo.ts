@@ -275,6 +275,10 @@ export default class SwarmVideo {
     const axiosOptions: AxiosRequestConfig = {
       onUploadProgress: e => {
         if (opts?.onUploadProgress) {
+          const { loaded, total } = e
+
+          if (!loaded || !total) return 1
+
           const progress = Math.round((e.loaded * 100) / e.total)
           opts.onUploadProgress(progress)
         }
@@ -300,7 +304,7 @@ export default class SwarmVideo {
       const blob = new Blob([videoData], { type: contentType })
       const file = new File([blob], name, { type: contentType })
 
-      await this.fairosClient!.files.upload(file, "root", axiosOptions)
+      await this.fairosClient!.files.upload(file, "etherna", axiosOptions)
 
       return name
     }

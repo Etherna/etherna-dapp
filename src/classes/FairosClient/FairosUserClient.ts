@@ -1,9 +1,10 @@
 import qs from "querystring"
 
 import http from "@utils/request"
-import { FairosPodsLS } from "./types"
+import { FairosDir, FairosPodsLS } from "./types"
 
 const POD_NAME = import.meta.env.VITE_APP_FAIRDRIVE_PODNAME
+const ETHERNA_DIR_NAME = "etherna"
 
 export default class IndexUsersClient {
   url: string
@@ -29,11 +30,24 @@ export default class IndexUsersClient {
     }
 
     const endpoint = `${this.url}/user/login`
-    const resp = await http.post(endpoint, qs.stringify(requestBody), {
+    await http.post(endpoint, qs.stringify(requestBody), {
       withCredentials: true
     })
 
-    return await this.openDefaultPod(password)
+    await this.openDefaultPod(password)
+    await this.createDefaultEthernaDir()
+  }
+
+  /**
+   * Logout current user
+   */
+  async logout() {
+    try {
+      const endpoint = `${this.url}/user/logout`
+      await http.post(endpoint, null, {
+        withCredentials: true
+      })
+    } catch { }
   }
 
   /**
@@ -74,6 +88,41 @@ export default class IndexUsersClient {
       return openPod
     } catch (error) {
       return null
+    }
+  }
+
+  private async createDefaultEthernaDir() {
+    try {
+      const podsEndpoint = `${this.url}/dir/ls`
+      const { data: dir } = await http.get<FairosDir>(podsEndpoint, {
+        params: {
+          dir: "/"
+        },
+        withCredentials: true
+      })
+
+      console.log('dir result', dir);
+
+
+      const ethernaDir = dir.entries.find(entry => entry.content_type === "inode/directory" && entry.name === ETHERNA_DIR_NAME)
+
+      if (!ethernaDir) {
+        // create etherna folder
+        await this.createFolder(ETHERNA_DIR_NAME)
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  private async createFolder(name: string) {
+    try {
+      const podsEndpoint = `${this.url}/dir/mkdir`
+      await http.post(podsEndpoint, qs.stringify({ dir: name }), {
+        withCredentials: true
+      })
+    } catch (error) {
+      console.error(error)
     }
   }
 }

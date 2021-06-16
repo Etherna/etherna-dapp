@@ -40,6 +40,21 @@ const FairdriveExtensionPanel: React.FC<FairdriveExtensionPanelProps> = ({ onBac
     }
   }
 
+  const signout = async () => {
+    try {
+      await fairosClient.user.logout()
+
+      dispatch({
+        type: UserActionTypes.USER_UPDATE_SIGNEDIN,
+        isSignedIn: isSignedIn ?? false,
+        isSignedInGateway: isSignedInGateway ?? false,
+        isSignedInFairdrive: false
+      })
+    } catch (error) {
+      showError("Cannot sign in", error.message)
+    }
+  }
+
   return (
     <div className="extension-panel">
       <div className="extension-panel-header">
@@ -80,6 +95,18 @@ const FairdriveExtensionPanel: React.FC<FairdriveExtensionPanelProps> = ({ onBac
         Status: {isSignedInFairdrive ? `Signed in` : `Signed out`}
         <span className={classNames("extension-panel-status", { active: isSignedInFairdrive })} />
       </div>
+
+      {isSignedInFairdrive && (
+        <Button
+          action={signout}
+          aspect="warning"
+          outline
+          size="small"
+          className="mt-2"
+        >
+          Signout
+        </Button>
+      )}
     </div>
   )
 }
