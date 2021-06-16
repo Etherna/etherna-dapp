@@ -1,24 +1,28 @@
+import { toggleFairosPasswordModal } from "@state/actions/modals"
 import React from "react"
 import { useVideoEditorState } from "../context"
 
 import "./driver-selector.scss"
-
-type DriverSelectorProps = {
-
-}
 
 const DriverOptions: Record<string, string> = {
   swarm: "Swarm",
   fairos: "Fairos",
 }
 
-const DriverSelector: React.FC<DriverSelectorProps> = ({ }) => {
+const DriverSelector: React.FC = () => {
   const { state, actions } = useVideoEditorState()
   const { driver } = state
   const { changeDriver } = actions
 
   const onChange = (driver: string) => {
     changeDriver(driver as any)
+    openDefaultPos(driver)
+  }
+
+  const openDefaultPos = (driver: string) => {
+    if (driver === "fairos") {
+      toggleFairosPasswordModal(true)
+    }
   }
 
   return (

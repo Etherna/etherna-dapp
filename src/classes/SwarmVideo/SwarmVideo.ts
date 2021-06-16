@@ -181,6 +181,7 @@ export default class SwarmVideo {
       creationDateTime: indexData?.creationDateTime,
       encryptionKey: indexData?.encryptionKey,
       encryptionType: indexData?.encryptionType,
+      fairDrivePath: indexData?.fairDrivePath,
       totUpvotes: indexData?.totUpvotes,
       totDownvotes: indexData?.totDownvotes,
       owner: {
@@ -209,7 +210,8 @@ export default class SwarmVideo {
       await this.indexClient.videos.updateVideo(this.hash, videoReference)
     } else {
       // create video on index
-      const indexVideo = await this.indexClient.videos.createVideo(videoReference)
+      const fairDrivePath = this.driver === "fairos" ? meta.sources[0].reference : undefined
+      const indexVideo = await this.indexClient.videos.createVideo(videoReference, fairDrivePath)
       this.video.owner = {
         ownerAddress: indexVideo.ownerAddress,
         ownerIdentityManifest: indexVideo.ownerIdentityManifest,
@@ -268,6 +270,9 @@ export default class SwarmVideo {
 
     this.video.sources.push(videoSource)
 
+    console.log('UPDATE', this.validatedMetadata());
+
+
     return reference
   }
 
@@ -306,7 +311,7 @@ export default class SwarmVideo {
 
       await this.fairosClient!.files.upload(file, "etherna", axiosOptions)
 
-      return name
+      return "etherna/" + name
     }
   }
 

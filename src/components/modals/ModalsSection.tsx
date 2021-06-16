@@ -4,12 +4,14 @@ import UnsupportedBrowserModal from "./UnsupportedBrowserModal"
 import ErrorModal from "./ErrorModal"
 import ShortcutModal from "./ShortcutModal"
 import ImageCropModal from "./ImageCropModal"
+import FairosPasswordModal from "./FairosPasswordModal"
 import useSelector from "@state/useSelector"
 
 const ModalsSection = () => {
   const {
     errorMessage,
     errorTitle,
+    showFairosPassword,
     showUnsupportedModal,
     isEditingShortcut,
     isCroppingImage,
@@ -31,6 +33,8 @@ const ModalsSection = () => {
       <ShortcutModal show={isEditingShortcut} />
 
       <ImageCropModal show={isCroppingImage} />
+
+      <FairosPasswordModal show={showFairosPassword} />
     </section>
   )
 }

@@ -37,3 +37,10 @@ export const closeShortcutModal = () => {
     isEditingShortcut: false,
   })
 }
+
+export const toggleFairosPasswordModal = (show: boolean) => {
+  store.dispatch({
+    type: UIActionTypes.UI_TOGGLE_FAIROS_PASSWORD,
+    showFairosPassword: show,
+  })
+}

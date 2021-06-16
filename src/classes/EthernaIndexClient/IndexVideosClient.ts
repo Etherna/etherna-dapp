@@ -49,14 +49,16 @@ export default class IndexVideosClient {
   /**
    * Create a new video on the index
    * @param hash Hash of the manifest/feed with the video metadata
+   * @param fairDrivePath Source of fairos video path
    * @param encryptionKey Encryption key
    * @returns Video info
    */
-  async createVideo(hash: string, encryptionKey?: string) {
+  async createVideo(hash: string, fairDrivePath?: string, encryptionKey?: string) {
     const endpoint = `${this.url}/videos`
     const resp = await http.post<IndexVideo>(endpoint, {
       manifestHash: hash,
       encryptionKey,
+      fairDrivePath,
       encryptionType: encryptionKey ? "AES256" : "Plain",
     }, {
       withCredentials: true

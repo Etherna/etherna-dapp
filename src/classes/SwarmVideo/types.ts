@@ -49,6 +49,8 @@ export type Video = SwarmVideoMeta & {
   creationDateTime?: string
   /** Video encryption key */
   encryptionKey?: string
+  /** Fairdrive path */
+  fairDrivePath?: string
   /** Video encryption type */
   encryptionType?: IndexEncryptionType
   /** Number of down votes */

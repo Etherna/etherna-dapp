@@ -4,6 +4,7 @@ import { Crop } from "react-image-crop"
 export const UIActionTypes = {
   UI_SHOW_ERROR: "UI_SHOW_ERROR",
   UI_HIDE_ERROR: "UI_HIDE_ERROR",
+  UI_TOGGLE_FAIROS_PASSWORD: "UI_TOGGLE_FAIROS_PASSWORD",
   UI_TOGGLE_CONNECTING_WALLET: "UI_TOGGLE_CONNECTING_WALLET",
   UI_TOGGLE_LOADING_PROFILE: "UI_TOGGLE_LOADING_PROFILE",
   UI_TOGGLE_BROWSER_SUPPORT: "UI_TOGGLE_BROWSER_SUPPORT",
@@ -23,6 +24,10 @@ type ShowErrorAction = {
 }
 type HideErrorAction = {
   type: typeof UIActionTypes.UI_HIDE_ERROR
+}
+type ToggleFairosPasswordAction = {
+  type: typeof UIActionTypes.UI_TOGGLE_FAIROS_PASSWORD
+  showFairosPassword: boolean
 }
 type ToggleConnectingWalletAction = {
   type: typeof UIActionTypes.UI_TOGGLE_CONNECTING_WALLET
@@ -61,6 +66,7 @@ type UpdateImageCropAction = {
 export type UIActions = (
   ShowErrorAction |
   HideErrorAction |
+  ToggleFairosPasswordAction |
   ToggleConnectingWalletAction |
   ToggleLoadingProfileAction |
   ToggleBrowserSupportAction |
@@ -89,6 +95,12 @@ const uiReducer = (state: UIState = {}, action: UIActions): UIState => {
         ...state,
         errorMessage: undefined,
         errorTitle: undefined,
+      }
+
+    case UIActionTypes.UI_TOGGLE_FAIROS_PASSWORD:
+      return {
+        ...state,
+        showFairosPassword: action.showFairosPassword,
       }
 
     case UIActionTypes.UI_TOGGLE_CONNECTING_WALLET:

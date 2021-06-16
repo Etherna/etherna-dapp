@@ -35,6 +35,7 @@ export default class VideoEditorCache {
     })
     videoHandler.hash = reference
     videoHandler.videoRaw = videoRaw
+    videoHandler.driver = driver
 
     const state: VideoEditorContextState = {
       reference,

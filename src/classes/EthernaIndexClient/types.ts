@@ -27,6 +27,7 @@ export type IndexVideo = {
   encryptionType: IndexEncryptionType
   manifestHash: string
   ownerAddress: string
+  fairDrivePath?: string
   ownerIdentityManifest: string
   totDownvotes: number
   totUpvotes: number

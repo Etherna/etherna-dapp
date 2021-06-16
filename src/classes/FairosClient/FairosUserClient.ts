@@ -101,9 +101,6 @@ export default class IndexUsersClient {
         withCredentials: true
       })
 
-      console.log('dir result', dir);
-
-
       const ethernaDir = dir.entries.find(entry => entry.content_type === "inode/directory" && entry.name === ETHERNA_DIR_NAME)
 
       if (!ethernaDir) {

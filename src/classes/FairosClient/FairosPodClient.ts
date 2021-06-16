@@ -5,7 +5,7 @@ import { FairosPodsLS } from "./types"
 
 const POD_NAME = import.meta.env.VITE_APP_FAIRDRIVE_PODNAME
 
-export default class IndexUsersClient {
+export default class FairosPodClient {
   url: string
 
   /**

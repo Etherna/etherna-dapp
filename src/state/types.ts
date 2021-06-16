@@ -57,6 +57,7 @@ export type ProfileState = {
 export type UIState = {
   errorTitle?: string
   errorMessage?: string
+  showFairosPassword?: boolean
   isConnectingWallet?: boolean
   isLoadingProfile?: boolean
   showUnsupportedModal?: boolean

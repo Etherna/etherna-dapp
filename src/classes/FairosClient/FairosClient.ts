@@ -1,9 +1,11 @@
 import FairosFilesClient from "./FairosFilesClient"
+import FairosPodClient from "./FairosPodClient"
 import FairosUserClient from "./FairosUserClient"
 import { FairosClientOptions } from "./types"
 
 export default class FairosClient {
   files: FairosFilesClient
+  pod: FairosPodClient
   user: FairosUserClient
 
   /**
@@ -16,6 +18,7 @@ export default class FairosClient {
     const url = `${host}/${apiPath}`
 
     this.files = new FairosFilesClient(url)
+    this.pod = new FairosPodClient(url)
     this.user = new FairosUserClient(url)
   }
 
