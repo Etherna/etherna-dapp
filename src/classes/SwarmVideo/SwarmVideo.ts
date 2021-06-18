@@ -401,8 +401,6 @@ export default class SwarmVideo {
     }
 
     if (rawVideo) {
-      console.log('resolve raw');
-
       resolvedMeta.title = rawVideo.title
       resolvedMeta.description = rawVideo.description
       resolvedMeta.originalQuality = rawVideo.originalQuality
