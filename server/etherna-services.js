@@ -105,7 +105,7 @@ const execBee = () => {
   const pwd = process.env.BEE_PWD ? `--password=${process.env.BEE_PWD}` : ``
   const endpoint = process.env.BEE_PORT ? `--api-addr=:${process.env.BEE_PORT}` : ``
   const pinning = boolVal(process.env.BEE_ENABLE_PIN) ? `--global-pinning-enable=true` : ``
-  const dbCapacity = process.env.BEE_DB_CAPACITY ? `--db-capacity=${process.env.BEE_DB_CAPACITY}` : ``
+  const dbCapacity = process.env.BEE_DB_CAPACITY ? `--cache-capacity=${process.env.BEE_DB_CAPACITY}` : ``
   const otherArgs = [
     `--cors-allowed-origins=*`,
     `--swap-enable=false`,
@@ -159,31 +159,39 @@ const run = async () => {
 
   const args = process.argv.slice(2, process.argv.length)
 
-  if (args.length === 0 || args.includes("--sso")) {
+  const shouldRunEthernaSSO = args.length === 0 || args.includes("--sso")
+  const shouldRunEthernaIndex = args.length === 0 || args.includes("--index")
+  const shouldRunEthernaCredit = args.length === 0 || args.includes("--credit")
+  const shouldRunEthernaValidator = args.length === 0 || args.includes("--val")
+  const shouldRunBeeNode = process.env.BEE_LOCAL_INSTANCE === "true" && (args.length === 0 || args.includes("--bee"))
+
+  if (shouldRunEthernaSSO) {
     const ssoProcess = execProject(process.env.ETHERNA_SSO_PROJECT_PATH)
     processes.push(ssoProcess)
     await waitService(process.env.ETHERNA_SSO_PROJECT_PATH, "Etherna SSO")
   }
 
-  if (args.length === 0 || args.includes("--index")) {
+  if (shouldRunEthernaIndex) {
     const indexProcess = execProject(process.env.ETHERNA_INDEX_PROJECT_PATH)
     processes.push(indexProcess)
-    await waitService(process.env.ETHERNA_INDEX_PROJECT_PATH, "Etherna Index")
   }
 
-  if (args.length === 0 || args.includes("--credit")) {
+  if (shouldRunEthernaCredit) {
     const creditProcess = execProject(process.env.ETHERNA_CREDIT_PROJECT_PATH)
     processes.push(creditProcess)
-    await waitService(process.env.ETHERNA_CREDIT_PROJECT_PATH, "Etherna Credit")
   }
 
-  if (args.length === 0 || args.includes("--val")) {
+  if (shouldRunEthernaValidator) {
     const validatorProcess = execProject(process.env.ETHERNA_GATEWAY_VALIDATOR_PROJECT_PATH)
     processes.push(validatorProcess)
-    await waitService(process.env.ETHERNA_GATEWAY_VALIDATOR_PROJECT_PATH, "Etherna Gateway Validator")
   }
 
-  if (process.env.BEE_LOCAL_INSTANCE === "true" && (args.length === 0 || args.includes("--bee"))) {
+  // await services async
+  shouldRunEthernaIndex && await waitService(process.env.ETHERNA_INDEX_PROJECT_PATH, "Etherna Index")
+  shouldRunEthernaCredit && await waitService(process.env.ETHERNA_CREDIT_PROJECT_PATH, "Etherna Credit")
+  shouldRunEthernaValidator && await waitService(process.env.ETHERNA_GATEWAY_VALIDATOR_PROJECT_PATH, "Etherna Gateway Validator")
+
+  if (shouldRunBeeNode) {
     const beeProcess = execBee()
     processes.push(beeProcess)
     await waitService(process.env.BEE_ENDPOINT, "Bee Node")
