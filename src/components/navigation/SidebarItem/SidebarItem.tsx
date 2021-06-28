@@ -4,7 +4,7 @@ import classnames from "classnames"
 
 import "./sidebar-item.scss"
 
-type SidebarItemProps = {
+export type SidebarItemProps = {
   as?: ElementType
   title?: string
   to?: string
@@ -12,6 +12,8 @@ type SidebarItemProps = {
   rel?: "noreferrer" | "noopener" | "nofollow"
   iconSvg?: React.ReactNode
   activeClassName?: string
+  compact?: boolean
+  isStatic?: boolean
   isActive?: ((pathname: string) => boolean) | boolean
   onClick?: () => void
 }
@@ -25,6 +27,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   rel,
   iconSvg,
   activeClassName = "active",
+  compact,
+  isStatic,
   isActive,
   onClick,
 }) => {
@@ -36,7 +40,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       <>
         {to ? (
           <NavLink
-            className={classnames("sidebar-item")}
+            className={classnames("sidebar-item", { static: isStatic, compact })}
             to={to}
             target={target}
             rel={rel}
@@ -47,7 +51,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           </NavLink>
         ) : (
           <As
-            className={classnames("sidebar-item", { [`${activeClassName}`]: isCurrentPage })}
+            className={classnames("sidebar-item", { [`${activeClassName}`]: isCurrentPage, static: isStatic, compact })}
             onClick={onClick}
           >
             {children}
@@ -55,7 +59,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         )}
       </>
     )
-  }, [to, target, rel, activeClassName, isCurrentPage, onClick])
+  }, [to, target, rel, activeClassName, isStatic, isCurrentPage, onClick])
 
   return (
     <Wrapper>
