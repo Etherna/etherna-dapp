@@ -12,7 +12,6 @@ module.exports = {
       safelist: ["dark"]
     },
   },
-  presets: [],
   darkMode: "class", // or 'media' or 'false'
   theme: {
     screens: {
