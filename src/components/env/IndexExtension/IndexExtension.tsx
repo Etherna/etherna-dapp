@@ -23,6 +23,7 @@ const IndexExtension: React.FC<IndexExtensionProps> = ({ noIcon = false }) => {
       isConnected={isSignedIn}
       iconSvg={!noIcon && <IndexIcon />}
       onClick={() => showEditor("index", indexUrl)}
+      compactMobile
     />
   )
 }

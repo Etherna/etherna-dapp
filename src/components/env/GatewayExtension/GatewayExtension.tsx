@@ -23,6 +23,7 @@ const GatewayExtension: React.FC<GatewayExtensionProps> = ({ noIcon = false }) =
       isConnected={isSignedInGateway}
       iconSvg={!noIcon && <GatewayIcon />}
       onClick={() => showEditor("gateway", gatewayUrl)}
+      compactMobile
     />
   )
 }

@@ -10,12 +10,13 @@ type ExtensionHostStatusProps = {
   host: string
   isConnected: boolean | undefined
   iconSvg?: React.ReactNode
+  compactMobile?: boolean
   onClick?(): void
 }
 
-const ExtensionHostStatus: React.FC<ExtensionHostStatusProps> = ({ title, host, isConnected, iconSvg, onClick }) => {
+const ExtensionHostStatus: React.FC<ExtensionHostStatusProps> = ({ title, host, isConnected, iconSvg, compactMobile, onClick }) => {
   return (
-    <div className="extension-host-status" onClick={onClick}>
+    <div className={classNames("extension-host-status", { "compact-mobile": compactMobile })} onClick={onClick}>
       {iconSvg && (
         <span className="extension-host-status-icon">
           {iconSvg}

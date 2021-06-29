@@ -5,6 +5,7 @@
 
 .extension-host-status-icon {
   @apply w-5 h-5;
+  @apply mr-2;
 }
 
 .extension-host-status-icon + * {
@@ -14,6 +15,10 @@
 .extension-host-status-detail {
   @apply flex flex-col items-start;
   @apply leading-none;
+
+  .extension-host-status.compact-mobile & {
+    @apply hidden lg:flex;
+  }
 }
 
 .extension-host-status-title {
