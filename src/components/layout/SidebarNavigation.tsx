@@ -36,7 +36,7 @@ const SidebarNavigation: React.FC = () => {
         <GatewayExtension />
       </SidebarItem>
 
-      <SidebarSpace />
+      <SidebarSpace customHeight="1rem" />
 
       <SidebarItem
         title="Home"

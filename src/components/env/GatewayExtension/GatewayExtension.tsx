@@ -6,7 +6,11 @@ import ExtensionHostStatus from "@components/env/ExtensionHostStatus"
 import useSelector from "@state/useSelector"
 import useExtensionEditor from "@state/hooks/ui/useExtensionEditor"
 
-const GatewayExtension: React.FC = () => {
+type GatewayExtensionProps = {
+  noIcon?: boolean
+}
+
+const GatewayExtension: React.FC<GatewayExtensionProps> = ({ noIcon = false }) => {
   const { gatewayUrl } = useSelector(state => state.env)
   const { isSignedInGateway } = useSelector(state => state.user)
 
@@ -17,7 +21,7 @@ const GatewayExtension: React.FC = () => {
       title="Gateway"
       host={gatewayUrl}
       isConnected={isSignedInGateway}
-      iconSvg={<GatewayIcon />}
+      iconSvg={!noIcon && <GatewayIcon />}
       onClick={() => showEditor("gateway", gatewayUrl)}
     />
   )

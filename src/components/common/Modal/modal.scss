@@ -32,10 +32,14 @@
 }
 
 .modal-content {
-  @apply flex-grow overflow-x-hidden;
+  @apply flex-1;
   @apply text-center;
   @apply space-y-2;
   @apply sm:text-left;
+
+  @screen sm {
+    max-width: calc(100% - theme('spacing.4') - theme('spacing.12')); // icon + space-x-4
+  }
 }
 
 .modal-icon {

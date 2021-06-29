@@ -6,10 +6,9 @@ import { ReactComponent as MoreIcon } from "@svg/icons/more-icon.svg"
 import SigninButton from "./SigninButton"
 import SharedMenuItems from "./SharedMenuItems"
 import SignedInMenuItems from "./SignedInMenuItems"
-import ExtensionPanelMenuItems, { PanelType } from "./ExtensionPanelMenuItems"
-import Avatar from "../Avatar"
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from "@common/Dropdown"
 import Placeholder from "@common/Placeholder"
+import Avatar from "@components/user/Avatar"
 import useSelector from "@state/useSelector"
 import useSignout from "@state/hooks/user/useSignout"
 
@@ -19,16 +18,7 @@ const UserMenu: React.FC = () => {
   const { isLoadingProfile } = useSelector(state => state.ui)
   const { signout } = useSignout()
 
-  const [selectedPanel, setSelectedPanel] = useState<PanelType | null>()
-
   const isSigningIn = isSignedIn === undefined || isSignedInGateway === undefined || isLoadingProfile
-
-  const handlePanelBack = () => {
-    setSelectedPanel(null)
-    setTimeout(() => {
-      setSelectedPanel(undefined)
-    }, 1000)
-  }
 
   if (isSigningIn) {
     return (
@@ -38,7 +28,7 @@ const UserMenu: React.FC = () => {
 
   return (
     <>
-      <Dropdown forceOpen={selectedPanel !== undefined}>
+      <Dropdown>
         <DropdownToggle className="btn btn-rounded btn-transparent">
           {isSignedIn === false ? (
             <MoreIcon />
@@ -48,26 +38,22 @@ const UserMenu: React.FC = () => {
         </DropdownToggle>
 
         <DropdownMenu>
-          {selectedPanel ? (
-            <ExtensionPanelMenuItems panel={selectedPanel} onBack={handlePanelBack} />
-          ) : (
-            <>
-              {isSignedIn === true && (
-                <SignedInMenuItems />
-              )}
+          <>
+            {isSignedIn === true && (
+              <SignedInMenuItems />
+            )}
 
-              <SharedMenuItems onPanelSelect={setSelectedPanel} />
+            <SharedMenuItems />
 
-              {isSignedIn === true && (
-                <>
-                  <hr />
-                  <DropdownItem action={signout} icon={<SignoutIcon />}>
-                    Sign out
-                  </DropdownItem>
-                </>
-              )}
-            </>
-          )}
+            {isSignedIn === true && (
+              <>
+                <hr />
+                <DropdownItem action={signout} icon={<SignoutIcon />}>
+                  Sign out
+                </DropdownItem>
+              </>
+            )}
+          </>
         </DropdownMenu>
       </Dropdown>
 

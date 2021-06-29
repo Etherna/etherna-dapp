@@ -5,19 +5,17 @@ import { ReactComponent as GatewayIcon } from "@svg/icons/navigation/gateway.svg
 import { ReactComponent as ShortcutsIcon } from "@svg/icons/shortcuts-icon.svg"
 import { ReactComponent as DarkModeIcon } from "@svg/icons/dark-mode-icon.svg"
 
-import ExtensionPanelSuffix from "./ExtensionPanelSuffix"
-import { PanelType } from "./ExtensionPanelMenuItems"
 import DarkModeToggle from "./DarkModeToggle"
 import { DropdownItem } from "@common/Dropdown"
+import IndexExtension from "@components/env/IndexExtension"
+import GatewayExtension from "@components/env/GatewayExtension"
 import routes from "@routes"
 import { toggleDarkMode } from "@state/actions/enviroment/darkMode"
 import useSelector from "@state/useSelector"
 
-type SharedMenuItemsProps = {
-  onPanelSelect(panel: PanelType): void
-}
+type SharedMenuItemsProps = {}
 
-const SharedMenuItems: React.FC<SharedMenuItemsProps> = ({ onPanelSelect }) => {
+const SharedMenuItems: React.FC<SharedMenuItemsProps> = ({ }) => {
   const darkMode = useSelector(state => state.env.darkMode)
   const { isSignedIn, isSignedInGateway } = useSelector(state => state.user)
 
@@ -28,18 +26,14 @@ const SharedMenuItems: React.FC<SharedMenuItemsProps> = ({ onPanelSelect }) => {
   return (
     <>
       <DropdownItem
-        action={() => onPanelSelect("index")}
         icon={<IndexIcon />}
-        suffix={<ExtensionPanelSuffix active={isSignedIn === true} />}
       >
-        Index
+        <IndexExtension noIcon />
       </DropdownItem>
       <DropdownItem
-        action={() => onPanelSelect("gateway")}
         icon={<GatewayIcon />}
-        suffix={<ExtensionPanelSuffix active={isSignedInGateway === true} />}
       >
-        Gateway
+        <GatewayExtension noIcon />
       </DropdownItem>
 
       <hr />

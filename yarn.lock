@@ -4811,7 +4811,7 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
-reduce-css-calc@^2.1.8:
+reduce-css-calc@^2.1.7, reduce-css-calc@^2.1.8:
   version "2.1.8"
   resolved "https://registry.yarnpkg.com/reduce-css-calc/-/reduce-css-calc-2.1.8.tgz#7ef8761a28d614980dc0c982f772c93f7a99de03"
   integrity sha512-8liAVezDmUcH+tdzoEGrhfbGcP7nOV4NkGE3a74+qqvE7nt9i4sKLGBuZNOnpI4WiGksiNPklZxva80061QiPg==
@@ -5498,6 +5498,14 @@ svg-parser@^2.0.2:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/svg-parser/-/svg-parser-2.0.4.tgz#fdc2e29e13951736140b76cb122c8ee6630eb6b5"
   integrity sha512-e4hG1hRwoOdRb37cIMSgzNsxyzKfayW6VOflrwvR+/bzrkyxY/31WkbgnQpgtrNp1SdpJvpUAGTa/ZoiPNDuRQ==
+
+tailwindcss-scroll-snap@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/tailwindcss-scroll-snap/-/tailwindcss-scroll-snap-1.1.0.tgz#46bc85a9ac94b5ab77c485e168f8ba5331bdb959"
+  integrity sha512-qmV7PJMqQrdzf2uKjaIrgIW9fpz8SNdD6hhVtbUbRGjz95CsZvsVozHRCz3NrPphro+tbRMbUhDYmTNKP6qPSw==
+  dependencies:
+    lodash "^4.17.15"
+    reduce-css-calc "^2.1.7"
 
 tailwindcss@^2.2.4:
   version "2.2.4"

@@ -981,6 +981,7 @@ module.exports = {
     rotate: ["responsive", "hover", "focus"],
     saturate: ["responsive"],
     scale: ["responsive", "hover", "focus"],
+    scrollSnapType: ['responsive'],
     sepia: ["responsive"],
     skew: ["responsive", "hover", "focus"],
     space: ["responsive"],
@@ -1008,5 +1009,7 @@ module.exports = {
     wordBreak: ["responsive"],
     zIndex: ["responsive", "focus-within", "focus"],
   },
-  plugins: [],
+  plugins: [
+    require("tailwindcss-scroll-snap")
+  ],
 }

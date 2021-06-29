@@ -6,7 +6,11 @@ import ExtensionHostStatus from "@components/env/ExtensionHostStatus"
 import useSelector from "@state/useSelector"
 import useExtensionEditor from "@state/hooks/ui/useExtensionEditor"
 
-const IndexExtension: React.FC = () => {
+type IndexExtensionProps = {
+  noIcon?: boolean
+}
+
+const IndexExtension: React.FC<IndexExtensionProps> = ({ noIcon = false }) => {
   const { indexUrl } = useSelector(state => state.env)
   const { isSignedIn } = useSelector(state => state.user)
 
@@ -17,7 +21,7 @@ const IndexExtension: React.FC = () => {
       title="Index"
       host={indexUrl}
       isConnected={isSignedIn}
-      iconSvg={<IndexIcon />}
+      iconSvg={!noIcon && <IndexIcon />}
       onClick={() => showEditor("index", indexUrl)}
     />
   )

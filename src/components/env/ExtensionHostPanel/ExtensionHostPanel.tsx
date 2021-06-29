@@ -3,7 +3,6 @@ import React, { useMemo, useState } from "react"
 import "./extension-host-panel.scss"
 import { ReactComponent as EditIcon } from "@svg/icons/edit-icon.svg"
 import { ReactComponent as TrashIcon } from "@svg/icons/trash.svg"
-import { ReactComponent as VerifiedIcon } from "@svg/icons/badge-check.svg"
 import { ReactComponent as CheckIcon } from "@svg/icons/check.svg"
 import { ReactComponent as PlusIcon } from "@svg/icons/plus.svg"
 
@@ -13,6 +12,7 @@ import { urlHostname, urlOrigin } from "@utils/urls"
 import Button from "@common/Button"
 import { showError } from "@state/actions/modals"
 import classNames from "classnames"
+import ExtensionHostsList from "../ExtensionHostsList"
 
 type ExtensionHostPanelProps = {
   listStorageKey: string
@@ -105,20 +105,14 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
   return (
     <div className="extension-host-panel">
       <p className="extension-host-panel-description">{description}</p>
-      <div className="extension-host-panel-list">
-        {hosts?.map((host, i) => (
-          <button className={classNames("extension-host-panel-button", { active: host.url === selectedHost?.url })} onClick={() => selectHost(host)} key={i}>
-            <span className="name">
-              {host.name}
-              {isVerifiedOrigin(host.url) && (
-                <span className="verified">
-                  <VerifiedIcon />
-                </span>
-              )}
-            </span>
-            <span className="host">{urlHostname(host.url)}</span>
-          </button>
-        ))}
+
+      <div className="extension-host-panel-list-container">
+        <ExtensionHostsList
+          hosts={hosts ?? []}
+          selectedHost={selectedHost}
+          isVerifiedOrigin={isVerifiedOrigin}
+          onHostSelected={selectHost}
+        />
       </div>
 
       <div className="extension-host-panel-update">

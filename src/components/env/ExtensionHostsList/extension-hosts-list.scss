@@ -1,0 +1,91 @@
+.extension-hosts-list {
+  @apply relative;
+  @apply w-full;
+}
+
+.extension-hosts-list-scrollable {
+  @apply w-full;
+  @apply relative;
+  @apply py-6;
+  @apply flex;
+  @apply overflow-x-auto;
+  @apply snap snap-x snap-mandatory;
+
+  &::-webkit-scrollbar {
+    @apply hidden;
+  }
+}
+
+.extension-hosts-list-nav {
+  @apply hidden sm:block;
+  @apply absolute top-1/2;
+  @apply transform -translate-y-1/2;
+  @apply w-8 h-8 rounded-full;
+  @apply border border-gray-700 dark:border-gray-300;
+  @apply text-gray-700 dark:text-gray-300;
+  @apply p-1;
+  @apply transition-colors duration-200;
+  @apply hover:bg-gray-500/25 dark:hover:bg-gray-500/25;
+
+  &.prev {
+    @apply -left-2;
+    @apply -translate-x-full;
+  }
+  &.next {
+    @apply -right-2;
+    @apply translate-x-full rotate-180;
+  }
+
+  > svg {
+    @apply mr-px; // fix visual misalligment
+  }
+}
+
+.extension-hosts-list-button {
+  @apply snap-start;
+  @apply relative;
+  @apply flex flex-col;
+  @apply text-sm font-medium;
+  @apply text-gray-600 dark:text-gray-500;
+  @apply border border-gray-600 dark:border-gray-500;
+  @apply rounded;
+  @apply px-3 py-1;
+  @apply transition-colors duration-300;
+  @apply hover:text-gray-300 dark:hover:text-gray-200;
+  @apply hover:border-gray-300 dark:hover:border-gray-200;
+
+  .name {
+    @apply text-gray-900 dark:text-gray-100;
+    @apply font-semibold;
+    @apply flex items-center;
+    @apply whitespace-nowrap;
+  }
+
+  .host {
+    @apply text-xs;
+    @apply text-gray-700 dark:text-gray-400;
+  }
+
+  .verified {
+    @apply inline-block;
+    @apply ml-0.5;
+    @apply w-4 h-4;
+  }
+
+  &.active {
+    @apply border-blue-400 dark:border-blue-500;
+    @apply bg-blue-400 dark:bg-blue-500;
+
+    .name,
+    .host {
+      @apply text-white;
+    }
+    .verified {
+      @apply text-blue-700 dark:text-blue-800;
+    }
+  }
+
+  & + & {
+    @apply ml-3;
+  }
+}
