@@ -93,7 +93,7 @@ const serviceHost = projectPath => {
  * @param {string} projectPath The service project path
  */
 const execProject = (projectPath) => {
-  const execCms = `dotnet watch -p ${projectPath} run`
+  const execCms = `DOTNET_WATCH_SUPPRESS_LAUNCH_BROWSER=true dotnet watch -p ${projectPath} run`
   return exec(execCms, execCallback)
 }
 
@@ -106,13 +106,12 @@ const execBee = () => {
   const endpoint = process.env.BEE_PORT ? `--api-addr=:${process.env.BEE_PORT}` : ``
   const pinning = boolVal(process.env.BEE_ENABLE_PIN) ? `--global-pinning-enable=true` : ``
   const dbCapacity = process.env.BEE_DB_CAPACITY ? `--cache-capacity=${process.env.BEE_DB_CAPACITY}` : ``
+  const swapEndpoint = process.env.BEE_SWAP_ENDPOINT ? `--swap-enable=true --swap-endpoint=${process.env.BEE_SWAP_ENDPOINT}` : `--standalone=true`
   const otherArgs = [
     `--cors-allowed-origins=*`,
-    `--swap-enable=false`,
-    `--standalone=true`,
-    `--gateway-mode=true`
+    //`--mainnet=false`,
   ]
-  const execCms = `bee start ${pwd} ${endpoint} ${pinning} ${dbCapacity} ${otherArgs.join(" ")}`.trim()
+  const execCms = `bee start ${pwd} ${endpoint} ${pinning} ${dbCapacity} ${swapEndpoint} ${otherArgs.join(" ")}`.trim()
   return exec(execCms, execCallback)
 }
 

@@ -8,7 +8,7 @@ const FilterTransformStream = require("../classes/FilterTransformStream")
 
 
 // Consts
-const GatewayValidPathsRegex = /^\/(bytes|chunks|files|dirs|tags|pin|soc|feeds|pss)\/?.*/
+const GatewayValidPathsRegex = /^\/(bytes|chunks|bzz|tags|pins|soc|feeds|pss|stamps)\/?.*/
 const MaxBodySizeCap = 5000000 //5MB
 const ValidatorHost = process.env.GATEWAY_VALIDATOR_PROXY_HOST
 const SwarmHost = process.env.GATEWAY_SWARM_PROXY_HOST

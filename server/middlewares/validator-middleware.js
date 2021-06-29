@@ -4,7 +4,7 @@ require("../utils/env")
 
 
 // Consts
-const GatewayValidPathsRegex = /^\/(bytes|chunks|files|dirs|tags|pin|soc|feeds|pss)\/?.*/
+const GatewayValidPathsRegex = /^\/(bytes|chunks|bzz|tags|pins|soc|feeds|pss|stamps)\/?.*/
 const ValidatorHost = process.env.GATEWAY_VALIDATOR_PROXY_HOST
 
 
