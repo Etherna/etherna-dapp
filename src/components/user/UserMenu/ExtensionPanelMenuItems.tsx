@@ -3,6 +3,7 @@ import React from "react"
 import ExtensionPanel from "./ExtensionPanel"
 import { enviromentActions } from "@state/actions"
 import useSelector from "@state/useSelector"
+import { safeURL, urlOrigin } from "@utils/urls"
 
 export type PanelType = "index" | "gateway"
 
@@ -50,8 +51,8 @@ const ExtensionPanelMenuItems: React.FC<EnvDropDownMenusProps> = ({ panel, onBac
           description={"You can change the default Etherna Index here"}
           host={indexHost}
           apiPath={indexApiPath}
-          defaultHost={import.meta.env.VITE_APP_INDEX_HOST}
-          defaultApiPath={import.meta.env.VITE_APP_INDEX_API_PATH}
+          defaultHost={urlOrigin(import.meta.env.VITE_APP_INDEX_URL)!}
+          defaultApiPath={safeURL(import.meta.env.VITE_APP_INDEX_URL)!.pathname}
           isSignedIn={isSignedIn}
           onReset={handleIndexReset}
           onSave={handleIndexUpdate}
@@ -67,8 +68,8 @@ const ExtensionPanelMenuItems: React.FC<EnvDropDownMenusProps> = ({ panel, onBac
           description={"Here you can specify a different Swarm Gateway"}
           host={gatewayHost}
           apiPath={gatewayApiPath}
-          defaultHost={import.meta.env.VITE_APP_GATEWAY_HOST}
-          defaultApiPath={import.meta.env.VITE_APP_GATEWAY_API_PATH}
+          defaultHost={urlOrigin(import.meta.env.VITE_APP_GATEWAY_URL)!}
+          defaultApiPath={safeURL(import.meta.env.VITE_APP_GATEWAY_URL)!.pathname}
           isSignedIn={isSignedInGateway}
           onReset={handleGatewayReset}
           onSave={handleGatewayUpdate}

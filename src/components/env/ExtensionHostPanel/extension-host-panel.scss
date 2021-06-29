@@ -1,0 +1,102 @@
+.extension-host-panel {}
+
+.extension-host-panel-description {
+  @apply text-sm;
+  @apply text-gray-700 dark:text-gray-400;
+}
+
+.extension-host-panel-list {
+  @apply py-6;
+  @apply flex;
+  @apply overflow-x-auto;
+
+  &::placeholder {
+    @apply hidden;
+  }
+}
+
+.extension-host-panel-button {
+  @apply relative;
+  @apply flex flex-col;
+  @apply text-sm font-medium;
+  @apply text-gray-600 dark:text-gray-500;
+  @apply border border-gray-600 dark:border-gray-500;
+  @apply rounded;
+  @apply px-3 py-1;
+  @apply transition-colors duration-300;
+  @apply hover:text-gray-300 dark:hover:text-gray-200;
+  @apply hover:border-gray-300 dark:hover:border-gray-200;
+
+  .name {
+    @apply text-gray-900 dark:text-gray-100;
+    @apply font-semibold;
+    @apply flex items-center;
+    @apply whitespace-nowrap;
+  }
+
+  .host {
+    @apply text-xs;
+    @apply text-gray-700 dark:text-gray-400;
+  }
+
+  .verified {
+    @apply inline-block;
+    @apply ml-0.5;
+    @apply w-4 h-4;
+  }
+
+  &.active {
+    @apply border-blue-400 dark:border-blue-500;
+    @apply bg-blue-400 dark:bg-blue-500;
+
+    .name,
+    .host {
+      @apply text-white;
+    }
+    .verified {
+      @apply text-blue-700 dark:text-blue-800;
+    }
+  }
+
+  &.new {
+    @apply items-center;
+    @apply px-2.5;
+
+    svg {
+      @apply w-6 h-6;
+      @apply m-auto;
+    }
+  }
+
+  & + & {
+    @apply ml-3;
+  }
+}
+
+.extension-host-panel-update {}
+
+.extension-host-panel-actions {
+  @apply flex items-center;
+
+  &-right {
+    @apply flex items-center;
+    @apply ml-auto;
+  }
+
+  .btn {
+    @apply px-1;
+  }
+}
+
+.extension-host-panel-fields {
+  @apply mt-6;
+
+  label {
+    @apply text-gray-400 dark:text-gray-400;
+  }
+}
+
+.extension-host-panel-value {
+  @apply font-medium;
+  @apply text-gray-700 dark:text-gray-200;
+}

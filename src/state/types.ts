@@ -16,11 +16,9 @@ export type AppState = {
 }
 
 export type EnvState = {
-  indexHost: string
-  indexApiPath: string
-  gatewayHost: string
-  gatewayApiPath: string
-  creditHost: string
+  indexUrl: string
+  gatewayUrl: string
+  creditUrl: string
   indexClient: EthernaIndexClient
   gatewayClient: EthernaGatewayClient
   authClient: EthernaAuthClient
@@ -65,6 +63,9 @@ export type UIState = {
   imageCrop?: Crop
   imageType?: "avatar" | "cover"
   image?: string
+
+  extensionName?: "index" | "gateway"
+  extensionUrl?: string
 }
 
 export type UserState = {

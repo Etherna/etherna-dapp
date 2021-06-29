@@ -4,6 +4,7 @@ import UnsupportedBrowserModal from "./UnsupportedBrowserModal"
 import ErrorModal from "./ErrorModal"
 import ShortcutModal from "./ShortcutModal"
 import ImageCropModal from "./ImageCropModal"
+import ExtensionEditorModal from "./ExtensionEditorModal"
 import useSelector from "@state/useSelector"
 
 const ModalsSection = () => {
@@ -31,6 +32,8 @@ const ModalsSection = () => {
       <ShortcutModal show={isEditingShortcut} />
 
       <ImageCropModal show={isCroppingImage} />
+
+      <ExtensionEditorModal />
     </section>
   )
 }

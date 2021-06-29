@@ -6,12 +6,15 @@ import { ReactComponent as UserIcon } from "@svg/icons/navigation/user.svg"
 import { ReactComponent as PlaylistIcon } from "@svg/icons/navigation/playlists.svg"
 import { ReactComponent as BookmarkIcon } from "@svg/icons/navigation/bookmark.svg"
 
+import { ReducerTypes, useStateValue } from "./DefaultLayout/LayoutContext"
 import Sidebar from "@components/navigation/Sidebar"
 import SidebarItem from "@components/navigation/SidebarItem"
 import SidebarSpace from "@components/navigation/SidebarSpace"
 import SidebarLinks from "@components/navigation/SidebarLinks"
+import IndexExtension from "@components/env/IndexExtension"
+import GatewayExtension from "@components/env/GatewayExtension"
 import routes from "@routes"
-import { ReducerTypes, useStateValue } from "./DefaultLayout/LayoutContext"
+import { urlOrigin, urlPath } from "@utils/urls"
 
 const SidebarNavigation: React.FC = () => {
   const [state, dispatch] = useStateValue()
@@ -26,6 +29,15 @@ const SidebarNavigation: React.FC = () => {
 
   return (
     <Sidebar floating={floatingSidebar} show={!hideSidebar} onClose={hodeSidebar}>
+      <SidebarItem isStatic compact>
+        <IndexExtension />
+      </SidebarItem>
+      <SidebarItem isStatic compact>
+        <GatewayExtension />
+      </SidebarItem>
+
+      <SidebarSpace />
+
       <SidebarItem
         title="Home"
         to="/"
@@ -62,15 +74,15 @@ const SidebarNavigation: React.FC = () => {
       <SidebarLinks>
         <SidebarItem
           title="Index Api"
-          to={`${import.meta.env.VITE_APP_INDEX_HOST}/swagger`}
+          to={urlPath(import.meta.env.VITE_APP_INDEX_URL, '/swagger')}
         />
         <SidebarItem
           title="Gateway"
-          to={import.meta.env.VITE_APP_GATEWAY_HOST}
+          to={urlOrigin(import.meta.env.VITE_APP_GATEWAY_URL)}
         />
         <SidebarItem
           title="Credit"
-          to={import.meta.env.VITE_APP_CREDIT_HOST}
+          to={urlOrigin(import.meta.env.VITE_APP_CREDIT_URL)}
         />
         <SidebarItem
           title="Privacy Policy"

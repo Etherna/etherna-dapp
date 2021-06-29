@@ -1,0 +1,36 @@
+.extension-host-status {
+  @apply flex-grow;
+  @apply flex items-center;
+}
+
+.extension-host-status-icon {
+  @apply w-5 h-5;
+}
+
+.extension-host-status-icon + * {
+  @apply ml-3;
+}
+
+.extension-host-status-detail {
+  @apply flex flex-col items-start;
+  @apply leading-none;
+}
+
+.extension-host-status-title {
+  @apply text-sm font-semibold;
+}
+
+.extension-host-status-host {
+  @apply text-xs font-medium;
+  @apply text-gray-500 dark:text-gray-300;
+}
+
+.extension-host-status-preview {
+  @apply w-2 h-2 rounded-full;
+  @apply ml-auto;
+  @apply bg-gray-300;
+
+  &.active {
+    @apply bg-green-500 dark:bg-green-400;
+  }
+}

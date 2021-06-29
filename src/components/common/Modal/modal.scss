@@ -1,7 +1,7 @@
 .modal {
   @apply fixed inset-0;
   @apply overflow-y-auto;
-  @apply z-10;
+  @apply z-100;
 }
 
 .modal-wrapper {
@@ -32,7 +32,7 @@
 }
 
 .modal-content {
-  @apply flex-grow;
+  @apply flex-grow overflow-x-hidden;
   @apply text-center;
   @apply space-y-2;
   @apply sm:text-left;

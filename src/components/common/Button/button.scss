@@ -76,7 +76,7 @@
   @apply text-gray-800 dark:text-gray-100;
 
   &:not(:disabled) {
-    @apply hover:bg-gray-200 dark:hover:bg-gray-700;
+    @apply hover:bg-green-500/20 dark:hover:bg-green-500/20;
     @apply hover:text-gray-800 dark:hover:text-gray-100;
   }
 }

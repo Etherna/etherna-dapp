@@ -1,8 +1,10 @@
 import { store } from "@state/store"
 import { EnvActionTypes } from "@state/reducers/enviromentReducer"
 
+const DARK_MODE_STORAGE_KEY = "setting:dark-mode"
+
 export const darkModeEnabled = () => {
-  const userPref = window.localStorage.getItem("darkMode")
+  const userPref = window.localStorage.getItem(DARK_MODE_STORAGE_KEY)
   return userPref !== null
     ? userPref === "true"
     : window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -19,7 +21,7 @@ export const loadDarkMode = () => {
 }
 
 export const toggleDarkMode = (darkMode: boolean) => {
-  window.localStorage.setItem("darkMode", darkMode ? "true" : "false")
+  window.localStorage.setItem(DARK_MODE_STORAGE_KEY, darkMode ? "true" : "false")
   loadDarkMode()
 
   store.dispatch({
