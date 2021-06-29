@@ -2,6 +2,7 @@ import SwarmBeeClient from "@classes/SwarmBeeClient"
 import EthernaIndexClient from "@classes/EthernaIndexClient"
 import { store } from "@state/store"
 import { EnvActionTypes } from "@state/reducers/enviromentReducer"
+import { safeURL, urlOrigin } from "@utils/urls"
 
 export const updateIndexHost = (host: string, apiPath?: string) => {
   window.localStorage.setItem("indexHost", host)
@@ -26,13 +27,13 @@ export const updateGatewayHost = (host: string, apiPath?: string) => {
 }
 
 export const resetIndexHost = () => {
-  const host = import.meta.env.VITE_APP_INDEX_HOST
-  const apiPath = import.meta.env.VITE_APP_INDEX_API_PATH
+  const host = urlOrigin(import.meta.env.VITE_APP_INDEX_URL)!
+  const apiPath = safeURL(import.meta.env.VITE_APP_INDEX_URL)!.pathname
   updateIndexHost(host, apiPath)
 }
 
 export const resetGatewayHost = () => {
-  const host = import.meta.env.VITE_APP_GATEWAY_HOST
-  const apiPath = import.meta.env.VITE_APP_INDEX_API_PATH
+  const host = urlOrigin(import.meta.env.VITE_APP_INDEX_URL)!
+  const apiPath = safeURL(import.meta.env.VITE_APP_INDEX_URL)!.pathname
   updateGatewayHost(host, apiPath)
 }

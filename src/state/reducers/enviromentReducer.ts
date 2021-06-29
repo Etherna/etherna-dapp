@@ -71,7 +71,9 @@ export type EnvActions = (
 )
 
 // Init reducer
-const creditHost = window.localStorage.getItem("creditHost") || import.meta.env.VITE_APP_CREDIT_HOST
+const indexUrl = window.localStorage.getItem("setting:index-url") || import.meta.env.VITE_APP_INDEX_URL
+const gatewayUrl = window.localStorage.getItem("setting:gateway-url") || import.meta.env.VITE_APP_GATEWAY_URL
+const creditUrl = window.localStorage.getItem("setting:credit-url") || import.meta.env.VITE_APP_CREDIT_URL
 const indexClient = new EthernaIndexClient({
   host: EthernaIndexClient.defaultHost,
   apiPath: EthernaIndexClient.defaultApiPath
@@ -87,11 +89,9 @@ const authClient = new EthernaAuthClient({
 const beeClient = new SwarmBeeClient(EthernaGatewayClient.defaultHost)
 
 const initialState: EnvState = {
-  indexHost: EthernaIndexClient.defaultHost,
-  indexApiPath: EthernaIndexClient.defaultApiPath,
-  gatewayHost: EthernaGatewayClient.defaultHost,
-  gatewayApiPath: EthernaGatewayClient.defaultApiPath,
-  creditHost,
+  indexUrl,
+  gatewayUrl,
+  creditUrl,
   indexClient,
   gatewayClient,
   authClient,
