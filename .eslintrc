@@ -14,15 +14,6 @@
     ],
     "semi": ["error", "never"],
     "react/react-in-jsx-scope": "off",
-    "indent": [
-      "error",
-      2,
-      {
-        "SwitchCase": 1,
-        "ignoredNodes": ["ConditionalExpression"],
-        "ignoreComments": true
-      }
-    ],
     "@typescript-eslint/indent": [
       "error",
       2,

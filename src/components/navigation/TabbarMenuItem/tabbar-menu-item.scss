@@ -12,6 +12,7 @@
   @apply dark:bg-gray-900 dark:bg-opacity-80;
   @apply backdrop-filter backdrop-blur-lg;
   @apply border-t border-b border-gray-800/75;
+  bottom: calc(theme('spacing.16') + var(--safe-area-inset-bottom));
 
   > .tabbar-item {
     @apply flex-row items-center;
