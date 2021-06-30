@@ -5,8 +5,8 @@ import classnames from "classnames"
 
 import "./tabbar-item.scss"
 
-type TabbarItemProps = {
-  title: string
+export type TabbarItemProps = {
+  title?: string
   to?: string
   target?: "_blank"
   rel?: "noreferrer" | "noopener" | "nofollow"
@@ -17,6 +17,7 @@ type TabbarItemProps = {
 }
 
 const TabbarItem: React.FC<TabbarItemProps> = ({
+  children,
   title,
   to,
   target,
@@ -57,10 +58,16 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
 
   return (
     <Wrapper>
-      <div className="tabbar-item-icon">
-        {iconSvg}
-      </div>
-      <span className="tabbar-item-title">{title}</span>
+      {children ? (
+        children
+      ) : (
+        <>
+          <div className="tabbar-item-icon">
+            {iconSvg}
+          </div>
+          <span className="tabbar-item-title">{title}</span>
+        </>
+      )}
     </Wrapper>
   )
 }

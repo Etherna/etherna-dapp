@@ -8,9 +8,10 @@ import useExtensionEditor from "@state/hooks/ui/useExtensionEditor"
 
 type IndexExtensionProps = {
   noIcon?: boolean
+  compactMobile?: boolean
 }
 
-const IndexExtension: React.FC<IndexExtensionProps> = ({ noIcon = false }) => {
+const IndexExtension: React.FC<IndexExtensionProps> = ({ noIcon = false, compactMobile = false }) => {
   const { indexUrl } = useSelector(state => state.env)
   const { isSignedIn } = useSelector(state => state.user)
 
@@ -23,7 +24,7 @@ const IndexExtension: React.FC<IndexExtensionProps> = ({ noIcon = false }) => {
       isConnected={isSignedIn}
       iconSvg={!noIcon && <IndexIcon />}
       onClick={() => showEditor("index", indexUrl)}
-      compactMobile
+      compactMobile={compactMobile}
     />
   )
 }

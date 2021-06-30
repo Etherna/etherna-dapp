@@ -8,9 +8,10 @@ import useExtensionEditor from "@state/hooks/ui/useExtensionEditor"
 
 type GatewayExtensionProps = {
   noIcon?: boolean
+  compactMobile?: boolean
 }
 
-const GatewayExtension: React.FC<GatewayExtensionProps> = ({ noIcon = false }) => {
+const GatewayExtension: React.FC<GatewayExtensionProps> = ({ noIcon = false, compactMobile = false }) => {
   const { gatewayUrl } = useSelector(state => state.env)
   const { isSignedInGateway } = useSelector(state => state.user)
 
@@ -23,7 +24,7 @@ const GatewayExtension: React.FC<GatewayExtensionProps> = ({ noIcon = false }) =
       isConnected={isSignedInGateway}
       iconSvg={!noIcon && <GatewayIcon />}
       onClick={() => showEditor("gateway", gatewayUrl)}
-      compactMobile
+      compactMobile={compactMobile}
     />
   )
 }

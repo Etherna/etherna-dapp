@@ -30,10 +30,10 @@ const SidebarNavigation: React.FC = () => {
   return (
     <Sidebar floating={floatingSidebar} show={!hideSidebar} onClose={hodeSidebar}>
       <SidebarItem isStatic compact>
-        <IndexExtension />
+        <IndexExtension compactMobile />
       </SidebarItem>
       <SidebarItem isStatic compact>
-        <GatewayExtension />
+        <GatewayExtension compactMobile />
       </SidebarItem>
 
       <SidebarSpace customHeight="1rem" />
@@ -74,7 +74,7 @@ const SidebarNavigation: React.FC = () => {
       <SidebarLinks>
         <SidebarItem
           title="Index Api"
-          to={urlPath(import.meta.env.VITE_APP_INDEX_URL, '/swagger')}
+          to={urlPath(import.meta.env.VITE_APP_INDEX_URL, "/swagger")}
         />
         <SidebarItem
           title="Gateway"

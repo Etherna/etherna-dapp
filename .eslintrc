@@ -23,6 +23,15 @@
         "ignoreComments": true
       }
     ],
+    "@typescript-eslint/indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1,
+        "ignoredNodes": ["ConditionalExpression"],
+        "ignoreComments": true
+      }
+    ],
     "quotes": [
       "warn",
       "double",

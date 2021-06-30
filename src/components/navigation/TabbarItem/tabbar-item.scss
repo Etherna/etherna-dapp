@@ -1,7 +1,9 @@
 .tabbar-item {
-  @apply flex flex-col flex-1 items-center justify-items-center rounded;
-  @apply space-y-0.5 px-4 py-2;
+  @apply flex-grow;
+  @apply min-w-[15%];
   @apply max-w-[96px];
+  @apply flex flex-col items-center justify-items-center rounded;
+  @apply space-y-0.5 px-4 py-2;
   @apply cursor-pointer transition-colors duration-300;
   @apply active:bg-gray-200 active:text-gray-800;
   @apply hover:bg-gray-200 hover:text-gray-800;

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 
 import { ReactComponent as SignoutIcon } from "@svg/icons/signout-icon.svg"
 import { ReactComponent as MoreIcon } from "@svg/icons/more-icon.svg"

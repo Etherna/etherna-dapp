@@ -15,9 +15,8 @@ import useSelector from "@state/useSelector"
 
 type SharedMenuItemsProps = {}
 
-const SharedMenuItems: React.FC<SharedMenuItemsProps> = ({ }) => {
+const SharedMenuItems: React.FC<SharedMenuItemsProps> = () => {
   const darkMode = useSelector(state => state.env.darkMode)
-  const { isSignedIn, isSignedInGateway } = useSelector(state => state.user)
 
   const handleDarkModeChange = () => {
     toggleDarkMode(!darkMode)

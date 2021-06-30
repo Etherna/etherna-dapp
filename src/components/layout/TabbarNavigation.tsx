@@ -8,6 +8,9 @@ import { ReactComponent as BookmarkIcon } from "@svg/icons/navigation/bookmark.s
 
 import Tabbar from "@components/navigation/Tabbar"
 import TabbarItem from "@components/navigation/TabbarItem"
+import TabbarMenuItem from "@components/navigation/TabbarMenuItem"
+import IndexExtension from "@components/env/IndexExtension"
+import GatewayExtension from "@components/env/GatewayExtension"
 import routes from "@routes"
 
 const TabbarNavigation: React.FC = () => {
@@ -37,12 +40,20 @@ const TabbarNavigation: React.FC = () => {
         isActive={pathname => /^\/playlists\//.test(pathname)}
         iconSvg={<PlaylistIcon />}
       />
-      <TabbarItem
-        title="Saved"
-        to={routes.getSavedLink()}
-        isActive={pathname => /^\/saved\//.test(pathname)}
-        iconSvg={<BookmarkIcon />}
-      />
+      <TabbarMenuItem title="More">
+        <TabbarItem
+          title="Saved"
+          to={routes.getSavedLink()}
+          isActive={pathname => /^\/saved\//.test(pathname)}
+          iconSvg={<BookmarkIcon />}
+        />
+        <TabbarItem>
+          <IndexExtension />
+        </TabbarItem>
+        <TabbarItem>
+          <GatewayExtension />
+        </TabbarItem>
+      </TabbarMenuItem>
     </Tabbar>
   )
 }
