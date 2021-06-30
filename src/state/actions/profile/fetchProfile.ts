@@ -10,7 +10,7 @@ import SwarmProfile from "@classes/SwarmProfile"
  */
 const fetchProfile = async (hash: string, address: string) => {
   store.dispatch({
-    type: UIActionTypes.UI_TOGGLE_LOADING_PROFILE,
+    type: UIActionTypes.TOGGLE_LOADING_PROFILE,
     isLoadingProfile: true,
   })
 
@@ -36,7 +36,7 @@ const fetchProfile = async (hash: string, address: string) => {
   }
 
   store.dispatch({
-    type: UIActionTypes.UI_TOGGLE_LOADING_PROFILE,
+    type: UIActionTypes.TOGGLE_LOADING_PROFILE,
     isLoadingProfile: false,
   })
 }

@@ -14,26 +14,26 @@ const useImageCrop = () => {
     const img = await fileToDataURL(file)
 
     dispatch({
-      type: UIActionTypes.UI_SET_CROP_IMAGE,
+      type: UIActionTypes.SET_CROP_IMAGE,
       imageType: type,
       image: img,
     })
     dispatch({
-      type: UIActionTypes.UI_TOGGLE_IMAGE_CROPPER,
+      type: UIActionTypes.TOGGLE_IMAGE_CROPPER,
       isCroppingImage: true,
     })
 
     const image = await getCroppedImage(img, getState)
 
     dispatch({
-      type: UIActionTypes.UI_UPDATE_IMAGE_CROP,
+      type: UIActionTypes.UPDATE_IMAGE_CROP,
     })
     dispatch({
-      type: UIActionTypes.UI_TOGGLE_IMAGE_CROPPER,
+      type: UIActionTypes.TOGGLE_IMAGE_CROPPER,
       isCroppingImage: false,
     })
     dispatch({
-      type: UIActionTypes.UI_SET_CROP_IMAGE,
+      type: UIActionTypes.SET_CROP_IMAGE,
       imageType: type,
       image: img,
     })
@@ -41,15 +41,15 @@ const useImageCrop = () => {
     return image
   }
 
-  const finishCropping = (cropData: Crop|undefined) => {
+  const finishCropping = (cropData: Crop | undefined) => {
     dispatch({
-      type: UIActionTypes.UI_UPDATE_IMAGE_CROP,
+      type: UIActionTypes.UPDATE_IMAGE_CROP,
       imageCrop: cropData,
     })
 
     if (!cropData) {
       dispatch({
-        type: UIActionTypes.UI_TOGGLE_IMAGE_CROPPER,
+        type: UIActionTypes.TOGGLE_IMAGE_CROPPER,
         isCroppingImage: false,
       })
     }
@@ -83,7 +83,7 @@ const waitCropData = (getState: () => AppState) =>
   })
 
 const applyImageCropping = (src: string, cropData: Crop) =>
-  new Promise<Blob|null>(resolve => {
+  new Promise<Blob | null>(resolve => {
     let image = new Image()
     image.src = src
     image.onload = async () => {
@@ -106,7 +106,7 @@ const getCroppedBlob = (image: CanvasImageSource, crop: Crop, fileName = "image"
   ctx.drawImage(image, x, y, width, height, 0, 0, width, height)
 
   // As a blob
-  return new Promise<Blob|null>(resolve => {
+  return new Promise<Blob | null>(resolve => {
     canvas.toBlob(
       blob => {
         if (blob) {

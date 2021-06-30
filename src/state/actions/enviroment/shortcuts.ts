@@ -11,7 +11,7 @@ export const editShortcut = (namespace: KeymapNamespace, key: string) => {
     shortcutKey: key,
   })
   store.dispatch({
-    type: UIActionTypes.UI_TOGGLE_EDITING_SHORTCUT,
+    type: UIActionTypes.TOGGLE_EDITING_SHORTCUT,
     isEditingShortcut: true,
   })
 }
@@ -63,7 +63,7 @@ export const saveShortcut = (newShortcut: string | null | undefined) => {
     shortcutKey: undefined,
   })
   store.dispatch({
-    type: UIActionTypes.UI_TOGGLE_EDITING_SHORTCUT,
+    type: UIActionTypes.TOGGLE_EDITING_SHORTCUT,
     isEditingShortcut: false,
   })
 }

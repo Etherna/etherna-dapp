@@ -3,7 +3,7 @@ import { UIActionTypes } from "@state/reducers/uiReducer"
 
 export const showError = (title: string, message: string) => {
   store.dispatch({
-    type: UIActionTypes.UI_SHOW_ERROR,
+    type: UIActionTypes.SHOW_ERROR,
     errorTitle: title,
     errorMessage: message,
   })
@@ -11,7 +11,7 @@ export const showError = (title: string, message: string) => {
 
 export const closeErrorModal = () => {
   store.dispatch({
-    type: UIActionTypes.UI_HIDE_ERROR,
+    type: UIActionTypes.HIDE_ERROR,
     errorMessage: undefined,
     errorTitle: undefined,
   })
@@ -19,21 +19,21 @@ export const closeErrorModal = () => {
 
 export const closeConnectingWalletModal = () => {
   store.dispatch({
-    type: UIActionTypes.UI_TOGGLE_CONNECTING_WALLET,
+    type: UIActionTypes.TOGGLE_CONNECTING_WALLET,
     isConnectingWallet: false,
   })
 }
 
 export const closeUnsupportedBrowserModal = () => {
   store.dispatch({
-    type: UIActionTypes.UI_TOGGLE_BROWSER_SUPPORT,
+    type: UIActionTypes.TOGGLE_BROWSER_SUPPORT,
     showUnsupportedModal: false,
   })
 }
 
 export const closeShortcutModal = () => {
   store.dispatch({
-    type: UIActionTypes.UI_TOGGLE_EDITING_SHORTCUT,
+    type: UIActionTypes.TOGGLE_EDITING_SHORTCUT,
     isEditingShortcut: false,
   })
 }

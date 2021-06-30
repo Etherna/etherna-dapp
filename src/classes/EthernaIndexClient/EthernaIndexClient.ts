@@ -1,7 +1,8 @@
 import IndexVideosClient from "./IndexVideosClient"
 import IndexUsersClient from "./IndexUsersClient"
 import { IndexClientOptions } from "./types"
-import { safeURL, urlOrigin } from "@utils/urls"
+import { safeURL, urlOrigin, urlPath } from "@utils/urls"
+import { parseLocalStorage } from "@utils/localStorage"
 
 export default class EthernaIndexClient {
   videos: IndexVideosClient
@@ -17,6 +18,9 @@ export default class EthernaIndexClient {
     const host = options.host.replace(/\/?$/, "")
     const apiPath = options.apiPath ? options.apiPath.replace(/(^\/?|\/?$)/g, "") : ""
     const url = `${host}/${apiPath}`
+
+    console.log(options)
+
 
     this.videos = new IndexVideosClient(url)
     this.users = new IndexUsersClient(url)
@@ -43,10 +47,10 @@ export default class EthernaIndexClient {
   }
 
   static get defaultHost(): string {
-    return window.localStorage.getItem("setting:index-url") || urlOrigin(import.meta.env.VITE_APP_INDEX_URL)!
+    return urlOrigin(parseLocalStorage("setting:index-url") ?? import.meta.env.VITE_APP_INDEX_URL)!
   }
 
   static get defaultApiPath(): string {
-    return window.localStorage.getItem("setting:index-url") || safeURL(import.meta.env.VITE_APP_INDEX_URL)!.pathname
+    return safeURL(parseLocalStorage("setting:index-url") ?? import.meta.env.VITE_APP_INDEX_URL)!.pathname
   }
 }

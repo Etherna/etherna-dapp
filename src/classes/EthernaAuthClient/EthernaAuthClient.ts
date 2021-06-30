@@ -1,3 +1,4 @@
+import { parseLocalStorage } from "@utils/localStorage"
 import { safeURL, urlOrigin } from "@utils/urls"
 import AuthIdentityClient from "./AuthIdentityClient"
 import { AuthClientOptions } from "./types"
@@ -40,10 +41,10 @@ export default class EthernaAuthClient {
   }
 
   static get defaultHost(): string {
-    return window.localStorage.getItem("setting:auth-url") ?? urlOrigin(import.meta.env.VITE_APP_AUTH_URL)!
+    return urlOrigin(parseLocalStorage("setting:auth-url") || import.meta.env.VITE_APP_AUTH_URL)!
   }
 
   static get defaultApiPath(): string {
-    return window.localStorage.getItem("setting:auth-url") ?? safeURL(import.meta.env.VITE_APP_AUTH_URL)!.pathname
+    return safeURL(parseLocalStorage("setting:auth-url") || import.meta.env.VITE_APP_AUTH_URL)!.pathname
   }
 }

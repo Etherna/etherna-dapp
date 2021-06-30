@@ -119,7 +119,7 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
 
   const fetchProfile = async (user: IndexCurrentUser, identity?: AuthIdentity) => {
     dispatch({
-      type: UIActionTypes.UI_TOGGLE_LOADING_PROFILE,
+      type: UIActionTypes.TOGGLE_LOADING_PROFILE,
       isLoadingProfile: true,
     })
 
@@ -158,7 +158,7 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
     }
 
     dispatch({
-      type: UIActionTypes.UI_TOGGLE_LOADING_PROFILE,
+      type: UIActionTypes.TOGGLE_LOADING_PROFILE,
       isLoadingProfile: false,
     })
   }
