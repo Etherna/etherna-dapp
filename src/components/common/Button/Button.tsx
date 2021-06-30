@@ -8,7 +8,7 @@ type ButtonProps = {
   className?: string
   size?: "small" | "normal" | "large"
   outline?: boolean
-  aspect?: "secondary" | "danger" | "warning" | "transparent" | "link" | "link-secondary"
+  aspect?: "primary-light" | "secondary" | "danger" | "warning" | "transparent" | "link" | "link-secondary"
   disabled?: boolean
   rounded?: boolean
   type?: "button" | "submit" | "reset"

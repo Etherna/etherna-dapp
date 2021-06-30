@@ -1,12 +1,13 @@
 import React from "react"
 
+import Button from "@common/Button"
 import loginRedirect from "@state/actions/user/loginRedirect"
 
 const SigninButton: React.FC = ({ children }) => {
   return (
-    <button className="btn btn-outline" type="button" onClick={() => loginRedirect()}>
+    <Button aspect="primary-light" type="button" action={() => loginRedirect()}>
       {children}
-    </button>
+    </Button>
   )
 }
 

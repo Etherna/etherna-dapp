@@ -23,6 +23,15 @@
   @apply py-3 px-8 text-base rounded-lg;
 }
 
+.btn-primary-light {
+  @apply text-white;
+  @apply bg-green-500/75 dark:bg-green-500/50;
+
+  &:not(:disabled) {
+    @apply hover:bg-green-500/100 dark:hover:bg-green-500/75;
+  }
+}
+
 .btn-outline {
   @apply border-2 border-primary-500 text-primary-500 bg-primary-500 bg-opacity-0 rounded-md;
 
