@@ -107,7 +107,7 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
       const bytePrice = await gatewayClient.settings.fetchCurrentBytePrice()
 
       dispatch({
-        type: EnvActionTypes.ENV_UPDATE_BYTE_PRICE,
+        type: EnvActionTypes.UPDATE_BYTE_PRICE,
         bytePrice,
       })
 
@@ -130,7 +130,7 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
       })
 
       dispatch({
-        type: EnvActionTypes.ENV_UPDATE_BEE_CLIENT,
+        type: EnvActionTypes.UPDATE_BEE_CLIENT,
         beeClient: beeClientSigner
       })
     }

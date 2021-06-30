@@ -25,7 +25,7 @@ export const toggleDarkMode = (darkMode: boolean) => {
   loadDarkMode()
 
   store.dispatch({
-    type: EnvActionTypes.ENV_TOGGLE_DARK_MODE,
+    type: EnvActionTypes.TOGGLE_DARK_MODE,
     darkMode,
   })
 }

@@ -8,7 +8,7 @@ export const updateIndexHost = (host: string, apiPath?: string) => {
   window.localStorage.setItem("indexHost", host)
   window.localStorage.setItem("indexApiPath", apiPath || "")
   store.dispatch({
-    type: EnvActionTypes.ENV_UPDATE_INDEXHOST,
+    type: EnvActionTypes.UPDATE_INDEXHOST,
     indexHost: host,
     apiPath: apiPath,
     indexClient: new EthernaIndexClient({ host, apiPath })
@@ -19,7 +19,7 @@ export const updateGatewayHost = (host: string, apiPath?: string) => {
   window.localStorage.setItem("gatewayHost", host)
   window.localStorage.setItem("gatewayApiPath", apiPath || "")
   store.dispatch({
-    type: EnvActionTypes.ENV_UPDATE_GATEWAY_HOST,
+    type: EnvActionTypes.UPDATE_GATEWAY_HOST,
     gatewayHost: host,
     apiPath: apiPath,
     beeClient: new SwarmBeeClient(host)

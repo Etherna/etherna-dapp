@@ -6,7 +6,7 @@ export const checkIsMobile = () => {
   let isMobile = mobilePattern.test(navigator.userAgent)
 
   store.dispatch({
-    type: EnvActionTypes.ENV_SET_IS_MOBILE,
+    type: EnvActionTypes.SET_IS_MOBILE,
     isMobile,
   })
 }
