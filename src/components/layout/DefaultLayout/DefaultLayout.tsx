@@ -34,7 +34,7 @@ const LayoutContent: React.FC = ({ children }) => {
           <TopbarNavigation />
           <TabbarNavigation />
 
-          <div className="container-fluid main bg-gray-500 h-[2000px]">
+          <div className="container-fluid main">
             {children}
           </div>
         </main>
