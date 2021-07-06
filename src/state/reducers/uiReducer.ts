@@ -4,6 +4,7 @@ import { Crop } from "react-image-crop"
 export const UIActionTypes = {
   SHOW_ERROR: "UI_SHOW_ERROR",
   HIDE_ERROR: "UI_HIDE_ERROR",
+  TOGGLE_CONFIRMATION: "UI_TOGGLE_CONFIRMATION",
   SHOW_EXTENSION_HOSTS_EDITOR: "UI_SHOW_EXTENSION_HOSTS_EDITOR",
   HIDE_EXTENSION_HOSTS_EDITOR: "UI_HIDE_EXTENSION_HOSTS_EDITOR",
   TOGGLE_CONNECTING_WALLET: "UI_TOGGLE_CONNECTING_WALLET",
@@ -25,6 +26,13 @@ type ShowErrorAction = {
 }
 type HideErrorAction = {
   type: typeof UIActionTypes.HIDE_ERROR
+}
+type ToggleConfirmationAction = {
+  type: typeof UIActionTypes.TOGGLE_CONFIRMATION
+  confirmTitle?: string
+  confirmMessage?: string
+  confirmButtonTitle?: string
+  confirmButtonType?: "default" | "destructive"
 }
 type ShowExtensionHostsEditorAction = {
   type: typeof UIActionTypes.SHOW_EXTENSION_HOSTS_EDITOR
@@ -71,6 +79,7 @@ type UpdateImageCropAction = {
 export type UIActions = (
   ShowErrorAction |
   HideErrorAction |
+  ToggleConfirmationAction |
   ShowExtensionHostsEditorAction |
   HideExtensionHostsEditorAction |
   ToggleConnectingWalletAction |
@@ -101,6 +110,15 @@ const uiReducer = (state: UIState = {}, action: UIActions): UIState => {
         ...state,
         errorMessage: undefined,
         errorTitle: undefined,
+      }
+
+    case UIActionTypes.TOGGLE_CONFIRMATION:
+      return {
+        ...state,
+        confirmTitle: action.confirmTitle,
+        confirmMessage: action.confirmMessage,
+        confirmButtonTitle: action.confirmButtonTitle,
+        confirmButtonType: action.confirmButtonType,
       }
 
     case UIActionTypes.SHOW_EXTENSION_HOSTS_EDITOR:

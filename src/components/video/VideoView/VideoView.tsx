@@ -11,7 +11,7 @@ import Avatar from "@components/user/Avatar"
 import { Video } from "@classes/SwarmVideo/types"
 import useSwarmVideo from "@hooks/useSwarmVideo"
 import Routes from "@routes"
-import { showError } from "@state/actions/modals"
+import { useErrorMessage } from "@state/hooks/ui"
 import { shortenEthAddr } from "@utils/ethFuncs"
 import dayjs from "@utils/dayjs"
 
@@ -28,6 +28,7 @@ const VideoView: React.FC<VideoViewProps> = ({ hash, routeState }) => {
     fetchProfile: true
   })
   const [isFetchingVideo, setIsFetchingVideo] = useState(false)
+  const { showError } = useErrorMessage()
 
   useEffect(() => {
     if (!video?.hash) {

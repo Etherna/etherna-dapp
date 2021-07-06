@@ -53,6 +53,12 @@ export type ProfileState = {
 export type UIState = {
   errorTitle?: string
   errorMessage?: string
+
+  confirmTitle?: string
+  confirmMessage?: string
+  confirmButtonTitle?: string
+  confirmButtonType?: "default" | "destructive"
+
   isConnectingWallet?: boolean
   isLoadingProfile?: boolean
   showUnsupportedModal?: boolean

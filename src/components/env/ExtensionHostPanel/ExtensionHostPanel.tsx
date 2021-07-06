@@ -7,12 +7,11 @@ import { ReactComponent as CheckIcon } from "@svg/icons/check.svg"
 import { ReactComponent as PlusIcon } from "@svg/icons/plus.svg"
 
 import { ExtensionHost } from "./types"
-import useLocalStorage from "@hooks/useLocalStorage"
-import { urlHostname, urlOrigin } from "@utils/urls"
-import Button from "@common/Button"
-import { showError } from "@state/actions/modals"
-import classNames from "classnames"
 import ExtensionHostsList from "../ExtensionHostsList"
+import Button from "@common/Button"
+import useLocalStorage from "@hooks/useLocalStorage"
+import { useErrorMessage } from "@state/hooks/ui"
+import { urlHostname } from "@utils/urls"
 
 type ExtensionHostPanelProps = {
   listStorageKey: string
@@ -33,10 +32,11 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
   onChange,
   onToggleEditing
 }) => {
-  const verifiedOrigins = import.meta.env.VITE_APP_VERIFIED_ORIGINS.split(';')
+  const verifiedOrigins = import.meta.env.VITE_APP_VERIFIED_ORIGINS.split(";")
   const defaultValue = initialValue ? [initialValue] : []
   const [hosts, setHosts] = useLocalStorage(listStorageKey, defaultValue)
   const [selectedUrl, setSelectedUrl] = useLocalStorage(currentStorageKey, defaultUrl)
+  const { showError } = useErrorMessage()
 
   const selectedHost = useMemo(() => {
     return hosts?.find(host => host.url === selectedUrl)

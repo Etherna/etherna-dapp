@@ -4,7 +4,7 @@ import { Canceler } from "axios"
 import { useVideoEditorState } from "../context"
 import FileUploadFlow, { FileUploadFlowHandlers } from "@components/media/FileUploadFlow"
 import FileUploadProgress from "@components/media/FileUploadProgress"
-import { showError } from "@state/actions/modals"
+import { useErrorMessage } from "@state/hooks/ui"
 
 type ThumbnailUploadProps = {
   disabled?: boolean
@@ -26,6 +26,7 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
   const flowRef = useRef<FileUploadFlowHandlers>(null)
   const [canceler, setCanceler] = useState<Canceler>()
   const [contentType, setContentType] = useState<string>("image/*")
+  const { showError } = useErrorMessage()
 
   const { state, actions } = useVideoEditorState()
   const { queue, videoHandler } = state

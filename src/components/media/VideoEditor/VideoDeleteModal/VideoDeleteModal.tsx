@@ -6,7 +6,7 @@ import thumbPlaceholder from "@svg/backgrounds/thumb-placeholder.svg?url"
 import Modal from "@common/Modal"
 import Button from "@common/Button"
 import SwarmImg from "@common/SwarmImg"
-import { showError } from "@state/actions/modals"
+import { useErrorMessage } from "@state/hooks/ui"
 
 type VideoDeleteModalProps = {
   show: boolean
@@ -24,6 +24,7 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
   onCancel
 }) => {
   const [isDeleting, setIsDeleting] = useState(false)
+  const { showError } = useErrorMessage()
 
   const handleDelete = async () => {
     setIsDeleting(true)
@@ -40,7 +41,7 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
     setIsDeleting(false)
   }
 
-  console.log(imagePreview, thumbPlaceholder);
+  console.log(imagePreview, thumbPlaceholder)
 
 
   return (

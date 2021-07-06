@@ -4,8 +4,8 @@ import FileDrag from "../FileDrag"
 import FilePreview from "../FilePreview"
 import FileUpload from "../FileUpload"
 import VideoEncoder from "../VideoEncoder"
-import { showError } from "@state/actions/modals"
 import useSelector from "@state/useSelector"
+import { useErrorMessage } from "@state/hooks/ui"
 import { fileToBuffer } from "@utils/buffer"
 import { isMimeFFMpegEncodable, isMimeAudio, isMimeWebCompatible } from "@utils/mimeTypes"
 import { getVideoDuration, getVideoResolution } from "@utils/media"
@@ -50,6 +50,7 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
   const [contentType, setContentType] = useState<string>()
 
   const { beeClient } = useSelector(state => state.env)
+  const { showError } = useErrorMessage()
 
   const status = reference ? "preview"
     : file === undefined ? "select"

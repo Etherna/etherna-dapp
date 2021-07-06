@@ -10,9 +10,8 @@ import { Profile } from "@classes/SwarmProfile/types"
 import SwarmImage from "@classes/SwarmImage"
 import SwarmProfile from "@classes/SwarmProfile"
 import useSelector from "@state/useSelector"
-import { useImageCrop } from "@state/hooks/ui"
+import { useErrorMessage, useImageCrop } from "@state/hooks/ui"
 import makeBlockies from "@utils/makeBlockies"
-import { showError } from "@state/actions/modals"
 
 type ImageType = "avatar" | "cover"
 
@@ -48,6 +47,8 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
   const [profileCover, setProfileCover] = useState(cover)
   const [isUploadingCover, setUploadingCover] = useState(false)
   const [isUploadingAvatar, setUploadingAvatar] = useState(false)
+
+  const { showError } = useErrorMessage()
 
   const imagesUtils: ImagesUtils = {
     avatar: {

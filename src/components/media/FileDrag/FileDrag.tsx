@@ -2,11 +2,10 @@ import React, { useState } from "react"
 import classnames from "classnames"
 
 import "./file-drag.scss"
-
 import { ReactComponent as UploadIcon } from "@svg/icons/upload-icon.svg"
 
 import Alert from "@common/Alert"
-import { showError } from "@state/actions/modals"
+import { useErrorMessage } from "@state/hooks/ui"
 import { isMimeCompatible } from "@utils/mimeTypes"
 
 type FileDragProps = {
@@ -28,6 +27,7 @@ const FileDrag: React.FC<FileDragProps> = ({
 }) => {
   const [isDragOver, setIsDragOver] = useState(false)
   const [showSizeLimitError, setShowSizeLimitError] = useState(false)
+  const { showError } = useErrorMessage()
 
   const updateDragOver = (hasEntered: boolean) => {
     if ((hasEntered && !isDragOver) || (!hasEntered && isDragOver)) {

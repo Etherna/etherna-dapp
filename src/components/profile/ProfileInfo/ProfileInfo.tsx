@@ -5,7 +5,7 @@ import "./profile-info.scss"
 import SwarmImg from "@common/SwarmImg"
 import { Profile } from "@classes/SwarmProfile/types"
 import useSwarmProfile from "@hooks/useSwarmProfile"
-import { showError } from "@state/actions/modals"
+import useErrorMessage from "@state/hooks/ui/useErrorMessage"
 import makeBlockies from "@utils/makeBlockies"
 import { checkIsEthAddress, shortenEthAddr } from "@utils/ethFuncs"
 
@@ -26,6 +26,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
 }) => {
   const { profile, loadProfile } = useSwarmProfile({ address: profileAddress })
   const profileName = profile.name ? profile.name : profileAddress
+  const { showError } = useErrorMessage()
 
   useEffect(() => {
     fetchProfile()

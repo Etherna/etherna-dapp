@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react"
 import { createFFmpeg } from "@ffmpeg/ffmpeg"
 
 import "./video-encoder.scss"
+import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 
 import Button from "@common/Button"
-import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
-import { showError } from "@state/actions/modals"
+import { useErrorMessage } from "@state/hooks/ui"
 import { isMimeCompatible } from "@utils/mimeTypes"
 import { fileToBuffer, fileToUint8Array } from "@utils/buffer"
 
@@ -31,6 +31,7 @@ const VideoEncoder: React.FC<VideoEncoderProps> = ({
   const [confirmed, setConfirmed] = useState(false)
   const [isEncoding, setIsEncoding] = useState(false)
   const isMpegVideo = isMimeCompatible(file.type, ["video/mp4", "video/m4v"])
+  const { showError } = useErrorMessage()
 
   useEffect(() => {
     // Clear previus cache

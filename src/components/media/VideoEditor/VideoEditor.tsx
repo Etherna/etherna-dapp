@@ -11,7 +11,7 @@ import VideoDeleteModal from "./VideoDeleteModal"
 import Button from "@common/Button"
 import Routes from "@routes"
 import useSelector from "@state/useSelector"
-import { showError } from "@state/actions/modals"
+import { useErrorMessage } from "@state/hooks/ui"
 
 const VideoEditor = () => {
   const { address } = useSelector(state => state.user)
@@ -26,6 +26,7 @@ const VideoEditor = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [saved, setSaved] = useState(false)
   const [videoLink, setVideoLink] = useState<string>()
+  const { showError } = useErrorMessage()
 
   const submitVideo = async () => {
     const { duration, originalQuality } = videoHandler.video

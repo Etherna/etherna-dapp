@@ -6,6 +6,7 @@ import { LayoutContextProvider, useStateValue } from "./LayoutContext"
 import SidebarNavigation from "@components/layout/SidebarNavigation"
 import TopbarNavigation from "@components/layout/TopbarNavigation"
 import TabbarNavigation from "@components/layout/TabbarNavigation"
+import Popups from "@components/layout/Popups"
 import Modals from "@components/modals/ModalsSection"
 
 const Layout: React.FC = ({ children }) => {
@@ -42,6 +43,8 @@ const LayoutContent: React.FC = ({ children }) => {
       </div>
 
       <Modals />
+
+      <Popups />
     </>
   )
 }

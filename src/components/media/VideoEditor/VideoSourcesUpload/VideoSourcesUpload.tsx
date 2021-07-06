@@ -7,7 +7,7 @@ import FileUploadFlow, { FileUploadFlowHandlers } from "@components/media/FileUp
 import FileUploadProgress from "@components/media/FileUploadProgress"
 import SwarmVideo from "@classes/SwarmVideo"
 import { VideoSource } from "@classes/SwarmVideo/types"
-import { showError } from "@state/actions/modals"
+import { useErrorMessage } from "@state/hooks/ui"
 import { getVideoDuration, getVideoResolution } from "@utils/media"
 import { isMimeAudio, isMimeFFMpegEncodable, isMimeWebCompatible } from "@utils/mimeTypes"
 
@@ -49,6 +49,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
   } = actions
   const currentQueue = state.queue.find(q => !q.reference)
   const [sources, setSources] = useState<QueueSource[]>([defaultSource])
+  const { showError } = useErrorMessage()
 
   useEffect(() => {
     setSources(

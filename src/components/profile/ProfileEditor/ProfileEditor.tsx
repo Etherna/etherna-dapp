@@ -6,8 +6,8 @@ import "./profile-editor.scss"
 import ProfileInfoEdit from "@components/profile/ProfileInfoEdit"
 import { Profile } from "@classes/SwarmProfile/types"
 import Routes from "@routes"
-import { showError } from "@state/actions/modals"
-import useProfileUpdate from "@state/hooks/profile/useProfileUpdate"
+import { useProfileUpdate } from "@state/hooks/profile"
+import { useErrorMessage } from "@state/hooks/ui"
 
 type ProfileEditorProps = {
   address: string
@@ -17,6 +17,7 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ address }) => {
   const updateProfile = useProfileUpdate(address)
   const [isSavingProfile, setSavingProfile] = useState(false)
   const [savedProfile, setSavedProfile] = useState(false)
+  const { showError } = useErrorMessage()
 
   const handleSubmit = async (profileInfo: Profile) => {
     setSavingProfile(true)

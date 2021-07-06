@@ -2,6 +2,7 @@ import React from "react"
 
 import Button from "@common/Button"
 import { isMimeImage } from "@utils/mimeTypes"
+import { useConfirmation } from "@state/hooks/ui"
 
 type FilePreviewProps = {
   previewUrl?: string
@@ -16,8 +17,16 @@ const FilePreview: React.FC<FilePreviewProps> = ({
   disabled,
   onRemoveFile
 }) => {
-  const askToRemoveFile = () => {
-    if (window.confirm("Remove the upload file?")) {
+  const { waitConfirmation } = useConfirmation()
+
+  const askToRemoveFile = async () => {
+    const remove = await waitConfirmation(
+      "Remove file?",
+      "Are you sure? Once is removed you won't be able to get it back without re-uploading it.",
+      "Yes, Remove",
+      "destructive"
+    )
+    if (remove) {
       onRemoveFile?.()
     }
   }
