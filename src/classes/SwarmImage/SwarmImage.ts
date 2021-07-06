@@ -141,6 +141,7 @@ export default class SwarmImage {
       blurredBase64: this.blurredBase64,
       value: "",
     }
+    const batchId = await this.beeClient.getBatchId()
 
     let imgReference = ""
 
@@ -153,7 +154,7 @@ export default class SwarmImage {
       }))
 
       // upload files and retrieve the new reference
-      const references = await this.beeClient.uploadMultipleFiles(uploads)
+      const references = await this.beeClient.uploadMultipleFiles(batchId, uploads)
       imgReference = references[0]
 
       // update raw image object
@@ -169,6 +170,7 @@ export default class SwarmImage {
     } else {
       // upload file and retrieve the new reference
       imgReference = await this.beeClient.uploadFile(
+        batchId,
         new Uint8Array(this.originalImageData!),
         undefined,
         { contentType: this.contentType }

@@ -1,4 +1,4 @@
-import { Bee, Collection, Reference } from "@ethersphere/bee-js"
+import { BatchId, Bee, Collection, Reference } from "@ethersphere/bee-js"
 
 import { CustomUploadOptions } from "./customUpload"
 import http from "@utils/request"
@@ -31,13 +31,18 @@ export default class SwarmBeeClient extends Bee {
 
   /**
    * Add content to a directory returning the new hash
+   * @param batchId Postage batch id
    * @param data List of files to upload
    * @param opts Upload options
    * @returns The new manifest hash
    */
-  async uploadMultipleFiles(data: MultipleFileUpload, opts?: CustomUploadOptions): Promise<Reference[]> {
+  async uploadMultipleFiles(
+    batchId: string | BatchId,
+    data: MultipleFileUpload,
+    opts?: CustomUploadOptions
+  ): Promise<Reference[]> {
     return await Promise.all(
-      data.map(data => this.uploadFile(data.buffer, undefined, { contentType: data.type }))
+      data.map(data => this.uploadFile(batchId, data.buffer, undefined, { contentType: data.type }))
     )
   }
 
@@ -94,6 +99,12 @@ export default class SwarmBeeClient extends Bee {
     } catch (error) {
       return false
     }
+  }
+
+  async getBatchId() {
+    const batches = await this.getAllPostageBatch()
+    const usableBatches = batches.filter(batch => batch.usable)
+    return usableBatches[0]?.batchID
   }
 
   /**

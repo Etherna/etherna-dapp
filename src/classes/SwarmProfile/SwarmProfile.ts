@@ -148,13 +148,14 @@ export default class SwarmProfile {
 
     // Upload json
     const serializedJson = new TextEncoder().encode(JSON.stringify(baseProfile))
-    const reference = await this.beeClient.uploadData(serializedJson)
+    const batchId = await this.beeClient.getBatchId()
+    const reference = await this.beeClient.uploadData(batchId, serializedJson)
 
     // update feed
     if (this.beeClient.signer) {
       const topic = this.beeClient.makeFeedTopic(SwarmProfile.topicName)
       const writer = this.beeClient.makeFeedWriter("sequence", topic)
-      await writer.upload(reference)
+      await writer.upload(batchId, reference)
     }
 
     return reference

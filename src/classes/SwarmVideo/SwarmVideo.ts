@@ -192,7 +192,8 @@ export default class SwarmVideo {
     // update meta
     const meta = this.validatedMetadata()
     const metaData = new TextEncoder().encode(JSON.stringify(meta))
-    const videoReference = await this.beeClient.uploadFile(metaData, undefined, { contentType: "text/json" })
+    const batchId = await this.beeClient.getBatchId()
+    const videoReference = await this.beeClient.uploadFile(batchId, metaData, undefined, { contentType: "text/json" })
 
     if (this.hash) {
       // update manifest on index
@@ -240,7 +241,9 @@ export default class SwarmVideo {
     const size = video.byteLength
     const bitrate = Math.round(size * 8 / duration)
 
+    const batchId = await this.beeClient.getBatchId()
     const reference = await this.beeClient.uploadFile(
+      batchId,
       new Uint8Array(video),
       undefined,
       {

@@ -460,10 +460,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@ethersphere/bee-js@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@ethersphere/bee-js/-/bee-js-0.12.0.tgz#46f18ac7494a8b615d5af9908982e5ca79a85b58"
-  integrity sha512-fpZjbjIU5pxuGGo6nvVyAkEvCNSYIuoUb5fyaaIyZ+czswEkVm5oPeEfNvF703EWnar6kcAjCpAOs+dLWwLKAg==
+"@ethersphere/bee-js@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@ethersphere/bee-js/-/bee-js-1.0.0.tgz#f0f7e10c5cf357a9df8cb4b49c7ea9aea07d4451"
+  integrity sha512-u+TnKf0loAQba7AfZ54kXIEWjNdqVMUR6NXwINhHa2IdoD2b52rcuP96eMImlUm4tEJkxi2yAS+lcIZ2U9/1Vw==
   dependencies:
     axios "^0.21.1"
     elliptic "^6.5.4"
