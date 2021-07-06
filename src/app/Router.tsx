@@ -4,6 +4,10 @@ import { Switch, Route, useLocation } from "react-router-dom"
 import { ProfileOwnerRoute, SignedInRoute, WatchRoute } from "./ProtectedRoutes"
 
 const AsyncHome = lazy(() => import("@pages/home"))
+const AsyncFrames = lazy(() => import("@pages/frames"))
+const AsyncFollowing = lazy(() => import("@pages/following"))
+const AsyncPlaylists = lazy(() => import("@pages/playlists"))
+const AsyncSaved = lazy(() => import("@pages/saved"))
 const AsyncProfile = lazy(() => import("@pages/profile"))
 const AsyncProfileEdit = lazy(() => import("@pages/profileEdit"))
 const AsyncProfiles = lazy(() => import("@pages/profiles"))
@@ -15,6 +19,18 @@ const AsyncNotFound = lazy(() => import("@pages/404"))
 
 const Home = () => (
   <Suspense fallback={null}><AsyncHome /></Suspense>
+)
+const Frames = () => (
+  <Suspense fallback={null}><AsyncFrames /></Suspense>
+)
+const Following = () => (
+  <Suspense fallback={null}><AsyncFollowing /></Suspense>
+)
+const Playlists = () => (
+  <Suspense fallback={null}><AsyncPlaylists /></Suspense>
+)
+const Saved = () => (
+  <Suspense fallback={null}><AsyncSaved /></Suspense>
 )
 const Profile = () => (
   <Suspense fallback={null}><AsyncProfile /></Suspense>
@@ -52,6 +68,18 @@ const Router = () => {
       <Switch location={background || location}>
         <Route path={"/"} exact>
           <Home />
+        </Route>
+        <Route path={"/frames"} exact>
+          <Frames />
+        </Route>
+        <Route path={"/following"} exact>
+          <Following />
+        </Route>
+        <Route path={"/playlists"} exact>
+          <Playlists />
+        </Route>
+        <Route path={"/saved"} exact>
+          <Saved />
         </Route>
         <Route path={"/profiles"} exact>
           <Profiles />
