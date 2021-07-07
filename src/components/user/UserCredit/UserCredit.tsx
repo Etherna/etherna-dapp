@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react"
-import classnames from "classnames"
+import React, { useMemo } from "react"
 
 import "./user-credit.scss"
 
@@ -8,9 +7,10 @@ import Button from "@common/Button"
 import Popup from "@common/Popup"
 import useSelector from "@state/useSelector"
 import loginRedirect from "@state/actions/user/loginRedirect"
+import { urlOrigin } from "@utils/urls"
 
 const UserCredit = () => {
-  const { creditHost, bytePrice } = useSelector(state => state.env)
+  const { creditUrl, bytePrice } = useSelector(state => state.env)
   const { credit, isSignedInGateway } = useSelector(state => state.user)
 
   const gbReproduction = useMemo(() => {
@@ -39,7 +39,7 @@ const UserCredit = () => {
               )}
               <div className="mt-8 mb-4">
                 <a
-                  href={creditHost}
+                  href={urlOrigin(creditUrl)}
                   className="btn btn-secondary"
                   rel="noreferrer noopener"
                   target="_blank"

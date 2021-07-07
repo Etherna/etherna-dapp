@@ -1,6 +1,6 @@
-import React, { Fragment, useEffect, useRef, useState } from "react"
+import React, { useState } from "react"
 import classnames from "classnames"
-import { Popover, Transition } from "@headlessui/react"
+import { Popover } from "@headlessui/react"
 import { usePopper } from "react-popper"
 
 import "./popup.scss"
@@ -24,8 +24,8 @@ const Popup: React.FC<PopupProps> = ({
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement,
     modifiers: [
-      { name: 'arrow', options: { element: arrowElement } },
-      { name: 'preventOverflow', options: { altAxis: true, padding: 4 } },
+      { name: "arrow", options: { element: arrowElement } },
+      { name: "preventOverflow", options: { altAxis: true, padding: 4 } },
     ],
   })
 
@@ -45,13 +45,12 @@ const Popup: React.FC<PopupProps> = ({
             className={classnames("popup-panel", { open })}
             ref={setPopperElement}
             style={styles.popper}
-            static
             {...attributes.popper}
           >
             <div className="popup-content">
               {children}
             </div>
-            <span className="popup-arrow" ref={setArrowElement} style={styles.arrow} ></span>
+            <span className="popup-arrow" ref={setArrowElement} style={styles.arrow} />
           </Popover.Panel>
 
           <Popover.Overlay className="popup-backdrop" />
