@@ -14,7 +14,14 @@ type ExtensionHostStatusProps = {
   onClick?(): void
 }
 
-const ExtensionHostStatus: React.FC<ExtensionHostStatusProps> = ({ title, host, isConnected, iconSvg, compactMobile, onClick }) => {
+const ExtensionHostStatus: React.FC<ExtensionHostStatusProps> = ({
+  title,
+  host,
+  isConnected,
+  iconSvg,
+  compactMobile,
+  onClick
+}) => {
   return (
     <div className={classNames("extension-host-status", { "compact-mobile": compactMobile })} onClick={onClick}>
       {iconSvg && (

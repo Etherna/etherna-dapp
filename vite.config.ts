@@ -3,6 +3,7 @@ import { defineConfig } from "vite"
 import reactRefresh from "@vitejs/plugin-react-refresh"
 import svgr from "vite-plugin-svgr"
 import tsconfigPaths from "vite-tsconfig-paths"
+import eslintPlugin from "vite-plugin-eslint"
 import { getAliases } from "vite-aliases"
 
 // https://vitejs.dev/config/
@@ -29,5 +30,6 @@ export default defineConfig({
     tsconfigPaths({ root: "." }),
     reactRefresh(),
     svgr(),
+    eslintPlugin({ cache: false })
   ],
 })

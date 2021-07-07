@@ -49,7 +49,7 @@ export const smoothScroll = (el: HTMLElement, opts: SmoothScrollOptions) => {
       el.scrollTo({
         left: elInitialLeft + (currentFrame * leftFrame),
         top: elInitialTop + (currentFrame * topFrame),
-        behavior: 'smooth'
+        behavior: "smooth"
       })
 
       currentFrame++

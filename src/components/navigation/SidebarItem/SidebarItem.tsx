@@ -59,7 +59,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         )}
       </>
     )
-  }, [to, target, rel, activeClassName, isStatic, isCurrentPage, onClick])
+  }, [to, isStatic, compact, target, rel, activeClassName, As, isCurrentPage, onClick])
 
   return (
     <Wrapper>

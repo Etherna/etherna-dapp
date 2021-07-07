@@ -1,7 +1,7 @@
 import IndexVideosClient from "./IndexVideosClient"
 import IndexUsersClient from "./IndexUsersClient"
 import { IndexClientOptions } from "./types"
-import { safeURL, urlOrigin, urlPath } from "@utils/urls"
+import { safeURL, urlOrigin } from "@utils/urls"
 import { parseLocalStorage } from "@utils/localStorage"
 
 export default class EthernaIndexClient {

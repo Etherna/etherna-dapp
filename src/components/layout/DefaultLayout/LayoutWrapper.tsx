@@ -10,7 +10,12 @@ type LayoutWrapperProps = {
   emptyLayout?: boolean
 }
 
-const LayoutWrapper = ({ children, hideSidebar = false, floatingSidebar = false, emptyLayout = false }: LayoutWrapperProps) => {
+const LayoutWrapper: React.FC<LayoutWrapperProps> = ({
+  children,
+  hideSidebar = false,
+  floatingSidebar = false,
+  emptyLayout = false
+}) => {
   const [, dispatch] = useStateValue()
 
   useEffect(() => {

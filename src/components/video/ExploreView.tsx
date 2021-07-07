@@ -14,7 +14,7 @@ const ExploreView = () => {
       hasMore={hasMore}
       scrollThreshold={30}
       loader={<div />}
-      style={{ overflow: 'unset' }}
+      style={{ overflow: "unset" }}
     >
       <VideoGrid videos={videos} />
     </InfiniteScroller>

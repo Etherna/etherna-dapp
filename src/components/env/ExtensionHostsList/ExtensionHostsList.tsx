@@ -17,7 +17,12 @@ type ExtensionHostsListProps = {
   onHostSelected?(host: ExtensionHost): void
 }
 
-const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({ hosts, selectedHost, isVerifiedOrigin, onHostSelected }) => {
+const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
+  hosts,
+  selectedHost,
+  isVerifiedOrigin,
+  onHostSelected
+}) => {
   const [canScrollPrev, setCanScrollPrev] = useState(false)
   const [canScrollNext, setCanScrollNext] = useState(false)
   const scrollListRef = useRef<HTMLElement>()
