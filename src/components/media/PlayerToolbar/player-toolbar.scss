@@ -1,0 +1,31 @@
+.player-toolbar {
+  @apply flex flex-col;
+  @apply bg-gray-400/20 dark:bg-gray-700/50;
+
+  &.floating {
+    @apply pt-12 px-3;
+    @apply bg-transparent;
+    @apply bg-gradient-to-t from-gray-900 to-gray-900/0;
+  }
+}
+
+.player-toolbar-content {
+  @apply flex items-center;
+  @apply space-x-3 sm:space-x-4 md:space-x-8;
+  @apply p-1 sm:p-3;
+
+  .floating & {
+    @apply px-0;
+  }
+}
+
+.player-toolbar-playback-group {
+  @apply flex items-center;
+  @apply space-x-1 sm:space-x-3;
+  @apply mr-auto;
+}
+
+.player-toolbar-video-setting-group {
+  @apply flex items-center;
+  @apply space-x-1 md:space-x-2;
+}

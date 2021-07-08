@@ -1,10 +1,13 @@
 import React from "react"
+import classNames from "classnames"
 
-import { useStateValue, ReducerTypes } from "../PlayerContext"
+import "./player-play-button.scss"
 import { ReactComponent as PlayIcon } from "@svg/icons/player/play-icon.svg"
 import { ReactComponent as PauseIcon } from "@svg/icons/player/pause-icon.svg"
 
-const PlayButton = () => {
+import { ReducerTypes, useStateValue } from "@components/media/Player/PlayerContext"
+
+const PlayerPlayButton: React.FC = () => {
   const [state, dispatch] = useStateValue()
   const { isPlaying } = state
 
@@ -17,7 +20,7 @@ const PlayButton = () => {
 
   return (
     <div
-      className="btn btn-play"
+      className={classNames("player-play-button", { play: !isPlaying })}
       onClick={togglePlay}
       role="button"
       tabIndex={0}
@@ -31,4 +34,4 @@ const PlayButton = () => {
   )
 }
 
-export default PlayButton
+export default PlayerPlayButton

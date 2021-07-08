@@ -35,3 +35,12 @@ export const checkIsMobileDevice = () => {
     (navigator && navigator.userAgent.indexOf("IEMobile") !== -1)
   )
 }
+
+/**
+ * Check if current device is touch
+ */
+export const isTouchDevice = () => {
+  return (("ontouchstart" in window) ||
+    (navigator.maxTouchPoints > 0) ||
+    (navigator.msMaxTouchPoints > 0))
+}

@@ -1,17 +1,18 @@
-import React, { useRef, useState, useEffect } from "react"
-import classnames from "classnames"
+import React, { useRef, useState, useEffect, useCallback } from "react"
+import classNames from "classnames"
 import Axios, { Canceler } from "axios"
 
 import "./player.scss"
 
 import { PlayerContextProvider, ReducerTypes, useStateValue } from "./PlayerContext"
 import PlayerPlaceholder from "./PlayerPlaceholder"
-import PlayerControls from "./PlayerControls"
-import PlayerBytesCounter from "./PlayerBytesCounter"
 import PlayerShortcuts from "./PlayerShortcuts"
-import PlayerErrorBanner from "./PlayerErrorBanner"
+import PlayerErrorBanner from "@components/media/PlayerErrorBanner"
+import PlayerBytesCounter from "@components/media/PlayerBytesCounter"
+import PlayerToolbar from "@components/media/PlayerToolbar"
 import { VideoSource } from "@classes/SwarmVideo/types"
 import http from "@utils/request"
+import { isTouchDevice } from "@utils/browser"
 
 type PlayerProps = {
   sources: VideoSource[]
@@ -24,7 +25,12 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
   const { source, currentQuality, isPlaying, currentTime, error, videoEl } = state
 
   const [hiddenControls, setHiddenControls] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>()
+  const [idle, setIdle] = useState(false)
+  const [videoElement, setVideoElement] = useState<HTMLVideoElement>()
+  const videoMutationObserverRef = useRef<MutationObserver>()
+  const idleTimeoutRef = useRef<number>()
+  const floating = !isTouchDevice()
+
 
   useEffect(() => {
     if (originalQuality) {
@@ -49,24 +55,21 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
   }, [currentQuality])
 
   useEffect(() => {
-    if (videoRef && videoRef.current) {
-      const video = videoRef.current
-      const observer = new MutationObserver(mutations => {
-        if (video.controls && !hiddenControls) {
-          setHiddenControls(true)
-        } else if (!video.controls && hiddenControls) {
-          setHiddenControls(false)
-        }
-      })
-      observer.observe(video, { attributes: true })
+    if (videoElement) {
+
+      watchControlChange(videoElement)
 
       dispatch({
         type: ReducerTypes.SET_VIDEO_ELEMENT,
-        videoEl: video,
+        videoEl: videoElement,
       })
     }
+
+    return () => {
+      videoMutationObserverRef.current?.disconnect()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [videoRef.current])
+  }, [videoElement, hiddenControls])
 
   useEffect(() => {
     if (currentTime === 1) {
@@ -76,20 +79,53 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
     }
   }, [currentTime, dispatch])
 
+  const watchControlChange = useCallback((video: HTMLVideoElement) => {
+    if (videoMutationObserverRef.current) {
+      videoMutationObserverRef.current.disconnect()
+    }
+    videoMutationObserverRef.current = new MutationObserver(mutations => {
+      if (video.controls && !hiddenControls) {
+        setHiddenControls(true)
+      } else if (!video.controls && hiddenControls) {
+        setHiddenControls(false)
+      }
+    })
+    videoMutationObserverRef.current.observe(video, { attributes: true })
+  }, [hiddenControls])
+
   const togglePlay = () => {
     dispatch({
       type: ReducerTypes.TOGGLE_PLAY,
       isPlaying: !isPlaying,
     })
+
+    if (!isPlaying) {
+      startIdleTimeout(true)
+    }
+  }
+
+  const startIdleTimeout = (forceStart: boolean | React.MouseEvent = false) => {
+    stopIdleTimeout()
+
+    if (forceStart || isPlaying) {
+      idleTimeoutRef.current = setTimeout(() => {
+        setIdle(true)
+      }, 3000) as unknown as number
+    }
+  }
+
+  const stopIdleTimeout = () => {
+    clearTimeout(idleTimeoutRef.current)
+    setIdle(false)
   }
 
   // Video events
 
   const onLoadMetadata = () => {
-    if (videoRef.current) {
+    if (videoElement) {
       dispatch({
         type: ReducerTypes.UPDATE_DURATION,
-        duration: videoRef.current.duration,
+        duration: videoElement.duration,
       })
     }
   }
@@ -149,18 +185,22 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
 
   return (
     <PlayerShortcuts>
-      <div className={classnames("player", { playing: isPlaying })}>
+      <div className={classNames("player", { playing: isPlaying, idle })}>
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <video
           ref={v => {
             if (v && v !== videoEl) {
-              videoRef.current = v
+              setVideoElement(v)
             }
           }}
+          className="player-video"
           autoPlay={false}
           preload="metadata"
           poster={!error ? thumbnail : undefined}
           controls={false}
+          onMouseEnter={startIdleTimeout}
+          onMouseMove={startIdleTimeout}
+          onMouseLeave={stopIdleTimeout}
           onClick={togglePlay}
           onLoadedMetadata={onLoadMetadata}
           onProgress={onProgress}
@@ -176,8 +216,10 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
           </p>
         </video>
 
-        {!hiddenControls && videoRef.current && !error && (
-          <PlayerControls />
+        {!hiddenControls && videoElement && !error && (
+          <div className={classNames("player-toolbar-wrapper", { floating })}>
+            <PlayerToolbar floating={floating} />
+          </div>
         )}
 
         {error && (

@@ -1,0 +1,16 @@
+.player-play-button {
+  @apply w-6 h-6 rounded-full;
+  @apply p-1.5;
+  @apply bg-gray-900 dark:bg-gray-100;
+  @apply text-gray-100 dark:text-gray-900;
+  @apply md:w-8 md:h-8;
+  @apply md:p-2;
+
+  > svg {
+    @apply w-full h-full;
+  }
+
+  &.play > svg {
+    @apply ml-px;
+  }
+}

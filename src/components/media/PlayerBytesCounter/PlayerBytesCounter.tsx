@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef } from "react"
 
 import "./player-bytes-counter.scss"
 
-import { useStateValue } from "../PlayerContext"
+import { useStateValue } from "../Player/PlayerContext"
 import useSelector from "@state/useSelector"
 
 type CounterProgressProps = {

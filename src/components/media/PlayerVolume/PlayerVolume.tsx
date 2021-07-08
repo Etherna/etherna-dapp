@@ -1,12 +1,14 @@
 import React from "react"
 
-import { useStateValue, ReducerTypes } from "../PlayerContext"
-import Slider from "@common/Slider"
 import { ReactComponent as MutedIcon } from "@svg/icons/player/muted-icon.svg"
 import { ReactComponent as VolumeLowIcon } from "@svg/icons/player/volume-low-icon.svg"
 import { ReactComponent as VolumeIcon } from "@svg/icons/player/volume-icon.svg"
 
-const VolumeControl = () => {
+import Slider from "@common/Slider"
+import { useStateValue, ReducerTypes } from "@components/media/Player/PlayerContext"
+import PlayerToolbarButton from "@components/media/PlayerToolbarButton"
+
+const PlayerVolume: React.FC = () => {
   const [state, dispatch] = useStateValue()
   const { muted, volume } = state
 
@@ -25,35 +27,31 @@ const VolumeControl = () => {
   }
 
   return (
-    <div className="option-group">
-      <div
-        className="btn btn-option"
-        onClick={toggleMute}
-        role="button"
-        tabIndex={0}
-      >
-        {muted === true ? (
+    <PlayerToolbarButton
+      icon={
+        muted === true ? (
           <MutedIcon />
         ) : volume < 0.25 ? (
           <VolumeLowIcon />
         ) : (
           <VolumeIcon />
-        )}
-      </div>
-      <div className="option-menu">
-        <Slider
-          value={volume}
-          min={0}
-          max={1}
-          step={0.01}
-          invert={true}
-          orientation="vertical"
-          className="vertical-slider"
-          onChange={updateVolume}
-        />
-      </div>
-    </div>
+        )
+      }
+      onClick={toggleMute}
+      hasMenu
+    >
+      <Slider
+        value={volume}
+        min={0}
+        max={1}
+        step={0.01}
+        invert={true}
+        orientation="vertical"
+        className="vertical-slider"
+        onChange={updateVolume}
+      />
+    </PlayerToolbarButton>
   )
 }
 
-export default VolumeControl
+export default PlayerVolume

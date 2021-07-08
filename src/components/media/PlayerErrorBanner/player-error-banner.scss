@@ -1,0 +1,21 @@
+.player-error-banner {
+  @apply absolute inset-0;
+  @apply flex flex-col justify-center;
+  @apply bg-gray-900 bg-opacity-5;
+
+  .error-icon {
+    @apply mx-auto w-16 h-16;
+    @apply text-gray-50;
+
+    &.danger {
+      @apply text-red-500;
+    }
+    &.warning {
+      @apply text-orange-400;
+    }
+  }
+  .error-description {
+    @apply text-white text-3xl font-semibold text-center;
+    @apply py-6;
+  }
+}
