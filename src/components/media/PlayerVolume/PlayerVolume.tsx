@@ -7,7 +7,7 @@ import { ReactComponent as VolumeIcon } from "@svg/icons/player/volume-icon.svg"
 import Slider from "@common/Slider"
 import PlayerToolbarButton from "@components/media/PlayerToolbarButton"
 import { PlayerReducerTypes } from "@context/player-context"
-import usePlayerState from "@context/player-context/hooks/usePlayerState"
+import { usePlayerState } from "@context/player-context/hooks"
 
 const PlayerVolume: React.FC = () => {
   const [state, dispatch] = usePlayerState()

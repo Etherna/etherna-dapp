@@ -11,7 +11,7 @@ import PlayerBytesCounter from "@components/media/PlayerBytesCounter"
 import PlayerToolbar from "@components/media/PlayerToolbar"
 import { VideoSource } from "@classes/SwarmVideo/types"
 import { PlayerContextProvider, PlayerReducerTypes } from "@context/player-context"
-import usePlayerState from "@context/player-context/hooks/usePlayerState"
+import { usePlayerState } from "@context/player-context/hooks"
 import http from "@utils/request"
 import { isTouchDevice } from "@utils/browser"
 

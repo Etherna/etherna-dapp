@@ -4,7 +4,7 @@ import { ReactComponent as FullScreenIcon } from "@svg/icons/player/fullscreen-i
 
 import PlayerToolbarButton from "@components/media/PlayerToolbarButton"
 import { PlayerReducerTypes } from "@context/player-context"
-import usePlayerState from "@context/player-context/hooks/usePlayerState"
+import { usePlayerState } from "@context/player-context/hooks"
 
 const PlayerFullScreenButton: React.FC = () => {
   const [, dispatch] = usePlayerState()

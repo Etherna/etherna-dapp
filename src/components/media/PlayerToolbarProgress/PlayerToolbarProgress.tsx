@@ -3,7 +3,7 @@ import React from "react"
 import "./player-toolbar-progress.scss"
 
 import { PlayerReducerTypes } from "@context/player-context"
-import usePlayerState from "@context/player-context/hooks/usePlayerState"
+import { usePlayerState } from "@context/player-context/hooks"
 
 const PlayerToolbarProgress: React.FC = () => {
   const [state, dispatch] = usePlayerState()

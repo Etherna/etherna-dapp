@@ -2,7 +2,7 @@ import React from "react"
 import { Shortcuts } from "react-shortcuts"
 
 import { PlayerReducerTypes } from "@context/player-context"
-import usePlayerState from "@context/player-context/hooks/usePlayerState"
+import { usePlayerState } from "@context/player-context/hooks"
 import { PlayerActions } from "@keyboard"
 
 type PlayerShortcutsProps = {
