@@ -6,11 +6,11 @@ import { ReactComponent as CreditErrorIcon } from "@svg/icons/credit-error-icon.
 import { ReactComponent as ServerErrorIcon } from "@svg/icons/server-error-icon.svg"
 import { ReactComponent as UnauthorizedIcon } from "@svg/icons/unauthorized-error-icon.svg"
 
-import { useStateValue } from "@components/media/Player/PlayerContext"
+import usePlayerState from "@context/player-context/hooks/usePlayerState"
 
 const PlayerErrorBanner = () => {
   const [description, setDescription] = useState("")
-  const [state] = useStateValue()
+  const [state] = usePlayerState()
   const { error } = state
 
   useEffect(() => {

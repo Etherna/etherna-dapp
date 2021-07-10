@@ -2,15 +2,16 @@ import React from "react"
 
 import { ReactComponent as PipIcon } from "@svg/icons/player/pip-icon.svg"
 
-import { useStateValue, ReducerTypes } from "@components/media/Player/PlayerContext"
 import PlayerToolbarButton from "@components/media/PlayerToolbarButton"
+import { PlayerReducerTypes } from "@context/player-context"
+import usePlayerState from "@context/player-context/hooks/usePlayerState"
 
 const PlayerPiPButton: React.FC = () => {
-  const [, dispatch] = useStateValue()
+  const [, dispatch] = usePlayerState()
 
   const togglePictureInPicture = () => {
     dispatch({
-      type: ReducerTypes.TOGGLE_PICTURE_IN_PICTURE,
+      type: PlayerReducerTypes.TOGGLE_PICTURE_IN_PICTURE,
     })
   }
 

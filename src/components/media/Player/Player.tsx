@@ -4,13 +4,14 @@ import Axios, { Canceler } from "axios"
 
 import "./player.scss"
 
-import { PlayerContextProvider, ReducerTypes, useStateValue } from "./PlayerContext"
 import PlayerPlaceholder from "./PlayerPlaceholder"
 import PlayerShortcuts from "./PlayerShortcuts"
 import PlayerErrorBanner from "@components/media/PlayerErrorBanner"
 import PlayerBytesCounter from "@components/media/PlayerBytesCounter"
 import PlayerToolbar from "@components/media/PlayerToolbar"
 import { VideoSource } from "@classes/SwarmVideo/types"
+import { PlayerContextProvider, PlayerReducerTypes } from "@context/player-context"
+import usePlayerState from "@context/player-context/hooks/usePlayerState"
 import http from "@utils/request"
 import { isTouchDevice } from "@utils/browser"
 
@@ -21,7 +22,7 @@ type PlayerProps = {
 }
 
 const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnail }) => {
-  const [state, dispatch] = useStateValue()
+  const [state, dispatch] = usePlayerState()
   const { source, currentQuality, isPlaying, currentTime, error, videoEl } = state
 
   const [hiddenControls, setHiddenControls] = useState(false)
@@ -35,7 +36,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
   useEffect(() => {
     if (originalQuality) {
       dispatch({
-        type: ReducerTypes.SET_CURRENT_QUALITY,
+        type: PlayerReducerTypes.SET_CURRENT_QUALITY,
         currentQuality: originalQuality
       })
     }
@@ -47,7 +48,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
 
     const sourceInfo = sources.find(s => s.quality === currentQuality) || sources[0]
     dispatch({
-      type: ReducerTypes.SET_SOURCE,
+      type: PlayerReducerTypes.SET_SOURCE,
       source: sourceInfo.source,
       size: sourceInfo.size || undefined
     })
@@ -60,7 +61,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
       watchControlChange(videoElement)
 
       dispatch({
-        type: ReducerTypes.SET_VIDEO_ELEMENT,
+        type: PlayerReducerTypes.SET_VIDEO_ELEMENT,
         videoEl: videoElement,
       })
     }
@@ -74,7 +75,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
   useEffect(() => {
     if (currentTime === 1) {
       dispatch({
-        type: ReducerTypes.RESET_PLAY,
+        type: PlayerReducerTypes.RESET_PLAY,
       })
     }
   }, [currentTime, dispatch])
@@ -95,7 +96,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
 
   const togglePlay = () => {
     dispatch({
-      type: ReducerTypes.TOGGLE_PLAY,
+      type: PlayerReducerTypes.TOGGLE_PLAY,
       isPlaying: !isPlaying,
     })
 
@@ -124,7 +125,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
   const onLoadMetadata = () => {
     if (videoElement) {
       dispatch({
-        type: ReducerTypes.UPDATE_DURATION,
+        type: PlayerReducerTypes.UPDATE_DURATION,
         duration: videoElement.duration,
       })
     }
@@ -132,13 +133,21 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
 
   const onProgress = () => {
     dispatch({
-      type: ReducerTypes.REFRESH_BUFFERING,
+      type: PlayerReducerTypes.REFRESH_BUFFERING,
     })
   }
 
   const onTimeUpdate = () => {
     dispatch({
-      type: ReducerTypes.REFRESH_CURRENT_TIME,
+      type: PlayerReducerTypes.REFRESH_CURRENT_TIME,
+    })
+  }
+
+  const renderError = (code: number, message: string) => {
+    dispatch({
+      type: PlayerReducerTypes.SET_PLAYBACK_ERROR,
+      errorCode: code,
+      errorMessage: message
     })
   }
 
@@ -167,14 +176,6 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
         renderError(500, error.message)
       }
     }
-  }
-
-  const renderError = (code: number, message: string) => {
-    dispatch({
-      type: ReducerTypes.SET_PLAYBACK_ERROR,
-      errorCode: code,
-      errorMessage: message
-    })
   }
 
   if (!source) {

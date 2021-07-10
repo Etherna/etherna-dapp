@@ -1,16 +1,18 @@
 import React from "react"
 
-import { useStateValue, ReducerTypes } from "@components/media/Player/PlayerContext"
+
 import PlayerToolbarSelect from "@components/media/PlayerToolbarSelect"
+import { PlayerReducerTypes } from "@context/player-context"
+import usePlayerState from "@context/player-context/hooks/usePlayerState"
 
 const PlayerPlaybackSpeed: React.FC = () => {
-  const [state, dispatch] = useStateValue()
+  const [state, dispatch] = usePlayerState()
   const { playbackRate } = state
   const playbackTicks = [0.25, 0.5, 1, 1.25, 1.5, 1.75, 2]
 
   const updatePlaybackRate = (option: { value: string }) => {
     dispatch({
-      type: ReducerTypes.UPDATE_PLAYBACK_RATE,
+      type: PlayerReducerTypes.UPDATE_PLAYBACK_RATE,
       playbackRate: +option.value,
     })
   }

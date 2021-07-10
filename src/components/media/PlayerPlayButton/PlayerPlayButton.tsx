@@ -5,15 +5,17 @@ import "./player-play-button.scss"
 import { ReactComponent as PlayIcon } from "@svg/icons/player/play-icon.svg"
 import { ReactComponent as PauseIcon } from "@svg/icons/player/pause-icon.svg"
 
-import { ReducerTypes, useStateValue } from "@components/media/Player/PlayerContext"
+import { PlayerReducerTypes } from "@context/player-context"
+import usePlayerState from "@context/player-context/hooks/usePlayerState"
+
 
 const PlayerPlayButton: React.FC = () => {
-  const [state, dispatch] = useStateValue()
+  const [state, dispatch] = usePlayerState()
   const { isPlaying } = state
 
   const togglePlay = () => {
     dispatch({
-      type: ReducerTypes.TOGGLE_PLAY,
+      type: PlayerReducerTypes.TOGGLE_PLAY,
       isPlaying: !isPlaying,
     })
   }

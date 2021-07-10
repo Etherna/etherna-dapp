@@ -1,115 +1,87 @@
-import React, { createContext, Dispatch, useContext, useReducer } from "react"
+import { PlayerContextState } from "."
 import { clamp } from "@utils/math"
 
-const PlayerContext = createContext<PlayerContextStore|undefined>(undefined)
-
-// Types
-type PlayerContextStore = [state: PlayerContextState, dispatch: Dispatch<AnyAction>]
-
-type PlayerContextState = {
-  videoEl?: HTMLVideoElement & {
-    requestPictureInPicture?: () => void
-    mozRequestFullScreen?: () => void
-    webkitRequestFullScreen?: () => void
-  }
-  source?: string
-  sourceSize?: number
-  currentQuality?: string
-  isPlaying: boolean
-  duration: number
-  currentTime: number
-  buffering: number
-  volume: number
-  muted: boolean
-  playbackRate: number
-  error?: {
-    code: number
-    message: string
-  }
-}
-
-// Actions
-export const ReducerTypes = {
-  SET_VIDEO_ELEMENT: "SET_VIDEO_ELEMENT",
-  SET_SOURCE: "SET_SOURCE",
-  SET_CURRENT_QUALITY: "SET_CURRENT_QUALITY",
-  SET_PLAYBACK_ERROR: "SET_PLAYBACK_ERROR",
-  TOGGLE_PLAY: "TOGGLE_PLAY",
-  RESET_PLAY: "RESET_PLAY",
-  TOGGLE_FULLSCREEN: "TOGGLE_FULLSCREEN",
-  TOGGLE_PICTURE_IN_PICTURE: "TOGGLE_PICTURE_IN_PICTURE",
-  TOGGLE_MUTED: "TOGGLE_MUTED",
-  UPDATE_DURATION: "UPDATE_DURATION",
-  UPDATE_PROGRESS: "UPDATE_PROGRESS",
-  UPDATE_PLAYBACK_RATE: "UPDATE_PLAYBACK_RATE",
-  UPDATE_VOLUME: "UPDATE_VOLUME",
-  REFRESH_CURRENT_TIME: "REFRESH_CURRENT_TIME",
-  REFRESH_BUFFERING: "REFRESH_BUFFERING",
+export const PlayerReducerTypes = {
+  SET_VIDEO_ELEMENT: "player/set-video-element",
+  SET_SOURCE: "player/set-source",
+  SET_CURRENT_QUALITY: "player/set-current-quality",
+  SET_PLAYBACK_ERROR: "player/set-playback-error",
+  TOGGLE_PLAY: "player/toggle-play",
+  RESET_PLAY: "player/reset-play",
+  TOGGLE_FULLSCREEN: "player/toggle-fullscreen",
+  TOGGLE_PICTURE_IN_PICTURE: "player/toggle-picture-in-picture",
+  TOGGLE_MUTED: "player/toggle-muted",
+  UPDATE_DURATION: "player/update-duration",
+  UPDATE_PROGRESS: "player/update-progress",
+  UPDATE_PLAYBACK_RATE: "player/update-playback-rate",
+  UPDATE_VOLUME: "player/update-volume",
+  REFRESH_CURRENT_TIME: "player/refresh-current-time",
+  REFRESH_BUFFERING: "player/refresh-buffering",
 } as const
 
 type SetVideoElAction = {
-  type: typeof ReducerTypes.SET_VIDEO_ELEMENT
+  type: typeof PlayerReducerTypes.SET_VIDEO_ELEMENT
   videoEl: HTMLVideoElement
 }
 type SetSourceAction = {
-  type: typeof ReducerTypes.SET_SOURCE
+  type: typeof PlayerReducerTypes.SET_SOURCE
   source: string
   size?: number
 }
 type SetCurrentQualityAction = {
-  type: typeof ReducerTypes.SET_CURRENT_QUALITY
+  type: typeof PlayerReducerTypes.SET_CURRENT_QUALITY
   currentQuality: string
 }
 type SetPlaybackErrorAction = {
-  type: typeof ReducerTypes.SET_PLAYBACK_ERROR
+  type: typeof PlayerReducerTypes.SET_PLAYBACK_ERROR
   errorCode?: number
   errorMessage?: string
 }
 type TogglePlayAction = {
-  type: typeof ReducerTypes.TOGGLE_PLAY
+  type: typeof PlayerReducerTypes.TOGGLE_PLAY
   isPlaying: boolean
 }
 type ResetPlayAction = {
-  type: typeof ReducerTypes.RESET_PLAY
+  type: typeof PlayerReducerTypes.RESET_PLAY
 }
 type ToggleFullScreenAction = {
-  type: typeof ReducerTypes.TOGGLE_FULLSCREEN
+  type: typeof PlayerReducerTypes.TOGGLE_FULLSCREEN
 }
 type TogglePiPAction = {
-  type: typeof ReducerTypes.TOGGLE_PICTURE_IN_PICTURE
+  type: typeof PlayerReducerTypes.TOGGLE_PICTURE_IN_PICTURE
 }
 type ToggleMutedAction = {
-  type: typeof ReducerTypes.TOGGLE_MUTED
+  type: typeof PlayerReducerTypes.TOGGLE_MUTED
   muted: boolean
 }
 type UpdateDurationAction = {
-  type: typeof ReducerTypes.UPDATE_DURATION
+  type: typeof PlayerReducerTypes.UPDATE_DURATION
   duration: number
 }
 type UpdateProgressAction = {
-  type: typeof ReducerTypes.UPDATE_PROGRESS
+  type: typeof PlayerReducerTypes.UPDATE_PROGRESS
   bySec?: number
   byPercent?: number
   atPercent?: number
 }
 type UpdatePlaybackRateAction = {
-  type: typeof ReducerTypes.UPDATE_PLAYBACK_RATE
+  type: typeof PlayerReducerTypes.UPDATE_PLAYBACK_RATE
   playbackRate: number
 }
 type UpdateVolumeAction = {
-  type: typeof ReducerTypes.UPDATE_VOLUME
+  type: typeof PlayerReducerTypes.UPDATE_VOLUME
   volume?: number
   byPercent?: number
   atPercent?: number
 }
 type RefreshCurrentTimeAction = {
-  type: typeof ReducerTypes.REFRESH_CURRENT_TIME
+  type: typeof PlayerReducerTypes.REFRESH_CURRENT_TIME
 }
 type RefreshBufferingAction = {
-  type: typeof ReducerTypes.REFRESH_BUFFERING
+  type: typeof PlayerReducerTypes.REFRESH_BUFFERING
 }
 
-type AnyAction = (
+export type AnyPlayerAction = (
   SetVideoElAction |
   SetSourceAction |
   SetCurrentQualityAction |
@@ -127,31 +99,30 @@ type AnyAction = (
   RefreshBufferingAction
 )
 
-// Reducer
-const reducer = (state: PlayerContextState, action: AnyAction): PlayerContextState => {
+const playerContextReducer = (state: PlayerContextState, action: AnyPlayerAction): PlayerContextState => {
   switch (action.type) {
-    case ReducerTypes.SET_VIDEO_ELEMENT: {
+    case PlayerReducerTypes.SET_VIDEO_ELEMENT: {
       return {
         ...state,
         videoEl: action.videoEl,
       }
     }
 
-    case ReducerTypes.SET_SOURCE: {
+    case PlayerReducerTypes.SET_SOURCE: {
       return {
         ...state,
         source: action.source,
         sourceSize: action.size
       }
     }
-    case ReducerTypes.SET_CURRENT_QUALITY: {
+    case PlayerReducerTypes.SET_CURRENT_QUALITY: {
       return {
         ...state,
         currentQuality: action.currentQuality,
       }
     }
 
-    case ReducerTypes.SET_PLAYBACK_ERROR: {
+    case PlayerReducerTypes.SET_PLAYBACK_ERROR: {
       const { errorCode, errorMessage } = action
       return {
         ...state,
@@ -162,7 +133,7 @@ const reducer = (state: PlayerContextState, action: AnyAction): PlayerContextSta
       }
     }
 
-    case ReducerTypes.TOGGLE_PLAY: {
+    case PlayerReducerTypes.TOGGLE_PLAY: {
       if (action.isPlaying) {
         if (state.currentTime === 1 && state.videoEl) {
           state.videoEl.currentTime = 0
@@ -177,7 +148,7 @@ const reducer = (state: PlayerContextState, action: AnyAction): PlayerContextSta
       }
     }
 
-    case ReducerTypes.RESET_PLAY: {
+    case PlayerReducerTypes.RESET_PLAY: {
       return {
         ...state,
         isPlaying: false,
@@ -185,7 +156,7 @@ const reducer = (state: PlayerContextState, action: AnyAction): PlayerContextSta
       }
     }
 
-    case ReducerTypes.TOGGLE_PICTURE_IN_PICTURE: {
+    case PlayerReducerTypes.TOGGLE_PICTURE_IN_PICTURE: {
       if (state.videoEl?.requestPictureInPicture) {
         if ((document as any).pictureInPictureElement) {
           (document as any).exitPictureInPicture()
@@ -198,7 +169,7 @@ const reducer = (state: PlayerContextState, action: AnyAction): PlayerContextSta
       }
     }
 
-    case ReducerTypes.TOGGLE_FULLSCREEN: {
+    case PlayerReducerTypes.TOGGLE_FULLSCREEN: {
       if (state.videoEl?.mozRequestFullScreen) {
         state.videoEl.mozRequestFullScreen()
       } else if (state.videoEl?.webkitRequestFullScreen) {
@@ -211,7 +182,7 @@ const reducer = (state: PlayerContextState, action: AnyAction): PlayerContextSta
       }
     }
 
-    case ReducerTypes.TOGGLE_MUTED: {
+    case PlayerReducerTypes.TOGGLE_MUTED: {
       if (state.videoEl) {
         state.videoEl.muted = action.muted
       }
@@ -221,14 +192,14 @@ const reducer = (state: PlayerContextState, action: AnyAction): PlayerContextSta
       }
     }
 
-    case ReducerTypes.UPDATE_DURATION: {
+    case PlayerReducerTypes.UPDATE_DURATION: {
       return {
         ...state,
         duration: action.duration,
       }
     }
 
-    case ReducerTypes.UPDATE_PROGRESS: {
+    case PlayerReducerTypes.UPDATE_PROGRESS: {
       let currentTime = state.videoEl?.currentTime || 0
       if (action.bySec) {
         currentTime += action.bySec
@@ -248,7 +219,7 @@ const reducer = (state: PlayerContextState, action: AnyAction): PlayerContextSta
       }
     }
 
-    case ReducerTypes.UPDATE_PLAYBACK_RATE: {
+    case PlayerReducerTypes.UPDATE_PLAYBACK_RATE: {
       if (state.videoEl) {
         state.videoEl.playbackRate = action.playbackRate
       }
@@ -258,7 +229,7 @@ const reducer = (state: PlayerContextState, action: AnyAction): PlayerContextSta
       }
     }
 
-    case ReducerTypes.UPDATE_VOLUME: {
+    case PlayerReducerTypes.UPDATE_VOLUME: {
       let volume = state.videoEl?.volume || 1
 
       if (action.volume) {
@@ -280,7 +251,7 @@ const reducer = (state: PlayerContextState, action: AnyAction): PlayerContextSta
       }
     }
 
-    case ReducerTypes.REFRESH_CURRENT_TIME: {
+    case PlayerReducerTypes.REFRESH_CURRENT_TIME: {
       const currentTime = state.videoEl?.currentTime || 0
       const time = state.duration > 0 ? currentTime / state.duration : 0
       return {
@@ -289,7 +260,7 @@ const reducer = (state: PlayerContextState, action: AnyAction): PlayerContextSta
       }
     }
 
-    case ReducerTypes.REFRESH_BUFFERING: {
+    case PlayerReducerTypes.REFRESH_BUFFERING: {
       if (!state.videoEl) return state
 
       let buffering = state.buffering
@@ -315,23 +286,4 @@ const reducer = (state: PlayerContextState, action: AnyAction): PlayerContextSta
   }
 }
 
-// Wrapper
-type PlayerContextProviderProps = {
-  children: React.ReactNode
-}
-export const PlayerContextProvider = ({ children }: PlayerContextProviderProps) => {
-  let store = useReducer(reducer, {
-    videoEl: undefined,
-    isPlaying: false,
-    duration: 0,
-    currentTime: 0,
-    buffering: 0,
-    volume: 1,
-    muted: false,
-    playbackRate: 1,
-  })
-  return <PlayerContext.Provider value={store}>{children}</PlayerContext.Provider>
-}
-
-// Hooks
-export const useStateValue = () => useContext(PlayerContext)!
+export default playerContextReducer

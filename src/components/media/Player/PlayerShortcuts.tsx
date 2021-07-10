@@ -1,7 +1,8 @@
 import React from "react"
 import { Shortcuts } from "react-shortcuts"
 
-import { useStateValue, ReducerTypes } from "./PlayerContext"
+import { PlayerReducerTypes } from "@context/player-context"
+import usePlayerState from "@context/player-context/hooks/usePlayerState"
 import { PlayerActions } from "@keyboard"
 
 type PlayerShortcutsProps = {
@@ -9,7 +10,7 @@ type PlayerShortcutsProps = {
 }
 
 const PlayerShortcuts = ({ children }: PlayerShortcutsProps) => {
-  const [state, dispatch] = useStateValue()
+  const [state, dispatch] = usePlayerState()
   const { isPlaying, muted } = state
 
   const handleShortcut = (action: string, event: Event) => {
@@ -19,92 +20,92 @@ const PlayerShortcuts = ({ children }: PlayerShortcutsProps) => {
     switch (action) {
       case PlayerActions.PLAYPAUSE:
         dispatch({
-          type: ReducerTypes.TOGGLE_PLAY,
+          type: PlayerReducerTypes.TOGGLE_PLAY,
           isPlaying: !isPlaying,
         })
         break
       case PlayerActions.SKIP_BACKWARD:
-        dispatch({ type: ReducerTypes.UPDATE_PROGRESS, bySec: -5 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_PROGRESS, bySec: -5 })
         break
       case PlayerActions.SKIP_FORWARD:
-        dispatch({ type: ReducerTypes.UPDATE_PROGRESS, bySec: 5 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_PROGRESS, bySec: 5 })
         break
       // TODO: Enable when captions available
       // case PlayerActions.CAPTIONS:
-      //     dispatch({ type: ReducerTypes.TOGGLE_CAPTIONS })
+      //     dispatch({ type: PlayerReducerTypes.TOGGLE_CAPTIONS })
       //     break
       case PlayerActions.FULL_SCREEN:
-        dispatch({ type: ReducerTypes.TOGGLE_FULLSCREEN })
+        dispatch({ type: PlayerReducerTypes.TOGGLE_FULLSCREEN })
         break
       case PlayerActions.PICTURE_IN_PICTURE:
-        dispatch({ type: ReducerTypes.TOGGLE_PICTURE_IN_PICTURE })
+        dispatch({ type: PlayerReducerTypes.TOGGLE_PICTURE_IN_PICTURE })
         break
       // TODO: Enable when mini player available
       // case PlayerActions.MINI_PLAYER:
-      //     dispatch({ type: ReducerTypes.TOGGLE_MINI_PLAYER })
+      //     dispatch({ type: PlayerReducerTypes.TOGGLE_MINI_PLAYER })
       //     break
       case PlayerActions.MUTE:
-        dispatch({ type: ReducerTypes.TOGGLE_MUTED, muted: !muted })
+        dispatch({ type: PlayerReducerTypes.TOGGLE_MUTED, muted: !muted })
         break
       case PlayerActions.VOLUME_UP:
-        dispatch({ type: ReducerTypes.UPDATE_VOLUME, byPercent: 0.05 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_VOLUME, byPercent: 0.05 })
         break
       case PlayerActions.VOLUME_DOWN:
-        dispatch({ type: ReducerTypes.UPDATE_VOLUME, byPercent: -0.05 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_VOLUME, byPercent: -0.05 })
         break
       case PlayerActions.VOLUME_10_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_VOLUME, atPercent: 0.1 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_VOLUME, atPercent: 0.1 })
         break
       case PlayerActions.VOLUME_20_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_VOLUME, atPercent: 0.2 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_VOLUME, atPercent: 0.2 })
         break
       case PlayerActions.VOLUME_30_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_VOLUME, atPercent: 0.3 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_VOLUME, atPercent: 0.3 })
         break
       case PlayerActions.VOLUME_40_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_VOLUME, atPercent: 0.4 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_VOLUME, atPercent: 0.4 })
         break
       case PlayerActions.VOLUME_50_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_VOLUME, atPercent: 0.5 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_VOLUME, atPercent: 0.5 })
         break
       case PlayerActions.VOLUME_60_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_VOLUME, atPercent: 0.6 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_VOLUME, atPercent: 0.6 })
         break
       case PlayerActions.VOLUME_70_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_VOLUME, atPercent: 0.7 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_VOLUME, atPercent: 0.7 })
         break
       case PlayerActions.VOLUME_80_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_VOLUME, atPercent: 0.8 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_VOLUME, atPercent: 0.8 })
         break
       case PlayerActions.VOLUME_90_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_VOLUME, atPercent: 0.9 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_VOLUME, atPercent: 0.9 })
         break
       case PlayerActions.SKIP_10_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_PROGRESS, atPercent: 0.1 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_PROGRESS, atPercent: 0.1 })
         break
       case PlayerActions.SKIP_20_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_PROGRESS, atPercent: 0.2 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_PROGRESS, atPercent: 0.2 })
         break
       case PlayerActions.SKIP_30_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_PROGRESS, atPercent: 0.3 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_PROGRESS, atPercent: 0.3 })
         break
       case PlayerActions.SKIP_40_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_PROGRESS, atPercent: 0.4 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_PROGRESS, atPercent: 0.4 })
         break
       case PlayerActions.SKIP_50_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_PROGRESS, atPercent: 0.5 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_PROGRESS, atPercent: 0.5 })
         break
       case PlayerActions.SKIP_60_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_PROGRESS, atPercent: 0.6 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_PROGRESS, atPercent: 0.6 })
         break
       case PlayerActions.SKIP_70_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_PROGRESS, atPercent: 0.7 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_PROGRESS, atPercent: 0.7 })
         break
       case PlayerActions.SKIP_80_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_PROGRESS, atPercent: 0.8 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_PROGRESS, atPercent: 0.8 })
         break
       case PlayerActions.SKIP_90_PERCENT:
-        dispatch({ type: ReducerTypes.UPDATE_PROGRESS, atPercent: 0.9 })
+        dispatch({ type: PlayerReducerTypes.UPDATE_PROGRESS, atPercent: 0.9 })
         break
     }
   }

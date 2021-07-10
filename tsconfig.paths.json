@@ -6,6 +6,7 @@
       "@classes/*": ["classes/*"],
       "@common/*": ["components/common/*"],
       "@components/*": ["components/*"],
+      "@context/*": ["context/*"],
       "@keyboard": ["keyboard"],
       "@hooks/*": ["hooks/*"],
       "@keyboard/*": ["keyboard/*"],

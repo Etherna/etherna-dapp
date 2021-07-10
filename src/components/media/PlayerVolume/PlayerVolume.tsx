@@ -5,23 +5,24 @@ import { ReactComponent as VolumeLowIcon } from "@svg/icons/player/volume-low-ic
 import { ReactComponent as VolumeIcon } from "@svg/icons/player/volume-icon.svg"
 
 import Slider from "@common/Slider"
-import { useStateValue, ReducerTypes } from "@components/media/Player/PlayerContext"
 import PlayerToolbarButton from "@components/media/PlayerToolbarButton"
+import { PlayerReducerTypes } from "@context/player-context"
+import usePlayerState from "@context/player-context/hooks/usePlayerState"
 
 const PlayerVolume: React.FC = () => {
-  const [state, dispatch] = useStateValue()
+  const [state, dispatch] = usePlayerState()
   const { muted, volume } = state
 
   const toggleMute = () => {
     dispatch({
-      type: ReducerTypes.TOGGLE_MUTED,
+      type: PlayerReducerTypes.TOGGLE_MUTED,
       muted: !muted,
     })
   }
 
   const updateVolume = (value: number | number[] | null | undefined) => {
     dispatch({
-      type: ReducerTypes.UPDATE_VOLUME,
+      type: PlayerReducerTypes.UPDATE_VOLUME,
       volume: value as number,
     })
   }

@@ -2,11 +2,11 @@ import React from "react"
 
 import "./player-time-progress.scss"
 
-import { useStateValue } from "@components/media/Player/PlayerContext"
 import Time from "@components/media/Time"
+import usePlayerState from "@context/player-context/hooks/usePlayerState"
 
 const PlayerTimeProgress: React.FC = () => {
-  const [state] = useStateValue()
+  const [state] = usePlayerState()
   const { currentTime, duration } = state
 
   return (

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef } from "react"
 
 import "./player-bytes-counter.scss"
 
-import { useStateValue } from "../Player/PlayerContext"
+import usePlayerState from "@context/player-context/hooks/usePlayerState"
 import useSelector from "@state/useSelector"
 
 type CounterProgressProps = {
@@ -62,7 +62,7 @@ const CounterProgress = ({ ticksCount, percent }: CounterProgressProps) => {
 }
 
 const PlayerBytesCounter = () => {
-  const [state] = useStateValue()
+  const [state] = usePlayerState()
   const { sourceSize } = state
 
   const { bytePrice } = useSelector(state => state.env)

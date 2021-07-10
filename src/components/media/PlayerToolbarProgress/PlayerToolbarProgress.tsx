@@ -2,10 +2,11 @@ import React from "react"
 
 import "./player-toolbar-progress.scss"
 
-import { ReducerTypes, useStateValue } from "@components/media/Player/PlayerContext"
+import { PlayerReducerTypes } from "@context/player-context"
+import usePlayerState from "@context/player-context/hooks/usePlayerState"
 
 const PlayerToolbarProgress: React.FC = () => {
-  const [state, dispatch] = useStateValue()
+  const [state, dispatch] = usePlayerState()
   const { buffering, currentTime } = state
 
   const updateCurrentTime = (e: React.MouseEvent) => {
@@ -14,7 +15,7 @@ const PlayerToolbarProgress: React.FC = () => {
     const time = x / rect.width
 
     dispatch({
-      type: ReducerTypes.UPDATE_PROGRESS,
+      type: PlayerReducerTypes.UPDATE_PROGRESS,
       atPercent: time,
     })
   }
