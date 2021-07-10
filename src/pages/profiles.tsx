@@ -1,11 +1,11 @@
 import React from "react"
 
-import LayoutWrapper from "@components/layout/DefaultLayout/LayoutWrapper"
+import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import SEO from "@components/layout/SEO"
 import ProfilesView from "@components/profile/ProfilesView"
 
 const ProfilesPage = () => (
-  <LayoutWrapper>
+  <AppLayoutWrapper>
     <SEO title="Profiles" />
     <div className="p-8">
       <h1 className="mb-1">Profiles</h1>
@@ -17,7 +17,7 @@ const ProfilesPage = () => (
 
       <ProfilesView />
     </div>
-  </LayoutWrapper>
+  </AppLayoutWrapper>
 )
 
 export default ProfilesPage

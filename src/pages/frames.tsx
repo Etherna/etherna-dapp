@@ -1,10 +1,10 @@
 import React from "react"
 
-import LayoutWrapper from "@components/layout/DefaultLayout/LayoutWrapper"
+import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import SEO from "@components/layout/SEO"
 
 const HomePage = () => (
-  <LayoutWrapper>
+  <AppLayoutWrapper>
     <SEO
       title="Frames"
       description="Explore all the communities... frame to frame!"
@@ -12,7 +12,7 @@ const HomePage = () => (
     <div className="p-4">
       Soon!
     </div>
-  </LayoutWrapper>
+  </AppLayoutWrapper>
 )
 
 export default HomePage

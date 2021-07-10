@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom"
 import "./scss/theme.scss"
 
 import Router from "./Router"
-import Layout from "@components/layout/DefaultLayout"
+import AppLayout from "@components/layout/AppLayout"
 import ShortcutWrapper from "@keyboard/shortcutWrapper"
 import StateWrapper from "@state/wrapper"
 import useAutoSignin from "@state/hooks/user/useAutoSignin"
@@ -17,9 +17,9 @@ const Root: React.FC = () => {
 
   return (
     <BrowserRouter basename={getBasename()}>
-      <Layout>
+      <AppLayout>
         <Router />
-      </Layout>
+      </AppLayout>
     </BrowserRouter>
   )
 }

@@ -12,6 +12,9 @@
 
   &.floating {
     @apply transform -translate-x-full;
+  }
+
+  &.animate-slide {
     @apply transition-transform duration-300;
   }
 

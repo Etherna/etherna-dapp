@@ -1,25 +1,27 @@
 import React from "react"
 
-import "./layout.scss"
+import "./app-layout.scss"
 
-import { LayoutContextProvider, useStateValue } from "./LayoutContext"
 import SidebarNavigation from "@components/layout/SidebarNavigation"
 import TopbarNavigation from "@components/layout/TopbarNavigation"
 import TabbarNavigation from "@components/layout/TabbarNavigation"
 import Popups from "@components/layout/Popups"
 import Modals from "@components/modals/ModalsSection"
+import { LayoutContextProvider } from "@context/layout-context"
+import { useLayoutState } from "@context/layout-context/hooks"
 
-const Layout: React.FC = ({ children }) => {
+const AppLayout: React.FC = ({ children }) => {
   return (
     <LayoutContextProvider>
-      <LayoutContent>{children}</LayoutContent>
+      <AppLayoutContent>
+        {children}
+      </AppLayoutContent>
     </LayoutContextProvider>
   )
 }
 
-const LayoutContent: React.FC = ({ children }) => {
-  const [state] = useStateValue()
-  const { emptyLayout } = state
+const AppLayoutContent: React.FC = ({ children }) => {
+  const [{ emptyLayout }] = useLayoutState()
 
   if (emptyLayout) {
     return <main>{children}</main>
@@ -49,4 +51,4 @@ const LayoutContent: React.FC = ({ children }) => {
   )
 }
 
-export default Layout
+export default AppLayout

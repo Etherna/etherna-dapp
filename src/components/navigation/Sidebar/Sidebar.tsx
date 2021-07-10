@@ -1,4 +1,5 @@
-import React from "react"
+import React, { useEffect, useRef, useState } from "react"
+import { useLocation } from "react-router-dom"
 import classnames from "classnames"
 import { Transition } from "@headlessui/react"
 
@@ -11,6 +12,22 @@ type SidebarProps = {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ children, floating, show, onClose }) => {
+  const location = useLocation()
+  const sidebarRef = useRef<HTMLElement>(null)
+  const [animateSlide, setAnimateSlide] = useState(show && floating)
+  const [showSidebar, setShowSidebar] = useState(show)
+
+  useEffect(() => {
+    if (show && floating) {
+      setAnimateSlide(true)
+    }
+    setShowSidebar(show)
+  }, [show, floating])
+
+  useEffect(() => {
+    setAnimateSlide(false)
+  }, [location])
+
   return (
     <>
       {floating && (
@@ -26,7 +43,10 @@ const Sidebar: React.FC<SidebarProps> = ({ children, floating, show, onClose }) 
           <div className="sidebar-backdrop" onClick={onClose}></div>
         </Transition>
       )}
-      <aside className={classnames("sidebar", { floating, show })}>
+      <aside
+        className={classnames("sidebar", { floating, show: showSidebar, "animate-slide": animateSlide })}
+        ref={sidebarRef}
+      >
         <div className="sidebar-container">
           {children}
         </div>

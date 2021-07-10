@@ -1,11 +1,11 @@
 import React from "react"
 
-import LayoutWrapper from "@components/layout/DefaultLayout/LayoutWrapper"
+import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import SEO from "@components/layout/SEO"
 import ExploreView from "@components/video/ExploreView"
 
 const HomePage = () => (
-  <LayoutWrapper>
+  <AppLayoutWrapper>
     <SEO
       title="Etherna"
       tagline="A transparent video platform"
@@ -14,7 +14,7 @@ const HomePage = () => (
     <div className="p-4">
       <ExploreView />
     </div>
-  </LayoutWrapper>
+  </AppLayoutWrapper>
 )
 
 export default HomePage

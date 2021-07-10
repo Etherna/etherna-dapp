@@ -1,7 +1,7 @@
 import React from "react"
 import { useLocation } from "react-router-dom"
 
-import LayoutWrapper from "@components/layout/DefaultLayout/LayoutWrapper"
+import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import SEO from "@components/layout/SEO"
 import VideoView from "@components/video/VideoView"
 import { Video } from "@classes/SwarmVideo/types"
@@ -16,10 +16,10 @@ const WatchPage = () => {
   if (!hash) return null
 
   return (
-    <LayoutWrapper hideSidebar floatingSidebar>
+    <AppLayoutWrapper hideSidebar floatingSidebar>
       <SEO title="Watch" />
       <VideoView hash={hash} routeState={routeState} />
-    </LayoutWrapper>
+    </AppLayoutWrapper>
   )
 }
 

@@ -6,23 +6,24 @@ import { ReactComponent as UserIcon } from "@svg/icons/navigation/user.svg"
 import { ReactComponent as PlaylistIcon } from "@svg/icons/navigation/playlists.svg"
 import { ReactComponent as BookmarkIcon } from "@svg/icons/navigation/bookmark.svg"
 
-import { ReducerTypes, useStateValue } from "./DefaultLayout/LayoutContext"
 import Sidebar from "@components/navigation/Sidebar"
 import SidebarItem from "@components/navigation/SidebarItem"
 import SidebarSpace from "@components/navigation/SidebarSpace"
 import SidebarLinks from "@components/navigation/SidebarLinks"
 import IndexExtension from "@components/env/IndexExtension"
 import GatewayExtension from "@components/env/GatewayExtension"
+import { LayoutReducerTypes } from "@context/layout-context"
+import { useLayoutState } from "@context/layout-context/hooks"
 import routes from "@routes"
 import { urlOrigin, urlPath } from "@utils/urls"
 
 const SidebarNavigation: React.FC = () => {
-  const [state, dispatch] = useStateValue()
+  const [state, dispatch] = useLayoutState()
   const { hideSidebar, floatingSidebar } = state
 
   const hodeSidebar = () => {
     dispatch({
-      type: ReducerTypes.SET_HIDE_SIDEBAR,
+      type: LayoutReducerTypes.SET_SIDEBAR_HIDDEN,
       hideSidebar: true
     })
   }

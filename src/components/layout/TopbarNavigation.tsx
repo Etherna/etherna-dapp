@@ -11,19 +11,20 @@ import TopbarItem from "@components/navigation/TopbarItem"
 import TopbarSpace from "@components/navigation/TopbarSpace"
 import UserCredit from "@components/user/UserCredit"
 import UserMenu from "@components/user/UserMenu"
+import { LayoutReducerTypes } from "@context/layout-context"
+import { useLayoutState } from "@context/layout-context/hooks"
 import useSelector from "@state/useSelector"
-import { ReducerTypes, useStateValue } from "./DefaultLayout/LayoutContext"
 
 const TopbarNavigation: React.FC = () => {
   const { isSignedIn } = useSelector(state => state.user)
   const { isLoadingProfile } = useSelector(state => state.ui)
 
-  const [state, dispatch] = useStateValue()
+  const [state, dispatch] = useLayoutState()
   const { floatingSidebar, hideSidebar } = state
 
   const toggleSidebar = () => {
     dispatch({
-      type: ReducerTypes.SET_HIDE_SIDEBAR,
+      type: LayoutReducerTypes.SET_SIDEBAR_HIDDEN,
       hideSidebar: !hideSidebar
     })
   }
