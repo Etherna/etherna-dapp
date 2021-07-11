@@ -1,12 +1,13 @@
 import React, { useState } from "react"
 
 import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
-import thumbPlaceholder from "@svg/backgrounds/thumb-placeholder.svg?url"
+import { ReactComponent as ThumbPlaceholder } from "@svg/backgrounds/thumb-placeholder.svg"
 
 import Modal from "@common/Modal"
 import Button from "@common/Button"
 import SwarmImg from "@common/SwarmImg"
 import { useErrorMessage } from "@state/hooks/ui"
+import { encodedSvg } from "@utils/svg"
 
 type VideoDeleteModalProps = {
   show: boolean
@@ -41,9 +42,6 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
     setIsDeleting(false)
   }
 
-  console.log(imagePreview, thumbPlaceholder)
-
-
   return (
     <Modal
       show={show}
@@ -69,7 +67,7 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
         <div className="col sm:w-1/4">
           <SwarmImg
             image={imagePreview}
-            fallback={thumbPlaceholder}
+            fallback={encodedSvg(<ThumbPlaceholder />)}
             className="rounded min-h-16 bg-gray-500"
             alt=""
           />

@@ -2,7 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import "./video-preview.scss"
-import thumbPlaceholder from "@svg/backgrounds/thumb-placeholder.svg?url"
+import { ReactComponent as ThumbPlaceholder } from "@svg/backgrounds/thumb-placeholder.svg"
 
 import VideoMenu from "../VideoMenu"
 import StateLink from "@common/StateLink"
@@ -14,6 +14,7 @@ import Routes from "@routes"
 import useSelector from "@state/useSelector"
 import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
 import dayjs from "@utils/dayjs"
+import { encodedSvg } from "@utils/svg"
 
 type VideoPreviewProps = {
   video: Video
@@ -50,7 +51,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile }) => {
         <div className="video-thumbnail">
           <SwarmImg
             image={video.thumbnail}
-            fallback={thumbPlaceholder}
+            fallback={encodedSvg(<ThumbPlaceholder />)}
             className="w-full h-full"
           />
           <div className="video-duration">
