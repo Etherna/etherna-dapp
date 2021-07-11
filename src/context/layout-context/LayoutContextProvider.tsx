@@ -2,6 +2,7 @@ import React, { useReducer } from "react"
 
 import { LayoutContext } from "."
 import layoutReducer from "./reducer"
+import logger from "@utils/context-logger"
 
 type LayoutContextProviderProps = {
   emptyLayout?: boolean
@@ -15,7 +16,8 @@ const LayoutContextProvider: React.FC<LayoutContextProviderProps> = ({
   hideSidebar = false,
   floatingSidebar = false,
 }) => {
-  const store = useReducer(layoutReducer, {
+  const stateReducer = import.meta.env.DEV ? logger(layoutReducer) : layoutReducer
+  const store = useReducer(stateReducer, {
     emptyLayout,
     hideSidebar,
     floatingSidebar,

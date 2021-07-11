@@ -1,5 +1,4 @@
 import React, { useReducer } from "react"
-import logger from "use-reducer-logger"
 
 import { VideoEditorContext } from "."
 import videoEditorReducer from "./reducer"
@@ -9,6 +8,7 @@ import { Video } from "@classes/SwarmVideo/types"
 import { Profile } from "@classes/SwarmProfile/types"
 import { THUMBNAIL_QUEUE_NAME } from "@components/media/VideoEditor/ThumbnailUpload"
 import useSelector from "@state/useSelector"
+import logger from "@utils/context-logger"
 
 type VideoEditorContextProviderProps = {
   children: React.ReactNode
@@ -72,7 +72,7 @@ const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
 
   initialState.videoHandler.owner = videoProfileData
 
-  const stateReducer = process.env.NODE_ENV === "development" ? logger(videoEditorReducer) : videoEditorReducer
+  const stateReducer = import.meta.env.DEV ? logger(videoEditorReducer) : videoEditorReducer
   const store = useReducer(stateReducer, initialState)
 
   return (
