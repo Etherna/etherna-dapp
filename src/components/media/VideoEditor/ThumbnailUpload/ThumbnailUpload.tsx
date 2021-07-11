@@ -1,9 +1,13 @@
 import React, { useImperativeHandle, useRef, useState } from "react"
 import { Canceler } from "axios"
 
-import { useVideoEditorState } from "../context"
 import FileUploadFlow, { FileUploadFlowHandlers } from "@components/media/FileUploadFlow"
 import FileUploadProgress from "@components/media/FileUploadProgress"
+import {
+  useVideoEditorBaseActions,
+  useVideoEditorQueueActions,
+  useVideoEditorState
+} from "@context/video-editor-context/hooks"
 import { useErrorMessage } from "@state/hooks/ui"
 
 type ThumbnailUploadProps = {
@@ -26,11 +30,11 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
   const flowRef = useRef<FileUploadFlowHandlers>(null)
   const [canceler, setCanceler] = useState<Canceler>()
   const [contentType, setContentType] = useState<string>("image/*")
-  const { showError } = useErrorMessage()
+  const [{ queue, videoHandler }] = useVideoEditorState()
 
-  const { state, actions } = useVideoEditorState()
-  const { queue, videoHandler } = state
-  const { addToQueue, removeFromQueue, updateCompletion, resetState } = actions
+  const { addToQueue, removeFromQueue, updateQueueCompletion } = useVideoEditorQueueActions()
+  const { resetState } = useVideoEditorBaseActions()
+  const { showError } = useErrorMessage()
 
   const currentQueue = queue.find(q => !q.reference)
   const thumbnailQueue = queue.find(q => q.name === THUMBNAIL_QUEUE_NAME)
@@ -46,9 +50,9 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
   const uploadThumbnail = async (buffer: ArrayBuffer) => {
     const reference = await videoHandler.addThumbnail(buffer, contentType, {
       onCancelToken: c => setCanceler(c),
-      onUploadProgress: p => updateCompletion(THUMBNAIL_QUEUE_NAME, p),
+      onUploadProgress: p => updateQueueCompletion(THUMBNAIL_QUEUE_NAME, p),
     })
-    updateCompletion(THUMBNAIL_QUEUE_NAME, 100, reference)
+    updateQueueCompletion(THUMBNAIL_QUEUE_NAME, 100, reference)
 
     onComplete?.()
 

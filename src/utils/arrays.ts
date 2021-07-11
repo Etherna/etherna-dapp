@@ -12,3 +12,7 @@ export const splitArray = <T>(array: Array<T>, limit: number): Array<Array<T>> =
     return [array.slice(0, index), array.slice(index + 1)]
   }
 }
+
+export const deepCloneArray = <T>(array: Array<T>): Array<T> => {
+  return JSON.parse(JSON.stringify(array))
+}

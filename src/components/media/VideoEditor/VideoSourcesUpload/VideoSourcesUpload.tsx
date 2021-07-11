@@ -1,12 +1,16 @@
 import React, { useImperativeHandle, useState, createRef, useEffect } from "react"
 import { Canceler } from "axios"
 
-import { useVideoEditorState } from "../context"
 import Tab, { TabContent } from "@common/Tab"
 import FileUploadFlow, { FileUploadFlowHandlers } from "@components/media/FileUploadFlow"
 import FileUploadProgress from "@components/media/FileUploadProgress"
 import SwarmVideo from "@classes/SwarmVideo"
 import { VideoSource } from "@classes/SwarmVideo/types"
+import {
+  useVideoEditorBaseActions,
+  useVideoEditorQueueActions,
+  useVideoEditorState
+} from "@context/video-editor-context/hooks"
 import { useErrorMessage } from "@state/hooks/ui"
 import { getVideoDuration, getVideoResolution } from "@utils/media"
 import { isMimeAudio, isMimeFFMpegEncodable, isMimeWebCompatible } from "@utils/mimeTypes"
@@ -36,19 +40,12 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
   onComplete,
   onCancel
 }, ref) => {
-  const { state, actions } = useVideoEditorState()
-  const { videoHandler, queue } = state
-  const {
-    updateOriginalQuality,
-    updateVideoDuration,
-    updateQueueName,
-    addToQueue,
-    removeFromQueue,
-    updateCompletion,
-    resetState,
-  } = actions
-  const currentQueue = state.queue.find(q => !q.reference)
+  const [{ videoHandler, queue }] = useVideoEditorState()
+  const currentQueue = queue.find(q => !q.reference)
   const [sources, setSources] = useState<QueueSource[]>([defaultSource])
+
+  const { resetState, updateOriginalQuality, updateVideoDuration } = useVideoEditorBaseActions()
+  const { addToQueue, removeFromQueue, updateQueueCompletion, updateQueueName } = useVideoEditorQueueActions()
   const { showError } = useErrorMessage()
 
   useEffect(() => {
@@ -105,10 +102,10 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
           return newSources
         })
       },
-      onUploadProgress: p => updateCompletion(queueName, p)
+      onUploadProgress: p => updateQueueCompletion(queueName, p)
     })
 
-    updateCompletion(queueName, 100, reference)
+    updateQueueCompletion(queueName, 100, reference)
     onComplete?.()
 
     return reference
@@ -192,8 +189,8 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
             ? `${i === 0 ? `Original - ` : ``}${source.quality}`
             : `${i === 0 ? `Original` : `<add source>`}`
           const queueName = SwarmVideo.getSourceName(source.quality)
-          const queue = state.queue.find(q => q.name === queueName)
-          const finished = !!queue?.reference
+          const thisQueue = queue.find(q => q.name === queueName)
+          const finished = !!thisQueue?.reference
           return (
             <TabContent tabKey={`quality-${i + 1}`} title={title} key={i}>
               {currentQueue?.completion && !finished && (
@@ -206,11 +203,11 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
               )}
               <FileUploadFlow
                 ref={source.ref}
-                reference={queue?.reference}
+                reference={thisQueue?.reference}
                 dragLabel={"Drag your video here"}
                 acceptTypes={["video", "audio"]}
                 sizeLimit={100}
-                canProcessFile={queue?.name === queueName}
+                canProcessFile={thisQueue?.name === queueName}
                 uploadHandler={buffer => uploadSource(buffer, i)}
                 onFileSelected={file => handleFileSelected(file, i)}
                 onEncodingComplete={

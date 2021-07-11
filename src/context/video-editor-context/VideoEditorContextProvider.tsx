@@ -2,21 +2,21 @@ import React, { useReducer } from "react"
 import logger from "use-reducer-logger"
 
 import { VideoEditorContext } from "."
-import { reducer } from "./videoEditorReducer"
+import videoEditorReducer from "./reducer"
 import VideoEditorCache from "./VideoEditorCache"
-import { THUMBNAIL_QUEUE_NAME } from "../ThumbnailUpload"
 import SwarmVideo from "@classes/SwarmVideo"
 import { Video } from "@classes/SwarmVideo/types"
-import useSelector from "@state/useSelector"
 import { Profile } from "@classes/SwarmProfile/types"
+import { THUMBNAIL_QUEUE_NAME } from "@components/media/VideoEditor/ThumbnailUpload"
+import useSelector from "@state/useSelector"
 
-type VideoEditorContextWrapperProps = {
+type VideoEditorContextProviderProps = {
   children: React.ReactNode
   reference: string | undefined
   videoData?: Video
 }
 
-export const VideoEditorContextWrapper: React.FC<VideoEditorContextWrapperProps> = ({
+const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
   children,
   reference,
   videoData
@@ -37,9 +37,13 @@ export const VideoEditorContextWrapper: React.FC<VideoEditorContextWrapperProps>
     cover: profile.cover,
   }
 
-  let initialState = VideoEditorCache.hasCache && !reference
+  let initialState = VideoEditorCache.hasCache
     ? VideoEditorCache.loadState(beeClient, indexClient)
     : null
+
+  if (initialState && initialState.reference !== reference) {
+    initialState = null
+  }
 
   if (!initialState) {
     const videoHandler = new SwarmVideo(reference, {
@@ -68,7 +72,7 @@ export const VideoEditorContextWrapper: React.FC<VideoEditorContextWrapperProps>
 
   initialState.videoHandler.owner = videoProfileData
 
-  const stateReducer = process.env.NODE_ENV === "development" ? logger(reducer) : reducer
+  const stateReducer = process.env.NODE_ENV === "development" ? logger(videoEditorReducer) : videoEditorReducer
   const store = useReducer(stateReducer, initialState)
 
   return (
@@ -78,4 +82,4 @@ export const VideoEditorContextWrapper: React.FC<VideoEditorContextWrapperProps>
   )
 }
 
-export default VideoEditorContextWrapper
+export default VideoEditorContextProvider

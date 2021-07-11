@@ -1,10 +1,10 @@
 import React, { useRef } from "react"
 
-import { useVideoEditorState } from "../context"
-import ThumbnailUpload, { ThumbnailUploadHandlers } from "../ThumbnailUpload"
-import VideoSourcesUpload, { VideoSourcesUploadHandlers } from "../VideoSourcesUpload"
-import PinContentField from "../PinContentField"
 import MarkdownEditor from "@common/MarkdownEditor"
+import ThumbnailUpload, { ThumbnailUploadHandlers } from "@components/media/VideoEditor/ThumbnailUpload"
+import VideoSourcesUpload, { VideoSourcesUploadHandlers } from "@components/media/VideoEditor/VideoSourcesUpload"
+import PinContentField from "@components/media/VideoEditor/PinContentField"
+import { useVideoEditorInfoActions, useVideoEditorState } from "@context/video-editor-context/hooks"
 
 type VideoPropertiesProps = {
   isSubmitting?: boolean
@@ -13,9 +13,8 @@ type VideoPropertiesProps = {
 const VideoProperties: React.FC<VideoPropertiesProps> = ({
   isSubmitting
 }) => {
-  const { state, actions } = useVideoEditorState()
-  const { videoHandler } = state
-  const { updatePinContent, updateTitle, updateDescription } = actions
+  const [{ videoHandler }] = useVideoEditorState()
+  const { updatePinContent, updateTitle, updateDescription } = useVideoEditorInfoActions()
 
   const videoFlow = useRef<VideoSourcesUploadHandlers>(null)
   const thumbFlow = useRef<ThumbnailUploadHandlers>(null)

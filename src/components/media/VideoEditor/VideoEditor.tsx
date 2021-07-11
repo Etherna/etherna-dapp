@@ -4,20 +4,18 @@ import { Redirect } from "react-router"
 import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 import { ReactComponent as TrashIcon } from "@svg/icons/trash.svg"
 
-import { useVideoEditorState } from "./context"
 import VideoCompletion from "./VideoCompletion"
 import VideoProperties from "./VideoProperties"
 import VideoDeleteModal from "./VideoDeleteModal"
 import Button from "@common/Button"
+import { useVideoEditorBaseActions, useVideoEditorState } from "@context/video-editor-context/hooks"
 import Routes from "@routes"
 import useSelector from "@state/useSelector"
 import { useErrorMessage } from "@state/hooks/ui"
 
 const VideoEditor = () => {
   const { address } = useSelector(state => state.user)
-  const { state, actions } = useVideoEditorState()
-  const { reference, queue, videoHandler } = state
-  const { resetState } = actions
+  const [{ reference, queue, videoHandler }] = useVideoEditorState()
   const hasQueuedProcesses = queue.filter(q => !q.reference).length > 0
   const hasOriginalVideo = videoHandler.originalQuality && videoHandler.sources.length > 0
 
@@ -26,7 +24,9 @@ const VideoEditor = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [saved, setSaved] = useState(false)
   const [videoLink, setVideoLink] = useState<string>()
+
   const { showError } = useErrorMessage()
+  const { resetState } = useVideoEditorBaseActions()
 
   const submitVideo = async () => {
     const { duration, originalQuality } = videoHandler.video

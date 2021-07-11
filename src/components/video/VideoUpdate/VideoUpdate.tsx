@@ -2,15 +2,14 @@ import React, { useEffect } from "react"
 import { Redirect } from "react-router-dom"
 
 import "./video-update.scss"
-
 import { ReactComponent as NotFoundImage } from "@svg/backgrounds/404-illustration.svg"
 
-import { Video } from "@classes/SwarmVideo/types"
-import useSelector from "@state/useSelector"
-import Routes from "@routes"
-import VideoEditorContextWrapper from "@components/media/VideoEditor/context/ContextWrapper"
 import VideoEditor from "@components/media/VideoEditor"
+import { Video } from "@classes/SwarmVideo/types"
+import { VideoEditorContextProvider } from "@context/video-editor-context"
 import useSwarmVideo from "@hooks/useSwarmVideo"
+import Routes from "@routes"
+import useSelector from "@state/useSelector"
 
 type VideoUpdateProps = {
   hash: string
@@ -54,9 +53,9 @@ const VideoUpdate: React.FC<VideoUpdateProps> = ({ hash, routeState }) => {
         </div>
       )}
       {videoOnIndex && (
-        <VideoEditorContextWrapper reference={hash} videoData={video}>
+        <VideoEditorContextProvider reference={hash} videoData={video}>
           <VideoEditor />
-        </VideoEditorContextWrapper>
+        </VideoEditorContextProvider>
       )}
     </div>
   )

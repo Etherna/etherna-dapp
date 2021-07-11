@@ -5,6 +5,7 @@ import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 import Alert from "@common/Alert"
 import Toggle from "@common/Toggle"
 import useSelector from "@state/useSelector"
+import { urlOrigin } from "@utils/urls"
 
 type PinContentFieldProps = {
   pinningEnabled?: boolean
@@ -12,7 +13,7 @@ type PinContentFieldProps = {
 }
 
 const PinContentField = ({ pinningEnabled, onChange }: PinContentFieldProps) => {
-  const { beeClient, gatewayHost } = useSelector(state => state.env)
+  const { beeClient, gatewayUrl } = useSelector(state => state.env)
 
   const [pinningAvailable, setPinningAvailable] = useState<boolean | null | undefined>(undefined)
   const [pinContent, setPinContent] = useState(pinningEnabled)
@@ -55,7 +56,7 @@ const PinContentField = ({ pinningEnabled, onChange }: PinContentFieldProps) => 
       )}
       {pinningAvailable === false && (
         <Alert title="Pinning unavailable" type="warning">
-          Pinning is disabled on the current gateway <em>{gatewayHost}</em>.
+          Pinning is disabled on the current gateway <em>{urlOrigin(gatewayUrl)}</em>.
         </Alert>
       )}
       {errorMessage && (

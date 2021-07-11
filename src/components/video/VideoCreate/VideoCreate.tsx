@@ -3,8 +3,8 @@ import React from "react"
 import "./video-create.scss"
 
 import VideoEditor from "@components/media/VideoEditor"
-import VideoEditorContextWrapper from "@components/media/VideoEditor/context/ContextWrapper"
 import Avatar from "@components/user/Avatar"
+import { VideoEditorContextProvider } from "@context/video-editor-context"
 import useSelector from "@state/useSelector"
 
 const Uploader = () => {
@@ -23,9 +23,9 @@ const Uploader = () => {
         </div>
       </div>
 
-      <VideoEditorContextWrapper reference={undefined}>
+      <VideoEditorContextProvider reference={undefined}>
         <VideoEditor />
-      </VideoEditorContextWrapper>
+      </VideoEditorContextProvider>
     </div>
   )
 }

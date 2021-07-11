@@ -2,12 +2,11 @@ import React from "react"
 import classnames from "classnames"
 
 import "./video-completion.scss"
-
-import { useVideoEditorState } from "../context"
+import { useVideoEditorState } from "@context/video-editor-context/hooks"
 
 const VideoCompletion = () => {
-  const { state } = useVideoEditorState()
-  const { videoHandler: { video } } = state
+  const [{ videoHandler }] = useVideoEditorState()
+  const { video } = videoHandler
 
   return (
     <ul className="upload-steps">
