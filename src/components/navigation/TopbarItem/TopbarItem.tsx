@@ -4,7 +4,7 @@ import classnames from "classnames"
 
 import "./topbar-item.scss"
 
-type TopbarItemProps = {
+export type TopbarItemProps = {
   title?: string
   to?: string
   target?: "_blank"

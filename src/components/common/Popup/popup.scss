@@ -77,6 +77,7 @@
   @apply p-4;
   @apply rounded-md;
   @apply min-w-[240px] max-w-sm;
+  @apply shadow-xl;
 }
 
 .popup-arrow {
@@ -108,7 +109,7 @@
 .popup-arrow::before,
 .popup-content {
   @apply border;
-  @apply border-gray-100;
+  @apply border-gray-200;
   @apply dark:border-gray-700;
 }
 

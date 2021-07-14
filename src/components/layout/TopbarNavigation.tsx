@@ -2,8 +2,10 @@ import React from "react"
 
 import { ReactComponent as Logo } from "@svg/logo.svg"
 import { ReactComponent as LogoCompact } from "@svg/logo-compact.svg"
+import { ReactComponent as PlusIcon } from "@svg/icons/plus.svg"
 import { ReactComponent as SearchIcon } from "@svg/icons/navigation/search.svg"
 import { ReactComponent as MenuIcon } from "@svg/icons/navigation/menu.svg"
+import { ReactComponent as UploadIcon } from "@svg/icons/upload-icon.svg"
 
 import Topbar from "@components/navigation/Topbar"
 import TopbarLogo from "@components/navigation/TopbarLogo"
@@ -14,6 +16,8 @@ import UserMenu from "@components/user/UserMenu"
 import { LayoutReducerTypes } from "@context/layout-context"
 import { useLayoutState } from "@context/layout-context/hooks"
 import useSelector from "@state/useSelector"
+import TopbarPopupItem from "@components/navigation/TopbarPopupItem"
+import routes from "@routes"
 
 const TopbarNavigation: React.FC = () => {
   const { isSignedIn } = useSelector(state => state.user)
@@ -37,10 +41,19 @@ const TopbarNavigation: React.FC = () => {
           onClick={toggleSidebar}
         />
       )}
+
       <TopbarLogo
         logo={<Logo />}
         logoCompact={<LogoCompact />}
       />
+
+      <TopbarPopupItem
+        toggle={<PlusIcon />}
+      >
+        <TopbarItem to={routes.getVideoUploadLink()} iconSvg={<UploadIcon />}>
+          Upload a video
+        </TopbarItem>
+      </TopbarPopupItem>
       <TopbarItem
         iconSvg={<SearchIcon />}
       />
