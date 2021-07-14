@@ -3,12 +3,12 @@ import React from "react"
 import { ReactComponent as SignoutIcon } from "@svg/icons/signout-icon.svg"
 import { ReactComponent as MoreIcon } from "@svg/icons/more-icon.svg"
 
-import SigninButton from "./SigninButton"
 import SharedMenuItems from "./SharedMenuItems"
 import SignedInMenuItems from "./SignedInMenuItems"
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from "@common/Dropdown"
 import Placeholder from "@common/Placeholder"
 import Avatar from "@components/user/Avatar"
+import SigninButton from "@components/user/SigninButton/SigninButton"
 import useSelector from "@state/useSelector"
 import useSignout from "@state/hooks/user/useSignout"
 
