@@ -21,8 +21,11 @@
   }
 
   .popup-content {
-    @apply bg-white/80 dark:bg-gray-800/80;
-    @apply backdrop-blur;
+    @apply bg-white dark:bg-gray-800;
+    @supports (backdrop-filter: blur(4px)) {
+      @apply bg-white/80 dark:bg-gray-800/80;
+      @apply backdrop-blur;
+    }
 
     .topbar-item {
       @apply mx-0 px-0;
@@ -40,8 +43,10 @@
   .popup-arrow {
     &::before,
     &::after {
-      @apply bg-white/0 dark:bg-gray-800/0;
-      @apply backdrop-blur-sm;
+      @supports (backdrop-filter: blur(4px)) {
+        @apply bg-white/50 dark:bg-gray-800/50;
+        @apply backdrop-blur-sm;
+      }
     }
   }
 }
