@@ -1,11 +1,12 @@
 .upload-step {
   @apply flex items-center text-gray-600;
-  @apply py-2 mb-4;
+  @apply text-sm font-medium;
+  @apply py-2;
   @apply dark:text-gray-400;
 
   &::before {
     content: "";
-    @apply mr-2 w-6 h-6 border border-gray-300 rounded-full;
+    @apply mr-2 w-5 h-5 border border-gray-300 rounded-full;
     @apply dark:border-gray-600;
   }
 

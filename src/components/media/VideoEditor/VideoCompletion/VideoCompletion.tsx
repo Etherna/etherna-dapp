@@ -2,6 +2,7 @@ import React from "react"
 import classnames from "classnames"
 
 import "./video-completion.scss"
+
 import { useVideoEditorState } from "@context/video-editor-context/hooks"
 
 const VideoCompletion = () => {

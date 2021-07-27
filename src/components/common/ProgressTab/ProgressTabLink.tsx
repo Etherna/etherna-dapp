@@ -3,6 +3,8 @@ import classNames from "classnames"
 
 export type ProgressTabLinkProps = {
   tabKey: string
+  title?: string
+  text?: string
   active?: boolean
   progressList?: Array<{
     progress: number | undefined | null
@@ -16,6 +18,8 @@ const ProgressTabLink: React.FC<ProgressTabLinkProps> = ({
   children,
   iconSvg,
   tabKey,
+  title,
+  text,
   active = false,
   progressList,
   onSelect
@@ -31,9 +35,12 @@ const ProgressTabLink: React.FC<ProgressTabLinkProps> = ({
             {iconSvg}
           </div>
         )}
-        {children}
+        <span className="progresstab-link-title">{children ?? title}</span>
+        {text && (
+          <p className="progresstab-link-description">{text}</p>
+        )}
       </span>
-      {progressList && (
+      {progressList && progressList.length > 0 && (
         <span className="progresstab-link-progress">
           {progressList.map(({ progress, completed }, i) => (
             <div

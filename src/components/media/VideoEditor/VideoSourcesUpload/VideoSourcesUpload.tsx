@@ -176,7 +176,6 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
 
   return (
     <div>
-      <label htmlFor="video">Video sources</label>
       <Tab
         defaultKey={`quality-1`}
         canAddRemoveTabs={true}

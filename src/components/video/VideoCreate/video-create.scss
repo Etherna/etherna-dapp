@@ -3,14 +3,8 @@
 .uploader {
   @apply m-6 max-w-screen-xl;
 
-  @screen sm {
-    .col {
-      @apply pr-6;
-    }
-    .step-col {
-      @apply pl-6 border-l border-gray-300;
-      @apply dark:border-gray-600;
-    }
+  .step-col {
+    @apply pt-12 lg:pt-0 lg:pl-8;
   }
 }
 

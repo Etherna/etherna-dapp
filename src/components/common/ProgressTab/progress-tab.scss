@@ -1,16 +1,23 @@
 .progresstab {
   @apply flex flex-col;
-  @apply space-y-3;
+  @apply space-y-8;
   @apply md:flex-row;
-  @apply md:space-y-0 md:space-x-3;
+  @apply md:space-y-0 md:space-x-6;
   @apply xl:space-x-8;
 }
 
 .progresstab-nav {
+  @apply flex-1;
   @apply flex;
   @apply space-x-3;
-  @apply md:flex-col;
+  @apply overflow-x-auto;
+  @apply md:flex-col md:flex-initial;
   @apply md:space-x-0 md:space-y-3;
+  @apply md:overflow-x-visible;
+
+  &:-webkit-scrollbar {
+    @apply hidden;
+  }
 }
 
 .progresstab-content-wrapper {
@@ -24,7 +31,7 @@
   @apply text-gray-800 dark:text-gray-300;
   @apply text-sm font-medium;
   @apply p-4;
-  @apply md:w-40;
+  @apply md:w-44;
 
   &.active {
     @apply bg-blue-400;
@@ -33,11 +40,23 @@
 }
 
 .progresstab-link-text {
-  @apply flex items-center;
+  @apply flex items-center flex-wrap;
+}
+
+.progresstab-link-description {
+  @apply text-xs italic font-normal;
+  @apply text-left;
+  @apply w-full;
+  @apply text-gray-500/75;
+  @apply mt-1.5;
+
+  .progresstab-link.active & {
+    @apply text-gray-50/75;
+  }
 }
 
 .progresstab-link-icon {
-  @apply mr-2;
+  @apply mr-1.5;
   @apply h-[1.25em];
 
   svg {

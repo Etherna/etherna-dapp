@@ -3,15 +3,21 @@ import { Redirect } from "react-router"
 
 import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 import { ReactComponent as TrashIcon } from "@svg/icons/trash.svg"
+import { ReactComponent as NotesIcon } from "@svg/icons/notes.svg"
+import { ReactComponent as MovieIcon } from "@svg/icons/movie.svg"
+import { ReactComponent as EyeIcon } from "@svg/icons/eye.svg"
 
+import VideoDetails from "./VideoDetails"
+import VideoSources from "./VideoSources"
+import VideoExtra from "./VideoExtra"
 import VideoCompletion from "./VideoCompletion"
-import VideoProperties from "./VideoProperties"
 import VideoDeleteModal from "./VideoDeleteModal"
 import Button from "@common/Button"
 import { useVideoEditorBaseActions, useVideoEditorState } from "@context/video-editor-context/hooks"
 import Routes from "@routes"
 import useSelector from "@state/useSelector"
 import { useErrorMessage } from "@state/hooks/ui"
+import ProgressTab, { ProgressTabContent, ProgressTabLink } from "@common/ProgressTab"
 
 const VideoEditor = () => {
   const { address } = useSelector(state => state.user)
@@ -94,7 +100,7 @@ const VideoEditor = () => {
             isDeleting
           }
         >
-          {reference ? "Update video" : "Add video"}
+          {reference ? "Update video" : "Publish video"}
         </Button>
       )}
 
@@ -120,8 +126,38 @@ const VideoEditor = () => {
     <>
       <div className="video-editor">
         <div className="row">
-          <div className="col sm:w-1/2 lg:w-2/3">
-            <VideoProperties isSubmitting={isSubmitting} />
+          <div className="col lg:w-2/3 xl:w-3/4">
+            <ProgressTab defaultKey="details">
+              <ProgressTabLink
+                tabKey="details"
+                title="Details"
+                iconSvg={<NotesIcon />}
+                text="Title, description, ..."
+              />
+              <ProgressTabLink
+                tabKey="sources"
+                title="Sources"
+                iconSvg={<MovieIcon />}
+                progressList={queue.map(q => ({ progress: q.completion, completed: !!q.reference }))}
+              />
+              <ProgressTabLink
+                tabKey="extra"
+                title="Extra"
+                iconSvg={<EyeIcon />}
+                text="Audience, visibility, ..."
+              />
+
+              <ProgressTabContent tabKey="details">
+                <VideoDetails isSubmitting={isSubmitting} />
+              </ProgressTabContent>
+              <ProgressTabContent tabKey="sources">
+                <VideoSources isSubmitting={isSubmitting} />
+              </ProgressTabContent>
+              <ProgressTabContent tabKey="extra">
+                <VideoExtra isSubmitting={isSubmitting} />
+              </ProgressTabContent>
+            </ProgressTab>
+
             {reference && (
               <div className="flex items-center justify-between">
                 <SaveButton />
@@ -129,16 +165,19 @@ const VideoEditor = () => {
               </div>
             )}
           </div>
-          <div className="col step-col sm:w-1/2 lg:w-1/3">
+          <div className="col step-col lg:w-1/3 xl:w-1/4">
             {!reference && (
               <>
                 <VideoCompletion />
-                <SaveButton />
+                <div className="mt-8">
+                  <SaveButton />
+                </div>
               </>
             )}
           </div>
         </div>
       </div>
+
       {reference && (
         <VideoDeleteModal
           show={showDeleteModal}
