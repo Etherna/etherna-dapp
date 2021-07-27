@@ -1,0 +1,100 @@
+.progresstab {
+  @apply flex flex-col;
+  @apply space-y-3;
+  @apply md:flex-row;
+  @apply md:space-y-0 md:space-x-3;
+  @apply xl:space-x-8;
+}
+
+.progresstab-nav {
+  @apply flex;
+  @apply space-x-3;
+  @apply md:flex-col;
+  @apply md:space-x-0 md:space-y-3;
+}
+
+.progresstab-content-wrapper {
+  @apply flex-grow;
+}
+
+.progresstab-link {
+  @apply flex flex-col justify-center;
+  @apply h-16 rounded;
+  @apply bg-gray-200/50 dark:bg-gray-700/50;
+  @apply text-gray-800 dark:text-gray-300;
+  @apply text-sm font-medium;
+  @apply p-4;
+  @apply md:w-40;
+
+  &.active {
+    @apply bg-blue-400;
+    @apply text-gray-50;
+  }
+}
+
+.progresstab-link-text {
+  @apply flex items-center;
+}
+
+.progresstab-link-icon {
+  @apply mr-2;
+  @apply h-[1.25em];
+
+  svg {
+    @apply h-full;
+  }
+}
+
+.progresstab-link-progress {
+  @apply flex items-center;
+  @apply space-x-1;
+  @apply w-full;
+  @apply mt-2;
+}
+
+.progresstab-link-progress-bar {
+  @apply relative;
+  @apply flex-shrink;
+  @apply w-4 h-1.5 rounded-sm;
+  @apply overflow-hidden;
+  @apply bg-gray-500/25;
+  @apply duration-300;
+  transition-property: width, flex-grow;
+
+  &.active {
+    @apply flex-grow;
+  }
+
+  &.completed {
+    @apply bg-blue-400;
+
+    .progresstab-link.active & {
+      @apply bg-gray-50;
+    }
+  }
+
+  .progresstab-link.active & {
+    @apply bg-gray-50/25;
+  }
+}
+
+.progresstab-link-progress-value {
+  @apply absolute;
+  @apply left-0 inset-y-0 rounded-sm;
+  @apply bg-blue-400;
+  @apply duration-100;
+  @apply motion-safe:animate-pulse;
+  transition-property: width;
+
+  .progresstab-link.active & {
+    @apply bg-gray-50;
+  }
+}
+
+.progresstab-content {
+  @apply hidden;
+
+  &.active {
+    @apply block;
+  }
+}
