@@ -6,6 +6,7 @@ import Alert from "@common/Alert"
 import Toggle from "@common/Toggle"
 import useSelector from "@state/useSelector"
 import { urlOrigin } from "@utils/urls"
+import Label from "@common/Label"
 
 type PinContentFieldProps = {
   pinningEnabled?: boolean
@@ -45,12 +46,12 @@ const PinContentField = ({ pinningEnabled, onChange }: PinContentFieldProps) => 
 
   return (
     <div className="form-group">
-      <label
+      <Label
         title="Pinning a video will make sure the node will always have a copy of the file"
         htmlFor="pinContent"
       >
         Pin Content
-      </label>
+      </Label>
       {pinningAvailable === undefined && (
         <Spinner width="20" />
       )}

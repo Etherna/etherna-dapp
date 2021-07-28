@@ -1,0 +1,66 @@
+import classNames from "classnames"
+import React from "react"
+
+import "./text-field.scss"
+
+import Label from "@common/Label"
+
+type TextFieldProps = {
+  id?: string
+  value: string
+  type?: "text" | "password" | "email" | "url" | "date" | "time" | "tel"
+  placeholder?: string
+  label?: string
+  disabled?: boolean
+  small?: boolean
+  charactersLimit?: number
+  onChange?(value: string): void
+}
+
+const TextField: React.FC<TextFieldProps> = ({
+  id,
+  value,
+  type = "text",
+  placeholder,
+  label,
+  charactersLimit,
+  disabled,
+  small,
+  onChange
+}) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value
+    if (charactersLimit) {
+      value = value.substr(0, charactersLimit)
+    }
+    onChange?.(value)
+  }
+
+  return (
+    <>
+      {label && (
+        <Label htmlFor={id}>{label}</Label>
+      )}
+      <div className="text-field-wrapper">
+        <input
+          id={id}
+          className={classNames("text-field", { small, charlimit: !!charactersLimit })}
+          type={type}
+          placeholder={placeholder}
+          disabled={disabled}
+          value={value}
+          onChange={handleChange}
+        />
+        {charactersLimit && (
+          <span className={classNames("text-field-char-counter", {
+            "limit-reached": value.length === charactersLimit
+          })}>
+            {value.length}/{charactersLimit}
+          </span>
+        )}
+      </div>
+    </>
+  )
+}
+
+export default TextField

@@ -4,6 +4,7 @@ import FileDrag from "../FileDrag"
 import FilePreview from "../FilePreview"
 import FileUpload from "../FileUpload"
 import VideoEncoder from "../VideoEncoder"
+import Label from "@common/Label"
 import useSelector from "@state/useSelector"
 import { useErrorMessage } from "@state/hooks/ui"
 import { fileToBuffer } from "@utils/buffer"
@@ -131,7 +132,7 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
 
   return (
     <>
-      <label htmlFor="video">{label}</label>
+      <Label htmlFor="video">{label}</Label>
       {status === "select" && (
         <FileDrag
           id={`${label}-input`}

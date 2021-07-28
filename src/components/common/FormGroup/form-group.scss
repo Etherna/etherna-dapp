@@ -1,0 +1,5 @@
+.form-group {
+  & + .form-group {
+    @apply mt-6;
+  }
+}

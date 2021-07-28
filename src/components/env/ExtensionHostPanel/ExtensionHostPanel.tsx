@@ -9,6 +9,8 @@ import { ReactComponent as PlusIcon } from "@svg/icons/plus.svg"
 import { ExtensionHost } from "./types"
 import ExtensionHostsList from "../ExtensionHostsList"
 import Button from "@common/Button"
+import Label from "@common/Label"
+import TextField from "@common/TextField"
 import useLocalStorage from "@hooks/useLocalStorage"
 import { useErrorMessage } from "@state/hooks/ui"
 import { urlHostname } from "@utils/urls"
@@ -147,17 +149,17 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
 
         <form className="extension-host-panel-fields">
           <div className="form-group">
-            <label htmlFor="name">Name</label>
+            <Label htmlFor="name">Name</Label>
             {isEditing ? (
-              <input id="name" type="text" value={name} onChange={e => setName(e.target.value)} />
+              <TextField id="name" type="text" value={name} onChange={setName} />
             ) : (
               <div className="extension-host-panel-value">{name}</div>
             )}
           </div>
           <div className="form-group">
-            <label htmlFor="url">Url</label>
+            <Label htmlFor="url">Url</Label>
             {isEditing ? (
-              <input id="url" type="text" value={url} onChange={e => setUrl(e.target.value)} />
+              <TextField id="url" type="text" value={url} onChange={setUrl} />
             ) : (
               <div className="extension-host-panel-value">{url}</div>
             )}

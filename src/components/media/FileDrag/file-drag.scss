@@ -1,8 +1,8 @@
 /*! purgecss start ignore */
 
 .drag-input {
-  @apply p-10 border-2 border-gray-400 border-dashed bg-gray-200 normal-case rounded;
-  @apply dark:bg-gray-800 dark:border-gray-600;
+  @apply block p-10 rounded;
+  @apply bg-gray-900/5 dark:bg-gray-100/5;
 
   [type="file"] {
     @apply hidden;
