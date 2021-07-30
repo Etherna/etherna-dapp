@@ -1,0 +1,16 @@
+.image-source-preview {
+  @apply flex flex-col;
+  @apply space-y-4;
+  @apply md:flex-row;
+  @apply md:space-y-0 md:space-x-4;
+}
+
+.image-source-preview-img {
+  @apply w-full h-auto;
+  @apply max-w-xxs;
+}
+
+.image-source-preview-stats {
+  @apply md:flex-grow;
+  @apply overflow-hidden;
+}

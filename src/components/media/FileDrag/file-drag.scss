@@ -1,31 +1,70 @@
-/*! purgecss start ignore */
-
 .drag-input {
-  @apply block p-10 rounded;
-  @apply bg-gray-900/5 dark:bg-gray-100/5;
+  @apply block;
 
   [type="file"] {
     @apply hidden;
   }
 
   &.drag-over {
-    @apply border-blue-300;
+    .drag-select {
+      @apply opacity-20;
+    }
+
+    .drag-icon {
+      @apply text-blue-400 dark:text-blue-300;
+    }
   }
 
   .drag-content {
     @apply flex flex-col items-center;
+    @apply space-y-3;
+  }
 
-    .drag-info {
-      @apply text-gray-600 mt-4;
-      @apply dark:text-gray-400;
-    }
-    .btn {
-      @apply mt-4;
-    }
-    svg {
-      @apply w-12 h-12;
-    }
+  .drag-icon {
+    @apply w-12 h-12;
+    @apply transition-colors duration-200;
+    @apply text-gray-500 dark:text-gray-300;
+  }
+
+  .drag-info {
+    @apply font-medium;
+    @apply text-gray-600 dark:text-gray-400;
+  }
+
+  .drag-size {
+    @apply text-xs font-medium;
+    @apply text-gray-600 dark:text-gray-400;
+    @apply mt-2;
+  }
+
+  .drag-select {
+    @apply transition-colors duration-200;
   }
 }
 
-/*! purgecss end ignore */
+.file-drag-processing {}
+
+.file-drag-processing-header {
+  @apply flex items-start;
+}
+
+.file-drag-processing-cancel {
+  @apply p-0 ml-auto;
+}
+
+.file-drag-processing-title {
+  @apply text-gray-700 dark:text-gray-400;
+}
+
+.file-drag-processing-action-list {
+  @apply space-y-5;
+  @apply mt-4;
+}
+
+.file-drag-processing-action-description {
+  @apply text-xs font-normal;
+  @apply text-gray-500 dark:text-gray-400;
+  @apply mt-1.5;
+  @apply max-w-md;
+}
+

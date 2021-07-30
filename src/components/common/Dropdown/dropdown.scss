@@ -33,6 +33,7 @@
   }
   &.active:not(.inactive) {
     @apply bg-gray-100 dark:bg-gray-700;
+    @apply text-gray-700 dark:text-gray-100;
   }
 
   &-icon {

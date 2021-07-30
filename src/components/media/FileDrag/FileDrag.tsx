@@ -1,12 +1,12 @@
-import React, { useState } from "react"
+import React, { useMemo, useRef, useState } from "react"
 import classnames from "classnames"
 
 import "./file-drag.scss"
-import { ReactComponent as UploadIcon } from "@svg/icons/upload-icon.svg"
+import { ReactComponent as DragIcon } from "@svg/icons/drag.svg"
 
-import Alert from "@common/Alert"
 import { useErrorMessage } from "@state/hooks/ui"
 import { isMimeCompatible } from "@utils/mimeTypes"
+import Button from "@common/Button"
 
 type FileDragProps = {
   id: string
@@ -14,7 +14,9 @@ type FileDragProps = {
   mimeTypes?: string
   disabled?: boolean
   uploadLimit?: number
-  onSelectFile: (file: File | null | undefined) => void
+  canAvoidEncoding?(contentType: string): boolean
+  canEncodeFile?(contentType: string): boolean
+  onSelectFile(file: File, encode: boolean): void
 }
 
 const FileDrag: React.FC<FileDragProps> = ({
@@ -23,11 +25,22 @@ const FileDrag: React.FC<FileDragProps> = ({
   mimeTypes = "*",
   disabled,
   uploadLimit,
-  onSelectFile
+  canAvoidEncoding,
+  canEncodeFile,
+  onSelectFile,
 }) => {
+  const [file, setFile] = useState<File>()
   const [isDragOver, setIsDragOver] = useState(false)
-  const [showSizeLimitError, setShowSizeLimitError] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+
   const { showError } = useErrorMessage()
+
+  const [isBrowserCompatible, isEncodable] = useMemo(() => {
+    return [
+      file && (canAvoidEncoding?.(file.type) ?? true),
+      file && (canEncodeFile?.(file.type) ?? false),
+    ]
+  }, [file, canEncodeFile, canAvoidEncoding])
 
   const updateDragOver = (hasEntered: boolean) => {
     if ((hasEntered && !isDragOver) || (!hasEntered && isDragOver)) {
@@ -76,60 +89,132 @@ const FileDrag: React.FC<FileDragProps> = ({
       }
 
       if (!uploadLimit || file.size <= uploadLimit * 1024 * 1024) {
-        onSelectFile(file)
+        setFile(file)
       } else {
-        setShowSizeLimitError(true)
+        showError(
+          "Size error",
+          `Your file is too large. The maximum upload size is currently ${uploadLimit}MB.`
+        )
       }
     } else {
-      onSelectFile(null)
+      resetInput()
+      console.warn("Error. No file selected from input.")
+    }
+  }
+
+  const handleFileProcessing = (encode: boolean) => {
+    if (file) {
+      onSelectFile(file, encode)
+    } else {
+      console.error("No file selected. Cannot continue.")
+    }
+  }
+
+  const handleCancel = () => {
+    resetInput()
+    setFile(undefined)
+  }
+
+  const resetInput = () => {
+    if (inputRef.current) {
+      inputRef.current.value = ""
     }
   }
 
   return (
     <>
-      {showSizeLimitError && (
-        <div className="mb-2">
-          <Alert
-            title="File size exceeded"
-            type="warning"
-            onClose={() => setShowSizeLimitError(false)}
-          >
-            Your file is too large. The maximum upload size is currently {uploadLimit}MB.
-          </Alert>
-        </div>
-      )}
-      <div
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        role="button"
-        tabIndex={0}
-      >
-        <label
-          htmlFor={id}
-          className={classnames("drag-input", {
-            "drag-over": isDragOver,
-          })}
-        >
-          <input
-            type="file"
-            id={id}
-            accept={mimeTypes}
-            onChange={e => handleFileSelect(e.target.files)}
-            disabled={disabled}
-          />
-          <div className="drag-content">
-            <UploadIcon />
-            <span className="drag-info text-lg">{label || "Drag here"}</span>
-            <span className="drag-info text-sm font-normal">or</span>
-            <div className="btn btn-outline">Select</div>
-            {uploadLimit && (
-              <small className="bold">{uploadLimit}MB</small>
+      {file ? (
+        <div className="file-drag-processing">
+          <div className="file-drag-processing-header">
+            <p className="file-drag-processing-title">
+              <span>You selected <span className="text-black dark:text-white">{file.name}</span>. </span>
+              {isEncodable ? (
+                "Choose what you want to do with the file."
+              ) : (
+                "Are you sure you want to upload this file?"
+              )}
+            </p>
+            <Button
+              className="file-drag-processing-cancel"
+              aspect="link-secondary"
+              action={handleCancel}
+              disabled={disabled}
+            >
+              Cancel
+            </Button>
+          </div>
+          <div className="file-drag-processing-action-list">
+            {isBrowserCompatible && (
+              <div className="file-drag-processing-action">
+                <Button action={() => handleFileProcessing(!isBrowserCompatible)} disabled={disabled}>
+                  {isEncodable ? (
+                    "Upload as is"
+                  ) : (
+                    "Yes, upload"
+                  )}
+                </Button>
+                {isEncodable && (
+                  <p className="file-drag-processing-action-description">
+                    Upload this source as is without any encoding (make sure is optimized for the browser).
+                  </p>
+                )}
+              </div>
+            )}
+
+            {isEncodable && (
+              <div className="file-drag-processing-action">
+                <Button action={() => handleFileProcessing(true)} disabled={disabled}>
+                  Encode and upload
+                </Button>
+                <p className="file-drag-processing-action-description">
+                  Encoding will ensure the source is optimized and compitible with most browsers.
+                  It might take several minutes to encode a high resolution video.
+                </p>
+              </div>
             )}
           </div>
-        </label>
-      </div>
+        </div>
+      ) : (
+        <div
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          role="button"
+          tabIndex={0}
+        >
+          <label
+            htmlFor={id}
+            className={classnames("drag-input", {
+              "drag-over": isDragOver,
+            })}
+          >
+            <input
+              type="file"
+              id={id}
+              accept={mimeTypes}
+              onChange={e => handleFileSelect(e.target.files)}
+              disabled={disabled}
+              ref={inputRef}
+            />
+            <div className="drag-content">
+              <DragIcon className="drag-icon" />
+
+              <span className="drag-info">
+                <span className="text-lg">{label || "Drag here"}</span>
+              </span>
+              <span className="drag-info drag-select">
+                <span className="text-sm font-normal">or</span>
+              </span>
+              <div className="btn btn-primary-light drag-select">Select</div>
+
+              {uploadLimit && (
+                <small className="drag-size drag-select">{uploadLimit}MB</small>
+              )}
+            </div>
+          </label>
+        </div>
+      )}
     </>
   )
 }

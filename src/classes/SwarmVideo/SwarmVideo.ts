@@ -276,6 +276,13 @@ export default class SwarmVideo {
 
     this.video.sources.push(videoSource)
 
+    if (SwarmVideo.getSourceQuality(quality) > SwarmVideo.getSourceQuality(this.video.originalQuality)) {
+      this.video.originalQuality = quality
+      this.video.source = videoSource.source
+    }
+
+    this.sortSources()
+
     return reference
   }
 
@@ -311,9 +318,16 @@ export default class SwarmVideo {
     this.video.thumbnail = undefined
   }
 
-  static getSourceName(quality: string | number | null) {
-    const name = parseInt(`${quality}`).toString().replace(/p?$/, "p")
+  static getSourceName(quality: string | number | null, key?: string) {
+    const name = quality
+      ? parseInt(`${quality}`).toString().replace(/p?$/, "p")
+      : key ?? "0p"
     return name
+  }
+
+  static getSourceQuality(sourceName: string | null | undefined) {
+    const quality = +(sourceName ?? "0").replace(/p?$/, "")
+    return quality
   }
 
 
@@ -329,6 +343,13 @@ export default class SwarmVideo {
       sources: []
     }
     return video
+  }
+
+  sortSources() {
+    const sources = this.video.sources.sort((a, b) => {
+      return SwarmVideo.getSourceQuality(b.quality) - SwarmVideo.getSourceQuality(a.quality)
+    })
+    this.video.sources = sources
   }
 
   private async fetchIndexVideo() {

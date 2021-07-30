@@ -1,0 +1,33 @@
+.video-source-preview {
+}
+
+.video-source-preview-header {
+  @apply flex items-start;
+  @apply flex-wrap;
+}
+
+.video-source-preview-name {
+  @apply flex-shrink-0;
+  @apply text-3xl font-bold tracking-tight;
+}
+
+.video-source-preview-accessories {
+  @apply flex items-center;
+  @apply ml-auto;
+  @apply space-x-4;
+}
+
+.video-source-preview-actions {
+  @apply space-x-2;
+}
+
+.video-source-preview-status {
+  @apply text-sm font-medium;
+  @apply text-gray-500 dark:text-gray-400;
+  @apply ml-3;
+}
+
+.video-source-preview-content {
+  @apply mt-3;
+}
+

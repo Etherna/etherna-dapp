@@ -4,6 +4,7 @@
   &-preview {
     @apply absolute inset-0;
     @apply w-full h-full;
+    @apply blur-[2px];
   }
 
   &-preview + &-picture {

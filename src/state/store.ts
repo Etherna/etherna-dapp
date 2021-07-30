@@ -14,7 +14,7 @@ function configureStore() {
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
   const middleware: Middleware[] = [thunkMiddleware]
 
-  if (process.env.NODE_ENV !== "production") {
+  if (import.meta.env.DEV) {
     middleware.push(createLogger())
   }
 

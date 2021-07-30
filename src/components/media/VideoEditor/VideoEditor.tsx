@@ -138,7 +138,10 @@ const VideoEditor = () => {
                 tabKey="sources"
                 title="Sources"
                 iconSvg={<MovieIcon />}
-                progressList={queue.map(q => ({ progress: q.completion, completed: !!q.reference }))}
+                progressList={queue.map(q => ({
+                  progress: q.completion ? q.completion / 100 : null,
+                  completed: !!q.reference
+                }))}
               />
               <ProgressTabLink
                 tabKey="extra"

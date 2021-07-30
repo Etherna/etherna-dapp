@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useMemo } from "react"
 import { createFFmpeg } from "@ffmpeg/ffmpeg"
 
 import "./video-encoder.scss"
@@ -6,17 +6,11 @@ import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 
 import Button from "@common/Button"
 import { useErrorMessage } from "@state/hooks/ui"
-import { isMimeCompatible } from "@utils/mimeTypes"
-import { fileToBuffer, fileToUint8Array } from "@utils/buffer"
-
-const ffmpeg = createFFmpeg({
-  log: process.env.NODE_ENV !== "production",
-})
+import { fileToUint8Array } from "@utils/buffer"
 
 type VideoEncoderProps = {
   file: File
   canEncode: boolean
-  onConfirmEncode?: () => void
   onEncodingComplete: (buffer: ArrayBuffer) => Promise<void>
   onCancel?: () => void
 }
@@ -24,53 +18,72 @@ type VideoEncoderProps = {
 const VideoEncoder: React.FC<VideoEncoderProps> = ({
   file,
   canEncode = true,
-  onConfirmEncode,
   onEncodingComplete,
   onCancel
 }) => {
-  const [confirmed, setConfirmed] = useState(false)
+  const ffmpeg = useMemo(() => {
+    return createFFmpeg({
+      log: import.meta.env.DEV,
+      progress: ({ ratio }) => {
+        console.log("progress", ratio)
+      }
+    })
+  }, [])
   const [isEncoding, setIsEncoding] = useState(false)
-  const isMpegVideo = isMimeCompatible(file.type, ["video/mp4", "video/m4v"])
+
   const { showError } = useErrorMessage()
 
   useEffect(() => {
     // Clear previus cache
-    try {
-      ffmpeg.FS("unlink", "output.mp4")
-    } catch { }
+    clearCache()
+    return () => clearCache()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    confirmed && canEncode && startEncoding()
+    canEncode && !isEncoding && startEncoding()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [confirmed, canEncode])
+  }, [canEncode])
+
+  const clearCache = () => {
+    try {
+      ffmpeg.FS("unlink", "output.mp4")
+    } catch { }
+  }
 
   const startEncoding = async () => {
     setIsEncoding(true)
 
     const ext = file.name.match(/\.[a-z0-9]*$/)![0]
 
+    console.log("file", file)
+
+
     try {
       if (!ffmpeg.isLoaded()) {
         await ffmpeg.load()
       }
 
+      console.log("load")
+
       const inputPath = `input${ext}`
 
       // copy input file
       ffmpeg.FS("writeFile", inputPath, await fileToUint8Array(file))
+      console.log("copy")
 
       // run ecoder
       await ffmpeg.run("-i", inputPath, "output.mp4")
+      console.log("output")
 
       // get output buffer
       const data = ffmpeg.FS("readFile", "output.mp4")
+      console.log("data")
 
       // clear cache
       ffmpeg.FS("unlink", "output.mp4")
+      console.log("unlink")
 
-      setIsEncoding(false)
       onEncodingComplete(data.buffer)
     } catch (error) {
       console.error(error)
@@ -80,45 +93,16 @@ const VideoEncoder: React.FC<VideoEncoderProps> = ({
     }
   }
 
-  const confirmEncode = () => {
-    setConfirmed(true)
-    onConfirmEncode?.()
-  }
-
-  const upload = async () => {
-    const buffer = await fileToBuffer(file)
-    await onEncodingComplete(buffer)
-
-    onConfirmEncode?.()
-  }
+  if (!file) return null
 
   return (
     <>
-      {file && !isEncoding && (
-        <>
-          <p className="text-gray-700 dark:text-gray-400 mb-3">
-            You selected <span className="text-black dark:text-white">{file.name}</span>. Do you confirm to upload
-            this file?
-          </p>
-          <Button size="small" aspect="secondary" action={onCancel}>
-            Cancel
-          </Button>
-          <Button size="small" className="ml-2" action={confirmEncode}>
-            Encode and Upload
-          </Button>
-          {isMpegVideo && (
-            <Button size="small" className="ml-2" action={upload}>
-              Upload
-            </Button>
-          )}
-        </>
-      )}
-      {confirmed && !canEncode && (
-        <p className="text-gray-700 dark:text-gray-400 mb-3">Pending encoding...</p>
+      {!canEncode && (
+        <p className="video-encoder-text">Pending encoding...</p>
       )}
       {isEncoding && (
         <div className="video-encoder">
-          <p className="leading-loose">
+          <p className="video-encoder-text">
             Encoding {file.name} <br />
             This process might take a while...
           </p>

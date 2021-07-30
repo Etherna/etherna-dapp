@@ -1,8 +1,10 @@
-/*! purgecss start ignore */
-
 .video-encoder {
-  @apply border-2 border-gray-400 bg-gray-200 text-gray-600 py-12 text-center;
-  @apply dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400;
+  @apply text-gray-600 py-12 text-center;
+  @apply border-2 border-gray-400;
+  @apply bg-gray-200 dark:bg-gray-800;
+  @apply dark:border-gray-600 dark:text-gray-400;
 }
 
-/*! purgecss end ignore */
+.video-encoder-text {
+  @apply text-gray-700 dark:text-gray-400 mb-3
+}

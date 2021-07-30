@@ -1,58 +1,53 @@
 import React, { useState, useEffect } from "react"
-import axios, { Canceler } from "axios"
+import axios from "axios"
 
-import "./swarm-upload.scss"
+import "./file-upload.scss"
 
 import Alert from "@common/Alert"
 import Button from "@common/Button"
-
-// cancellation token function
-let uploadCancel: Canceler | undefined
+import { FilePreviewRenderProps } from "../FileUploadFlow/types"
 
 type FileUploadProps = {
+  children?: React.ReactChild | ((props: FilePreviewRenderProps) => React.ReactChild)
   buffer: ArrayBuffer
-  filename: string
-  showConfirmation?: boolean
   disabled?: boolean
   canUpload?: boolean
   uploadHandler: (buffer: ArrayBuffer) => Promise<string>
-  onConfirmUpload?: () => void
-  onFinishedUploading: (hash: string) => void
+  onUploadStart?: () => void
+  onUploadFinished: (hash: string) => void
   onCancel: () => void
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({
+  children,
   buffer,
-  filename,
-  showConfirmation,
   disabled,
   canUpload = true,
   uploadHandler,
-  onConfirmUpload,
-  onFinishedUploading,
+  onUploadStart,
+  onUploadFinished,
   onCancel,
 }) => {
   const [isUploading, setIsUploading] = useState(false)
-  const [confirmed, setConfirmed] = useState(!showConfirmation && !isUploading)
   const [errorMessage, setErrorMessage] = useState<string>()
 
   useEffect(() => {
-    if (confirmed && canUpload) {
+    if (canUpload) {
       handleStartUpload()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [confirmed, canUpload])
+  }, [canUpload])
 
 
   const handleStartUpload = async () => {
     setIsUploading(true)
 
+    onUploadStart?.()
+
     try {
       const hash = await uploadHandler(buffer)
 
-      setIsUploading(false)
-      setConfirmed(false)
-      onFinishedUploading(hash)
+      onUploadFinished(hash)
     } catch (error) {
       console.error(error)
 
@@ -68,26 +63,14 @@ const FileUpload: React.FC<FileUploadProps> = ({
     }
   }
 
-  const confirmUpload = () => {
-    setConfirmed(true)
-    onConfirmUpload?.()
-  }
-
   const handleRemoveFile = () => {
     setIsUploading(false)
     setErrorMessage(undefined)
     onCancel()
   }
 
-  const handleCancel = () => {
-    if (uploadCancel) {
-      uploadCancel("Upload canceled by user")
-    }
-    onCancel()
-  }
-
   return (
-    <div className="mb-4">
+    <div className="file-upload">
       {errorMessage && (
         <>
           <Alert type="danger" title="Upload error">
@@ -98,21 +81,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
           </Button>
         </>
       )}
-      {showConfirmation && buffer && !isUploading && !confirmed && (
-        <>
-          <p className="text-gray-700 dark:text-gray-400 mb-3">
-            You selected <span className="text-black dark:text-white">{filename}</span>. Do you confirm to upload
-            this file?
-          </p>
-          <Button size="small" aspect="secondary" action={handleCancel} disabled={disabled}>
-            Cancel
-          </Button>
-          <Button size="small" className="ml-2" action={confirmUpload} disabled={disabled}>
-            OK
-          </Button>
-        </>
-      )}
-      {confirmed && !canUpload && <p className="text-gray-700 dark:text-gray-400 mb-3">Pending upload...</p>}
+
+      {typeof children === "function"
+        ? children({ isUploading })
+        : children
+      }
     </div>
   )
 }

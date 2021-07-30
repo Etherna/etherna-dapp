@@ -1,10 +1,14 @@
 import { VideoEditorContextState, VideoEditorQueue } from "."
 import VideoEditorCache from "./VideoEditorCache"
 import SwarmVideo from "@classes/SwarmVideo"
+import { deepCloneArray } from "@utils/arrays"
 
 // Actions
 export const VideoEditorActionTypes = {
+  ADD_QUEUE: "videoeditor/add-queue",
   UPDATE_QUEUE: "videoeditor/update-queue",
+  UPDATE_QUEUE_NAME: "videoeditor/update-queue-name",
+  REMOVE_QUEUE: "videoeditor/remove-queue",
   UPDATE_ORIGINAL_QUALITY: "videoeditor/update-original-quality",
   UPDATE_DURATION: "videoeditor/update-duration",
   UPDATE_TITLE: "videoeditor/update-title",
@@ -13,9 +17,24 @@ export const VideoEditorActionTypes = {
   RESET: "videoeditor/reset",
 } as const
 
+type AddQueueAction = {
+  type: typeof VideoEditorActionTypes.ADD_QUEUE
+  name: string
+}
 type UpdateQueueAction = {
   type: typeof VideoEditorActionTypes.UPDATE_QUEUE
-  queue: VideoEditorQueue[]
+  name: string
+  completion: number
+  reference?: string
+}
+type UpdateQueueNameAction = {
+  type: typeof VideoEditorActionTypes.UPDATE_QUEUE_NAME
+  oldName: string
+  newName: string
+}
+type RemoveQueueAction = {
+  type: typeof VideoEditorActionTypes.REMOVE_QUEUE
+  name: string
 }
 type UpdateOriginalQualityAction = {
   type: typeof VideoEditorActionTypes.UPDATE_ORIGINAL_QUALITY
@@ -42,7 +61,10 @@ type ResetAction = {
 }
 
 export type AnyVideoEditorAction = (
+  AddQueueAction |
   UpdateQueueAction |
+  UpdateQueueNameAction |
+  RemoveQueueAction |
   UpdateOriginalQualityAction |
   UpdateDurationAction |
   UpdatePinContentAction |
@@ -56,8 +78,31 @@ const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEdit
   let newState = state
 
   switch (action.type) {
+    case VideoEditorActionTypes.ADD_QUEUE:
+      const addQueue: VideoEditorQueue[] = [...state.queue, {
+        name: action.name,
+        completion: null
+      }]
+      newState = { ...state, queue: addQueue }
+      break
     case VideoEditorActionTypes.UPDATE_QUEUE:
-      newState = { ...state, queue: action.queue }
+      const updateQueue = deepCloneArray(state.queue)
+      const updateQueueElement = updateQueue.find(q => q.name === action.name)
+      if (updateQueueElement) updateQueueElement.completion = action.completion
+      if (updateQueueElement) updateQueueElement.reference = action.reference
+      newState = { ...state, queue: updateQueue }
+      break
+    case VideoEditorActionTypes.UPDATE_QUEUE_NAME:
+      const updateNameQueue = deepCloneArray(state.queue)
+      const updateQueueNameElement = updateNameQueue.find(q => q.name === action.oldName)
+      if (updateQueueNameElement) updateQueueNameElement.name = action.newName
+      newState = { ...state, queue: updateNameQueue }
+      break
+    case VideoEditorActionTypes.REMOVE_QUEUE:
+      const removeQueue = [...state.queue]
+      const removeIndex = removeQueue.findIndex(q => q.name === action.name)
+      removeIndex >= 0 && removeQueue.splice(removeIndex, 1)
+      newState = { ...state, queue: removeQueue }
       break
     case VideoEditorActionTypes.UPDATE_ORIGINAL_QUALITY:
       state.videoHandler.originalQuality = action.quality

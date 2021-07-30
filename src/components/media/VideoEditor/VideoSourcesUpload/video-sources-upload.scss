@@ -1,0 +1,18 @@
+.video-sources-upload {
+  @apply space-y-3;
+}
+
+.video-sources-upload-add-btn {
+  @apply w-full;
+  @apply flex items-center space-x-2;
+  @apply px-2 py-4 rounded;
+  @apply text-sm font-medium;
+  @apply transition-colors duration-200;
+  @apply text-gray-700 dark:text-gray-300;
+  @apply bg-gray-900/5 dark:bg-gray-100/5;
+  @apply active:bg-graycool-200 dark:active:bg-gray-800;
+
+  svg {
+    @apply h-[1.25em];
+  }
+}

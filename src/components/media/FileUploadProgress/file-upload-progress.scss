@@ -1,0 +1,19 @@
+.file-upload-progress {
+  @apply flex flex-wrap items-center;
+  @apply w-full max-w-sm;
+
+  .progress {
+    @apply w-auto flex-grow;
+  }
+}
+
+.file-upload-progress-value {
+  @apply text-sm font-semibold;
+  @apply ml-2;
+}
+
+.file-upload-progress-text {
+  @apply text-sm;
+  @apply w-full;
+  @apply mt-1.5;
+}

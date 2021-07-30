@@ -1,45 +1,28 @@
 import React from "react"
-import { Canceler } from "axios"
 
-import Button from "@common/Button"
+import "./file-upload-progress.scss"
+
 import ProgressBar from "@common/ProgressBar"
 
 type FileUploadProgressProps = {
   progress: number
-  disabled?: boolean
-  canceler?: Canceler
-  onCancelUpload?: () => void
 }
 
 const FileUploadProgress: React.FC<FileUploadProgressProps> = ({
   progress,
-  disabled,
-  canceler,
-  onCancelUpload
 }) => {
   if (progress === 0) return null
 
-  const handleCancel = () => {
-    if (canceler) {
-      canceler("User canceled the upload.")
-    }
-    onCancelUpload?.()
-  }
-
   return (
-    <>
-      {progress < 100 ? <p>Uploading ({progress}%)...</p> : <p>Processing...</p>}
+    <div className="file-upload-progress">
       <ProgressBar progress={progress} />
-      <Button
-        size="small"
-        aspect="secondary"
-        className="mt-2"
-        action={handleCancel}
-        disabled={disabled}
-      >
-        Cancel
-      </Button>
-    </>
+      <span className="file-upload-progress-value">
+        {progress}%
+      </span>
+      <span className="file-upload-progress-text">
+        {progress < 100 ? <p>Uploading...</p> : <p>Processing...</p>}
+      </span>
+    </div>
   )
 }
 
