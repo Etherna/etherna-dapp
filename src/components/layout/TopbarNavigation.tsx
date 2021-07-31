@@ -5,7 +5,7 @@ import { ReactComponent as LogoCompact } from "@svg/logo-compact.svg"
 import { ReactComponent as PlusIcon } from "@svg/icons/plus.svg"
 import { ReactComponent as SearchIcon } from "@svg/icons/navigation/search.svg"
 import { ReactComponent as MenuIcon } from "@svg/icons/navigation/menu.svg"
-import { ReactComponent as UploadIcon } from "@svg/icons/upload-icon.svg"
+import { ReactComponent as UploadIcon } from "@svg/icons/upload.svg"
 
 import Topbar from "@components/navigation/Topbar"
 import TopbarLogo from "@components/navigation/TopbarLogo"

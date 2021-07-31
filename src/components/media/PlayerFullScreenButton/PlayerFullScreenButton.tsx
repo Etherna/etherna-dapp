@@ -1,6 +1,6 @@
 import React from "react"
 
-import { ReactComponent as FullScreenIcon } from "@svg/icons/player/fullscreen-icon.svg"
+import { ReactComponent as FullScreenIcon } from "@svg/icons/player/fullscreen.svg"
 
 import PlayerToolbarButton from "@components/media/PlayerToolbarButton"
 import { PlayerReducerTypes } from "@context/player-context"

@@ -1,8 +1,8 @@
 import React from "react"
 
-import { ReactComponent as EditIcon } from "@svg/icons/edit-icon.svg"
-import { ReactComponent as ProfileIcon } from "@svg/icons/profile-icon.svg"
-import { ReactComponent as UploadIcon } from "@svg/icons/upload-icon.svg"
+import { ReactComponent as EditIcon } from "@svg/icons/edit.svg"
+import { ReactComponent as ProfileIcon } from "@svg/icons/profile.svg"
+import { ReactComponent as UploadIcon } from "@svg/icons/upload.svg"
 
 import { DropdownItem } from "@common/Dropdown"
 import Avatar from "@components/user/Avatar"

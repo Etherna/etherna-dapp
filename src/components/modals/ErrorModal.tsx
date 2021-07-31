@@ -1,7 +1,7 @@
 import React from "react"
 
-import { ReactComponent as SignatureIcon } from "@svg/icons/signature-required-icon.svg"
-import { ReactComponent as ErrorIcon } from "@svg/icons/error-icon.svg"
+import { ReactComponent as SignatureIcon } from "@svg/icons/signature-required.svg"
+import { ReactComponent as ErrorIcon } from "@svg/icons/error.svg"
 
 import Modal from "@common/Modal"
 import Button from "@common/Button"

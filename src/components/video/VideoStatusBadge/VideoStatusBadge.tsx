@@ -2,7 +2,7 @@ import React from "react"
 import classnames from "classnames"
 
 import "./video-status-badge.scss"
-import { ReactComponent as UnindexedIcon } from "@svg/icons/unindexed-icon.svg"
+import { ReactComponent as UnindexedIcon } from "@svg/icons/unindexed.svg"
 
 type VideoStatusBadgeProps = {
   status: "available" | "unlisted" | "unindexed"

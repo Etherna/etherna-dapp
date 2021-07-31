@@ -2,8 +2,8 @@ import React from "react"
 import classNames from "classnames"
 
 import "./player-play-button.scss"
-import { ReactComponent as PlayIcon } from "@svg/icons/player/play-icon.svg"
-import { ReactComponent as PauseIcon } from "@svg/icons/player/pause-icon.svg"
+import { ReactComponent as PlayIcon } from "@svg/icons/player/play.svg"
+import { ReactComponent as PauseIcon } from "@svg/icons/player/pause.svg"
 
 import { PlayerReducerTypes } from "@context/player-context"
 import { usePlayerState } from "@context/player-context/hooks"

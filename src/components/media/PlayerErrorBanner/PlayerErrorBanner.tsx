@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react"
 import classnames from "classnames"
 
 import "./player-error-banner.scss"
-import { ReactComponent as CreditErrorIcon } from "@svg/icons/credit-error-icon.svg"
-import { ReactComponent as ServerErrorIcon } from "@svg/icons/server-error-icon.svg"
-import { ReactComponent as UnauthorizedIcon } from "@svg/icons/unauthorized-error-icon.svg"
+import { ReactComponent as CreditErrorIcon } from "@svg/icons/credit-error.svg"
+import { ReactComponent as ServerErrorIcon } from "@svg/icons/server-error.svg"
+import { ReactComponent as UnauthorizedIcon } from "@svg/icons/unauthorized-error.svg"
 
 import { usePlayerState } from "@context/player-context/hooks"
 

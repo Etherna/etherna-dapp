@@ -1,6 +1,6 @@
 import React from "react"
 
-import { ReactComponent as PipIcon } from "@svg/icons/player/pip-icon.svg"
+import { ReactComponent as PipIcon } from "@svg/icons/player/pip.svg"
 
 import PlayerToolbarButton from "@components/media/PlayerToolbarButton"
 import { PlayerReducerTypes } from "@context/player-context"

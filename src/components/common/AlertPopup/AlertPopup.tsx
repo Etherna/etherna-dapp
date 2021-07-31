@@ -2,7 +2,7 @@ import React, { useEffect } from "react"
 import classnames from "classnames"
 
 import "./alert-popup.scss"
-import { ReactComponent as ErrorIcon } from "@svg/icons/warning-icon.svg"
+import { ReactComponent as ErrorIcon } from "@svg/icons/warning.svg"
 import { ReactComponent as SuccessIcon } from "@svg/icons/check-circle.svg"
 
 type AlertAction = {

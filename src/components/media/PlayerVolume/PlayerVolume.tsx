@@ -1,8 +1,8 @@
 import React from "react"
 
-import { ReactComponent as MutedIcon } from "@svg/icons/player/muted-icon.svg"
-import { ReactComponent as VolumeLowIcon } from "@svg/icons/player/volume-low-icon.svg"
-import { ReactComponent as VolumeIcon } from "@svg/icons/player/volume-icon.svg"
+import { ReactComponent as MutedIcon } from "@svg/icons/player/muted.svg"
+import { ReactComponent as VolumeLowIcon } from "@svg/icons/player/volume-low.svg"
+import { ReactComponent as VolumeIcon } from "@svg/icons/player/volume.svg"
 
 import Slider from "@common/Slider"
 import PlayerToolbarButton from "@components/media/PlayerToolbarButton"

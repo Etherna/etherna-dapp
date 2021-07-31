@@ -1,7 +1,7 @@
 import React from "react"
 
-import { ReactComponent as DarkModeIcon } from "@svg/icons/dark-mode-icon.svg"
-import { ReactComponent as LightModeIcon } from "@svg/icons/light-mode-icon.svg"
+import { ReactComponent as DarkModeIcon } from "@svg/icons/dark-mode.svg"
+import { ReactComponent as LightModeIcon } from "@svg/icons/light-mode.svg"
 
 import Toggle from "@common/Toggle"
 

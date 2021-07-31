@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react"
 
 import "./extension-host-panel.scss"
-import { ReactComponent as EditIcon } from "@svg/icons/edit-icon.svg"
+import { ReactComponent as EditIcon } from "@svg/icons/edit.svg"
 import { ReactComponent as TrashIcon } from "@svg/icons/trash.svg"
 import { ReactComponent as CheckIcon } from "@svg/icons/check.svg"
 import { ReactComponent as PlusIcon } from "@svg/icons/plus.svg"
