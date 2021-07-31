@@ -3,10 +3,12 @@ import React, { useEffect, useState } from "react"
 import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 
 import Alert from "@common/Alert"
+import Label from "@common/Label"
+import FormGroup from "@common/FormGroup"
+import FieldDesrcription from "@common/FieldDesrcription"
 import Toggle from "@common/Toggle"
 import useSelector from "@state/useSelector"
 import { urlOrigin } from "@utils/urls"
-import Label from "@common/Label"
 
 type PinContentFieldProps = {
   pinningEnabled?: boolean
@@ -45,13 +47,9 @@ const PinContentField = ({ pinningEnabled, onChange }: PinContentFieldProps) => 
   }
 
   return (
-    <div className="form-group">
-      <Label
-        title="Pinning a video will make sure the node will always have a copy of the file"
-        htmlFor="pinContent"
-      >
-        Pin Content
-      </Label>
+    <FormGroup>
+      <Label htmlFor="pinContent">Pin Content</Label>
+
       {pinningAvailable === undefined && (
         <Spinner width="20" />
       )}
@@ -65,6 +63,7 @@ const PinContentField = ({ pinningEnabled, onChange }: PinContentFieldProps) => 
           {errorMessage}
         </Alert>
       )}
+
       {pinningAvailable === true && pinContent !== undefined && (
         <Toggle
           label={pinContent ? "Pinning enabled" : "Pinning disabled"}
@@ -72,7 +71,10 @@ const PinContentField = ({ pinningEnabled, onChange }: PinContentFieldProps) => 
           onChange={handlePinChange}
         />
       )}
-    </div>
+      <FieldDesrcription>
+        Pinning a video will make sure the node will always have a copy of the file
+      </FieldDesrcription>
+    </FormGroup>
   )
 }
 

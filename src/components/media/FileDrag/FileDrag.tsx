@@ -4,9 +4,10 @@ import classnames from "classnames"
 import "./file-drag.scss"
 import { ReactComponent as DragIcon } from "@svg/icons/drag.svg"
 
+import Button from "@common/Button"
+import FieldDesrcription from "@common/FieldDesrcription"
 import { useErrorMessage } from "@state/hooks/ui"
 import { isMimeCompatible } from "@utils/mimeTypes"
-import Button from "@common/Button"
 
 type FileDragProps = {
   id: string
@@ -154,9 +155,9 @@ const FileDrag: React.FC<FileDragProps> = ({
                   )}
                 </Button>
                 {isEncodable && (
-                  <p className="file-drag-processing-action-description">
+                  <FieldDesrcription>
                     Upload this source as is without any encoding (make sure is optimized for the browser).
-                  </p>
+                  </FieldDesrcription>
                 )}
               </div>
             )}
@@ -166,10 +167,10 @@ const FileDrag: React.FC<FileDragProps> = ({
                 <Button action={() => handleFileProcessing(true)} disabled={disabled}>
                   Encode and upload
                 </Button>
-                <p className="file-drag-processing-action-description">
+                <FieldDesrcription>
                   Encoding will ensure the source is optimized and compitible with most browsers.
                   It might take several minutes to encode a high resolution video.
-                </p>
+                </FieldDesrcription>
               </div>
             )}
           </div>
