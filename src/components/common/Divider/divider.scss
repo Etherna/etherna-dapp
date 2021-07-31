@@ -1,0 +1,20 @@
+.divider {
+  @apply flex flex-col;
+  @apply py-6;
+}
+
+.divider-top,
+.divider-bottom {
+  @apply w-full h-12;
+  @apply text-gray-400 dark:text-gray-700;
+
+  svg {
+    @apply w-full h-full;
+  }
+}
+
+.divider-bottom {
+  svg {
+    @apply transform rotate-180;
+  }
+}

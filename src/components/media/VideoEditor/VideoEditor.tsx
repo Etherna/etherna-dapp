@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { Redirect } from "react-router"
 
+import "./video-editor.scss"
 import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 import { ReactComponent as TrashIcon } from "@svg/icons/trash.svg"
 import { ReactComponent as NotesIcon } from "@svg/icons/notes.svg"
@@ -10,20 +11,23 @@ import { ReactComponent as EyeIcon } from "@svg/icons/eye.svg"
 import VideoDetails from "./VideoDetails"
 import VideoSources from "./VideoSources"
 import VideoExtra from "./VideoExtra"
-import VideoCompletion from "./VideoCompletion"
 import VideoDeleteModal from "./VideoDeleteModal"
 import Button from "@common/Button"
+import ProgressTab, { ProgressTabContent, ProgressTabLink } from "@common/ProgressTab"
+import FieldDesrcription from "@common/FieldDesrcription"
+import Divider from "@common/Divider"
 import { useVideoEditorBaseActions, useVideoEditorState } from "@context/video-editor-context/hooks"
 import Routes from "@routes"
 import useSelector from "@state/useSelector"
-import { useErrorMessage } from "@state/hooks/ui"
-import ProgressTab, { ProgressTabContent, ProgressTabLink } from "@common/ProgressTab"
+import { useConfirmation, useErrorMessage } from "@state/hooks/ui"
 
 const VideoEditor = () => {
+  const { waitConfirmation } = useConfirmation()
   const { address } = useSelector(state => state.user)
   const [{ reference, queue, videoHandler }] = useVideoEditorState()
   const hasQueuedProcesses = queue.filter(q => !q.reference).length > 0
   const hasOriginalVideo = videoHandler.originalQuality && videoHandler.sources.length > 0
+  const canPublishVideo = videoHandler.video.title && hasOriginalVideo
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -86,6 +90,16 @@ const VideoEditor = () => {
     )
   }
 
+  const askToClearState = async () => {
+    const clear = await waitConfirmation(
+      "Clear all",
+      "Are you sure you want to clear the upload data? This action cannot be reversed.",
+      "Yes, clear",
+      "destructive"
+    )
+    clear && resetState()
+  }
+
   const SaveButton = () => (
     <>
       {isSubmitting ? (
@@ -93,33 +107,17 @@ const VideoEditor = () => {
       ) : (
         <Button
           action={submitVideo}
+          size="large"
           disabled={
-            !videoHandler.title ||
+            !canPublishVideo ||
             hasQueuedProcesses ||
-            !hasOriginalVideo ||
             isDeleting
           }
         >
           {reference ? "Update video" : "Publish video"}
         </Button>
       )}
-
-      {!videoHandler.video.isVideoOnIndex && (
-        <div className="mt-5">
-          <Button aspect="link-secondary" action={resetState}><TrashIcon /> Clear all</Button>
-        </div>
-      )}
     </>
-  )
-
-  const DeleteButton = () => (
-    <Button
-      aspect="danger"
-      disabled={isSubmitting}
-      action={() => setShowDeleteModal(true)}
-    >
-      Delete Video
-    </Button>
   )
 
   return (
@@ -161,22 +159,31 @@ const VideoEditor = () => {
               </ProgressTabContent>
             </ProgressTab>
 
-            {reference && (
-              <div className="flex items-center justify-between">
+            <Divider className="mt-10" bottom />
+
+            <div className="video-editor-action-bar">
+              <div className="video-editor-action-save">
                 <SaveButton />
-                <DeleteButton />
+                {!canPublishVideo && (
+                  <FieldDesrcription smaller>
+                    Before publishing a video you must upload a <wbr />
+                    <strong>video source</strong> and insert a <strong>title</strong>.
+                  </FieldDesrcription>
+                )}
               </div>
-            )}
-          </div>
-          <div className="col step-col lg:w-1/3 xl:w-1/4">
-            {!reference && (
-              <>
-                <VideoCompletion />
-                <div className="mt-8">
-                  <SaveButton />
-                </div>
-              </>
-            )}
+
+              {reference ? (
+                <Button
+                  aspect="danger"
+                  disabled={isSubmitting}
+                  action={() => setShowDeleteModal(true)}
+                >
+                  Delete Video
+                </Button>
+              ) : (
+                <Button aspect="link-secondary" action={askToClearState}><TrashIcon /> Clear all</Button>
+              )}
+            </div>
           </div>
         </div>
       </div>
