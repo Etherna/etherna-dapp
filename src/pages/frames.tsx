@@ -1,5 +1,6 @@
 import React from "react"
 
+import Container from "@common/Container"
 import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import SEO from "@components/layout/SEO"
 
@@ -9,9 +10,9 @@ const HomePage = () => (
       title="Frames"
       description="Explore all the communities... frame to frame!"
     />
-    <div className="p-4">
+    <Container>
       Soon!
-    </div>
+    </Container>
   </AppLayoutWrapper>
 )
 

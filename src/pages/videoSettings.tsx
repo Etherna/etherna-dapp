@@ -1,6 +1,7 @@
 import React from "react"
 import { useLocation } from "react-router-dom"
 
+import Container from "@common/Container"
 import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import SEO from "@components/layout/SEO"
 import VideoUpdate from "@components/video/VideoUpdate"
@@ -18,7 +19,10 @@ const VideoSettings = () => {
   return (
     <AppLayoutWrapper>
       <SEO title="Edit Video" />
-      <VideoUpdate hash={hash} routeState={routeState} />
+
+      <Container>
+        <VideoUpdate hash={hash} routeState={routeState} />
+      </Container>
     </AppLayoutWrapper>
   )
 }

@@ -124,7 +124,7 @@ const VideoEditor = () => {
     <>
       <div className="video-editor">
         <div className="row">
-          <div className="col lg:w-2/3 xl:w-3/4">
+          <div className="col">
             <ProgressTab defaultKey="details">
               <ProgressTabLink
                 tabKey="details"

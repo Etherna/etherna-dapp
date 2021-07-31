@@ -1,6 +1,7 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 
+import Container from "@common/Container"
 import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import SEO from "@components/layout/SEO"
 import ProfileEditor from "@components/profile/ProfileEditor"
@@ -13,7 +14,10 @@ const ProfileEditPage = () => {
   return (
     <AppLayoutWrapper>
       <SEO title={`Editing profile ${name || id}`} />
-      <ProfileEditor address={id} />
+
+      <Container noPaddingX noPaddingY>
+        <ProfileEditor address={id} />
+      </Container>
     </AppLayoutWrapper>
   )
 }

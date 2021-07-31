@@ -1,6 +1,7 @@
 import React from "react"
 import { useLocation } from "react-router-dom"
 
+import Container from "@common/Container"
 import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import SEO from "@components/layout/SEO"
 import VideoView from "@components/video/VideoView"
@@ -18,7 +19,10 @@ const WatchPage = () => {
   return (
     <AppLayoutWrapper hideSidebar floatingSidebar>
       <SEO title="Watch" />
-      <VideoView hash={hash} routeState={routeState} />
+
+      <Container noPaddingX noPaddingY>
+        <VideoView hash={hash} routeState={routeState} />
+      </Container>
     </AppLayoutWrapper>
   )
 }

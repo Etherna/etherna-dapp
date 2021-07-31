@@ -1,7 +1,5 @@
-/*! purgecss start ignore */
-
 .video-update {
-  @apply max-w-screen-2xl p-10;
+  @apply max-w-screen-lg;
 
   .video-preview {
     .thumbnail {
@@ -9,5 +7,3 @@
     }
   }
 }
-
-/*! purgecss end ignore */
