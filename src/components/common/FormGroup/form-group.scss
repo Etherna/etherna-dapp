@@ -2,4 +2,8 @@
   & + .form-group {
     @apply mt-6;
   }
+
+  &.disabled {
+    @apply opacity-50 pointer-events-none cursor-default;
+  }
 }

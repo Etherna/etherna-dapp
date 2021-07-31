@@ -1,10 +1,15 @@
 import React from "react"
+import classNames from "classnames"
 
 import "./form-group.scss"
 
-const FormGroup: React.FC = ({ children }) => {
+type FormGroupProps = {
+  disabled?: boolean
+}
+
+const FormGroup: React.FC<FormGroupProps> = ({ children, disabled }) => {
   return (
-    <div className="form-group">
+    <div className={classNames("form-group", { disabled })}>
       {children}
     </div>
   )

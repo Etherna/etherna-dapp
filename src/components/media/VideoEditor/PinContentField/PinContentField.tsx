@@ -72,7 +72,7 @@ const PinContentField = ({ pinningEnabled, onChange }: PinContentFieldProps) => 
         />
       )}
       <FieldDesrcription>
-        Pinning a video will make sure the node will always have a copy of the file
+        Pinning a video will make sure the node will always have a copy of the file.
       </FieldDesrcription>
     </FormGroup>
   )
