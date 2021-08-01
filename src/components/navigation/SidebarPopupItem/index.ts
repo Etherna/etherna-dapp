@@ -1,3 +1,3 @@
-import SidebarLinks from "./SidebarLinks"
+import SidebarPopupItem from "./SidebarPopupItem"
 
-export default SidebarLinks
+export default SidebarPopupItem

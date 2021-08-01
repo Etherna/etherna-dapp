@@ -2,7 +2,6 @@ import React from "react"
 
 import "./app-layout.scss"
 
-import Container from "@common/Container"
 import SidebarNavigation from "@components/layout/SidebarNavigation"
 import TopbarNavigation from "@components/layout/TopbarNavigation"
 import TabbarNavigation from "@components/layout/TabbarNavigation"
