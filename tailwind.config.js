@@ -15,6 +15,7 @@ module.exports = {
   darkMode: "class", // or 'media' or 'false'
   theme: {
     screens: {
+      xs: "360px",
       sm: "640px",
       md: "768px",
       lg: "1024px",
@@ -981,7 +982,7 @@ module.exports = {
     rotate: ["responsive", "hover", "focus"],
     saturate: ["responsive"],
     scale: ["responsive", "hover", "focus"],
-    scrollSnapType: ['responsive'],
+    scrollSnapType: ["responsive"],
     sepia: ["responsive"],
     skew: ["responsive", "hover", "focus"],
     space: ["responsive"],

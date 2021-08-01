@@ -1,66 +1,53 @@
-/*! purgecss start ignore */
-
-$color-gray-100: #f5f5f5;
-$color-gray-800: #262626;
-
 .user-credit-badge {
-  @apply flex items-baseline bg-gray-100 rounded-full h-10 px-4 py-2 cursor-pointer;
-  @apply dark:bg-gray-800;
-
-  .credit-currency {
-    @apply text-xs text-gray-600 tracking-tighter;
-    @apply dark:text-gray-400;
-  }
-  .credit-value {
-    @apply relative text-gray-900 text-xl font-bold ml-1 overflow-hidden transition-all duration-300;
-    @apply dark:text-gray-200;
-  }
+  @apply relative;
+  @apply flex items-baseline;
+  @apply h-10 px-4 py-2 overflow-hidden;
+  @apply rounded-full cursor-pointer;
+  @apply bg-gray-100 dark:bg-gray-800;
 
   &.expandable {
-    .credit-text-lg {
-      &::after {
-        content: "";
-        @apply absolute right-0 inset-y-0 w-6 bg-gray-100;
-        @apply dark:bg-gray-800;
-        background: linear-gradient(90deg, rgba($color: $color-gray-100, $alpha: 0) 0%, rgba($color: $color-gray-100, $alpha: 1) 100%);
-
-        .dark & {
-          background: linear-gradient(90deg, rgba($color: $color-gray-800, $alpha: 0) 0%, rgba($color: $color-gray-800, $alpha: 1) 100%);
-        }
-      }
+    &:after {
+      content: "";
+      @apply absolute right-0 inset-y-0;
+      @apply w-12;
+      @apply bg-gradient-to-r from-gray-100/10 via-gray-100/80 to-gray-100;
+      @apply dark:from-gray-800/10 dark:via-gray-800/80 dark:to-gray-800;
+      @apply md:content-none;
     }
-
-    &:hover {
-      .credit-text-lg {
-        @apply max-w-none;
-        &::after {
-          background: transparent;
-        }
-      }
+    &:hover::after {
+      @apply opacity-0;
     }
   }
+}
 
-  &-warning {
-    .credit-text-sm {
-      @apply text-orange-500 text-opacity-50;
-    }
-    .credit-text-lg {
-      @apply text-orange-500;
-    }
-  }
+.user-credit-currency {
+  @apply hidden xs:inline;
+  @apply text-xs tracking-tighter;
+  @apply text-gray-600 dark:text-gray-400;
+}
 
-  &-danger {
-    .credit-text-sm {
-      @apply text-red-600;
-    }
-    .credit-text-lg {
-      @apply text-red-500;
-    }
+.user-credit-value {
+  @apply flex items-baseline;
+  @apply relative ml-1 overflow-hidden;
+  @apply text-gray-900 dark:text-gray-200;
+}
+
+.user-credit-value-integer {
+  @apply text-xl font-semibold;
+}
+
+.user-credit-value-decimal {
+  @apply inline-block;
+  @apply text-base font-medium;
+  @apply opacity-60;
+  @apply duration-300;
+  transition-property: max-width;
+
+  @screen md {
+    max-width: unset !important;
   }
 }
 
 .user-credit-popup {
   @apply min-w-xs p-4 text-center;
 }
-
-/*! purgecss end ignore */
