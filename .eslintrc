@@ -4,7 +4,21 @@
     "es2020": true,
     "jest": true
   },
-  "extends": ["react-app"],
+  "extends": [
+    "plugin:react/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react",
+    "@typescript-eslint"
+  ],
   "rules": {
     "max-len": [
       "warn",
@@ -14,6 +28,7 @@
     ],
     "semi": ["error", "never"],
     "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
     "@typescript-eslint/indent": [
       "error",
       2,
