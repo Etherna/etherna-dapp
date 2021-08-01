@@ -1,0 +1,74 @@
+/* 
+ *  Copyright 2021-present Etherna Sagl
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.video-rating {
+  @apply inline-block;
+  @apply min-w-[128px];
+  @apply transition-opacity duration-75;
+
+  &.fetching {
+    @apply opacity-0;
+  }
+}
+
+.video-rating-buttons {
+  @apply flex justify-between;
+}
+
+.video-rating-progressbar {
+  @apply relative;
+  @apply mt-1;
+  @apply w-full h-1 rounded-full;
+  @apply overflow-hidden;
+  @apply bg-gray-200 dark:bg-gray-700;
+
+  .progress {
+    @apply absolute left-0 inset-y-0;
+    @apply transition-all duration-300;
+    @apply bg-gray-400 dark:bg-gray-500;
+  }
+}
+
+.video-rating-btn {
+  @apply appearance-none;
+  @apply border-none shadow-none bg-transparent;
+  @apply flex items-center;
+  @apply px-1.5 py-0.5;
+  @apply rounded-sm;
+  @apply text-gray-500 dark:text-gray-600;
+  @apply hover:bg-gray-200 active:bg-gray-200 active:bg-opacity-75;
+  @apply dark:text-gray-400;
+  @apply dark:hover:bg-gray-800 dark:active:bg-gray-800 dark:active:bg-opacity-75;
+
+
+  &.rating-down {
+    .thumb-icon {
+      @apply transform rotate-180;
+    }
+  }
+
+  .thumb-icon {
+    @apply inline-block w-5 h-5;
+    svg {
+      @apply w-full h-full;
+    }
+  }
+
+  .counter {
+    @apply ml-2;
+    @apply text-sm font-semibold;
+  }
+}

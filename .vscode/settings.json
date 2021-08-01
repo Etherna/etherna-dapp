@@ -18,5 +18,18 @@
   "[scss]": {
     "tailwindCSS.validate": true
   },
-  "svg.preview.background": "transparent"
+  "svg.preview.background": "transparent",
+  "license-header-manager.excludeFolders": [
+    "node_modules",
+    "build",
+    "images",
+    "config"
+  ],
+  "license-header-manager.excludeExtensions": [".js"],
+  "license-header-manager.additionalCommentStyles": [{
+    "extension": ".tsx",
+    "commentStart": "/*",
+    "commentMiddle": " * ",
+    "commentEnd": " */"
+  }]
 }
