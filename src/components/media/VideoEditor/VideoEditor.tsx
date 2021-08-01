@@ -1,18 +1,18 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
 import React, { useState } from "react"
@@ -37,6 +37,9 @@ import { useVideoEditorBaseActions, useVideoEditorState } from "@context/video-e
 import Routes from "@routes"
 import useSelector from "@state/useSelector"
 import { useConfirmation, useErrorMessage } from "@state/hooks/ui"
+import VideoEditorCache from "@context/video-editor-context/VideoEditorCache"
+
+const PORTAL_ID = "video-drag-portal"
 
 const VideoEditor = () => {
   const { waitConfirmation } = useConfirmation()
@@ -137,9 +140,14 @@ const VideoEditor = () => {
     </>
   )
 
+  const usePortal = VideoEditorCache.isCacheEmptyOrDefault && queue.length === 0 && !reference
+
   return (
     <>
-      <div className="video-editor">
+      {usePortal && (
+        <div id={PORTAL_ID}></div>
+      )}
+      <div className="video-editor" style={{ display: usePortal ? "none" : undefined }}>
         <div className="row">
           <div className="col">
             <ProgressTab defaultKey="details">
@@ -169,7 +177,7 @@ const VideoEditor = () => {
                 <VideoDetails isSubmitting={isSubmitting} />
               </ProgressTabContent>
               <ProgressTabContent tabKey="sources">
-                <VideoSources isSubmitting={isSubmitting} />
+                <VideoSources initialDragPortal={`#${PORTAL_ID}`} isSubmitting={isSubmitting} />
               </ProgressTabContent>
               <ProgressTabContent tabKey="extra">
                 <VideoExtra isSubmitting={isSubmitting} />
