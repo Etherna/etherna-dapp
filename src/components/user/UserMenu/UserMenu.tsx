@@ -1,18 +1,18 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
 import React from "react"
@@ -22,6 +22,7 @@ import { ReactComponent as MoreIcon } from "@svg/icons/more.svg"
 
 import SharedMenuItems from "./SharedMenuItems"
 import SignedInMenuItems from "./SignedInMenuItems"
+import Button from "@common/Button"
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from "@common/Dropdown"
 import Placeholder from "@common/Placeholder"
 import Avatar from "@components/user/Avatar"
@@ -46,12 +47,14 @@ const UserMenu: React.FC = () => {
   return (
     <>
       <Dropdown>
-        <DropdownToggle className="btn btn-rounded btn-transparent">
-          {isSignedIn === false ? (
-            <MoreIcon />
-          ) : (
-            <Avatar image={avatar} address={address} />
-          )}
+        <DropdownToggle>
+          <Button as="div" modifier="transparent" rounded iconOnly>
+            {isSignedIn === false ? (
+              <MoreIcon />
+            ) : (
+              <Avatar image={avatar} address={address} />
+            )}
+          </Button>
         </DropdownToggle>
 
         <DropdownMenu>

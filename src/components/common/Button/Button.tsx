@@ -1,74 +1,115 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
 import React from "react"
-import classnames from "classnames"
+import { Link } from "react-router-dom"
+import classNames from "classnames"
 
 import "./button.scss"
 
 type ButtonProps = {
-  children: React.ReactNode
+  as?: React.ElementType
+  href?: string
+  rel?: string
+  target?: "_blank"
   className?: string
-  size?: "small" | "normal" | "large"
-  outline?: boolean
-  aspect?: "primary-light" | "secondary" | "danger" | "warning" | "transparent" | "link" | "link-secondary"
-  disabled?: boolean
-  rounded?: boolean
+  aspect?: "fill" | "outline" | "link"
+  modifier?: "primary" | "transparent" | "secondary" | "inverted" | "warning" | "danger"
   type?: "button" | "submit" | "reset"
-  action?: (e: React.SyntheticEvent) => void
+  rounded?: boolean
+  small?: boolean
+  large?: boolean
+  lighter?: boolean
+  iconOnly?: boolean
+  disabled?: boolean
+  style?: React.CSSProperties
+  onClick?: (e: React.SyntheticEvent) => void
 }
 
-const Button = ({
+const Button: React.FC<ButtonProps> = ({
   children,
+  as: As = "button",
   className,
-  size,
-  outline,
-  aspect,
-  action,
+  href,
+  rel,
+  target,
+  small,
+  large,
+  lighter,
+  iconOnly,
+  aspect = "fill",
+  modifier = "primary",
+  type,
   disabled,
   rounded,
-  type,
-}: ButtonProps) => {
+  onClick,
+}) => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.target === document.activeElement && e.key === "Enter" && action) {
-      action(e)
+    const isActiveElement = e.target === document.activeElement
+    const triggers = ["Enter", "Space"]
+    if (isActiveElement && triggers.includes(e.key)) {
+      onClick?.(e)
     }
   }
 
+  const btnClassName = classNames(
+    "btn",
+    {
+      "btn-default": aspect !== "link" && !small && !large,
+      [`btn-${aspect}`]: aspect,
+      [`btn--${modifier}`]: modifier,
+      "btn-sm": small,
+      "btn-lg": large,
+      "btn-light": lighter,
+      "btn-rounded": rounded,
+      "btn-icon": iconOnly,
+    },
+    className
+  )
+
   return (
-    <button
-      className={classnames(
-        "btn",
-        {
-          "btn-sm": size === "small",
-          "btn-lg": size === "large",
-          "btn-outline": outline,
-          "btn-rounded": rounded,
-          [`btn-${aspect}`]: aspect,
-        },
-        className
+    <>
+      {As === "a" && href ? (
+        <Link
+          to={href}
+          rel={rel}
+          target={target}
+          className={btnClassName}
+          type={type}
+          role="button"
+          onClick={onClick}
+          onKeyDown={handleKeyDown}
+        >
+          {children}
+        </Link>
+      ) : (
+        <As
+          className={btnClassName}
+          type={type}
+          tabIndex={0}
+          role="button"
+          onClick={onClick}
+          onKeyDown={handleKeyDown}
+          disabled={disabled ? true : false}
+        >
+          {children}
+        </As>
       )}
-      type={type}
-      onClick={action}
-      onKeyDown={handleKeyDown}
-      disabled={disabled ? true : false}
-    >
-      {children}
-    </button>
+    </>
   )
 }
 

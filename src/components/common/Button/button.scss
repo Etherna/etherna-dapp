@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,32 +14,185 @@
  *  limitations under the License.
  */
 
+$btn-modifiers: (
+  primary theme('colors.primary.500') theme('colors.primary.600') theme('colors.primary.600') theme('colors.primary.700'),
+  secondary theme('colors.gray.400') theme('colors.gray.500') theme('colors.gray.600') theme('colors.gray.700'),
+  inverted theme('colors.gray.900') theme('colors.black') theme('colors.gray.100') theme('colors.white'),
+  warning theme('colors.yellow.500') theme('colors.yellow.600') theme('colors.yellow.600') theme('colors.yellow.700'),
+  danger theme('colors.red.500') theme('colors.red.600') theme('colors.red.600') theme('colors.red.700'),
+);
+
 .btn {
-  @apply inline-flex items-center justify-center rounded-md;
-  @apply py-2 px-5 space-x-1;
-  @apply transition duration-300;
-  @apply text-white font-semibold text-sm text-center;
-  @apply bg-primary-500 dark:bg-primary-600;
+  @apply inline-flex items-center justify-center;
+  @apply transition-colors duration-75;
+  @apply font-semibold text-center;
   @apply cursor-pointer;
 
-  &:not(:disabled) {
-    @apply hover:bg-primary-600 hover:text-white;
-    @apply dark:hover:bg-primary-700;
+  svg {
+    @apply h-[1.2em];
+    @apply mr-1.5;
   }
 
-  svg {
-    @apply h-4;
+  &:disabled {
+    @apply opacity-50 pointer-events-none cursor-default;
   }
+}
+
+.btn-default {
+  @apply py-2 px-5 rounded;
+  @apply text-sm;
 }
 
 .btn-sm {
-  @apply py-1 px-3 text-xs rounded;
+  @apply py-1 px-3 rounded;
+  @apply text-xs;
 }
 
 .btn-lg {
-  @apply py-3 px-8 text-base rounded-lg;
+  @apply py-3 px-8 rounded-lg;
+  @apply text-base;
 }
 
+.btn-icon {
+  @apply p-2;
+
+  svg {
+    @apply m-0;
+  }
+}
+
+.btn-rounded {
+  @apply rounded-full;
+}
+
+.btn-fill {
+  @apply text-gray-50;
+
+  @each $modifier, $light-color, $light-color-active, $dark-color, $dark-color-active in $btn-modifiers {
+    &.btn--#{$modifier} {
+      background-color: $light-color;
+      .dark & {
+        background-color: $dark-color;
+      }
+
+      &:active {
+        background-color: $light-color-active;
+        .dark & {
+          background-color: $dark-color-active;
+        }
+      }
+
+      &.btn-light {
+        background-color: $light-color + 'ab';
+
+        .dark & {
+          background-color: $dark-color + 'ab';
+        }
+      }
+
+      &.btn-light:active {
+        background-color: $light-color + 'c2';
+
+        .dark & {
+          background-color: $dark-color + 'c2';
+        }
+      }
+    }
+    &.btn--inverted {
+      @apply text-gray-100 dark:text-gray-900;
+    }
+    &.btn--transparent {
+      @apply text-gray-900 dark:text-gray-100;
+      @apply active:bg-gray-900/5 dark:active:bg-gray-100/5;
+    }
+  }
+}
+
+.btn-outline {
+  @apply border;
+
+  @each $modifier, $light-color, $light-color-active, $dark-color, $dark-color-active in $btn-modifiers {
+    &.btn--#{$modifier} {
+      color: $light-color;
+      border-color: $light-color;
+      .dark & {
+        color: $dark-color;
+        border-color: $dark-color;
+      }
+
+      &:active {
+        color: $light-color-active;
+        border-color: $light-color-active;
+        .dark & {
+          color: $dark-color-active;
+          border-color: $dark-color-active;
+        }
+      }
+
+      &.btn-light {
+        color: $light-color + 'ab';
+        border-color: $light-color + 'ab';
+
+        .dark & {
+          color: $dark-color + 'ab';
+          border-color: $dark-color + 'ab';
+        }
+      }
+
+      &.btn-light:active {
+        color: $light-color + 'c2';
+        border-color: $light-color + 'c2';
+
+        .dark & {
+          color: $dark-color + 'c2';
+          border-color: $dark-color + 'c2';
+        }
+      }
+    }
+  }
+}
+
+.btn-link {
+  @apply text-[1em];
+
+  @each $modifier, $light-color, $light-color-active, $dark-color, $dark-color-active in $btn-modifiers {
+    &.btn--#{$modifier} {
+      color: $light-color;
+      .dark & {
+        color: $dark-color;
+      }
+
+      &:active {
+        color: $light-color-active;
+        .dark & {
+          color: $dark-color-active;
+        }
+      }
+
+      &.btn-light {
+        color: $light-color + 'ab';
+
+        .dark & {
+          color: $dark-color + 'ab';
+        }
+      }
+
+      &.btn-light:active {
+        color: $light-color + 'c2';
+
+        .dark & {
+          color: $dark-color + 'c2';
+        }
+      }
+    }
+
+    &.btn--secondary {
+      @apply text-gray-500 dark:text-gray-400;
+    }
+  }
+}
+
+/*
 .btn-primary-light {
   @apply text-white;
   @apply bg-green-500/75 dark:bg-green-500/50;
@@ -48,6 +201,8 @@
     @apply hover:bg-green-500/100 dark:hover:bg-green-500/75;
   }
 }
+
+/*
 
 .btn-outline {
   @apply border-2 rounded-md;
@@ -147,3 +302,4 @@
     @apply w-6 h-6;
   }
 }
+*/

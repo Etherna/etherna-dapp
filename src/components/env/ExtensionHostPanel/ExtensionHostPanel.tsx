@@ -1,18 +1,18 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
 import React, { useMemo, useState } from "react"
@@ -137,24 +137,24 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
       <div className="extension-host-panel-update">
         <div className="extension-host-panel-actions">
           {isEditing ? (
-            <Button aspect="transparent" size="small" action={saveSelectedHost}>
+            <Button modifier="transparent" onClick={saveSelectedHost} small>
               <CheckIcon />
               <span>Save</span>
             </Button>
           ) : (
             <>
-              <Button aspect="transparent" size="small" action={addNewHost}>
+              <Button modifier="transparent" onClick={addNewHost} small>
                 <PlusIcon />
                 <span>Add</span>
               </Button>
 
               {!isVerifiedOrigin(selectedUrl) && (
                 <div className="extension-host-panel-actions-right">
-                  <Button aspect="transparent" size="small" action={toggleEditSelectedHost}>
+                  <Button modifier="transparent" onClick={toggleEditSelectedHost} small>
                     <EditIcon />
                     <span>Edit</span>
                   </Button>
-                  <Button aspect="transparent" size="small" action={deleteSelectedHost}>
+                  <Button modifier="transparent" onClick={deleteSelectedHost} small>
                     <TrashIcon />
                     <span>Remove</span>
                   </Button>

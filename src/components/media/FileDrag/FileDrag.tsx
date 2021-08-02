@@ -175,8 +175,9 @@ const FileDragContent: React.FC<FileDragProps> = ({
             </p>
             <Button
               className="file-drag-processing-cancel"
-              aspect="link-secondary"
-              action={handleCancel}
+              aspect="link"
+              modifier="secondary"
+              onClick={handleCancel}
               disabled={disabled}
             >
               Cancel
@@ -185,7 +186,7 @@ const FileDragContent: React.FC<FileDragProps> = ({
           <div className="file-drag-processing-action-list">
             {isBrowserCompatible && (
               <div className="file-drag-processing-action">
-                <Button action={() => handleFileProcessing(!isBrowserCompatible)} disabled={disabled}>
+                <Button onClick={() => handleFileProcessing(!isBrowserCompatible)} disabled={disabled}>
                   {isEncodable ? (
                     "Upload as is"
                   ) : (
@@ -202,7 +203,7 @@ const FileDragContent: React.FC<FileDragProps> = ({
 
             {isEncodable && (
               <div className="file-drag-processing-action">
-                <Button action={() => handleFileProcessing(true)} disabled={disabled}>
+                <Button onClick={() => handleFileProcessing(true)} disabled={disabled}>
                   Encode and upload
                 </Button>
                 <FieldDesrcription>
@@ -245,7 +246,7 @@ const FileDragContent: React.FC<FileDragProps> = ({
               <span className="drag-info drag-select">
                 <span className="text-sm font-normal">or</span>
               </span>
-              <div className="btn btn-primary-light drag-select">Select</div>
+              <Button as="div" className="drag-select" lighter>Select</Button>
 
               {uploadLimit && (
                 <small className="drag-size drag-select">{uploadLimit}MB</small>

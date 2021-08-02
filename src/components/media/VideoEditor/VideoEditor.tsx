@@ -126,13 +126,13 @@ const VideoEditor = () => {
         <Spinner width={30} />
       ) : (
         <Button
-          action={submitVideo}
-          size="large"
+          onClick={submitVideo}
           disabled={
             !canPublishVideo ||
             hasQueuedProcesses ||
             isDeleting
           }
+          large
         >
           {reference ? "Update video" : "Publish video"}
         </Button>
@@ -199,14 +199,14 @@ const VideoEditor = () => {
 
               {reference ? (
                 <Button
-                  aspect="danger"
+                  modifier="danger"
                   disabled={isSubmitting}
-                  action={() => setShowDeleteModal(true)}
+                  onClick={() => setShowDeleteModal(true)}
                 >
                   Delete Video
                 </Button>
               ) : (
-                <Button aspect="link-secondary" action={askToClearState}><TrashIcon /> Clear all</Button>
+                <Button aspect="link" modifier="secondary" onClick={askToClearState}><TrashIcon /> Clear all</Button>
               )}
             </div>
           </div>

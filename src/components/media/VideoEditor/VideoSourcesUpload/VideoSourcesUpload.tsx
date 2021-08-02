@@ -278,12 +278,12 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
                 actionsRender={
                   <>
                     {(i > 0 && !isUploading) && (
-                      <Button aspect="link" action={() => removeSource(i)} disabled={disabled}>
+                      <Button aspect="link" onClick={() => removeSource(i)} disabled={disabled}>
                         Remove
                       </Button>
                     )}
                     {isUploading && (
-                      <Button aspect="link" action={() => handleCancelUpload(i)} disabled={disabled}>
+                      <Button aspect="link" onClick={() => handleCancelUpload(i)} disabled={disabled}>
                         Cancel
                       </Button>
                     )}
