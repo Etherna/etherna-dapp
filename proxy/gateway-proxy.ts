@@ -15,6 +15,7 @@
  */
 
 import fs from "fs"
+import path from "path"
 import express from "express"
 import https from "https"
 import cors from "cors"
@@ -46,17 +47,21 @@ app.use(
 app.use(SwarmMiddleware)
 app.use(ValidatorMiddleware)
 
-const PrivateKeyPath = process.env.SSL_KEY_FILE
-const CertificatePath = process.env.SSL_CRT_FILE
+const PrivateKeyPath = path.resolve("..", process.env.SSL_KEY_FILE)
+const CertificatePath = path.resolve("..", process.env.SSL_CRT_FILE)
 
 if (fs.existsSync(PrivateKeyPath) && fs.existsSync(CertificatePath)) {
-  const privateKey = fs.readFileSync(PrivateKeyPath, "utf8")
-  const certificate = fs.readFileSync(CertificatePath, "utf8")
+  const privateKey = fs.readFileSync(PrivateKeyPath)
+  const certificate = fs.readFileSync(CertificatePath)
 
   const httpsServer = https.createServer({ key: privateKey, cert: certificate }, app)
-  httpsServer.listen(port)
+  httpsServer.listen(port, () => {
+    console.log(`Proxy started at: https://localhost:${port}`)
+  })
 } else {
-  app.listen(port)
+  app.listen(port, () => {
+    console.log(`Proxy started at: http://localhost:${port}`)
+  })
 }
 
 process.setMaxListeners(0)

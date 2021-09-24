@@ -19,11 +19,12 @@ import path from "path"
 import dotenv from "dotenv"
 
 export default function loadEnv() {
-  const envPath = fs.existsSync(path.resolve(".env.development"))
-    ? ".env.development"
-    : ".env"
+  const envPath = fs.existsSync(path.resolve("../.env.development"))
+    ? path.resolve("../.env.development")
+    : path.resolve("../.env")
 
   dotenv.config({
     path: envPath,
   })
+
 }
