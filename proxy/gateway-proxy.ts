@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,16 +14,16 @@
  *  limitations under the License.
  */
 
-const fs = require("fs")
-const https = require("https")
-const express = require("express")
-const cors = require("cors")
-const { json, raw, urlencoded } = require("body-parser")
+import fs from "fs"
+import express from "express"
+import https from "https"
+import cors from "cors"
 
-const { ValidatorMiddleware } = require("./middlewares/validator-middleware")
-const { SwarmMiddleware } = require("./middlewares/swarm-middleware")
+import ValidatorMiddleware from "./middlewares/validator-middleware.js"
+import SwarmMiddleware from "./middlewares/swarm-middleware.js"
+import loadEnv from "./utils/env.js"
 
-require("./utils/env")
+loadEnv()
 
 /**
  * Setup node server
@@ -31,9 +31,9 @@ require("./utils/env")
 const app = express()
 const port = process.env.GATEWAY_PORT || 44362
 
-app.use(json())
-app.use(urlencoded({ extended: true }))
-app.use(raw({
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(express.raw({
   type: "*/*",
   limit: "100mb"
 }))

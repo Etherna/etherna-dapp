@@ -20,6 +20,9 @@
     "react",
     "@typescript-eslint"
   ],
+  "ignorePatterns": [
+    "*/build/**/*.js"
+  ],
   "rules": {
     "max-len": [
       "warn",
@@ -27,7 +30,10 @@
         "code": 120
       }
     ],
-    "semi": ["error", "never"],
+    "semi": [
+      "error",
+      "never"
+    ],
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
     "react/display-name": "off",
@@ -36,7 +42,9 @@
       2,
       {
         "SwitchCase": 1,
-        "ignoredNodes": ["ConditionalExpression"],
+        "ignoredNodes": [
+          "ConditionalExpression"
+        ],
         "ignoreComments": true
       }
     ],

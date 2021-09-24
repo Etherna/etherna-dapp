@@ -27,7 +27,8 @@ yarn install
 
 ### 2. Configure SSL
 
-For more info check out the SSL [README](/server/sslcert/README.md).
+Some APIs might require the app to run with an SSL certificate.
+For more info on how to install a local certificate check out the SSL [README](/server/sslcert/README.md).
 
 ```
 cd server
@@ -92,13 +93,13 @@ npm run dev
 // or
 yarn dev
 
+// to run all the services (recommended)
+npm run start
+// or
+yarn start
+
 // to run the gateway proxy (no etherna services)
 npm run start:proxy
 // or
 yarn start:proxy
-
-// to run all the services (recommended)
-npm run start:services
-// or
-yarn start:services
 ```

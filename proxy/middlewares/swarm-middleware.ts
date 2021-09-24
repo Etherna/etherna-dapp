@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,14 +14,16 @@
  *  limitations under the License.
  */
 
-const fetch = require("node-fetch").default
-const { Response } = require("node-fetch")
-const { createProxyMiddleware } = require("http-proxy-middleware")
+import { createProxyMiddleware } from "http-proxy-middleware"
+import { Request as ProxyRequest, Response as ProxyResponse } from "http-proxy-middleware/dist/types"
+import { ClientRequest, IncomingHttpHeaders } from "http"
+import fetch, { Response, RequestInit, BodyInit } from "node-fetch"
 
-require("../utils/env")
+import FilterTransformStream from "../classes/FilterTransformStream.js"
+import loadEnv from "../utils/env.js"
+import type { ValidationResponse } from "./validator"
 
-const FilterTransformStream = require("../classes/FilterTransformStream")
-
+loadEnv()
 
 // Consts
 const GatewayValidPathsRegex = /^\/(bytes|chunks|bzz|tags|pins|soc|feeds|pss|stamps)\/?.*/
@@ -29,30 +31,26 @@ const MaxBodySizeCap = 5000000 //5MB
 const ValidatorHost = process.env.GATEWAY_VALIDATOR_PROXY_HOST
 const SwarmHost = process.env.GATEWAY_SWARM_PROXY_HOST
 
-
 // Middleware
-module.exports.SwarmMiddleware = createProxyMiddleware(
-  (pathname, req) => {
+const SwarmMiddleware = createProxyMiddleware(
+  pathname => {
     return GatewayValidPathsRegex.test(pathname)
   },
   {
     target: SwarmHost,
     changeOrigin: true,
     secure: false,
-    logLevel: "info" && "warn" && "error",
+    logLevel: "error",
     selfHandleResponse: true,
-    onProxyReq: handleRequest
+    onProxyReq: handleRequest as any
   }
 )
 
 
 /**
  * Fetch and return the request body
- * @param {import("http").ClientRequest} proxyReq
- * @param {import("http-proxy-middleware/dist/types").Request} req
- * @param {import("http-proxy-middleware/dist/types").Response} res
  */
-async function handleRequest(proxyReq, req, res) {
+async function handleRequest(proxyReq: ClientRequest, req: ProxyRequest, res: ProxyResponse) {
   // Wrap your script in a try/catch and return the error stack to view error information.
   try {
     const response = await handleValidatorRequest(req, res)
@@ -76,10 +74,8 @@ async function handleRequest(proxyReq, req, res) {
 
 /**
  * Validate and handle requests for gateway resources.
- * @param {import("http-proxy-middleware/dist/types").Request} req
- * @param {import("http-proxy-middleware/dist/types").Response} res
  */
-async function handleValidatorRequest(req, res) {
+async function handleValidatorRequest(req: ProxyRequest, res: ProxyResponse) {
   // Run requests.
   const gatewayResponsePromise = forwardRequestToGateway(req) //start async request to gateway
 
@@ -96,7 +92,6 @@ async function handleValidatorRequest(req, res) {
   // So we must return the un-filtered response in the meantime.
   return await gatewayResponsePromise
 
-
   // Get Validator response.
   const validatorResponse = await forwardRequestToValidator(req) //get response from validator
 
@@ -107,7 +102,7 @@ async function handleValidatorRequest(req, res) {
   }
 
   // Decode data from validator response.
-  const validationData = await validatorResponse.json()
+  const validationData = await validatorResponse.json() as ValidationResponse
 
   // Elaborate result.
   switch (validationData.result) {
@@ -133,10 +128,8 @@ async function handleValidatorRequest(req, res) {
 
 /**
  * Execute a limited request, validate result, and report to validator consumed data ammount
- * @param {Promise<import("node-fetch").Response>} gatewayResponsePromise
- * @param {{id: string, maxBodySize: number, result: string}} validationData
  */
-async function limitGatewayResponse(gatewayResponsePromise, validationData) {
+async function limitGatewayResponse(gatewayResponsePromise: Promise<Response>, validationData: ValidationResponse) {
   const maxBodySize = Math.min(validationData.maxBodySize, MaxBodySizeCap) //put an hard cap on body size
   const requestId = validationData.id
   const requestSecret = validationData.secret
@@ -166,8 +159,11 @@ async function limitGatewayResponse(gatewayResponsePromise, validationData) {
       }
 
       //Content-Length. Fix it only if there is also content-range header
-      if (response.headers.has("Content-Length") && parseInt(response.headers.get("Content-Length"), 10) > maxBodySize) {
-        response.headers.set("Content-Length", maxBodySize)
+      const contentLength = response.headers.has("Content-Length")
+        ? parseInt(response.headers.get("Content-Length"), 10)
+        : null
+      if (contentLength > maxBodySize) {
+        response.headers.set("Content-Length", `${maxBodySize}`)
       }
     }
 
@@ -188,11 +184,8 @@ async function limitGatewayResponse(gatewayResponsePromise, validationData) {
 
 /**
 * Notify validator that a stream is ended with a given transfered data.
-* @param {string} requestId
-* @param {number} bodySize
-* @param {string} secret
 */
-async function notifyEndOfLimitedRequest(requestId, bodySize, secret) {
+async function notifyEndOfLimitedRequest(requestId: string, bodySize: number, secret: string) {
   const closeEndpoint = ValidatorHost + "/api/v0.2/interceptor/request/close"
 
   const method = "PUT"
@@ -211,9 +204,8 @@ async function notifyEndOfLimitedRequest(requestId, bodySize, secret) {
 
 /**
  * Build forward request to gateway as a reverse proxy.
- * @param {import("http-proxy-middleware/dist/types").Request} request
  */
-async function forwardRequestToGateway(request) {
+async function forwardRequestToGateway(request: ProxyRequest) {
   // Strip cookies.
   const headers = { ...request.headers }
   headers.host = SwarmHost.replace(/^https?:\/\//, "")
@@ -227,10 +219,8 @@ async function forwardRequestToGateway(request) {
 
 /**
  * Build forward request to validator as a reverse proxy.
- * @param {import("http-proxy-middleware/dist/types").Request} request
- * @param {boolean} forceHttps
  */
-async function forwardRequestToValidator(request, forceHttps) {
+async function forwardRequestToValidator(request: ProxyRequest, forceHttps = false) {
   // Create new url.
   const newRequestUrl = new URL(ValidatorHost + request.url)
 
@@ -252,14 +242,10 @@ async function forwardRequestToValidator(request, forceHttps) {
 
 /**
  * Parse the options for a fetch request
- * @param {import("node-fetch").HeadersInit} headers
- * @param {string} method
- * @param {import("node-fetch").BodyInit} body
  */
-const parseFetchOptions = (headers, method, body) => {
-  /** @type {import("node-fetch").RequestInit} */
-  const options = {
-    headers,
+const parseFetchOptions = (headers: IncomingHttpHeaders, method: string, body: BodyInit) => {
+  const options: RequestInit = {
+    headers: headers as HeadersInit,
     body,
     method: method,
   }
@@ -270,3 +256,5 @@ const parseFetchOptions = (headers, method, body) => {
 
   return options
 }
+
+export default SwarmMiddleware

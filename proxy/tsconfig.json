@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "esModuleInterop": true,
+    "importHelpers": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "target": "esnext",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "outDir": "./build",
+    "rootDir": "./",
+    "baseUrl": "."
+  }
+}
