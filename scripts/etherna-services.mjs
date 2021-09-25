@@ -122,18 +122,7 @@ const execProject = (projectPath) => {
  * Run the bee instance
  */
 const execBee = () => {
-  const boolVal = (val) => val === "true" || val === "1"
-  const pwd = process.env.BEE_PWD ? `--password=${process.env.BEE_PWD}` : ``
-  const endpoint = process.env.BEE_PORT ? `--api-addr=:${process.env.BEE_PORT}` : ``
-  const pinning = boolVal(process.env.BEE_ENABLE_PIN) ? `--global-pinning-enable=true` : ``
-  const dbCapacity = process.env.BEE_DB_CAPACITY ? `--cache-capacity=${process.env.BEE_DB_CAPACITY}` : ``
-  const swapEndpoint = process.env.BEE_SWAP_ENDPOINT ? `--swap-endpoint=${process.env.BEE_SWAP_ENDPOINT}` : ``
-  const otherArgs = [
-    `--gateway-mode=true`,
-    `--cors-allowed-origins=*`,
-    `--mainnet=false`,
-  ]
-  const execCms = `bee start ${pwd} ${endpoint} ${pinning} ${dbCapacity} ${swapEndpoint} ${otherArgs.join(" ")}`.trim()
+  const execCms = `bee dev --cors-allowed-origins=*`
   return exec(execCms, execCallback)
 }
 
