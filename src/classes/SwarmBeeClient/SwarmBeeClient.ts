@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,10 +14,11 @@
  *  limitations under the License.
  */
 
-import { BatchId, Bee, Collection, Reference } from "@ethersphere/bee-js"
+import { BatchId, Bee, Collection, UploadResult } from "@ethersphere/bee-js"
 
-import { CustomUploadOptions } from "./customUpload"
-import http from "@utils/request"
+import { AxiosUploadOptions, CustomUploadOptions } from "./customUpload"
+import http, { createRequest } from "@utils/request"
+import { buildAxiosFetch } from "@utils/fetch"
 
 export type MultipleFileUpload = { buffer: Uint8Array, type?: string }[]
 
@@ -25,6 +26,16 @@ export type MultipleFileUpload = { buffer: Uint8Array, type?: string }[]
  * Extend default Bee client with more functionalities and endpoints
  */
 export default class SwarmBeeClient extends Bee {
+
+  /**
+   * Create custom fetch implementation that accept upload progress and canceler
+   */
+  getFetch(options?: AxiosUploadOptions) {
+    const request = createRequest()
+    request.defaults.onUploadProgress = options?.onUploadProgress
+    request.defaults.cancelToken = options?.cancelToken
+    return buildAxiosFetch(request) as typeof fetch
+  }
 
   /**
    * Add content to a directory returning the new hash
@@ -56,7 +67,7 @@ export default class SwarmBeeClient extends Bee {
     batchId: string | BatchId,
     data: MultipleFileUpload,
     opts?: CustomUploadOptions
-  ): Promise<Reference[]> {
+  ): Promise<UploadResult[]> {
     return await Promise.all(
       data.map(data => this.uploadFile(batchId, data.buffer, undefined, { contentType: data.type }))
     )
@@ -112,7 +123,7 @@ export default class SwarmBeeClient extends Bee {
         }
       })
       return true
-    } catch (error) {
+    } catch (error: any) {
       return false
     }
   }

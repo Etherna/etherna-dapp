@@ -184,14 +184,15 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
         )}
         {status === "upload" && (
           <FileUpload
-            children={children}
             buffer={buffer!}
             disabled={disabled}
             canUpload={canProcessFile}
             uploadHandler={uploadHandler}
             onUploadFinished={onUploadFinished}
             onCancel={handleCancel}
-          />
+          >
+            {children}
+          </FileUpload>
         )}
         {status === "preview" && (
           <>

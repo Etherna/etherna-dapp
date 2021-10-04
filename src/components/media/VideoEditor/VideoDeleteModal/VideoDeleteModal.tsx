@@ -49,7 +49,7 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
 
     try {
       await deleteHandler()
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
 
       onCancel?.()

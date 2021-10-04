@@ -102,7 +102,7 @@ const VideoEncoder: React.FC<VideoEncoderProps> = ({
       console.log("unlink")
 
       onEncodingComplete(data.buffer)
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
 
       showError("Encoding Error", error.message)

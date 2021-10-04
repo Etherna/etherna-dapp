@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+import Axios from "axios"
 import imageResize from "image-resizer-js"
 
 import { SwarmImageRaw, SwarmImageUploadOptions } from "./types"
@@ -158,6 +159,19 @@ export default class SwarmImage {
       value: "",
     }
     const batchId = await this.beeClient.getBatchId()
+    const fetch = this.beeClient.getFetch({
+      onUploadProgress: e => {
+        if (options?.onUploadProgress) {
+          const progress = Math.round((e.loaded * 100) / e.total)
+          options.onUploadProgress(progress)
+        }
+      },
+      cancelToken: new Axios.CancelToken(function executor(c) {
+        if (options?.onCancelToken) {
+          options.onCancelToken(c)
+        }
+      }),
+    })
 
     let imgReference = ""
 
@@ -170,27 +184,30 @@ export default class SwarmImage {
       }))
 
       // upload files and retrieve the new reference
-      const references = await this.beeClient.uploadMultipleFiles(batchId, uploads)
-      imgReference = references[0]
+      const references = await this.beeClient.uploadMultipleFiles(batchId, uploads, { fetch })
+      imgReference = references[0].reference
 
       // update raw image object
-      imageRaw.value = references[0]
+      imageRaw.value = references[0].reference
       imageRaw.originalSize = this.originalImageSize
       imageRaw.sources = sizes.reduce(
         (obj, size, i) => ({
           ...obj,
-          [size]: references[i],
+          [size]: references[i].reference,
         }),
         imageRaw.sources
       )
     } else {
       // upload file and retrieve the new reference
-      imgReference = await this.beeClient.uploadFile(
+      imgReference = (await this.beeClient.uploadFile(
         batchId,
         new Uint8Array(this.originalImageData!),
         undefined,
-        { contentType: this.contentType }
-      )
+        {
+          contentType: this.contentType,
+          fetch
+        }
+      )).reference
 
       // update raw image object
       imageRaw.value = imgReference
@@ -236,7 +253,7 @@ export default class SwarmImage {
         }
         img.onerror = reject
         img.src = dataURL
-      } catch (error) {
+      } catch (error: any) {
         reject(error)
       }
     })

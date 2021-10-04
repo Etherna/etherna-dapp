@@ -55,7 +55,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ videoHash, onCommentPosted })
       setText("")
       setIsFocused(false)
       inputRef.current?.blur()
-    } catch (error) {
+    } catch (error: any) {
       showError("Cannot post the comment", error.message)
     }
 

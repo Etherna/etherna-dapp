@@ -18,6 +18,7 @@
 @tailwind components;
 
 @import "../../../node_modules/react-image-crop/src/ReactCrop.scss";
+@import "./tw-fix";
 @import "./reset";
 @import "./typography";
 @import "./grid";

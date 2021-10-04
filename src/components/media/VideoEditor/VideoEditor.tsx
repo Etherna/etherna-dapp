@@ -80,7 +80,7 @@ const VideoEditor = () => {
       resetState()
       setVideoLink(Routes.getVideoLink(reference))
       setSaved(true)
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
       showError("Linking error", error.message)
     }
@@ -95,7 +95,7 @@ const VideoEditor = () => {
       await videoHandler.deleteVideo()
 
       setSaved(true)
-    } catch (error) {
+    } catch (error: any) {
       showError("Cannot delete the video", error.message)
     }
 

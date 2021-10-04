@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -211,7 +211,12 @@ export default class SwarmVideo {
     const meta = this.validatedMetadata()
     const metaData = new TextEncoder().encode(JSON.stringify(meta))
     const batchId = await this.beeClient.getBatchId()
-    const videoReference = await this.beeClient.uploadFile(batchId, metaData, undefined, { contentType: "text/json" })
+    const videoReference = (await this.beeClient.uploadFile(
+      batchId,
+      metaData,
+      undefined,
+      { contentType: "text/json" }
+    )).reference
 
     if (this.hash) {
       // update manifest on index
@@ -260,27 +265,28 @@ export default class SwarmVideo {
     const bitrate = Math.round(size * 8 / duration)
 
     const batchId = await this.beeClient.getBatchId()
-    const reference = await this.beeClient.uploadFile(
+    const fetch = this.beeClient.getFetch({
+      onUploadProgress: e => {
+        if (opts?.onUploadProgress) {
+          const progress = Math.round((e.loaded * 100) / e.total)
+          opts.onUploadProgress(progress)
+        }
+      },
+      cancelToken: new Axios.CancelToken(function executor(c) {
+        if (opts?.onCancelToken) {
+          opts.onCancelToken(c)
+        }
+      }),
+    })
+    const reference = (await this.beeClient.uploadFile(
       batchId,
       new Uint8Array(video),
       undefined,
       {
         contentType,
-        axiosOptions: {
-          onUploadProgress: e => {
-            if (opts?.onUploadProgress) {
-              const progress = Math.round((e.loaded * 100) / e.total)
-              opts.onUploadProgress(progress)
-            }
-          },
-          cancelToken: new Axios.CancelToken(function executor(c) {
-            if (opts?.onCancelToken) {
-              opts.onCancelToken(c)
-            }
-          }),
-        }
+        fetch,
       }
-    )
+    )).reference
 
     const videoSource: VideoSource = {
       source: this.beeClient.getFileUrl(reference),

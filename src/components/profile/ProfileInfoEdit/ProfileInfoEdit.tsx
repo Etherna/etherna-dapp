@@ -23,6 +23,7 @@ import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
 
 import Button from "@common/Button"
 import MarkdownEditor from "@common/MarkdownEditor"
+import TextField from "@common/TextField"
 import { Profile } from "@classes/SwarmProfile/types"
 import SwarmImage from "@classes/SwarmImage"
 import SwarmProfile from "@classes/SwarmProfile"
@@ -123,7 +124,7 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
       await responsiveImage.upload()
 
       imagesUtils[type].updateImage(responsiveImage)
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
       showError("Cannot upload the image", error.message)
     }
@@ -205,11 +206,11 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
 
       <div className="row">
         <div className="col max-w-xxs p-4">
-          <input
+          <TextField
             type="text"
             placeholder="Profile name"
             value={profileName || ""}
-            onChange={e => setProfileName(e.target.value || "")}
+            onChange={val => setProfileName(val || "")}
           />
         </div>
         <div className="flex-1 p-4">

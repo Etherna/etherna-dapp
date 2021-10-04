@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -124,7 +124,7 @@ export default class SwarmProfile {
       const rawProfile = resp.json() as ProfileRaw
 
       profile = { ...profile, ...rawProfile }
-    } catch (error) {
+    } catch (error: any) {
       // Fetch profile from feed
       try {
         const topic = this.beeClient.makeFeedTopic(SwarmProfile.topicName)
@@ -165,7 +165,7 @@ export default class SwarmProfile {
     // Upload json
     const serializedJson = new TextEncoder().encode(JSON.stringify(baseProfile))
     const batchId = await this.beeClient.getBatchId()
-    const reference = await this.beeClient.uploadData(batchId, serializedJson)
+    const reference = (await this.beeClient.uploadData(batchId, serializedJson)).reference
 
     // update feed
     if (this.beeClient.signer) {
@@ -207,7 +207,7 @@ export default class SwarmProfile {
     try {
       const data = await this.beeClient.downloadData(reference)
       return data.json()
-    } catch (error) {
+    } catch (error: any) {
       return {}
     }
   }

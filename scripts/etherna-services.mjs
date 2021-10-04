@@ -114,7 +114,7 @@ const serviceHost = projectPath => {
  * @param {string} projectPath The service project path
  */
 const execProject = (projectPath) => {
-  const execCms = `DOTNET_WATCH_SUPPRESS_LAUNCH_BROWSER=true dotnet watch -p ${projectPath} run`
+  const execCms = `dotnet watch -p ${projectPath} run`
   return exec(execCms, execCallback)
 }
 
@@ -161,6 +161,8 @@ let processes = []
  * Run the project services
  */
 const run = async () => {
+  console.log(chalk.gray("Starting services..."))
+
   process.on("exit", () => {
     processes.forEach(process => {
       process.kill()
@@ -173,6 +175,7 @@ const run = async () => {
   const shouldRunEthernaIndex = args.length === 0 || args.includes("--index")
   const shouldRunEthernaCredit = args.length === 0 || args.includes("--credit")
   const shouldRunEthernaValidator = args.length === 0 || args.includes("--val")
+  const shouldRunProxy = args.length === 0 || args.includes("--proxy")
   const shouldRunBeeNode = process.env.BEE_LOCAL_INSTANCE === "true" && (args.length === 0 || args.includes("--bee"))
 
   if (shouldRunEthernaSSO) {
@@ -196,6 +199,11 @@ const run = async () => {
     processes.push(validatorProcess)
   }
 
+  if (shouldRunProxy) {
+    const validatorProcess = exec("cd proxy && npm run start", execCallback)
+    processes.push(validatorProcess)
+  }
+
   // await services async
   shouldRunEthernaIndex &&
     await waitService(process.env.ETHERNA_INDEX_PROJECT_PATH, "Etherna Index")
@@ -203,6 +211,8 @@ const run = async () => {
     await waitService(process.env.ETHERNA_CREDIT_PROJECT_PATH, "Etherna Credit")
   shouldRunEthernaValidator &&
     await waitService(process.env.ETHERNA_GATEWAY_VALIDATOR_PROJECT_PATH, "Etherna Gateway Validator")
+  shouldRunProxy &&
+    await waitService(`https://localhost:${process.env.GATEWAY_PORT}`, "Etherna Gateway Proxy")
 
   if (shouldRunBeeNode) {
     const beeProcess = execBee()

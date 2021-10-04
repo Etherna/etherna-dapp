@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+import { CancelToken } from "axios"
 import { BatchId, Collection, UploadHeaders, UploadOptions } from "@ethersphere/bee-js"
 import { prepareData } from "@ethersphere/bee-js/dist/src/utils/data"
 import { makeTar } from "@ethersphere/bee-js/dist/src/utils/tar"
@@ -21,11 +22,16 @@ import { extractUploadHeaders } from "@ethersphere/bee-js/dist/src/utils/headers
 
 import http from "@utils/request"
 
-export interface CustomUploadOptions extends UploadOptions {
+export interface CustomUploadOptions extends UploadOptions, AxiosUploadOptions {
   reference?: string
   endpoint?: "files" | "dirs"
   defaultIndexPath?: string
   defaultErrorPath?: string
+}
+
+export interface AxiosUploadOptions {
+  onUploadProgress?: (progressEvent: { loaded: number, total: number }) => void
+  cancelToken?: CancelToken
 }
 
 export interface CustomUploadHeaders extends UploadHeaders {
@@ -80,7 +86,8 @@ export async function upload(
       ...extractCustomUploadHeaders(postageBatchId, options),
     },
     responseType: "json",
-    ...options?.axiosOptions,
+    onUploadProgress: options?.onUploadProgress,
+    cancelToken: options?.cancelToken,
   })
 
   return response.data.reference

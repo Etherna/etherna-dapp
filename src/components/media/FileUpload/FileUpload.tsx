@@ -65,7 +65,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
       const hash = await uploadHandler(buffer)
 
       onUploadFinished(hash)
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
 
       setIsUploading(false)

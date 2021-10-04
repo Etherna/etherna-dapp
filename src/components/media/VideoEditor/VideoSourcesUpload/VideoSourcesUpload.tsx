@@ -164,7 +164,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
       setSources(newSources)
 
       removeFromQueue(queueName)
-    } catch (error) {
+    } catch (error: any) {
       showError("Error", error.message)
     }
   }

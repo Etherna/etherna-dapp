@@ -33,7 +33,7 @@ const fund = () => {
     console.log(`Creating a postage batch with ${result.bzz} BZZ / ${result.depth} depth...`)
 
     try {
-      const batchId = await bee.createPostageBatch(result.bzz, +result.depth)
+      const batchId = await bee.createPostageBatch(result.bzz || "10000000", +(result.depth || "20"))
       console.log(chalk.green(`Created postage batch. Id: ${batchId}`))
     } catch (error) {
       console.log(chalk.red(`Cannot create batch: ${error.message}`))
