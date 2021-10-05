@@ -12,12 +12,25 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
  */
 
-.appLayout {
-  @apply flex flex-wrap;
+import React from "react"
+import classNames from "classnames"
+
+type SidebarSpaceProps = {
+  flexible?: boolean
+  customHeight?: string
 }
 
-.main {
-  @apply block;
+const SidebarSpace: React.FC<SidebarSpaceProps> = ({ flexible, customHeight }) => {
+  const height = flexible ? "auto" : (customHeight ?? "2.25rem")
+  return (
+    <div
+      className={classNames({ "flex-grow": flexible })}
+      style={{ height }}
+    />
+  )
 }
+
+export default SidebarSpace

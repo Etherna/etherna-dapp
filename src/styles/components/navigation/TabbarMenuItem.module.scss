@@ -1,0 +1,46 @@
+/*
+ *  Copyright 2021-present Etherna Sagl
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.tabbarMenuItem {
+  @apply flex-grow;
+  @apply min-w-[15%];
+  @apply max-w-[96px];
+}
+
+.tabbarMenuItemMenu {
+  @apply fixed bottom-16 inset-x-0 z-10;
+  @apply flex flex-col-reverse;
+  @apply p-4 space-y-4 space-y-reverse;
+  @apply bg-gray-50 bg-opacity-80;
+  @apply dark:bg-gray-900 dark:bg-opacity-80;
+  @apply backdrop-filter backdrop-blur-lg;
+  @apply border-t border-b border-gray-800/75;
+  bottom: calc(theme("spacing.16") + var(--safe-area-inset-bottom));
+
+  > .tabbarItem {
+    composes: tabbarItem from "./TabbarItem.module.scss";
+
+    @apply flex-row items-center;
+    @apply max-w-none;
+
+    .tabbarItemTitle {
+      composes: tabbarItemTitle from "./TabbarItem.module.scss";
+
+      @apply mt-0 ml-5;
+      @apply text-sm;
+    }
+  }
+}

@@ -14,10 +14,31 @@
  *  limitations under the License.
  */
 
-.appLayout {
-  @apply flex flex-wrap;
+.sidebarLinksToggle {
+  @apply relative;
+
+  > .sidebarItem {
+    composes: sidebarItem from "./SidebarItem.module.scss";
+
+    @apply lg:pointer-events-none;
+    @apply lg:hover:bg-transparent;
+
+    > .sidebarItemIcon {
+      composes: sidebarItemIcon from "./SidebarItem.module.scss";
+
+      @apply lg:hidden;
+    }
+
+    > .sidebarLinksList {
+      composes: sidebarLinksList from "./SidebarLinksList.module.scss";
+      @apply ml-0;
+    }
+  }
 }
 
-.main {
-  @apply block;
+.sidebarLinksToggleArrow {
+  @apply absolute right-0 top-1/2;
+  @apply transform -translate-y-1/2;
+  @apply w-2.5 h-2.5;
+  @apply lg:hidden;
 }

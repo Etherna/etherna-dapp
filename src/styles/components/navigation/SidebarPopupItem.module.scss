@@ -14,10 +14,9 @@
  *  limitations under the License.
  */
 
-.appLayout {
-  @apply flex flex-wrap;
+.sidebarPopupItem {
 }
 
-.main {
-  @apply block;
+.sidebarPopupItemArrow {
+  @apply w-3 h-3;
 }

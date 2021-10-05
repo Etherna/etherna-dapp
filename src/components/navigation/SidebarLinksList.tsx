@@ -12,12 +12,19 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
  */
 
-.appLayout {
-  @apply flex flex-wrap;
+import React from "react"
+
+import classes from "@styles/components/navigation/SidebarLinksList.module.scss"
+
+const SidebarLinksList: React.FC = ({ children }) => {
+  return (
+    <div className={classes.sidebarLinksList}>
+      {children}
+    </div>
+  )
 }
 
-.main {
-  @apply block;
-}
+export default SidebarLinksList

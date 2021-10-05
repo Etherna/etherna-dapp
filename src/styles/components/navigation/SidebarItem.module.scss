@@ -1,0 +1,55 @@
+/*
+ *  Copyright 2021-present Etherna Sagl
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.sidebarItem {
+  @apply flex items-center justify-items-center rounded;
+  @apply w-full space-x-3 px-4 py-3;
+  @apply text-sm;
+  @apply cursor-pointer transition-colors duration-300;
+  @apply text-gray-800;
+  @apply dark:text-gray-200;
+  @apply lg:justify-items-stretch;
+
+  &.active {
+    @apply bg-gray-200 text-gray-900;
+    @apply dark:bg-gray-700 dark:text-gray-100;
+  }
+
+  &.compact {
+    @apply py-0;
+  }
+
+  &:not(.static) {
+    @apply hover:bg-gray-200 hover:text-gray-900;
+    @apply dark:hover:bg-gray-700 dark:hover:text-gray-100;
+  }
+}
+
+.sidebarItemIcon {
+  @apply w-6 h-6;
+  @apply mx-auto lg:mx-0;
+  @apply lg:w-5 lg:h-5;
+
+  svg {
+    @apply fill-current;
+  }
+}
+
+.sidebarItemTitle {
+  @apply hidden;
+  @apply text-sm;
+  @apply lg:inline lg:font-semibold;
+}

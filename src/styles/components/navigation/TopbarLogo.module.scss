@@ -14,10 +14,21 @@
  *  limitations under the License.
  */
 
-.appLayout {
-  @apply flex flex-wrap;
+.topbarLogo {
+  @apply h-5;
+  @apply text-gray-900 dark:text-gray-100;
+  @apply hover:text-gray-900 dark:hover:text-gray-100;
+
+  img,
+  svg {
+    @apply h-full w-auto object-contain object-center;
+  }
 }
 
-.main {
-  @apply block;
+.topbarLogoMobile {
+  @apply h-full sm:hidden;
+}
+
+.topbarLogoDefault {
+  @apply hidden h-full sm:block;
 }

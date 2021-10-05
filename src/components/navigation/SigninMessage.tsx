@@ -12,12 +12,27 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
  */
 
-.appLayout {
-  @apply flex flex-wrap;
+import React from "react"
+
+import classes from "@styles/components/navigation/SigninMessage.module.scss"
+
+import SigninButton from "@components/user/SigninButton"
+
+const SigninMessage: React.FC = () => {
+  return (
+    <div className={classes.signinMessage}>
+      <div className={classes.signinMessageText}>
+        You must signin to visit this page.
+      </div>
+
+      <div>
+        <SigninButton>Sign in</SigninButton>
+      </div>
+    </div>
+  )
 }
 
-.main {
-  @apply block;
-}
+export default SigninMessage

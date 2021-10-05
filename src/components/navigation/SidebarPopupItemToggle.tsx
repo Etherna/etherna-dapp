@@ -12,12 +12,23 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
  */
 
-.appLayout {
-  @apply flex flex-wrap;
+import React from "react"
+
+import SidebarItem, { SidebarItemProps } from "./SidebarItem"
+
+const SidebarPopupItemToggle: React.FC<SidebarItemProps> = (props) => {
+  const itemProps = { ...props }
+
+  return (
+    <SidebarItem {...itemProps} compact isStatic>
+      {props.children && (
+        props.children
+      )}
+    </SidebarItem>
+  )
 }
 
-.main {
-  @apply block;
-}
+export default SidebarPopupItemToggle

@@ -14,10 +14,11 @@
  *  limitations under the License.
  */
 
-.appLayout {
-  @apply flex flex-wrap;
+.signinMessage {
+  @apply px-4 py-6;
 }
 
-.main {
-  @apply block;
+.signinMessageText {
+  @apply text-xl font-medium;
+  @apply mb-4;
 }

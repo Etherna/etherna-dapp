@@ -14,10 +14,35 @@
  *  limitations under the License.
  */
 
-.appLayout {
-  @apply flex flex-wrap;
+.sidebarLinks {
 }
 
-.main {
-  @apply block;
+.sidebarLinksPopup {
+  @apply lg:hidden;
+
+  .sidebarItem {
+    composes: sidebarItem from "./SidebarItem.module.scss";
+
+    .sidebarItemTitle {
+      composes: sidebarItemTitle from "./SidebarItem.module.scss";
+
+      @apply block;
+      @apply px-0 py-1.5;
+    }
+  }
+}
+
+.sidebarLinksFlow {
+  @apply hidden lg:block;
+
+  > .sidebarItem {
+    composes: sidebarItem from "./SidebarItem.module.scss";
+
+    @apply pointer-events-none;
+    @apply hover:bg-transparent;
+
+    > * {
+      @apply pointer-events-auto;
+    }
+  }
 }
