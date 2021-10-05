@@ -17,18 +17,19 @@
 
 import React, { useMemo, useState } from "react"
 
-import "./extension-host-panel.scss"
+import classes from "@styles/components/env/ExtensionHostPanel.module.scss"
 import { ReactComponent as EditIcon } from "@assets/icons/edit.svg"
 import { ReactComponent as TrashIcon } from "@assets/icons/trash.svg"
 import { ReactComponent as CheckIcon } from "@assets/icons/check.svg"
 import { ReactComponent as PlusIcon } from "@assets/icons/plus.svg"
 
-import { ExtensionHost } from "./types"
-import ExtensionHostsList from "../ExtensionHostsList"
+import ExtensionHostsList from "./ExtensionHostsList"
 import Button from "@common/Button"
 import Label from "@common/Label"
+import FormGroup from "@common/FormGroup"
 import TextField from "@common/TextField"
 import useLocalStorage from "@hooks/useLocalStorage"
+import { ExtensionHost } from "@typings/env/extension-host"
 import { useErrorMessage } from "@state/hooks/ui"
 import { urlHostname } from "@utils/urls"
 
@@ -122,10 +123,10 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
   }
 
   return (
-    <div className="extension-host-panel">
-      <p className="extension-host-panel-description">{description}</p>
+    <div className={classes.extensionHostPanel}>
+      <p className={classes.extensionHostPanelDescription}>{description}</p>
 
-      <div className="extension-host-panel-list-container">
+      <div className={classes.extensionHostPanelListContainer}>
         <ExtensionHostsList
           hosts={hosts ?? []}
           selectedHost={selectedHost}
@@ -134,27 +135,27 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
         />
       </div>
 
-      <div className="extension-host-panel-update">
-        <div className="extension-host-panel-actions">
+      <div className={classes.extensionHostPanelUpdate}>
+        <div className={classes.extensionHostPanelActions}>
           {isEditing ? (
-            <Button modifier="transparent" onClick={saveSelectedHost} small>
+            <Button className={classes.btn} modifier="transparent" onClick={saveSelectedHost} small>
               <CheckIcon />
               <span>Save</span>
             </Button>
           ) : (
             <>
-              <Button modifier="transparent" onClick={addNewHost} small>
+              <Button className={classes.btn} modifier="transparent" onClick={addNewHost} small>
                 <PlusIcon />
                 <span>Add</span>
               </Button>
 
               {!isVerifiedOrigin(selectedUrl) && (
-                <div className="extension-host-panel-actions-right">
-                  <Button modifier="transparent" onClick={toggleEditSelectedHost} small>
+                <div className={classes.extensionHostPanelActionsRight}>
+                  <Button className={classes.btn} modifier="transparent" onClick={toggleEditSelectedHost} small>
                     <EditIcon />
                     <span>Edit</span>
                   </Button>
-                  <Button modifier="transparent" onClick={deleteSelectedHost} small>
+                  <Button className={classes.btn} modifier="transparent" onClick={deleteSelectedHost} small>
                     <TrashIcon />
                     <span>Remove</span>
                   </Button>
@@ -164,23 +165,23 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
           )}
         </div>
 
-        <form className="extension-host-panel-fields">
-          <div className="form-group">
+        <form className={classes.extensionHostPanelFields}>
+          <FormGroup>
             <Label htmlFor="name">Name</Label>
             {isEditing ? (
               <TextField id="name" type="text" value={name} onChange={setName} />
             ) : (
-              <div className="extension-host-panel-value">{name}</div>
+              <div className={classes.extensionHostPanelValue}>{name}</div>
             )}
-          </div>
-          <div className="form-group">
+          </FormGroup>
+          <FormGroup>
             <Label htmlFor="url">Url</Label>
             {isEditing ? (
               <TextField id="url" type="text" value={url} onChange={setUrl} />
             ) : (
-              <div className="extension-host-panel-value">{url}</div>
+              <div className={classes.extensionHostPanelValue}>{url}</div>
             )}
-          </div>
+          </FormGroup>
         </form>
       </div>
     </div>

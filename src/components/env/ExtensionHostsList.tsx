@@ -19,11 +19,11 @@ import React, { useRef, useState } from "react"
 import classNames from "classnames"
 import clamp from "lodash/clamp"
 
-import "./extension-hosts-list.scss"
+import classes from "@styles/components/env/ExtensionHostsList.module.scss"
 import { ReactComponent as VerifiedIcon } from "@assets/icons/badge-check.svg"
 import { ReactComponent as ChevronLeftIcon } from "@assets/icons/chevron-left.svg"
 
-import { ExtensionHost } from "@components/env/ExtensionHostPanel/types"
+import { ExtensionHost } from "@typings/env/extension-host"
 import { urlHostname } from "@utils/urls"
 import { smoothScroll } from "@utils/scroll"
 
@@ -83,35 +83,35 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
   }
 
   return (
-    <div className="extension-hosts-list">
+    <div className={classes.extensionHostsList}>
       {canScrollPrev && (
-        <button className="extension-hosts-list-nav prev" onClick={() => scrollList("prev")}>
+        <button className={classNames(classes.extensionHostsListNav, classes.prev)} onClick={() => scrollList("prev")}>
           <ChevronLeftIcon />
         </button>
       )}
 
-      <div className="extension-hosts-list-scrollable" onScroll={onScroll} ref={initScrollList}>
+      <div className={classes.extensionHostsListScrollable} onScroll={onScroll} ref={initScrollList}>
         {hosts?.map((host, i) => (
           <button
-            className={classNames("extension-hosts-list-button", { active: host.url === selectedHost?.url })}
+            className={classNames(classes.extensionHostsListButton, { active: host.url === selectedHost?.url })}
             onClick={() => onHostSelected?.(host)}
             key={i}
           >
-            <span className="name">
+            <span className={classes.name}>
               {host.name}
               {isVerifiedOrigin(host.url) && (
-                <span className="verified">
+                <span className={classes.verified}>
                   <VerifiedIcon />
                 </span>
               )}
             </span>
-            <span className="host">{urlHostname(host.url)}</span>
+            <span className={classes.host}>{urlHostname(host.url)}</span>
           </button>
         ))}
       </div>
 
       {canScrollNext && (
-        <button className="extension-hosts-list-nav next" onClick={() => scrollList("next")}>
+        <button className={classNames(classes.extensionHostsListNav, classes.next)} onClick={() => scrollList("next")}>
           <ChevronLeftIcon />
         </button>
       )}
