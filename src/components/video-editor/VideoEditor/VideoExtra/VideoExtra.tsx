@@ -1,0 +1,50 @@
+/*
+ *  Copyright 2021-present Etherna Sagl
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+import React from "react"
+
+import FormGroup from "@common/FormGroup"
+import PinContentField from "@components/video-editor/VideoEditor/PinContentField"
+import AudienceSelector from "@components/video-editor/VideoEditor/AudienceSelector"
+import VisibilitySelector from "@components/video-editor/VideoEditor/VisibilitySelector"
+import { useVideoEditorInfoActions } from "@context/video-editor-context/hooks"
+
+type VideoExtraProps = {
+  isSubmitting: boolean
+}
+
+const VideoExtra: React.FC<VideoExtraProps> = ({ isSubmitting }) => {
+  const { updatePinContent } = useVideoEditorInfoActions()
+
+  return (
+    <>
+      <FormGroup disabled>
+        <AudienceSelector />
+      </FormGroup>
+
+      <FormGroup>
+        <PinContentField onChange={pin => updatePinContent(pin)} />
+      </FormGroup>
+
+      <FormGroup disabled>
+        <VisibilitySelector />
+      </FormGroup>
+    </>
+  )
+}
+
+export default VideoExtra

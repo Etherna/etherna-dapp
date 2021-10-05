@@ -20,7 +20,7 @@ import React, { useState, useEffect } from "react"
 import "./video-view.scss"
 
 import SEO from "@components/layout/SEO"
-import Player from "@components/media/Player"
+import Player from "@components/player/Player"
 import VideoComments from "@components/video/VideoComments"
 import VideoDetails from "@components/video/VideoDetails"
 import { Video } from "@classes/SwarmVideo/types"

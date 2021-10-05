@@ -21,7 +21,7 @@ import { Redirect } from "react-router-dom"
 import "./video-update.scss"
 import { ReactComponent as NotFoundImage } from "@assets/backgrounds/404-illustration.svg"
 
-import VideoEditor from "@components/media/VideoEditor"
+import VideoEditor from "@components/video-editor/VideoEditor"
 import { Video } from "@classes/SwarmVideo/types"
 import { VideoEditorContextProvider } from "@context/video-editor-context"
 import useSwarmVideo from "@hooks/useSwarmVideo"

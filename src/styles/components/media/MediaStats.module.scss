@@ -1,0 +1,91 @@
+/*
+ *  Copyright 2021-present Etherna Sagl
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.mediaStats {
+}
+
+.mediaStatsBtn {
+  @apply flex items-center;
+  @apply bg-transparent border-none;
+  @apply px-0 py-3;
+  @apply space-x-2;
+  @apply text-sm font-medium;
+  @apply text-gray-500 dark:text-gray-300;
+  @apply active:text-gray-600 dark:active:text-gray-200;
+  @apply transition-colors duration-200;
+
+  .icon {
+    @apply transform;
+    @apply transition-transform duration-200;
+
+    > svg {
+      @apply h-[1.25em];
+    }
+  }
+
+  .mediaStats.expanded & {
+    @apply text-gray-800 dark:text-gray-100;
+
+    .icon {
+      @apply rotate-180;
+    }
+  }
+}
+
+.mediaStatsContent {
+  @apply overflow-hidden;
+  @apply max-h-0;
+  @apply duration-300;
+  transition-property: max-height;
+  will-change: max-height;
+}
+
+.mediaStatsTable {
+  @apply table-fixed;
+  @apply w-full;
+  @apply transform -translate-y-full;
+  @apply opacity-0;
+  @apply transition duration-300;
+
+  .mediaStats.expanded & {
+    @apply translate-y-0 opacity-100;
+  }
+
+  tr {
+    @apply text-xs;
+    @apply text-left;
+  }
+
+  th,
+  td {
+    &,
+    & > * {
+      @apply truncate;
+    }
+  }
+
+  th {
+    @apply w-[80px];
+    @apply font-semibold;
+    @apply text-gray-500 dark:text-gray-400;
+  }
+
+  td {
+    @apply font-medium;
+    @apply text-gray-900 dark:text-gray-200;
+    @apply pl-5;
+  }
+}
