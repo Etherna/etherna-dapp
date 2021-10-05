@@ -19,7 +19,7 @@ import React, { useRef, useState } from "react"
 import classnames from "classnames"
 
 import "./profile-info-edit.scss"
-import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
+import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 
 import Button from "@common/Button"
 import MarkdownEditor from "@common/MarkdownEditor"

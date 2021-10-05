@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import { ReactComponent as ErrorIcon } from "@svg/icons/error.svg"
+import { ReactComponent as ErrorIcon } from "@assets/icons/error.svg"
 
 import Modal from "@common/Modal"
 import Button from "@common/Button"

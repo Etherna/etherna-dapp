@@ -1,36 +1,36 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
 import React from "react"
 import classnames from "classnames"
 import { EditorState, RichUtils } from "draft-js"
 
-import { ReactComponent as BoldIcon } from "@svg/icons/rte/bold.svg"
-import { ReactComponent as ItalicIcon } from "@svg/icons/rte/italic.svg"
-import { ReactComponent as UnderlineIcon } from "@svg/icons/rte/underline.svg"
-import { ReactComponent as StrikethroughIcon } from "@svg/icons/rte/strikethrough.svg"
-import { ReactComponent as CodeIcon } from "@svg/icons/rte/code.svg"
-import { ReactComponent as CodeBlockIcon } from "@svg/icons/rte/code-block.svg"
-import { ReactComponent as AlignRightIcon } from "@svg/icons/rte/align-right.svg"
-import { ReactComponent as AlignLeftIcon } from "@svg/icons/rte/align-left.svg"
-import { ReactComponent as AlignCenterIcon } from "@svg/icons/rte/align-center.svg"
-import { ReactComponent as AlignJustifiedIcon } from "@svg/icons/rte/align-justified.svg"
-import { ReactComponent as UnorderedListIconIcon } from "@svg/icons/rte/unordered-list.svg"
-import { ReactComponent as OrderedListIconIcon } from "@svg/icons/rte/ordered-list.svg"
+import { ReactComponent as BoldIcon } from "@assets/icons/rte/bold.svg"
+import { ReactComponent as ItalicIcon } from "@assets/icons/rte/italic.svg"
+import { ReactComponent as UnderlineIcon } from "@assets/icons/rte/underline.svg"
+import { ReactComponent as StrikethroughIcon } from "@assets/icons/rte/strikethrough.svg"
+import { ReactComponent as CodeIcon } from "@assets/icons/rte/code.svg"
+import { ReactComponent as CodeBlockIcon } from "@assets/icons/rte/code-block.svg"
+import { ReactComponent as AlignRightIcon } from "@assets/icons/rte/align-right.svg"
+import { ReactComponent as AlignLeftIcon } from "@assets/icons/rte/align-left.svg"
+import { ReactComponent as AlignCenterIcon } from "@assets/icons/rte/align-center.svg"
+import { ReactComponent as AlignJustifiedIcon } from "@assets/icons/rte/align-justified.svg"
+import { ReactComponent as UnorderedListIconIcon } from "@assets/icons/rte/unordered-list.svg"
+import { ReactComponent as OrderedListIconIcon } from "@assets/icons/rte/ordered-list.svg"
 
 export type MarkdownButtonConfig = {
   label?: string

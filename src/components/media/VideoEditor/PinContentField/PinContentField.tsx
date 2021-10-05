@@ -17,7 +17,7 @@
 
 import React, { useEffect, useState } from "react"
 
-import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
+import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 
 import Alert from "@common/Alert"
 import Label from "@common/Label"

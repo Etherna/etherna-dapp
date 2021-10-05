@@ -17,8 +17,8 @@
 
 import React from "react"
 
-import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
-import { ReactComponent as SignatureIcon } from "@svg/icons/signature-required.svg"
+import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
+import { ReactComponent as SignatureIcon } from "@assets/icons/signature-required.svg"
 
 import Modal from "../common/Modal"
 import Button from "../common/Button"

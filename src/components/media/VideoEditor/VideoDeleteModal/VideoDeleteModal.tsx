@@ -17,8 +17,8 @@
 
 import React, { useState } from "react"
 
-import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
-import { ReactComponent as ThumbPlaceholder } from "@svg/backgrounds/thumb-placeholder.svg"
+import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
+import { ReactComponent as ThumbPlaceholder } from "@assets/backgrounds/thumb-placeholder.svg"
 
 import Modal from "@common/Modal"
 import Button from "@common/Button"

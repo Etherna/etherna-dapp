@@ -20,7 +20,7 @@ import ReactDOM from "react-dom"
 import classnames from "classnames"
 
 import "./file-drag.scss"
-import { ReactComponent as DragIcon } from "@svg/icons/drag.svg"
+import { ReactComponent as DragIcon } from "@assets/icons/drag.svg"
 
 import Button from "@common/Button"
 import FieldDesrcription from "@common/FieldDesrcription"

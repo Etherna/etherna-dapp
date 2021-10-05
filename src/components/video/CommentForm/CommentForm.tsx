@@ -18,7 +18,7 @@
 import React, { useRef, useState } from "react"
 
 import "./comment-form.scss"
-import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
+import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 
 import Button from "@common/Button"
 import Avatar from "@components/user/Avatar"

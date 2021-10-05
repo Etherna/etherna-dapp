@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import { ReactComponent as MoreIcon } from "@svg/icons/more.svg"
+import { ReactComponent as MoreIcon } from "@assets/icons/more.svg"
 
 import { Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from "@common/Dropdown"
 import StateLink from "@common/StateLink"

@@ -5,7 +5,20 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "eslint.validate": ["javascript", "typescript", "typescriptreact"],
+  "path-autocomplete.pathMappings": {
+    "@assets": "${folder}/src/assets",
+    "@components": "${folder}/src/components",
+    "@context": "${folder}/src/context",
+    "@hooks": "${folder}/src/hooks",
+    "@typings": "${folder}/src/typings",
+    "@styles": "${folder}/src/styles",
+    "@utils": "${folder}/src/utils"
+  },
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "typescriptreact"
+  ],
   "[javascript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
   },
@@ -25,11 +38,15 @@
     "images",
     "config"
   ],
-  "license-header-manager.excludeExtensions": [".js"],
-  "license-header-manager.additionalCommentStyles": [{
-    "extension": ".tsx",
-    "commentStart": "/*",
-    "commentMiddle": " * ",
-    "commentEnd": " */"
-  }]
+  "license-header-manager.excludeExtensions": [
+    ".js"
+  ],
+  "license-header-manager.additionalCommentStyles": [
+    {
+      "extension": ".tsx",
+      "commentStart": "/*",
+      "commentMiddle": " * ",
+      "commentEnd": " */"
+    }
+  ]
 }

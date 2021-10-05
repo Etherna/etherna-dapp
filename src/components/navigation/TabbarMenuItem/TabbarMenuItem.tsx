@@ -19,7 +19,7 @@ import React, { useState } from "react"
 import { Transition } from "@headlessui/react"
 
 import "./tabbar-menu-item.scss"
-import { ReactComponent as MenuIcon } from "@svg/icons/navigation/menu.svg"
+import { ReactComponent as MenuIcon } from "@assets/icons/navigation/menu.svg"
 
 import TabbarItem, { TabbarItemProps } from "@components/navigation/TabbarItem"
 

@@ -18,10 +18,10 @@
 import React, { useMemo, useState } from "react"
 
 import "./extension-host-panel.scss"
-import { ReactComponent as EditIcon } from "@svg/icons/edit.svg"
-import { ReactComponent as TrashIcon } from "@svg/icons/trash.svg"
-import { ReactComponent as CheckIcon } from "@svg/icons/check.svg"
-import { ReactComponent as PlusIcon } from "@svg/icons/plus.svg"
+import { ReactComponent as EditIcon } from "@assets/icons/edit.svg"
+import { ReactComponent as TrashIcon } from "@assets/icons/trash.svg"
+import { ReactComponent as CheckIcon } from "@assets/icons/check.svg"
+import { ReactComponent as PlusIcon } from "@assets/icons/plus.svg"
 
 import { ExtensionHost } from "./types"
 import ExtensionHostsList from "../ExtensionHostsList"

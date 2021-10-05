@@ -19,7 +19,7 @@ import React, { useImperativeHandle, useState, createRef, useEffect } from "reac
 import { Canceler } from "axios"
 
 import "./video-sources-upload.scss"
-import { ReactComponent as PlusIcon } from "@svg/icons/plus.svg"
+import { ReactComponent as PlusIcon } from "@assets/icons/plus.svg"
 
 import Button from "@common/Button"
 import VideoSourcePreview from "@components/media/VideoSourcePreview/VideoSourcePreview"

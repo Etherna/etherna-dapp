@@ -19,7 +19,7 @@ import React, { useState, useEffect, useMemo } from "react"
 import { createFFmpeg } from "@ffmpeg/ffmpeg"
 
 import "./video-encoder.scss"
-import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
+import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 
 import Button from "@common/Button"
 import { useErrorMessage } from "@state/hooks/ui"

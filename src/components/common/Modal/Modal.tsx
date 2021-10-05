@@ -20,7 +20,7 @@ import classnames from "classnames"
 import { Dialog, Transition } from "@headlessui/react"
 
 import "./modal.scss"
-import { ReactComponent as XIcon } from "@svg/icons/cross.svg"
+import { ReactComponent as XIcon } from "@assets/icons/cross.svg"
 
 import Button from "@common/Button"
 

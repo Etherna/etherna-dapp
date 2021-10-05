@@ -17,8 +17,8 @@
 
 import React from "react"
 
-import { ReactComponent as SignoutIcon } from "@svg/icons/signout.svg"
-import { ReactComponent as MoreIcon } from "@svg/icons/more.svg"
+import { ReactComponent as SignoutIcon } from "@assets/icons/signout.svg"
+import { ReactComponent as MoreIcon } from "@assets/icons/more.svg"
 
 import SharedMenuItems from "./SharedMenuItems"
 import SignedInMenuItems from "./SignedInMenuItems"

@@ -19,8 +19,8 @@ import React from "react"
 
 import "./shortcuts.scss"
 
-import { ReactComponent as EditIcon } from "@svg/icons/edit.svg"
-import { ReactComponent as ResetIcon } from "@svg/icons/reset.svg"
+import { ReactComponent as EditIcon } from "@assets/icons/edit.svg"
+import { ReactComponent as ResetIcon } from "@assets/icons/reset.svg"
 
 import Button from "@common/Button"
 import Kbd from "@common/Kbd"
