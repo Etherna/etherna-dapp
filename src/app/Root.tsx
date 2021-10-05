@@ -19,7 +19,7 @@ import React from "react"
 import { BrowserRouter } from "react-router-dom"
 import { HelmetProvider } from "react-helmet-async"
 
-import "./scss/theme.scss"
+import "@styles/theme.scss"
 
 import Router from "./Router"
 import AppLayout from "@components/layout/AppLayout"

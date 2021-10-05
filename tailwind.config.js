@@ -1,4 +1,5 @@
 const colors = require("tailwindcss/colors")
+const plugin = require("tailwindcss/plugin")
 
 module.exports = {
   mode: "jit",
@@ -1011,6 +1012,20 @@ module.exports = {
     zIndex: ["responsive", "focus-within", "focus"],
   },
   plugins: [
-    require("tailwindcss-scroll-snap")
+    require("tailwindcss-scroll-snap"),
+    plugin(function ({ addUtilities }) {
+      const utils = {
+        ".absolute-center": {
+          "position": "absolute",
+          "left": "50%",
+          "top": "50%",
+          "--tw-translate-x": "-50%",
+          "--tw-translate-y": "-50%",
+          "transform": "var(--tw-transform)",
+        }
+      }
+
+      addUtilities(utils, ["responsive"])
+    }),
   ],
 }

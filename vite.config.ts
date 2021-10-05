@@ -22,16 +22,21 @@ import tsconfigPaths from "vite-tsconfig-paths"
 import eslintPlugin from "vite-plugin-eslint"
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   build: {
     manifest: true,
     outDir: "build",
   },
   server: {
-    https: {
+    https: mode === "development" && fs.existsSync("ssl/key.pem") && fs.existsSync("ssl/cert.pem") && {
       key: fs.readFileSync("proxy/sslcert/key.pem"),
       cert: fs.readFileSync("proxy/sslcert/cert.pem"),
     },
+  },
+  css: {
+    modules: {
+      localsConvention: "camelCaseOnly",
+    }
   },
   define: {
     global: "window",
@@ -42,4 +47,4 @@ export default defineConfig({
     svgr(),
     eslintPlugin({ cache: false })
   ],
-})
+}))

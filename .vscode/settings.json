@@ -6,12 +6,20 @@
     "source.fixAll.eslint": true
   },
   "path-autocomplete.pathMappings": {
+    "@app": "${folder}/src/app",
     "@assets": "${folder}/src/assets",
+    "@classes": "${folder}/src/classes",
     "@components": "${folder}/src/components",
     "@context": "${folder}/src/context",
     "@hooks": "${folder}/src/hooks",
-    "@typings": "${folder}/src/typings",
+    "@keyboard": "${folder}/src/keyboard",
+    "@lang": "${folder}/src/lang",
+    "@pages": "${folder}/src/pages",
+    "@prefetch": "${folder}/src/prefetch",
+    "@routes": "${folder}/src/routes",
+    "@state": "${folder}/src/state",
     "@styles": "${folder}/src/styles",
+    "@typings": "${folder}/src/typings",
     "@utils": "${folder}/src/utils"
   },
   "eslint.validate": [

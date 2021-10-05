@@ -1,0 +1,31 @@
+/*
+ *  Copyright 2021-present Etherna Sagl
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.DraftEditor-root {
+  @apply relative;
+}
+
+.public-DraftEditorPlaceholder-root {
+  @apply pointer-events-none;
+  @apply absolute top-3 left-3;
+  @apply text-gray-400;
+  @apply dark:text-gray-500;
+}
+
+.DraftEditor-editorContainer {
+  @apply py-3 px-3;
+  @apply min-h-44;
+}

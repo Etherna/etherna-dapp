@@ -2,63 +2,25 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@app/*": [
-        "app/*"
-      ],
-      "@classes/*": [
-        "classes/*"
-      ],
-      "@common/*": [
-        "components/common/*"
-      ],
-      "@components/*": [
-        "components/*"
-      ],
-      "@context/*": [
-        "context/*"
-      ],
-      "@keyboard": [
-        "keyboard"
-      ],
-      "@hooks/*": [
-        "hooks/*"
-      ],
-      "@keyboard/*": [
-        "keyboard/*"
-      ],
-      "@lang": [
-        "lang"
-      ],
-      "@lang/*": [
-        "lang/*"
-      ],
-      "@prefetch": [
-        "prefetch"
-      ],
-      "@prefetch/*": [
-        "prefetch/*"
-      ],
-      "@icons/*": [
-        "components/icons/*"
-      ],
-      "@pages/*": [
-        "pages/*"
-      ],
-      "@routes": [
-        "routes"
-      ],
-      "@state/*": [
-        "state/*"
-      ],
-      "@typings/*": [
-        "typings/*"
-      ],
-      "@utils/*": [
-        "utils/*"
-      ],
-      "@assets/*": [
-        "svg/*"
-      ]
+      "@app/*": ["app/*"],
+      "@assets/*": ["assets/*"],
+      "@classes/*": ["classes/*"],
+      "@common/*": ["components/common/*"],
+      "@components/*": ["components/*"],
+      "@context/*": ["context/*"],
+      "@keyboard": ["keyboard"],
+      "@hooks/*": ["hooks/*"],
+      "@keyboard/*": ["keyboard/*"],
+      "@lang": ["lang"],
+      "@lang/*": ["lang/*"],
+      "@prefetch": ["prefetch"],
+      "@prefetch/*": ["prefetch/*"],
+      "@pages/*": ["pages/*"],
+      "@routes": ["routes"],
+      "@state/*": ["state/*"],
+      "@styles/*": ["styles/*"],
+      "@typings/*": ["typings/*"],
+      "@utils/*": ["utils/*"],
     }
   }
 }
