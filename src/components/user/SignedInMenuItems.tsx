@@ -21,7 +21,7 @@ import { ReactComponent as EditIcon } from "@assets/icons/edit.svg"
 import { ReactComponent as ProfileIcon } from "@assets/icons/profile.svg"
 import { ReactComponent as UploadIcon } from "@assets/icons/upload.svg"
 
-import { DropdownItem } from "@common/Dropdown"
+import DropdownItem from "@common/DropdownItem"
 import Avatar from "@components/user/Avatar"
 import useSelector from "@state/useSelector"
 import routes from "@routes"

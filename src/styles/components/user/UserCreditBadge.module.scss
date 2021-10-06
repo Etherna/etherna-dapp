@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-.user-credit-badge {
+.userCreditBadge {
   @apply relative;
   @apply flex items-baseline;
   @apply h-10 px-4 py-2 overflow-hidden;
@@ -36,23 +36,23 @@
   }
 }
 
-.user-credit-currency {
+.userCreditCurrency {
   @apply hidden xs:inline;
   @apply text-xs tracking-tighter;
   @apply text-gray-600 dark:text-gray-400;
 }
 
-.user-credit-value {
+.userCreditValue {
   @apply flex items-baseline;
   @apply relative ml-1 overflow-hidden;
   @apply text-gray-900 dark:text-gray-200;
 }
 
-.user-credit-value-integer {
+.userCreditValueInteger {
   @apply text-xl font-semibold;
 }
 
-.user-credit-value-decimal {
+.userCreditValueDecimal {
   @apply inline-block;
   @apply text-base font-medium;
   @apply opacity-60;
@@ -64,6 +64,6 @@
   }
 }
 
-.user-credit-popup {
+.userCreditPopup {
   @apply min-w-xs p-4 text-center;
 }

@@ -23,7 +23,7 @@ import { ReactComponent as ShortcutsIcon } from "@assets/icons/shortcuts.svg"
 import { ReactComponent as DarkModeIcon } from "@assets/icons/dark-mode.svg"
 
 import DarkModeToggle from "./DarkModeToggle"
-import { DropdownItem } from "@common/Dropdown"
+import DropdownItem from "@common/DropdownItem"
 import IndexExtension from "@components/env/IndexExtension"
 import GatewayExtension from "@components/env/GatewayExtension"
 import routes from "@routes"

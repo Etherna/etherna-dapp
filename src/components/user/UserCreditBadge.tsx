@@ -1,22 +1,25 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
 import React, { useEffect, useState } from "react"
-import classnames from "classnames"
+import classNames from "classnames"
+
+import classes from "@styles/components/user/UserCreditBadge.module.scss"
+
 import { getDecimalParts } from "@utils/math"
 import { isTouchDevice } from "@utils/browser"
 
@@ -44,21 +47,21 @@ const UserCreditBadge: React.FC<UserCreditBadgeProps> = ({ credit }) => {
 
   return (
     <div
-      className={classnames("user-credit-badge", {
-        expandable,
+      className={classNames(classes.userCreditBadge, {
+        [classes.expandable]: expandable,
         "user-credit-badge-warning": false, // gbReproduction < 1 && gbReproduction >= 0.1,
         "user-credit-badge-danger": false, // gbReproduction < 0.1,
       })}
       onMouseEnter={() => setIsHover(!isTouch)}
       onMouseLeave={() => setIsHover(false)}
     >
-      <span className="user-credit-currency">USD</span>
-      <div className="user-credit-value">
-        <span className="user-credit-value-integer">
+      <span className={classes.userCreditCurrency}>USD</span>
+      <div className={classes.userCreditValue}>
+        <span className={classes.userCreditValueInteger}>
           {integer}.
         </span>
         <span
-          className="user-credit-value-decimal"
+          className={classes.userCreditValueDecimal}
           style={{ maxWidth: `${currentDecimalWidth}px` }}
           ref={el => el && setCreditDecimalEl(el)}
         >

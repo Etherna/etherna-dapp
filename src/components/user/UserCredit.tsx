@@ -17,7 +17,7 @@
 
 import React, { useMemo } from "react"
 
-import "./user-credit.scss"
+import classes from "@styles/components/user/UserCredit.module.scss"
 
 import UserCreditBadge from "./UserCreditBadge"
 import Button from "@common/Button"
@@ -37,14 +37,14 @@ const UserCredit = () => {
   if (!isSignedInGateway || !credit) return null
 
   return (
-    <div className="user-credit-wrapper">
+    <div>
       <Popup
         toggle={
           <UserCreditBadge credit={credit} />
         }
         placement="bottom"
       >
-        <div className="user-credit-popup">
+        <div className={classes.userCreditPopup}>
           <p className="text-xs mb-4">You current balance is:</p>
           <p className="text-2xl font-bold break-all">{credit}</p>
           <span className="text-sm text-gray-600 dark:text-gray-400 tracking-tighter">USD</span>
