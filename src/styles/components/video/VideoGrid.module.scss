@@ -1,0 +1,81 @@
+/*
+ *  Copyright 2021-present Etherna Sagl
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.videoGridHeader {
+  @apply mt-4 mb-2;
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply mb-1;
+  }
+}
+
+.videoGrid {
+  $video-size: 200px;
+  $video-size-mini: 120px;
+
+  @apply grid grid-flow-row-dense gap-4;
+  grid-template-columns: repeat(auto-fill, minmax($video-size, 1fr));
+
+  @screen lg {
+    grid-template-columns: repeat(auto-fill, minmax($video-size + 40px, 1fr));
+  }
+  @screen xl {
+    grid-template-columns: repeat(auto-fill, minmax($video-size + 80px, 1fr));
+  }
+
+  &.mini {
+    @apply grid grid-flow-row-dense gap-4;
+    grid-template-columns: repeat(auto-fill, minmax($video-size-mini, 1fr));
+
+    @screen lg {
+      grid-template-columns: repeat(
+        auto-fill,
+        minmax($video-size-mini + 40px, 1fr)
+      );
+    }
+    @screen xl {
+      grid-template-columns: repeat(
+        auto-fill,
+        minmax($video-size-mini + 80px, 1fr)
+      );
+    }
+  }
+}
+
+.videoPreview {
+  composes: videoPreview from "./VideoPreview.module.scss";
+
+  .videoInfo {
+    composes: videoInfo from "./VideoPreview.module.scss";
+
+    .videoInfoStats {
+      composes: videoInfoStats from "./VideoPreview.module.scss";
+
+      .videoInfoTitle {
+        composes: videoInfoTitle from "./VideoPreview.module.scss";
+
+        @apply text-sm;
+
+        .mini & {
+          @apply text-sm;
+        }
+      }
+    }
+  }
+}

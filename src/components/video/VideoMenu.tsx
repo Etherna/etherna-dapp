@@ -19,11 +19,14 @@ import React from "react"
 
 import { ReactComponent as MoreIcon } from "@assets/icons/more.svg"
 
-import { Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from "@common/Dropdown"
+import Button from "@common/Button"
+import Dropdown from "@common/Dropdown"
+import DropdownToggle from "@common/DropdownToggle"
+import DropdownItem from "@common/DropdownItem"
+import DropdownMenu from "@common/DropdownMenu"
 import StateLink from "@common/StateLink"
 import { Video } from "@classes/SwarmVideo/types"
 import Routes from "@routes"
-import Button from "@common/Button"
 
 type VideoMenuProps = {
   video: Video
