@@ -16,9 +16,9 @@
  */
 
 import React, { useRef, useState } from "react"
-import classnames from "classnames"
+import classNames from "classnames"
 
-import "./profile-info-edit.scss"
+import classes from "@styles/components/profile/ProfileInfoEdit.module.scss"
 import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 
 import Button from "@common/Button"
@@ -137,10 +137,10 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
   }
 
   return (
-    <div className="profile-info-edit">
-      <div className="cover">
+    <div className={classes.profileInfoEdit}>
+      <div className={classes.cover}>
         <label
-          className={classnames("cover-input", {
+          className={classNames(classes.coverInput, {
             active: !!profileCover?.originalSource,
           })}
           htmlFor="cover-input"
@@ -149,7 +149,7 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
             <img
               src={profileCover.filePreview || profileCover.originalSource}
               alt={profileName}
-              className="cover-image"
+              className={classes.coverImage}
             />
           )}
           {isUploadingCover && (
@@ -163,20 +163,24 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
             id="cover-input"
             onChange={e => handleImageChange(e, "cover")}
           />
-          <div className="cover-actions">
+          <div className={classes.coverActions}>
             {profileCover?.originalSource && (
-              <Button className="remove-button" type="button" onClick={e => handleRemoveImage(e, "cover")}>
+              <Button
+                className={classNames(classes.btn, classes.removeButton)}
+                type="button"
+                onClick={e => handleRemoveImage(e, "cover")}
+              >
                 &#10005;
               </Button>
             )}
-            <Button as="div" className="change-button">Change cover</Button>
+            <Button as="div" className={classNames(classes.btn)}>Change cover</Button>
           </div>
         </label>
       </div>
 
       <div className="row items-center px-4">
         <label htmlFor="avatar-input">
-          <div className="profile-avatar" data-label="Change Avatar">
+          <div className={classes.profileAvatar} data-label="Change Avatar">
             <img
               src={profileAvatar?.filePreview || profileAvatar?.originalSource || makeBlockies(profileAddress)}
               alt={profileName}

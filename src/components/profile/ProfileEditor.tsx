@@ -18,8 +18,6 @@
 import React, { useState } from "react"
 import { Redirect } from "react-router-dom"
 
-import "./profile-editor.scss"
-
 import ProfileInfoEdit from "@components/profile/ProfileInfoEdit"
 import { Profile } from "@classes/SwarmProfile/types"
 import Routes from "@routes"

@@ -17,7 +17,7 @@
 
 import React, { useEffect } from "react"
 
-import "./profile-info.scss"
+import classes from "@styles/components/profile/ProfileInfo.module.scss"
 
 import SwarmImg from "@common/SwarmImg"
 import { Profile } from "@classes/SwarmProfile/types"
@@ -76,13 +76,13 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   }
 
   return (
-    <div className="profile">
-      <div className="cover">
+    <div className={classes.profile}>
+      <div className={classes.cover}>
         {profile?.cover && (
           <SwarmImg
             image={profile.cover}
             alt={profileName}
-            className="cover-image"
+            className={classes.coverImage}
             preserveAspectRatio
           />
         )}
@@ -90,7 +90,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
 
       <div className="row items-center">
         <div className="col md:max-w-xxs px-4">
-          <div className="profile-avatar">
+          <div className={classes.profileAvatar}>
             <SwarmImg
               image={profile.avatar}
               fallback={makeBlockies(profileAddress)}
@@ -105,7 +105,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
 
       <div className="row">
         <div className="col md:max-w-xxs p-4">
-          <h1 className="profile-name">
+          <h1 className={classes.profileName}>
             {checkIsEthAddress(profileName)
               ? shortenEthAddr(profileName)
               : profileName || shortenEthAddr(profileName)}

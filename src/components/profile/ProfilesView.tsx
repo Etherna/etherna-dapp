@@ -18,12 +18,12 @@
 import React, { useState, useEffect } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
-import "./profiles.scss"
+import classes from "@styles/components/profile/Profiles.module.scss"
 
-import ProfilePreview from "../ProfilePreview"
-import ProfilePreviewPlaceholder from "../ProfilePreviewPlaceholder"
-import useSelector from "@state/useSelector"
+import ProfilePreview from "./ProfilePreview"
+import ProfilePreviewPlaceholder from "./ProfilePreviewPlaceholder"
 import { IndexUser } from "@classes/EthernaIndexClient/types"
+import useSelector from "@state/useSelector"
 
 const FETCH_COUNT = 10
 
@@ -58,7 +58,7 @@ const ProfilesView = () => {
   }
 
   return (
-    <div className="profiles">
+    <div className={classes.profiles}>
       {profiles === undefined && <ProfilePreviewPlaceholder />}
 
       <InfiniteScroller

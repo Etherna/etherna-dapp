@@ -17,12 +17,11 @@
 
 import React, { useState } from "react"
 
-import "./profile.scss"
-
 import ProfileAbout from "./ProfileAbout"
 import ProfileVideos from "./ProfileVideos"
 import Button from "@common/Button"
 import NavPills from "@common/NavPills"
+import NavPillsItem from "@common/NavPillsItem"
 import SEO from "@components/layout/SEO"
 import ProfileInfo from "@components/profile/ProfileInfo"
 import Routes from "@routes"
@@ -56,14 +55,14 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
       <ProfileInfo
         profileAddress={profileAddress}
         nav={
-          <NavPills.Container vertical={!isMobile} className="mt-10">
-            <NavPills.Pill active={activeTab === "videos"} onClick={() => setActiveTab("videos")}>
+          <NavPills vertical={!isMobile} className="mt-10">
+            <NavPillsItem active={activeTab === "videos"} onClick={() => setActiveTab("videos")}>
               Videos
-            </NavPills.Pill>
-            <NavPills.Pill active={activeTab === "about"} onClick={() => setActiveTab("about")}>
+            </NavPillsItem>
+            <NavPillsItem active={activeTab === "about"} onClick={() => setActiveTab("about")}>
               About
-            </NavPills.Pill>
-          </NavPills.Container>
+            </NavPillsItem>
+          </NavPills>
         }
         actions={
           <div className="flex ml-auto">
