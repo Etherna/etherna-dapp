@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import "./shortcuts.scss"
+import classes from "@styles/components/settings/ShortcutsEditor.module.scss"
 
 import { ReactComponent as EditIcon } from "@assets/icons/edit.svg"
 import { ReactComponent as ResetIcon } from "@assets/icons/reset.svg"
@@ -39,9 +39,9 @@ const ShortcutsEditor = ({ namespace }: ShortcutsEditorProps) => {
   const shortChunks = splitArray(Object.keys(shortcuts), 10)
 
   return (
-    <div className="shortcuts-table-container">
+    <div className={classes.shortcutsTableContainer}>
       {shortChunks.map((shortcutNames, i) => (
-        <table className="shortcuts-table" key={i}>
+        <table className={classes.shortcutsTable} key={i}>
           <tbody>
             {shortcutNames.map(shortcut => (
               <tr key={shortcut}>
