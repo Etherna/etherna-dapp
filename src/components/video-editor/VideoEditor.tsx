@@ -18,7 +18,7 @@
 import React, { useState } from "react"
 import { Redirect } from "react-router"
 
-import "./video-editor.scss"
+import classes from "@styles/components/video-editor/VideoEditor.module.scss"
 import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 import { ReactComponent as TrashIcon } from "@assets/icons/trash.svg"
 import { ReactComponent as NotesIcon } from "@assets/icons/notes.svg"
@@ -30,14 +30,16 @@ import VideoSources from "./VideoSources"
 import VideoExtra from "./VideoExtra"
 import VideoDeleteModal from "./VideoDeleteModal"
 import Button from "@common/Button"
-import ProgressTab, { ProgressTabContent, ProgressTabLink } from "@common/ProgressTab"
+import ProgressTab from "@common/ProgressTab"
+import ProgressTabContent from "@common/ProgressTabContent"
+import ProgressTabLink from "@common/ProgressTabLink"
 import FieldDesrcription from "@common/FieldDesrcription"
 import Divider from "@common/Divider"
 import { useVideoEditorBaseActions, useVideoEditorState } from "@context/video-editor-context/hooks"
+import VideoEditorCache from "@context/video-editor-context/VideoEditorCache"
 import Routes from "@routes"
 import useSelector from "@state/useSelector"
 import { useConfirmation, useErrorMessage } from "@state/hooks/ui"
-import VideoEditorCache from "@context/video-editor-context/VideoEditorCache"
 
 const PORTAL_ID = "video-drag-portal"
 
@@ -147,7 +149,7 @@ const VideoEditor = () => {
       {usePortal && (
         <div id={PORTAL_ID}></div>
       )}
-      <div className="video-editor" style={{ display: usePortal ? "none" : undefined }}>
+      <div style={{ display: usePortal ? "none" : undefined }}>
         <div className="row">
           <div className="col">
             <ProgressTab defaultKey="details">
@@ -186,8 +188,8 @@ const VideoEditor = () => {
 
             <Divider className="mt-10" bottom />
 
-            <div className="video-editor-action-bar">
-              <div className="video-editor-action-save">
+            <div className={classes.videoEditorActionBar}>
+              <div className={classes.videoEditorActionSave}>
                 <SaveButton />
                 {!canPublishVideo && (
                   <FieldDesrcription smaller>

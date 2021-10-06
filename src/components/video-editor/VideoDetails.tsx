@@ -17,11 +17,11 @@
 
 import React, { useRef } from "react"
 
+import ThumbnailUpload, { ThumbnailUploadHandlers } from "./ThumbnailUpload"
 import MarkdownEditor from "@common/MarkdownEditor"
-import ThumbnailUpload, { ThumbnailUploadHandlers } from "@components/video-editor/VideoEditor/ThumbnailUpload"
-import { useVideoEditorInfoActions, useVideoEditorState } from "@context/video-editor-context/hooks"
 import TextField from "@common/TextField"
 import FormGroup from "@common/FormGroup"
+import { useVideoEditorInfoActions, useVideoEditorState } from "@context/video-editor-context/hooks"
 
 type VideoDetailsProps = {
   isSubmitting: boolean

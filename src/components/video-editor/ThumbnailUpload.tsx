@@ -20,13 +20,13 @@ import { Canceler } from "axios"
 
 import FileUploadFlow, { FileUploadFlowHandlers } from "@components/media/FileUploadFlow"
 import FileUploadProgress from "@components/media/FileUploadProgress"
+import ImageSourcePreview from "@components/media/ImageSourcePreview"
 import {
   useVideoEditorBaseActions,
   useVideoEditorQueueActions,
   useVideoEditorState
 } from "@context/video-editor-context/hooks"
 import { useErrorMessage } from "@state/hooks/ui"
-import ImageSourcePreview from "@components/media/ImageSourcePreview"
 
 type ThumbnailUploadProps = {
   disabled?: boolean

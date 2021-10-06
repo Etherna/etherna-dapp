@@ -17,10 +17,10 @@
 
 import React from "react"
 
+import PinContentField from "./PinContentField"
+import AudienceSelector from "./AudienceSelector"
+import VisibilitySelector from "./VisibilitySelector"
 import FormGroup from "@common/FormGroup"
-import PinContentField from "@components/video-editor/VideoEditor/PinContentField"
-import AudienceSelector from "@components/video-editor/VideoEditor/AudienceSelector"
-import VisibilitySelector from "@components/video-editor/VideoEditor/VisibilitySelector"
 import { useVideoEditorInfoActions } from "@context/video-editor-context/hooks"
 
 type VideoExtraProps = {

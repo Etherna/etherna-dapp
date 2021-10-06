@@ -17,7 +17,8 @@
 
 import React, { useRef } from "react"
 
-import VideoSourcesUpload, { VideoSourcesUploadHandlers } from "@components/video-editor/VideoEditor/VideoSourcesUpload"
+import VideoSourcesUpload, { VideoSourcesUploadHandlers } from "./VideoSourcesUpload"
+import FormGroup from "@common/FormGroup"
 
 type VideoSourcesProps = {
   initialDragPortal?: string
@@ -29,13 +30,13 @@ const VideoSources: React.FC<VideoSourcesProps> = ({ isSubmitting, initialDragPo
 
   return (
     <>
-      <div className="form-group">
+      <FormGroup>
         <VideoSourcesUpload
           ref={videoFlow}
           initialDragPortal={initialDragPortal}
           disabled={isSubmitting}
         />
-      </div>
+      </FormGroup>
     </>
   )
 }

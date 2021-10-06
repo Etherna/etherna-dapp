@@ -18,11 +18,11 @@
 import React, { useImperativeHandle, useState, createRef, useEffect } from "react"
 import { Canceler } from "axios"
 
-import "./video-sources-upload.scss"
+import classes from "@styles/components/video-editor/VideoSourcesUpload.module.scss"
 import { ReactComponent as PlusIcon } from "@assets/icons/plus.svg"
 
 import Button from "@common/Button"
-import VideoSourcePreview from "@components/media/VideoSourcePreview/VideoSourcePreview"
+import VideoSourcePreview from "@components/media/VideoSourcePreview"
 import VideoSourceStats from "@components/media/VideoSourceStats"
 import FileUploadFlow, { FileUploadFlowHandlers } from "@components/media/FileUploadFlow"
 import FileUploadProgress from "@components/media/FileUploadProgress"
@@ -247,7 +247,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
   }
 
   return (
-    <div className="video-sources-upload">
+    <div className={classes.videoSourcesUpload}>
       {sources.map((source, i) => {
         const queueName = SwarmVideo.getSourceName(source.quality)
         const thisQueue = queue.find(q => q.name === queueName)
@@ -308,7 +308,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
       })}
 
       {sources[0].quality && (
-        <button className="video-sources-upload-add-btn" onClick={addSource}>
+        <button className={classes.videoSourcesUploadAddBtn} onClick={addSource}>
           <PlusIcon />
           <span>Manually add lower quality source</span>
         </button>
