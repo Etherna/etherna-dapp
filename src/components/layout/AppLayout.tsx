@@ -50,14 +50,14 @@ const AppLayoutContent: React.FC = ({ children }) => {
 
         <SidebarNavigation />
 
-        <main>
+        <div className={classes.main}>
           <TopbarNavigation />
           <TabbarNavigation />
 
-          <div className={classes.main}>
+          <main>
             {children}
-          </div>
-        </main>
+          </main>
+        </div>
 
       </div>
 

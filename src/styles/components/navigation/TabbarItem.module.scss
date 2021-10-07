@@ -30,6 +30,11 @@
   &.active {
     @apply text-green-500 hover:text-green-500;
   }
+
+  &.submenu {
+    @apply flex-row items-center;
+    @apply max-w-none;
+  }
 }
 
 .tabbarItemIcon {
@@ -42,4 +47,9 @@
 .tabbarItemTitle {
   @apply font-semibold;
   font-size: 10px;
+
+  .submenu & {
+    @apply mt-0 ml-5;
+    @apply text-sm;
+  }
 }

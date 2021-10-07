@@ -26,7 +26,11 @@ import SidebarItem from "@components/navigation/SidebarItem"
 const SidebarLinksToggle: React.FC = () => {
   return (
     <div className={classes.sidebarLinksToggle}>
-      <SidebarItem iconSvg={<ExternalIcon />} />
+      <SidebarItem
+        className={classes.sidebarItem}
+        iconClassName={classes.sidebarItemIcon}
+        iconSvg={<ExternalIcon />}
+      />
       <div className={classes.sidebarLinksToggleArrow}>
         <ArrowIcon />
       </div>

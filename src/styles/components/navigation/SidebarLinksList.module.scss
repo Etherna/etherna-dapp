@@ -18,37 +18,4 @@
   @apply flex flex-wrap;
   @apply flex-col lg:flex-row;
   @apply pointer-events-auto;
-
-  > .sidebarItem {
-    composes: sidebarItem from "./SidebarItem.module.scss";
-
-    @apply text-gray-600 dark:text-gray-400;
-    @apply lg:inline-block;
-    @apply lg:w-auto;
-    @apply lg:px-0 py-0;
-    @apply lg:hover:bg-transparent;
-
-    &:hover {
-      @apply text-gray-800 dark:text-gray-100;
-      &::after {
-        @apply text-gray-600 dark:text-gray-400;
-      }
-    }
-
-    @screen lg {
-      &:not(:last-child)::after {
-        content: "\2013";
-        @apply text-gray-600 dark:text-gray-400;
-        @apply inline-block px-2;
-        @apply pointer-events-none;
-        @apply transition-none;
-      }
-    }
-
-    > .sidebarItemTitle {
-      composes: sidebarItemTitle from "./SidebarItem.module.scss";
-
-      @apply lg:text-sm lg:font-normal;
-    }
-  }
 }

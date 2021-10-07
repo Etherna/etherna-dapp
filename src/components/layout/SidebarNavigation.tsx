@@ -33,6 +33,7 @@ import { LayoutReducerTypes } from "@context/layout-context"
 import { useLayoutState } from "@context/layout-context/hooks"
 import routes from "@routes"
 import { urlOrigin, urlPath } from "@utils/urls"
+import SidebarLinksItem from "@components/navigation/SidebarLinksItem"
 
 const SidebarNavigation: React.FC = () => {
   const [state, dispatch] = useLayoutState()
@@ -90,19 +91,19 @@ const SidebarNavigation: React.FC = () => {
       <SidebarSpace flexible />
 
       <SidebarLinks>
-        <SidebarItem
+        <SidebarLinksItem
           title="Index Api"
           to={urlPath(import.meta.env.VITE_APP_INDEX_URL, "/swagger")}
         />
-        <SidebarItem
+        <SidebarLinksItem
           title="Gateway"
           to={urlOrigin(import.meta.env.VITE_APP_GATEWAY_URL)}
         />
-        <SidebarItem
+        <SidebarLinksItem
           title="Credit"
           to={urlOrigin(import.meta.env.VITE_APP_CREDIT_URL)}
         />
-        <SidebarItem
+        <SidebarLinksItem
           title="Privacy Policy"
           to={routes.getPrivacyPolicyLink()}
         />

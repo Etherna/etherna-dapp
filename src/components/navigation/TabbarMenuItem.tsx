@@ -17,6 +17,7 @@
 
 import React, { useState } from "react"
 import { Transition } from "@headlessui/react"
+import omit from "lodash/omit"
 
 import classes from "@styles/components/navigation/TabbarMenuItem.module.scss"
 import { ReactComponent as MenuIcon } from "@assets/icons/navigation/menu.svg"
@@ -37,7 +38,7 @@ const TabbarMenuItem: React.FC<TabbarMenuItemProps> = (props) => {
   return (
     <div className={classes.tabbarMenuItem}>
       <TabbarItem
-        {...props}
+        {...(omit(props, "children"))}
         iconSvg={<MenuIcon />}
         onClick={toggleShowMenu}
       />

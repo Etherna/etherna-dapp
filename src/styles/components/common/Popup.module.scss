@@ -91,7 +91,7 @@
 }
 
 .popupContent {
-  @apply p-4;
+  @apply px-6 py-4;
   @apply rounded-md;
   @apply min-w-[240px] max-w-sm;
   @apply shadow-xl;

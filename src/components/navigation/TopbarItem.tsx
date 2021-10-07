@@ -23,11 +23,11 @@ import classes from "@styles/components/navigation/TopbarItem.module.scss"
 
 export type TopbarItemProps = {
   title?: string
+  className?: string
   to?: string
   target?: "_blank"
   rel?: "noreferrer" | "noopener" | "nofollow"
   iconSvg?: React.ReactNode
-  activeClassName?: string
   ignoreHoverState?: boolean
   isActive?: ((pathname: string) => boolean) | boolean
   onClick?: () => void
@@ -39,8 +39,8 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
   to,
   target,
   rel,
+  className,
   iconSvg,
-  activeClassName = "active",
   ignoreHoverState,
   isActive,
   onClick,
@@ -53,22 +53,22 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
       <>
         {to ? (
           <NavLink
-            className={classNames(classes.topbarItem, {
+            className={classNames(classes.topbarItem, className, {
               [classes.topbarItemStatic]: ignoreHoverState
             })}
             to={to}
             target={target}
             rel={rel}
             isActive={() => isCurrentPage}
-            activeClassName={activeClassName}
+            activeClassName={classes.active}
           >
             {children}
           </NavLink>
         ) : !ignoreHoverState ? (
           <button
-            className={classNames(classes.topbarItem, {
+            className={classNames(classes.topbarItem, className, {
               [classes.topbarItemStatic]: ignoreHoverState,
-              [`${activeClassName}`]: isCurrentPage
+              [classes.active]: isCurrentPage
             })}
             onClick={onClick}
           >
@@ -76,9 +76,9 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
           </button>
         ) : (
           <div
-            className={classNames(classes.topbarItem, {
+            className={classNames(classes.topbarItem, className, {
               [classes.topbarItemStatic]: ignoreHoverState,
-              [`${activeClassName}`]: isCurrentPage
+              [classes.active]: isCurrentPage
             })}
             onClick={onClick}
           >
@@ -87,8 +87,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
         )}
       </>
     )
-  }, [to, ignoreHoverState, target, rel, activeClassName, isCurrentPage, onClick])
-
+  }, [to, ignoreHoverState, target, rel, className, isCurrentPage, onClick])
 
   return (
     <Wrapper>

@@ -64,9 +64,7 @@ const TopbarNavigation: React.FC = () => {
         logoCompact={<LogoCompact />}
       />
 
-      <TopbarPopupItem
-        toggle={<PlusIcon />}
-      >
+      <TopbarPopupItem toggle={<PlusIcon />}>
         <TopbarItem to={routes.getVideoUploadLink()} iconSvg={<UploadIcon />}>
           Upload a video
         </TopbarItem>

@@ -139,8 +139,6 @@ export const createRequest = () => {
 
   request.interceptors.request.use(
     async config => {
-      console.log("config", config)
-
       if (!config) return config
       // only cache get requests
       if (!["GET", "get"].includes(config.method || "")) return config

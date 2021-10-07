@@ -94,8 +94,8 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
   }
 
   return (
-    <div className={classNames(classes.alertPopupContainer, { show })} onMouseDown={onMouseDown}>
-      <div className={classNames(classes.alertPopup, { show })}>
+    <div className={classNames(classes.alertPopupContainer, { [classes.show]: show })} onMouseDown={onMouseDown}>
+      <div className={classNames(classes.alertPopup, { [classes.show]: show })}>
         {icon && (
           <figure className={classes.alertPopupIcon}>
             <Icon />
@@ -134,7 +134,7 @@ const AlertPopupAction: React.FC<AlertAction> = ({
   action,
 }) => (
   <button
-    className={classnames(classes.alertPopupBtn, {
+    className={classNames(classes.alertPopupBtn, {
       [classes.alertPopupBtnDefault]: type === "default",
       [classes.alertPopupBtnDestructive]: type === "destructive",
     })}

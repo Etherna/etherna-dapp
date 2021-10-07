@@ -32,11 +32,14 @@ const TopbarPopupItem: React.FC<TopbarPopupItemProps> = props => {
     <div className={classes.topbarPopupItem}>
       <Popup
         toggle={
-          <TopbarPopupItemToggle {...props}>
+          <TopbarPopupItemToggle {...props} className={classes.popupTopbarItem}>
             {props.toggle}
           </TopbarPopupItemToggle>
         }
         placement="bottom"
+        toggleClassName={classes.popupToggle}
+        contentClassName={classes.popupContent}
+        arrowClassName={classes.popupArrow}
       >
         {props.children}
       </Popup>

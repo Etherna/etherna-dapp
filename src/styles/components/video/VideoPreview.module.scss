@@ -33,7 +33,7 @@
     padding-bottom: 62%;
   }
 
-  > * {
+  > *:not(.videoThumbnailDuration) {
     @apply absolute inset-0;
     @apply bg-gray-200;
     @apply dark:bg-gray-700;

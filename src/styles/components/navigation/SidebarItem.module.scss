@@ -18,7 +18,6 @@
   @apply flex items-center justify-items-center rounded;
   @apply w-full space-x-3 px-4 py-3;
   @apply text-sm;
-  @apply cursor-pointer transition-colors duration-300;
   @apply text-gray-800;
   @apply dark:text-gray-200;
   @apply lg:justify-items-stretch;
@@ -33,6 +32,7 @@
   }
 
   &:not(.static) {
+    @apply cursor-pointer transition-colors duration-300;
     @apply hover:bg-gray-200 hover:text-gray-900;
     @apply dark:hover:bg-gray-700 dark:hover:text-gray-100;
   }

@@ -31,8 +31,6 @@
   }
 }
 
-.topbar ~ .main {
-  composes: main from "../layout/AppLayout.module.scss";
-
+.topbar ~ main {
   @apply mt-16 lg:mt-20;
 }

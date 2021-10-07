@@ -18,20 +18,11 @@
   @apply relative;
 
   > .sidebarItem {
-    composes: sidebarItem from "./SidebarItem.module.scss";
-
     @apply lg:pointer-events-none;
     @apply lg:hover:bg-transparent;
 
     > .sidebarItemIcon {
-      composes: sidebarItemIcon from "./SidebarItem.module.scss";
-
       @apply lg:hidden;
-    }
-
-    > .sidebarLinksList {
-      composes: sidebarLinksList from "./SidebarLinksList.module.scss";
-      @apply ml-0;
     }
   }
 }

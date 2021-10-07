@@ -40,7 +40,7 @@ const SidebarLinks: React.FC<SidebarLinksProps> = ({ children }) => {
       </div>
 
       <div className={classes.sidebarLinksFlow}>
-        <SidebarItem as="div">
+        <SidebarItem as="div" isStatic>
           <SidebarLinksList>
             {children}
           </SidebarLinksList>

@@ -15,6 +15,7 @@
  */
 
 import fs from "fs"
+import stringHash from "string-hash"
 import { defineConfig } from "vite"
 import reactRefresh from "@vitejs/plugin-react-refresh"
 import svgr from "vite-plugin-svgr"
@@ -28,7 +29,10 @@ export default defineConfig(({ mode }) => ({
     outDir: "build",
   },
   server: {
-    https: mode === "development" && fs.existsSync("ssl/key.pem") && fs.existsSync("ssl/cert.pem") && {
+    https: mode === "development" &&
+      fs.existsSync("proxy/sslcert/key.pem") &&
+      fs.existsSync("proxy/sslcert/cert.pem") &&
+    {
       key: fs.readFileSync("proxy/sslcert/key.pem"),
       cert: fs.readFileSync("proxy/sslcert/cert.pem"),
     },
@@ -36,6 +40,11 @@ export default defineConfig(({ mode }) => ({
   css: {
     modules: {
       localsConvention: "camelCaseOnly",
+      generateScopedName: (name, filename, css) => {
+        if (name === "dark") return "dark"
+        const hash = stringHash(css).toString(36).substr(0, 5)
+        return `_${name}_${hash}`
+      }
     }
   },
   define: {

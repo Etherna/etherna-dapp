@@ -47,9 +47,9 @@ const Toggle: React.FC<ToggleProps> = ({
         <Switch
           checked={checked}
           onChange={onChange}
-          className={classNames(classes.toggleControl, { on: checked })}
+          className={classNames(classes.toggleControl, { [classes.on]: checked })}
         >
-          <span className={classNames(classes.toggleKnob, { on: checked })}>
+          <span className={classNames(classes.toggleKnob, { [classes.on]: checked })}>
             {checked && checkedIcon}
             {!checked && uncheckedIcon}
           </span>

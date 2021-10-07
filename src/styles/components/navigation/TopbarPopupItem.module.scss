@@ -16,11 +16,7 @@
 
 .topbarPopupItem {
   .popupToggle {
-    composes: popupToggle from "../common/Popup.module.scss";
-
-    .topbarItem {
-      composes: topbarItem from "./TopbarItem.module.scss";
-
+    .popupTopbarItem {
       svg {
         @apply w-6 h-6;
         @screen lg {
@@ -41,17 +37,13 @@
   }
 
   .popupContent {
-    composes: popupContent from "../common/Popup.module.scss";
-
     @apply bg-white dark:bg-gray-800;
     @supports (backdrop-filter: blur(4px)) {
       @apply bg-white/80 dark:bg-gray-800/80;
       @apply backdrop-blur;
     }
 
-    .topbarItem {
-      composes: topbarItem from "./TopbarItem.module.scss";
-
+    .popupTopbarItem {
       @apply mx-0 px-0;
       @apply text-sm font-semibold;
       @apply text-gray-800 dark:text-gray-200;
@@ -65,8 +57,6 @@
   }
 
   .popupArrow {
-    composes: popupArrow from "../common/Popup.module.scss";
-
     &::before,
     &::after {
       @supports (backdrop-filter: blur(4px)) {

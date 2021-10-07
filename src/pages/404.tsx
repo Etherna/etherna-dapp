@@ -36,7 +36,7 @@ const NotFoundPage = () => {
             Oops! <br />
             Page not found
           </h2>
-          <p className="text-gray-700 dark:text-gray-300">The page you are looking for doesn't exist</p>
+          <p className="text-gray-700 dark:text-gray-300">The page you are looking for doesn&apos;t exist</p>
 
           <h3 className="mt-12">Resources</h3>
           <nav className="flex flex-col">

@@ -57,17 +57,18 @@ const TabbarNavigation: React.FC = () => {
         isActive={pathname => /^\/playlists\//.test(pathname)}
         iconSvg={<PlaylistIcon />}
       />
-      <TabbarMenuItem title="More">
+      <TabbarMenuItem as="div" title="More">
         <TabbarItem
           title="Saved"
           to={routes.getSavedLink()}
           isActive={pathname => /^\/saved\//.test(pathname)}
           iconSvg={<BookmarkIcon />}
+          isSubmenu
         />
-        <TabbarItem>
+        <TabbarItem isSubmenu>
           <IndexExtension />
         </TabbarItem>
-        <TabbarItem>
+        <TabbarItem isSubmenu>
           <GatewayExtension />
         </TabbarItem>
       </TabbarMenuItem>

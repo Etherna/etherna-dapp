@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+@import "./VideoPreview.module.scss";
+
 .videoGridHeader {
   @apply mt-4 mb-2;
 
@@ -54,28 +56,6 @@
         auto-fill,
         minmax($video-size-mini + 80px, 1fr)
       );
-    }
-  }
-}
-
-.videoPreview {
-  composes: videoPreview from "./VideoPreview.module.scss";
-
-  .videoInfo {
-    composes: videoInfo from "./VideoPreview.module.scss";
-
-    .videoInfoStats {
-      composes: videoInfoStats from "./VideoPreview.module.scss";
-
-      .videoInfoTitle {
-        composes: videoInfoTitle from "./VideoPreview.module.scss";
-
-        @apply text-sm;
-
-        .mini & {
-          @apply text-sm;
-        }
-      }
     }
   }
 }

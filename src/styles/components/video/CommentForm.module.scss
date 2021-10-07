@@ -31,5 +31,10 @@
 }
 
 .videoCommentAvatar {
-  composes: videoCommentAvatar from "./VideoCommentsItem.module.scss";
+  @apply w-10 h-10 rounded-full;
+  @apply bg-graycool-300 dark:bg-gray-700;
+
+  > * {
+    @apply w-full h-full;
+  }
 }

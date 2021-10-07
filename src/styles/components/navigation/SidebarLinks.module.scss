@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+@import "./SidebarItem.module.scss";
+
 .sidebarLinks {
 }
 
@@ -21,11 +23,7 @@
   @apply lg:hidden;
 
   .sidebarItem {
-    composes: sidebarItem from "./SidebarItem.module.scss";
-
     .sidebarItemTitle {
-      composes: sidebarItemTitle from "./SidebarItem.module.scss";
-
       @apply block;
       @apply px-0 py-1.5;
     }
@@ -36,8 +34,6 @@
   @apply hidden lg:block;
 
   > .sidebarItem {
-    composes: sidebarItem from "./SidebarItem.module.scss";
-
     @apply pointer-events-none;
     @apply hover:bg-transparent;
 

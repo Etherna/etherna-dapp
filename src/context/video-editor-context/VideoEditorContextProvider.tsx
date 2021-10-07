@@ -23,7 +23,7 @@ import VideoEditorCache from "./VideoEditorCache"
 import SwarmVideo from "@classes/SwarmVideo"
 import { Video } from "@classes/SwarmVideo/types"
 import { Profile } from "@classes/SwarmProfile/types"
-import { THUMBNAIL_QUEUE_NAME } from "@components/video-editor/VideoEditor/ThumbnailUpload"
+import { THUMBNAIL_QUEUE_NAME } from "@components/video-editor/ThumbnailUpload"
 import useSelector from "@state/useSelector"
 import logger from "@utils/context-logger"
 

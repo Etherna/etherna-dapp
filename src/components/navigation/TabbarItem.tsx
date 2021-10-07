@@ -15,7 +15,7 @@
  *
  */
 
-import React, { useMemo } from "react"
+import React, { useMemo, ElementType } from "react"
 import { useLocation } from "react-router"
 import { NavLink } from "react-router-dom"
 import classNames from "classnames"
@@ -23,25 +23,27 @@ import classNames from "classnames"
 import classes from "@styles/components/navigation/TabbarItem.module.scss"
 
 export type TabbarItemProps = {
+  as?: ElementType
   title?: string
   to?: string
   target?: "_blank"
   rel?: "noreferrer" | "noopener" | "nofollow"
   iconSvg?: React.ReactNode
-  activeClassName?: string
   isActive?: ((pathname: string) => boolean) | boolean
+  isSubmenu?: boolean
   onClick?: () => void
 }
 
 const TabbarItem: React.FC<TabbarItemProps> = ({
+  as: As = "button",
   children,
   title,
   to,
   target,
   rel,
   iconSvg,
-  activeClassName = "active",
   isActive,
+  isSubmenu,
   onClick,
 }) => {
   const { pathname } = useLocation()
@@ -52,39 +54,46 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
       <>
         {to ? (
           <NavLink
-            className={classNames(classes.tabbarItem)}
+            className={classNames(classes.tabbarItem, {
+              [classes.active]: isCurrentPage,
+              [classes.submenu]: isSubmenu
+            })}
             to={to}
             target={target}
             rel={rel}
             isActive={() => isCurrentPage}
-            activeClassName={activeClassName}
+            activeClassName={classes.active}
           >
             {children}
           </NavLink>
         ) : (
-          <button
-            className={classNames(classes.tabbarItem, { [`${activeClassName}`]: isCurrentPage })}
+          <As
+            className={classNames(classes.tabbarItem, {
+              [classes.active]: isCurrentPage,
+              [classes.submenu]: isSubmenu
+            })}
             onClick={onClick}
           >
             {children}
-          </button>
+          </As>
         )}
       </>
     )
-  }, [to, target, rel, activeClassName, isCurrentPage, onClick])
+  }, [As, to, target, rel, isSubmenu, isCurrentPage, onClick])
 
   return (
     <Wrapper>
-      {children ? (
-        children
-      ) : (
-        <>
-          <div className={classes.tabbarItemIcon}>
-            {iconSvg}
-          </div>
-          <span className={classes.tabbarItemTitle}>{title}</span>
-        </>
+      {iconSvg && (
+        <div className={classes.tabbarItemIcon}>
+          {iconSvg}
+        </div>
       )}
+
+      {title && (
+        <span className={classes.tabbarItemTitle}>{title}</span>
+      )}
+
+      {children}
     </Wrapper>
   )
 }

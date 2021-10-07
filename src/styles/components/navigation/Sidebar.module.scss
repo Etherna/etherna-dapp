@@ -49,7 +49,7 @@
   @apply z-20;
 }
 
-.sidebar:not(.floating) + main {
+.sidebar:not(.floating) + * {
   @screen sm {
     @apply pl-20;
   }
@@ -57,9 +57,7 @@
     @apply pl-64;
   }
 
-  > .topbar {
-    composes: topbar from "./Topbar.module.scss";
-
+  > [data-topbar] {
     @screen sm {
       @apply left-20;
     }

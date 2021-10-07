@@ -30,7 +30,7 @@ type SidebarProps = {
 
 const Sidebar: React.FC<SidebarProps> = ({ children, floating, show, onClose }) => {
   const location = useLocation()
-  const sidebarRef = useRef<HTMLElement>(null)
+  const sidebarRef = useRef<HTMLDivElement>(null)
   const [animateSlide, setAnimateSlide] = useState(show && floating)
   const [showSidebar, setShowSidebar] = useState(show)
 

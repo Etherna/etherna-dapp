@@ -19,10 +19,6 @@ body {
   @apply dark:bg-gray-900 dark:text-light;
 }
 
-main {
-  @apply w-full;
-}
-
 a {
   transition: color 0.25s;
   @apply no-underline cursor-pointer text-primary-500;

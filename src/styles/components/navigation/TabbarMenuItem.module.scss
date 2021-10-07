@@ -29,18 +29,4 @@
   @apply backdrop-filter backdrop-blur-lg;
   @apply border-t border-b border-gray-800/75;
   bottom: calc(theme("spacing.16") + var(--safe-area-inset-bottom));
-
-  > .tabbarItem {
-    composes: tabbarItem from "./TabbarItem.module.scss";
-
-    @apply flex-row items-center;
-    @apply max-w-none;
-
-    .tabbarItemTitle {
-      composes: tabbarItemTitle from "./TabbarItem.module.scss";
-
-      @apply mt-0 ml-5;
-      @apply text-sm;
-    }
-  }
 }

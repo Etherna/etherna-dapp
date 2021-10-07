@@ -21,7 +21,7 @@ import classes from "@styles/components/navigation/Tabbar.module.scss"
 
 const Tabbar: React.FC = ({ children }) => {
   return (
-    <nav className={classes.tabbar}>
+    <nav className={classes.tabbar} data-tabbar>
       {children}
     </nav>
   )

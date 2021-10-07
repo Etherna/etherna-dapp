@@ -47,9 +47,7 @@
   }
 }
 
-.tabbar ~ .main {
-  composes: main from "../layout/AppLayout.module.scss";
-
+.tabbar ~ main {
   @apply mb-20;
   @screen lg {
     @apply mb-0;

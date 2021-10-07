@@ -25,6 +25,10 @@ import classes from "@styles/components/common/Popup.module.scss"
 type PopupProps = {
   toggle: React.ReactNode
   placement?: "left" | "top" | "right" | "bottom"
+  className?: string
+  arrowClassName?: string
+  contentClassName?: string
+  toggleClassName?: string
   margin?: number
   disabled?: boolean
 }
@@ -33,6 +37,10 @@ const Popup: React.FC<PopupProps> = ({
   children,
   toggle,
   placement = "bottom",
+  className,
+  arrowClassName,
+  contentClassName,
+  toggleClassName,
   disabled,
 }) => {
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>()
@@ -51,23 +59,31 @@ const Popup: React.FC<PopupProps> = ({
   }
 
   return (
-    <Popover as="nav" className={classes.popup}>
+    <Popover as="nav" className={classNames(classes.popup, className)}>
       {({ open }) => (
         <>
-          <Popover.Button as="div" className={classes.popupToggle} ref={setReferenceElement}>
+          <Popover.Button
+            as="div"
+            className={classNames(classes.popupToggle, toggleClassName)}
+            ref={setReferenceElement}
+          >
             {toggle}
           </Popover.Button>
 
           <Popover.Panel
-            className={classNames(classes.popupPanel, { open })}
+            className={classNames(classes.popupPanel, { [classes.open]: open })}
             ref={setPopperElement}
             style={styles.popper}
             {...attributes.popper}
           >
-            <div className={classes.popupContent}>
+            <div className={classNames(classes.popupContent, contentClassName)}>
               {children}
             </div>
-            <span className={classes.popupArrow} ref={setArrowElement} style={styles.arrow} />
+            <span
+              className={classNames(classes.popupArrow, arrowClassName)}
+              style={styles.arrow}
+              ref={setArrowElement}
+            />
           </Popover.Panel>
 
           <Popover.Overlay className={classes.popupBackdrop} />

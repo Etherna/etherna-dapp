@@ -28,7 +28,9 @@ export type SidebarItemProps = {
   target?: "_blank"
   rel?: "noreferrer" | "noopener" | "nofollow"
   iconSvg?: React.ReactNode
-  activeClassName?: string
+  className?: string
+  iconClassName?: string
+  titleClassName?: string
   compact?: boolean
   isStatic?: boolean
   isActive?: ((pathname: string) => boolean) | boolean
@@ -43,7 +45,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   target,
   rel,
   iconSvg,
-  activeClassName = "active",
+  className,
+  iconClassName,
+  titleClassName,
   compact,
   isStatic,
   isActive,
@@ -57,7 +61,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       <>
         {to ? (
           <NavLink
-            className={classNames(classes.sidebarItem, {
+            className={classNames(classes.sidebarItem, className, {
               [classes.static]: isStatic,
               [classes.compact]: compact
             })}
@@ -65,14 +69,14 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
             target={target}
             rel={rel}
             isActive={() => isCurrentPage}
-            activeClassName={activeClassName}
+            activeClassName={classes.active}
           >
             {children}
           </NavLink>
         ) : (
           <As
             className={classNames(classes.sidebarItem, {
-              [`${activeClassName}`]: isCurrentPage,
+              [classes.active]: isCurrentPage,
               [classes.static]: isStatic,
               [classes.compact]: compact
             })}
@@ -83,17 +87,17 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         )}
       </>
     )
-  }, [to, isStatic, compact, target, rel, activeClassName, As, isCurrentPage, onClick])
+  }, [to, isStatic, compact, target, rel, className, As, isCurrentPage, onClick])
 
   return (
     <Wrapper>
       {iconSvg && (
-        <div className={classes.sidebarItemIcon}>
+        <div className={classNames(classes.sidebarItemIcon, iconClassName)}>
           {iconSvg}
         </div>
       )}
       {title && (
-        <span className={classes.sidebarItemTitle}>{title}</span>
+        <span className={classNames(classes.sidebarItemTitle, titleClassName)}>{title}</span>
       )}
       {children}
     </Wrapper>

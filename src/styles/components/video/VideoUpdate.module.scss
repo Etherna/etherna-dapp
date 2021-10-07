@@ -16,14 +16,4 @@
 
 .videoUpdate {
   @apply max-w-screen-lg;
-
-  .videoPreview {
-    composes: videoPreview from "./VideoPreview.module.scss";
-
-    .videoThumbnail {
-      composes: videoThumbnail from "./VideoPreview.module.scss";
-
-      @apply rounded max-h-48 h-auto;
-    }
-  }
 }
