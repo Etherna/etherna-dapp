@@ -1,0 +1,21 @@
+.comingSoon {
+  @apply w-full h-full;
+}
+
+.comingSoonContent {
+  @apply w-full max-w-lg m-auto;
+  @apply flex flex-col;
+}
+
+.comingSoonImage {
+  @apply w-full h-auto;
+}
+
+.comingSoonTitle {
+  @apply text-lg lg:text-2xl;
+  @apply font-bold;
+}
+
+.comingSoonDescription {
+  @apply text-gray-700 dark:text-gray-400;
+}
