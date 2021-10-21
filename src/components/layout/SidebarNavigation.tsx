@@ -23,6 +23,7 @@ import { ReactComponent as UserIcon } from "@assets/icons/navigation/user.svg"
 import { ReactComponent as PlaylistIcon } from "@assets/icons/navigation/playlists.svg"
 import { ReactComponent as BookmarkIcon } from "@assets/icons/navigation/bookmark.svg"
 
+import FeedbackLink from "./FeedbackLink"
 import Sidebar from "@components/navigation/Sidebar"
 import SidebarItem from "@components/navigation/SidebarItem"
 import SidebarSpace from "@components/navigation/SidebarSpace"
@@ -66,31 +67,32 @@ const SidebarNavigation: React.FC = () => {
       <SidebarItem
         title="Frames"
         to={routes.getFramesLink()}
-        isActive={pathname => /^\/frames\//.test(pathname)}
+        isActive={pathname => /^\/frames\/?/.test(pathname)}
         iconSvg={<FramesIcon />}
       />
       <SidebarItem
         title="Following"
         to={routes.getFollowingLink()}
-        isActive={pathname => /^\/following\//.test(pathname)}
+        isActive={pathname => /^\/following\/?/.test(pathname)}
         iconSvg={<UserIcon />}
       />
       <SidebarItem
         title="Playlists"
         to={routes.getPlaylistsLink()}
-        isActive={pathname => /^\/playlists\//.test(pathname)}
+        isActive={pathname => /^\/playlists\/?/.test(pathname)}
         iconSvg={<PlaylistIcon />}
       />
       <SidebarItem
         title="Saved"
         to={routes.getSavedLink()}
-        isActive={pathname => /^\/saved\//.test(pathname)}
+        isActive={pathname => /^\/saved\/?/.test(pathname)}
         iconSvg={<BookmarkIcon />}
       />
 
       <SidebarSpace flexible />
 
       <SidebarLinks>
+        <FeedbackLink />
         <SidebarLinksItem
           title="Index Api"
           to={urlPath(import.meta.env.VITE_APP_INDEX_URL, "/swagger")}

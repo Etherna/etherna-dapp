@@ -9,6 +9,7 @@ type SidebarLinksItemProps = {
   as?: ElementType
   to?: string
   title?: string
+  id?: string
   className?: string
   target?: "_blank"
   rel?: "noreferrer" | "noopener" | "nofollow"
@@ -21,6 +22,7 @@ const SidebarLinksItem: React.FC<SidebarLinksItemProps> = ({
   children,
   as: As = "button",
   to,
+  id,
   className,
   title,
   target,
@@ -38,6 +40,7 @@ const SidebarLinksItem: React.FC<SidebarLinksItemProps> = ({
         {to ? (
           <NavLink
             className={classNames(classes.sidebarLinkItem, className)}
+            id={id}
             to={to}
             target={target}
             rel={rel}
@@ -51,6 +54,7 @@ const SidebarLinksItem: React.FC<SidebarLinksItemProps> = ({
             className={classNames(classes.sidebarLinkItem, {
               [`${activeClassName}`]: isCurrentPage,
             })}
+            id={id}
             onClick={onClick}
           >
             {children}
@@ -58,7 +62,7 @@ const SidebarLinksItem: React.FC<SidebarLinksItemProps> = ({
         )}
       </>
     )
-  }, [to, target, rel, className, activeClassName, As, isCurrentPage, onClick])
+  }, [to, target, rel, className, id, activeClassName, As, isCurrentPage, onClick])
 
   return (
     <Wrapper>
