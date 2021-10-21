@@ -71,9 +71,11 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile }) => {
             fallback={encodedSvg(<ThumbPlaceholder />)}
             className="w-full h-full"
           />
-          <div className={classes.videoThumbnailDuration}>
-            <Time duration={video.duration} />
-          </div>
+          {video.duration && video.duration > 0 && (
+            <div className={classes.videoThumbnailDuration}>
+              <Time duration={video.duration} />
+            </div>
+          )}
         </div>
       </VideoLink>
       <div className={classes.videoInfo}>
@@ -84,7 +86,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile }) => {
         )}
         <div className={classes.videoInfoStats}>
           <VideoLink>
-            <h4 className={classes.videoInfoTitle}>{video.title}</h4>
+            <h4 className={classes.videoInfoTitle}>{video.title || "???"}</h4>
           </VideoLink>
           {!hideProfile && profileLink && (
             <Link to={profileLink}>
