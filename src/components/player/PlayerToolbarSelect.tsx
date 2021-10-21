@@ -45,7 +45,7 @@ const PlayerToolbarSelect: React.FC<PlayerToolbarSelectProps> = ({
             {options.map(option => (
               <Listbox.Option
                 className={classNames(classes.playerToolbarSelectListItem, {
-                  active: option.value === value
+                  [classes.active]: option.value === value
                 })}
                 key={option.value}
                 value={option}

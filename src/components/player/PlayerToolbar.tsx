@@ -30,11 +30,15 @@ import PlayerVolume from "./PlayerVolume"
 
 type PlayerToolbarProps = {
   floating?: boolean
+  idle?: boolean
 }
 
-const PlayerToolbar: React.FC<PlayerToolbarProps> = ({ floating }) => {
+const PlayerToolbar: React.FC<PlayerToolbarProps> = ({ floating, idle }) => {
   return (
-    <div className={classNames(classes.playerToolbar, { [classes.floating]: floating })}>
+    <div className={classNames(classes.playerToolbar, {
+      [classes.floating]: floating,
+      [classes.idle]: idle
+    })}>
       <PlayerToolbarProgress />
 
       <div className={classes.playerToolbarContent}>

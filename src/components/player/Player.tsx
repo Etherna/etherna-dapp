@@ -49,7 +49,6 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
   const idleTimeoutRef = useRef<number>()
   const floating = !isTouchDevice()
 
-
   useEffect(() => {
     if (originalQuality) {
       dispatch({
@@ -112,13 +111,16 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
   }, [hiddenControls])
 
   const togglePlay = () => {
+    const playing = !isPlaying
     dispatch({
       type: PlayerReducerTypes.TOGGLE_PLAY,
-      isPlaying: !isPlaying,
+      isPlaying: playing,
     })
 
-    if (!isPlaying) {
+    if (playing) {
       startIdleTimeout(true)
+    } else {
+      stopIdleTimeout()
     }
   }
 
@@ -135,6 +137,26 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
   const stopIdleTimeout = () => {
     clearTimeout(idleTimeoutRef.current)
     setIdle(false)
+  }
+
+  const onMouseEnter = () => {
+    if (isPlaying) {
+      setIdle(false)
+      startIdleTimeout()
+    }
+  }
+
+  const onMouseMouse = () => {
+    if (isPlaying) {
+      startIdleTimeout()
+    }
+  }
+
+  const onMouseLeave = () => {
+    if (isPlaying) {
+      clearTimeout(idleTimeoutRef.current)
+      setIdle(true)
+    }
   }
 
   // Video events
@@ -218,12 +240,13 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
           preload="metadata"
           poster={!error ? thumbnail : undefined}
           controls={false}
-          onMouseEnter={startIdleTimeout}
-          onMouseMove={startIdleTimeout}
-          onMouseLeave={stopIdleTimeout}
+          onMouseEnter={onMouseEnter}
+          onMouseMove={onMouseMouse}
+          onMouseLeave={onMouseLeave}
           onClick={togglePlay}
           onLoadedMetadata={onLoadMetadata}
           onProgress={onProgress}
+          onPause={stopIdleTimeout}
           onTimeUpdate={onTimeUpdate}
           onError={onPlaybackError}
         >
@@ -238,7 +261,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
 
         {!hiddenControls && videoElement && !error && (
           <div className={classNames(classes.playerToolbarWrapper, { floating })}>
-            <PlayerToolbar floating={floating} />
+            <PlayerToolbar floating={floating} idle={idle} />
           </div>
         )}
 

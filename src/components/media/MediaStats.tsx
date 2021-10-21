@@ -36,12 +36,12 @@ const MediaStats: React.FC<MediaStatsProps> = ({
   const tableRef = useRef<HTMLTableElement>(null!)
 
   return (
-    <div className={classNames(classes.mediaStats, { expanded })}>
+    <div className={classNames(classes.mediaStats, { [classes.expanded]: expanded })}>
       <button className={classes.mediaStatsBtn} onClick={() => setExpanded(!expanded)}>
-        <span className="text">
+        <span>
           {expanded ? hideText : showText}
         </span>
-        <span className="icon">
+        <span className={classes.icon}>
           <ChevronDownIcon />
         </span>
       </button>

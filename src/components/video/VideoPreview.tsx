@@ -81,7 +81,11 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile }) => {
       <div className={classes.videoInfo}>
         {!hideProfile && profileLink && (
           <Link to={profileLink}>
-            <Avatar image={profileAvatar} address={profileAddress} />
+            <Avatar
+              className={classes.videoInfoAvatar}
+              image={profileAvatar}
+              address={profileAddress}
+            />
           </Link>
         )}
         <div className={classes.videoInfoStats}>

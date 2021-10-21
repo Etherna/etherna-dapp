@@ -45,7 +45,7 @@ const ProgressTabLink: React.FC<ProgressTabLinkProps> = ({
 }) => {
   return (
     <button
-      className={classNames(classes.progresstabLink, { active })}
+      className={classNames(classes.progresstabLink, { [classes.active]: active })}
       onClick={() => onSelect?.(tabKey)}
     >
       <span className={classes.progresstabLinkText}>
@@ -64,8 +64,8 @@ const ProgressTabLink: React.FC<ProgressTabLinkProps> = ({
           {progressList.map(({ progress, completed }, i) => (
             <div
               className={classNames(classes.progresstabLinkProgressBar, {
-                active: typeof progress === "number" && !completed,
-                completed,
+                [classes.active]: typeof progress === "number" && !completed,
+                [classes.completed]: completed,
               })}
               key={i}
             >

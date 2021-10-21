@@ -93,7 +93,9 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
       <div className={classes.extensionHostsListScrollable} onScroll={onScroll} ref={initScrollList}>
         {hosts?.map((host, i) => (
           <button
-            className={classNames(classes.extensionHostsListButton, { active: host.url === selectedHost?.url })}
+            className={classNames(classes.extensionHostsListButton, {
+              [classes.active]: host.url === selectedHost?.url
+            })}
             onClick={() => onHostSelected?.(host)}
             key={i}
           >

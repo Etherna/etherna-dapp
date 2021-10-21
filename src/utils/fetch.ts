@@ -20,6 +20,28 @@ const isObjectHeaders = (headers: HeadersInit | undefined): headers is Record<st
   return !isIteratorHeaders(headers) && typeof headers === "object"
 }
 
+const readAllChunks = async (readableStream: ReadableStream): Promise<Uint8Array> => {
+  const reader = readableStream.getReader()
+  const chunks: Uint8Array[] = []
+
+  while (true) {
+    const { value, done } = await reader.read()
+
+    value && chunks.push(value)
+
+    if (done) break
+  }
+
+  const mergedArray = new Uint8Array(chunks.reduce((length, chunk) => length + chunk.length, 0))
+  let position = 0
+  for (const chunk of chunks) {
+    mergedArray.set(chunk, position)
+    position += chunk.length
+  }
+
+  return mergedArray
+}
+
 const mapHeaders = (headers: HeadersInit | undefined) => {
   const entries = isArrayHeaders(headers)
     ? headers
@@ -28,10 +50,16 @@ const mapHeaders = (headers: HeadersInit | undefined) => {
       : isObjectHeaders(headers)
         ? Object.entries(headers)
         : []
-  return entries.reduce<Record<string, string>>((acc, [key, value]) => {
+  const lowerCasedHeaders = entries.reduce<Record<string, string>>((acc, [key, value]) => {
     acc[key.toLowerCase()] = value
     return acc
   }, {})
+
+  if (!("content-type" in lowerCasedHeaders)) {
+    lowerCasedHeaders["content-type"] = "text/plain;charset=UTF-8"
+  }
+
+  return lowerCasedHeaders
 }
 
 export const buildAxiosFetch = (axios: AxiosInstance): AxiosFetch => {
@@ -41,12 +69,17 @@ export const buildAxiosFetch = (axios: AxiosInstance): AxiosFetch => {
     const lowerCasedHeaders = mapHeaders(inputHeaders)
     const url = isRequest ? input?.url : input
     const method = (isRequest ? input?.method ?? "GET" : input) as Method
-    const body = isRequest ? input.body : init.body
+    let data: any = isRequest ? input.body : init.body
+
+    if (data instanceof ReadableStream) {
+      data = await readAllChunks(data)
+      data = new Blob([data], { type: "video/mp4" })
+    }
 
     const config: AxiosRequestConfig = {
       url,
       method,
-      data: typeof body === "undefined" || body instanceof FormData ? body : String(body),
+      data,
       headers: lowerCasedHeaders,
       withCredentials: init.credentials === "include",
       responseType: "arraybuffer"

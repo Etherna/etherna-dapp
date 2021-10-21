@@ -33,7 +33,7 @@ const PlayerPlaybackSpeed: React.FC = () => {
     })
   }
 
-  const optionLabel = (val: number) => `${val}X`
+  const optionLabel = (val: number) => `${val}`
 
   return (
     <PlayerToolbarSelect
@@ -41,7 +41,7 @@ const PlayerPlaybackSpeed: React.FC = () => {
       options={playbackTicks.map(tick => ({ value: tick.toString(), label: optionLabel(tick) }))}
       onSelect={updatePlaybackRate}
     >
-      <span>{optionLabel(playbackRate)}</span>
+      <span style={{ minWidth: "2rem" }}>{optionLabel(playbackRate)}⨉</span>
     </PlayerToolbarSelect>
   )
 }

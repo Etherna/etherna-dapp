@@ -292,7 +292,7 @@ export default class SwarmVideo {
       source: this.beeClient.getFileUrl(reference),
       quality,
       reference,
-      referenceProtocol: "files",
+      referenceProtocol: "bzz",
       contentType,
       size,
       bitrate
@@ -405,7 +405,7 @@ export default class SwarmVideo {
         quality: "",
         source: this.beeClient.getFileUrl(this.hash!),
         reference: "",
-        referenceProtocol: "files"
+        referenceProtocol: "bzz"
       }]
     }
 

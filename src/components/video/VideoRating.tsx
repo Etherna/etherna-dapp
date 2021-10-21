@@ -108,16 +108,6 @@ const VideoRating: React.FC<VideoRatingProps> = ({
     <div className={classes.videoRating}>
       <div className={classes.videoRatingButtons}>
         <button
-          className={classNames(classes.videoRatingBtn, classes.ratingDown)}
-          onClick={giveThumbsUp}
-          disabled={isUpdatingVote}
-        >
-          <span className={classes.thumbIcon}>
-            <ThumbUpIcon />
-          </span>
-          <span className={classes.counter}>{shortNumber(currentUpvotes)}</span>
-        </button>
-        <button
           className={classNames(classes.videoRatingBtn)}
           onClick={giveThumbsDown}
           disabled={isUpdatingVote}
@@ -126,6 +116,16 @@ const VideoRating: React.FC<VideoRatingProps> = ({
             <ThumbUpIcon />
           </span>
           <span className={classes.counter}>{shortNumber(currentDownvotes)}</span>
+        </button>
+        <button
+          className={classNames(classes.videoRatingBtn, classes.ratingDown)}
+          onClick={giveThumbsUp}
+          disabled={isUpdatingVote}
+        >
+          <span className={classes.thumbIcon}>
+            <ThumbUpIcon />
+          </span>
+          <span className={classes.counter}>{shortNumber(currentUpvotes)}</span>
         </button>
       </div>
 

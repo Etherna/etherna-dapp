@@ -61,6 +61,7 @@
   @apply cursor-pointer;
   @apply px-2;
   @apply text-sm text-center font-semibold;
+  @apply focus:outline-none;
 
   &.active {
     @apply text-green-500;

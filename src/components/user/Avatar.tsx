@@ -29,13 +29,14 @@ type AvatarProps = {
   address?: string
   size?: number
   showBadge?: boolean
+  className?: string
 }
 
-const Avatar: React.FC<AvatarProps> = ({ image, address, size, showBadge }) => {
+const Avatar: React.FC<AvatarProps> = ({ image, address, size, showBadge, className }) => {
   const blockie = address ? makeBlockies(address) : undefined
 
   return (
-    <div className={classNames(classes.avatar, { [classes.badge]: showBadge })}>
+    <div className={classNames(classes.avatar, className, { [classes.badge]: showBadge })}>
       <SwarmImg
         image={image}
         fallback={blockie}

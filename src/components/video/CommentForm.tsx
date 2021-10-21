@@ -25,6 +25,7 @@ import Avatar from "@components/user/Avatar"
 import { IndexVideoComment } from "@classes/EthernaIndexClient/types"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
+import TextField from "@common/TextField"
 
 type CommentFormProps = {
   videoHash: string
@@ -74,14 +75,15 @@ const CommentForm: React.FC<CommentFormProps> = ({ videoHash, onCommentPosted })
         <Avatar image={avatar} address={address} />
       </div>
 
-      <textarea
-        ref={inputRef}
+      <TextField
+        elRef={inputRef}
         className={classes.commentFormInput}
         placeholder="Add a public comment"
         value={text}
         disabled={isPosting}
-        onChange={e => setText(e.target.value)}
+        onChange={setText}
         onFocus={() => setIsFocused(true)}
+        multiline
       />
 
       {isFocused && (

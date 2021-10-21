@@ -22,6 +22,10 @@
 
 .commentFormInput {
   @apply flex-1;
+
+  textarea {
+    @apply h-12;
+  }
 }
 
 .commentFormActions {

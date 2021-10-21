@@ -51,7 +51,6 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
   )
 
   const handleChange = (val: string) => {
-    console.log(val)
     onChange?.(val)
   }
 

@@ -16,7 +16,7 @@
  */
 
 import classNames from "classnames"
-import React from "react"
+import React, { useMemo } from "react"
 
 import classes from "@styles/components/common/TextField.module.scss"
 
@@ -24,26 +24,34 @@ import Label from "@common/Label"
 
 type TextFieldProps = {
   id?: string
+  className?: string
   value: string
   type?: "text" | "password" | "email" | "url" | "date" | "time" | "tel"
   placeholder?: string
   label?: string
   disabled?: boolean
+  multiline?: boolean
   small?: boolean
   charactersLimit?: number
+  elRef?: React.MutableRefObject<any>
   onChange?(value: string): void
+  onFocus?(): void
 }
 
 const TextField: React.FC<TextFieldProps> = ({
   id,
+  className,
   value,
   type = "text",
   placeholder,
   label,
   charactersLimit,
+  multiline,
   disabled,
   small,
-  onChange
+  elRef,
+  onChange,
+  onFocus,
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value
@@ -53,13 +61,26 @@ const TextField: React.FC<TextFieldProps> = ({
     onChange?.(value)
   }
 
+  const Field: React.FC<React.AllHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>> = useMemo(
+    () => (props: React.AllHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>) => (
+      <>
+        {multiline ? (
+          <textarea {...props} rows={6} ref={elRef} />
+        ) : (
+          <input {...props} ref={elRef} />
+        )}
+      </>
+    ) as any,
+    [multiline, elRef]
+  )
+
   return (
     <>
       {label && (
         <Label htmlFor={id}>{label}</Label>
       )}
-      <div className={classes.textFieldWrapper}>
-        <input
+      <div className={classNames(classes.textFieldWrapper, className)}>
+        <Field
           id={id}
           className={classNames(classes.textField, {
             [classes.small]: small,
@@ -70,6 +91,7 @@ const TextField: React.FC<TextFieldProps> = ({
           disabled={disabled}
           value={value}
           onChange={handleChange}
+          onFocus={onFocus}
         />
         {charactersLimit && (
           <span className={classNames(classes.textFieldCharCounter, {
