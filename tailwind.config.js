@@ -1012,6 +1012,7 @@ module.exports = {
     zIndex: ["responsive", "focus-within", "focus"],
   },
   plugins: [
+    require("@tailwindcss/typography"),
     require("tailwindcss-scroll-snap"),
     plugin(function ({ addUtilities }) {
       const utils = {

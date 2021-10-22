@@ -64,3 +64,8 @@
     @apply ml-1.5;
   }
 }
+
+.markdownEditorContent {
+  @apply prose max-w-none;
+  @apply text-gray-700 dark:text-gray-200;
+}

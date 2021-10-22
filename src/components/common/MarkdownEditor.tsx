@@ -57,12 +57,6 @@ const toolbarConfig: ToolbarConfig = {
     { label: "Strikethrough", type: "inline", style: "STRIKETHROUGH" },
     { label: "Code", type: "inline", style: "CODE" },
   ],
-  BLOCK_ALIGNMENT_BUTTONS: [
-    { label: "Align Left", type: "block", style: "ALIGN_LEFT" },
-    { label: "Align Center", type: "block", style: "ALIGN_CENTER" },
-    { label: "Align Right", type: "block", style: "ALIGN_RIGHT" },
-    { label: "Align Justify", type: "block", style: "ALIGN_JUSTIFY" },
-  ],
   BLOCK_TYPE_BUTTONS: [
     { label: "Unordered list", type: "block", style: "unordered-list-item" },
     { label: "Ordered list", type: "block", style: "ordered-list-item" },
@@ -158,17 +152,19 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           ))}
         </div>
 
-        <Editor
-          placeholder={placeholder}
-          editorState={state}
-          handleBeforeInput={handleBeforeInput}
-          handleKeyCommand={handleKeyCommand}
-          onChange={handleChange}
-          onFocus={() => setHasFocus(true)}
-          onBlur={() => setHasFocus(false)}
-          readOnly={disabled}
-          spellCheck
-        />
+        <div className={classes.markdownEditorContent}>
+          <Editor
+            placeholder={placeholder}
+            editorState={state}
+            handleBeforeInput={handleBeforeInput}
+            handleKeyCommand={handleKeyCommand}
+            onChange={handleChange}
+            onFocus={() => setHasFocus(true)}
+            onBlur={() => setHasFocus(false)}
+            readOnly={disabled}
+            spellCheck
+          />
+        </div>
 
         {charactersLimit && (
           <span className={classNames(textfieldClasses.textFieldCharCounter, {

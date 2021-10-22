@@ -26,10 +26,6 @@ import { ReactComponent as UnderlineIcon } from "@assets/icons/rte/underline.svg
 import { ReactComponent as StrikethroughIcon } from "@assets/icons/rte/strikethrough.svg"
 import { ReactComponent as CodeIcon } from "@assets/icons/rte/code.svg"
 import { ReactComponent as CodeBlockIcon } from "@assets/icons/rte/code-block.svg"
-import { ReactComponent as AlignRightIcon } from "@assets/icons/rte/align-right.svg"
-import { ReactComponent as AlignLeftIcon } from "@assets/icons/rte/align-left.svg"
-import { ReactComponent as AlignCenterIcon } from "@assets/icons/rte/align-center.svg"
-import { ReactComponent as AlignJustifiedIcon } from "@assets/icons/rte/align-justified.svg"
 import { ReactComponent as UnorderedListIconIcon } from "@assets/icons/rte/unordered-list.svg"
 import { ReactComponent as OrderedListIconIcon } from "@assets/icons/rte/ordered-list.svg"
 
@@ -47,11 +43,7 @@ export type MarkdownButtonConfig = {
   "blockquote" |
   "unordered-list-item" |
   "ordered-list-item" |
-  "code-block" |
-  "ALIGN_LEFT" |
-  "ALIGN_CENTER" |
-  "ALIGN_RIGHT" |
-  "ALIGN_JUSTIFY"
+  "code-block"
 } | {
   type: "inline"
   style: "BOLD" | "ITALIC" | "UNDERLINE" | "CODE" | "STRIKETHROUGH"
@@ -104,10 +96,6 @@ const MarkdownEditorButton: React.FC<MarkdownEditorButtonProps> = ({
       case "UNDERLINE": return <UnderlineIcon />
       case "STRIKETHROUGH": return <StrikethroughIcon />
       case "CODE": return <CodeIcon />
-      case "ALIGN_RIGHT": return <AlignRightIcon />
-      case "ALIGN_LEFT": return <AlignLeftIcon />
-      case "ALIGN_CENTER": return <AlignCenterIcon />
-      case "ALIGN_JUSTIFY": return <AlignJustifiedIcon />
       case "code-block": return <CodeBlockIcon />
       case "unordered-list-item": return <UnorderedListIconIcon />
       case "ordered-list-item": return <OrderedListIconIcon />
@@ -120,7 +108,7 @@ const MarkdownEditorButton: React.FC<MarkdownEditorButtonProps> = ({
         [classes.active]: active
       })}
       title={config.label}
-      onClick={toggleStyle}
+      onMouseDown={toggleStyle}
     >
       {getIcon()}
     </button>

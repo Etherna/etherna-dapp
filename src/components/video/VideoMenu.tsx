@@ -36,7 +36,7 @@ const VideoMenu: React.FC<VideoMenuProps> = ({ video }) => {
   return (
     <Dropdown>
       <DropdownToggle>
-        <Button className="w-2 h-2" modifier="transparent" rounded iconOnly small>
+        <Button as="div" className="w-2 h-2" modifier="transparent" rounded iconOnly small>
           <MoreIcon className="m-auto" />
         </Button>
       </DropdownToggle>
