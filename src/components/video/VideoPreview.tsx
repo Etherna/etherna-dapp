@@ -41,11 +41,11 @@ type VideoPreviewProps = {
 const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile }) => {
   const { address } = useSelector(state => state.user)
 
-  const profileAddress = video.ownerAddress
-  const profileName = (video.owner?.profileData?.name) || shortenEthAddr(profileAddress)
+  const ownerAddress = video.owner?.ownerAddress
+  const profileName = (video.owner?.profileData?.name) || shortenEthAddr(ownerAddress)
   const profileAvatar = video.owner?.profileData?.avatar
 
-  const profileLink = video.ownerAddress ? Routes.getProfileLink(video.ownerAddress) : null
+  const profileLink = ownerAddress ? Routes.getProfileLink(ownerAddress) : null
   const videoLink = Routes.getVideoLink(video.hash)
   const videoSearch = new URL(videoLink, document.baseURI).search
   const videoPath = videoLink.replace(videoSearch, "")
@@ -84,7 +84,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile }) => {
             <Avatar
               className={classes.videoInfoAvatar}
               image={profileAvatar}
-              address={profileAddress}
+              address={ownerAddress}
             />
           </Link>
         )}
@@ -109,7 +109,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile }) => {
             </div>
           )}
         </div>
-        {address === profileAddress && (
+        {address === ownerAddress && (
           <VideoMenu video={video} />
         )}
       </div>
