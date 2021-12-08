@@ -34,14 +34,9 @@ const HomePage = () => (
         It has specific logic and dynamics for is moderation and on how users interact with it.
         Content is displayed inside it with an ordered list, and the order can be selected in different ways.
         These ways can be determined by index, or in future could be choose directly by client implementing itself.
-        A frame can be also expanded by specific plugins applied to it.
-        These plugins can expand functionalities, but can’t be mandatory for a vanilla use of frame.
         Frames can be removed by super moderators of Index,
         but any discussion between moderators and index administrators must be in clear and permanent on Swarm.
-        This will make anything transparent, and can create a “funny” archive of creepy history contents.
-        Frame can be composed of “sub-frame”. A subframe is an internal category that can have
-        it’s dedicated moderation schema, with an hierarchical management.
-        Sub frame contents can be accessed by parent frame.`}
+        This will make anything transparent, and can create a “funny” archive of creepy history contents.`}
       />
     </Container>
   </AppLayoutWrapper>

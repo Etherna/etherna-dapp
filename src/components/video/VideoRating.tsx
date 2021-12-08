@@ -15,14 +15,14 @@
  *
  */
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
+import classNames from "classnames"
 
 import classes from "@styles/components/video/VideoRating.module.scss"
 import { ReactComponent as ThumbUpIcon } from "@assets/icons/player/thumb-up.svg"
 
 import { VoteValue } from "@classes/EthernaIndexClient/types"
 import useSelector from "@state/useSelector"
-import classNames from "classnames"
 
 type VideoRatingProps = {
   videoHash: string
@@ -41,12 +41,21 @@ const VideoRating: React.FC<VideoRatingProps> = ({
   const [currentVote, setCurrentVote] = useState<VoteValue>("Neutral")
 
   const { indexClient } = useSelector((state) => state.env)
+
   const progress =
-    currentUpvotes > currentDownvotes
-      ? Math.round(currentUpvotes - currentDownvotes / currentUpvotes + currentDownvotes)
-      : currentUpvotes < currentDownvotes
-        ? Math.round(currentDownvotes - currentUpvotes / currentUpvotes + currentDownvotes)
+    currentUpvotes < currentDownvotes
+      ? Math.round((currentUpvotes - currentDownvotes) / (currentUpvotes + currentDownvotes))
+      : currentUpvotes > currentDownvotes
+        ? Math.round((currentDownvotes - currentUpvotes) / (currentUpvotes + currentDownvotes))
         : 0.5
+
+  useEffect(() => {
+    setCurrentUpvotes(upvotes ?? 0)
+    setCurrentDownvotes(downvotes ?? 0)
+  }, [upvotes, downvotes])
+
+  console.log("prog", progress, upvotes, downvotes)
+
 
   const giveThumbsUp = () => {
     const newVote: VoteValue = currentVote === "Up" ? "Neutral" : "Up"
@@ -115,7 +124,7 @@ const VideoRating: React.FC<VideoRatingProps> = ({
           <span className={classes.thumbIcon}>
             <ThumbUpIcon />
           </span>
-          <span className={classes.counter}>{shortNumber(currentDownvotes)}</span>
+          <span className={classes.counter}>{shortNumber(currentUpvotes)}</span>
         </button>
         <button
           className={classNames(classes.videoRatingBtn, classes.ratingDown)}
@@ -125,7 +134,7 @@ const VideoRating: React.FC<VideoRatingProps> = ({
           <span className={classes.thumbIcon}>
             <ThumbUpIcon />
           </span>
-          <span className={classes.counter}>{shortNumber(currentUpvotes)}</span>
+          <span className={classes.counter}>{shortNumber(currentDownvotes)}</span>
         </button>
       </div>
 

@@ -16,6 +16,7 @@
  */
 
 import React from "react"
+import classNames from "classnames"
 
 import classes from "@styles/components/video/VideoDetailsTitleBar.module.scss"
 
@@ -26,7 +27,11 @@ type VideoDetailsTitleBarProps = {
 const VideoDetailsTitleBar: React.FC<VideoDetailsTitleBarProps> = ({ title, children }) => {
   return (
     <div className={classes.videoDetailsTitlebar}>
-      <h1 className={classes.videoDetailsTitle}>{title ?? ""}</h1>
+      <h1 className={classNames(classes.videoDetailsTitle, {
+        [classes.untitled]: !title
+      })}>
+        {title ?? "Untitled"}
+      </h1>
 
       <div className={classes.videoDetailsActions}>
         {children}

@@ -57,7 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children, floating, show, onClose }) 
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="sidebar-backdrop" onClick={onClose}></div>
+          <div className={classes.sidebarBackdrop} onClick={onClose}></div>
         </Transition>
       )}
       <aside

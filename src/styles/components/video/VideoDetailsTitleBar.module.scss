@@ -21,6 +21,10 @@
 
 .videoDetailsTitle {
   @apply mb-1 font-semibold text-2xl;
+
+  &.untitled {
+    @apply opacity-50;
+  }
 }
 
 .videoDetailsActions {
