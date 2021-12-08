@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -57,7 +57,7 @@ const useImageCrop = () => {
     return image
   }
 
-  const finishCropping = (cropData: Crop | undefined) => {
+  const finishCropping = (cropData: Partial<Crop> | undefined) => {
     dispatch({
       type: UIActionTypes.UPDATE_IMAGE_CROP,
       imageCrop: cropData,
@@ -88,7 +88,7 @@ const getCroppedImage = async (src: string, getState: () => AppState) => {
 }
 
 const waitCropData = (getState: () => AppState) =>
-  new Promise<Crop>(resolve => {
+  new Promise<Partial<Crop>>(resolve => {
     const id = setInterval(() => {
       const { imageCrop } = getState().ui
       if (imageCrop !== undefined) {
@@ -98,7 +98,7 @@ const waitCropData = (getState: () => AppState) =>
     }, 1000)
   })
 
-const applyImageCropping = (src: string, cropData: Crop) =>
+const applyImageCropping = (src: string, cropData: Partial<Crop>) =>
   new Promise<Blob | null>(resolve => {
     let image = new Image()
     image.src = src
@@ -108,7 +108,7 @@ const applyImageCropping = (src: string, cropData: Crop) =>
     }
   })
 
-const getCroppedBlob = (image: CanvasImageSource, crop: Crop, fileName = "image") => {
+const getCroppedBlob = (image: CanvasImageSource, crop: Partial<Crop>, fileName = "image") => {
   const canvas = document.createElement("canvas")
   canvas.width = crop.width || 0
   canvas.height = crop.height || 0

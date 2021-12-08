@@ -128,6 +128,10 @@ export default class SwarmBeeClient extends Bee {
     }
   }
 
+  async getAllPostageBatch() {
+    return [] as any[]
+  }
+
   async getBatchId() {
     const batches = await this.getAllPostageBatch()
     const usableBatches = batches.filter(batch => batch.usable)

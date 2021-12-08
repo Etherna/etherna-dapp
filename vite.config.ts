@@ -21,6 +21,7 @@ import react from "@vitejs/plugin-react"
 import svgr from "vite-plugin-svgr"
 import tsconfigPaths from "vite-tsconfig-paths"
 import eslintPlugin from "vite-plugin-eslint"
+// import { VitePWA } from "vite-plugin-pwa"
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -54,6 +55,9 @@ export default defineConfig(({ mode }) => ({
     tsconfigPaths({ root: "." }),
     react(),
     svgr(),
-    eslintPlugin({ cache: false })
+    eslintPlugin({ cache: false }),
+    // VitePWA({
+    //   registerType: "autoUpdate"
+    // }),
   ],
 }))

@@ -2,13 +2,22 @@
   "extends": "./tsconfig.paths.json",
   "compilerOptions": {
     "target": "ESNext",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": ["vite/client"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
+    "types": [
+      "vite/client",
+      "vite-plugin-pwa/client"
+    ],
     "plugins": [
-      { "name": "typescript-plugin-css-modules" }
+      {
+        "name": "typescript-plugin-css-modules"
+      }
     ],
     "allowJs": false,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,

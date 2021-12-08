@@ -58,7 +58,7 @@ const Button: React.FC<ButtonProps> = ({
   rounded,
   onClick,
 }) => {
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLElement | HTMLAnchorElement>) => {
     const isActiveElement = e.target === document.activeElement
     const triggers = ["Enter", "Space"]
     if (isActiveElement && triggers.includes(e.key)) {
@@ -99,7 +99,7 @@ const Button: React.FC<ButtonProps> = ({
           type={type}
           role="button"
           onClick={onClick}
-          onKeyDown={handleKeyDown}
+          onKeyDown={e => handleKeyDown(e as any)}
         >
           {children}
         </Link>

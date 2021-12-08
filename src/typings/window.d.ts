@@ -53,5 +53,15 @@ declare global {
       triggerFunction?: (showCollectorDialog: () => void) => void
       showCollectorDialog?: () => void
     }
+
+    // polyfills
+    webkitRequestAnimationFrame?: typeof window.requestAnimationFrame
+    mozRequestAnimationFrame?: typeof window.requestAnimationFrame
+    msRequestAnimationFrame?: typeof window.requestAnimationFrame
+  }
+
+  interface Navigator {
+    // polyfills
+    msMaxTouchPoints?: typeof navigator.maxTouchPoints
   }
 }
