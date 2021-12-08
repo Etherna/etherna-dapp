@@ -27,11 +27,13 @@ import useSelector from "@state/useSelector"
 import useExtensionEditor from "@state/hooks/ui/useExtensionEditor"
 
 const ExtensionEditorModal = () => {
-  const { extensionUrl, extensionName } = useSelector(state => state.ui)
-  const [isEditing, setIsEditing] = useState(false)
-  const [initialUrl, setInitialUrl] = useState(extensionUrl)
-  const [selectedUrl, setSelectedUrl] = useState(initialUrl)
+  const { extensionName } = useSelector(state => state.ui)
+  const STORAGE_LIST_KEY = `setting:${extensionName}-hosts`
+  const STORAGE_SELECTED_KEY = `setting:${extensionName}-url`
+
   const { hideEditor } = useExtensionEditor()
+  const [isEditing, setIsEditing] = useState(false)
+  const [selectedUrl, setSelectedUrl] = useState("")
 
   const defaultUrl = useMemo(() => {
     switch (extensionName) {
@@ -40,6 +42,18 @@ const ExtensionEditorModal = () => {
       default: return ""
     }
   }, [extensionName])
+  const initialSelectedUrl = useMemo(() => {
+    if (localStorage.getItem(STORAGE_SELECTED_KEY)) {
+      return JSON.parse(localStorage.getItem(STORAGE_SELECTED_KEY)!)
+    }
+    return defaultUrl
+  }, [defaultUrl, STORAGE_SELECTED_KEY])
+
+  useEffect(() => {
+    if (initialSelectedUrl) {
+      setSelectedUrl(initialSelectedUrl)
+    }
+  }, [initialSelectedUrl])
 
   const description = useMemo(() => {
     switch (extensionName) {
@@ -54,13 +68,6 @@ const ExtensionEditorModal = () => {
       default: return ""
     }
   }, [extensionName])
-
-  useEffect(() => {
-    if (extensionUrl) {
-      setInitialUrl(extensionUrl)
-      setSelectedUrl(extensionUrl)
-    }
-  }, [extensionUrl])
 
   const closeModal = () => {
     hideEditor()
@@ -85,7 +92,7 @@ const ExtensionEditorModal = () => {
       }
       footerButtons={
         <>
-          <Button onClick={applyChanges} disabled={isEditing || selectedUrl === initialUrl}>
+          <Button onClick={applyChanges} disabled={isEditing || selectedUrl === initialSelectedUrl}>
             Apply changes
           </Button>
           <Button modifier="secondary" onClick={closeModal} disabled={isEditing}>
@@ -95,8 +102,8 @@ const ExtensionEditorModal = () => {
       }
     >
       <ExtensionHostPanel
-        listStorageKey={`setting:${extensionName}-hosts`}
-        currentStorageKey={`setting:${extensionName}-url`}
+        listStorageKey={STORAGE_LIST_KEY}
+        currentStorageKey={STORAGE_SELECTED_KEY}
         defaultUrl={defaultUrl}
         initialValue={{ name: `Etherna ${extensionName}`, url: defaultUrl }}
         description={description}

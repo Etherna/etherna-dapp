@@ -26,6 +26,19 @@ export const safeURL = (url: string | null | undefined, path?: string) => {
   }
 }
 
+export const isSafeURL = (url: string | null | undefined, path?: string) => {
+  try {
+    let baseUrl = (url ?? "")
+    if (!/https?:\/\//.test(baseUrl)) {
+      baseUrl = `https://${baseUrl}`
+    }
+    new URL(path ?? "", baseUrl)
+    return true
+  } catch (error: any) {
+    return false
+  }
+}
+
 export const urlOrigin = (baseUrl: string) => {
   return safeURL(baseUrl)?.origin
 }

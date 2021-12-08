@@ -27,10 +27,13 @@ type TextFieldProps = {
   className?: string
   value: string
   type?: "text" | "password" | "email" | "url" | "date" | "time" | "tel"
+  autoComplete?: "on" | "off" | "name" | "given-name" | "family-name" |
+  "email" | "tel" | "url" | "current-password" | "new-password" | "one-time-code"
   placeholder?: string
   label?: string
   disabled?: boolean
   multiline?: boolean
+  autoFocus?: boolean
   small?: boolean
   charactersLimit?: number
   elRef?: React.MutableRefObject<any>
@@ -43,10 +46,12 @@ const TextField: React.FC<TextFieldProps> = ({
   className,
   value,
   type = "text",
+  autoComplete,
   placeholder,
   label,
   charactersLimit,
   multiline,
+  autoFocus,
   disabled,
   small,
   elRef,
@@ -87,11 +92,13 @@ const TextField: React.FC<TextFieldProps> = ({
             [classes.charlimit]: !!charactersLimit
           })}
           type={type}
+          autoComplete={autoComplete}
           placeholder={placeholder}
           disabled={disabled}
           value={value}
           onChange={handleChange}
           onFocus={onFocus}
+          autoFocus={autoFocus}
         />
         {charactersLimit && (
           <span className={classNames(classes.textFieldCharCounter, {

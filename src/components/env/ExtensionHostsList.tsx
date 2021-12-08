@@ -15,7 +15,7 @@
  *
  */
 
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import classNames from "classnames"
 import clamp from "lodash/clamp"
 
@@ -43,6 +43,16 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
   const [canScrollPrev, setCanScrollPrev] = useState(false)
   const [canScrollNext, setCanScrollNext] = useState(false)
   const scrollListRef = useRef<HTMLElement>()
+
+  useEffect(() => {
+    const scrollList = scrollListRef.current
+    if (scrollList) {
+      smoothScroll(scrollList, {
+        duration: 200,
+        left: scrollList.scrollWidth - scrollList.clientWidth - scrollList.scrollLeft
+      })
+    }
+  }, [hosts])
 
   const initScrollList = (el: HTMLElement | null) => {
     if (!el) return

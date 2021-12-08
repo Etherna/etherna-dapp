@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,7 @@
  */
 
 import { parseLocalStorage } from "@utils/localStorage"
-import { safeURL, urlOrigin } from "@utils/urls"
+import { isSafeURL, safeURL, urlOrigin } from "@utils/urls"
 import AuthIdentityClient from "./AuthIdentityClient"
 import { AuthClientOptions } from "./types"
 
@@ -57,10 +57,18 @@ export default class EthernaAuthClient {
   }
 
   static get defaultHost(): string {
-    return urlOrigin(parseLocalStorage("setting:auth-url") || import.meta.env.VITE_APP_AUTH_URL)!
+    const localUrl = parseLocalStorage<string>("setting:auth-url")
+    if (isSafeURL(localUrl)) {
+      return urlOrigin(localUrl!)!
+    }
+    return urlOrigin(import.meta.env.VITE_APP_AUTH_URL)!
   }
 
   static get defaultApiPath(): string {
-    return safeURL(parseLocalStorage("setting:auth-url") || import.meta.env.VITE_APP_AUTH_URL)!.pathname
+    const localUrl = parseLocalStorage<string>("setting:auth-url")
+    if (isSafeURL(localUrl)) {
+      return safeURL(localUrl)!.pathname
+    }
+    return safeURL(import.meta.env.VITE_APP_AUTH_URL)!.pathname
   }
 }

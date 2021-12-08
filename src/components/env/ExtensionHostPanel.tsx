@@ -31,7 +31,7 @@ import TextField from "@common/TextField"
 import useLocalStorage from "@hooks/useLocalStorage"
 import { ExtensionHost } from "@typings/env/extension-host"
 import { useErrorMessage } from "@state/hooks/ui"
-import { urlHostname } from "@utils/urls"
+import { isSafeURL, urlHostname } from "@utils/urls"
 
 type ExtensionHostPanelProps = {
   listStorageKey: string
@@ -81,16 +81,17 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
     setSelectedUrl(hosts![selectedHostIndex].url)
     setName(newHost.name)
     setUrl(newHost.url)
-    onChange?.(selectedHost!)
+    onChange?.(newHost)
   }
 
   const addNewHost = () => {
-    const newHosts = [...hosts!, { name: "New host", url: "https://" }]
-    const selectedHostIndex = newHosts.findIndex(host => host.url === selectedUrl) + 1
+    const newHost = { name: "New host", url: "https://" }
 
-    setHosts(newHosts)
-    setSelectedUrl(newHosts[selectedHostIndex].url)
-    onChange?.(selectedHost!)
+    setHosts([...hosts!, newHost])
+    setSelectedUrl(newHost.url)
+    setName(newHost.name)
+    setUrl(newHost.url)
+    toggleEditSelectedHost()
   }
 
   const deleteSelectedHost = () => {
@@ -106,10 +107,20 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
 
     setHosts(newHosts)
     setSelectedUrl(newHosts[nextIndex].url)
+    setName(newHosts[nextIndex].name)
+    setUrl(newHosts[nextIndex].url)
     onChange?.(selectedHost!)
+    isEditing && toggleEditSelectedHost()
   }
 
   const saveSelectedHost = () => {
+    if (!name) {
+      return showError("Host name error", "Please type a host name")
+    }
+    if (!isSafeURL(url)) {
+      return showError("URL Error", "Please insert a valid URL")
+    }
+
     const newHosts = [...hosts!]
     const selectedHostIndex = newHosts.findIndex(host => host.url === selectedUrl)
     newHosts[selectedHostIndex].name = name
@@ -138,10 +149,18 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
       <div className={classes.extensionHostPanelUpdate}>
         <div className={classes.extensionHostPanelActions}>
           {isEditing ? (
-            <Button className={classes.btn} modifier="transparent" onClick={saveSelectedHost} small>
-              <CheckIcon />
-              <span>Save</span>
-            </Button>
+            <>
+              <Button className={classes.btn} modifier="transparent" onClick={saveSelectedHost} small>
+                <CheckIcon />
+                <span>Save</span>
+              </Button>
+              <div className={classes.extensionHostPanelActionsRight}>
+                <Button className={classes.btn} modifier="transparent" onClick={deleteSelectedHost} small>
+                  <TrashIcon />
+                  <span>Remove</span>
+                </Button>
+              </div>
+            </>
           ) : (
             <>
               <Button className={classes.btn} modifier="transparent" onClick={addNewHost} small>
@@ -169,7 +188,7 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
           <FormGroup>
             <Label htmlFor="name">Name</Label>
             {isEditing ? (
-              <TextField id="name" type="text" value={name} onChange={setName} />
+              <TextField id="name" type="text" value={name} onChange={setName} autoFocus />
             ) : (
               <div className={classes.extensionHostPanelValue}>{name}</div>
             )}

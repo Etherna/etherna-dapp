@@ -19,7 +19,7 @@
   @apply bg-gray-900/0;
   @apply flex items-center justify-center;
   @apply transition duration-300;
-  @apply z-100;
+  @apply z-200;
 
   &.show {
     @apply visible bg-gray-900/60;
