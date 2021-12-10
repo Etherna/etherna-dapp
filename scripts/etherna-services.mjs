@@ -140,7 +140,11 @@ const waitService = (projectPath, name) => {
       waitOn({
         resources: [host],
         delay: 100,
-        timeout: 60000
+        timeout: 30000,
+        validateStatus: function (status) {
+          // if returns any status code then server is up
+          return true
+        }
       }).then(() => {
         console.log(chalk.green(`${name} connected!`) + chalk.reset(` Host --> ${host}`))
         resolve()
@@ -208,8 +212,22 @@ const run = async () => {
   }
 
   if (shouldRunProxy) {
-    const validatorProcess = exec("cd proxy && npm run start", execCallback)
+    const validatorProcess = exec(
+      "npm run start",
+      {
+        cwd: path.resolve("proxy")
+      },
+      execCallback
+    )
+    const beeDebugProcess = exec(
+      "npm run start:bee-debug",
+      {
+        cwd: path.resolve("proxy")
+      },
+      execCallback
+    )
     processes.push(validatorProcess)
+    processes.push(beeDebugProcess)
   }
 
   // await services async
@@ -219,6 +237,8 @@ const run = async () => {
     await waitService(process.env.ETHERNA_CREDIT_PROJECT_PATH, "Etherna Credit")
   shouldRunEthernaValidator &&
     await waitService(process.env.ETHERNA_GATEWAY_VALIDATOR_PROJECT_PATH, "Etherna Gateway Validator")
+  shouldRunProxy &&
+    await waitService(`https://localhost:${process.env.BEE_DEBUG_PORT}`, "Bee Debug Https Proxy")
   shouldRunProxy &&
     await waitService(`https://localhost:${process.env.GATEWAY_PORT}`, "Etherna Gateway Proxy")
 

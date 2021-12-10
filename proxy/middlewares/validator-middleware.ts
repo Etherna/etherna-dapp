@@ -16,9 +16,7 @@
 
 import { createProxyMiddleware } from "http-proxy-middleware"
 
-import loadEnv from "../utils/env.js"
-
-loadEnv()
+import "../utils/env.js"
 
 // Consts
 const GatewayValidPathsRegex = /^\/(bytes|chunks|bzz|tags|pins|soc|feeds|pss|stamps)\/?.*/

@@ -21,29 +21,24 @@ import https from "https"
 import cors from "cors"
 
 import "./utils/env.js"
-import ValidatorMiddleware from "./middlewares/validator-middleware.js"
-import SwarmMiddleware from "./middlewares/swarm-middleware.js"
+import { createProxyMiddleware } from "http-proxy-middleware"
 
-/**
- * Setup node server
- */
+const port = process.env.BEE_DEBUG_PORT || 1636
+
 const app = express()
-const port = process.env.GATEWAY_PORT || 44362
-
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(express.raw({
-  type: "*/*",
-  limit: "100mb"
+app.use(cors({
+  credentials: true,
+  origin: true
 }))
-app.use(
-  cors({
-    credentials: true,
-    origin: true
-  })
-)
-app.use(SwarmMiddleware)
-app.use(ValidatorMiddleware)
+app.use(createProxyMiddleware(
+  {
+    target: process.env.BEE_DEBUG_ENDPOINT,
+    secure: false,
+    logLevel: "error"
+  }
+))
 
 const PrivateKeyPath = path.resolve("..", process.env.SSL_KEY_FILE)
 const CertificatePath = path.resolve("..", process.env.SSL_CRT_FILE)
@@ -53,15 +48,9 @@ if (fs.existsSync(PrivateKeyPath) && fs.existsSync(CertificatePath)) {
   const certificate = fs.readFileSync(CertificatePath)
 
   const httpsServer = https.createServer({ key: privateKey, cert: certificate }, app)
-
-  // Proxy gateway validator/bee
   httpsServer.listen(port, () => {
-    console.log(`Proxy started at: https://localhost:${port}`)
+    console.log(`Bee Debug Proxy started at: https://localhost:${port}`)
   })
 } else {
-  app.listen(port, () => {
-    console.log(`Proxy started at: http://localhost:${port}`)
-  })
+  throw new Error("You need a certificate to run this proxy")
 }
-
-process.setMaxListeners(0)

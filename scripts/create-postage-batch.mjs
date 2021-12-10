@@ -15,7 +15,7 @@ DotEnv.config({
 export async function createPostageBatch(amount = 10000000, depth = 20) {
   console.log(chalk.blueBright(`Creating a postage batch with ${amount} BZZ / ${depth} depth...`))
   try {
-    const batchResp = await axios.post(`${process.env.VITE_APP_POSTAGE_URL}/${amount}/${depth}`)
+    const batchResp = await axios.post(`${process.env.BEE_DEBUG_ENDPOINT}/stamps/${amount}/${depth}`)
     const { batchID } = batchResp.data
     console.log(chalk.green(`Created postage batch. Id: ${batchID}`))
     return batchID

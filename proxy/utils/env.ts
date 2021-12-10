@@ -18,13 +18,10 @@ import fs from "fs"
 import path from "path"
 import dotenv from "dotenv"
 
-export default function loadEnv() {
-  const envPath = fs.existsSync(path.resolve("../.env.development"))
-    ? path.resolve("../.env.development")
-    : path.resolve("../.env")
+const envPath = fs.existsSync(path.resolve("../.env.development"))
+  ? path.resolve("../.env.development")
+  : path.resolve("../.env")
 
-  dotenv.config({
-    path: envPath,
-  })
-
-}
+dotenv.config({
+  path: envPath,
+})

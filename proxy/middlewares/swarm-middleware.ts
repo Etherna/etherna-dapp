@@ -19,11 +19,9 @@ import { Request as ProxyRequest, Response as ProxyResponse } from "http-proxy-m
 import { ClientRequest, IncomingHttpHeaders } from "http"
 import fetch, { Response, RequestInit, BodyInit } from "node-fetch"
 
+import "../utils/env.js"
 import FilterTransformStream from "../classes/FilterTransformStream.js"
-import loadEnv from "../utils/env.js"
 import type { ValidationResponse } from "./validator"
-
-loadEnv()
 
 // Consts
 const GatewayValidPathsRegex = /^\/(bytes|chunks|bzz|tags|pins|soc|feeds|pss|stamps)\/?.*/

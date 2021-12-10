@@ -93,7 +93,7 @@
   "scripts": {
     "dev": "vite",
     "start": "node scripts/etherna-services.mjs",
-    "start:proxy": "cd proxy && npm run start",
+    "start:proxy": "node scripts/etherna-services.mjs --proxy",
     "start:bee": "node scripts/etherna-services.mjs --bee",
     "postage": "node scripts/create-postage-batch.mjs",
     "build": "tsc && vite build",
