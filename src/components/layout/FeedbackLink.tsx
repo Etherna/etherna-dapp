@@ -21,18 +21,20 @@ import SidebarLinksItem from "@components/navigation/SidebarLinksItem"
 
 const FeedbackLink = () => {
   useEffect(() => {
-    const script = document.createElement("script")
-    script.src = import.meta.env.VITE_APP_FEEDBACK_URL
-    script.async = true
-    script.onload = () => {
-      window.ATL_JQ_PAGE_PROPS = {
-        triggerFunction: (showCollectorDialog) => {
-          window.ATL_JQ_PAGE_PROPS!.showCollectorDialog = showCollectorDialog
+    if (import.meta.env.VITE_APP_FEEDBACK_URL) {
+      const script = document.createElement("script")
+      script.src = import.meta.env.VITE_APP_FEEDBACK_URL
+      script.async = true
+      script.onload = () => {
+        window.ATL_JQ_PAGE_PROPS = {
+          triggerFunction: (showCollectorDialog) => {
+            window.ATL_JQ_PAGE_PROPS!.showCollectorDialog = showCollectorDialog
+          }
         }
       }
-    }
 
-    document.body.appendChild(script)
+      document.body.appendChild(script)
+    }
   }, [])
 
   const handleFeedback = () => {
