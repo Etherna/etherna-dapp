@@ -5,6 +5,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
+  "files.trimTrailingWhitespace": false,
   "path-autocomplete.pathMappings": {
     "@app": "${folder}/src/app",
     "@assets": "${folder}/src/assets",
