@@ -130,8 +130,8 @@ export default class SwarmBeeClient extends Bee {
 
   async getAllPostageBatch() {
     try {
-      const postageResp = await http.get<PostageBatch[]>(import.meta.env.VITE_APP_POSTAGE_URL)
-      return postageResp.data
+      const postageResp = await http.get<{ stamps: PostageBatch[] }>(import.meta.env.VITE_APP_POSTAGE_URL)
+      return postageResp.data.stamps
     } catch (error) {
       return []
     }
