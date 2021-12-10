@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { BatchId, Bee, Collection, UploadResult } from "@ethersphere/bee-js"
+import { BatchId, Bee, Collection, PostageBatch, UploadResult } from "@ethersphere/bee-js"
 
 import { AxiosUploadOptions, CustomUploadOptions } from "./customUpload"
 import http, { createRequest } from "@utils/request"
@@ -129,7 +129,12 @@ export default class SwarmBeeClient extends Bee {
   }
 
   async getAllPostageBatch() {
-    return [] as any[]
+    try {
+      const postageResp = await http.get<PostageBatch[]>(import.meta.env.VITE_APP_POSTAGE_URL)
+      return postageResp.data
+    } catch (error) {
+      return []
+    }
   }
 
   async getBatchId() {
