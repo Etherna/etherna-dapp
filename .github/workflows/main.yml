@@ -17,6 +17,7 @@ jobs:
       VITE_APP_GATEWAY_URL: "https://gateway.etherna.io/api/v0.2"
       VITE_APP_CREDIT_URL: "https://credit.etherna.io"
       VITE_APP_AUTH_URL: "https://sso.etherna.io/api/v0.2"
+      VITE_APP_POSTAGE_URL: "https://gateway.etherna.io/api/v0.2/stamps"
       GENERATE_SOURCEMAP: false
     runs-on: ubuntu-latest
     steps:
