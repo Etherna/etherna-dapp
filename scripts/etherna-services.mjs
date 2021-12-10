@@ -21,6 +21,7 @@ import chalk from "chalk"
 import url from "url"
 import { exec } from "child_process"
 import DotEnv from "dotenv"
+import { createPostageBatch } from "./create-postage-batch.mjs"
 
 DotEnv.config({
   path: fs.existsSync(path.resolve(`.env.development`))
@@ -178,6 +179,13 @@ const run = async () => {
   const shouldRunProxy = args.length === 0 || args.includes("--proxy")
   const shouldRunBeeNode = process.env.BEE_LOCAL_INSTANCE === "true" && (args.length === 0 || args.includes("--bee"))
 
+  if (shouldRunBeeNode) {
+    const beeProcess = execBee()
+    processes.push(beeProcess)
+    await waitService(process.env.BEE_ENDPOINT, "Bee Node")
+    await createPostageBatch()
+  }
+
   if (shouldRunEthernaSSO) {
     const ssoProcess = execProject(process.env.ETHERNA_SSO_PROJECT_PATH)
     processes.push(ssoProcess)
@@ -213,12 +221,6 @@ const run = async () => {
     await waitService(process.env.ETHERNA_GATEWAY_VALIDATOR_PROJECT_PATH, "Etherna Gateway Validator")
   shouldRunProxy &&
     await waitService(`https://localhost:${process.env.GATEWAY_PORT}`, "Etherna Gateway Proxy")
-
-  if (shouldRunBeeNode) {
-    const beeProcess = execBee()
-    processes.push(beeProcess)
-    await waitService(process.env.BEE_ENDPOINT, "Bee Node")
-  }
 
   console.log(`✅ All done!`)
 }

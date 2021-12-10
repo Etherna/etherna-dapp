@@ -2,8 +2,9 @@ import fs from "fs"
 import path from "path"
 import prompt from "prompt"
 import chalk from "chalk"
-import BeeJs from "@ethersphere/bee-js"
+import axios from "axios"
 import DotEnv from "dotenv"
+import { fileURLToPath } from "url"
 
 DotEnv.config({
   path: fs.existsSync(path.resolve(".env.development"))
@@ -11,7 +12,18 @@ DotEnv.config({
     : ".env"
 })
 
-const bee = new BeeJs.Bee(process.env.BEE_ENDPOINT)
+export async function createPostageBatch(amount = 10000000, depth = 20) {
+  console.log(chalk.blueBright(`Creating a postage batch with ${amount} BZZ / ${depth} depth...`))
+  try {
+    const batchResp = await axios.post(`${process.env.VITE_APP_POSTAGE_URL}/${amount}/${depth}`)
+    const { batchID } = batchResp.data
+    console.log(chalk.green(`Created postage batch. Id: ${batchID}`))
+    return batchID
+  } catch (error) {
+    console.log(chalk.red(`Cannot create postage batch: ${error.message}`))
+    console.log(error.request.data)
+  }
+}
 
 const fund = () => {
   console.log(`Suggested for batch creation: 10000000 BZZ / 20 depth`)
@@ -30,16 +42,13 @@ const fund = () => {
       return 1
     }
 
-    console.log(`Creating a postage batch with ${result.bzz} BZZ / ${result.depth} depth...`)
+    const amount = result.bzz || "10000000"
+    const depth = result.depth || "20"
 
-    try {
-      const batchId = await bee.createPostageBatch(result.bzz || "10000000", +(result.depth || "20"))
-      console.log(chalk.green(`Created postage batch. Id: ${batchId}`))
-    } catch (error) {
-      console.log(chalk.red(`Cannot create batch: ${error.message}`))
-      console.log(error.request)
-    }
+    await createPostageBatch(amount, depth)
   })
 }
 
-fund()
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  fund()
+}
