@@ -14,11 +14,21 @@
  *  limitations under the License.
  */
 
-import { Canceler } from "axios"
+import type { Canceler } from "axios"
+
+import type SwarmBeeClient from "@classes/SwarmBeeClient"
+
+export type SwarmImageReaderOptions = {
+  beeClient: SwarmBeeClient
+}
+
+export type SwarmImageWriterOptions = {
+  beeClient: SwarmBeeClient
+  isResponsive?: boolean
+  responsiveSizes?: number[]
+}
 
 export type SwarmImageUploadOptions = {
-  reference?: string
-  path?: string
   onUploadProgress?: (progress: number) => void
   onCancelToken?: (canceler: Canceler) => void
 }

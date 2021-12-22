@@ -14,6 +14,43 @@
  *  limitations under the License.
  */
 
-import SwarmVideo from "./SwarmVideo"
+import SwarmVideoReader from "./SwarmVideoReader"
+import SwarmVideoWriter from "./SwarmVideoWriter"
+import SwarmBeeClient from "@classes/SwarmBeeClient"
+import uuidv4 from "@utils/uuid"
+import type { Video } from "@definitions/swarm-video"
 
-export default SwarmVideo
+const SwarmVideoIO = {
+  Reader: SwarmVideoReader,
+  Writer: SwarmVideoWriter,
+  getSourceName: (quality: string | number | null, key?: `${number}p`): `${number}p` => {
+    return quality
+      ? `${parseInt(`${quality}`)}p`
+      : key ?? `${0}p`
+  },
+  getSourceQuality: (sourceName: string | null | undefined): number => {
+    return parseInt(sourceName ?? "0")
+  },
+  getVideoFeedTopicName: (id: string) => `EthernaVideo:${id}`
+}
+
+export const getDefaultVideo = (reference: string, bee: SwarmBeeClient): Video => ({
+  reference,
+  id: uuidv4(),
+  title: null,
+  description: null,
+  originalQuality: null,
+  ownerAddress: null,
+  duration: NaN,
+  isVideoOnIndex: false,
+  thumbnail: null,
+  sources: [{
+    reference,
+    bitrate: NaN,
+    size: NaN,
+    source: bee.getBzzUrl(reference),
+    quality: `${NaN}p`
+  }],
+})
+
+export default SwarmVideoIO

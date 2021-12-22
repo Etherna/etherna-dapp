@@ -48,6 +48,7 @@ export default class SwarmBeeClient extends Bee {
 
   /**
    * Delete content from a directory returning the new hash
+   * 
    * @param reference Directory manifest hash
    * @param path Resource path to delete
    * @returns The new manifest hash
@@ -58,6 +59,7 @@ export default class SwarmBeeClient extends Bee {
 
   /**
    * Add content to a directory returning the new hash
+   * 
    * @param batchId Postage batch id
    * @param data List of files to upload
    * @param opts Upload options
@@ -75,6 +77,7 @@ export default class SwarmBeeClient extends Bee {
 
   /**
    * Get the bzz url from referance and path
+   * 
    * @param reference Bee resource reference
    * @param path Resource path
    * @returns The resource url
@@ -86,17 +89,8 @@ export default class SwarmBeeClient extends Bee {
   }
 
   /**
-   * Get the file url from referance
-   * @param reference Bee resource reference
-   * @returns The resource url
-   */
-  getFileUrl(reference: string) {
-    const hash = reference?.replaceAll(/(^\/|\/$)/ig, "")
-    return `${this.url}/bzz/${hash}`
-  }
-
-  /**
    * Download a resource from swarm by the bzz path
+   * 
    * @param reference Bee resource reference
    * @param path Resource path
    * @returns The data array
@@ -111,30 +105,44 @@ export default class SwarmBeeClient extends Bee {
 
   /**
    * Check if pinning is enabled on the current host
+   * 
    * @returns True if pinning is enabled
    */
   async pinEnabled() {
     try {
-      const endpoint = `${this.url}/pin/chunks`
-      await http.get(endpoint, {
-        params: {
-          offset: 0,
-          limit: 1
-        }
+      const controller = new AbortController()
+      await http.get(`${import.meta.env.VITE_APP_GATEWAY_URL}/pins`, {
+        signal: controller.signal,
+        onDownloadProgress: (p) => {
+          console.log("p", p)
+          controller.abort()
+        },
       })
       return true
-    } catch (error: any) {
+    } catch {
       return false
     }
   }
 
-  async getAllPostageBatch() {
-    try {
-      const postageResp = await http.get<{ stamps: PostageBatch[] }>(import.meta.env.VITE_APP_POSTAGE_URL)
-      return postageResp.data.stamps
-    } catch (error) {
-      return []
+  async getAllPostageBatch(): Promise<PostageBatch[]> {
+    if (import.meta.env.VITE_APP_POSTAGE_URL) {
+      try {
+        const postageResp = await http.get<{ stamps: PostageBatch[] }>(import.meta.env.VITE_APP_POSTAGE_URL)
+        return postageResp.data.stamps
+      } catch { }
     }
+    const emptyBatchId = "0000000000000000000000000000000000000000000000000000000000000000" as BatchId
+    return [{
+      batchID: emptyBatchId,
+      amount: "0",
+      depth: 0,
+      blockNumber: 0,
+      bucketDepth: 0,
+      immutableFlag: false,
+      label: "",
+      usable: true,
+      utilization: 0,
+    }]
   }
 
   async getBatchId() {
@@ -145,6 +153,7 @@ export default class SwarmBeeClient extends Bee {
 
   /**
    * Check if an hash is a valid swarm hash
+   * 
    * @param hash Hash string
    * @returns True if the hash is valid
    */

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { Dispatch } from "react"
+import type { Dispatch } from "react"
 import type { AnyPlayerAction } from "@context/player-context"
 
 export type PlayerContextStore = [state: PlayerContextState, dispatch: Dispatch<AnyPlayerAction>]

@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 
-import Lang from "lang.js"
-import { Crop } from "react-image-crop"
+import type Lang from "lang.js"
+import type { Crop } from "react-image-crop"
 
-import EthernaGatewayClient from "@classes/EthernaGatewayClient"
-import EthernaIndexClient from "@classes/EthernaIndexClient"
-import EthernaAuthClient from "@classes/EthernaAuthClient"
-import SwarmBeeClient from "@classes/SwarmBeeClient"
+import type EthernaGatewayClient from "@classes/EthernaGatewayClient"
+import type EthernaIndexClient from "@classes/EthernaIndexClient"
+import type EthernaAuthClient from "@classes/EthernaAuthClient"
+import type SwarmBeeClient from "@classes/SwarmBeeClient"
 import type { SwarmImage } from "./swarm-image"
 import type { Keymap, KeymapNamespace } from "./keyboard"
 

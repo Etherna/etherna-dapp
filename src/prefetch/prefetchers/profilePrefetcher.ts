@@ -16,10 +16,10 @@
 
 import { nullablePromise } from "@utils/promise"
 import { store } from "@state/store"
-import SwarmProfile from "@classes/SwarmProfile"
-import { Profile } from "@classes/SwarmProfile/types"
-import { Video } from "@classes/SwarmVideo/types"
+import SwarmProfileIO from "@classes/SwarmProfile"
 import SwarmVideo from "@classes/SwarmVideo"
+import type { Profile } from "@definitions/swarm-profile"
+import type { Video } from "@definitions/swarm-video"
 
 const match = /\/profile\/([^/]+)/
 

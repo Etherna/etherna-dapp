@@ -24,12 +24,13 @@ import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 import Button from "@common/Button"
 import MarkdownEditor from "@common/MarkdownEditor"
 import TextField from "@common/TextField"
-import { Profile } from "@classes/SwarmProfile/types"
-import SwarmImage from "@classes/SwarmImage"
-import SwarmProfile from "@classes/SwarmProfile"
+import SwarmProfileIO from "@classes/SwarmProfile"
+import SwarmImageIO from "@classes/SwarmImage"
 import useSelector from "@state/useSelector"
 import { useErrorMessage, useImageCrop } from "@state/hooks/ui"
 import makeBlockies from "@utils/makeBlockies"
+import type { SwarmImage, SwarmImageRaw } from "@definitions/swarm-image"
+import type { Profile } from "@definitions/swarm-profile"
 
 type ImageType = "avatar" | "cover"
 
@@ -43,7 +44,7 @@ type ProfileInfoEditProps = {
 type ImagesUtils = {
   [key in ImageType]: {
     setLoading: (loading: boolean) => void,
-    updateImage: (image: SwarmImage | undefined) => void,
+    updateImage: (image: SwarmImageRaw | undefined) => void,
     responsiveSizes: number[]
   }
 }
@@ -72,12 +73,12 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
     avatar: {
       setLoading: setUploadingAvatar,
       updateImage: setProfileAvatar,
-      responsiveSizes: SwarmProfile.avatarResponsiveSizes,
+      responsiveSizes: SwarmProfileIO.avatarResponsiveSizes,
     },
     cover: {
       setLoading: setUploadingCover,
       updateImage: setProfileCover,
-      responsiveSizes: SwarmProfile.coverResponsiveSizes,
+      responsiveSizes: SwarmProfileIO.coverResponsiveSizes,
     }
   }
 
@@ -115,15 +116,14 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
     imagesUtils[type].setLoading(true)
 
     try {
-      const responsiveImage = new SwarmImage(undefined, {
+      const responsiveImage = new SwarmImageIO.Writer(file, {
         beeClient,
         isResponsive: true,
         responsiveSizes: imagesUtils[type].responsiveSizes
       })
-      await responsiveImage.setImageData(file)
-      await responsiveImage.upload()
+      const rawImage = await responsiveImage.upload()
 
-      imagesUtils[type].updateImage(responsiveImage)
+      imagesUtils[type].updateImage(rawImage)
     } catch (error: any) {
       console.error(error)
       showError("Cannot upload the image", error.message)

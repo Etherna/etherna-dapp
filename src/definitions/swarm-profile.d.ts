@@ -14,8 +14,7 @@
  *  limitations under the License.
  */
 
-import { SwarmImageRaw } from "@classes/SwarmImage/types"
-import { SwarmImage } from "./swarm-image"
+import type { SwarmImage, SwarmImageRaw } from "./swarm-image"
 
 export type ProfileRaw = {
   /**  Profile address */
@@ -25,9 +24,9 @@ export type ProfileRaw = {
   /**  Description of the Profile */
   description?: string | null
   /**  User's raw avatar image */
-  avatar?: SwarmImageRaw
+  avatar: SwarmImageRaw | null
   /**  User's raw cover image */
-  cover?: SwarmImageRaw
+  cover: SwarmImageRaw | null
   /** User's location */
   location?: string
   /** User's website */
@@ -37,8 +36,6 @@ export type ProfileRaw = {
 }
 
 export type Profile = {
-  /**  Swarm manifest hash */
-  reference: string
   /**  Profile address */
   address: string
   /**  Name of the Profile */

@@ -14,13 +14,28 @@
  *  limitations under the License.
  */
 
-import { Canceler } from "axios"
+import type { Canceler } from "axios"
 
-export type SwarmVideoDownloadOptions = {
-  /** If true will download the video even with prefetched data (default = false) */
-  forced?: boolean
-  /** By default true, set to false to avoid fetchsing the profile */
+import type EthernaIndexClient from "@classes/EthernaIndexClient"
+import type SwarmBeeClient from "@classes/SwarmBeeClient"
+import type { IndexVideo } from "@definitions/api-index"
+import type { Profile } from "@definitions/swarm-profile"
+import type { Video } from "@definitions/swarm-video"
+
+export type SwarmVideoReaderOptions = {
+  beeClient: SwarmBeeClient
+  indexClient: EthernaIndexClient
+  videoData?: Video
+  indexData?: IndexVideo
+  profileData?: Profile
   fetchProfile?: boolean
+  fetchFromCache?: boolean
+  updateCache?: boolean
+}
+
+export type SwarmVideoWriterOptions = {
+  beeClient: SwarmBeeClient
+  indexClient: EthernaIndexClient
 }
 
 export type SwarmVideoUploadOptions = {

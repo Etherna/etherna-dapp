@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { Dispatch } from "react"
+import type { Dispatch } from "react"
 
 import type { AnyVideoEditorAction } from "@context/video-editor-context"
 import type { SwarmVideo } from "./swarm-video"

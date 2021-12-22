@@ -14,11 +14,15 @@
  *  limitations under the License.
  */
 
-import { Canceler } from "axios"
-import { IndexEncryptionType } from "@classes/EthernaIndexClient/types"
-import { SwarmImageRaw } from "./swarm-image"
+import type { Canceler } from "axios"
+
+import type { IndexEncryptionType } from "@classes/EthernaIndexClient/types"
+import type { SwarmImage, SwarmImageRaw } from "./swarm-image"
+import type { Profile } from "./swarm-profile"
 
 export type SwarmVideoRaw = {
+  /**  UUID v4 of the video (Used for feed topic) */
+  id: string
   /**  Title of the video */
   title: string
   /**  Description of the video */
@@ -49,6 +53,8 @@ export type SwarmVideoSourceRaw = {
 export type SwarmVideo = {
   /**  Hash of the video */
   reference: string
+  /**  UUID v4 of the video (Used for feed topic) */
+  id: string
   /**  Title of the video */
   title: string | null
   /**  Description of the video */

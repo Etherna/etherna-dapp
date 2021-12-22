@@ -38,7 +38,8 @@
     "react-slider": "1.3.1",
     "redux": "4.1.2",
     "redux-thunk": "2.4.1",
-    "snarkdown": "2.0.0"
+    "snarkdown": "2.0.0",
+    "uuid": "8.3.2"
   },
   "devDependencies": {
     "@types/classnames": "2.3.1",
@@ -54,6 +55,7 @@
     "@types/react-router-dom": "5.3.2",
     "@types/react-slider": "1.3.1",
     "@types/redux-logger": "3.0.9",
+    "@types/uuid": "8.3.3",
     "@typescript-eslint/eslint-plugin": "5.6.0",
     "@typescript-eslint/parser": "5.6.0",
     "@vitejs/plugin-react": "1.1.1",
