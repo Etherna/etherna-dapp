@@ -16,11 +16,11 @@
 
 import { Dispatch } from "redux"
 import { useDispatch, useStore } from "react-redux"
-import { Crop } from "react-image-crop"
+import type { Crop } from "react-image-crop"
 
-import { AppState } from "@state/types"
 import { UIActionTypes, UIActions } from "@state/reducers/uiReducer"
 import { fileToDataURL } from "@utils/buffer"
+import type { AppState } from "@definitions/app-state"
 
 const useImageCrop = () => {
   const getState = useStore<AppState>().getState

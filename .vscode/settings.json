@@ -12,6 +12,7 @@
     "@classes": "${folder}/src/classes",
     "@components": "${folder}/src/components",
     "@context": "${folder}/src/context",
+    "@definitions": "${folder}/src/definitions",
     "@hooks": "${folder}/src/hooks",
     "@keyboard": "${folder}/src/keyboard",
     "@lang": "${folder}/src/lang",

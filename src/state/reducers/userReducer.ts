@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { UserState } from "@state/types"
+import type { UserState } from "@definitions/app-state"
 
 export const UserActionTypes = {
   USER_ENS_UPDATE: "USER_ENS_UPDATE",
@@ -27,7 +27,7 @@ export const UserActionTypes = {
 // Export dispatch actions
 type UpdateEnsAction = {
   type: typeof UserActionTypes.USER_ENS_UPDATE
-  ens: string|null|undefined
+  ens: string | null | undefined
 }
 type UserSignoutAction = {
   type: typeof UserActionTypes.USER_SIGNOUT

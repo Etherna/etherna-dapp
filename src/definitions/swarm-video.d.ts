@@ -14,11 +14,9 @@
  *  limitations under the License.
  */
 
-import { IndexEncryptionType } from "@classes/EthernaIndexClient/types"
-import SwarmImage from "@classes/SwarmImage"
-import { SwarmImageRaw } from "@classes/SwarmImage/types"
-import { Profile } from "@classes/SwarmProfile/types"
 import { Canceler } from "axios"
+import { IndexEncryptionType } from "@classes/EthernaIndexClient/types"
+import { SwarmImageRaw } from "./swarm-image"
 
 export type SwarmVideoRaw = {
   /**  Title of the video */
@@ -26,41 +24,53 @@ export type SwarmVideoRaw = {
   /**  Description of the video */
   description: string
   /**  Quality of the original video */
-  originalQuality: string
+  originalQuality: `${number}p`
   /**  Address of the owner of the video */
   ownerAddress: string
   /**  Duration of the video in seconds */
   duration: number
   /** Thumbnail raw image */
-  thumbnail?: SwarmImageRaw
+  thumbnail: SwarmImageRaw | null
   /**  List of available qualities of the video */
   sources: SwarmVideoSourceRaw[]
 }
 
-export type SwarmVideoMeta = {
+export type SwarmVideoSourceRaw = {
+  /** Video resolution (eg: 1080p) */
+  quality: `${number}p`
+  /** Swarm reference of the video */
+  reference: string
+  /** Video size in bytes */
+  size: number
+  /** Video bitrate */
+  bitrate: number
+}
+
+export type SwarmVideo = {
   /**  Hash of the video */
-  hash: string
+  reference: string
   /**  Title of the video */
-  title?: string
+  title: string | null
   /**  Description of the video */
-  description?: string
+  description: string | null
   /**  Quality of the original video */
-  originalQuality?: string
+  originalQuality: `${number}p` | null
   /**  Address of the owner of the video */
-  ownerAddress?: string
+  ownerAddress: string | null
   /**  Duration of the video in seconds */
   duration: number
-  /**  Url of the original video */
-  source: string
   /**  Thumbnail image data */
-  thumbnail?: SwarmImage
+  thumbnail: SwarmImage | null
   /**  All qualities of video */
   sources: VideoSource[]
 }
 
-export type Video = SwarmVideoMeta & {
-  /** Whether the video is indexed */
-  isVideoOnIndex: boolean
+export type VideoSource = SwarmVideoSourceRaw & {
+  /**  Source url */
+  source: string
+}
+
+export type VideoIndexed = {
   /** When the video was created */
   creationDateTime?: string
   /** Video encryption key */
@@ -71,45 +81,11 @@ export type Video = SwarmVideoMeta & {
   totDownvotes?: number
   /** Number of up votes */
   totUpvotes?: number
+}
 
+export type Video = SwarmVideo & VideoIndexed & {
+  /** Whether the video is indexed */
+  isVideoOnIndex: boolean
   /** Owner info */
-  owner?: SwarmVideoOwner
-}
-
-export type SwarmVideoOwner = {
-  /** Owner ETH address */
-  ownerAddress?: string
-  /** Owner manifest hash of the profile */
-  ownerIdentityManifest?: string
-  /** Profile data of the owner */
-  profileData?: Profile
-}
-
-export type SwarmVideoSourceRaw = {
-  quality: string
-  reference: string
-  referenceProtocol: "bytes" | "bzz"
-  size?: number
-  bitrate?: number
-  contentType?: string
-}
-
-export type VideoSource = SwarmVideoSourceRaw & {
-  /**  Source url */
-  source: string
-}
-
-
-// Class options
-
-export type SwarmVideoDownloadOptions = {
-  /** If true will download the video even with prefetched data (default = false) */
-  forced?: boolean
-  /** By default true, set to false to avoid fetchsing the profile */
-  fetchProfile?: boolean
-}
-
-export type SwarmVideoUploadOptions = {
-  onUploadProgress?: (progress: number) => void
-  onCancelToken?: (canceler: Canceler) => void
+  owner?: Profile
 }

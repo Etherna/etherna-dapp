@@ -262,7 +262,7 @@ export default class SwarmVideo {
 
     const duration = await getVideoDuration(video)
     const size = video.byteLength
-    const bitrate = Math.round(size * 8 / duration)
+    const bitrate = Math.round((size * 8) / duration)
 
     const batchId = await this.beeClient.getBatchId()
     const fetch = this.beeClient.getFetch({

@@ -23,7 +23,7 @@ import classes from "@styles/components/env/ExtensionHostsList.module.scss"
 import { ReactComponent as VerifiedIcon } from "@assets/icons/badge-check.svg"
 import { ReactComponent as ChevronLeftIcon } from "@assets/icons/chevron-left.svg"
 
-import { ExtensionHost } from "@typings/env/extension-host"
+import { ExtensionHost } from "@definitions/extension-host"
 import { urlHostname } from "@utils/urls"
 import { smoothScroll } from "@utils/scroll"
 

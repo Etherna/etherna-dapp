@@ -15,16 +15,16 @@
  */
 
 import { baseKeymap } from "@keyboard"
-import { Keymap, KeymapNamespace } from "@keyboard/typings"
 import lang from "@lang"
 import EthernaGatewayClient from "@classes/EthernaGatewayClient"
 import EthernaIndexClient from "@classes/EthernaIndexClient"
 import EthernaAuthClient from "@classes/EthernaAuthClient"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
 import { loadDarkMode } from "@state/actions/enviroment/darkMode"
-import { EnvState } from "@state/types"
 import { checkIsMobile } from "@utils/browser"
 import { parseLocalStorage } from "@utils/localStorage"
+import type { EnvState } from "@definitions/app-state"
+import type { Keymap, KeymapNamespace } from "@definitions/keyboard"
 
 export const EnvActionTypes = {
   SET_IS_MOBILE: "ENV_SET_IS_MOBILE",

@@ -8,6 +8,7 @@
       "@common/*": ["components/common/*"],
       "@components/*": ["components/*"],
       "@context/*": ["context/*"],
+      "@definitions/*": ["definitions/*"],
       "@keyboard": ["keyboard"],
       "@hooks/*": ["hooks/*"],
       "@keyboard/*": ["keyboard/*"],

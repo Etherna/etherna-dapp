@@ -16,7 +16,7 @@
 
 import { createContext } from "react"
 
-import { VideoEditorContextStore } from "./types"
+import type { VideoEditorContextStore } from "@definitions/video-editor-context"
 
 export const VideoEditorContext = createContext<VideoEditorContextStore | undefined>(undefined)
 
@@ -24,4 +24,8 @@ export const VideoEditorContext = createContext<VideoEditorContextStore | undefi
 export { default as VideoEditorContextProvider } from "./VideoEditorContextProvider"
 export { VideoEditorActionTypes } from "./reducer"
 export type { AnyVideoEditorAction } from "./reducer"
-export type { VideoEditorContextStore, VideoEditorContextState, VideoEditorQueue } from "./types"
+export type {
+  VideoEditorContextStore,
+  VideoEditorContextState,
+  VideoEditorQueue
+} from "@definitions/video-editor-context"

@@ -17,12 +17,12 @@
 import Lang from "lang.js"
 import { Crop } from "react-image-crop"
 
-import { Keymap, KeymapNamespace } from "@keyboard/typings"
 import EthernaGatewayClient from "@classes/EthernaGatewayClient"
 import EthernaIndexClient from "@classes/EthernaIndexClient"
 import EthernaAuthClient from "@classes/EthernaAuthClient"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
-import SwarmImage from "@classes/SwarmImage"
+import type { SwarmImage } from "./swarm-image"
+import type { Keymap, KeymapNamespace } from "./keyboard"
 
 export type AppState = {
   env: EnvState

@@ -14,14 +14,16 @@
  *  limitations under the License.
  */
 
-import { Dispatch } from "react"
+import { Canceler } from "axios"
 
-import { AnyLayoutAction } from "."
+export type SwarmVideoDownloadOptions = {
+  /** If true will download the video even with prefetched data (default = false) */
+  forced?: boolean
+  /** By default true, set to false to avoid fetchsing the profile */
+  fetchProfile?: boolean
+}
 
-export type LayoutContextStore = [state: LayoutContextState, dispatch: Dispatch<AnyLayoutAction>]
-
-export type LayoutContextState = {
-  emptyLayout: boolean
-  hideSidebar: boolean
-  floatingSidebar: boolean
+export type SwarmVideoUploadOptions = {
+  onUploadProgress?: (progress: number) => void
+  onCancelToken?: (canceler: Canceler) => void
 }

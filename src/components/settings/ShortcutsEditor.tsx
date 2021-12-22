@@ -18,16 +18,15 @@
 import React from "react"
 
 import classes from "@styles/components/settings/ShortcutsEditor.module.scss"
-
 import { ReactComponent as EditIcon } from "@assets/icons/edit.svg"
 import { ReactComponent as ResetIcon } from "@assets/icons/reset.svg"
 
 import Button from "@common/Button"
 import Kbd from "@common/Kbd"
-import { KeymapNamespace } from "@keyboard/typings"
 import { editShortcut, resetShortcut, hasCustomShortcut } from "@state/actions/enviroment/shortcuts"
 import useSelector from "@state/useSelector"
 import { splitArray } from "@utils/arrays"
+import type { KeymapNamespace } from "@definitions/keyboard"
 
 type ShortcutsEditorProps = {
   namespace: KeymapNamespace

@@ -15,7 +15,7 @@
  */
 
 import { createContext } from "react"
-import { LayoutContextStore } from "./types"
+import type { LayoutContextStore } from "@definitions/layout-context"
 
 export const LayoutContext = createContext<LayoutContextStore | undefined>(undefined)
 
@@ -23,4 +23,4 @@ export const LayoutContext = createContext<LayoutContextStore | undefined>(undef
 export { default as LayoutContextProvider } from "./LayoutContextProvider"
 export { LayoutReducerTypes } from "./reducer"
 export type { AnyLayoutAction } from "./reducer"
-export type { LayoutContextStore, LayoutContextState } from "./types"
+export type { LayoutContextStore, LayoutContextState } from "@definitions/layout-context"

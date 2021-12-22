@@ -15,7 +15,7 @@
  */
 
 import { Dispatch } from "react"
-import { AnyPlayerAction } from "@context/player-context"
+import type { AnyPlayerAction } from "@context/player-context"
 
 export type PlayerContextStore = [state: PlayerContextState, dispatch: Dispatch<AnyPlayerAction>]
 

@@ -14,8 +14,9 @@
  *  limitations under the License.
  */
 
-import { UIState } from "@state/types"
 import { Crop } from "react-image-crop"
+
+import type { UIState } from "@definitions/app-state"
 
 export const UIActionTypes = {
   SHOW_ERROR: "UI_SHOW_ERROR",
