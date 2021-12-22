@@ -81,7 +81,7 @@ export default class SwarmVideoReader {
    * @param forced If true will download the video even with prefetched data (default = false)
    * @returns The video object
    */
-  async downloadVideo(forced = false) {
+  async download(forced = false) {
     if (this.loadedFromPrefetch && !forced) return this.video
 
     const [indexData, rawVideo, ownerProfile] = await Promise.all([

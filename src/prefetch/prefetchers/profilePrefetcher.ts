@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-import { nullablePromise } from "@utils/promise"
 import { store } from "@state/store"
+import { nullablePromise } from "@utils/promise"
 import SwarmProfileIO from "@classes/SwarmProfile"
-import SwarmVideo from "@classes/SwarmVideo"
+import SwarmVideoIO from "@classes/SwarmVideo"
 import type { Profile } from "@definitions/swarm-profile"
 import type { Video } from "@definitions/swarm-video"
 
@@ -35,37 +35,28 @@ const fetch = async () => {
       nullablePromise(indexClient.users.fetchUserVideos(address, 0, 50))
     ])
 
-    const swarmProfile = user
-      ? new SwarmProfile({
-        address: user.address,
-        hash: user.identityManifest,
-        beeClient
-      })
+    const swarmProfileReader = user
+      ? new SwarmProfileIO.Reader(user.address, { beeClient })
       : null
-    const profile = swarmProfile
-      ? await nullablePromise(swarmProfile.downloadProfile(true))
+    const profile = swarmProfileReader
+      ? await nullablePromise(swarmProfileReader.download(true))
       : null
 
-    const swarmVideos = userVideos?.map(video => new SwarmVideo(video.manifestHash, {
-      beeClient,
-      indexClient,
-      profileData: profile ?? undefined,
-      indexData: video,
-    }))
-
-    const videos = swarmVideos
-      ? await Promise.all(swarmVideos.map(video => (
-        nullablePromise(video.downloadVideo({
-          fetchProfile: false,
-          forced: true
-        })))
-      ))
+    const videos = userVideos
+      ? await Promise.all(userVideos.map(video => (
+        nullablePromise(new SwarmVideoIO.Reader(video.manifestHash, user?.address ?? "0x0", {
+          beeClient,
+          indexClient,
+          profileData: profile ?? undefined,
+          indexData: video,
+        }).download(true))
+      )))
       : null
 
     // set prefetch data
     window.prefetchData = {}
     window.prefetchData.profile = profile
-    window.prefetchData.videos = videos
+    window.prefetchData.videos = videos ? videos.filter(Boolean) as Video[] : null
   }
 }
 
@@ -76,7 +67,7 @@ const profilePrefetcher = {
 
 export type ProfilePrefetch = {
   profile?: Profile | null
-  videos?: (Video | null)[] | null
+  videos?: Video[] | null
 }
 
 export default profilePrefetcher

@@ -109,7 +109,7 @@ export default class SwarmVideoWriter {
   /**
    * Update video meta on swarm & reference on index
    */
-  async updateVideo() {
+  async update() {
     if (!this._videoRaw.sources.length) throw new Error("Please add at least 1 video source")
     if (!this.beeClient.signer) throw new Error("Enable your wallet to update your profile")
 
