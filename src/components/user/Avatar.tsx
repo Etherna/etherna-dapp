@@ -22,11 +22,11 @@ import classes from "@styles/components/user/Avatar.module.scss"
 
 import SwarmImg from "@common/SwarmImg"
 import makeBlockies from "@utils/makeBlockies"
-import SwarmImage from "@classes/SwarmImage"
+import type { SwarmImage } from "@definitions/swarm-image"
 
 type AvatarProps = {
-  image?: string | SwarmImage
-  address?: string
+  image?: string | SwarmImage | null
+  address?: string | null
   size?: number
   showBadge?: boolean
   className?: string
@@ -36,7 +36,13 @@ const Avatar: React.FC<AvatarProps> = ({ image, address, size, showBadge, classN
   const blockie = address ? makeBlockies(address) : undefined
 
   return (
-    <div className={classNames(classes.avatar, className, { [classes.badge]: showBadge })}>
+    <div
+      className={classNames(classes.avatar, className, { [classes.badge]: showBadge })}
+      style={{
+        width: size ? `${size}px` : undefined,
+        height: size ? `${size}px` : undefined,
+      }}
+    >
       <SwarmImg
         image={image}
         fallback={blockie}

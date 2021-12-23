@@ -17,19 +17,18 @@
 
 import React from "react"
 
-import Container from "@common/Container"
-import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
-import SEO from "@components/layout/SEO"
-import VideoCreate from "@components/video/VideoCreate"
+import Placeholder from "@common/Placeholder"
 
-const UploadPage = () => (
-  <AppLayoutWrapper>
-    <SEO title="Upload a video" />
+const VideoCommentPlaceholder = () => {
+  return (
+    <div className="flex">
+      <Placeholder className="w-10 h-10" width="100%" height="100%" round="full" />
+      <div className="flex flex-col flex-1 ml-2 mt-1">
+        <Placeholder width="100%" height="1rem" round="sm" />
+        <Placeholder className="mt-1.5" width="60%" height="0.75rem" round="sm" />
+      </div>
+    </div>
+  )
+}
 
-    <Container fluid>
-      <VideoCreate />
-    </Container>
-  </AppLayoutWrapper>
-)
-
-export default UploadPage
+export default VideoCommentPlaceholder

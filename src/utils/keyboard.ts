@@ -50,6 +50,12 @@ const keyMap: Record<number, string> = {
   222: "'"
 }
 
+/**
+ * Get a keystroke readable string
+ * 
+ * @param e Kyboard event
+ * @returns The keyboard readable string
+ */
 export const keyEventToString = (e: KeyboardEvent) => {
   const result: string[] = []
   const isModifier = [16, 17, 18, 91, 93, 224].includes(e.keyCode)

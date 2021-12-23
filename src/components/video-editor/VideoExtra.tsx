@@ -28,7 +28,7 @@ type VideoExtraProps = {
 }
 
 const VideoExtra: React.FC<VideoExtraProps> = ({ isSubmitting }) => {
-  const { updatePinContent } = useVideoEditorInfoActions()
+  // const { updatePinContent } = useVideoEditorInfoActions()
 
   return (
     <>
@@ -36,9 +36,9 @@ const VideoExtra: React.FC<VideoExtraProps> = ({ isSubmitting }) => {
         <AudienceSelector />
       </FormGroup>
 
-      <FormGroup>
+      {/* <FormGroup>
         <PinContentField onChange={pin => updatePinContent(pin)} />
-      </FormGroup>
+      </FormGroup> */}
 
       <FormGroup disabled>
         <VisibilitySelector />

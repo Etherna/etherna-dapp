@@ -29,7 +29,7 @@ const HomePage = () => (
       tagline="A transparent video platform"
       description="A transparent video platform"
     />
-    <Container>
+    <Container fluid>
       <ExploreView />
     </Container>
   </AppLayoutWrapper>

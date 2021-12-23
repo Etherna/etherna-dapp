@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { ProfileState } from "@definitions/app-state"
+import type { ProfileState } from "@definitions/app-state"
 import type { SwarmImage } from "@definitions/swarm-image"
 
 export const ProfileActionTypes = {
@@ -28,8 +28,8 @@ type UpdateProfileAction = {
   type: typeof ProfileActionTypes.PROFILE_UPDATE
   name: string
   description: string
-  avatar?: SwarmImage
-  cover?: SwarmImage
+  avatar: SwarmImage | null
+  cover: SwarmImage | null
   location?: string
   website?: string
   birthday?: string
@@ -39,8 +39,8 @@ type SaveProfileAction = {
   type: typeof ProfileActionTypes.PROFILE_SAVE
   name: string
   description: string
-  avatar?: SwarmImage
-  cover?: SwarmImage
+  avatar?: SwarmImage | null
+  cover?: SwarmImage | null
 }
 type SignoutAction = {
   type: typeof ProfileActionTypes.PROFILE_SIGNOUT

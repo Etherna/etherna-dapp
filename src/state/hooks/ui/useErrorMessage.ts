@@ -19,7 +19,7 @@ import { useDispatch } from "react-redux"
 
 import { UIActions, UIActionTypes } from "@state/reducers/uiReducer"
 
-const useErrorMessage = () => {
+export default function useErrorMessage() {
   const dispatch = useDispatch<Dispatch<UIActions>>()
 
   const showError = (title: string, message: string) => {
@@ -41,5 +41,3 @@ const useErrorMessage = () => {
     hideError
   }
 }
-
-export default useErrorMessage

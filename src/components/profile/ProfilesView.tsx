@@ -22,8 +22,8 @@ import classes from "@styles/components/profile/Profiles.module.scss"
 
 import ProfilePreview from "./ProfilePreview"
 import ProfilePreviewPlaceholder from "./ProfilePreviewPlaceholder"
-import { IndexUser } from "@classes/EthernaIndexClient/types"
 import useSelector from "@state/useSelector"
+import type { IndexUser } from "@definitions/api-index"
 
 const FETCH_COUNT = 10
 
@@ -72,7 +72,6 @@ const ProfilesView = () => {
           profiles.map((profile, index) => (
             <ProfilePreview
               profileAddress={profile.address}
-              profileManifest={profile.identityManifest}
               key={`${profile.address}-${index}`}
             />
           ))

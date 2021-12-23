@@ -28,7 +28,7 @@ export type SwarmVideoRaw = {
   /**  Description of the video */
   description: string
   /**  Quality of the original video */
-  originalQuality: `${number}p`
+  originalQuality: SwarmVideoQuality
   /**  Address of the owner of the video */
   ownerAddress: string
   /**  Duration of the video in seconds */
@@ -39,9 +39,11 @@ export type SwarmVideoRaw = {
   sources: SwarmVideoSourceRaw[]
 }
 
+export type SwarmVideoQuality = `${number}p`
+
 export type SwarmVideoSourceRaw = {
   /** Video resolution (eg: 1080p) */
-  quality: `${number}p`
+  quality: SwarmVideoQuality
   /** Swarm reference of the video */
   reference: string
   /** Video size in bytes */
@@ -60,7 +62,7 @@ export type SwarmVideo = {
   /**  Description of the video */
   description: string | null
   /**  Quality of the original video */
-  originalQuality: `${number}p` | null
+  originalQuality: SwarmVideoQuality | null
   /**  Address of the owner of the video */
   ownerAddress: string | null
   /**  Duration of the video in seconds */

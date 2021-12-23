@@ -25,16 +25,15 @@ import VideoGrid from "@components/video/VideoGrid"
 import Routes from "@routes"
 import useSwarmProfile from "@hooks/useSwarmProfile"
 import useSwarmVideos from "@hooks/useSwarmVideos"
-import { shortenEthAddr } from "@utils/ethFuncs"
+import { shortenEthAddr } from "@utils/ethereum"
 
 type ProfilePreviewProps = {
   profileAddress: string
-  profileManifest?: string
 }
 
-const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress, profileManifest }) => {
-  const { profile, loadProfile } = useSwarmProfile({ address: profileAddress, hash: profileManifest })
-  const { videos } = useSwarmVideos({ ownerAddress: profileAddress, profileData: profile, seedLimit: 5 })
+const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress }) => {
+  const { profile, loadProfile } = useSwarmProfile({ address: profileAddress })
+  const { videos } = useSwarmVideos({ ownerAddress: profileAddress, profileData: profile ?? undefined, seedLimit: 5 })
 
   useEffect(() => {
     loadProfile()
@@ -47,7 +46,7 @@ const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress, profile
     <div className={classes.profilePreview} key={profileAddress}>
       <div className={classes.profileInfo}>
         <Link to={Routes.getProfileLink(profileAddress)}>
-          <Avatar image={profile.avatar} address={profileAddress} />
+          <Avatar image={profile?.avatar} address={profileAddress} />
         </Link>
         <Link to={Routes.getProfileLink(profileAddress)}>
           <h3>{profile.name || shortenEthAddr(profileAddress)}</h3>

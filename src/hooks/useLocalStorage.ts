@@ -22,7 +22,7 @@ import { useState } from "react"
  * @param defaultValue Default value
  * @returns The parsed value
  */
-const useLocalStorage = <T>(key: string, defaultValue: T | null = null): [T | null, (value: T) => void] => {
+export default function useLocalStorage<T>(key: string, defaultValue: T | null = null): [T | null, (value: T) => void] {
   const [storedValue, setStoredValue] = useState(() => {
     try {
       const item = window.localStorage.getItem(key)
@@ -46,5 +46,3 @@ const useLocalStorage = <T>(key: string, defaultValue: T | null = null): [T | nu
 
   return [storedValue, setValue]
 }
-
-export default useLocalStorage

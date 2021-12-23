@@ -25,9 +25,9 @@ import NavPillsItem from "@common/NavPillsItem"
 import SEO from "@components/layout/SEO"
 import ProfileInfo from "@components/profile/ProfileInfo"
 import Routes from "@routes"
-import { Profile } from "@classes/SwarmProfile/types"
-import useSelector from "@state/useSelector"
 import useSwarmVideos from "@hooks/useSwarmVideos"
+import useSelector from "@state/useSelector"
+import type { Profile } from "@definitions/swarm-profile"
 
 type ProfileViewProps = {
   profileAddress: string

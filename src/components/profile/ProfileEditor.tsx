@@ -19,10 +19,10 @@ import React, { useState } from "react"
 import { Redirect } from "react-router-dom"
 
 import ProfileInfoEdit from "@components/profile/ProfileInfoEdit"
-import { Profile } from "@classes/SwarmProfile/types"
 import Routes from "@routes"
 import { useProfileUpdate } from "@state/hooks/profile"
 import { useErrorMessage } from "@state/hooks/ui"
+import type { Profile } from "@definitions/swarm-profile"
 
 type ProfileEditorProps = {
   address: string

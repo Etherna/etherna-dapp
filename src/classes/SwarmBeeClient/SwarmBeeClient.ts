@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { BatchId, Bee, Collection, PostageBatch, UploadResult } from "@ethersphere/bee-js"
+import { BatchId, Bee, PostageBatch, UploadResult } from "@ethersphere/bee-js"
 
 import { AxiosUploadOptions, CustomUploadOptions } from "./customUpload"
 import http, { createRequest } from "@utils/request"
@@ -23,7 +23,7 @@ import { buildAxiosFetch } from "@utils/fetch"
 export type MultipleFileUpload = { buffer: Uint8Array, type?: string }[]
 
 /**
- * Extend default Bee client with more functionalities and endpoints
+ * Extend default Bee client with more functionalities
  */
 export default class SwarmBeeClient extends Bee {
 
@@ -35,26 +35,6 @@ export default class SwarmBeeClient extends Bee {
     request.defaults.onUploadProgress = options?.onUploadProgress
     request.defaults.cancelToken = options?.cancelToken
     return buildAxiosFetch(request) as typeof fetch
-  }
-
-  /**
-   * Add content to a directory returning the new hash
-   * @param opts Upload options
-   * @returns The new manifest hash
-   */
-  uploadToDir(data: Collection<Uint8Array>, opts?: CustomUploadOptions): Promise<string> {
-    throw new Error("Not implemented yet")
-  }
-
-  /**
-   * Delete content from a directory returning the new hash
-   * 
-   * @param reference Directory manifest hash
-   * @param path Resource path to delete
-   * @returns The new manifest hash
-   */
-  deleteFromDir(reference: string, path: string): Promise<string> {
-    throw new Error("Not implemented yet")
   }
 
   /**

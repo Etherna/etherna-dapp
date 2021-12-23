@@ -18,16 +18,16 @@ import { useEffect } from "react"
 import { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
 
-import { AuthIdentity } from "@classes/EthernaAuthClient/types"
-import SwarmProfile from "@classes/SwarmProfile"
-import loginRedirect from "@state/actions/user/loginRedirect"
+import SwarmProfileIO from "@classes/SwarmProfile"
+import SwarmBeeClient from "@classes/SwarmBeeClient"
+import loginRedirect from "@state/actions/user/login-redirect"
 import { UserActions, UserActionTypes } from "@state/reducers/userReducer"
 import { EnvActions, EnvActionTypes } from "@state/reducers/enviromentReducer"
 import { ProfileActions, ProfileActionTypes } from "@state/reducers/profileReducer"
 import { UIActions, UIActionTypes } from "@state/reducers/uiReducer"
 import useSelector from "@state/useSelector"
-import SwarmBeeClient from "@classes/SwarmBeeClient"
-import { IndexCurrentUser } from "@classes/EthernaIndexClient/types"
+import type { IndexCurrentUser } from "@definitions/api-index"
+import type { AuthIdentity } from "@definitions/api-sso"
 
 type AutoSigninOpts = {
   forceSignin?: boolean
@@ -35,7 +35,7 @@ type AutoSigninOpts = {
   isStatusPage?: boolean
 }
 
-const useAutoSignin = (opts: AutoSigninOpts = {}) => {
+export default function useAutoSignin(opts: AutoSigninOpts = {}) {
   const { indexClient, gatewayClient, authClient, beeClient } = useSelector(state => state.env)
   const dispatch = useDispatch<Dispatch<UserActions | EnvActions | UIActions | ProfileActions>>()
 
@@ -153,8 +153,8 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
 
     try {
       const address = user.address
-      const hash = user.identityManifest
-      const profile = await (new SwarmProfile({ beeClient, address, hash })).downloadProfile()
+      const profileReader = new SwarmProfileIO.Reader(address, { beeClient })
+      const profile = await profileReader.download()
 
       if (!profile) throw new Error("Cannot fetch profile")
 
@@ -179,5 +179,3 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
     })
   }
 }
-
-export default useAutoSignin

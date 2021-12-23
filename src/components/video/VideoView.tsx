@@ -24,18 +24,19 @@ import SEO from "@components/layout/SEO"
 import Player from "@components/player/Player"
 import VideoComments from "@components/video/VideoComments"
 import VideoDetails from "@components/video/VideoDetails"
-import { Video } from "@classes/SwarmVideo/types"
 import useSwarmVideo from "@hooks/useSwarmVideo"
 import { useErrorMessage } from "@state/hooks/ui"
+import type { Video } from "@definitions/swarm-video"
+import SwarmImageIO from "@classes/SwarmImage"
 
 type VideoViewProps = {
-  hash: string
+  reference: string
   routeState?: Video
 }
 
-const VideoView: React.FC<VideoViewProps> = ({ hash, routeState }) => {
+const VideoView: React.FC<VideoViewProps> = ({ reference, routeState }) => {
   const { video, loadVideo } = useSwarmVideo({
-    hash,
+    reference,
     routeState,
     fetchFromCache: true,
     fetchProfile: true
@@ -44,7 +45,7 @@ const VideoView: React.FC<VideoViewProps> = ({ hash, routeState }) => {
   const { showError } = useErrorMessage()
 
   useEffect(() => {
-    if (!video?.hash) {
+    if (!video?.reference) {
       fetchVideo()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -69,19 +70,21 @@ const VideoView: React.FC<VideoViewProps> = ({ hash, routeState }) => {
 
   return (
     <>
-      <SEO title={video.title || hash} />
+      <SEO title={video.title || reference} />
       <div className={classNames(classes.videoWatch, "container")}>
         <div className="row justify-center">
           <div className="col lg:w-3/4">
             <Player
               sources={video.sources}
               originalQuality={video.originalQuality}
-              thumbnail={video.thumbnail?.originalSource}
+              thumbnail={SwarmImageIO.Reader.getOriginalSourceReference(video.thumbnail)}
             />
 
             <VideoDetails video={video} />
 
-            <VideoComments videoHash={hash} videoAuthorAddress={video.ownerAddress} />
+            {video.isVideoOnIndex && (
+              <VideoComments videoHash={reference} videoAuthorAddress={video.ownerAddress} />
+            )}
           </div>
 
           <aside className="lg:w-1/4 hidden">

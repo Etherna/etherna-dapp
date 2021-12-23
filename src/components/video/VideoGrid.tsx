@@ -22,7 +22,7 @@ import classes from "@styles/components/video/VideoGrid.module.scss"
 
 import VideoPreviewPlaceholder from "./VideoPreviewPlaceholder"
 import VideoPreview from "@components/video/VideoPreview"
-import { Video } from "@classes/SwarmVideo/types"
+import type { Video } from "@definitions/swarm-video"
 
 type VideoGridProps = {
   label?: string
@@ -43,7 +43,7 @@ const VideoGrid: React.FC<VideoGridProps> = ({ label, videos, mini }) => {
         {videos === undefined && <VideoPreviewPlaceholder />}
         {videos &&
           videos.map((v, i) => (
-            <VideoPreview video={v} hideProfile={mini} key={v.hash + `_${i}`} />
+            <VideoPreview video={v} hideProfile={mini} key={v.reference + `_${i}`} />
           ))}
       </div>
     </>

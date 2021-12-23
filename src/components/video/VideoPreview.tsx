@@ -26,12 +26,12 @@ import StateLink from "@common/StateLink"
 import SwarmImg from "@common/SwarmImg"
 import Time from "@components/media/Time"
 import Avatar from "@components/user/Avatar"
-import { Video } from "@classes/SwarmVideo/types"
 import Routes from "@routes"
 import useSelector from "@state/useSelector"
-import { shortenEthAddr, checkIsEthAddress } from "@utils/ethFuncs"
+import { shortenEthAddr, checkIsEthAddress } from "@utils/ethereum"
 import dayjs from "@utils/dayjs"
 import { encodedSvg } from "@utils/svg"
+import type { Video } from "@definitions/swarm-video"
 
 type VideoPreviewProps = {
   video: Video
@@ -41,12 +41,12 @@ type VideoPreviewProps = {
 const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile }) => {
   const { address } = useSelector(state => state.user)
 
-  const ownerAddress = video.owner?.ownerAddress
-  const profileName = (video.owner?.profileData?.name) || shortenEthAddr(ownerAddress)
-  const profileAvatar = video.owner?.profileData?.avatar
+  const ownerAddress = video.ownerAddress
+  const profileName = (video.owner?.name) || shortenEthAddr(ownerAddress)
+  const profileAvatar = video.owner?.avatar
 
   const profileLink = ownerAddress ? Routes.getProfileLink(ownerAddress) : null
-  const videoLink = Routes.getVideoLink(video.hash)
+  const videoLink = Routes.getVideoLink(video.reference)
   const videoSearch = new URL(videoLink, document.baseURI).search
   const videoPath = videoLink.replace(videoSearch, "")
 
@@ -69,7 +69,6 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile }) => {
           <SwarmImg
             image={video.thumbnail}
             fallback={encodedSvg(<ThumbPlaceholder />)}
-            className="w-full h-full"
           />
           {video.duration && video.duration > 0 && (
             <div className={classes.videoThumbnailDuration}>

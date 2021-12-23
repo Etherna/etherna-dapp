@@ -54,7 +54,7 @@ const ErrorModal = ({ title, error = "", show = false }: ErrorModalProps) => {
       <>
         {isMetaMaskSignError || isMozillaError ? (
           <p>
-            You must provide consent in your Web3 wallet to sign in or create a profile, please try
+            You must provide consent in your Web3 wallet to update profile and create playlists, please try
             again.
           </p>
         ) : (

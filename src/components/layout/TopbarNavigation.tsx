@@ -28,12 +28,12 @@ import Topbar from "@components/navigation/Topbar"
 import TopbarLogo from "@components/navigation/TopbarLogo"
 import TopbarItem from "@components/navigation/TopbarItem"
 import TopbarSpace from "@components/navigation/TopbarSpace"
+import TopbarPopupItem from "@components/navigation/TopbarPopupItem"
 import UserCredit from "@components/user/UserCredit"
 import UserMenu from "@components/user/UserMenu"
 import { LayoutReducerTypes } from "@context/layout-context"
 import { useLayoutState } from "@context/layout-context/hooks"
 import useSelector from "@state/useSelector"
-import TopbarPopupItem from "@components/navigation/TopbarPopupItem"
 import routes from "@routes"
 
 const TopbarNavigation: React.FC = () => {

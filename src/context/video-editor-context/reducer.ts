@@ -16,8 +16,9 @@
 
 import { VideoEditorContextState, VideoEditorQueue } from "."
 import VideoEditorCache from "./VideoEditorCache"
-import SwarmVideo from "@classes/SwarmVideo"
-import { deepCloneArray } from "@utils/arrays"
+import { deepCloneArray } from "@utils/array"
+import type { VideoEditorQueueName } from "@definitions/video-editor-context"
+import type { SwarmVideoQuality } from "@definitions/swarm-video"
 
 // Actions
 export const VideoEditorActionTypes = {
@@ -35,26 +36,26 @@ export const VideoEditorActionTypes = {
 
 type AddQueueAction = {
   type: typeof VideoEditorActionTypes.ADD_QUEUE
-  name: string
+  name: VideoEditorQueueName
 }
 type UpdateQueueAction = {
   type: typeof VideoEditorActionTypes.UPDATE_QUEUE
-  name: string
+  name: VideoEditorQueueName
   completion: number
   reference?: string
 }
 type UpdateQueueNameAction = {
   type: typeof VideoEditorActionTypes.UPDATE_QUEUE_NAME
-  oldName: string
-  newName: string
+  oldName: VideoEditorQueueName
+  newName: VideoEditorQueueName
 }
 type RemoveQueueAction = {
   type: typeof VideoEditorActionTypes.REMOVE_QUEUE
-  name: string
+  name: VideoEditorQueueName
 }
 type UpdateOriginalQualityAction = {
   type: typeof VideoEditorActionTypes.UPDATE_ORIGINAL_QUALITY
-  quality: string
+  quality: SwarmVideoQuality
 }
 type UpdateDurationAction = {
   type: typeof VideoEditorActionTypes.UPDATE_DURATION
@@ -121,19 +122,19 @@ const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEdit
       newState = { ...state, queue: removeQueue }
       break
     case VideoEditorActionTypes.UPDATE_ORIGINAL_QUALITY:
-      state.videoHandler.originalQuality = action.quality
+      state.videoWriter.originalQuality = action.quality
       newState = { ...state }
       break
     case VideoEditorActionTypes.UPDATE_DURATION:
-      state.videoHandler.duration = action.duration
+      state.videoWriter.duration = action.duration
       newState = { ...state }
       break
     case VideoEditorActionTypes.UPDATE_TITLE:
-      state.videoHandler.title = action.title
+      state.videoWriter.title = action.title
       newState = { ...state }
       break
     case VideoEditorActionTypes.UPDATE_DESCRIPTION:
-      state.videoHandler.description = action.description
+      state.videoWriter.description = action.description
       newState = { ...state }
       break
     case VideoEditorActionTypes.UPDATE_PIN_CONTENT:
@@ -143,15 +144,9 @@ const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEdit
       newState = {
         reference: undefined,
         queue: [],
+        ownerAddress: state.ownerAddress,
         pinContent: state.pinContent,
-        videoHandler: new SwarmVideo(undefined, {
-          beeClient: state.videoHandler.beeClient,
-          indexClient: state.videoHandler.indexClient,
-          fetchFromCache: state.videoHandler.fetchFromCache,
-          updateCache: state.videoHandler.updateCache,
-          fetchProfile: state.videoHandler.fetchProfile,
-          profileData: state.videoHandler.owner
-        })
+        videoWriter: state.videoWriter.resetCopy()
       }
       break
   }

@@ -14,20 +14,11 @@
  *  limitations under the License.
  */
 
-const getCurrentTimeFormatted = () => {
-  const currentTime = new Date()
-  const hours = currentTime.getHours()
-  const minutes = currentTime.getMinutes()
-  const seconds = currentTime.getSeconds()
-  const milliseconds = currentTime.getMilliseconds()
-  return `${hours}:${minutes}:${seconds}.${milliseconds}`
-}
-
 type Reducer<State = any, Action = any> = (state: State, action: Action) => State
 
 let lastAction: any
 
-const logger = <R extends Reducer>(reducer: R): R => {
+export default function logger<R extends Reducer>(reducer: R): R {
   const reducerWithLogger = (state: any, action: any) => {
     const next = reducer(state, action)
 
@@ -52,4 +43,11 @@ const logger = <R extends Reducer>(reducer: R): R => {
   return reducerWithLogger as R
 }
 
-export default logger
+const getCurrentTimeFormatted = () => {
+  const currentTime = new Date()
+  const hours = currentTime.getHours()
+  const minutes = currentTime.getMinutes()
+  const seconds = currentTime.getSeconds()
+  const milliseconds = currentTime.getMilliseconds()
+  return `${hours}:${minutes}:${seconds}.${milliseconds}`
+}

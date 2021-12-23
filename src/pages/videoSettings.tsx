@@ -22,8 +22,8 @@ import Container from "@common/Container"
 import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import SEO from "@components/layout/SEO"
 import VideoUpdate from "@components/video/VideoUpdate"
-import { Video } from "@classes/SwarmVideo/types"
 import useRouteState from "@hooks/useRouteState"
+import type { Video } from "@definitions/swarm-video"
 
 const VideoSettings = () => {
   const location = useLocation()
@@ -38,7 +38,7 @@ const VideoSettings = () => {
       <SEO title="Edit Video" />
 
       <Container>
-        <VideoUpdate hash={hash} routeState={routeState} />
+        <VideoUpdate reference={hash} routeState={routeState} />
       </Container>
     </AppLayoutWrapper>
   )

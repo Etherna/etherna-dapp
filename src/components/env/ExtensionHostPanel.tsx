@@ -29,9 +29,9 @@ import Label from "@common/Label"
 import FormGroup from "@common/FormGroup"
 import TextField from "@common/TextField"
 import useLocalStorage from "@hooks/useLocalStorage"
-import { ExtensionHost } from "@definitions/extension-host"
 import { useErrorMessage } from "@state/hooks/ui"
 import { isSafeURL, urlHostname } from "@utils/urls"
+import type { ExtensionHost } from "@definitions/extension-host"
 
 type ExtensionHostPanelProps = {
   listStorageKey: string

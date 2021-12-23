@@ -35,7 +35,6 @@ type UserSignoutAction = {
 type UpdateIdentityAction = {
   type: typeof UserActionTypes.USER_UPDATE_IDENTITY
   address?: string
-  manifest?: string
   prevAddresses?: string[]
 }
 type UpdateCreditAction = {
@@ -75,7 +74,6 @@ const userReducer = (state: UserState = {}, action: UserActions): UserState => {
       return {
         ...state,
         address: action.address,
-        identityManifest: action.manifest,
         prevAddresses: action.prevAddresses,
       }
 

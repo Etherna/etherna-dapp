@@ -21,13 +21,13 @@ import classes from "@styles/components/video/VideoComments.module.scss"
 import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 
 import VideoCommentsItem from "./VideoCommentsItem"
-import { IndexVideoComment } from "@classes/EthernaIndexClient/types"
 import CommentForm from "@components/video/CommentForm"
 import useSelector from "@state/useSelector"
+import type { IndexVideoComment } from "@definitions/api-index"
 
 type VideoCommentsProps = {
   videoHash: string
-  videoAuthorAddress?: string
+  videoAuthorAddress?: string | null
 }
 
 const VideoComments: React.FC<VideoCommentsProps> = ({ videoHash, videoAuthorAddress }) => {

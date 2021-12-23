@@ -21,39 +21,39 @@ import classNames from "classnames"
 
 import classes from "@styles/components/video/VideoCommentsItem.module.scss"
 
+import VideoCommentPlaceholder from "./VideoCommentPlaceholder"
 import Avatar from "@components/user/Avatar"
-import { IndexVideoComment } from "@classes/EthernaIndexClient/types"
 import useSwarmProfile from "@hooks/useSwarmProfile"
 import routes from "@routes"
 import dayjs from "@utils/dayjs"
+import type { IndexVideoComment } from "@definitions/api-index"
 
 type VideoCommentsItemProps = {
   comment: IndexVideoComment
-  videoAuthorAddress?: string
+  videoAuthorAddress?: string | null
 }
 
 const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({ comment, videoAuthorAddress }) => {
-  const { creationDateTime, text, ownerAddress, ownerIdentityManifest } = comment
-  const { profile, loadProfile } = useSwarmProfile({
-    hash: ownerIdentityManifest,
+  const { creationDateTime, text, ownerAddress } = comment
+  const { profile, isLoading, loadProfile } = useSwarmProfile({
     address: ownerAddress,
     updateCache: true,
-    fetchFromCache: true
+    fetchFromCache: true,
   })
 
   useEffect(() => {
-    if (ownerIdentityManifest) {
-      loadProfile()
-    }
+    loadProfile()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [comment])
+
+  if (isLoading) return (
+    <VideoCommentPlaceholder />
+  )
 
   return (
     <div className={classes.videoComment}>
       <div className={classes.videoCommentAvatar}>
-        {profile.avatar && (
-          <Avatar image={profile.avatar} address={ownerAddress} />
-        )}
+        <Avatar image={profile?.avatar} address={ownerAddress} />
       </div>
       <div className={classes.videoCommentContent}>
         <Link
@@ -62,7 +62,7 @@ const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({ comment, videoAut
             [classes.isVideoAuthor]: videoAuthorAddress === ownerAddress
           })}
         >
-          {profile.name}
+          {profile?.name ?? ownerAddress}
         </Link>
         <span className={classes.videoCommentTime}>
           {dayjs.duration(dayjs(creationDateTime).diff(dayjs())).humanize(true)}

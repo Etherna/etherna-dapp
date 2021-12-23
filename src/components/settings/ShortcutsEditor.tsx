@@ -25,7 +25,7 @@ import Button from "@common/Button"
 import Kbd from "@common/Kbd"
 import { editShortcut, resetShortcut, hasCustomShortcut } from "@state/actions/enviroment/shortcuts"
 import useSelector from "@state/useSelector"
-import { splitArray } from "@utils/arrays"
+import { splitArray } from "@utils/array"
 import type { KeymapNamespace } from "@definitions/keyboard"
 
 type ShortcutsEditorProps = {

@@ -35,21 +35,27 @@ import ProgressTabContent from "@common/ProgressTabContent"
 import ProgressTabLink from "@common/ProgressTabLink"
 import FieldDesrcription from "@common/FieldDesrcription"
 import Divider from "@common/Divider"
+import SwarmImageIO from "@classes/SwarmImage"
+import SwarmVideoIO from "@classes/SwarmVideo"
 import { useVideoEditorBaseActions, useVideoEditorState } from "@context/video-editor-context/hooks"
 import VideoEditorCache from "@context/video-editor-context/VideoEditorCache"
 import Routes from "@routes"
 import useSelector from "@state/useSelector"
 import { useConfirmation, useErrorMessage } from "@state/hooks/ui"
+import type { Profile } from "@definitions/swarm-profile"
 
 const PORTAL_ID = "video-drag-portal"
 
 const VideoEditor = () => {
   const { waitConfirmation } = useConfirmation()
+  const profile = useSelector(state => state.profile)
   const { address } = useSelector(state => state.user)
-  const [{ reference, queue, videoHandler }] = useVideoEditorState()
+  const { beeClient } = useSelector(state => state.env)
+
+  const [{ reference, queue, videoWriter }] = useVideoEditorState()
   const hasQueuedProcesses = queue.filter(q => !q.reference).length > 0
-  const hasOriginalVideo = videoHandler.originalQuality && videoHandler.sources.length > 0
-  const canPublishVideo = videoHandler.video.title && hasOriginalVideo
+  const hasOriginalVideo = videoWriter.originalQuality && videoWriter.sources.length > 0
+  const canPublishVideo = videoWriter.videoRaw.title && hasOriginalVideo
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -61,7 +67,7 @@ const VideoEditor = () => {
   const { resetState } = useVideoEditorBaseActions()
 
   const submitVideo = async () => {
-    const { duration, originalQuality } = videoHandler.video
+    const { duration, originalQuality } = videoWriter.videoRaw
 
     if (!duration || !originalQuality) {
       showError(
@@ -74,10 +80,20 @@ const VideoEditor = () => {
     setIsSubmitting(true)
 
     try {
-      const reference = await videoHandler.updateVideo()
+      const ownerProfile: Profile = {
+        address: address!,
+        name: profile.name ?? null,
+        description: profile.description ?? null,
+        avatar: profile.avatar ?? null,
+        cover: profile.cover ?? null,
+        birthday: profile.birthday,
+        location: profile.location,
+        website: profile.website,
+      }
+      const reference = await videoWriter.update(ownerProfile)
 
       // update route state for redirect
-      window.routeState = videoHandler.video
+      window.routeState = videoWriter.video
 
       resetState()
       setVideoLink(Routes.getVideoLink(reference))
@@ -94,7 +110,7 @@ const VideoEditor = () => {
     setIsDeleting(true)
 
     try {
-      await videoHandler.deleteVideo()
+      await videoWriter.deleteVideo()
 
       setSaved(true)
     } catch (error: any) {
@@ -163,7 +179,7 @@ const VideoEditor = () => {
                 tabKey="sources"
                 title="Sources"
                 iconSvg={<MovieIcon />}
-                progressList={queue.map(q => ({
+                progressList={queue.filter(q => SwarmVideoIO.getSourceQuality(q.name) > 0).map(q => ({
                   progress: q.completion ? q.completion / 100 : null,
                   completed: !!q.reference
                 }))}
@@ -218,8 +234,12 @@ const VideoEditor = () => {
       {reference && (
         <VideoDeleteModal
           show={showDeleteModal}
-          imagePreview={videoHandler.thumbnail?.originalSource}
-          title={videoHandler.title ?? "Undefined"}
+          imagePreview={
+            videoWriter.thumbnail
+              ? beeClient.getBzzUrl(SwarmImageIO.Reader.getOriginalSourceReference(videoWriter.thumbnail)!)
+              : undefined
+          }
+          title={videoWriter.title ?? "Undefined"}
           deleteHandler={deleteVideo}
           onCancel={() => setShowDeleteModal(false)}
         />

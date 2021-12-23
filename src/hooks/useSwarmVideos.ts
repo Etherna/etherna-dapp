@@ -16,11 +16,11 @@
 
 import { useEffect, useState } from "react"
 
-import SwarmVideo from "@classes/SwarmVideo"
-import { Profile } from "@classes/SwarmProfile/types"
-import { Video } from "@classes/SwarmVideo/types"
+import SwarmVideoIO from "@classes/SwarmVideo"
 import useSelector from "@state/useSelector"
-import { IndexVideo } from "@classes/EthernaIndexClient/types"
+import type { Profile } from "@definitions/swarm-profile"
+import type { Video } from "@definitions/swarm-video"
+import type { IndexVideo } from "@definitions/api-index"
 
 type SwarmVideosOptions = {
   seedLimit?: number
@@ -43,7 +43,7 @@ type UseVideos = {
 const DEFAULT_SEED_LIMIT = 50
 const DEFAULT_FETCH_LIMIT = 20
 
-const useSwarmVideos = (opts: SwarmVideosOptions = {}): UseVideos => {
+export default function useSwarmVideos(opts: SwarmVideosOptions = {}): UseVideos {
   const { beeClient, indexClient } = useSelector(state => state.env)
   const [videos, setVideos] = useState<Video[]>()
   const [page, setPage] = useState(0)
@@ -58,7 +58,7 @@ const useSwarmVideos = (opts: SwarmVideosOptions = {}): UseVideos => {
 
   useEffect(() => {
     fetchVideos()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
 
   useEffect(() => {
@@ -70,25 +70,21 @@ const useSwarmVideos = (opts: SwarmVideosOptions = {}): UseVideos => {
   const updateVideosProfile = (profile: Profile) => {
     setVideos(videos => videos?.map(video => ({
       ...video,
-      owner: {
-        ownerAddress: profile.address,
-        ownerIdentityManifest: profile.manifest,
-        profileData: profile
-      }
+      owner: profile
     })))
   }
 
   const videoLoadPromise = (indexData: IndexVideo) => {
     const { ownerAddress, profileData } = opts
     const fetchProfile = !ownerAddress && !profileData
-    const swarmVideo = new SwarmVideo(indexData.manifestHash, {
+    const swarmVideoReader = new SwarmVideoIO.Reader(indexData.manifestHash, ownerAddress, {
       beeClient,
       indexClient,
       indexData,
       profileData,
       fetchProfile
     })
-    return swarmVideo.downloadVideo()
+    return swarmVideoReader.download()
   }
 
   const fetchVideos = async () => {
@@ -125,5 +121,3 @@ const useSwarmVideos = (opts: SwarmVideosOptions = {}): UseVideos => {
     loadMore
   }
 }
-
-export default useSwarmVideos

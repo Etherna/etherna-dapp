@@ -20,12 +20,13 @@ import React, { useReducer } from "react"
 import { VideoEditorContext } from "."
 import videoEditorReducer from "./reducer"
 import VideoEditorCache from "./VideoEditorCache"
-import SwarmVideo from "@classes/SwarmVideo"
-import { Video } from "@classes/SwarmVideo/types"
-import { Profile } from "@classes/SwarmProfile/types"
 import { THUMBNAIL_QUEUE_NAME } from "@components/video-editor/ThumbnailUpload"
 import useSelector from "@state/useSelector"
 import logger from "@utils/context-logger"
+import SwarmVideoIO from "@classes/SwarmVideo"
+import SwarmImageIO from "@classes/SwarmImage"
+import type { VideoEditorQueue } from "@definitions/video-editor-context"
+import type { Video } from "@definitions/swarm-video"
 
 type VideoEditorContextProviderProps = {
   children: React.ReactNode
@@ -38,21 +39,8 @@ const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
   reference,
   videoData
 }) => {
-  const profile = useSelector(state => state.profile)
-  const { address, identityManifest } = useSelector(state => state.user)
+  const { address } = useSelector(state => state.user)
   const { beeClient, indexClient } = useSelector(state => state.env)
-
-  const videoProfileData: Profile = {
-    address: address!,
-    manifest: identityManifest,
-    name: profile.name ?? null,
-    description: profile.description ?? null,
-    birthday: profile.birthday,
-    location: profile.location,
-    website: profile.website,
-    avatar: profile.avatar,
-    cover: profile.cover,
-  }
 
   let initialState = VideoEditorCache.hasCache
     ? VideoEditorCache.loadState(beeClient, indexClient)
@@ -63,31 +51,27 @@ const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
   }
 
   if (!initialState) {
-    const videoHandler = new SwarmVideo(reference, {
+    const videoWriter = new SwarmVideoIO.Writer(videoData, address!, {
       beeClient,
       indexClient,
-      fetchFromCache: false,
-      fetchProfile: false,
-      videoData,
     })
 
     initialState = {
       reference,
-      queue: videoHandler.video.sources.map(source => ({
+      videoWriter,
+      ownerAddress: address!,
+      pinContent: undefined,
+      queue: videoWriter.videoRaw.sources.map(source => ({
+        reference: source.reference,
         completion: 100,
-        name: SwarmVideo.getSourceName(source.quality),
-        reference: source.reference
-      })).concat(videoHandler.thumbnail ? [{
+        name: SwarmVideoIO.getSourceName(source.quality),
+      } as VideoEditorQueue)).concat(videoWriter.thumbnail ? [{
+        reference: SwarmImageIO.Reader.getOriginalSourceReference(videoWriter.thumbnail),
         completion: 100,
-        reference: videoHandler.thumbnail.originalReference!,
         name: THUMBNAIL_QUEUE_NAME
       }] : []),
-      videoHandler,
-      pinContent: undefined
     }
   }
-
-  initialState.videoHandler.owner = videoProfileData
 
   const stateReducer = import.meta.env.DEV ? logger(videoEditorReducer) : videoEditorReducer
   const store = useReducer(stateReducer, initialState)

@@ -31,7 +31,6 @@ export default class SwarmImageReader {
         reference
       }))
       .sort((a, b) => parseInt(b.size) - parseInt(a.size))
-    const getBzzUrl = opts.beeClient.getBzzUrl
 
     if ("src" in image) {
       this.image = image
@@ -44,13 +43,20 @@ export default class SwarmImageReader {
       this.imageRaw = image
       this.image = {
         ...image,
-        src: getBzzUrl(sources[0].reference),
+        src: opts.beeClient.getBzzUrl(sources[0].reference),
         srcset: sources.length > 1
           ? sources.reduce(
-            (srcset, source) => `${srcset ? srcset + "," : ""} ${source.size} ${getBzzUrl(source.reference)}`, ""
+            (srcset, source) =>
+              `${srcset ? srcset + "," : ""} ${source.size} ${opts.beeClient.getBzzUrl(source.reference)}`, ""
           )
           : undefined,
       }
     }
+  }
+
+  static getOriginalSourceReference(image: SwarmImage | SwarmImageRaw | null | undefined): string | undefined {
+    const source = Object.entries(image?.sources ?? {})
+      .sort((a, b) => parseInt(b[0]) - parseInt(a[0]))[0]
+    return source?.[1] ?? undefined
   }
 }

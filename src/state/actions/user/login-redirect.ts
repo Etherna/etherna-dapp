@@ -18,6 +18,7 @@ import { store } from "@state/store"
 
 /**
  * Redirect to the service login page
+ * 
  * @param service Service to signin
  */
 const loginRedirect = (service: "index" | "gateway" | String | null = null) => {

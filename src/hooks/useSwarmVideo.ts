@@ -16,57 +16,49 @@
 
 import { useEffect, useState } from "react"
 
-import { Video } from "@classes/SwarmVideo/types"
-import SwarmVideo from "@classes/SwarmVideo"
+import SwarmVideoIO from "@classes/SwarmVideo"
 import useSelector from "@state/useSelector"
+import type { Video } from "@definitions/swarm-video"
 
 type SwarmVideoOptions = {
-  hash: string
+  reference: string
   routeState?: Video
   fetchProfile?: boolean
   fetchFromCache?: boolean
 }
 
-type UseVideo = {
-  /** Video object */
-  video: Video | undefined,
-  /** Download video info  */
-  loadVideo: () => Promise<Video | undefined>
-}
-
-const useSwarmVideo = (opts: SwarmVideoOptions): UseVideo => {
+export default function useSwarmVideo(opts: SwarmVideoOptions) {
   const { beeClient, indexClient } = useSelector(state => state.env)
-  const [hash, setHash] = useState(opts.hash)
-  const [videoHandler, setVideoHandler] = useState<SwarmVideo>(
-    new SwarmVideo(hash, { beeClient, indexClient, fetchFromCache: opts.fetchFromCache })
-  )
-  const [video, setVideo] = useState<Video | undefined>(opts.routeState)
+  const [reference, setReference] = useState(opts.reference)
+  const [video, setVideo] = useState<Video | null>(opts.routeState ?? null)
+  const [isLoading, setIsloading] = useState(false)
 
   useEffect(() => {
-    if (hash !== opts.hash) {
-      setHash(opts.hash)
-    }
-    if (videoHandler.hash !== opts.hash) {
-      setVideoHandler(new SwarmVideo(hash, { beeClient, indexClient, fetchFromCache: opts.fetchFromCache }))
+    if (reference !== opts.reference) {
+      setReference(opts.reference)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts.hash])
+  }, [opts.reference])
 
   // Returns
-  const loadVideo = async () => {
-    if (!videoHandler) return
+  const loadVideo = async (): Promise<void> => {
+    setIsloading(true)
 
-    const video = await videoHandler.downloadVideo({ fetchProfile: opts.fetchProfile })
-
+    const videoReader = new SwarmVideoIO.Reader(reference, undefined, {
+      beeClient,
+      indexClient,
+      fetchProfile: opts.fetchProfile,
+      fetchFromCache: opts.fetchFromCache,
+    })
+    const video = await videoReader.download()
     setVideo(video)
 
-    return video
+    setIsloading(true)
   }
 
   return {
     video,
-    loadVideo
+    isLoading,
+    loadVideo,
   }
 }
-
-export default useSwarmVideo

@@ -18,6 +18,7 @@ import { providers } from "ethers/lib.esm/ethers"
 
 /**
  * Check if a string a valid eth address
+ * 
  * @param address Address string value
  */
 export const checkIsEthAddress = (address: string | null | undefined) => {
@@ -27,6 +28,7 @@ export const checkIsEthAddress = (address: string | null | undefined) => {
 
 /**
  * Get the shorten string of a address
+ * 
  * @param address Address string value
  */
 export const shortenEthAddr = (address: string | null | undefined) => {
@@ -37,6 +39,7 @@ export const shortenEthAddr = (address: string | null | undefined) => {
 
 /**
  * Check if a provider is injected by the browser
+ * 
  * @param provider Web3 provider
  */
 export const checkUsingInjectedProvider = (provider: any) => {
@@ -48,17 +51,19 @@ export const checkUsingInjectedProvider = (provider: any) => {
 
 /**
  * Fetch the wallet accounts
+ * 
  * @param web3 Web3 instance
  */
 export const fetchAccounts = async (provider?: providers.Web3Provider) => {
-  if (!provider && !window.web3?.currentProvider) return []
+  if (!provider || !window.ethereum) return []
 
-  const web3Provider = provider ?? new providers.Web3Provider(window.web3!.currentProvider)
+  const web3Provider = provider ?? new providers.Web3Provider(window.ethereum)
   return await web3Provider.listAccounts()
 }
 
 /**
  * Get the network name from the id
+ * 
  * @param networkId Id of the networks
  */
 export const getNetworkName = (networkId: number | string | undefined) => {

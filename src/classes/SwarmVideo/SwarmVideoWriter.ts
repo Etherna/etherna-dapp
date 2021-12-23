@@ -23,8 +23,10 @@ import SwarmImageIO from "@classes/SwarmImage"
 import { getVideoDuration, getVideoResolution } from "@utils/media"
 import uuidv4 from "@utils/uuid"
 import type { SwarmVideoUploadOptions, SwarmVideoWriterOptions } from "./types"
-import type { SwarmVideoRaw, Video } from "@definitions/swarm-video"
+import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@definitions/swarm-video"
 import type { SwarmImageRaw } from "@definitions/swarm-image"
+import type { IndexVideo } from "@definitions/api-index"
+import { Profile } from "@definitions/swarm-profile"
 
 /**
  * Load/Update video info over swarm
@@ -32,6 +34,7 @@ import type { SwarmImageRaw } from "@definitions/swarm-image"
 export default class SwarmVideoWriter {
   ownerAddress: string
   reference?: string
+  video?: Video
 
   private _videoRaw: SwarmVideoRaw
   private beeClient: SwarmBeeClient
@@ -44,6 +47,7 @@ export default class SwarmVideoWriter {
     this.indexClient = opts.indexClient
     this.ownerAddress = ownerAddress
     this.reference = video?.reference
+    this.video = video
     this._videoRaw = this.parseVideo(video) ?? {
       id: uuidv4(),
       title: "",
@@ -72,10 +76,10 @@ export default class SwarmVideoWriter {
     this._videoRaw.description = value
   }
 
-  get originalQuality(): `${number}p` {
+  get originalQuality(): SwarmVideoQuality {
     return this._videoRaw.originalQuality
   }
-  set originalQuality(value: `${number}p`) {
+  set originalQuality(value: SwarmVideoQuality) {
     this._videoRaw.originalQuality = value
   }
 
@@ -107,22 +111,19 @@ export default class SwarmVideoWriter {
   // Public methods
 
   /**
-   * Update video meta on swarm & reference on index
+   * Update video meta on swarm & reference on index.
+   * 
+   * @param ownerProfile Profile data of the owner (assigned to `this.video` object) - optional when updating
+   * @returns The reference hash of the video feed  
    */
-  async update() {
+  async update(ownerProfile?: Profile): Promise<string> {
     if (!this._videoRaw.sources.length) throw new Error("Please add at least 1 video source")
     if (!this.beeClient.signer) throw new Error("Enable your wallet to update your profile")
 
     // update meta
-    const rawVideo = { ...this._videoRaw }
-    const metaData = new TextEncoder().encode(JSON.stringify(rawVideo))
+    const rawVideo = this._videoRaw
     const batchId = await this.beeClient.getBatchId()
-    const metaReference = (await this.beeClient.uploadFile(
-      batchId,
-      metaData,
-      undefined,
-      { contentType: "application/json" }
-    )).reference
+    const metaReference = (await this.beeClient.uploadFile(batchId, JSON.stringify(rawVideo))).reference
 
     // update feed
     const topic = this.beeClient.makeFeedTopic(SwarmVideoIO.getVideoFeedTopicName(rawVideo.id))
@@ -130,15 +131,25 @@ export default class SwarmVideoWriter {
     await writer.upload(batchId, metaReference)
     const videoReference = await this.beeClient.createFeedManifest(batchId, "sequence", topic, rawVideo.ownerAddress)
 
+    let indexVideo: IndexVideo
     if (this.reference) {
-      await this.indexClient.videos.updateVideo(this.reference, videoReference) // both should be the same
+      indexVideo = await this.indexClient.videos.updateVideo(this.reference, videoReference) // both should be the same
     } else {
-      await this.indexClient.videos.createVideo(videoReference)
+      indexVideo = await this.indexClient.videos.createVideo(videoReference)
     }
 
     this.reference = videoReference
 
-    return this.reference!
+    const reader = new SwarmVideoIO.Reader(videoReference, this.ownerAddress, {
+      beeClient: this.beeClient,
+      indexClient: this.indexClient,
+      videoData: rawVideo,
+      profileData: this.video?.owner ?? ownerProfile,
+      indexData: indexVideo
+    })
+    this.video = reader.video
+
+    return videoReference
   }
 
   async deleteVideo() {
@@ -215,10 +226,10 @@ export default class SwarmVideoWriter {
       onUploadProgress: opts?.onUploadProgress,
     })
 
-    return this._videoRaw.thumbnail
+    return SwarmImageIO.Reader.getOriginalSourceReference(this._videoRaw.thumbnail)!
   }
 
-  async removeVideoSource(quality: `${number}p`) {
+  async removeVideoSource(quality: SwarmVideoQuality) {
     const sourceIndex = this._videoRaw.sources.findIndex(source => source.quality === quality)
     if (sourceIndex === -1) {
       throw new Error("There is no video source with this quality")
@@ -232,6 +243,21 @@ export default class SwarmVideoWriter {
       throw new Error("There is no thumbnail to remove")
     }
     this._videoRaw.thumbnail = null
+  }
+
+  getSourceUrl(quality: SwarmVideoQuality): string | undefined {
+    const source = this.videoRaw.sources.find(source => source.quality === quality)
+    if (source) {
+      return this.beeClient.getBzzUrl(source.reference)
+    }
+    return undefined
+  }
+
+  resetCopy() {
+    return new SwarmVideoWriter(undefined, this.ownerAddress, {
+      beeClient: this.beeClient,
+      indexClient: this.indexClient,
+    })
   }
 
   // Private methods

@@ -22,7 +22,7 @@ import { UIActions, UIActionTypes } from "@state/reducers/uiReducer"
 let waitingInterval: number | undefined
 let waitingStatus: boolean | undefined
 
-const useConfirmation = () => {
+export default function useConfirmation() {
   const dispatch = useDispatch<Dispatch<UIActions>>()
 
   const showConfirmation = (title: string, message: string) => {
@@ -82,5 +82,3 @@ const useConfirmation = () => {
     waitConfirmation
   }
 }
-
-export default useConfirmation

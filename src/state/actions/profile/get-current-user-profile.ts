@@ -15,31 +15,23 @@
  */
 
 import { store } from "@state/store"
+import type { Profile } from "@definitions/swarm-profile"
 
 /**
- * Redirect to the service login page
- * @param service Service to signin
+ * Get current user profile
+ * 
+ * @returns Current profile info
  */
-const logoutRedirect = (service: "index" | "gateway" | String | null = null) => {
-  const { indexClient, gatewayClient } = store.getState().env
-
-  // strip query params
-  const redirectUrl = window.location.origin + window.location.pathname
-
-  switch (service) {
-    case "index":
-      indexClient.logoutRedirect(redirectUrl)
-      break
-    case "gateway":
-      gatewayClient.logoutRedirect(redirectUrl)
-      break
-    case null:
-    case undefined:
-      indexClient.logoutRedirect(redirectUrl + "?signout=gateway")
-      break
-    default:
-      break
+const getCurrentUserProfile = (): Profile => {
+  const { name, description, avatar, cover } = store.getState().profile
+  const { address } = store.getState().user
+  return {
+    address: address ?? "",
+    name: name ?? "",
+    description: description ?? "",
+    avatar: avatar ?? null,
+    cover: cover ?? null,
   }
 }
 
-export default logoutRedirect
+export default getCurrentUserProfile

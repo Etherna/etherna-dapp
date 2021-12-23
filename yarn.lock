@@ -1080,10 +1080,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@ethersphere/bee-js@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@ethersphere/bee-js/-/bee-js-3.0.0.tgz#a9146c850c594c79503f982efbf1f3bfc2305838"
-  integrity sha512-Z08qnpFT8vTui93KLEu+HAB/Lkc8yVv1xGv642iR80kH0itmg0PrJ8hukirSyGV82LJ/YrGGd+Lx63ntzH61vA==
+"@ethersphere/bee-js@3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@ethersphere/bee-js/-/bee-js-3.1.0.tgz#8021049d055a17ffb973873571320f308a6cde42"
+  integrity sha512-Sg5uy+eeG5jfogMqxoiZfmML/TFH89QKeiM2jpN5mdYDgTYbUFQPIEE5bPUKt/VbBIMMDIv/hB0l7iGzgY4tJA==
   dependencies:
     "@types/readable-stream" "^2.3.11"
     bufferutil "^4.0.3"
@@ -6250,7 +6250,7 @@ util-deprecate@^1.0.1, util-deprecate@^1.0.2:
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
 
-uuid@^8.3.2:
+uuid@8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==

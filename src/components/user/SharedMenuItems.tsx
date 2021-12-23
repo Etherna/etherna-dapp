@@ -27,7 +27,7 @@ import DropdownItem from "@common/DropdownItem"
 import IndexExtension from "@components/env/IndexExtension"
 import GatewayExtension from "@components/env/GatewayExtension"
 import routes from "@routes"
-import { toggleDarkMode } from "@state/actions/enviroment/darkMode"
+import { toggleDarkMode } from "@state/actions/enviroment/dark-mode"
 import useSelector from "@state/useSelector"
 
 type SharedMenuItemsProps = {}

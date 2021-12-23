@@ -16,19 +16,6 @@
 
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios"
 
-const hashCode = (value: string) => {
-  let hash = 0
-  let i: number
-  let chr: number
-  if (value.length === 0) return hash.toString()
-  for (i = 0; i < value.length; i++) {
-    chr = value.charCodeAt(i)
-    hash = ((hash << 5) - hash) + chr
-    hash |= 0 // Convert to 32bit integer
-  }
-  return hash.toString()
-}
-
 interface SkipXHRError extends AxiosError {
   isSkipXHR?: boolean
   request?: AxiosRequestConfig
@@ -56,6 +43,19 @@ type PendingCache = {
   pushPendingRequest: (config: AxiosRequestConfig) => void
   /** Decrease pending request counter and delete it if empty */
   popPendingRequest: (config: AxiosRequestConfig | undefined) => void
+}
+
+const hashCode = (value: string) => {
+  let hash = 0
+  let i: number
+  let chr: number
+  if (value.length === 0) return hash.toString()
+  for (i = 0; i < value.length; i++) {
+    chr = value.charCodeAt(i)
+    hash = ((hash << 5) - hash) + chr
+    hash |= 0 // Convert to 32bit integer
+  }
+  return hash.toString()
 }
 
 /**

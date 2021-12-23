@@ -22,7 +22,7 @@ import classes from "@styles/components/media/FileUpload.module.scss"
 
 import Alert from "@common/Alert"
 import Button from "@common/Button"
-import { FilePreviewRenderProps } from "@definitions/file-preview"
+import type { FilePreviewRenderProps } from "@definitions/file-preview"
 
 type FileUploadProps = {
   children?: React.ReactChild | ((props: FilePreviewRenderProps) => React.ReactChild)

@@ -15,31 +15,41 @@
  *  
  */
 
-import React from "react"
+import React, { useMemo } from "react"
 
 import classes from "@styles/components/media/ImageSourcePreview.module.scss"
 
 import MediaStats from "@components/media/MediaStats"
-import SwarmImage from "@classes/SwarmImage"
+import SwarmImageIO from "@classes/SwarmImage"
+import useSelector from "@state/useSelector"
+import type { SwarmImageRaw } from "@definitions/swarm-image"
 
 type ImageSourcePreviewProps = {
-  image?: SwarmImage
+  image?: SwarmImageRaw | null
 }
 
 const ImageSourcePreview: React.FC<ImageSourcePreviewProps> = ({
   image
 }) => {
+  const beeClient = useSelector(state => state.env.beeClient)
+
+  const [reference, srcUrl] = useMemo(() => {
+    const reference = SwarmImageIO.Reader.getOriginalSourceReference(image)
+    const url = reference ? beeClient.getBzzUrl(reference) : undefined
+    return [reference, url]
+  }, [image, beeClient])
+
   return (
     <div className={classes.imageSourcePreview}>
-      <img className={classes.imageSourcePreviewImg} src={image?.filePreview ?? image?.originalSource} alt="" />
+      <img className={classes.imageSourcePreviewImg} src={srcUrl} alt="" />
       <div className={classes.imageSourcePreviewStats}>
         <MediaStats
           stats={[{
             label: "Hash",
-            value: image?.originalReference ?? ""
+            value: reference ?? ""
           }, {
             label: "Download url",
-            value: <a href={image?.originalSource} target="_blank" rel="noreferrer">{image?.originalSource}</a>
+            value: <a href={srcUrl} target="_blank" rel="noreferrer">{srcUrl}</a>
           }]}
           showText="Show info"
           hideText="Hide info"

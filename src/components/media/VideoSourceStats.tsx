@@ -18,22 +18,22 @@
 import React from "react"
 
 import MediaStats from "@components/media/MediaStats"
-import { VideoSource } from "@classes/SwarmVideo/types"
 import { convertBirate, convertBytes } from "@utils/converters"
+import type { SwarmVideoSourceRaw } from "@definitions/swarm-video"
 
 type VideoSourceStatsProps = {
-  source: VideoSource | undefined
+  source: SwarmVideoSourceRaw | undefined
+  srcUrl: string | undefined
 }
 
-const VideoSourceStats: React.FC<VideoSourceStatsProps> = ({ source }) => {
+const VideoSourceStats: React.FC<VideoSourceStatsProps> = ({ source, srcUrl }) => {
   if (!source) return null
 
   const stats = [
     source.size ? { label: "Size", value: convertBytes(source.size).readable } : false,
     source.bitrate ? { label: "Bitrate", value: convertBirate(source.bitrate).readable } : false,
     { label: "Hash", value: source.reference },
-    { label: "Protocol", value: source.referenceProtocol },
-    { label: "Preview", value: <a href={source.source} target="_blank" rel="noreferrer">{source.source}</a> },
+    { label: "Preview", value: <a href={srcUrl} target="_blank" rel="noreferrer">{srcUrl}</a> },
   ].filter(Boolean) as Array<{ label: string, value: string | JSX.Element }>
 
   return (

@@ -18,7 +18,7 @@ import GatewayUsersClient from "./GatewayUsersClient"
 import GatewaySettingsClient from "./GatewaySettingsClient"
 import { GatewayClientOptions } from "./typings"
 import { isSafeURL, safeURL, urlOrigin } from "@utils/urls"
-import { parseLocalStorage } from "@utils/localStorage"
+import { parseLocalStorage } from "@utils/local-storage"
 
 export default class EthernaGatewayClient {
   users: GatewayUsersClient

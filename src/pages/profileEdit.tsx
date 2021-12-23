@@ -32,7 +32,7 @@ const ProfileEditPage = () => {
     <AppLayoutWrapper>
       <SEO title={`Editing profile ${name || id}`} />
 
-      <Container noPaddingX noPaddingY>
+      <Container noPaddingX noPaddingY fluid>
         <ProfileEditor address={id} />
       </Container>
     </AppLayoutWrapper>

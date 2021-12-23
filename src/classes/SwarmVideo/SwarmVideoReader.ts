@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { getDefaultVideo } from "."
+import { getDefaultRawVideo, getDefaultVideo } from "."
 import EthernaIndexClient from "@classes/EthernaIndexClient"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
 import SwarmImageIO from "@classes/SwarmImage"
@@ -31,6 +31,7 @@ export default class SwarmVideoReader {
   reference: string
   ownerAddress?: string
   video: Video
+  videoRaw: SwarmVideoRaw
   loadedFromPrefetch: boolean = false
   fetchProfile: boolean
   fetchFromCache: boolean
@@ -51,8 +52,8 @@ export default class SwarmVideoReader {
     this.fetchProfile = opts.fetchProfile || true
     this.fetchFromCache = opts.fetchFromCache || true
     this.updateCache = opts.updateCache || true
-    this.video = opts.videoData ?? getDefaultVideo(reference, this.beeClient)
-    this.video.owner = opts.videoData?.owner ?? opts.profileData
+    this.video = this.parseRawVideo(opts.videoData, opts.indexData, opts.profileData)
+    this.videoRaw = this.parseVideo(opts.videoData)
 
     if (this.hasPrefetch) {
       this.loadVideoFromPrefetch()
@@ -65,7 +66,7 @@ export default class SwarmVideoReader {
 
   get hasPrefetch(): boolean {
     const prefetchVideo = window.prefetchData?.video
-    return prefetchVideo?.hash === this.reference
+    return prefetchVideo?.reference === this.reference
   }
 
   get hasCache(): boolean {
@@ -99,16 +100,7 @@ export default class SwarmVideoReader {
       owner = await this.fetchOwnerProfile(rawVideo.ownerAddress)
     }
 
-    const video: Video = {
-      ...rawVideo,
-      creationDateTime: indexData?.creationDateTime,
-      encryptionKey: indexData?.encryptionKey,
-      encryptionType: indexData?.encryptionType,
-      totUpvotes: indexData?.totUpvotes,
-      totDownvotes: indexData?.totDownvotes,
-      isVideoOnIndex: !!indexData,
-      owner,
-    }
+    const video = this.parseRawVideo(rawVideo, indexData, owner)
 
     if (this.updateCache) {
       this.updateVideoCache(video)
@@ -117,27 +109,11 @@ export default class SwarmVideoReader {
     return video
   }
 
-  // Private methods
-
-  private async fetchIndexVideo() {
-    try {
-      return await this.indexClient.videos.fetchVideo(this.reference)
-    } catch {
-      return null
-    }
-  }
-
-  private async fetchRawVideo() {
-    try {
-      const resp = await this.beeClient.downloadFile(this.reference)
-      const meta = resp.data.json() as SwarmVideoRaw
-      return this.parseRawVideo(meta)
-    } catch { }
-
-    return this.parseRawVideo(null)
-  }
-
-  private parseRawVideo(rawVideo: SwarmVideoRaw | null): SwarmVideo {
+  parseRawVideo(
+    rawVideo: SwarmVideoRaw | Video | null | undefined,
+    indexData?: IndexVideo | null,
+    owner?: Profile | null,
+  ): Video {
     if (!rawVideo) {
       return getDefaultVideo(this.reference, this.beeClient)
     }
@@ -149,6 +125,7 @@ export default class SwarmVideoReader {
       description: rawVideo.description,
       originalQuality: rawVideo.originalQuality,
       ownerAddress: rawVideo.ownerAddress,
+      owner: "owner" in rawVideo ? rawVideo.owner : owner ?? undefined,
       duration: rawVideo.duration,
       thumbnail: rawVideo.thumbnail
         ? new SwarmImageIO.Reader(rawVideo.thumbnail, { beeClient: this.beeClient }).image
@@ -157,7 +134,58 @@ export default class SwarmVideoReader {
         ...rawSource,
         source: this.beeClient.getBzzUrl(rawSource.reference)
       })),
+      isVideoOnIndex: !!indexData,
+      creationDateTime: indexData?.creationDateTime,
+      encryptionKey: indexData?.encryptionKey,
+      encryptionType: indexData?.encryptionType,
+      totDownvotes: indexData?.totDownvotes,
+      totUpvotes: indexData?.totUpvotes,
     }
+  }
+
+  parseVideo(video: Video | SwarmVideoRaw | null | undefined): SwarmVideoRaw {
+    if (!video) {
+      return getDefaultRawVideo(this.reference)
+    }
+
+    return {
+      id: video.id,
+      title: video.title ?? "",
+      description: video.description ?? "",
+      originalQuality: video.originalQuality ?? `${NaN}p`,
+      ownerAddress: video.ownerAddress ?? this.ownerAddress ?? "0x0",
+      duration: video.duration,
+      thumbnail: video.thumbnail
+        ? new SwarmImageIO.Reader(video.thumbnail, { beeClient: this.beeClient }).imageRaw
+        : null,
+      sources: video.sources.map(source => ({
+        reference: source.reference,
+        size: source.size,
+        bitrate: source.bitrate,
+        quality: source.quality,
+      })),
+    }
+  }
+
+  // Private methods
+
+  private async fetchIndexVideo(): Promise<IndexVideo | null> {
+    try {
+      return await this.indexClient.videos.fetchVideo(this.reference)
+    } catch {
+      return null
+    }
+  }
+
+  private async fetchRawVideo() {
+    try {
+      const resp = await this.beeClient.downloadFile(this.reference)
+      const meta = resp.data.json() as SwarmVideoRaw
+      return this.parseVideo(meta)
+    } catch (error) {
+      console.error(error)
+    }
+    return this.parseVideo(null)
   }
 
   private async fetchOwnerProfile(address: string) {

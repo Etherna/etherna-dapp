@@ -20,12 +20,12 @@ import type EthernaIndexClient from "@classes/EthernaIndexClient"
 import type SwarmBeeClient from "@classes/SwarmBeeClient"
 import type { IndexVideo } from "@definitions/api-index"
 import type { Profile } from "@definitions/swarm-profile"
-import type { Video } from "@definitions/swarm-video"
+import type { SwarmVideoRaw, Video } from "@definitions/swarm-video"
 
 export type SwarmVideoReaderOptions = {
   beeClient: SwarmBeeClient
   indexClient: EthernaIndexClient
-  videoData?: Video
+  videoData?: Video | SwarmVideoRaw
   indexData?: IndexVideo
   profileData?: Profile
   fetchProfile?: boolean

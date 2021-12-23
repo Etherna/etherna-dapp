@@ -19,10 +19,12 @@ import React, { useEffect, useState } from "react"
 import classNames from "classnames"
 
 import classes from "@styles/components/common/SwarmImg.module.scss"
+
+import useSelector from "@state/useSelector"
 import type { SwarmImage } from "@definitions/swarm-image"
 
 type SwarmImgProps = {
-  image?: string | SwarmImage
+  image?: string | SwarmImage | null
   fallback?: string
   className?: string
   alt?: string
@@ -31,6 +33,7 @@ type SwarmImgProps = {
 }
 
 const SwarmImg: React.FC<SwarmImgProps> = ({ image, fallback, className, alt, preserveAspectRatio, style }) => {
+  const beeClient = useSelector(state => state.env.beeClient)
   const [src, setSrc] = useState<string>()
   const [size, setSize] = useState<number>()
   const [imgLoaded, setImgLoaded] = useState(typeof image === "string")
@@ -68,8 +71,7 @@ const SwarmImg: React.FC<SwarmImgProps> = ({ image, fallback, className, alt, pr
 
     const optimized = sizes.find(size => size > screenSize)
     const optimizedSrc = optimized ? image.sources[`${optimized}w`] : image.sources[`${largest}w`]
-
-    return optimizedSrc
+    return beeClient.getBzzUrl(optimizedSrc)
   }
 
   return (

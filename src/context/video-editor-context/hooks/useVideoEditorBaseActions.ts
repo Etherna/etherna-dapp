@@ -16,6 +16,7 @@
 
 import useVideoEditorState from "./useVideoEditorState"
 import { VideoEditorActionTypes } from "../reducer"
+import type { SwarmVideoQuality } from "@definitions/swarm-video"
 
 const useVideoEditorBaseActions = () => {
   const [, dispatch] = useVideoEditorState()
@@ -24,7 +25,7 @@ const useVideoEditorBaseActions = () => {
    * Update video original quality
    * @param quality Original video quality (eg: 720p)
    */
-  const updateOriginalQuality = (quality: string) => (
+  const updateOriginalQuality = (quality: SwarmVideoQuality) => (
     dispatch({ type: VideoEditorActionTypes.UPDATE_ORIGINAL_QUALITY, quality })
   )
 

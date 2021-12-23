@@ -18,7 +18,7 @@
 import React from "react"
 
 import Button from "@common/Button"
-import loginRedirect from "@state/actions/user/loginRedirect"
+import loginRedirect from "@state/actions/user/login-redirect"
 
 const SigninButton: React.FC = ({ children }) => {
   return (

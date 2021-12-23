@@ -19,7 +19,7 @@ import pick from "lodash/pick"
 import { SwarmProfileTopicName } from "."
 import SwarmBeeClient from "@classes/SwarmBeeClient"
 import SwarmImageIO from "@classes/SwarmImage"
-import { checkIsEthAddress } from "@utils/ethFuncs"
+import { checkIsEthAddress } from "@utils/ethereum"
 import type { SwarmProfileWriterOptions } from "./types"
 import type { SwarmImage } from "@definitions/swarm-image"
 import type { Profile, ProfileRaw } from "@definitions/swarm-profile"
@@ -51,7 +51,7 @@ export default class SwarmProfileWriter {
    * @param profile The updated profile
    * @return The new hash of the profile
    */
-  async upload(profile: Profile) {
+  async update(profile: Profile) {
     if (!this.beeClient.signer) throw new Error("Enable your wallet to update your profile")
 
     // Get validated profiles
@@ -60,9 +60,7 @@ export default class SwarmProfileWriter {
     // Upload json
     const serializedJson = new TextEncoder().encode(JSON.stringify(baseProfile))
     const batchId = await this.beeClient.getBatchId()
-    const reference = (await this.beeClient.uploadFile(batchId, serializedJson, undefined, {
-      contentType: "application/json"
-    })).reference
+    const reference = (await this.beeClient.uploadFile(batchId, serializedJson)).reference
 
     // update feed
     const topic = this.beeClient.makeFeedTopic(SwarmProfileTopicName)

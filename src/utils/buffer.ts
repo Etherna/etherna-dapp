@@ -16,6 +16,7 @@
 
 /**
  * Get the array buffer of a file
+ * 
  * @param file File to convert
  * @returns The array buffer data
  */
@@ -32,6 +33,7 @@ export const fileToBuffer = (file: File) => {
 }
 /**
  * Get the array buffer of a file
+ * 
  * @param file File to convert
  * @returns The array buffer data
  */
@@ -42,6 +44,7 @@ export const fileToUint8Array = async (file: File) => {
 
 /**
  * Convert a file to a data URL string
+ * 
  * @param file File to convert
  * @returns The base64 data URL
  */
@@ -59,6 +62,7 @@ export const fileToDataURL = (file: File) => {
 
 /**
  * Convert a buffer to a File object
+ * 
  * @param buffer Buffer to convert
  * @param contentType Mime type of the array buffer
  * @returns The file object
@@ -69,6 +73,7 @@ export const bufferToFile = (buffer: ArrayBuffer, contentType?: string) => {
 
 /**
  * Convert a buffer to a data URL string
+ * 
  * @param buffer Buffer to convert
  * @returns The base64 data URL
  */

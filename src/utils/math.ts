@@ -22,6 +22,7 @@ export const clamp = (value: number, min: number, max: number) =>
 
 /**
  * Return the integer + decimal parts of a number
+ * 
  * @param num The number to split
  * @param fractionDigits If provided will round to a number of digits
  */

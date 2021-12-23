@@ -22,20 +22,20 @@ import classes from "@styles/components/video/VideoUpdate.module.scss"
 import { ReactComponent as NotFoundImage } from "@assets/backgrounds/404-illustration.svg"
 
 import VideoEditor from "@components/video-editor/VideoEditor"
-import { Video } from "@classes/SwarmVideo/types"
 import { VideoEditorContextProvider } from "@context/video-editor-context"
 import useSwarmVideo from "@hooks/useSwarmVideo"
 import Routes from "@routes"
 import useSelector from "@state/useSelector"
+import type { Video } from "@definitions/swarm-video"
 
 type VideoUpdateProps = {
-  hash: string
+  reference: string
   routeState: Video | undefined
 }
 
-const VideoUpdate: React.FC<VideoUpdateProps> = ({ hash, routeState }) => {
+const VideoUpdate: React.FC<VideoUpdateProps> = ({ reference, routeState }) => {
   const { video, loadVideo } = useSwarmVideo({
-    hash,
+    reference,
     fetchProfile: false,
     fetchFromCache: false,
     routeState
@@ -70,7 +70,7 @@ const VideoUpdate: React.FC<VideoUpdateProps> = ({ hash, routeState }) => {
         </div>
       )}
       {videoOnIndex && (
-        <VideoEditorContextProvider reference={hash} videoData={video}>
+        <VideoEditorContextProvider reference={reference} videoData={video}>
           <VideoEditor />
         </VideoEditorContextProvider>
       )}

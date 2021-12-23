@@ -23,6 +23,7 @@ import VideoEditor from "@components/video-editor/VideoEditor"
 import Avatar from "@components/user/Avatar"
 import { VideoEditorContextProvider } from "@context/video-editor-context"
 import useSelector from "@state/useSelector"
+import { shortenEthAddr } from "@utils/ethereum"
 
 const Uploader = () => {
   const { name, avatar } = useSelector(state => state.profile)
@@ -36,7 +37,7 @@ const Uploader = () => {
       <div className="row mb-6">
         <div className="flex items-center">
           <Avatar image={avatar} address={address} />
-          <h3 className="mb-0 ml-1">{name}</h3>
+          <h3 className="mb-0 ml-1">{name || shortenEthAddr(address)}</h3>
         </div>
       </div>
 

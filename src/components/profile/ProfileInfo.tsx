@@ -20,11 +20,11 @@ import React, { useEffect } from "react"
 import classes from "@styles/components/profile/ProfileInfo.module.scss"
 
 import SwarmImg from "@common/SwarmImg"
-import { Profile } from "@classes/SwarmProfile/types"
 import useSwarmProfile from "@hooks/useSwarmProfile"
 import useErrorMessage from "@state/hooks/ui/useErrorMessage"
 import makeBlockies from "@utils/makeBlockies"
-import { checkIsEthAddress, shortenEthAddr } from "@utils/ethFuncs"
+import { checkIsEthAddress, shortenEthAddr } from "@utils/ethereum"
+import type { Profile } from "@definitions/swarm-profile"
 
 type ProfileInfoProps = {
   children: React.ReactNode
@@ -42,7 +42,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   onFetchedProfile
 }) => {
   const { profile, loadProfile } = useSwarmProfile({ address: profileAddress })
-  const profileName = profile.name ? profile.name : profileAddress
+  const profileName = profile?.name ? profile.name : profileAddress
   const { showError } = useErrorMessage()
 
   useEffect(() => {
@@ -54,9 +54,13 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
     if (profile) {
       onFetchedProfile({
         name: profile.name,
-        avatar: profile.avatar,
-        description: profile.description,
         address: profile.address,
+        avatar: profile.avatar,
+        cover: profile.cover,
+        description: profile.description,
+        birthday: profile.birthday,
+        location: profile.location,
+        website: profile.website,
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -92,7 +96,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
         <div className="col md:max-w-xxs px-4">
           <div className={classes.profileAvatar}>
             <SwarmImg
-              image={profile.avatar}
+              image={profile?.avatar}
               fallback={makeBlockies(profileAddress)}
               alt={profileName}
             />

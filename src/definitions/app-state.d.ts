@@ -58,8 +58,8 @@ export type EnvState = {
 export type ProfileState = {
   name?: string
   description?: string
-  avatar?: SwarmImage
-  cover?: SwarmImage
+  avatar?: SwarmImage | null
+  cover?: SwarmImage | null
   location?: string
   website?: string
   birthday?: string
@@ -92,7 +92,6 @@ export type UIState = {
 
 export type UserState = {
   address?: string
-  identityManifest?: string
   prevAddresses?: string[]
   ens?: string | null
   credit?: number

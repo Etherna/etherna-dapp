@@ -22,7 +22,7 @@ import { UIActionTypes, UIActions } from "@state/reducers/uiReducer"
 import { fileToDataURL } from "@utils/buffer"
 import type { AppState } from "@definitions/app-state"
 
-const useImageCrop = () => {
+export default function useImageCrop() {
   const getState = useStore<AppState>().getState
   const dispatch = useDispatch<Dispatch<UIActions>>()
 
@@ -135,6 +135,3 @@ const getCroppedBlob = (image: CanvasImageSource, crop: Partial<Crop>, fileName 
     )
   })
 }
-
-
-export default useImageCrop

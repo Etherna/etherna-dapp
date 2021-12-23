@@ -21,11 +21,11 @@ import classes from "@styles/components/video/CommentForm.module.scss"
 import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 
 import Button from "@common/Button"
+import TextField from "@common/TextField"
 import Avatar from "@components/user/Avatar"
-import { IndexVideoComment } from "@classes/EthernaIndexClient/types"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
-import TextField from "@common/TextField"
+import type { IndexVideoComment } from "@definitions/api-index"
 
 type CommentFormProps = {
   videoHash: string

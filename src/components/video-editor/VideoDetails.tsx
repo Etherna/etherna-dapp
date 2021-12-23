@@ -28,7 +28,7 @@ type VideoDetailsProps = {
 }
 
 const VideoDetails: React.FC<VideoDetailsProps> = ({ isSubmitting }) => {
-  const [{ videoHandler }] = useVideoEditorState()
+  const [{ videoWriter }] = useVideoEditorState()
   const { updateTitle, updateDescription } = useVideoEditorInfoActions()
 
   const thumbFlow = useRef<ThumbnailUploadHandlers>(null)
@@ -41,7 +41,7 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ isSubmitting }) => {
           id="title"
           label="Title"
           placeholder="Title of the video"
-          value={videoHandler.title ?? ""}
+          value={videoWriter.title ?? ""}
           charactersLimit={150}
           onChange={updateTitle}
           disabled={isSubmitting}
@@ -53,7 +53,7 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ isSubmitting }) => {
           id="description"
           label="Description"
           placeholder="Description of the video"
-          value={videoHandler.description ?? ""}
+          value={videoWriter.description ?? ""}
           charactersLimit={5000}
           onChange={value => updateDescription(value)}
           disabled={isSubmitting}

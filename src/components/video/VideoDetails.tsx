@@ -23,7 +23,7 @@ import VideoDetailsDescription from "./VideoDetailsDescription"
 import VideoDetailsTitleBar from "./VideoDetailsTitleBar"
 import VideoStatusBadge from "@components/video/VideoStatusBadge"
 import VideoRating from "@components/video/VideoRating"
-import { Video } from "@classes/SwarmVideo/types"
+import type { Video } from "@definitions/swarm-video"
 
 type VideoDetailsProps = {
   video: Video
@@ -33,7 +33,13 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video }) => {
   return (
     <div>
       <VideoDetailsTitleBar title={video.title}>
-        <VideoRating videoHash={video.hash} upvotes={video.totUpvotes} downvotes={video.totDownvotes} />
+        {video.isVideoOnIndex && (
+          <VideoRating
+            videoHash={video.reference}
+            upvotes={video.totUpvotes}
+            downvotes={video.totDownvotes}
+          />
+        )}
       </VideoDetailsTitleBar>
 
       <VideoStatusBadge status={video.isVideoOnIndex ? "available" : "unindexed"} />

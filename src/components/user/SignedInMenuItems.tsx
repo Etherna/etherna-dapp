@@ -25,7 +25,7 @@ import DropdownItem from "@common/DropdownItem"
 import Avatar from "@components/user/Avatar"
 import useSelector from "@state/useSelector"
 import routes from "@routes"
-import { checkIsEthAddress, shortenEthAddr } from "@utils/ethFuncs"
+import { checkIsEthAddress, shortenEthAddr } from "@utils/ethereum"
 
 const SignedInMenuItems: React.FC = () => {
   const { name, avatar } = useSelector(state => state.profile)

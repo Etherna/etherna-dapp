@@ -16,6 +16,7 @@
 
 /**
  * Get a video duration
+ * 
  * @param videoObj Video file object or encoded buffer
  * @returns Duration in seconds
  */
@@ -42,6 +43,7 @@ export const getVideoDuration = (videoObj: string | File | ArrayBuffer) => {
 
 /**
  * Get a video resolution
+ * 
  * @param videoObj Video file object or encoded buffer
  * @returns Video resolution
  */
@@ -68,6 +70,7 @@ export const getVideoResolution = (videoObj: string | File | ArrayBuffer) => {
 
 /**
  * Get video source *
+ * 
  * @param videoObj Video source/buffer/file
  */
 const videoSource = (videoObj: string | File | ArrayBuffer) =>

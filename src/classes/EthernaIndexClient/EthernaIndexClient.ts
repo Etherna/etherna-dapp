@@ -18,7 +18,7 @@ import IndexVideosClient from "./IndexVideosClient"
 import IndexUsersClient from "./IndexUsersClient"
 import { IndexClientOptions } from "./types"
 import { isSafeURL, safeURL, urlOrigin } from "@utils/urls"
-import { parseLocalStorage } from "@utils/localStorage"
+import { parseLocalStorage } from "@utils/local-storage"
 
 export default class EthernaIndexClient {
   videos: IndexVideosClient

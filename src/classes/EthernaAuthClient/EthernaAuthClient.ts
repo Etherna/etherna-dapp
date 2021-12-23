@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-import { parseLocalStorage } from "@utils/localStorage"
-import { isSafeURL, safeURL, urlOrigin } from "@utils/urls"
 import AuthIdentityClient from "./AuthIdentityClient"
-import { AuthClientOptions } from "./types"
+import { parseLocalStorage } from "@utils/local-storage"
+import { isSafeURL, safeURL, urlOrigin } from "@utils/urls"
+import type { AuthClientOptions } from "@definitions/api-sso"
 
 export default class EthernaAuthClient {
   identity: AuthIdentityClient

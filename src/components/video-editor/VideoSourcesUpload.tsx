@@ -26,8 +26,7 @@ import VideoSourcePreview from "@components/media/VideoSourcePreview"
 import VideoSourceStats from "@components/media/VideoSourceStats"
 import FileUploadFlow, { FileUploadFlowHandlers } from "@components/media/FileUploadFlow"
 import FileUploadProgress from "@components/media/FileUploadProgress"
-import SwarmVideo from "@classes/SwarmVideo"
-import { VideoSource } from "@classes/SwarmVideo/types"
+import SwarmVideoIO from "@classes/SwarmVideo"
 import {
   useVideoEditorBaseActions,
   useVideoEditorQueueActions,
@@ -35,10 +34,11 @@ import {
 } from "@context/video-editor-context/hooks"
 import { useErrorMessage } from "@state/hooks/ui"
 import { getVideoDuration, getVideoResolution } from "@utils/media"
-import { isMimeAudio, isMimeFFMpegEncodable, isMimeWebCompatible } from "@utils/mimeTypes"
+import { isMimeAudio, isMimeFFMpegEncodable, isMimeWebCompatible } from "@utils/mime-types"
+import type { SwarmVideoQuality, VideoSource } from "@definitions/swarm-video"
 
 type QueueSource = {
-  quality: string | null
+  quality: SwarmVideoQuality | null
   contentType: string | null
   key: string
   canceler?: Canceler
@@ -72,7 +72,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
   onComplete,
   onCancel
 }, ref) => {
-  const [{ videoHandler, queue }] = useVideoEditorState()
+  const [{ videoWriter, queue }] = useVideoEditorState()
   const currentQueue = queue.find(q => !q.reference)
   const [sources, setSources] = useState<QueueSource[]>([defaultSource()])
 
@@ -82,10 +82,10 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
 
   useEffect(() => {
     setSources(
-      videoHandler.sources.length === 0 ? (
+      videoWriter.sources.length === 0 ? (
         [defaultSource()]
       ) : (
-        videoHandler.sources.map(source => ({
+        videoWriter.sources.map(source => ({
           key: sourceKey(),
           quality: source.quality,
           contentType: null,
@@ -125,9 +125,9 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
 
   const uploadSource = async (buffer: ArrayBuffer, index: number) => {
     const source = sources[index]
-    const queueName = SwarmVideo.getSourceName(source.quality)
+    const queueName = SwarmVideoIO.getSourceName(source.quality)
 
-    const reference = await videoHandler.addVideoSource(buffer, source.contentType!, {
+    const reference = await videoWriter.addVideoSource(buffer, source.contentType!, {
       onCancelToken: c => {
         setSources(sources => {
           const newSources = [...sources]
@@ -145,7 +145,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
     // Sort sources
     setSources(sources => {
       const sortedSources = sources.sort((a, b) => {
-        return SwarmVideo.getSourceQuality(b.quality) - SwarmVideo.getSourceQuality(a.quality)
+        return SwarmVideoIO.getSourceQuality(b.quality) - SwarmVideoIO.getSourceQuality(a.quality)
       })
       return [...sortedSources]
     })
@@ -155,9 +155,9 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
 
   const removeSource = async (index: number) => {
     try {
-      const queueName = SwarmVideo.getSourceName(sources[index].quality)
+      const queueName = SwarmVideoIO.getSourceName(sources[index].quality)
 
-      await videoHandler.removeVideoSource(sources[index].quality!)
+      await videoWriter.removeVideoSource(sources[index].quality!)
 
       const newSources = [...sources]
       newSources.splice(index, 1)
@@ -179,26 +179,26 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
 
       if (index === 0) {
         updateVideoDuration(duration)
-        updateOriginalQuality(SwarmVideo.getSourceName(quality))
+        updateOriginalQuality(SwarmVideoIO.getSourceName(quality))
       }
     }
 
     const newSources = [...sources]
-    newSources[index].quality = SwarmVideo.getSourceName(quality, newSources[index].key)
+    newSources[index].quality = SwarmVideoIO.getSourceName(quality)
     newSources[index].contentType = isMimeFFMpegEncodable(file.type)
       ? isMimeAudio(file.type) ? "audio/mpeg" : "video/mp4"
       : file.type
     setSources(newSources)
 
-    const queueName = SwarmVideo.getSourceName(quality)
+    const queueName = SwarmVideoIO.getSourceName(quality)
     addToQueue(queueName)
   }
 
   const handleFileEncoded = (contentType: string, duration: number, quality: number, index: number) => {
     if (index !== 0) return
 
-    const originalQueueName = SwarmVideo.getSourceName(sources[index].quality, sources[index].key)
-    const queueName = SwarmVideo.getSourceName(quality)
+    const originalQueueName = SwarmVideoIO.getSourceName(sources[index].quality)
+    const queueName = SwarmVideoIO.getSourceName(quality)
 
     if (originalQueueName !== queueName) {
       updateQueueName(originalQueueName, queueName)
@@ -235,23 +235,23 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
 
       setSources(newSources)
 
-      const sourceName = SwarmVideo.getSourceName(quality)
+      const sourceName = SwarmVideoIO.getSourceName(quality)
       updateQueueCompletion(sourceName, 0, undefined)
     }
   }
 
-  const handleSourceReset = (name: string) => {
+  const handleSourceReset = (name: SwarmVideoQuality) => {
     removeFromQueue(name)
-
     onCancel?.(name)
   }
 
   return (
     <div className={classes.videoSourcesUpload}>
       {sources.map((source, i) => {
-        const queueName = SwarmVideo.getSourceName(source.quality)
+        const queueName = SwarmVideoIO.getSourceName(source.quality)
         const thisQueue = queue.find(q => q.name === queueName)
         const finished = !!thisQueue?.reference
+        const videoSource = videoWriter.sources.find(source => source.quality === queueName)
 
         return (
           <FileUploadFlow
@@ -299,7 +299,10 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
                 )}
 
                 {finished && (
-                  <VideoSourceStats source={videoHandler.sources.find(source => source.quality === queueName)} />
+                  <VideoSourceStats
+                    source={videoSource}
+                    srcUrl={videoWriter.getSourceUrl(queueName)}
+                  />
                 )}
               </VideoSourcePreview>
             )}

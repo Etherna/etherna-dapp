@@ -25,6 +25,13 @@ const BYTES_MAP = {
 
 type BytesScale = keyof typeof BYTES_MAP
 
+/**
+ * Convert bytes into bits, kbytes, mbytes etc...
+ * 
+ * @param fromBytes Bytes reference value
+ * @param decimals Number of decimal palces
+ * @returns Each converted amount
+ */
 export const convertBytes = (fromBytes: number | string, decimals = 2) => {
   const normalizedValue = `${fromBytes}`.toLowerCase()
   const matches = normalizedValue.match(/^(?<val>[0-9]+\.?[0-9]*|\.[0-9]+)[ ]*(?<scale>bytes|kb|mb|gb|tb)?/)
@@ -54,6 +61,12 @@ export const convertBytes = (fromBytes: number | string, decimals = 2) => {
   }
 }
 
+/**
+ * Convert bitrate 
+ * 
+ * @param fromBytesPerSec Bytes per second amount
+ * @returns Object containing converted bitrate values
+ */
 export const convertBirate = (fromBytesPerSec: number | string) => {
   const conversions = convertBytes(fromBytesPerSec)
   const readableValue = parseFloat(conversions.mbytes.toFixed(2))

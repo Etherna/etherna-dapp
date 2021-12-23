@@ -21,7 +21,7 @@ import classNames from "classnames"
 import classes from "@styles/components/video/VideoDetailsTitleBar.module.scss"
 
 type VideoDetailsTitleBarProps = {
-  title?: string
+  title?: string | null
 }
 
 const VideoDetailsTitleBar: React.FC<VideoDetailsTitleBarProps> = ({ title, children }) => {

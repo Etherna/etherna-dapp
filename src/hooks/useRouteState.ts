@@ -14,8 +14,6 @@
  *  limitations under the License.
  */
 
-const useRouteState = <T>(): T | undefined => {
+export default function useRouteState<T>(): T | undefined {
   return window.routeState
 }
-
-export default useRouteState

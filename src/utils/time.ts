@@ -1,4 +1,4 @@
-/*
+/* 
  *  Copyright 2021-present Etherna Sagl
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,30 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
  */
 
-import React from "react"
+import { stringPadLeft } from "./string"
 
-import Container from "@common/Container"
-import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
-import SEO from "@components/layout/SEO"
-import VideoCreate from "@components/video/VideoCreate"
+/**
+ * Get the hours, minutes and seconds of a time in seconds
+ * 
+ * @param {number} time Time in seconds
+ */
+export const timeComponents = (time: number | string | null | undefined) => {
+  time = parseInt(`${time || 0}`)
 
-const UploadPage = () => (
-  <AppLayoutWrapper>
-    <SEO title="Upload a video" />
+  let hours: number | null = Math.floor(time / 3600)
+  if (hours >= 1) {
+    time = time - hours * 3600
+  } else {
+    hours = null
+  }
+  const minutes = Math.floor(time / 60)
+  const seconds = time - minutes * 60
 
-    <Container fluid>
-      <VideoCreate />
-    </Container>
-  </AppLayoutWrapper>
-)
-
-export default UploadPage
+  return {
+    hours: stringPadLeft(hours),
+    minutes: stringPadLeft(minutes)!,
+    seconds: stringPadLeft(seconds)!,
+  }
+}

@@ -26,15 +26,15 @@ import { ReactComponent as BookmarkIcon } from "@assets/icons/navigation/bookmar
 import FeedbackLink from "./FeedbackLink"
 import Sidebar from "@components/navigation/Sidebar"
 import SidebarItem from "@components/navigation/SidebarItem"
-import SidebarSpace from "@components/navigation/SidebarSpace"
+import SidebarLinksItem from "@components/navigation/SidebarLinksItem"
 import SidebarLinks from "@components/navigation/SidebarLinks"
+import SidebarSpace from "@components/navigation/SidebarSpace"
 import IndexExtension from "@components/env/IndexExtension"
 import GatewayExtension from "@components/env/GatewayExtension"
 import { LayoutReducerTypes } from "@context/layout-context"
 import { useLayoutState } from "@context/layout-context/hooks"
 import routes from "@routes"
 import { urlOrigin, urlPath } from "@utils/urls"
-import SidebarLinksItem from "@components/navigation/SidebarLinksItem"
 
 const SidebarNavigation: React.FC = () => {
   const [state, dispatch] = useLayoutState()

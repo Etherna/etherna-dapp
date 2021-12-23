@@ -24,10 +24,10 @@ import FileUpload from "./FileUpload"
 import VideoEncoder from "./VideoEncoder"
 import Label from "@common/Label"
 import { useErrorMessage } from "@state/hooks/ui"
-import { FilePreviewRenderProps } from "@definitions/file-preview"
 import { fileToBuffer } from "@utils/buffer"
-import { isMimeFFMpegEncodable, isMimeAudio, isMimeWebCompatible } from "@utils/mimeTypes"
+import { isMimeFFMpegEncodable, isMimeAudio, isMimeWebCompatible } from "@utils/mime-types"
 import { getVideoDuration, getVideoResolution } from "@utils/media"
+import type { FilePreviewRenderProps } from "@definitions/file-preview"
 
 type FileUploadFlowProps = {
   children?: React.ReactChild | ((props: FilePreviewRenderProps) => React.ReactChild)

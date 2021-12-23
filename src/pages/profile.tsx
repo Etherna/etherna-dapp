@@ -30,7 +30,7 @@ const ProfilePage = () => {
     <AppLayoutWrapper>
       <SEO title="Profile" />
 
-      <Container noPaddingX noPaddingY>
+      <Container noPaddingX noPaddingY fluid>
         <ProfileView profileAddress={id} />
       </Container>
     </AppLayoutWrapper>

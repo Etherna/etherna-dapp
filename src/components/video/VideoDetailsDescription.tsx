@@ -20,7 +20,7 @@ import React from "react"
 import MarkdownPreview from "@common/MarkdownPreview"
 
 type VideoDetailsDescriptionProps = {
-  description?: string
+  description?: string | null
 }
 
 const VideoDetailsDescription: React.FC<VideoDetailsDescriptionProps> = ({ description }) => {

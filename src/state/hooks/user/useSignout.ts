@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-import logoutRedirect from "@state/actions/user/logoutRedirect"
+import logoutRedirect from "@state/actions/user/logout-redirect"
 import useSelector from "@state/useSelector"
 
-const useSignout = () => {
+export default function useSignout() {
   const { isSignedIn, isSignedInGateway } = useSelector(state => state.user)
 
   const signout = () => {
@@ -34,5 +34,3 @@ const useSignout = () => {
     signout
   }
 }
-
-export default useSignout

@@ -22,22 +22,22 @@ import classes from "@styles/components/video/VideoDetailsProfile.module.scss"
 
 import Avatar from "@components/user/Avatar"
 import routes from "@routes"
-import { shortenEthAddr } from "@utils/ethFuncs"
-import { SwarmVideoOwner } from "@classes/SwarmVideo/types"
+import { shortenEthAddr } from "@utils/ethereum"
+import type { Profile } from "@definitions/swarm-profile"
 
 type VideoDetailsProfileProps = {
-  owner?: SwarmVideoOwner
+  owner?: Profile
 }
 
 const VideoDetailsProfile: React.FC<VideoDetailsProfileProps> = ({ owner }) => {
   return (
     <div className={classes.videoDetailsProfile}>
-      {owner?.ownerAddress && (
-        <Link to={routes.getProfileLink(owner.ownerAddress)}>
+      {owner?.address && (
+        <Link to={routes.getProfileLink(owner.address)}>
           <div className={classes.videoProfile}>
-            <Avatar image={owner.profileData?.avatar} address={owner.ownerAddress} />
+            <Avatar image={owner.avatar} address={owner.address} />
             <h3 className={classes.profileName}>
-              {owner.profileData?.name || shortenEthAddr(owner.ownerAddress)}
+              {owner.name || shortenEthAddr(owner.address)}
             </h3>
           </div>
         </Link>

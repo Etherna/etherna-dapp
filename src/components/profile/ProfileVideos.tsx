@@ -19,7 +19,7 @@ import React from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
 import VideoGrid from "@components/video/VideoGrid"
-import { Video } from "@classes/SwarmVideo/types"
+import type { Video } from "@definitions/swarm-video"
 
 type ProfileVideosProps = {
   videos: Video[]

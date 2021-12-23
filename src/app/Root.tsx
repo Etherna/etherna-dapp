@@ -24,7 +24,7 @@ import "@styles/theme.scss"
 import Router from "./Router"
 import AppLayout from "@components/layout/AppLayout"
 import ShortcutWrapper from "@keyboard/shortcutWrapper"
-import StateWrapper from "@state/wrapper"
+import StateProviderWrapper from "@state/StateProviderWrapper"
 import useAutoSignin from "@state/hooks/user/useAutoSignin"
 import { getBasename } from "@routes"
 
@@ -45,11 +45,11 @@ const Root: React.FC = () => {
 }
 
 const StateRoot: React.FC = () => (
-  <StateWrapper>
+  <StateProviderWrapper>
     <ShortcutWrapper>
       <Root />
     </ShortcutWrapper>
-  </StateWrapper>
+  </StateProviderWrapper>
 )
 
 export default StateRoot

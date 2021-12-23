@@ -14,23 +14,33 @@
  *  limitations under the License.
  */
 
-import { Profile } from "@classes/SwarmProfile/types"
 import { store } from "@state/store"
 
 /**
- * Get current user profile
- * @returns Current profile info
+ * Redirect to the service login page
+ * 
+ * @param service Service to signin
  */
-const getCurrentUserProfile = (): Profile => {
-  const { name, description, avatar, cover } = store.getState().profile
-  const { address } = store.getState().user
-  return {
-    name: name || "",
-    address: address || "",
-    description,
-    avatar,
-    cover
+const logoutRedirect = (service: "index" | "gateway" | String | null = null) => {
+  const { indexClient, gatewayClient } = store.getState().env
+
+  // strip query params
+  const redirectUrl = window.location.origin + window.location.pathname
+
+  switch (service) {
+    case "index":
+      indexClient.logoutRedirect(redirectUrl)
+      break
+    case "gateway":
+      gatewayClient.logoutRedirect(redirectUrl)
+      break
+    case null:
+    case undefined:
+      indexClient.logoutRedirect(redirectUrl + "?signout=gateway")
+      break
+    default:
+      break
   }
 }
 
-export default getCurrentUserProfile
+export default logoutRedirect

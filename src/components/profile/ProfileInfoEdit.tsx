@@ -44,7 +44,8 @@ type ProfileInfoEditProps = {
 type ImagesUtils = {
   [key in ImageType]: {
     setLoading: (loading: boolean) => void,
-    updateImage: (image: SwarmImageRaw | undefined) => void,
+    setPreview: (dataURL: string | undefined) => void,
+    updateImage: (image: SwarmImage | undefined) => void,
     responsiveSizes: number[]
   }
 }
@@ -58,27 +59,31 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
   const { beeClient } = useSelector(state => state.env)
   const { name, description, avatar, cover } = useSelector(state => state.profile)
   const { cropImage } = useImageCrop()
+  const { showError } = useErrorMessage()
+
   const avatarRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
   const [profileName, setProfileName] = useState(name)
   const [profileDescription, setProfileDescription] = useState(description)
   const [profileAvatar, setProfileAvatar] = useState(avatar)
   const [profileCover, setProfileCover] = useState(cover)
+  const [avatarPreview, setAvatarPreview] = useState<string>()
+  const [coverPreview, setCoverPreview] = useState<string>()
   const [isUploadingCover, setUploadingCover] = useState(false)
   const [isUploadingAvatar, setUploadingAvatar] = useState(false)
-
-  const { showError } = useErrorMessage()
 
   const imagesUtils: ImagesUtils = {
     avatar: {
       setLoading: setUploadingAvatar,
       updateImage: setProfileAvatar,
-      responsiveSizes: SwarmProfileIO.avatarResponsiveSizes,
+      setPreview: setAvatarPreview,
+      responsiveSizes: SwarmProfileIO.Reader.avatarResponsiveSizes,
     },
     cover: {
       setLoading: setUploadingCover,
       updateImage: setProfileCover,
-      responsiveSizes: SwarmProfileIO.coverResponsiveSizes,
+      setPreview: setCoverPreview,
+      responsiveSizes: SwarmProfileIO.Reader.coverResponsiveSizes,
     }
   }
 
@@ -87,9 +92,9 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
       onSubmit({
         address: profileAddress,
         name: profileName || "",
-        description: profileDescription,
-        avatar: profileAvatar,
-        cover: profileCover,
+        description: profileDescription ?? null,
+        avatar: profileAvatar ?? null,
+        cover: profileCover ?? null,
       })
     }
   }
@@ -112,18 +117,26 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
     }
   }
 
+  const swarmImageUrl = (image: SwarmImageRaw | null | undefined) => {
+    const reference = SwarmImageIO.Reader.getOriginalSourceReference(image)
+    return reference ? beeClient.getBzzUrl(reference) : undefined
+  }
+
   const handleUploadImage = async (file: File, type: ImageType) => {
     imagesUtils[type].setLoading(true)
 
     try {
-      const responsiveImage = new SwarmImageIO.Writer(file, {
+      const imageWriter = new SwarmImageIO.Writer(file, {
         beeClient,
         isResponsive: true,
         responsiveSizes: imagesUtils[type].responsiveSizes
       })
-      const rawImage = await responsiveImage.upload()
+      imagesUtils[type].setPreview(await imageWriter.getFilePreview())
+      const rawImage = await imageWriter.upload()
+      const imageReader = new SwarmImageIO.Reader(rawImage, { beeClient })
+      imagesUtils[type].setPreview(undefined)
 
-      imagesUtils[type].updateImage(rawImage)
+      imagesUtils[type].updateImage(imageReader.image)
     } catch (error: any) {
       console.error(error)
       showError("Cannot upload the image", error.message)
@@ -141,13 +154,13 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
       <div className={classes.cover}>
         <label
           className={classNames(classes.coverInput, {
-            active: !!profileCover?.originalSource,
+            [classes.hasCover]: !!profileCover,
           })}
           htmlFor="cover-input"
         >
           {profileCover && (
             <img
-              src={profileCover.filePreview || profileCover.originalSource}
+              src={coverPreview || swarmImageUrl(profileCover)}
               alt={profileName}
               className={classes.coverImage}
             />
@@ -164,7 +177,7 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
             onChange={e => handleImageChange(e, "cover")}
           />
           <div className={classes.coverActions}>
-            {profileCover?.originalSource && (
+            {profileCover && (
               <Button
                 className={classNames(classes.btn, classes.removeButton)}
                 type="button"
@@ -182,7 +195,7 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
         <label htmlFor="avatar-input">
           <div className={classes.profileAvatar} data-label="Change Avatar">
             <img
-              src={profileAvatar?.filePreview || profileAvatar?.originalSource || makeBlockies(profileAddress)}
+              src={avatarPreview || swarmImageUrl(profileAvatar) || makeBlockies(profileAddress)}
               alt={profileName}
             />
             {isUploadingAvatar && (

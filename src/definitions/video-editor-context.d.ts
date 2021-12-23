@@ -16,8 +16,10 @@
 
 import type { Dispatch } from "react"
 
+import { THUMBNAIL_QUEUE_NAME } from "@components/video-editor/ThumbnailUpload"
 import type { AnyVideoEditorAction } from "@context/video-editor-context"
-import type { SwarmVideo } from "./swarm-video"
+import type SwarmVideoWriter from "@classes/SwarmVideo/SwarmVideoWriter"
+import type { SwarmVideoQuality } from "./swarm-video"
 
 export type VideoEditorContextStore = [state: VideoEditorContextState, dispatch: Dispatch<AnyVideoEditorAction>]
 
@@ -25,15 +27,19 @@ export type VideoEditorContextState = {
   /** Initial video reference (if editing a video) */
   reference: string | undefined
   /** Video instance */
-  videoHandler: SwarmVideo
+  videoWriter: SwarmVideoWriter
+  /** Address of the video owner */
+  ownerAddress: string
   /** Upload queue */
   queue: VideoEditorQueue[]
   /** Pin content on Swarm */
   pinContent: boolean | undefined
 }
 
+export type VideoEditorQueueName = SwarmVideoQuality | typeof THUMBNAIL_QUEUE_NAME
+
 export type VideoEditorQueue = {
-  name: string
+  name: VideoEditorQueueName
   completion: number | null
   reference?: string
 }

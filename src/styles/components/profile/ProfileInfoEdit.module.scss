@@ -30,7 +30,7 @@
 .coverInput {
   @apply relative w-full min-h-32 m-0 overflow-hidden;
 
-  &.active {
+  &.hasCover {
     @apply h-auto;
   }
 

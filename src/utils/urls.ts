@@ -14,6 +14,14 @@
  *  limitations under the License.
  */
 
+/**
+ * Convert unsafe url string to a safe version
+ * to be used in URL class
+ * 
+ * @param url Url to convert
+ * @param path Path to append (optional)
+ * @returns The safe URL object
+ */
 export const safeURL = (url: string | null | undefined, path?: string) => {
   try {
     let baseUrl = (url ?? "")
@@ -26,6 +34,13 @@ export const safeURL = (url: string | null | undefined, path?: string) => {
   }
 }
 
+/**
+ * Check if url is safe to use in URL class
+ * 
+ * @param url Url to check
+ * @param path Path to append
+ * @returns True if safe
+ */
 export const isSafeURL = (url: string | null | undefined, path?: string) => {
   try {
     let baseUrl = (url ?? "")
@@ -39,14 +54,33 @@ export const isSafeURL = (url: string | null | undefined, path?: string) => {
   }
 }
 
+/**
+ * Get the url origin
+ * 
+ * @param baseUrl Reference url
+ * @returns The url origin
+ */
 export const urlOrigin = (baseUrl: string) => {
   return safeURL(baseUrl)?.origin
 }
 
+/**
+ * Get the url hostname
+ * 
+ * @param baseUrl Reference url
+ * @returns The url hostname
+ */
 export const urlHostname = (baseUrl: string) => {
   return safeURL(baseUrl)?.hostname
 }
 
+/**
+ * Get the url href
+ * 
+ * @param baseUrl Reference url
+ * @param path Path to append (optional)
+ * @returns The url href
+ */
 export const urlPath = (baseUrl: string, path?: string) => {
   return safeURL(baseUrl, path)?.href
 }

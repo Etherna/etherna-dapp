@@ -15,14 +15,14 @@
  */
 
 import { VideoEditorContextState } from "."
-import SwarmVideo from "@classes/SwarmVideo"
-import { SwarmVideoRaw } from "@classes/SwarmVideo/types"
+import SwarmVideoIO from "@classes/SwarmVideo"
 import EthernaIndexClient from "@classes/EthernaIndexClient"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
+import type { SwarmVideoRaw } from "@definitions/swarm-video"
 
 const STORAGE_KEY = "videoEditorState"
 
-type CacheState = Omit<VideoEditorContextState, "videoHandler"> & {
+type CacheState = Omit<VideoEditorContextState, "videoWriter"> & {
   videoRaw: SwarmVideoRaw
 }
 
@@ -56,20 +56,19 @@ export default class VideoEditorCache {
 
   static loadState(beeClient: SwarmBeeClient, indexClient: EthernaIndexClient) {
     const value = window.localStorage.getItem(STORAGE_KEY)!
-    const { reference, queue, videoRaw, pinContent } = JSON.parse(value) as CacheState
-    const videoHandler = new SwarmVideo(reference, {
+    const { reference, queue, videoRaw, pinContent, ownerAddress } = JSON.parse(value) as CacheState
+    const videoWriter = new SwarmVideoIO.Writer(undefined, ownerAddress, {
       beeClient,
       indexClient,
-      fetchFromCache: false,
-      fetchProfile: false
     })
-    videoHandler.hash = reference
-    videoHandler.videoRaw = videoRaw
+    videoWriter.reference = reference
+    videoWriter.videoRaw = videoRaw
 
     const state: VideoEditorContextState = {
       reference,
+      ownerAddress,
       queue,
-      videoHandler,
+      videoWriter,
       pinContent
     }
 
@@ -77,11 +76,12 @@ export default class VideoEditorCache {
   }
 
   static saveState(state: VideoEditorContextState) {
-    const { reference, queue, videoHandler, pinContent } = state
-    const videoRaw = videoHandler.videoRaw
+    const { reference, queue, videoWriter, pinContent, ownerAddress } = state
+    const videoRaw = videoWriter.videoRaw
 
     const cacheState: CacheState = {
       reference,
+      ownerAddress,
       queue,
       videoRaw,
       pinContent

@@ -6,7 +6,7 @@
   "author": "Mattia Dalzocchio",
   "license": "Apache-2.0",
   "dependencies": {
-    "@ethersphere/bee-js": "3.0.0",
+    "@ethersphere/bee-js": "3.1.0",
     "@ffmpeg/core": "0.10.0",
     "@ffmpeg/ffmpeg": "0.10.1",
     "@headlessui/react": "1.4.2",
@@ -100,7 +100,7 @@
     "postage": "node scripts/create-postage-batch.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint ./src"
+    "lint": "eslint \"**/*.{ts,tsx}\""
   },
   "browserslist": {
     "production": [

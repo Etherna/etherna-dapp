@@ -21,8 +21,8 @@ import classNames from "classnames"
 import classes from "@styles/components/video/VideoRating.module.scss"
 import { ReactComponent as ThumbUpIcon } from "@assets/icons/player/thumb-up.svg"
 
-import { VoteValue } from "@classes/EthernaIndexClient/types"
 import useSelector from "@state/useSelector"
+import type { VoteValue } from "@definitions/api-index"
 
 type VideoRatingProps = {
   videoHash: string
@@ -53,9 +53,6 @@ const VideoRating: React.FC<VideoRatingProps> = ({
     setCurrentUpvotes(upvotes ?? 0)
     setCurrentDownvotes(downvotes ?? 0)
   }, [upvotes, downvotes])
-
-  console.log("prog", progress, upvotes, downvotes)
-
 
   const giveThumbsUp = () => {
     const newVote: VoteValue = currentVote === "Up" ? "Neutral" : "Up"
@@ -118,7 +115,7 @@ const VideoRating: React.FC<VideoRatingProps> = ({
       <div className={classes.videoRatingButtons}>
         <button
           className={classNames(classes.videoRatingBtn)}
-          onClick={giveThumbsDown}
+          onClick={giveThumbsUp}
           disabled={isUpdatingVote}
         >
           <span className={classes.thumbIcon}>
@@ -128,7 +125,7 @@ const VideoRating: React.FC<VideoRatingProps> = ({
         </button>
         <button
           className={classNames(classes.videoRatingBtn, classes.ratingDown)}
-          onClick={giveThumbsUp}
+          onClick={giveThumbsDown}
           disabled={isUpdatingVote}
         >
           <span className={classes.thumbIcon}>

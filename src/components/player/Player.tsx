@@ -26,16 +26,16 @@ import PlayerShortcuts from "./PlayerShortcuts"
 import PlayerErrorBanner from "./PlayerErrorBanner"
 import PlayerBytesCounter from "./PlayerBytesCounter"
 import PlayerToolbar from "./PlayerToolbar"
-import { VideoSource } from "@classes/SwarmVideo/types"
 import { PlayerContextProvider, PlayerReducerTypes } from "@context/player-context"
 import { usePlayerState } from "@context/player-context/hooks"
 import http from "@utils/request"
 import { isTouchDevice } from "@utils/browser"
+import type { VideoSource } from "@definitions/swarm-video"
 
 type PlayerProps = {
   sources: VideoSource[]
-  originalQuality?: string
-  thumbnail?: string
+  originalQuality?: string | null
+  thumbnail?: string | null
 }
 
 const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnail }) => {
@@ -238,7 +238,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
           className={classes.playerVideo}
           autoPlay={false}
           preload="metadata"
-          poster={!error ? thumbnail : undefined}
+          poster={!error && thumbnail ? thumbnail : undefined}
           controls={false}
           onMouseEnter={onMouseEnter}
           onMouseMove={onMouseMouse}
@@ -269,6 +269,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
           <PlayerErrorBanner />
         )}
       </div>
+
       <PlayerBytesCounter />
     </PlayerShortcuts>
   )

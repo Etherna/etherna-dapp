@@ -18,15 +18,15 @@ import SwarmVideoReader from "./SwarmVideoReader"
 import SwarmVideoWriter from "./SwarmVideoWriter"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
 import uuidv4 from "@utils/uuid"
-import type { Video } from "@definitions/swarm-video"
+import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@definitions/swarm-video"
 
 const SwarmVideoIO = {
   Reader: SwarmVideoReader,
   Writer: SwarmVideoWriter,
-  getSourceName: (quality: string | number | null, key?: `${number}p`): `${number}p` => {
+  getSourceName: (quality: string | number | null): SwarmVideoQuality => {
     return quality
       ? `${parseInt(`${quality}`)}p`
-      : key ?? `${0}p`
+      : `${NaN}p`
   },
   getSourceQuality: (sourceName: string | null | undefined): number => {
     return parseInt(sourceName ?? "0")
@@ -49,6 +49,22 @@ export const getDefaultVideo = (reference: string, bee: SwarmBeeClient): Video =
     bitrate: NaN,
     size: NaN,
     source: bee.getBzzUrl(reference),
+    quality: `${NaN}p`
+  }],
+})
+
+export const getDefaultRawVideo = (reference: string): SwarmVideoRaw => ({
+  id: uuidv4(),
+  title: "",
+  description: "",
+  originalQuality: `${NaN}p`,
+  ownerAddress: "0x0",
+  duration: NaN,
+  thumbnail: null,
+  sources: [{
+    reference,
+    bitrate: NaN,
+    size: NaN,
     quality: `${NaN}p`
   }],
 })
