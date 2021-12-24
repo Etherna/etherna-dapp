@@ -15,7 +15,7 @@
  */
 
 import http from "@utils/request"
-import { AuthIdentity } from "./types"
+import type { AuthIdentity } from "@definitions/api-sso"
 
 export default class AuthIdentityClient {
   url: string

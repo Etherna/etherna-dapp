@@ -17,21 +17,22 @@
 
 import React from "react"
 
-import LayoutWrapper from "@components/layout/DefaultLayout/LayoutWrapper"
+import Container from "@common/Container"
+import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import SEO from "@components/layout/SEO"
 import ShortcutsEditor from "@components/settings/ShortcutsEditor"
 
 const Shortcuts = () => (
-  <LayoutWrapper>
+  <AppLayoutWrapper>
     <SEO title="Shortcuts" />
 
-    <div className="container my-8 px-4">
+    <Container className="my-8">
       <h1>Shortcuts</h1>
 
       <h2>Player</h2>
       <ShortcutsEditor namespace="PLAYER" />
-    </div>
-  </LayoutWrapper>
+    </Container>
+  </AppLayoutWrapper>
 )
 
 export default Shortcuts

@@ -1,4 +1,4 @@
-# etherna
+# Etherna
 
 We want to solve two big issue. One related to most part of youtube creators that in last period had been demonetized and obscured. The other one, is the preservation of user's personal data.
 
@@ -19,6 +19,8 @@ With our service, we think, every people will be able to learn the real value of
 
 ### 1. Install node modules
 
+To install dependecies `yarn` is recommended since the `yarn.lock` is already present.
+
 ```
 npm install
 // or
@@ -27,7 +29,8 @@ yarn install
 
 ### 2. Configure SSL
 
-For more info check out the SSL [README](/server/sslcert/README.md).
+Some APIs might require the app to run with an SSL certificate.
+For more info on how to install a local certificate check out the SSL [README](/server/sslcert/README.md).
 
 ```
 cd server
@@ -84,7 +87,16 @@ Then set the following keys in the .env:
 - `GATEWAY_SWARM_PROXY_HOST="http://localhost:1633"`
 - `DISABLE_REQUEST_VALIDATION=false`
 
-### 7. Run the project
+### 7. Setup the proxy enviroment
+
+The proxy server is used to simulate a production enviroment where streaming a video cause the spending of user's credit.
+
+1. Change directory:
+   `cd proxy`
+2. Install dependencies:
+   `yarn install`
+
+### 8. Run the project
 
 ```
 // to run the web app
@@ -92,13 +104,13 @@ npm run dev
 // or
 yarn dev
 
+// to run all the services (recommended)
+npm run start
+// or
+yarn start
+
 // to run the gateway proxy (no etherna services)
 npm run start:proxy
 // or
 yarn start:proxy
-
-// to run all the services (recommended)
-npm run start:services
-// or
-yarn start:services
 ```

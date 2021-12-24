@@ -17,12 +17,16 @@
 
 import React from "react"
 
-import { ReactComponent as MoreIcon } from "@svg/icons/more-icon.svg"
+import { ReactComponent as MoreIcon } from "@assets/icons/more-circle.svg"
 
-import { Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from "@common/Dropdown"
+import Button from "@common/Button"
+import Dropdown from "@common/Dropdown"
+import DropdownToggle from "@common/DropdownToggle"
+import DropdownItem from "@common/DropdownItem"
+import DropdownMenu from "@common/DropdownMenu"
 import StateLink from "@common/StateLink"
-import { Video } from "@classes/SwarmVideo/types"
 import Routes from "@routes"
+import type { Video } from "@definitions/swarm-video"
 
 type VideoMenuProps = {
   video: Video
@@ -31,12 +35,12 @@ type VideoMenuProps = {
 const VideoMenu: React.FC<VideoMenuProps> = ({ video }) => {
   return (
     <Dropdown>
-      <DropdownToggle className="btn btn-rounded btn-transparent btn-sm w-2 h-2">
-        <MoreIcon className="m-auto" />
+      <DropdownToggle>
+        <MoreIcon className="w-5 h-5" />
       </DropdownToggle>
       <DropdownMenu>
         <DropdownItem>
-          <StateLink to={Routes.getVideoSettingsLink(video.hash)} state={video}>Video Settings</StateLink>
+          <StateLink to={Routes.getVideoSettingsLink(video.reference)} state={video}>Video Settings</StateLink>
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>

@@ -22,10 +22,29 @@ export const getHomeLink = () => {
 }
 
 /**
- * Profile routes
+ * Frames routes
+ */
+export const getFramesLink = () => {
+  return `/frames`
+}
+
+/**
+ * User routes
  */
 export const getProfilesLink = () => {
   return `/profiles`
+}
+
+export const getFollowingLink = () => {
+  return `/following`
+}
+
+export const getSavedLink = () => {
+  return `/saved`
+}
+
+export const getPlaylistsLink = () => {
+  return `/playlists`
 }
 
 export const getProfileLink = (hash: string) => {
@@ -58,6 +77,9 @@ export const getHowItWorksLink = () => {
 }
 export const getShortcutsLink = () => {
   return `/shortcuts`
+}
+export const getPrivacyPolicyLink = () => {
+  return `/privacy-policy`
 }
 
 /**

@@ -17,13 +17,14 @@
 
 import React from "react"
 import { BrowserRouter } from "react-router-dom"
+import { HelmetProvider } from "react-helmet-async"
 
-import "./scss/theme.scss"
+import "@styles/theme.scss"
 
 import Router from "./Router"
-import Layout from "@components/layout/DefaultLayout"
+import AppLayout from "@components/layout/AppLayout"
 import ShortcutWrapper from "@keyboard/shortcutWrapper"
-import StateWrapper from "@state/wrapper"
+import StateProviderWrapper from "@state/StateProviderWrapper"
 import useAutoSignin from "@state/hooks/user/useAutoSignin"
 import { getBasename } from "@routes"
 
@@ -34,19 +35,21 @@ const Root: React.FC = () => {
 
   return (
     <BrowserRouter basename={getBasename()}>
-      <Layout>
-        <Router />
-      </Layout>
+      <HelmetProvider context={{}}>
+        <AppLayout>
+          <Router />
+        </AppLayout>
+      </HelmetProvider>
     </BrowserRouter>
   )
 }
 
 const StateRoot: React.FC = () => (
-  <StateWrapper>
+  <StateProviderWrapper>
     <ShortcutWrapper>
       <Root />
     </ShortcutWrapper>
-  </StateWrapper>
+  </StateProviderWrapper>
 )
 
 export default StateRoot

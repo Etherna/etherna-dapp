@@ -1,0 +1,90 @@
+/* 
+ *  Copyright 2021-present Etherna Sagl
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+/*
+ *  Copyright 2021-present Etherna Sagl
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+@use "sass:math";
+
+$tick-width: 0.16rem;
+
+.playerBytesCounter {
+  @apply flex items-center mt-4 mb-6 text-xs text-gray-900 font-semibold;
+  @apply dark:text-gray-100;
+}
+
+.playerBytesCounterProgress {
+  @apply w-6 h-6 relative;
+}
+
+.playerBytesCounterProgressTick {
+  --tw-translate-x: math.div($tick-width, 2);
+  width: $tick-width;
+  right: 50%;
+  @apply absolute h-3 transform origin-bottom scale-90 opacity-0;
+
+  &::after {
+    content: "";
+    height: 50%;
+    @apply absolute inset-x-0 top-0 bg-gray-900;
+    @apply dark:bg-gray-200;
+  }
+
+  &:nth-child(2) {
+    @apply rotate-45;
+  }
+  &:nth-child(3) {
+    animation-delay: 0.4s;
+    @apply rotate-90;
+  }
+  &:nth-child(4) {
+    animation-delay: 0.6s;
+    @apply rotate-135;
+  }
+  &:nth-child(5) {
+    animation-delay: 0.8s;
+    @apply rotate-180;
+  }
+  &:nth-child(6) {
+    animation-delay: 1s;
+    @apply -rotate-135;
+  }
+  &:nth-child(7) {
+    animation-delay: 1.2s;
+    @apply -rotate-90;
+  }
+  &:nth-child(8) {
+    animation-delay: 1.4s;
+    @apply -rotate-45;
+  }
+}
+
+.playerBytesCounterLabel {
+  @apply ml-1;
+}

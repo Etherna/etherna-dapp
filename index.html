@@ -16,107 +16,104 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="shortcut icon" href="/images/icon.png" />
-    <link rel="apple-touch-icon" href="/images/icon-192.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#34BA9C" />
-    <meta name="description" content="A transparent video platform" />
-    <meta http-equiv="Cache-control" content="public, max-age=3600, must-revalidate">
-    <meta http-equiv="Expires" content="public, max-age=3600, must-revalidate">
-    <meta http-equiv="Last-Modified" content="public, max-age=3600, must-revalidate">
-    <link rel="manifest" href="/manifest.json" />
-    <title>Etherna</title>
-    <script>
-      /// Define basepath
-      var path = window.location.pathname;
-      var bzzPattern = /\/bzz\/([^/]+)/;
-      window.__basename__ = bzzPattern.test(path)
-        ? path.match(bzzPattern)[0]
-        : null;
-    </script>
-  </head>
-  <body class="">
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <script type="module" src="/src/index.tsx"></script>
 
-    <script>
-      /// don't run if __basename__ is empty
-      if (window.__basename__) {
-        fixCurrentUrls();
-        observeDOM();
-      }
+<head>
+  <meta charset="utf-8" />
+  <link rel="shortcut icon" href="/images/icon.png" />
+  <link rel="apple-touch-icon" href="/images/icon-192.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="A transparent video platform" />
+  <meta http-equiv="Cache-control" content="public, max-age=3600, must-revalidate">
+  <meta http-equiv="Expires" content="public, max-age=3600, must-revalidate">
+  <meta http-equiv="Last-Modified" content="public, max-age=3600, must-revalidate">
+  <link rel="manifest" href="/manifest.json" />
+  <title>Etherna</title>
+  <script>
+    /// Define basepath
+    var path = window.location.pathname;
+    var bzzPattern = /\/bzz\/([^/]+)/;
+    window.__basename__ = bzzPattern.test(path) ?
+      path.match(bzzPattern)[0] :
+      null;
 
-      /// Fix current scripts and links
-      function fixCurrentUrls() {
-        var currentScripts = document.querySelectorAll('script');
-        var currentLinks = document.querySelectorAll('link');
-        fixUrls(currentScripts);
-        fixUrls(currentLinks);
-      }
+  </script>
+</head>
 
-      /// Observe for added scripts and links in DOM
-      function observeDOM() {
-        var observer = new MutationObserver(function (mutations) {
-          mutations.forEach(function (mutation) {
-            fixUrls(mutation.addedNodes);
-          });
+<body class="">
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+  <script type="module" src="/src/index.tsx"></script>
+
+  <script>
+    /// don't run if __basename__ is empty
+    if (window.__basename__) {
+      fixCurrentUrls();
+      observeDOM();
+    }
+
+    /// Fix current scripts and links
+    function fixCurrentUrls() {
+      var currentScripts = document.querySelectorAll('script');
+      var currentLinks = document.querySelectorAll('link');
+      fixUrls(currentScripts);
+      fixUrls(currentLinks);
+    }
+
+    /// Observe for added scripts and links in DOM
+    function observeDOM() {
+      var observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          fixUrls(mutation.addedNodes);
         });
-        observer.observe(document.documentElement, {
-          childList: true,
-          subtree: true,
-          attributes: false
-        });
-      }
+      });
+      observer.observe(document.documentElement, {
+        childList: true,
+        subtree: true,
+        attributes: false
+      });
+    }
 
-      /// Replace script and link tags with corrected one
-      function fixUrls(nodes) {
-        const basename = window.__basename__;
+    /// Replace script and link tags with corrected one
+    function fixUrls(nodes) {
+      const basename = window.__basename__;
 
-        nodes.forEach(function (node) {
-          if (typeof node !== "object") return;
+      nodes.forEach(function (node) {
+        if (typeof node !== "object") return;
 
-          var href = node.getAttribute('href');
-          if (href && !href.startsWith(basename)) {
-            var copy = clonedEl(node);
-            if (copy) {
-              copy.setAttribute('href', basename + href);
-              node.parentNode.appendChild(copy);
-              node.remove();
-            }
+        var href = node.getAttribute('href');
+        if (href && !href.startsWith(basename)) {
+          var copy = clonedEl(node);
+          if (copy) {
+            copy.setAttribute('href', basename + href);
+            node.parentNode.appendChild(copy);
+            node.remove();
           }
-          var src = node.getAttribute('src');
-          if (src && !src.startsWith(basename)) {
-            var copy = clonedEl(node);
-            if (copy) {
-              copy.setAttribute('src', basename + src);
-              node.parentNode.appendChild(copy);
-              node.remove();
-            }
-          }
-        });
-      }
-
-      // Clone element with attributes
-      function clonedEl(originEl) {
-        if (!originEl) return null;
-
-        var cloneEl = document.createElement(originEl.tagName);
-        for (var i = 0; i < originEl.attributes.length; i++) {
-          var attr = originEl.attributes[i];
-          cloneEl.setAttribute(attr.name, attr.value);
         }
-        return cloneEl;
+        var src = node.getAttribute('src');
+        if (src && !src.startsWith(basename)) {
+          var copy = clonedEl(node);
+          if (copy) {
+            copy.setAttribute('src', basename + src);
+            node.parentNode.appendChild(copy);
+            node.remove();
+          }
+        }
+      });
+    }
+
+    // Clone element with attributes
+    function clonedEl(originEl) {
+      if (!originEl) return null;
+
+      var cloneEl = document.createElement(originEl.tagName);
+      for (var i = 0; i < originEl.attributes.length; i++) {
+        var attr = originEl.attributes[i];
+        cloneEl.setAttribute(attr.name, attr.value);
       }
-    </script>
-    <script type="text/javascript" src="https://etherna.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/-m454we/b/23/a44af77267a987a660377e5c46e0fb64/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=1c189ede"></script>
-    <script type="text/javascript">
-      window.ATL_JQ_PAGE_PROPS = {
-        "triggerFunction": function(showCollectorDialog) {
-          window.ATL_JQ_PAGE_PROPS.showCollectorDialog = showCollectorDialog;
-      }};
-    </script>
-  </body>
+      return cloneEl;
+    }
+
+  </script>
+</body>
+
 </html>

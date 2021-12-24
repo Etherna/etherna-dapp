@@ -17,11 +17,11 @@
 
 import React from "react"
 
-import { ReactComponent as Spinner } from "@svg/animated/spinner.svg"
-import { ReactComponent as SignatureIcon } from "@svg/icons/signature-required-icon.svg"
+import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
+import { ReactComponent as SignatureIcon } from "@assets/icons/signature-required.svg"
 
-import Modal from "../common/Modal"
-import Button from "../common/Button"
+import Modal from "@common/Modal"
+import Button from "@common/Button"
 import { closeConnectingWalletModal } from "@state/actions/modals"
 
 const ConnectingWalletModal = ({ show = false }) => {
@@ -33,7 +33,7 @@ const ConnectingWalletModal = ({ show = false }) => {
       title="Connecting wallet"
       icon={<SignatureIcon />}
       footerButtons={
-        <Button aspect="secondary" action={closeConnectingWalletModal}>
+        <Button modifier="secondary" onClick={closeConnectingWalletModal}>
           Close
         </Button>
       }

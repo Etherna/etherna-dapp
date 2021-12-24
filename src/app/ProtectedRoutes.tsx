@@ -20,6 +20,7 @@ import { Route, Redirect } from "react-router-dom"
 
 import Routes from "@routes"
 import useSelector from "@state/useSelector"
+import SigninMessage from "@components/navigation/SigninMessage"
 
 type RouteProps = {
   path: string
@@ -34,18 +35,11 @@ export const SignedInRoute = ({ path, exact, children }: RouteProps) => {
     <Route
       path={path}
       exact={exact}
-      render={({ location }) =>
+      render={() =>
         isSignedIn === undefined ? null : isSignedIn === true ? (
           children
         ) : (
-          <Redirect
-            to={{
-              pathname: Routes.getHomeLink(),
-              state: {
-                from: location,
-              },
-            }}
-          />
+          <SigninMessage />
         )
       }
     />

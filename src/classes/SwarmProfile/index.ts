@@ -14,6 +14,23 @@
  *  limitations under the License.
  */
 
-import SwarmProfile from "./SwarmProfile"
+import { Profile } from "@definitions/swarm-profile"
+import SwarmProfileReader from "./SwarmProfileReader"
+import SwarmProfileWriter from "./SwarmProfileWriter"
 
-export default SwarmProfile
+const SwarmProfileIO = {
+  Reader: SwarmProfileReader,
+  Writer: SwarmProfileWriter,
+}
+
+export const SwarmProfileTopicName = "EthernaUserProfile"
+
+export const getDefaultProfile = (address: string): Profile => ({
+  address,
+  name: "",
+  description: "",
+  avatar: null,
+  cover: null,
+})
+
+export default SwarmProfileIO

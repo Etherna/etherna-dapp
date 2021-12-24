@@ -15,8 +15,9 @@
  *  
  */
 
+import useSelector from "@state/useSelector"
 import React from "react"
-import Helmet from "react-helmet"
+import { Helmet } from "react-helmet-async"
 
 type SEOProps = {
   description?: string
@@ -33,6 +34,7 @@ function SEO({
   title,
   tagline
 }: SEOProps) {
+  const darkMode = useSelector(state => state.env.darkMode)
   const siteTitle = import.meta.env.VITE_APP_NAME
   const siteTagline = import.meta.env.VITE_APP_TAGLINE
 
@@ -46,6 +48,10 @@ function SEO({
       title={title}
       titleTemplate={`%s – ${tagline || siteTitle}`}
       meta={[
+        {
+          name: `theme-color`,
+          content: darkMode ? `#171717` : `#064E3B`,
+        },
         {
           name: `description`,
           content: metaDescription,

@@ -17,17 +17,20 @@
 import { useEffect } from "react"
 import { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
+import type { EthAddress } from "@ethersphere/bee-js/dist/src/utils/eth"
 
-import { AuthIdentity } from "@classes/EthernaAuthClient/types"
-import SwarmProfile from "@classes/SwarmProfile"
-import loginRedirect from "@state/actions/user/loginRedirect"
+import SwarmProfileIO from "@classes/SwarmProfile"
+import SwarmBeeClient from "@classes/SwarmBeeClient"
+import loginRedirect from "@state/actions/user/login-redirect"
 import { UserActions, UserActionTypes } from "@state/reducers/userReducer"
 import { EnvActions, EnvActionTypes } from "@state/reducers/enviromentReducer"
 import { ProfileActions, ProfileActionTypes } from "@state/reducers/profileReducer"
 import { UIActions, UIActionTypes } from "@state/reducers/uiReducer"
 import useSelector from "@state/useSelector"
-import SwarmBeeClient from "@classes/SwarmBeeClient"
-import { IndexCurrentUser } from "@classes/EthernaIndexClient/types"
+import { addressBytes, signMessage } from "@utils/ethereum"
+import type { IndexCurrentUser } from "@definitions/api-index"
+import type { AuthIdentity } from "@definitions/api-sso"
+import { showError } from "@state/actions/modals"
 
 type AutoSigninOpts = {
   forceSignin?: boolean
@@ -35,7 +38,7 @@ type AutoSigninOpts = {
   isStatusPage?: boolean
 }
 
-const useAutoSignin = (opts: AutoSigninOpts = {}) => {
+export default function useAutoSignin(opts: AutoSigninOpts = {}) {
   const { indexClient, gatewayClient, authClient, beeClient } = useSelector(state => state.env)
   const dispatch = useDispatch<Dispatch<UserActions | EnvActions | UIActions | ProfileActions>>()
 
@@ -54,12 +57,16 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
   }, [])
 
   const fetchIdentity = async () => {
-    const [identity, currentUser, hasCredit] = await Promise.all([
+    const [identityResult, currentUserResult, hasCreditResult] = await Promise.allSettled([
       fetchAuthIdentity(),
       fetchIndexCurrentUser(),
       fetchCurrentUserCredit(),
       fetchCurrentBytePrice(),
     ])
+
+    const identity = identityResult.status === "fulfilled" && identityResult.value
+    const currentUser = currentUserResult.status === "fulfilled" && currentUserResult.value
+    const hasCredit = hasCreditResult.status === "fulfilled" && hasCreditResult.value
 
     dispatch({
       type: UserActionTypes.USER_UPDATE_SIGNEDIN,
@@ -67,14 +74,22 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
       isSignedInGateway: hasCredit
     })
 
-    if (currentUser) {
-      await fetchProfile(currentUser, identity)
+    if (currentUser && identity) {
+      const address = identity.etherLoginAddress || identity.etherAddress
+      await fetchProfile(address, identity)
     }
   }
 
   const fetchAuthIdentity = async () => {
     try {
       const identity = await authClient.identity.fetchCurrentIdentity()
+
+      dispatch({
+        type: UserActionTypes.USER_UPDATE_IDENTITY,
+        address: identity.etherLoginAddress || identity.etherAddress,
+        prevAddresses: identity.etherPreviousAddresses,
+      })
+
       return identity
     } catch {
       return undefined
@@ -84,14 +99,6 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
   const fetchIndexCurrentUser = async () => {
     try {
       const profile = await indexClient.users.fetchCurrentUser()
-
-      dispatch({
-        type: UserActionTypes.USER_UPDATE_IDENTITY,
-        address: profile.address,
-        manifest: profile.identityManifest,
-        prevAddresses: profile.prevAddresses,
-      })
-
       return profile
     } catch {
       return false
@@ -123,7 +130,7 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
       const bytePrice = await gatewayClient.settings.fetchCurrentBytePrice()
 
       dispatch({
-        type: EnvActionTypes.ENV_UPDATE_BYTE_PRICE,
+        type: EnvActionTypes.UPDATE_BYTE_PRICE,
         bytePrice,
       })
 
@@ -133,9 +140,9 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
     }
   }
 
-  const fetchProfile = async (user: IndexCurrentUser, identity?: AuthIdentity) => {
+  const fetchProfile = async (address: string, identity?: AuthIdentity) => {
     dispatch({
-      type: UIActionTypes.UI_TOGGLE_LOADING_PROFILE,
+      type: UIActionTypes.TOGGLE_LOADING_PROFILE,
       isLoadingProfile: true,
     })
 
@@ -146,15 +153,36 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
       })
 
       dispatch({
-        type: EnvActionTypes.ENV_UPDATE_BEE_CLIENT,
+        type: EnvActionTypes.UPDATE_BEE_CLIENT,
+        beeClient: beeClientSigner
+      })
+    } else if (window.ethereum && window.ethereum.request) {
+      const beeClientSigner = new SwarmBeeClient(beeClient.url, {
+        signer: {
+          address: addressBytes(address) as EthAddress,
+          sign: async (digest) => {
+            try {
+              return await signMessage(digest.hex().toString(), address)
+            } catch (error: any) {
+              if (error.code === -32602) {
+                return await signMessage(digest.hex().toString(), address)
+              } else {
+                throw error
+              }
+            }
+          }
+        }
+      })
+
+      dispatch({
+        type: EnvActionTypes.UPDATE_BEE_CLIENT,
         beeClient: beeClientSigner
       })
     }
 
     try {
-      const address = user.address
-      const hash = user.identityManifest
-      const profile = await (new SwarmProfile({ beeClient, address, hash })).downloadProfile()
+      const profileReader = new SwarmProfileIO.Reader(address, { beeClient })
+      const profile = await profileReader.download()
 
       if (!profile) throw new Error("Cannot fetch profile")
 
@@ -169,15 +197,13 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
         birthday: profile.birthday,
         existsOnIndex: true,
       })
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
     }
 
     dispatch({
-      type: UIActionTypes.UI_TOGGLE_LOADING_PROFILE,
+      type: UIActionTypes.TOGGLE_LOADING_PROFILE,
       isLoadingProfile: false,
     })
   }
 }
-
-export default useAutoSignin

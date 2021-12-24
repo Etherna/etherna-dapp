@@ -26,18 +26,7 @@ declare global {
     web3?: {
       currentProvider: providers.ExternalProvider
     }
-    ethereum?: {
-      autoRefreshOnNetworkChange: boolean
-      chainId: number
-      enable: () => Promise<string[]>
-      networkVersion: string
-      isMetamask?: boolean
-      isFortmatic?: boolean
-      isPortis?: boolean
-      isWalletConnect?: boolean
-      isSquarelink?: boolean
-      isAuthereum?: boolean
-    }
+    ethereum?: ExternalProvider
 
     // prefetch
     prefetchData?: ProfilePrefetch & VideoPrefetch
@@ -50,7 +39,18 @@ declare global {
 
     // atlassian
     ATL_JQ_PAGE_PROPS?: {
+      triggerFunction?: (showCollectorDialog: () => void) => void
       showCollectorDialog?: () => void
     }
+
+    // polyfills
+    webkitRequestAnimationFrame?: typeof window.requestAnimationFrame
+    mozRequestAnimationFrame?: typeof window.requestAnimationFrame
+    msRequestAnimationFrame?: typeof window.requestAnimationFrame
+  }
+
+  interface Navigator {
+    // polyfills
+    msMaxTouchPoints?: typeof navigator.maxTouchPoints
   }
 }

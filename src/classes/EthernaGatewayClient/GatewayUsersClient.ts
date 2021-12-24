@@ -15,7 +15,7 @@
  */
 
 import http from "@utils/request"
-import { GatewayCurrentUser } from "./typings"
+import type { GatewayCurrentUser } from "@definitions/api-gateway"
 
 export default class GatewayUsersClient {
   url: string

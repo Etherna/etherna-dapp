@@ -15,35 +15,49 @@
  */
 
 import fs from "fs"
+import stringHash from "string-hash"
 import { defineConfig } from "vite"
-import reactRefresh from "@vitejs/plugin-react-refresh"
+import react from "@vitejs/plugin-react"
 import svgr from "vite-plugin-svgr"
 import tsconfigPaths from "vite-tsconfig-paths"
-import { getAliases } from "vite-aliases"
+import eslintPlugin from "vite-plugin-eslint"
+// import { VitePWA } from "vite-plugin-pwa"
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   build: {
     manifest: true,
     outDir: "build",
   },
-  resolve: {
-    alias: getAliases({
-      deep: false,
-    }),
-  },
   server: {
-    https: {
-      key: fs.readFileSync("server/sslcert/key.pem"),
-      cert: fs.readFileSync("server/sslcert/cert.pem"),
+    https: mode === "development" &&
+      fs.existsSync("proxy/sslcert/key.pem") &&
+      fs.existsSync("proxy/sslcert/cert.pem") &&
+    {
+      key: fs.readFileSync("proxy/sslcert/key.pem"),
+      cert: fs.readFileSync("proxy/sslcert/cert.pem"),
     },
+  },
+  css: {
+    modules: {
+      localsConvention: "camelCaseOnly",
+      generateScopedName: (name, filename, css) => {
+        if (name === "dark") return "dark"
+        const hash = stringHash(css).toString(36).substr(0, 5)
+        return `_${name}_${hash}`
+      }
+    }
   },
   define: {
     global: "window",
   },
   plugins: [
     tsconfigPaths({ root: "." }),
-    reactRefresh(),
+    react(),
     svgr(),
+    eslintPlugin({ cache: false }),
+    // VitePWA({
+    //   registerType: "autoUpdate"
+    // }),
   ],
-})
+}))

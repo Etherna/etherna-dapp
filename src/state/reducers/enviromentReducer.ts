@@ -15,63 +15,62 @@
  */
 
 import { baseKeymap } from "@keyboard"
-import { Keymap, KeymapNamespace } from "@keyboard/typings"
 import lang from "@lang"
 import EthernaGatewayClient from "@classes/EthernaGatewayClient"
 import EthernaIndexClient from "@classes/EthernaIndexClient"
 import EthernaAuthClient from "@classes/EthernaAuthClient"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
-import { loadDarkMode } from "@state/actions/enviroment/darkMode"
-import { EnvState } from "@state/types"
+import { loadDarkMode } from "@state/actions/enviroment/dark-mode"
 import { checkIsMobile } from "@utils/browser"
+import { parseLocalStorage } from "@utils/local-storage"
+import type { EnvState } from "@definitions/app-state"
+import type { Keymap, KeymapNamespace } from "@definitions/keyboard"
 
 export const EnvActionTypes = {
-  ENV_SET_IS_MOBILE: "ENV_SET_IS_MOBILE",
-  ENV_UPDATE_INDEXHOST: "ENV_UPDATE_INDEXHOST",
-  ENV_UPDATE_GATEWAY_HOST: "ENV_UPDATE_GATEWAY_HOST",
-  ENV_UPDATE_BEE_CLIENT: "ENV_UPDATE_BEE_CLIENT",
-  ENV_UPDATE_KEYMAP: "ENV_UPDATE_KEYMAP",
-  ENV_EDIT_SHORTCUT: "ENV_EDIT_SHORTCUT",
-  ENV_TOGGLE_DARK_MODE: "ENV_TOGGLE_DARK_MODE",
-  ENV_UPDATE_BYTE_PRICE: "ENV_UPDATE_BYTE_PRICE",
+  SET_IS_MOBILE: "ENV_SET_IS_MOBILE",
+  UPDATE_INDEXHOST: "ENV_UPDATE_INDEXHOST",
+  UPDATE_GATEWAY_HOST: "ENV_UPDATE_GATEWAY_HOST",
+  UPDATE_BEE_CLIENT: "ENV_UPDATE_BEE_CLIENT",
+  UPDATE_KEYMAP: "ENV_UPDATE_KEYMAP",
+  EDIT_SHORTCUT: "ENV_EDIT_SHORTCUT",
+  TOGGLE_DARK_MODE: "ENV_TOGGLE_DARK_MODE",
+  UPDATE_BYTE_PRICE: "ENV_UPDATE_BYTE_PRICE",
 } as const
 
 // Export dispatch actions
 type SetIsMobileAction = {
-  type: typeof EnvActionTypes.ENV_SET_IS_MOBILE
+  type: typeof EnvActionTypes.SET_IS_MOBILE
   isMobile: boolean
 }
 type UpdateIndexHostAction = {
-  type: typeof EnvActionTypes.ENV_UPDATE_INDEXHOST
-  indexHost: string
-  apiPath: string | null | undefined
+  type: typeof EnvActionTypes.UPDATE_INDEXHOST
+  indexUrl: string
   indexClient: EthernaIndexClient
 }
 type UpdateGatewayHostAction = {
-  type: typeof EnvActionTypes.ENV_UPDATE_GATEWAY_HOST
-  gatewayHost: string
-  apiPath: string | null | undefined
+  type: typeof EnvActionTypes.UPDATE_GATEWAY_HOST
+  gatewayUrl: string
   beeClient: SwarmBeeClient
 }
 type UpdateBeeClientAction = {
-  type: typeof EnvActionTypes.ENV_UPDATE_BEE_CLIENT
+  type: typeof EnvActionTypes.UPDATE_BEE_CLIENT
   beeClient: SwarmBeeClient
 }
 type UpdateKeymapAction = {
-  type: typeof EnvActionTypes.ENV_UPDATE_KEYMAP
+  type: typeof EnvActionTypes.UPDATE_KEYMAP
   keymap: Keymap
 }
 type EditShortcutsAction = {
-  type: typeof EnvActionTypes.ENV_EDIT_SHORTCUT
+  type: typeof EnvActionTypes.EDIT_SHORTCUT
   shortcutNamespace?: KeymapNamespace
   shortcutKey?: string
 }
 type ToggleDarkModeAction = {
-  type: typeof EnvActionTypes.ENV_TOGGLE_DARK_MODE
+  type: typeof EnvActionTypes.TOGGLE_DARK_MODE
   darkMode: boolean
 }
 type UpdateBytePriceAction = {
-  type: typeof EnvActionTypes.ENV_UPDATE_BYTE_PRICE
+  type: typeof EnvActionTypes.UPDATE_BYTE_PRICE
   bytePrice: number
 }
 
@@ -87,7 +86,9 @@ export type EnvActions = (
 )
 
 // Init reducer
-const creditHost = window.localStorage.getItem("creditHost") || import.meta.env.VITE_APP_CREDIT_HOST
+const indexUrl = parseLocalStorage<string>("setting:index-url") || import.meta.env.VITE_APP_INDEX_URL
+const gatewayUrl = parseLocalStorage<string>("setting:gateway-url") || import.meta.env.VITE_APP_GATEWAY_URL
+const creditUrl = parseLocalStorage<string>("setting:credit-url") || import.meta.env.VITE_APP_CREDIT_URL
 const indexClient = new EthernaIndexClient({
   host: EthernaIndexClient.defaultHost,
   apiPath: EthernaIndexClient.defaultApiPath
@@ -103,11 +104,9 @@ const authClient = new EthernaAuthClient({
 const beeClient = new SwarmBeeClient(EthernaGatewayClient.defaultHost)
 
 const initialState: EnvState = {
-  indexHost: EthernaIndexClient.defaultHost,
-  indexApiPath: EthernaIndexClient.defaultApiPath,
-  gatewayHost: EthernaGatewayClient.defaultHost,
-  gatewayApiPath: EthernaGatewayClient.defaultApiPath,
-  creditHost,
+  indexUrl,
+  gatewayUrl,
+  creditUrl,
   indexClient,
   gatewayClient,
   authClient,
@@ -120,54 +119,52 @@ const initialState: EnvState = {
 
 const enviromentReducer = (state: EnvState = initialState, action: EnvActions): EnvState => {
   switch (action.type) {
-    case EnvActionTypes.ENV_SET_IS_MOBILE:
+    case EnvActionTypes.SET_IS_MOBILE:
       return {
         ...state,
         isMobile: action.isMobile,
       }
 
-    case EnvActionTypes.ENV_UPDATE_INDEXHOST:
+    case EnvActionTypes.UPDATE_INDEXHOST:
       return {
         ...state,
-        indexHost: action.indexHost,
-        indexApiPath: action.apiPath || "",
+        indexUrl: action.indexUrl,
         indexClient: action.indexClient,
       }
 
-    case EnvActionTypes.ENV_UPDATE_GATEWAY_HOST:
+    case EnvActionTypes.UPDATE_GATEWAY_HOST:
       return {
         ...state,
-        gatewayHost: action.gatewayHost,
-        gatewayApiPath: action.apiPath || "",
+        gatewayUrl: action.gatewayUrl,
         beeClient: action.beeClient
       }
 
-    case EnvActionTypes.ENV_UPDATE_BEE_CLIENT:
+    case EnvActionTypes.UPDATE_BEE_CLIENT:
       return {
         ...state,
         beeClient: action.beeClient
       }
 
-    case EnvActionTypes.ENV_UPDATE_BYTE_PRICE:
+    case EnvActionTypes.UPDATE_BYTE_PRICE:
       return {
         ...state,
         bytePrice: action.bytePrice
       }
 
-    case EnvActionTypes.ENV_UPDATE_KEYMAP:
+    case EnvActionTypes.UPDATE_KEYMAP:
       return {
         ...state,
         keymap: action.keymap,
       }
 
-    case EnvActionTypes.ENV_EDIT_SHORTCUT:
+    case EnvActionTypes.EDIT_SHORTCUT:
       return {
         ...state,
         shortcutNamespace: action.shortcutNamespace,
         shortcutKey: action.shortcutKey,
       }
 
-    case EnvActionTypes.ENV_TOGGLE_DARK_MODE:
+    case EnvActionTypes.TOGGLE_DARK_MODE:
       return {
         ...state,
         darkMode: action.darkMode,

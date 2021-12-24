@@ -18,11 +18,12 @@
 import React from "react"
 import { useLocation } from "react-router-dom"
 
-import LayoutWrapper from "@components/layout/DefaultLayout/LayoutWrapper"
+import Container from "@common/Container"
+import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import SEO from "@components/layout/SEO"
 import VideoUpdate from "@components/video/VideoUpdate"
-import { Video } from "@classes/SwarmVideo/types"
 import useRouteState from "@hooks/useRouteState"
+import type { Video } from "@definitions/swarm-video"
 
 const VideoSettings = () => {
   const location = useLocation()
@@ -33,10 +34,13 @@ const VideoSettings = () => {
   if (!hash) return null
 
   return (
-    <LayoutWrapper>
+    <AppLayoutWrapper>
       <SEO title="Edit Video" />
-      <VideoUpdate hash={hash} routeState={routeState} />
-    </LayoutWrapper>
+
+      <Container>
+        <VideoUpdate reference={hash} routeState={routeState} />
+      </Container>
+    </AppLayoutWrapper>
   )
 }
 

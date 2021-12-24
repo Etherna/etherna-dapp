@@ -14,18 +14,24 @@
  *  limitations under the License.
  */
 
-import { Collection, UploadHeaders, UploadOptions } from "@ethersphere/bee-js"
+import { CancelToken } from "axios"
+import { BatchId, Collection, UploadHeaders, UploadOptions } from "@ethersphere/bee-js"
 import { prepareData } from "@ethersphere/bee-js/dist/src/utils/data"
 import { makeTar } from "@ethersphere/bee-js/dist/src/utils/tar"
 import { extractUploadHeaders } from "@ethersphere/bee-js/dist/src/utils/headers"
 
 import http from "@utils/request"
 
-export interface CustomUploadOptions extends UploadOptions {
+export interface CustomUploadOptions extends UploadOptions, AxiosUploadOptions {
   reference?: string
   endpoint?: "files" | "dirs"
   defaultIndexPath?: string
   defaultErrorPath?: string
+}
+
+export interface AxiosUploadOptions {
+  onUploadProgress?: (progressEvent: { loaded: number, total: number }) => void
+  cancelToken?: CancelToken
 }
 
 export interface CustomUploadHeaders extends UploadHeaders {
@@ -38,8 +44,8 @@ export interface CustomUploadHeaders extends UploadHeaders {
  * @param opts Custom upload options
  * @returns The custom headers
  */
-export function extractCustomUploadHeaders(opts?: CustomUploadOptions) {
-  const headers: CustomUploadHeaders = extractUploadHeaders(opts)
+export function extractCustomUploadHeaders(postageBatchId: BatchId, opts?: CustomUploadOptions) {
+  const headers: CustomUploadHeaders = extractUploadHeaders(postageBatchId, opts)
 
   if (opts?.defaultIndexPath) headers["swarm-index-document"] = opts.defaultIndexPath
 
@@ -51,12 +57,14 @@ export function extractCustomUploadHeaders(opts?: CustomUploadOptions) {
 /**
  * Upload single file to a Bee node
  *
- * @param url     Bee URL
- * @param data    Data to be uploaded
- * @param name    optional - name of the file
- * @param options optional - Aditional options like tag, encryption, pinning
+ * @param postageBatchId  Postage batch id
+ * @param url             Bee URL
+ * @param data            Data to be uploaded
+ * @param name            optional - name of the file
+ * @param options         optional - Aditional options like tag, encryption, pinning
  */
 export async function upload(
+  postageBatchId: BatchId,
   url: string,
   data: string | Uint8Array | ArrayBuffer | Collection<Uint8Array>,
   options?: CustomUploadOptions,
@@ -75,10 +83,11 @@ export async function upload(
     data: parsedData,
     headers: {
       "content-type": contentType,
-      ...extractCustomUploadHeaders(options),
+      ...extractCustomUploadHeaders(postageBatchId, options),
     },
     responseType: "json",
-    ...options?.axiosOptions,
+    onUploadProgress: options?.onUploadProgress,
+    cancelToken: options?.cancelToken,
   })
 
   return response.data.reference

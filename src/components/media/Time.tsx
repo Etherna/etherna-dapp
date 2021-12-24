@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import timeComponents from "@utils/timeComponents"
+import { timeComponents } from "@utils/time"
 
 type TimeProps = {
   duration: number

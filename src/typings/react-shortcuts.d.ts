@@ -40,12 +40,12 @@ declare module "react-shortcuts" {
   }
 
   export class ShortcutManager extends EventEmitter {
-    constructor(keymap: ShortcutsKeymap = {})
-    setKeymap(keymap: ShortcutsKeymap)
-    extendKeymap(keymap: ShortcutsKeymap)
+    constructor(keymap: ShortcutsKeymap)
+    setKeymap(keymap: ShortcutsKeymap): void
+    extendKeymap(keymap: ShortcutsKeymap): void
     getAllShortcuts(): ShortcutsKeymap
     getAllShortcutsForPlatform(platformName: string): string[]
   }
 
-  export class Shortcuts extends React.Component<ShortcutsProps> {}
+  export class Shortcuts extends React.Component<ShortcutsProps> { }
 }

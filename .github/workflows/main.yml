@@ -11,14 +11,13 @@ jobs:
     env:
       VITE_APP_NAME: "Etherna"
       VITE_APP_TAGLINE: "A transparent video platform"
-      VITE_APP_INFURA_ID: ${{ secrets.INFURA_ID }}
-      VITE_APP_INDEX_HOST: "https://index.etherna.io"
-      VITE_APP_INDEX_API_PATH: "/api/v0.2"
-      VITE_APP_GATEWAY_HOST: "https://gateway.etherna.io"
-      VITE_APP_GATEWAY_API_PATH: "/api/v0.2"
-      VITE_APP_CREDIT_HOST: "https://credit.etherna.io"
-      VITE_APP_AUTH_HOST: "https://sso.etherna.io"
-      VITE_APP_AUTH_API_PATH: "/api/v0.2"
+      VITE_APP_VERIFIED_ORIGINS: "etherna.io"
+      VITE_APP_FEEDBACK_URL: "https://etherna.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/-m454we/b/23/a44af77267a987a660377e5c46e0fb64/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=1c189ede"
+      VITE_APP_INDEX_URL: "https://index.etherna.io/api/v0.2"
+      VITE_APP_GATEWAY_URL: "https://gateway.etherna.io/api/v0.2"
+      VITE_APP_CREDIT_URL: "https://credit.etherna.io"
+      VITE_APP_AUTH_URL: "https://sso.etherna.io/api/v0.2"
+      VITE_APP_POSTAGE_URL: "https://gateway.etherna.io/api/v0.2/stamps"
       GENERATE_SOURCEMAP: false
     runs-on: ubuntu-latest
     steps:
@@ -28,7 +27,7 @@ jobs:
       with:
         node-version: '14'
         architecture: 'x64'
-    - run: yarn install
+    - run: yarn install --ignore-optional
     - run: yarn build
     - name: Upload to Host
       uses: sebastianpopp/ftp-action@releases/v2
@@ -44,5 +43,5 @@ jobs:
       with:
         localRoot: build
         defaultPath: index.html
-        feedName: EthernaVideoDapp
+        feedName: EthernaDapp
         feedUserPrivateKey: ${{ secrets.PRIVATE_KEY }}

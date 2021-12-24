@@ -1,20 +1,5 @@
-/* 
- *  Copyright 2021-present Etherna Sagl
- *  
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *  
- *      http://www.apache.org/licenses/LICENSE-2.0
- *  
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
-
 const colors = require("tailwindcss/colors")
+const plugin = require("tailwindcss/plugin")
 
 module.exports = {
   mode: "jit",
@@ -28,10 +13,10 @@ module.exports = {
       safelist: ["dark"]
     },
   },
-  presets: [],
   darkMode: "class", // or 'media' or 'false'
   theme: {
     screens: {
+      xs: "360px",
       sm: "640px",
       md: "768px",
       lg: "1024px",
@@ -717,6 +702,7 @@ module.exports = {
       110: "1.1",
       125: "1.25",
       150: "1.5",
+      200: "2",
     },
     sepia: {
       0: "0",
@@ -997,6 +983,7 @@ module.exports = {
     rotate: ["responsive", "hover", "focus"],
     saturate: ["responsive"],
     scale: ["responsive", "hover", "focus"],
+    scrollSnapType: ["responsive"],
     sepia: ["responsive"],
     skew: ["responsive", "hover", "focus"],
     space: ["responsive"],
@@ -1024,5 +1011,22 @@ module.exports = {
     wordBreak: ["responsive"],
     zIndex: ["responsive", "focus-within", "focus"],
   },
-  plugins: [],
+  plugins: [
+    require("@tailwindcss/typography"),
+    require("tailwindcss-scroll-snap"),
+    plugin(function ({ addUtilities }) {
+      const utils = {
+        ".absolute-center": {
+          "position": "absolute",
+          "left": "50%",
+          "top": "50%",
+          "--tw-translate-x": "-50%",
+          "--tw-translate-y": "-50%",
+          "transform": "var(--tw-transform)",
+        }
+      }
+
+      addUtilities(utils, ["responsive"])
+    }),
+  ],
 }

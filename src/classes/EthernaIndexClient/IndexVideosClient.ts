@@ -15,7 +15,7 @@
  */
 
 import http from "@utils/request"
-import { IndexVideo, IndexVideoComment, VoteValue } from "./types"
+import type { IndexVideo, IndexVideoComment, VoteValue } from "@definitions/api-index"
 
 export default class IndexVideosClient {
   url: string
@@ -153,8 +153,8 @@ export default class IndexVideosClient {
     const resp = await http.post<IndexVideoComment>(endpoint, `"${message}"`, {
       withCredentials: true,
       headers: {
-        'accept': 'text/plain',
-        'content-type': 'application/json',
+        "accept": "text/plain",
+        "content-type": "application/json",
       }
     })
 

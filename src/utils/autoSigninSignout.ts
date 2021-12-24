@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-import loginRedirect from "@state/actions/user/loginRedirect"
-import logoutRedirect from "@state/actions/user/logoutRedirect"
+import loginRedirect from "@state/actions/user/login-redirect"
+import logoutRedirect from "@state/actions/user/logout-redirect"
 
-const autoSigninSignout = () => {
+export default function autoSigninSignout() {
   const searchParams = new URLSearchParams(window.location.search)
 
   // login redirect
@@ -32,5 +32,3 @@ const autoSigninSignout = () => {
     logoutRedirect(service)
   }
 }
-
-export default autoSigninSignout

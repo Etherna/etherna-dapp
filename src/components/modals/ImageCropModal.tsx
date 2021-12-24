@@ -30,7 +30,7 @@ type ImageCropModalProps = {
 const ImageCropModal: React.FC<ImageCropModalProps> = ({ show = false }) => {
   const imgRef = useRef<HTMLImageElement>()
   const { imageType, image } = useSelector(state => state.ui)
-  const [crop, setCrop] = useState<Crop>()
+  const [crop, setCrop] = useState<Partial<Crop>>()
   const { finishCropping } = useImageCrop()
 
   useEffect(() => {
@@ -73,7 +73,7 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ show = false }) => {
       showCancelButton={true}
       title="Crop the image"
       footerButtons={
-        <Button action={handleContinue}>
+        <Button onClick={handleContinue}>
           Done
         </Button>
       }
@@ -83,7 +83,7 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ show = false }) => {
         <ReactCrop
           src={image!}
           onImageLoaded={onLoad}
-          crop={crop}
+          crop={crop ?? {}}
           onChange={crop => setCrop(crop)}
         />
       </div>

@@ -17,13 +17,13 @@
 import { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
 
-import { Profile } from "@classes/SwarmProfile/types"
 import useSwarmProfile from "@hooks/useSwarmProfile"
 import { ProfileActions, ProfileActionTypes } from "@state/reducers/profileReducer"
 import { UserActions, UserActionTypes } from "@state/reducers/userReducer"
 import useSelector from "@state/useSelector"
+import type { Profile } from "@definitions/swarm-profile"
 
-const useProfileUpdate = (address: string) => {
+export default function useProfileUpdate(address: string) {
   const dispatch = useDispatch<Dispatch<ProfileActions | UserActions>>()
   const { prevAddresses } = useSelector(state => state.user)
   const { updateProfile: updateSwarmProfile } = useSwarmProfile({ address })
@@ -33,8 +33,8 @@ const useProfileUpdate = (address: string) => {
 
     dispatch({
       type: ProfileActionTypes.PROFILE_SAVE,
-      name: profile.name || "",
-      description: profile.description || "",
+      name: profile.name ?? "",
+      description: profile.description ?? "",
       avatar: profile.avatar,
       cover: profile.cover,
     })
@@ -49,4 +49,3 @@ const useProfileUpdate = (address: string) => {
   return updateProfile
 }
 
-export default useProfileUpdate

@@ -14,51 +14,50 @@
  *  limitations under the License.
  */
 
-import { Bee, Collection, Reference } from "@ethersphere/bee-js"
+import { BatchId, Bee, PostageBatch, UploadResult } from "@ethersphere/bee-js"
 
-import { CustomUploadOptions } from "./customUpload"
-import http from "@utils/request"
+import { AxiosUploadOptions, CustomUploadOptions } from "./customUpload"
+import http, { createRequest } from "@utils/request"
+import { buildAxiosFetch } from "@utils/fetch"
 
 export type MultipleFileUpload = { buffer: Uint8Array, type?: string }[]
 
 /**
- * Extend default Bee client with more functionalities and endpoints
+ * Extend default Bee client with more functionalities
  */
 export default class SwarmBeeClient extends Bee {
 
   /**
-   * Add content to a directory returning the new hash
-   * @param opts Upload options
-   * @returns The new manifest hash
+   * Create custom fetch implementation that accept upload progress and canceler
    */
-  uploadToDir(data: Collection<Uint8Array>, opts?: CustomUploadOptions): Promise<string> {
-    throw new Error("Not implemented yet")
-  }
-
-  /**
-   * Delete content from a directory returning the new hash
-   * @param reference Directory manifest hash
-   * @param path Resource path to delete
-   * @returns The new manifest hash
-   */
-  deleteFromDir(reference: string, path: string): Promise<string> {
-    throw new Error("Not implemented yet")
+  getFetch(options?: AxiosUploadOptions) {
+    const request = createRequest()
+    request.defaults.onUploadProgress = options?.onUploadProgress
+    request.defaults.cancelToken = options?.cancelToken
+    return buildAxiosFetch(request) as typeof fetch
   }
 
   /**
    * Add content to a directory returning the new hash
+   * 
+   * @param batchId Postage batch id
    * @param data List of files to upload
    * @param opts Upload options
    * @returns The new manifest hash
    */
-  async uploadMultipleFiles(data: MultipleFileUpload, opts?: CustomUploadOptions): Promise<Reference[]> {
+  async uploadMultipleFiles(
+    batchId: string | BatchId,
+    data: MultipleFileUpload,
+    opts?: CustomUploadOptions
+  ): Promise<UploadResult[]> {
     return await Promise.all(
-      data.map(data => this.uploadFile(data.buffer, undefined, { contentType: data.type }))
+      data.map(data => this.uploadFile(batchId, data.buffer, undefined, { contentType: data.type }))
     )
   }
 
   /**
    * Get the bzz url from referance and path
+   * 
    * @param reference Bee resource reference
    * @param path Resource path
    * @returns The resource url
@@ -70,17 +69,8 @@ export default class SwarmBeeClient extends Bee {
   }
 
   /**
-   * Get the file url from referance
-   * @param reference Bee resource reference
-   * @returns The resource url
-   */
-  getFileUrl(reference: string) {
-    const hash = reference?.replaceAll(/(^\/|\/$)/ig, "")
-    return `${this.url}/files/${hash}`
-  }
-
-  /**
    * Download a resource from swarm by the bzz path
+   * 
    * @param reference Bee resource reference
    * @param path Resource path
    * @returns The data array
@@ -95,25 +85,55 @@ export default class SwarmBeeClient extends Bee {
 
   /**
    * Check if pinning is enabled on the current host
+   * 
    * @returns True if pinning is enabled
    */
   async pinEnabled() {
     try {
-      const endpoint = `${this.url}/pin/chunks`
-      await http.get(endpoint, {
-        params: {
-          offset: 0,
-          limit: 1
-        }
+      const controller = new AbortController()
+      await http.get(`${import.meta.env.VITE_APP_GATEWAY_URL}/pins`, {
+        signal: controller.signal,
+        onDownloadProgress: (p) => {
+          console.log("p", p)
+          controller.abort()
+        },
       })
       return true
-    } catch (error) {
+    } catch {
       return false
     }
   }
 
+  async getAllPostageBatch(): Promise<PostageBatch[]> {
+    if (import.meta.env.VITE_APP_POSTAGE_URL) {
+      try {
+        const postageResp = await http.get<{ stamps: PostageBatch[] }>(import.meta.env.VITE_APP_POSTAGE_URL)
+        return postageResp.data.stamps
+      } catch { }
+    }
+    const emptyBatchId = "0000000000000000000000000000000000000000000000000000000000000000" as BatchId
+    return [{
+      batchID: emptyBatchId,
+      amount: "0",
+      depth: 0,
+      blockNumber: 0,
+      bucketDepth: 0,
+      immutableFlag: false,
+      label: "",
+      usable: true,
+      utilization: 0,
+    }]
+  }
+
+  async getBatchId() {
+    const batches = await this.getAllPostageBatch()
+    const usableBatches = batches.filter(batch => batch.usable)
+    return usableBatches[0]?.batchID
+  }
+
   /**
    * Check if an hash is a valid swarm hash
+   * 
    * @param hash Hash string
    * @returns True if the hash is valid
    */

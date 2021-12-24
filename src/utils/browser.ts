@@ -51,3 +51,19 @@ export const checkIsMobileDevice = () => {
     (navigator && navigator.userAgent.indexOf("IEMobile") !== -1)
   )
 }
+
+/**
+ * Check if current device is touch
+ */
+export const isTouchDevice = () => {
+  return (("ontouchstart" in window) ||
+    (navigator.maxTouchPoints > 0) ||
+    ((navigator.msMaxTouchPoints ?? 0) > 0))
+}
+
+/**
+ * Check if current user agent is a bot or crawler
+ */
+export const isBotUserAgent = () => {
+  return /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)
+}

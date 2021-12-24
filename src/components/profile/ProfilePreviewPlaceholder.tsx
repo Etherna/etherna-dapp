@@ -17,6 +17,8 @@
 
 import React from "react"
 
+import classes from "@styles/components/profile/ProfilePreview.module.scss"
+
 import Placeholder from "@common/Placeholder"
 
 const ProfilePreviewPlaceholder = () => {
@@ -29,7 +31,7 @@ const ProfilePreviewPlaceholder = () => {
   return (
     <>
       {arrayMap.map(i => (
-        <div className="profile-placeholder" key={i}>
+        <div className={classes.profilePlaceholder} key={i}>
           <div className="flex items-center py-2">
             <Placeholder width="2rem" height="2rem" round="full" />
             <Placeholder className="ml-2" width="10rem" height="1rem" />

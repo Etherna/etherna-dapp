@@ -15,7 +15,7 @@
  */
 
 import http from "@utils/request"
-import { IndexCurrentUser, IndexUser, IndexUserVideos, IndexVideo } from "./types"
+import { IndexCurrentUser, IndexUser, IndexUserVideos, IndexVideo } from "@definitions/api-index"
 
 export default class IndexUsersClient {
   url: string

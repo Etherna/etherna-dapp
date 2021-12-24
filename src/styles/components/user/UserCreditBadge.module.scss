@@ -1,0 +1,69 @@
+/* 
+ *  Copyright 2021-present Etherna Sagl
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.userCreditBadge {
+  @apply relative;
+  @apply flex items-baseline;
+  @apply h-10 px-4 py-2 overflow-hidden;
+  @apply rounded-full cursor-pointer;
+  @apply bg-gray-100 dark:bg-gray-800;
+
+  &.expandable {
+    &:after {
+      content: "";
+      @apply absolute right-0 inset-y-0;
+      @apply w-12;
+      @apply bg-gradient-to-r from-gray-100/10 via-gray-100/80 to-gray-100;
+      @apply dark:from-gray-800/10 dark:via-gray-800/80 dark:to-gray-800;
+      @apply md:content-none;
+    }
+    &:hover::after {
+      @apply opacity-0;
+    }
+  }
+}
+
+.userCreditCurrency {
+  @apply hidden xs:inline;
+  @apply text-xs tracking-tighter;
+  @apply text-gray-600 dark:text-gray-400;
+}
+
+.userCreditValue {
+  @apply flex items-baseline;
+  @apply relative ml-1 overflow-hidden;
+  @apply text-gray-900 dark:text-gray-200;
+}
+
+.userCreditValueInteger {
+  @apply text-xl font-semibold;
+}
+
+.userCreditValueDecimal {
+  @apply inline-block;
+  @apply text-base font-medium;
+  @apply opacity-60;
+  @apply duration-300;
+  transition-property: max-width;
+
+  @screen md {
+    max-width: unset !important;
+  }
+}
+
+.userCreditPopup {
+  @apply min-w-xs p-4 text-center;
+}

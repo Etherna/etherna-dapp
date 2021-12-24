@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import { ReactComponent as ErrorIcon } from "@svg/icons/error-icon.svg"
+import { ReactComponent as ErrorIcon } from "@assets/icons/error.svg"
 
 import Modal from "@common/Modal"
 import Button from "@common/Button"
@@ -33,7 +33,7 @@ const UnsupportedBrowserModal = ({ show = false }) => {
       title={"You must use Safari version 11.1 or higher"}
       icon={<ErrorIcon />}
       footerButtons={
-        <Button aspect="secondary" action={closeUnsupportedBrowserModal}>
+        <Button modifier="secondary" onClick={closeUnsupportedBrowserModal}>
           Close
         </Button>
       }

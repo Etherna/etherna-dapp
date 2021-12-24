@@ -16,12 +16,14 @@
  */
 
 import React, { useEffect, useState, useRef } from "react"
-import classnames from "classnames"
+import classNames from "classnames"
 
-import Modal from "../common/Modal"
-import Button from "../common/Button"
-import Kbd from "../common/Kbd"
-import { ReactComponent as WarningIcon } from "@svg/icons/warning-icon.svg"
+import classes from "@styles/components/modals/ShortcutModal.module.scss"
+import { ReactComponent as WarningIcon } from "@assets/icons/warning.svg"
+
+import Modal from "@components/common/Modal"
+import Button from "@components/common/Button"
+import Kbd from "@components/common/Kbd"
 import { closeShortcutModal } from "@state/actions/modals"
 import { saveShortcut, shortcutExists } from "@state/actions/enviroment/shortcuts"
 import useSelector from "@state/useSelector"
@@ -78,12 +80,12 @@ const ShortcutModal = ({ show = false }) => {
       showCloseButton={true}
       footerButtons={
         <>
-          <Button aspect="danger" action={deleteShortcut}>
+          <Button modifier="danger" onClick={deleteShortcut}>
             Delete
           </Button>
           <Button
-            aspect="secondary"
-            action={overrideShortcut}
+            modifier="secondary"
+            onClick={overrideShortcut}
             disabled={!!existingShortcut}
           >
             Save
@@ -94,14 +96,14 @@ const ShortcutModal = ({ show = false }) => {
     >
       <div
         ref={editorRef}
-        className={classnames("shortcut-preview-container", {
-          "shortcut-error": existingShortcut,
+        className={classNames(classes.shortcutPreviewContainer, {
+          [classes.shortcutError]: existingShortcut,
         })}
         tabIndex={0}
         onClick={focusEditor}
         onKeyDown={handleKeyDown}
       >
-        {shortcut && <Kbd className="shortcut-preview" shortcut={shortcut} />}
+        {shortcut && <Kbd className={classes.shortcutPreview} shortcut={shortcut} />}
       </div>
       {existingShortcut && (
         <div className="flex items-center my-4">

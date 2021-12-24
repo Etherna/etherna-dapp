@@ -3,9 +3,12 @@
     "baseUrl": "./src",
     "paths": {
       "@app/*": ["app/*"],
+      "@assets/*": ["assets/*"],
       "@classes/*": ["classes/*"],
       "@common/*": ["components/common/*"],
       "@components/*": ["components/*"],
+      "@context/*": ["context/*"],
+      "@definitions/*": ["definitions/*"],
       "@keyboard": ["keyboard"],
       "@hooks/*": ["hooks/*"],
       "@keyboard/*": ["keyboard/*"],
@@ -13,13 +16,12 @@
       "@lang/*": ["lang/*"],
       "@prefetch": ["prefetch"],
       "@prefetch/*": ["prefetch/*"],
-      "@icons/*": ["components/icons/*"],
       "@pages/*": ["pages/*"],
       "@routes": ["routes"],
       "@state/*": ["state/*"],
+      "@styles/*": ["styles/*"],
       "@typings/*": ["typings/*"],
       "@utils/*": ["utils/*"],
-      "@svg/*": ["svg/*"]
     }
   }
 }

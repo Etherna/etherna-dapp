@@ -16,7 +16,9 @@
 
 import GatewayUsersClient from "./GatewayUsersClient"
 import GatewaySettingsClient from "./GatewaySettingsClient"
-import { GatewayClientOptions } from "./typings"
+import { isSafeURL, safeURL, urlOrigin } from "@utils/urls"
+import { parseLocalStorage } from "@utils/local-storage"
+import type { GatewayClientOptions } from "@definitions/api-gateway"
 
 export default class EthernaGatewayClient {
   users: GatewayUsersClient
@@ -58,10 +60,18 @@ export default class EthernaGatewayClient {
   }
 
   static get defaultHost(): string {
-    return window.localStorage.getItem("gatewayHost") || import.meta.env.VITE_APP_GATEWAY_HOST
+    const localUrl = parseLocalStorage<string>("setting:gateway-url")
+    if (isSafeURL(localUrl)) {
+      return urlOrigin(localUrl!)!
+    }
+    return urlOrigin(import.meta.env.VITE_APP_GATEWAY_URL)!
   }
 
   static get defaultApiPath(): string {
-    return window.localStorage.getItem("gatewayApiPath") || import.meta.env.VITE_APP_GATEWAY_API_PATH
+    const localUrl = parseLocalStorage<string>("setting:gateway-url")
+    if (isSafeURL(localUrl)) {
+      return safeURL(localUrl)!.pathname
+    }
+    return safeURL(import.meta.env.VITE_APP_GATEWAY_URL)!.pathname
   }
 }

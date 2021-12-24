@@ -17,12 +17,12 @@
 
 import React from "react"
 
-import { ReactComponent as SignatureIcon } from "@svg/icons/signature-required-icon.svg"
-import { ReactComponent as ErrorIcon } from "@svg/icons/error-icon.svg"
-import { closeErrorModal } from "@state/actions/modals"
+import { ReactComponent as SignatureIcon } from "@assets/icons/signature-required.svg"
+import { ReactComponent as ErrorIcon } from "@assets/icons/error.svg"
 
-import Modal from "../common/Modal"
-import Button from "../common/Button"
+import Modal from "@common/Modal"
+import Button from "@common/Button"
+import { useErrorMessage } from "@state/hooks/ui"
 
 type ErrorModalProps = {
   title?: string
@@ -31,6 +31,8 @@ type ErrorModalProps = {
 }
 
 const ErrorModal = ({ title, error = "", show = false }: ErrorModalProps) => {
+  const { hideError } = useErrorMessage()
+
   const isMetaMaskSignError = error.substring(0, 65) === "Web3 Wallet Signature Error: User denied message signature."
   const isMozillaError = error.substring(0, 26) === "value/</<@moz-extension://"
   const errorString = error.substring(0, 200)
@@ -44,7 +46,7 @@ const ErrorModal = ({ title, error = "", show = false }: ErrorModalProps) => {
       title={isMetaMaskSignError || isMozillaError ? "Sign in" : title}
       icon={isMetaMaskSignError || isMozillaError ? <SignatureIcon /> : <ErrorIcon />}
       footerButtons={
-        <Button aspect="secondary" action={closeErrorModal}>
+        <Button modifier="secondary" onClick={hideError}>
           Close
         </Button>
       }
@@ -52,7 +54,7 @@ const ErrorModal = ({ title, error = "", show = false }: ErrorModalProps) => {
       <>
         {isMetaMaskSignError || isMozillaError ? (
           <p>
-            You must provide consent in your Web3 wallet to sign in or create a profile, please try
+            You must provide consent in your Web3 wallet to update profile and create playlists, please try
             again.
           </p>
         ) : (

@@ -18,11 +18,12 @@
 import React from "react"
 import { useLocation } from "react-router-dom"
 
-import LayoutWrapper from "@components/layout/DefaultLayout/LayoutWrapper"
+import Container from "@common/Container"
+import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import SEO from "@components/layout/SEO"
 import VideoView from "@components/video/VideoView"
-import { Video } from "@classes/SwarmVideo/types"
 import useRouteState from "@hooks/useRouteState"
+import type { Video } from "@definitions/swarm-video"
 
 const WatchPage = () => {
   const location = useLocation()
@@ -33,10 +34,13 @@ const WatchPage = () => {
   if (!hash) return null
 
   return (
-    <LayoutWrapper hideSidebar={true}>
+    <AppLayoutWrapper hideSidebar floatingSidebar>
       <SEO title="Watch" />
-      <VideoView hash={hash} routeState={routeState} />
-    </LayoutWrapper>
+
+      <Container noPaddingX noPaddingY>
+        <VideoView reference={hash} routeState={routeState} />
+      </Container>
+    </AppLayoutWrapper>
   )
 }
 
