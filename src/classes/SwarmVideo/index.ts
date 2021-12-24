@@ -19,6 +19,7 @@ import SwarmVideoWriter from "./SwarmVideoWriter"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
 import uuidv4 from "@utils/uuid"
 import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@definitions/swarm-video"
+import type { IndexVideo } from "@definitions/api-index"
 
 const SwarmVideoIO = {
   Reader: SwarmVideoReader,
@@ -34,15 +35,19 @@ const SwarmVideoIO = {
   getVideoFeedTopicName: (id: string) => `EthernaVideo:${id}`
 }
 
-export const getDefaultVideo = (reference: string, bee: SwarmBeeClient): Video => ({
+export const getDefaultVideo = (
+  reference: string,
+  indexData: IndexVideo | null | undefined,
+  bee: SwarmBeeClient
+): Video => ({
   reference,
   id: uuidv4(),
   title: null,
   description: null,
   originalQuality: null,
-  ownerAddress: null,
+  ownerAddress: indexData?.ownerAddress ?? null,
   duration: NaN,
-  isVideoOnIndex: false,
+  isVideoOnIndex: !!indexData,
   thumbnail: null,
   sources: [{
     reference,
@@ -58,7 +63,7 @@ export const getDefaultRawVideo = (reference: string): SwarmVideoRaw => ({
   title: "",
   description: "",
   originalQuality: `${NaN}p`,
-  ownerAddress: "0x0",
+  ownerAddress: "",
   duration: NaN,
   thumbnail: null,
   sources: [{

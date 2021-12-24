@@ -95,12 +95,24 @@ export default class SwarmVideoReader {
           : Promise.resolve(undefined)
     ])
 
+    // Add owner address if empty
+    rawVideo.ownerAddress = rawVideo.ownerAddress || indexData?.ownerAddress || ""
+
     let owner = ownerProfile
     if (!owner && rawVideo.ownerAddress) {
       owner = await this.fetchOwnerProfile(rawVideo.ownerAddress)
     }
 
     const video = this.parseRawVideo(rawVideo, indexData, owner)
+
+    // Fix empty address with default
+    video.ownerAddress = video.ownerAddress || "0x0"
+    console.log(this.ownerAddress)
+    console.log(rawVideo)
+    console.log(indexData)
+    console.log(owner)
+    console.log(video)
+
 
     if (this.updateCache) {
       this.updateVideoCache(video)
@@ -115,7 +127,7 @@ export default class SwarmVideoReader {
     owner?: Profile | null,
   ): Video {
     if (!rawVideo) {
-      return getDefaultVideo(this.reference, this.beeClient)
+      return getDefaultVideo(this.reference, indexData, this.beeClient)
     }
 
     return {
@@ -124,7 +136,7 @@ export default class SwarmVideoReader {
       title: rawVideo.title,
       description: rawVideo.description,
       originalQuality: rawVideo.originalQuality,
-      ownerAddress: rawVideo.ownerAddress,
+      ownerAddress: rawVideo.ownerAddress || indexData?.ownerAddress || "",
       owner: "owner" in rawVideo ? rawVideo.owner : owner ?? undefined,
       duration: rawVideo.duration,
       thumbnail: rawVideo.thumbnail
@@ -153,7 +165,7 @@ export default class SwarmVideoReader {
       title: video.title ?? "",
       description: video.description ?? "",
       originalQuality: video.originalQuality ?? `${NaN}p`,
-      ownerAddress: video.ownerAddress ?? this.ownerAddress ?? "0x0",
+      ownerAddress: video.ownerAddress ?? this.ownerAddress ?? "",
       duration: video.duration,
       thumbnail: video.thumbnail
         ? new SwarmImageIO.Reader(video.thumbnail, { beeClient: this.beeClient }).imageRaw

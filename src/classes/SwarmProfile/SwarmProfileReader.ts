@@ -75,6 +75,7 @@ export default class SwarmProfileReader {
    */
   async download(forced = false) {
     if (this.loadedFromPrefetch && !forced) return this.profile
+    if (!this.address || this.address === "0x0") return undefined
 
     let profile = getDefaultProfile(this.address) as ProfileRaw
 

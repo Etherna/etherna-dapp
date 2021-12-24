@@ -30,7 +30,7 @@ const VideoDetailsTitleBar: React.FC<VideoDetailsTitleBarProps> = ({ title, chil
       <h1 className={classNames(classes.videoDetailsTitle, {
         [classes.untitled]: !title
       })}>
-        {title ?? "Untitled"}
+        {title || "Untitled"}
       </h1>
 
       <div className={classes.videoDetailsActions}>
