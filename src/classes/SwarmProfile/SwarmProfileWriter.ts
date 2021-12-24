@@ -123,14 +123,14 @@ export default class SwarmProfileWriter {
   /**
    * Parse image to raw image
    * 
-   * @param imageRaw The image object
+   * @param image The image object
    * @returns The raw Swarm Image
    */
-  private parseImage = (imageRaw: SwarmImage | null) => {
-    if (imageRaw) {
-      return new SwarmImageIO.Reader(imageRaw, {
+  private parseImage = (image: SwarmImage | null) => {
+    if (image) {
+      return new SwarmImageIO.Reader(image, {
         beeClient: this.beeClient
-      }).image
+      }).imageRaw
     }
     return null
   }

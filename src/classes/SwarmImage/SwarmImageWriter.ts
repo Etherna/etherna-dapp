@@ -19,6 +19,7 @@ import imageResize from "image-resizer-js"
 
 import SwarmBeeClient, { MultipleFileUpload } from "@classes/SwarmBeeClient"
 import { bufferToDataURL, fileToBuffer } from "@utils/buffer"
+import { imageToBlurHash } from "@utils/blur-hash"
 import type { SwarmImageUploadOptions, SwarmImageWriterOptions } from "./types"
 import type { SwarmImageRaw } from "@definitions/swarm-image"
 
@@ -58,10 +59,10 @@ export default class SwarmImageWriter {
    * @returns The raw image object
    */
   async upload(options?: SwarmImageUploadOptions): Promise<SwarmImageRaw> {
-    const { blurredBase64, imageAspectRatio, responsiveSourcesData } = await this.generateImages()
+    const { blurhash, imageAspectRatio, responsiveSourcesData } = await this.generateImages()
 
     const imageRaw: SwarmImageRaw = {
-      blurredBase64: blurredBase64,
+      blurhash,
       aspectRatio: imageAspectRatio,
       sources: {}
     }
@@ -111,7 +112,7 @@ export default class SwarmImageWriter {
     const originalImageData = await fileToBuffer(this.file)
     const imageSize = await this.getFileImageSize(originalImageData)
 
-    const blurredBase64 = await this.imageToBlurredBase64(originalImageData)
+    const blurhash = await imageToBlurHash(originalImageData, imageSize.width, imageSize.height)
     const imageAspectRatio = imageSize.width / imageSize.height
 
     const responsiveSourcesData: { [size: `${number}w`]: Uint8Array } = {
@@ -127,7 +128,7 @@ export default class SwarmImageWriter {
     }
 
     return {
-      blurredBase64,
+      blurhash,
       imageAspectRatio,
       responsiveSourcesData
     }
@@ -150,14 +151,6 @@ export default class SwarmImageWriter {
         reject(error)
       }
     })
-  }
-
-  async imageToBlurredBase64(image: ArrayBuffer) {
-    const data = await imageResize(image, {
-      maxWidth: 10,
-      quality: 25,
-    })
-    return await bufferToDataURL(data)
   }
 
   async imageToResponsiveSize(image: ArrayBuffer, width: number) {

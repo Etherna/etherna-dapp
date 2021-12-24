@@ -43,7 +43,7 @@ const UserMenu: React.FC = () => {
 
   if (isSigningIn) {
     return (
-      <Placeholder width="2.5rem" height="2.5rem" round="full" />
+      <Placeholder width="2rem" height="2rem" round="full" />
     )
   }
 
