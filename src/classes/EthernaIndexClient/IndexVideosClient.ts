@@ -15,7 +15,7 @@
  */
 
 import http from "@utils/request"
-import { IndexVideo, IndexVideoComment, VoteValue } from "./types"
+import type { IndexVideo, IndexVideoComment, VoteValue } from "@definitions/api-index"
 
 export default class IndexVideosClient {
   url: string

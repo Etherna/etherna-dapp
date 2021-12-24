@@ -16,7 +16,6 @@
 
 import { compose } from "redux"
 import { providers } from "ethers/lib.esm/ethers"
-import type { ExternalProvider } from "@ethersproject/providers/src.ts/web3-provider"
 
 import { ProfilePrefetch } from "prefetch/prefetchers/profilePrefetcher"
 import { VideoPrefetch } from "prefetch/prefetchers/videoPrefetcher"
@@ -27,14 +26,7 @@ declare global {
     web3?: {
       currentProvider: providers.ExternalProvider
     }
-    ethereum?: ExternalProvider & {
-      autoRefreshOnNetworkChange?: boolean
-      chainId?: string
-      networkVersion?: string
-      selectedAddress?: string
-      isConnected?(): Promise<boolean>
-      enable(): Promise<string[]>
-    }
+    ethereum?: ExternalProvider
 
     // prefetch
     prefetchData?: ProfilePrefetch & VideoPrefetch
