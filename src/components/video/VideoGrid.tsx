@@ -20,7 +20,7 @@ import classNames from "classnames"
 
 import classes from "@styles/components/video/VideoGrid.module.scss"
 
-import VideoPreviewPlaceholder from "./VideoPreviewPlaceholder"
+import VideoPreviewPlaceholder from "@components/placeholders/VideoPreviewPlaceholder"
 import VideoPreview from "@components/video/VideoPreview"
 import type { Video } from "@definitions/swarm-video"
 
