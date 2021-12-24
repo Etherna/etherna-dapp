@@ -21,7 +21,7 @@ import InfiniteScroller from "react-infinite-scroll-component"
 import classes from "@styles/components/profile/Profiles.module.scss"
 
 import ProfilePreview from "./ProfilePreview"
-import ProfilePreviewPlaceholder from "./ProfilePreviewPlaceholder"
+import ProfilePreviewPlaceholder from "@components/placeholders/ProfilePreviewPlaceholder"
 import useSelector from "@state/useSelector"
 import type { IndexUser } from "@definitions/api-index"
 

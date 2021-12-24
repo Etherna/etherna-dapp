@@ -21,7 +21,7 @@ import classNames from "classnames"
 
 import classes from "@styles/components/video/VideoCommentsItem.module.scss"
 
-import VideoCommentPlaceholder from "./VideoCommentPlaceholder"
+import VideoCommentPlaceholder from "@components/placeholders/VideoCommentPlaceholder"
 import Avatar from "@components/user/Avatar"
 import useSwarmProfile from "@hooks/useSwarmProfile"
 import routes from "@routes"
