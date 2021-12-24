@@ -31,7 +31,9 @@ declare global {
       autoRefreshOnNetworkChange?: boolean
       chainId?: string
       networkVersion?: string
-      enable: () => Promise<string[]>
+      selectedAddress?: string
+      isConnected?(): Promise<boolean>
+      enable(): Promise<string[]>
     }
 
     // prefetch

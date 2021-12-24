@@ -17,6 +17,7 @@
 import { useEffect } from "react"
 import { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
+import type { EthAddress } from "@ethersphere/bee-js/dist/src/utils/eth"
 
 import SwarmProfileIO from "@classes/SwarmProfile"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
@@ -26,8 +27,10 @@ import { EnvActions, EnvActionTypes } from "@state/reducers/enviromentReducer"
 import { ProfileActions, ProfileActionTypes } from "@state/reducers/profileReducer"
 import { UIActions, UIActionTypes } from "@state/reducers/uiReducer"
 import useSelector from "@state/useSelector"
+import { addressBytes, signMessage } from "@utils/ethereum"
 import type { IndexCurrentUser } from "@definitions/api-index"
 import type { AuthIdentity } from "@definitions/api-sso"
+import { showError } from "@state/actions/modals"
 
 type AutoSigninOpts = {
   forceSignin?: boolean
@@ -54,12 +57,16 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
   }, [])
 
   const fetchIdentity = async () => {
-    const [identity, currentUser, hasCredit] = await Promise.all([
+    const [identityResult, currentUserResult, hasCreditResult] = await Promise.allSettled([
       fetchAuthIdentity(),
       fetchIndexCurrentUser(),
       fetchCurrentUserCredit(),
       fetchCurrentBytePrice(),
     ])
+
+    const identity = identityResult.status === "fulfilled" && identityResult.value
+    const currentUser = currentUserResult.status === "fulfilled" && currentUserResult.value
+    const hasCredit = hasCreditResult.status === "fulfilled" && hasCreditResult.value
 
     dispatch({
       type: UserActionTypes.USER_UPDATE_SIGNEDIN,
@@ -67,14 +74,22 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
       isSignedInGateway: hasCredit
     })
 
-    if (currentUser) {
-      await fetchProfile(currentUser, identity)
+    if (currentUser && identity) {
+      const address = identity.etherLoginAddress || identity.etherAddress
+      await fetchProfile(address, identity)
     }
   }
 
   const fetchAuthIdentity = async () => {
     try {
       const identity = await authClient.identity.fetchCurrentIdentity()
+
+      dispatch({
+        type: UserActionTypes.USER_UPDATE_IDENTITY,
+        address: identity.etherLoginAddress || identity.etherAddress,
+        prevAddresses: identity.etherPreviousAddresses,
+      })
+
       return identity
     } catch {
       return undefined
@@ -84,14 +99,6 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
   const fetchIndexCurrentUser = async () => {
     try {
       const profile = await indexClient.users.fetchCurrentUser()
-
-      dispatch({
-        type: UserActionTypes.USER_UPDATE_IDENTITY,
-        address: profile.address,
-        manifest: profile.identityManifest,
-        prevAddresses: profile.prevAddresses,
-      })
-
       return profile
     } catch {
       return false
@@ -133,7 +140,7 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
     }
   }
 
-  const fetchProfile = async (user: IndexCurrentUser, identity?: AuthIdentity) => {
+  const fetchProfile = async (address: string, identity?: AuthIdentity) => {
     dispatch({
       type: UIActionTypes.TOGGLE_LOADING_PROFILE,
       isLoadingProfile: true,
@@ -149,10 +156,31 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
         type: EnvActionTypes.UPDATE_BEE_CLIENT,
         beeClient: beeClientSigner
       })
+    } else if (window.ethereum && window.ethereum.request) {
+      const beeClientSigner = new SwarmBeeClient(beeClient.url, {
+        signer: {
+          address: addressBytes(address) as EthAddress,
+          sign: async (digest) => {
+            try {
+              return await signMessage(digest.hex().toString(), address)
+            } catch (error: any) {
+              if (error.code === -32602) {
+                return await signMessage(digest.hex().toString(), address)
+              } else {
+                throw error
+              }
+            }
+          }
+        }
+      })
+
+      dispatch({
+        type: EnvActionTypes.UPDATE_BEE_CLIENT,
+        beeClient: beeClientSigner
+      })
     }
 
     try {
-      const address = user.address
       const profileReader = new SwarmProfileIO.Reader(address, { beeClient })
       const profile = await profileReader.download()
 

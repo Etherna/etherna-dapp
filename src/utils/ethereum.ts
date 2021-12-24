@@ -17,6 +17,36 @@
 import { providers } from "ethers/lib.esm/ethers"
 
 /**
+ * Sign a message with the user wallet
+ * 
+ * @param digest Hex string of the message
+ * @param address Signing address
+ * @returns Signed hash
+ */
+export const signMessage = async (digest: string, address: string): Promise<string> => {
+  if (!window.ethereum)
+    throw new Error("No wallet installed. Try installing MetaMask extension.")
+  if (!window.ethereum.request)
+    throw new Error("You have an old version of your wallet. Try to update MetaMask.")
+
+  const accounts = await window.ethereum.request({ method: "eth_requestAccounts" })
+
+  if (!accounts || !accounts.length)
+    throw new Error("Unlock your wallet.")
+
+  const data = await window.ethereum.request({
+    method: "personal_sign",
+    params: [address, digest],
+  })
+  return data
+}
+
+export const addressBytes = (address: string) => {
+  const bytes = address.replace(/^0x/, "").match(/.{1,2}/g) ?? []
+  return new Uint8Array(bytes.map(b => parseInt(b, 16)))
+}
+
+/**
  * Check if a string a valid eth address
  * 
  * @param address Address string value
@@ -51,14 +81,10 @@ export const checkUsingInjectedProvider = (provider: any) => {
 
 /**
  * Fetch the wallet accounts
- * 
- * @param web3 Web3 instance
  */
-export const fetchAccounts = async (provider?: providers.Web3Provider) => {
-  if (!provider || !window.ethereum) return []
-
-  const web3Provider = provider ?? new providers.Web3Provider(window.ethereum)
-  return await web3Provider.listAccounts()
+export const fetchAccounts = async () => {
+  if (!window.ethereum || !window.ethereum.request) return []
+  return await window.ethereum.request({ method: "eth_requestAccounts" })
 }
 
 /**
