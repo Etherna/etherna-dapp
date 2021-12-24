@@ -16,6 +16,7 @@
     "@testing-library/react": "12.1.2",
     "@testing-library/user-event": "13.5.0",
     "axios": "0.24.0",
+    "blurhash": "1.1.4",
     "classnames": "2.3.1",
     "dayjs": "1.10.7",
     "draft-js": "0.11.7",

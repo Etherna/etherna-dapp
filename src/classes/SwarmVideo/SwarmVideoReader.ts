@@ -107,12 +107,6 @@ export default class SwarmVideoReader {
 
     // Fix empty address with default
     video.ownerAddress = video.ownerAddress || "0x0"
-    console.log(this.ownerAddress)
-    console.log(rawVideo)
-    console.log(indexData)
-    console.log(owner)
-    console.log(video)
-
 
     if (this.updateCache) {
       this.updateVideoCache(video)
