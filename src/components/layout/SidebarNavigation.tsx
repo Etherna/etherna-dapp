@@ -29,7 +29,7 @@ import SidebarItem from "@components/navigation/SidebarItem"
 import SidebarLinksItem from "@components/navigation/SidebarLinksItem"
 import SidebarLinks from "@components/navigation/SidebarLinks"
 import SidebarSpace from "@components/navigation/SidebarSpace"
-import IndexExtension from "@components/env/IndexExtension"
+// import IndexExtension from "@components/env/IndexExtension"
 import GatewayExtension from "@components/env/GatewayExtension"
 import { LayoutReducerTypes } from "@context/layout-context"
 import { useLayoutState } from "@context/layout-context/hooks"
@@ -49,9 +49,9 @@ const SidebarNavigation: React.FC = () => {
 
   return (
     <Sidebar floating={floatingSidebar} show={!hideSidebar} onClose={hodeSidebar}>
-      <SidebarItem isStatic compact>
+      {/* <SidebarItem isStatic compact>
         <IndexExtension compactMobile />
-      </SidebarItem>
+      </SidebarItem> */}
       <SidebarItem isStatic compact>
         <GatewayExtension compactMobile />
       </SidebarItem>

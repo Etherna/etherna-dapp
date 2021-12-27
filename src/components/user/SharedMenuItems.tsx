@@ -17,14 +17,14 @@
 
 import React from "react"
 
-import { ReactComponent as IndexIcon } from "@assets/icons/navigation/index.svg"
+// import { ReactComponent as IndexIcon } from "@assets/icons/navigation/index.svg"
 import { ReactComponent as GatewayIcon } from "@assets/icons/navigation/gateway.svg"
 import { ReactComponent as ShortcutsIcon } from "@assets/icons/shortcuts.svg"
 import { ReactComponent as DarkModeIcon } from "@assets/icons/dark-mode.svg"
 
 import DarkModeToggle from "./DarkModeToggle"
 import DropdownItem from "@common/DropdownItem"
-import IndexExtension from "@components/env/IndexExtension"
+// import IndexExtension from "@components/env/IndexExtension"
 import GatewayExtension from "@components/env/GatewayExtension"
 import routes from "@routes"
 import { toggleDarkMode } from "@state/actions/enviroment/dark-mode"
@@ -41,11 +41,11 @@ const SharedMenuItems: React.FC<SharedMenuItemsProps> = () => {
 
   return (
     <>
-      <DropdownItem
+      {/* <DropdownItem
         icon={<IndexIcon />}
       >
         <IndexExtension noIcon />
-      </DropdownItem>
+      </DropdownItem> */}
       <DropdownItem
         icon={<GatewayIcon />}
       >
