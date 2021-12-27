@@ -38,6 +38,8 @@ type TextFieldProps = {
   charactersLimit?: number
   elRef?: React.MutableRefObject<any>
   onChange?(value: string): void
+  onKeyDown?(e: React.KeyboardEvent<HTMLInputElement>): void
+  onBlur?(): void
   onFocus?(): void
 }
 
@@ -56,6 +58,8 @@ const TextField: React.FC<TextFieldProps> = ({
   small,
   elRef,
   onChange,
+  onKeyDown,
+  onBlur,
   onFocus,
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,7 +101,9 @@ const TextField: React.FC<TextFieldProps> = ({
           disabled={disabled}
           value={value}
           onChange={handleChange}
+          onKeyDown={onKeyDown}
           onFocus={onFocus}
+          onBlur={onBlur}
           autoFocus={autoFocus}
         />
         {charactersLimit && (

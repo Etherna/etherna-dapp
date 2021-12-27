@@ -20,10 +20,10 @@ import React from "react"
 import { ReactComponent as Logo } from "@assets/logo.svg"
 import { ReactComponent as LogoCompact } from "@assets/logo-compact.svg"
 import { ReactComponent as PlusIcon } from "@assets/icons/plus.svg"
-import { ReactComponent as SearchIcon } from "@assets/icons/navigation/search.svg"
 import { ReactComponent as MenuIcon } from "@assets/icons/navigation/menu.svg"
 import { ReactComponent as UploadIcon } from "@assets/icons/upload.svg"
 
+import SearchItem from "./SearchItem"
 import Topbar from "@components/navigation/Topbar"
 import TopbarLogo from "@components/navigation/TopbarLogo"
 import TopbarItem from "@components/navigation/TopbarItem"
@@ -69,9 +69,7 @@ const TopbarNavigation: React.FC = () => {
           Upload a video
         </TopbarItem>
       </TopbarPopupItem>
-      <TopbarItem
-        iconSvg={<SearchIcon />}
-      />
+      <SearchItem />
 
       <TopbarSpace flexible />
 

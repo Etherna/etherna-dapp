@@ -1,0 +1,27 @@
+.searchItem {
+  &.active {
+    @apply absolute left-1 top-1 right-1;
+    @apply md:relative md:top-0;
+    @apply z-1;
+    @apply bg-gray-200 dark:bg-gray-800;
+  }
+}
+
+.searchItemClose {
+  @apply absolute right-2;
+  svg {
+    @apply w-5 h-5;
+  }
+}
+
+.searchItemField {
+  @apply w-full md:w-auto;
+
+  input {
+    @apply px-0 py-1;
+    @apply pr-8 md:pr-0;
+    @apply bg-transparent dark:bg-transparent;
+    @apply border-transparent dark:border-transparent;
+    @apply focus:border-transparent dark:focus:border-transparent;
+  }
+}

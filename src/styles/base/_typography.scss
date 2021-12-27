@@ -69,11 +69,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  @apply text-4xl font-semibold mb-6;
+  @apply text-3xl font-semibold mb-6;
   @apply lg:mb-8;
 }
 h2 {
-  @apply text-3xl font-semibold mb-5;
+  @apply text-2xl font-semibold mb-5;
   @apply lg:mb-6;
 }
 h3 {
