@@ -31,6 +31,7 @@ const AsyncProfiles = lazy(() => import("@pages/profiles"))
 const AsyncWatch = lazy(() => import("@pages/watch"))
 const AsyncVideoSettings = lazy(() => import("@pages/videoSettings"))
 const AsyncUpload = lazy(() => import("@pages/upload"))
+const AsyncSearch = lazy(() => import("@pages/search"))
 const AsyncShortcuts = lazy(() => import("@pages/shortcuts"))
 const AsyncNotFound = lazy(() => import("@pages/404"))
 
@@ -69,6 +70,9 @@ const Upload = () => (
 )
 const Shortcuts = () => (
   <Suspense fallback={null}><AsyncShortcuts /></Suspense>
+)
+const Search = () => (
+  <Suspense fallback={null}><AsyncSearch /></Suspense>
 )
 const NotFound = () => (
   <Suspense fallback={null}><AsyncNotFound /></Suspense>
@@ -116,6 +120,9 @@ const Router = () => {
         <SignedInRoute path={"/upload"}>
           <Upload />
         </SignedInRoute>
+        <Route path={"/search"}>
+          <Search />
+        </Route>
         <Route path={"/shortcuts"}>
           <Shortcuts />
         </Route>

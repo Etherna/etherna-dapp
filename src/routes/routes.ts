@@ -55,6 +55,10 @@ export const getProfileEditingLink = (hash: string) => {
   return `/profile/${encodeURIComponent(hash)}/edit`
 }
 
+export const getSearchLink = (query: string) => {
+  return `/search?q=${encodeURIComponent(query)}`
+}
+
 /**
  * Video routes
  */
