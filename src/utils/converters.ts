@@ -80,3 +80,27 @@ export const convertBirate = (fromBytesPerSec: number | string) => {
     readable
   }
 }
+
+/**
+ * Convert time from seconds
+ * 
+ * @param seconds Seconds amount
+ * @returns Object with various time conversions
+ */
+export const convertTime = (seconds: number) => {
+  seconds = Math.round(seconds)
+
+  const minutes = Math.round(seconds / 60)
+  const hours = +(minutes / 60).toFixed(1)
+  const readable = seconds > 120
+    ? minutes > 60 * 60 * 2
+      ? `${hours} ${hours >= 2 ? "hours" : "hour"}`
+      : `${minutes} ${minutes >= 2 ? "minutes" : "minute"}`
+    : `${seconds} ${seconds >= 2 ? "seconds" : "second"}`
+  return {
+    seconds,
+    minutes,
+    hours,
+    readable,
+  }
+}

@@ -19,8 +19,8 @@
 $tick-width: 0.16rem;
 
 .counter {
-  @apply flex items-center mt-4 mb-6 text-xs font-semibold;
-  @apply text-gray-900 dark:text-gray-100;
+  @apply flex items-center mt-4 mb-6 text-xs font-medium;
+  @apply text-gray-700 dark:text-gray-300;
 }
 
 .counterSignal {
@@ -60,4 +60,14 @@ $tick-width: 0.16rem;
 
 .counterLabel {
   @apply ml-1;
+}
+
+.counterAmount {
+  @apply relative;
+  @apply text-gray-900 dark:text-gray-50;
+  @apply font-semibold;
+
+  @apply after:absolute after:h-px;
+  @apply after:inset-x-0 after:top-full;
+  @apply after:bg-gray-50;
 }

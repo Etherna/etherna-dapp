@@ -15,51 +15,58 @@
  *  
  */
 
-import React, { useMemo } from "react"
+import React from "react"
 import classNames from "classnames"
 
 import classes from "@styles/components/player/PlayerBytesCounter.module.scss"
 
 import { usePlayerState } from "@context/player-context/hooks"
 import useSelector from "@state/useSelector"
+import { convertTime } from "@utils/converters"
 
 const PlayerBytesCounter: React.FC = () => {
   const [state] = usePlayerState()
-  const { sourceSize } = state
+  const { sourceSize, duration, currentTime } = state
 
   const { bytePrice } = useSelector(state => state.env)
   const { credit } = useSelector(state => state.user)
 
-  const remainingBytes = useMemo(() => {
-    if (!sourceSize || !bytePrice) return null
-    return Math.min(sourceSize, bytePrice > 0 ? (credit || 0) / bytePrice : 0)
-  }, [credit, bytePrice, sourceSize])
+  if (!bytePrice || bytePrice === 0 || credit == null) return null
 
-  const remainingPercent = remainingBytes && sourceSize ? remainingBytes / sourceSize * 100 : 0
+  const remainingDuration = duration - currentTime
+  const remainingBytes = (sourceSize || 0) * (remainingDuration / duration)
+  const remainingCost = remainingBytes * bytePrice
+  const watchablePercent = remainingCost > 0 ? credit / remainingCost : 0
+  const remainingSeconds = Math.round(watchablePercent * remainingDuration)
 
-  if (!bytePrice || credit == null || remainingPercent >= 100) return null
+  if (watchablePercent >= 1) return null
 
   return (
     <div className={classNames(classes.counter, {
       [classes.unknown]: !sourceSize,
-      [classes.limited]: sourceSize && remainingPercent > 0,
-      [classes.zero]: sourceSize && remainingPercent === 0,
+      [classes.limited]: sourceSize && watchablePercent > 0,
+      [classes.zero]: sourceSize && watchablePercent === 0,
     })}>
       <span className={classes.counterSignal}>
         <span className={classes.counterSignalPing} />
         <span className={classes.counterSignalLight} />
       </span>
       <span className={classes.counterLabel}>
-        {sourceSize ? `${remainingPercent}%` : "Unknown watch time"}
+        {!sourceSize ? "Unknown watch time" : ""}
       </span>
       <span className={classes.counterLabel}>
-        {
-          !sourceSize
-            ? " | We coudn't get an estimate for this video"
-            : remainingPercent > 0
-              ? ` | With your credit you can only enjoy ${remainingPercent}% of this video`
-              : ` | Your credit is zero. Add some to enjoy this video`
-        }
+        {!sourceSize && (
+          <span>{" | We coudn't get an estimate for this video"}</span>
+        )}
+        {(sourceSize && remainingSeconds > 0) ? (
+          <>
+            <span>With your credit you can only enjoy the remaining </span>
+            <span className={classes.counterAmount}>{convertTime(remainingSeconds).readable}</span>
+            <span> of this video</span>
+          </>
+        ) : (
+          <span>{"Your credit is zero. Add some to enjoy this video"}</span>
+        )}
       </span>
     </div>
   )
