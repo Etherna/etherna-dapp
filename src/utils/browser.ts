@@ -35,9 +35,7 @@ export const checkIsMobileWithoutWeb3 = () => {
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
   )
-  const hasWeb3 =
-    typeof window.web3 !== "undefined" ||
-    typeof window.ethereum !== "undefined"
+  const hasWeb3 = typeof window.ethereum !== "undefined"
   if (isMobile && !hasWeb3) isMobileWithWeb3 = true
   return isMobileWithWeb3
 }

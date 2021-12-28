@@ -23,7 +23,7 @@
 }
 
 .playerVideo {
-  @apply max-h-80vh w-full;
+  @apply max-h-[80vh] w-full;
   @apply object-cover;
   @apply bg-gray-200 dark:bg-gray-700;
 }

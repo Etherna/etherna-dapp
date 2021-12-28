@@ -25,7 +25,7 @@
   @apply py-6;
   @apply flex;
   @apply overflow-x-auto;
-  @apply snap snap-x snap-mandatory;
+  @apply snap-x snap-mandatory;
 
   &::-webkit-scrollbar {
     @apply hidden;

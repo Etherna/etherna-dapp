@@ -14,8 +14,6 @@
  *  limitations under the License.
  */
 
-import { providers } from "ethers/lib.esm/ethers"
-
 /**
  * Sign a message with the user wallet
  * 
