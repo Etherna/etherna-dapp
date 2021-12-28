@@ -1,4 +1,4 @@
-/*
+/* 
  *  Copyright 2021-present Etherna Sagl
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,37 +12,24 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
  */
 
-import React from "react"
-import classNames from "classnames"
+.navPillsItem {
+  @apply text-center font-semibold text-gray-500 px-4 py-1.5 rounded-full;
+  @apply cursor-pointer transition duration-200;
+  @apply hover:bg-gray-200;
+  @apply dark:text-gray-400 dark:hover:bg-gray-800;
 
-import classes from "@styles/components/common/NavPillsItem.module.scss"
-
-type NavPillsItemProps = {
-  active?: boolean
-  vertical?: boolean
-  onClick?: () => void
+  &:not(:last-child) {
+    @apply mr-2;
+  }
+  &.active {
+    @apply bg-primary-500/70 text-gray-50;
+    @apply dark:bg-primary-500/50 dark:text-gray-50;
+  }
+  &.vertical {
+    &:not(:last-child) {
+      @apply mb-2 w-full;
+    }
+  }
 }
-
-const NavPillsItem: React.FC<NavPillsItemProps> = ({
-  children,
-  active,
-  vertical,
-  onClick
-}) => {
-  return (
-    <div
-      className={classNames(classes.navPillsItem, {
-        [classes.active]: active,
-        [classes.vertical]: vertical,
-      })}
-      onClick={onClick}
-    >
-      {children}
-    </div>
-  )
-}
-
-export default NavPillsItem
