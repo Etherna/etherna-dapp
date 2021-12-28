@@ -15,70 +15,15 @@
  *  
  */
 
-import React, { useEffect, useMemo, useRef } from "react"
+import React, { useMemo } from "react"
+import classNames from "classnames"
 
 import classes from "@styles/components/player/PlayerBytesCounter.module.scss"
 
 import { usePlayerState } from "@context/player-context/hooks"
 import useSelector from "@state/useSelector"
 
-type CounterProgressProps = {
-  ticksCount: number
-  percent: number
-}
-
-const CounterProgress: React.FC<CounterProgressProps> = ({ ticksCount, percent }) => {
-  const elRef = useRef<HTMLDivElement>(null)
-  const ticks = new Array(ticksCount).fill(0)
-  const percentTreshold = 25
-  const minOpacity = 0.1
-
-  useEffect(() => {
-    const element = elRef.current
-
-    if (!element) return
-
-    for (let i = 0; i < element.children.length; i++) {
-      const tick = element.children.item(i)! as HTMLElement
-      const opacity = tick.dataset.opacity || 0
-      tick.animate([
-        { opacity: 0 },
-        { opacity: 1 },
-        { opacity },
-      ], {
-        delay: i * 100 + 1000,
-        duration: 500,
-        fill: "forwards"
-      })
-    }
-
-  }, [elRef])
-
-  return (
-    <div className={classes.playerBytesCounterProgress} ref={elRef}>
-      {ticks.map((_, i) => {
-        const tickPercent = 100 / ticksCount * i
-        const fixedPercent = percent != null && !isNaN(percent) ? percent : 0
-        const rangeLow = fixedPercent - percentTreshold
-        const rangeHigh = fixedPercent + percentTreshold
-        const opacity = tickPercent < rangeLow
-          ? 1
-          : tickPercent > rangeHigh
-            ? minOpacity
-            : 1 - ((tickPercent - rangeLow) / (rangeHigh - rangeLow)) + minOpacity
-        return (
-          <div
-            className={classes.playerBytesCounterProgressTick}
-            data-opacity={opacity}
-            key={i}
-          />
-        )
-      })}
-    </div>
-  )
-}
-
-const PlayerBytesCounter = () => {
+const PlayerBytesCounter: React.FC = () => {
   const [state] = usePlayerState()
   const { sourceSize } = state
 
@@ -92,19 +37,28 @@ const PlayerBytesCounter = () => {
 
   const remainingPercent = remainingBytes && sourceSize ? remainingBytes / sourceSize * 100 : 0
 
-  if (remainingPercent >= 100) return null
+  if (!bytePrice || credit == null || remainingPercent >= 100) return null
 
   return (
-    <div className={classes.playerBytesCounter}>
-      <CounterProgress ticksCount={8} percent={remainingPercent} />
-      <span className={classes.playerBytesCounterLabel}>
-        {remainingPercent ? `${remainingPercent}%` : "Unknown"}
+    <div className={classNames(classes.counter, {
+      [classes.unknown]: !sourceSize,
+      [classes.limited]: sourceSize && remainingPercent > 0,
+      [classes.zero]: sourceSize && remainingPercent === 0,
+    })}>
+      <span className={classes.counterSignal}>
+        <span className={classes.counterSignalPing} />
+        <span className={classes.counterSignalLight} />
       </span>
-      <span className={classes.playerBytesCounterLabel}>
+      <span className={classes.counterLabel}>
+        {sourceSize ? `${remainingPercent}%` : "Unknown watch time"}
+      </span>
+      <span className={classes.counterLabel}>
         {
-          remainingPercent
-            ? ` | With your credit you can only enjoy ${remainingPercent}% of this video`
-            : " | We coudn't get an estimate for this video"
+          !sourceSize
+            ? " | We coudn't get an estimate for this video"
+            : remainingPercent > 0
+              ? ` | With your credit you can only enjoy ${remainingPercent}% of this video`
+              : ` | Your credit is zero. Add some to enjoy this video`
         }
       </span>
     </div>
