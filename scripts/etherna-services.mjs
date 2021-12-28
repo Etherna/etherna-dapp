@@ -207,7 +207,7 @@ const run = async () => {
   }
 
   if (shouldRunEthernaValidator) {
-    const validatorProcess = execProject(process.env.ETHERNA_GATEWAY_VALIDATOR_PROJECT_PATH)
+    const validatorProcess = execProject(process.env.ETHERNA_GATEWAY_PROJECT_PATH)
     processes.push(validatorProcess)
   }
 
@@ -236,7 +236,7 @@ const run = async () => {
   shouldRunEthernaCredit &&
     await waitService(process.env.ETHERNA_CREDIT_PROJECT_PATH, "Etherna Credit")
   shouldRunEthernaValidator &&
-    await waitService(process.env.ETHERNA_GATEWAY_VALIDATOR_PROJECT_PATH, "Etherna Gateway Validator")
+    await waitService(process.env.ETHERNA_GATEWAY_PROJECT_PATH, "Etherna Gateway Validator")
   shouldRunProxy &&
     await waitService(`https://localhost:${process.env.BEE_DEBUG_PORT}`, "Bee Debug Https Proxy")
   shouldRunProxy &&

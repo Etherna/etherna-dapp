@@ -118,7 +118,7 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
     } catch {
       dispatch({
         type: UserActionTypes.USER_UPDATE_CREDIT,
-        credit: 0,
+        credit: null,
       })
 
       return false

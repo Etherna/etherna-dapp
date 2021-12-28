@@ -94,7 +94,7 @@ export type UserState = {
   address?: string
   prevAddresses?: string[]
   ens?: string | null
-  credit?: number
+  credit?: number | null
   isSignedIn?: boolean
   isSignedInGateway?: boolean
 }

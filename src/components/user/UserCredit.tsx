@@ -25,16 +25,16 @@ import Popup from "@common/Popup"
 import useSelector from "@state/useSelector"
 import { urlOrigin } from "@utils/urls"
 
-const UserCredit = () => {
+const UserCredit: React.FC = () => {
   const { creditUrl, bytePrice } = useSelector(state => state.env)
   const { credit, isSignedInGateway } = useSelector(state => state.user)
 
   const gbReproduction = useMemo(() => {
-    if (!credit || !bytePrice || bytePrice === 0) return "0.000"
+    if (credit == null || !bytePrice) return "0.000"
     return +(credit / bytePrice * 0.000000001).toFixed(3)
   }, [credit, bytePrice])
 
-  if (!isSignedInGateway || !credit) return null
+  if (!isSignedInGateway || credit == null) return null
 
   return (
     <div>

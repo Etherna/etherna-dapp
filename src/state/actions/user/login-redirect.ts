@@ -21,7 +21,7 @@ import { store } from "@state/store"
  * 
  * @param service Service to signin
  */
-const loginRedirect = (service: "index" | "gateway" | String | null = null) => {
+const loginRedirect = (service: "index" | "gateway" | string | null = null) => {
   const { indexClient, gatewayClient } = store.getState().env
 
   // strip query params

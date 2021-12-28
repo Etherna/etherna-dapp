@@ -15,97 +15,58 @@
  *  
  */
 
-import React, { useEffect, useMemo, useRef } from "react"
+import React from "react"
+import classNames from "classnames"
 
 import classes from "@styles/components/player/PlayerBytesCounter.module.scss"
 
 import { usePlayerState } from "@context/player-context/hooks"
 import useSelector from "@state/useSelector"
+import { convertTime } from "@utils/converters"
 
-type CounterProgressProps = {
-  ticksCount: number
-  percent: number
-}
-
-const CounterProgress: React.FC<CounterProgressProps> = ({ ticksCount, percent }) => {
-  const elRef = useRef<HTMLDivElement>(null)
-  const ticks = new Array(ticksCount).fill(0)
-  const percentTreshold = 25
-  const minOpacity = 0.1
-
-  useEffect(() => {
-    const element = elRef.current
-
-    if (!element) return
-
-    for (let i = 0; i < element.children.length; i++) {
-      const tick = element.children.item(i)! as HTMLElement
-      const opacity = tick.dataset.opacity || 0
-      tick.animate([
-        { opacity: 0 },
-        { opacity: 1 },
-        { opacity },
-      ], {
-        delay: i * 100 + 1000,
-        duration: 500,
-        fill: "forwards"
-      })
-    }
-
-  }, [elRef])
-
-  return (
-    <div className={classes.playerBytesCounterProgress} ref={elRef}>
-      {ticks.map((_, i) => {
-        const tickPercent = 100 / ticksCount * i
-        const fixedPercent = percent != null && !isNaN(percent) ? percent : 0
-        const rangeLow = fixedPercent - percentTreshold
-        const rangeHigh = fixedPercent + percentTreshold
-        const opacity = tickPercent < rangeLow
-          ? 1
-          : tickPercent > rangeHigh
-            ? minOpacity
-            : 1 - ((tickPercent - rangeLow) / (rangeHigh - rangeLow)) + minOpacity
-        return (
-          <div
-            className={classes.playerBytesCounterProgressTick}
-            data-opacity={opacity}
-            key={i}
-          />
-        )
-      })}
-    </div>
-  )
-}
-
-const PlayerBytesCounter = () => {
+const PlayerBytesCounter: React.FC = () => {
   const [state] = usePlayerState()
-  const { sourceSize } = state
+  const { sourceSize, duration, currentTime } = state
 
   const { bytePrice } = useSelector(state => state.env)
   const { credit } = useSelector(state => state.user)
 
-  const remainingBytes = useMemo(() => {
-    if (!sourceSize || !bytePrice) return null
-    return Math.min(sourceSize, bytePrice > 0 ? (credit || 0) / bytePrice : 0)
-  }, [credit, bytePrice, sourceSize])
+  if (!bytePrice || bytePrice === 0 || credit == null) return null
 
-  const remainingPercent = remainingBytes && sourceSize ? remainingBytes / sourceSize * 100 : 0
+  const remainingDuration = duration - currentTime
+  const remainingBytes = (sourceSize || 0) * (remainingDuration / duration)
+  const remainingCost = remainingBytes * bytePrice
+  const watchablePercent = remainingCost > 0 ? credit / remainingCost : 0
+  const remainingSeconds = Math.round(watchablePercent * remainingDuration)
 
-  if (remainingPercent >= 100) return null
+  if (watchablePercent >= 1) return null
 
   return (
-    <div className={classes.playerBytesCounter}>
-      <CounterProgress ticksCount={8} percent={remainingPercent} />
-      <span className={classes.playerBytesCounterLabel}>
-        {remainingPercent ? `${remainingPercent}%` : "Unknown"}
+    <div className={classNames(classes.counter, {
+      [classes.unknown]: !sourceSize,
+      [classes.limited]: sourceSize && watchablePercent > 0,
+      [classes.zero]: sourceSize && watchablePercent === 0,
+    })}>
+      <span className={classes.counterSignal}>
+        <span className={classes.counterSignalPing} />
+        <span className={classes.counterSignalLight} />
       </span>
-      <span className={classes.playerBytesCounterLabel}>
-        {
-          remainingPercent
-            ? ` | With your credit you can only enjoy ${remainingPercent}% of this video`
-            : " | We coudn't get an estimate for this video"
-        }
+      <span className={classes.counterLabel}>
+        {!sourceSize ? "Unknown watch time" : ""}
+      </span>
+      <span className={classes.counterLabel}>
+        {!sourceSize && (
+          <span>{" | We coudn't get an estimate for this video"}</span>
+        )}
+        {(sourceSize && remainingSeconds > 0) ? (
+          <>
+            <span>With your credit you can only enjoy the remaining </span>
+            <span className={classes.counterAmount}>{convertTime(remainingSeconds).readable}</span>
+            <span> of this video</span>
+          </>
+        ) : (
+          <span>{"Your credit is zero. Add some to enjoy this video"}</span>
+        )}
       </span>
     </div>
   )

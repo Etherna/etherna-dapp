@@ -21,6 +21,7 @@ import EthernaIndexClient from "@classes/EthernaIndexClient"
 import EthernaAuthClient from "@classes/EthernaAuthClient"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
 import { loadDarkMode } from "@state/actions/enviroment/dark-mode"
+import autoUpgradeEthernaService from "@utils/autoUpgradeEthernaService"
 import { checkIsMobile } from "@utils/browser"
 import { parseLocalStorage } from "@utils/local-storage"
 import type { EnvState } from "@definitions/app-state"
@@ -84,6 +85,11 @@ export type EnvActions = (
   ToggleDarkModeAction |
   UpdateBytePriceAction
 )
+
+// Upagrade deprecated services urls
+autoUpgradeEthernaService("setting:index-url", import.meta.env.VITE_APP_INDEX_URL)
+autoUpgradeEthernaService("setting:gateway-url", import.meta.env.VITE_APP_GATEWAY_URL)
+autoUpgradeEthernaService("setting:credit-url", import.meta.env.VITE_APP_CREDIT_URL)
 
 // Init reducer
 const indexUrl = parseLocalStorage<string>("setting:index-url") || import.meta.env.VITE_APP_INDEX_URL

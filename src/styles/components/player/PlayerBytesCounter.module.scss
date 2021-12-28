@@ -18,57 +18,56 @@
 
 $tick-width: 0.16rem;
 
-.playerBytesCounter {
-  @apply flex items-center mt-4 mb-6 text-xs text-gray-900 font-semibold;
-  @apply dark:text-gray-100;
+.counter {
+  @apply flex items-center mt-4 mb-6 text-xs font-medium;
+  @apply text-gray-700 dark:text-gray-300;
 }
 
-.playerBytesCounterProgress {
-  @apply w-6 h-6 relative;
-}
+.counterSignal {
+  @apply relative flex h-3 w-3;
+  @apply mr-1;
 
-.playerBytesCounterProgressTick {
-  --tw-translate-x: math.div($tick-width, 2);
-  width: $tick-width;
-  right: 50%;
-  @apply absolute h-3 transform origin-bottom scale-90 opacity-0;
+  &Ping {
+    @apply animate-[ping_1s_ease-out_1s_3];
+    @apply absolute inline-flex;
+    @apply h-full w-full rounded-full;
 
-  &::after {
-    content: "";
-    height: 50%;
-    @apply absolute inset-x-0 top-0 bg-gray-900;
-    @apply dark:bg-gray-200;
+    .unknown & {
+      @apply bg-gray-400/75 dark:bg-gray-400/75;
+    }
+    .limited & {
+      @apply bg-amber-300/75 dark:bg-amber-300/75;
+    }
+    .zero & {
+      @apply bg-red-400/75 dark:bg-red-400/75;
+    }
   }
+  &Light {
+    @apply relative inline-flex;
+    @apply h-3 w-3 rounded-full;
 
-  &:nth-child(2) {
-    @apply rotate-45;
-  }
-  &:nth-child(3) {
-    animation-delay: 0.4s;
-    @apply rotate-90;
-  }
-  &:nth-child(4) {
-    animation-delay: 0.6s;
-    @apply rotate-[135deg];
-  }
-  &:nth-child(5) {
-    animation-delay: 0.8s;
-    @apply rotate-180;
-  }
-  &:nth-child(6) {
-    animation-delay: 1s;
-    @apply -rotate-[135deg];
-  }
-  &:nth-child(7) {
-    animation-delay: 1.2s;
-    @apply -rotate-90;
-  }
-  &:nth-child(8) {
-    animation-delay: 1.4s;
-    @apply -rotate-45;
+    .unknown & {
+      @apply bg-gray-300 dark:bg-gray-500;
+    }
+    .limited & {
+      @apply bg-amber-400 dark:bg-amber-500;
+    }
+    .zero & {
+      @apply bg-red-500 dark:bg-red-500;
+    }
   }
 }
 
-.playerBytesCounterLabel {
+.counterLabel {
   @apply ml-1;
+}
+
+.counterAmount {
+  @apply relative;
+  @apply text-gray-900 dark:text-gray-50;
+  @apply font-semibold;
+
+  @apply after:absolute after:h-px;
+  @apply after:inset-x-0 after:top-full;
+  @apply after:bg-gray-50;
 }

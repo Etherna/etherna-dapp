@@ -39,7 +39,7 @@ type UpdateIdentityAction = {
 }
 type UpdateCreditAction = {
   type: typeof UserActionTypes.USER_UPDATE_CREDIT
-  credit: number
+  credit: number | null
 }
 type UpdateSignedInAction = {
   type: typeof UserActionTypes.USER_UPDATE_SIGNEDIN
