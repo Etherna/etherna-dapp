@@ -26,7 +26,7 @@
   @apply transition-colors duration-200;
   @apply text-gray-700 dark:text-gray-300;
   @apply bg-gray-900/5 dark:bg-gray-100/5;
-  @apply active:bg-graycool-200 dark:active:bg-gray-800;
+  @apply active:bg-gray-200 dark:active:bg-gray-800;
 
   svg {
     @apply h-[1.25em];

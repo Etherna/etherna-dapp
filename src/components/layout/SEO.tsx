@@ -50,7 +50,7 @@ function SEO({
       meta={[
         {
           name: `theme-color`,
-          content: darkMode ? `#171717` : `#064E3B`,
+          content: darkMode ? `#111827` : `#f9fafb`,
         },
         {
           name: `description`,

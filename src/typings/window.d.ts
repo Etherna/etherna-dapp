@@ -15,7 +15,6 @@
  */
 
 import { compose } from "redux"
-import { providers } from "ethers/lib.esm/ethers"
 
 import { ProfilePrefetch } from "prefetch/prefetchers/profilePrefetcher"
 import { VideoPrefetch } from "prefetch/prefetchers/videoPrefetcher"
@@ -23,9 +22,6 @@ import { VideoPrefetch } from "prefetch/prefetchers/videoPrefetcher"
 declare global {
   interface Window {
     // ethereum
-    web3?: {
-      currentProvider: providers.ExternalProvider
-    }
     ethereum?: ExternalProvider
 
     // prefetch
