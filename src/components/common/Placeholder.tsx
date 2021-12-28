@@ -29,8 +29,8 @@ type PlaceholderProps = {
 }
 
 const Placeholder = ({
-  width = "100%",
-  height = "2rem",
+  width,
+  height,
   ratio,
   round,
   className

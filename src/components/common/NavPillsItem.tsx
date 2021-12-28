@@ -18,18 +18,25 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/NavPills.module.scss"
+import classes from "@styles/components/common/NavPillsItem.module.scss"
 
 type NavPillsItemProps = {
   active?: boolean
+  vertical?: boolean
   onClick?: () => void
 }
 
-const NavPillsItem: React.FC<NavPillsItemProps> = ({ children, active, onClick }) => {
+const NavPillsItem: React.FC<NavPillsItemProps> = ({
+  children,
+  active,
+  vertical,
+  onClick
+}) => {
   return (
     <div
       className={classNames(classes.navPillsItem, {
         [classes.active]: active,
+        [classes.vertical]: vertical,
       })}
       onClick={onClick}
     >

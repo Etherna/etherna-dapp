@@ -24,3 +24,12 @@ export const nullablePromise = async <T>(promise: Promise<T>) =>
   new Promise<T | null>(resolve => {
     promise.then(result => resolve(result)).catch(() => resolve(null))
   })
+
+export const wait = (delay = 1000) =>
+  new Promise<void>(res => {
+    if (import.meta.env.DEV) {
+      setTimeout(res, delay)
+    } else {
+      res()
+    }
+  })

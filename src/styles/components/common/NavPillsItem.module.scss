@@ -14,22 +14,22 @@
  *  limitations under the License.
  */
 
-export type SwarmImageRaw = {
-  /** Image aspect ratio (width / height) */
-  aspectRatio: number
-  /** Blurhash value  */
-  blurhash: string
-  /** Sources of image in different resolutions */
-  sources: {
-    [size: `${number}w`]: string
-  }
-}
+.navPillsItem {
+  @apply text-center font-semibold text-gray-500 px-4 py-1.5 rounded-full;
+  @apply cursor-pointer transition duration-200;
+  @apply hover:bg-gray-200;
+  @apply dark:text-gray-400 dark:hover:bg-gray-800;
 
-export type SwarmImage = SwarmImageRaw & {
-  /** Data URL of the blur-hash  */
-  blurredBase64: string
-  /** img src url */
-  src: string
-  /** img srcset urls */
-  srcset?: string
+  &:not(:last-child) {
+    @apply mr-2;
+  }
+  &.active {
+    @apply bg-primary-500/70 text-gray-50;
+    @apply dark:bg-primary-500/50 dark:text-gray-50;
+  }
+  &.vertical {
+    &:not(:last-child) {
+      @apply mb-2 w-full;
+    }
+  }
 }

@@ -29,10 +29,10 @@ const NavPills: React.FC<NavPillsProps> = ({ children, className, vertical }) =>
   return (
     <nav
       className={classNames(classes.navPills, className, {
-        [classes.navVertical]: vertical,
+        [classes.vertical]: vertical,
       })}
     >
-      {children}
+      {React.Children.map(children, el => React.cloneElement(el as any, { vertical }))}
     </nav>
   )
 }
