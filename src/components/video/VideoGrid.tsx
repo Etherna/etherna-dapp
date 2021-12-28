@@ -27,10 +27,18 @@ import type { Video } from "@definitions/swarm-video"
 type VideoGridProps = {
   label?: string
   videos?: Video[]
+  isFetching?: boolean
+  fetchingPreviewCount?: number
   mini?: boolean
 }
 
-const VideoGrid: React.FC<VideoGridProps> = ({ label, videos, mini }) => {
+const VideoGrid: React.FC<VideoGridProps> = ({
+  label,
+  videos,
+  mini,
+  isFetching,
+  fetchingPreviewCount = 4,
+}) => {
   const LabelTag = mini ? "h5" : "h3"
   return (
     <>
@@ -40,11 +48,14 @@ const VideoGrid: React.FC<VideoGridProps> = ({ label, videos, mini }) => {
         </div>
       )}
       <div className={classNames(classes.videoGrid, { [classes.mini]: mini })}>
-        {videos === undefined && <VideoPreviewPlaceholder />}
-        {videos &&
-          videos.map((v, i) => (
-            <VideoPreview video={v} hideProfile={mini} key={v.reference + `_${i}`} />
-          ))}
+        {videos && videos.map(video => (
+          <VideoPreview video={video} hideProfile={mini} key={video.reference} />
+        ))}
+        {isFetching && (
+          Array(fetchingPreviewCount).fill(0).map((_, i) => (
+            <VideoPreviewPlaceholder mini={mini} key={i} />
+          ))
+        )}
       </div>
     </>
   )

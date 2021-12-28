@@ -37,7 +37,8 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
   const [profile, setProfile] = useState<Profile>()
   const { videos, hasMore, isFetching, loadMore } = useSwarmVideos({
     ownerAddress: profileAddress,
-    profileData: profile
+    profileData: profile,
+    waitProfile: true,
   })
 
   const { address } = useSelector(state => state.user)

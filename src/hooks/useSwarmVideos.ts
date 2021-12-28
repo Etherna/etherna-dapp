@@ -18,6 +18,7 @@ import { useEffect, useState } from "react"
 
 import SwarmVideoIO from "@classes/SwarmVideo"
 import useSelector from "@state/useSelector"
+import { wait } from "@utils/promise"
 import type { Profile } from "@definitions/swarm-profile"
 import type { Video } from "@definitions/swarm-video"
 import type { IndexVideo } from "@definitions/api-index"
@@ -27,23 +28,13 @@ type SwarmVideosOptions = {
   fetchLimit?: number
   profileData?: Profile
   ownerAddress?: string
-}
-
-type UseVideos = {
-  /** Videos list */
-  videos: Video[] | undefined
-  /** Whether more videos can be fetched */
-  hasMore: boolean
-  /** Is fetching videos */
-  isFetching: boolean
-  /** Load more videos */
-  loadMore: () => void
+  waitProfile?: boolean
 }
 
 const DEFAULT_SEED_LIMIT = 50
 const DEFAULT_FETCH_LIMIT = 20
 
-export default function useSwarmVideos(opts: SwarmVideosOptions = {}): UseVideos {
+export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
   const { beeClient, indexClient } = useSelector(state => state.env)
   const [videos, setVideos] = useState<Video[]>()
   const [page, setPage] = useState(0)
@@ -57,9 +48,14 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}): UseVideos
   }, [opts.ownerAddress])
 
   useEffect(() => {
+    if (opts.waitProfile && !opts.profileData) {
+      // waiting profile is fetching
+      setIsFetching(true)
+      return
+    }
     fetchVideos()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page])
+  }, [page, opts.waitProfile, opts.profileData])
 
   useEffect(() => {
     if (opts.profileData) {
@@ -88,6 +84,10 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}): UseVideos
   }
 
   const fetchVideos = async () => {
+    if (!hasMore) {
+      return setIsFetching(false)
+    }
+
     setIsFetching(true)
 
     const { ownerAddress } = opts
@@ -97,12 +97,18 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}): UseVideos
       : await indexClient.videos.fetchVideos(page, take)
 
     const newVideos = await Promise.all(indexVideos.map(videoLoadPromise))
+    await wait(2000)
 
     if (newVideos.length < take) {
       setHasMore(false)
     }
 
-    setVideos((videos ?? []).concat(newVideos))
+    setVideos(videos => {
+      return [
+        ...(videos ?? []),
+        ...newVideos
+      ].filter((vid, i, self) => self.indexOf(vid) === i)
+    })
 
     setIsFetching(false)
   }

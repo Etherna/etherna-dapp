@@ -20,6 +20,7 @@ import React, { useEffect } from "react"
 import classes from "@styles/components/profile/ProfileInfo.module.scss"
 
 import SwarmImg from "@common/SwarmImg"
+import ProfileInfoPlaceholder from "@components/placeholders/ProfileInfoPlaceholder"
 import useSwarmProfile from "@hooks/useSwarmProfile"
 import useErrorMessage from "@state/hooks/ui/useErrorMessage"
 import makeBlockies from "@utils/makeBlockies"
@@ -41,7 +42,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   actions,
   onFetchedProfile
 }) => {
-  const { profile, loadProfile } = useSwarmProfile({ address: profileAddress })
+  const { profile, isLoading, loadProfile } = useSwarmProfile({ address: profileAddress })
   const profileName = profile?.name ? profile.name : profileAddress
   const { showError } = useErrorMessage()
 
@@ -67,16 +68,12 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   }, [profile])
 
   const fetchProfile = async () => {
-    //setIsFetchingProfile(true)
-
     try {
       await loadProfile()
     } catch (error: any) {
       console.error(error)
       showError("Error", "Failed to fetch the profile information")
     }
-
-    //setIsFetchingProfile(false)
   }
 
   return (
@@ -92,35 +89,41 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
         )}
       </div>
 
-      <div className="row items-center">
-        <div className="col md:max-w-xxs px-4">
-          <div className={classes.profileAvatar}>
-            <SwarmImg
-              image={profile?.avatar}
-              fallback={makeBlockies(profileAddress)}
-              alt={profileName}
-            />
+      {isLoading ? (
+        <ProfileInfoPlaceholder>{children}</ProfileInfoPlaceholder>
+      ) : (
+        <>
+          <div className="row items-center">
+            <div className="col md:max-w-xxs px-4">
+              <div className={classes.profileAvatar}>
+                <SwarmImg
+                  image={profile?.avatar}
+                  fallback={makeBlockies(profileAddress)}
+                  alt={profileName}
+                />
+              </div>
+            </div>
+            <div className="col flex-1 px-4">
+              <div className="flex">{actions}</div>
+            </div>
           </div>
-        </div>
-        <div className="col flex-1 px-4">
-          <div className="flex">{actions}</div>
-        </div>
-      </div>
 
-      <div className="row">
-        <div className="col md:max-w-xxs p-4">
-          <h1 className={classes.profileName}>
-            {checkIsEthAddress(profileName)
-              ? shortenEthAddr(profileName)
-              : profileName || shortenEthAddr(profileName)}
-          </h1>
-          {nav}
-        </div>
-        <div className="col flex-1 p-4">
-          {/* Main content */}
-          {children}
-        </div>
-      </div>
+          <div className="row">
+            <div className="col md:max-w-xxs p-4">
+              <h1 className={classes.profileName}>
+                {checkIsEthAddress(profileName)
+                  ? shortenEthAddr(profileName)
+                  : profileName || shortenEthAddr(profileName)}
+              </h1>
+              {nav}
+            </div>
+            <div className="col flex-1 p-4">
+              {/* Main content */}
+              {children}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
