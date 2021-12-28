@@ -69,7 +69,7 @@ Update the following keys with the paths to the .csproj file (example '/path/to/
 - `ETHERNA_SSO_PROJECT_PATH`
 - `ETHERNA_INDEX_PROJECT_PATH`
 - `ETHERNA_CREDIT_PROJECT_PATH`
-- `ETHERNA_GATEWAY_VALIDATOR_PROJECT_PATH`
+- `ETHERNA_GATEWAY_PROJECT_PATH`
 
 ### 6. Setup bee server
 
