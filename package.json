@@ -6,6 +6,7 @@
   "author": "Mattia Dalzocchio",
   "license": "Apache-2.0",
   "dependencies": {
+    "@datapunt/matomo-tracker-react": "0.5.1",
     "@ethersphere/bee-js": "3.1.0",
     "@ffmpeg/core": "0.10.0",
     "@ffmpeg/ffmpeg": "0.10.1",

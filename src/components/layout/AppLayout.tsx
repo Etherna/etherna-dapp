@@ -26,8 +26,11 @@ import Popups from "@components/layout/Popups"
 import Modals from "@components/modals/ModalsSection"
 import { LayoutContextProvider } from "@context/layout-context"
 import { useLayoutState } from "@context/layout-context/hooks"
+import usePageTracking from "@hooks/usePageTracking"
 
 const AppLayout: React.FC = ({ children }) => {
+  usePageTracking()
+
   return (
     <LayoutContextProvider>
       <AppLayoutContent>

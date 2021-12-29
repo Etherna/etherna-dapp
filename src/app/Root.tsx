@@ -21,6 +21,7 @@ import { HelmetProvider } from "react-helmet-async"
 
 import "@styles/theme.scss"
 
+import AnalyticsProvider from "./AnalyticsProvider"
 import Router from "./Router"
 import AppLayout from "@components/layout/AppLayout"
 import ShortcutWrapper from "@keyboard/shortcutWrapper"
@@ -36,9 +37,11 @@ const Root: React.FC = () => {
   return (
     <BrowserRouter basename={getBasename()}>
       <HelmetProvider context={{}}>
-        <AppLayout>
-          <Router />
-        </AppLayout>
+        <AnalyticsProvider>
+          <AppLayout>
+            <Router />
+          </AppLayout>
+        </AnalyticsProvider>
       </HelmetProvider>
     </BrowserRouter>
   )
