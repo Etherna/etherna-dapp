@@ -33,12 +33,13 @@ import { isTouchDevice } from "@utils/browser"
 import type { VideoSource } from "@definitions/swarm-video"
 
 type PlayerProps = {
+  title?: string
   sources: VideoSource[]
   originalQuality?: string | null
   thumbnail?: string | null
 }
 
-const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnail }) => {
+const InnerPlayer: React.FC<PlayerProps> = ({ title, sources, originalQuality, thumbnail }) => {
   const [state, dispatch] = usePlayerState()
   const { source, currentQuality, isPlaying, currentTime, error, videoEl } = state
 
@@ -249,6 +250,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({ sources, originalQuality, thumbnai
           onPause={stopIdleTimeout}
           onTimeUpdate={onTimeUpdate}
           onError={onPlaybackError}
+          data-matomo-title={title}
         >
           <source src={source} />
           <p className="text-center block">

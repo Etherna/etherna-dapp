@@ -75,6 +75,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState }) => {
         <div className="row justify-center">
           <div className="col lg:w-3/4">
             <Player
+              title={video.title || reference}
               sources={video.sources}
               originalQuality={video.originalQuality}
               thumbnail={SwarmImageIO.Reader.getOriginalSourceReference(video.thumbnail)}
