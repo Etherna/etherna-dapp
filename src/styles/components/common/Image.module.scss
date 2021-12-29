@@ -14,23 +14,30 @@
  *  limitations under the License.
  */
 
-.swarmImg {
-  @apply relative w-full h-full;
+.image {
+  @apply relative;
+
+  &.fill {
+    @apply absolute inset-0;
+  }
+  &.responsive {
+    @apply w-full;
+  }
 }
 
-.swarmImgPreview {
+.imagePlaceholder {
   @apply absolute inset-0;
-  @apply w-full h-full;
-  // @apply blur-[2px];
+  @apply bg-no-repeat bg-cover;
+  @apply bg-gray-400 dark:bg-gray-600;
+  @apply transition-opacity duration-300;
+
+  .loaded & {
+    @apply opacity-0;
+  }
 }
 
-.swarmImgPreview + .swarmImgPreview {
-  @apply -z-1;
-}
-
-.swarmImgPicture {
+.imagePicture {
   img {
-    @apply w-full h-full;
-    @apply object-cover object-center;
+    @apply absolute inset-0 w-full h-full;
   }
 }

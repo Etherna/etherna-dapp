@@ -23,7 +23,7 @@ import { ReactComponent as ThumbPlaceholder } from "@assets/backgrounds/thumb-pl
 
 import VideoMenu from "./VideoMenu"
 import StateLink from "@common/StateLink"
-import SwarmImg from "@common/SwarmImg"
+import Image from "@common/Image"
 import Time from "@components/media/Time"
 import Avatar from "@components/user/Avatar"
 import Routes from "@routes"
@@ -66,9 +66,12 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile }) => {
     <div className={classes.videoPreview}>
       <VideoLink>
         <div className={classes.videoThumbnail}>
-          <SwarmImg
-            image={video.thumbnail}
-            fallback={encodedSvg(<ThumbPlaceholder />)}
+          <Image
+            src={encodedSvg(<ThumbPlaceholder />)}
+            sources={video.thumbnail?.sources}
+            placeholder="blur"
+            blurredDataURL={video.thumbnail?.blurredBase64}
+            fallbackSrc={encodedSvg(<ThumbPlaceholder />)}
           />
           {video.duration && video.duration > 0 && (
             <div className={classes.videoThumbnailDuration}>

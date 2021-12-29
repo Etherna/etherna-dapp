@@ -24,6 +24,10 @@
     @apply flex-grow;
   }
 
+  img, .img {
+    @apply w-full h-full object-cover overflow-hidden;
+  }
+
   &.badge {
     &::after {
       content: "";

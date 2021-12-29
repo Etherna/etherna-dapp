@@ -19,7 +19,7 @@ import React, { useEffect } from "react"
 
 import classes from "@styles/components/profile/ProfileInfo.module.scss"
 
-import SwarmImg from "@common/SwarmImg"
+import Image from "@common/Image"
 import ProfileInfoPlaceholder from "@components/placeholders/ProfileInfoPlaceholder"
 import useSwarmProfile from "@hooks/useSwarmProfile"
 import useErrorMessage from "@state/hooks/ui/useErrorMessage"
@@ -80,11 +80,14 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
     <div className={classes.profile}>
       <div className={classes.cover}>
         {profile?.cover && (
-          <SwarmImg
-            image={profile.cover}
+          <Image
+            sources={profile.cover.sources}
+            placeholder="blur"
+            blurredDataURL={profile.cover.blurredBase64}
+            layout="responsive"
+            aspectRatio={profile.cover.aspectRatio}
             alt={profileName}
             className={classes.coverImage}
-            preserveAspectRatio
           />
         )}
       </div>
@@ -96,9 +99,12 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
           <div className="row items-center">
             <div className="col md:max-w-xxs px-4">
               <div className={classes.profileAvatar}>
-                <SwarmImg
-                  image={profile?.avatar}
-                  fallback={makeBlockies(profileAddress)}
+                <Image
+                  sources={profile?.avatar?.sources}
+                  placeholder="blur"
+                  blurredDataURL={profile?.avatar?.blurredBase64}
+                  layout="fill"
+                  fallbackSrc={makeBlockies(profileAddress)}
                   alt={profileName}
                 />
               </div>
