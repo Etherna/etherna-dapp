@@ -181,12 +181,15 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
               <Button
                 className={classNames(classes.btn, classes.removeButton)}
                 type="button"
+                modifier="secondary"
                 onClick={e => handleRemoveImage(e, "cover")}
               >
                 &#10005;
               </Button>
             )}
-            <Button as="div" className={classNames(classes.btn)}>Change cover</Button>
+            <Button as="div" modifier="secondary" className={classNames(classes.btn)}>
+              Change cover
+            </Button>
           </div>
         </label>
       </div>

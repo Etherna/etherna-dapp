@@ -22,7 +22,7 @@ import { ReactComponent as ThumbPlaceholder } from "@assets/backgrounds/thumb-pl
 
 import Modal from "@common/Modal"
 import Button from "@common/Button"
-import SwarmImg from "@common/SwarmImg"
+import Image from "@common/Image"
 import { useErrorMessage } from "@state/hooks/ui"
 import { encodedSvg } from "@utils/svg"
 
@@ -82,9 +82,9 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
     >
       <div className="flex my-4">
         <div className="col sm:w-1/4">
-          <SwarmImg
-            image={imagePreview}
-            fallback={encodedSvg(<ThumbPlaceholder />)}
+          <Image
+            src={imagePreview}
+            fallbackSrc={encodedSvg(<ThumbPlaceholder />)}
             className="rounded min-h-16 bg-gray-500"
             alt=""
           />

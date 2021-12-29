@@ -20,7 +20,7 @@ import classNames from "classnames"
 
 import classes from "@styles/components/user/Avatar.module.scss"
 
-import SwarmImg from "@common/SwarmImg"
+import Image from "@common/Image"
 import makeBlockies from "@utils/makeBlockies"
 import type { SwarmImage } from "@definitions/swarm-image"
 
@@ -34,6 +34,7 @@ type AvatarProps = {
 
 const Avatar: React.FC<AvatarProps> = ({ image, address, size, showBadge, className }) => {
   const blockie = address ? makeBlockies(address) : undefined
+  const src = !image ? blockie : undefined
 
   return (
     <div
@@ -43,13 +44,15 @@ const Avatar: React.FC<AvatarProps> = ({ image, address, size, showBadge, classN
         height: size ? `${size}px` : undefined,
       }}
     >
-      <SwarmImg
-        image={image}
-        fallback={blockie}
-        style={{
-          width: size ? `${size}px` : undefined,
-          height: size ? `${size}px` : undefined,
-        }}
+      <Image
+        src={src}
+        sources={typeof image === "object" ? image?.sources : undefined}
+        placeholder={typeof image === "object" ? "blur" : "empty"}
+        blurredDataURL={typeof image === "object" ? image?.blurredBase64 : undefined}
+        layout="fill"
+        objectFit="cover"
+        fallbackSrc={blockie}
+        placeholderClassName="rounded-full"
       />
     </div>
   )

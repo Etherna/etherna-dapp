@@ -19,8 +19,9 @@
 }
 
 .cover {
-  @apply w-full bg-gray-200 -mb-8;
-  @apply dark:bg-gray-800;
+  @apply relative;
+  @apply w-full min-h-44 -mb-8;
+  @apply bg-gray-200/90 dark:bg-gray-800/50;
 }
 
 .coverImage {
@@ -28,7 +29,7 @@
 }
 
 .coverInput {
-  @apply relative w-full min-h-32 m-0 overflow-hidden;
+  @apply absolute inset-0 m-0 overflow-hidden;
 
   &.hasCover {
     @apply h-auto;
@@ -44,8 +45,6 @@
 
   .btn {
     @apply h-8 py-1 rounded-full mx-2 normal-case cursor-pointer;
-    @apply bg-black bg-opacity-50;
-    @apply hover:bg-black;
   }
   .removeButton {
     @apply w-8 p-0 justify-center;
