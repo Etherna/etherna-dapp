@@ -46,8 +46,10 @@ const UserCredit: React.FC = () => {
       >
         <div className={classes.userCreditPopup}>
           <p className="text-xs mb-4">You current balance is:</p>
-          <p className="text-2xl font-bold break-all">{credit}</p>
-          <span className="text-sm text-gray-600 dark:text-gray-400 tracking-tighter">USD</span>
+          <p className="text-2xl font-bold break-all">
+            {credit}
+            <span className="text-sm text-gray-600 dark:text-gray-400 tracking-tighter">USD</span>
+          </p>
           {bytePrice && (
             <p className="my-3 text-gray-600 dark:text-gray-400 text-sm">
               This is equivalent to <strong className="text-md">{gbReproduction}</strong> GB of videos reprodution.
