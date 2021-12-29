@@ -15,7 +15,7 @@
  */
 
 import http from "@utils/request"
-import type { GatewayCurrentUser } from "@definitions/api-gateway"
+import type { GatewayCredit, GatewayCurrentUser } from "@definitions/api-gateway"
 
 export default class GatewayUsersClient {
   url: string
@@ -53,11 +53,11 @@ export default class GatewayUsersClient {
   async fetchCredit() {
     const endpoint = `${this.url}/users/current/credit`
 
-    const resp = await http.get<number>(endpoint, {
+    const resp = await http.get<GatewayCredit>(endpoint, {
       withCredentials: true
     })
 
-    if (typeof resp.data !== "number") {
+    if (typeof resp.data !== "object") {
       throw new Error("Cannot fetch user's credit")
     }
 

@@ -43,7 +43,7 @@ const UserMenu: React.FC = () => {
 
   if (isSigningIn) {
     return (
-      <Placeholder width="2rem" height="2rem" round="full" />
+      <Placeholder width="2.25rem" height="2.25rem" round="full" />
     )
   }
 
@@ -55,7 +55,7 @@ const UserMenu: React.FC = () => {
             {isSignedIn === false ? (
               <MoreIcon />
             ) : (
-              <Avatar image={avatar} address={address} size={32} />
+              <Avatar image={avatar} address={address} size={36} />
             )}
           </Button>
         </DropdownToggle>

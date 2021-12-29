@@ -40,6 +40,7 @@ type UpdateIdentityAction = {
 type UpdateCreditAction = {
   type: typeof UserActionTypes.USER_UPDATE_CREDIT
   credit: number | null
+  creditUnlimited: boolean
 }
 type UpdateSignedInAction = {
   type: typeof UserActionTypes.USER_UPDATE_SIGNEDIN
@@ -81,6 +82,7 @@ const userReducer = (state: UserState = {}, action: UserActions): UserState => {
       return {
         ...state,
         credit: action.credit,
+        creditUnlimited: action.creditUnlimited,
       }
 
     case UserActionTypes.USER_UPDATE_SIGNEDIN:

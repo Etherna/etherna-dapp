@@ -26,3 +26,8 @@ export type GatewayCurrentUser = {
   etherPreviousAddresses: string[]
   username: string
 }
+
+export type GatewayCredit = {
+  isUnlimited: boolean
+  value: number
+}
