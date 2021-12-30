@@ -17,7 +17,7 @@ export async function createPostageBatch(amount = 10000000, depth = 20) {
   try {
     const batchResp = await axios.post(`${process.env.BEE_DEBUG_ENDPOINT}/stamps/${amount}/${depth}`)
     const { batchID } = batchResp.data
-    console.log(chalk.green(`Created postage batch. Id: ${batchID}`))
+    console.log(chalk.blueBright(`Created postage batch: ${batchID}`))
     return batchID
   } catch (error) {
     console.log(chalk.red(`Cannot create postage batch: ${error.message}`))

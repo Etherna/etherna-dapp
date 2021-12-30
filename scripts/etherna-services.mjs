@@ -22,6 +22,7 @@ import url from "url"
 import { exec } from "child_process"
 import DotEnv from "dotenv"
 import { createPostageBatch } from "./create-postage-batch.mjs"
+import { loadSeed } from "./swarm-seed.mjs"
 
 DotEnv.config({
   path: fs.existsSync(path.resolve(`.env.development`))
@@ -187,7 +188,8 @@ const run = async () => {
     const beeProcess = execBee()
     processes.push(beeProcess)
     await waitService(process.env.BEE_ENDPOINT, "Bee Node")
-    await createPostageBatch()
+    const batchId = await createPostageBatch()
+    await loadSeed(batchId)
   }
 
   if (shouldRunEthernaSSO) {
