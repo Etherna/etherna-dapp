@@ -31,7 +31,7 @@ const GatewayValidPathsRegex = /^\/(bytes|chunks|bzz|tags|pins|soc|feeds|pss|sta
 const MaxBodySizeCap = 5000000 //5MB
 const ValidatorHost = process.env.GATEWAY_VALIDATOR_PROXY_HOST
 const SwarmHost = process.env.GATEWAY_SWARM_PROXY_HOST
-const SeedDataFolder = path.resolve(process.env.OLDPWD + "/seed")
+const SeedDataFolder = path.resolve(process.cwd() + "/../") + "/seed"
 
 // Middleware
 const SwarmMiddleware = createProxyMiddleware(
