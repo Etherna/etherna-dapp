@@ -81,19 +81,19 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
       onClose={onCancel}
     >
       <div className="flex my-4">
-        <div className="col sm:w-1/4">
+        <div className="col relative sm:w-1/4 min-h-16">
           <Image
-            src={imagePreview}
+            src={imagePreview ?? encodedSvg(<ThumbPlaceholder />)}
             fallbackSrc={encodedSvg(<ThumbPlaceholder />)}
             className="rounded min-h-16 bg-gray-500"
             alt=""
           />
         </div>
         <div className="col sm:w-3/4">
-          <h4 className="ml-2 mt-3">{title}</h4>
+          <h4 className="ml-2 mt-3 font-semibold">{title || "Untitled"}</h4>
         </div>
       </div>
-      <p>
+      <p className="block leading-tight mt-2">
         Do you confirm to delete this video? <br />
         This operation cannot be undone.
       </p>

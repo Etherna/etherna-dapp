@@ -207,7 +207,7 @@ const VideoEditor = () => {
             <div className={classes.videoEditorActionBar}>
               <div className={classes.videoEditorActionSave}>
                 <SaveButton />
-                {!canPublishVideo && (
+                {(!canPublishVideo && !reference) && (
                   <FieldDesrcription smaller>
                     Before publishing a video you must upload a <wbr />
                     <strong>video source</strong> and insert a <strong>title</strong>.

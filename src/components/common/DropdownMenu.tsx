@@ -22,10 +22,11 @@ import { Menu, Transition } from "@headlessui/react"
 import classes from "@styles/components/common/DropdownMenu.module.scss"
 
 export type DropdownMenuProps = {
+  className?: string
   open?: boolean
 }
 
-const DropdownMenu: React.FC<DropdownMenuProps> = ({ children, open }) => {
+const DropdownMenu: React.FC<DropdownMenuProps> = ({ children, className, open }) => {
   return (
     <Transition
       show={open}
@@ -37,7 +38,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ children, open }) => {
       leaveFrom="transform opacity-100 scale-100"
       leaveTo="transform opacity-0 scale-95"
     >
-      <Menu.Items className={classNames(classes.dropdownMenu)} static>
+      <Menu.Items className={classNames(classes.dropdownMenu, className)} static>
         {children}
       </Menu.Items>
     </Transition>
