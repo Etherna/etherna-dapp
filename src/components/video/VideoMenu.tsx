@@ -38,7 +38,7 @@ const VideoMenu: React.FC<VideoMenuProps> = ({ video }) => {
       <DropdownToggle>
         <MoreIcon className="w-5 h-5" />
       </DropdownToggle>
-      <DropdownMenu>
+      <DropdownMenu className="!w-44">
         <DropdownItem>
           <StateLink to={Routes.getVideoSettingsLink(video.reference)} state={video}>Video Settings</StateLink>
         </DropdownItem>

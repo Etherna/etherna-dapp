@@ -28,6 +28,7 @@
 }
 
 .videoGrid {
+  @apply pb-24;
   $video-size: 200px;
   $video-size-mini: 120px;
 

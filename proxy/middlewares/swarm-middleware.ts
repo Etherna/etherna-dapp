@@ -14,12 +14,15 @@
  *  limitations under the License.
  */
 
+import fs from "fs"
+import path from "path"
 import { createProxyMiddleware } from "http-proxy-middleware"
 import { Request as ProxyRequest, Response as ProxyResponse } from "http-proxy-middleware/dist/types"
 import { ClientRequest, IncomingHttpHeaders } from "http"
 import fetch, { Response, RequestInit, BodyInit } from "node-fetch"
 
 import "../utils/env.js"
+import { unzipJSON } from "../utils/unzip.js"
 import FilterTransformStream from "../classes/FilterTransformStream.js"
 import type { ValidationResponse } from "./validator"
 
@@ -28,6 +31,7 @@ const GatewayValidPathsRegex = /^\/(bytes|chunks|bzz|tags|pins|soc|feeds|pss|sta
 const MaxBodySizeCap = 5000000 //5MB
 const ValidatorHost = process.env.GATEWAY_VALIDATOR_PROXY_HOST
 const SwarmHost = process.env.GATEWAY_SWARM_PROXY_HOST
+const SeedDataFolder = path.resolve(process.cwd() + "/../") + "/seed"
 
 // Middleware
 const SwarmMiddleware = createProxyMiddleware(
@@ -212,7 +216,60 @@ async function forwardRequestToGateway(request: ProxyRequest) {
   const options = parseFetchOptions(headers, request.method, request.body)
   options.compress = false
 
+  if (request.method === "POST" && /^\/(soc|bzz|feeds)/.test(request.path) && process.env.BEE_SEED_ENABLED === "true") {
+    return await saveSeedData(request, await fetch(SwarmHost + request.url, options))
+  }
   return await fetch(SwarmHost + request.url, options)
+}
+
+/**
+ * Save seed data locally
+ * @param req Proxy request
+ * @param res Fetch response
+ */
+async function saveSeedData(req: ProxyRequest, res: Response) {
+  // create folders 
+  if (!fs.existsSync(SeedDataFolder)) fs.mkdirSync(SeedDataFolder)
+  if (!fs.existsSync(SeedDataFolder + "/data")) fs.mkdirSync(SeedDataFolder + "/data")
+
+  const data = await res.clone().arrayBuffer()
+  const respJson = await unzipJSON<{ reference: string }>(data)
+  const reference = respJson.reference
+
+  if (!reference) return
+
+  type RequestsLog = {
+    v: number
+    items: Array<{
+      path: string
+      search?: string
+      contentType: string | null
+      dataId?: string
+    }>
+  }
+
+  const requests: RequestsLog = fs.existsSync(SeedDataFolder + "/requests.json")
+    ? JSON.parse(fs.readFileSync(SeedDataFolder + "/requests.json").toString())
+    : { v: 1, items: [] }
+
+  const dataId = Buffer.isBuffer(req.body) ? reference : undefined
+  const exists = requests.items.find(item => item.path === req.path && item.dataId === dataId)
+
+  if (!exists) {
+    requests.items.push({
+      path: req.path,
+      search: new URL(req.url, "http://dummy.test").search,
+      contentType: req.headers["content-type"] || null,
+      dataId,
+    })
+
+    fs.writeFileSync(SeedDataFolder + "/requests.json", JSON.stringify(requests))
+    if (Buffer.isBuffer(req.body)) {
+      fs.writeFileSync(SeedDataFolder + "/data/" + reference, req.body)
+    }
+  }
+
+  return res
 }
 
 /**

@@ -89,18 +89,16 @@ const Image: React.FC<ImageProps> = ({
     if (!rootEl) return
 
     if (sources) {
-      const src = getOptimizedSrc(sources, rootEl.clientWidth)
-      setSrc(src)
-      setImgLoaded(false)
+      const newSrc = getOptimizedSrc(sources, rootEl.clientWidth)
+      setSrc(newSrc)
+      newSrc !== src && setImgLoaded(false)
     } else {
       setSrc(staticSrc)
     }
   }
 
   const onLoadImage = () => {
-    setTimeout(() => {
-      setImgLoaded(true)
-    }, 500)
+    setImgLoaded(true)
   }
 
   const onError = () => {

@@ -26,7 +26,7 @@ import type { SwarmVideoUploadOptions, SwarmVideoWriterOptions } from "./types"
 import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@definitions/swarm-video"
 import type { SwarmImageRaw } from "@definitions/swarm-image"
 import type { IndexVideo } from "@definitions/api-index"
-import { Profile } from "@definitions/swarm-profile"
+import type { Profile } from "@definitions/swarm-profile"
 
 /**
  * Load/Update video info over swarm

@@ -32,6 +32,7 @@ bower_components
 # Compiled scripts
 build/
 dist/
+seed/
 
 # Dependency directories
 node_modules/
