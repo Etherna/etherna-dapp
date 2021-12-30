@@ -81,13 +81,13 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
       <div className={classes.cover}>
         {profile?.cover && (
           <Image
+            className={classes.coverImage}
             sources={profile.cover.sources}
             placeholder="blur"
             blurredDataURL={profile.cover.blurredBase64}
             layout="responsive"
             aspectRatio={profile.cover.aspectRatio}
             alt={profileName}
-            className={classes.coverImage}
           />
         )}
       </div>
