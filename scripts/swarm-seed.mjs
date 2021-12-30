@@ -59,6 +59,8 @@ export async function testSeed() {
 }
 
 export async function loadSeed(batchId) {
+  if (process.env.BEE_SEED_ENABLED !== "true") return
+
   const requests = fs.existsSync(SeedDataFolder + "/requests.json")
     ? JSON.parse(fs.readFileSync(SeedDataFolder + "/requests.json").toString())
     : { v: 1, items: [] }

@@ -216,7 +216,7 @@ async function forwardRequestToGateway(request: ProxyRequest) {
   const options = parseFetchOptions(headers, request.method, request.body)
   options.compress = false
 
-  if (request.method === "POST" && /^\/(soc|bzz|feeds)/.test(request.path)) {
+  if (request.method === "POST" && /^\/(soc|bzz|feeds)/.test(request.path) && process.env.BEE_SEED_ENABLED === "true") {
     return await saveSeedData(request, await fetch(SwarmHost + request.url, options))
   }
   return await fetch(SwarmHost + request.url, options)
