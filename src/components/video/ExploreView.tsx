@@ -22,7 +22,7 @@ import VideoGrid from "@components/video/VideoGrid"
 import useSwarmVideos from "@hooks/useSwarmVideos"
 
 const ExploreView = () => {
-  const { videos, hasMore, loadMore } = useSwarmVideos()
+  const { videos, hasMore, isFetching, loadMore } = useSwarmVideos()
 
   return (
     <InfiniteScroller
@@ -33,7 +33,7 @@ const ExploreView = () => {
       loader={<div />}
       style={{ overflow: "unset" }}
     >
-      <VideoGrid videos={videos} />
+      <VideoGrid videos={videos} isFetching={isFetching} />
     </InfiniteScroller>
   )
 }
