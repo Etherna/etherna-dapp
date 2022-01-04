@@ -15,7 +15,7 @@
  *  
  */
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Redirect } from "react-router"
 
 import classes from "@styles/components/video-editor/VideoEditor.module.scss"
@@ -40,6 +40,7 @@ import SwarmVideoIO from "@classes/SwarmVideo"
 import { useVideoEditorBaseActions, useVideoEditorState } from "@context/video-editor-context/hooks"
 import VideoEditorCache from "@context/video-editor-context/VideoEditorCache"
 import Routes from "@routes"
+import useUserPlaylists from "@hooks/useUserPlaylists"
 import useSelector from "@state/useSelector"
 import { useConfirmation, useErrorMessage } from "@state/hooks/ui"
 import type { Profile } from "@definitions/swarm-profile"
@@ -65,16 +66,35 @@ const VideoEditor = () => {
 
   const { showError } = useErrorMessage()
   const { resetState } = useVideoEditorBaseActions()
+  const {
+    channelPlaylist,
+    loadPlaylists,
+    addVideoToPlaylist,
+    removeVideoFromPlaylist
+  } = useUserPlaylists(address!, { resolveChannel: true })
+
+  useEffect(() => {
+    if (address) {
+      loadPlaylists()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address])
 
   const submitVideo = async () => {
     const { duration, originalQuality } = videoWriter.videoRaw
 
+    if (!channelPlaylist) {
+      return showError(
+        "Channel error",
+        "Channel video list not fetched."
+      )
+    }
+
     if (!duration || !originalQuality) {
-      showError(
+      return showError(
         "Metadata error",
         "There was a problem loading the video metadata. Try to re-upload the original video."
       )
-      return
     }
 
     setIsSubmitting(true)
@@ -90,13 +110,16 @@ const VideoEditor = () => {
         location: profile.location,
         website: profile.website,
       }
-      const reference = await videoWriter.update(ownerProfile)
+      const videoReference = await videoWriter.update(ownerProfile)
+
+      // update channel playlist
+      !reference && await addVideoToPlaylist(channelPlaylist.id, videoReference)
 
       // update route state for redirect
       window.routeState = videoWriter.video
 
       resetState()
-      setVideoLink(Routes.getVideoLink(reference))
+      setVideoLink(Routes.getVideoLink(videoReference))
       setSaved(true)
     } catch (error: any) {
       console.error(error)
@@ -107,10 +130,18 @@ const VideoEditor = () => {
   }
 
   const deleteVideo = async () => {
+    if (!channelPlaylist) {
+      return showError(
+        "Channel error",
+        "Channel video list not fetched."
+      )
+    }
+
     setIsDeleting(true)
 
     try {
       await videoWriter.deleteVideo()
+      await removeVideoFromPlaylist(channelPlaylist.id, reference!)
 
       setSaved(true)
     } catch (error: any) {

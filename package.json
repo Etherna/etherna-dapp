@@ -19,6 +19,7 @@
     "axios": "0.24.0",
     "blurhash": "1.1.4",
     "classnames": "2.3.1",
+    "crypto-ts": "1.0.2",
     "dayjs": "1.10.7",
     "draft-js": "0.11.7",
     "ethereum-blockies-base64": "1.0.2",

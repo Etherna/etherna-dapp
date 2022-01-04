@@ -1,4 +1,4 @@
-/*
+/* 
  *  Copyright 2021-present Etherna Sagl
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,30 +12,22 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
  */
 
-import React from "react"
-import InfiniteScroller from "react-infinite-scroll-component"
+import type { Canceler } from "axios"
 
-import VideoGrid from "@components/video/VideoGrid"
-import useSwarmVideos from "@hooks/useSwarmVideos"
+import type SwarmBeeClient from "@classes/SwarmBeeClient"
+import type { SwarmPlaylist, SwarmPlaylistType } from "@definitions/swarm-playlist"
 
-const ExploreView = () => {
-  const { videos, hasMore, isFetching, loadMore } = useSwarmVideos()
-
-  return (
-    <InfiniteScroller
-      dataLength={videos?.length ?? 0}
-      next={loadMore}
-      hasMore={hasMore}
-      scrollThreshold={30}
-      loader={<div />}
-      style={{ overflow: "unset" }}
-    >
-      <VideoGrid videos={videos} isFetching={isFetching} />
-    </InfiniteScroller>
-  )
+export type SwarmPlaylistReaderOptions = {
+  beeClient: SwarmBeeClient
+  indexUrl: string
+  owner?: string
+  id?: string
 }
 
-export default ExploreView
+export type SwarmPlaylistWriterOptions = {
+  beeClient: SwarmBeeClient
+  indexUrl: string
+  initialType?: SwarmPlaylistType
+}
