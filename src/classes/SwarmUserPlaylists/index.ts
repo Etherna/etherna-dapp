@@ -17,11 +17,43 @@
 import SwarmUserPlaylistsReader from "./SwarmUserPlaylistsReader"
 import SwarmUserPlaylistsWriter from "./SwarmUserPlaylistsWriter"
 import { urlOrigin } from "@utils/urls"
+import uuidv4 from "@utils/uuid"
+import type { SwarmPlaylist } from "@definitions/swarm-playlist"
 
 const SwarmUserPlaylistsIO = {
   Reader: SwarmUserPlaylistsReader,
   Writer: SwarmUserPlaylistsWriter,
-  getFeedTopicName: (index: string) => `EthernaUserPlaylists:${urlOrigin(index)}`
+  getFeedTopicName: (index: string) => `EthernaUserPlaylists:${urlOrigin(index)}`,
+  getDefaultChannelPlaylist: (owner: string): SwarmPlaylist => ({
+    id: "__channel",
+    reference: null,
+    name: "",
+    owner,
+    type: "public",
+    videos: [],
+    created_at: +new Date(),
+    updated_at: +new Date(),
+  }),
+  getDefaultSavedPlaylist: (owner: string): SwarmPlaylist => ({
+    id: "__saved",
+    reference: null,
+    name: "",
+    owner,
+    type: "unlisted",
+    videos: [],
+    created_at: +new Date(),
+    updated_at: +new Date(),
+  }),
+  getDefaultCustomPlaylist: (owner: string): SwarmPlaylist => ({
+    id: uuidv4(),
+    reference: null,
+    name: "Untitle",
+    owner,
+    type: "unlisted",
+    videos: [],
+    created_at: +new Date(),
+    updated_at: +new Date(),
+  })
 }
 
 export default SwarmUserPlaylistsIO

@@ -18,7 +18,6 @@ import SwarmUserPlaylistsIO from "."
 import SwarmBeeClient from "@classes/SwarmBeeClient"
 import SwarmPlaylistIO from "@classes/SwarmPlaylist"
 import { urlOrigin } from "@utils/urls"
-import uuidv4 from "@utils/uuid"
 import type { SwarmUserPlaylistsDownloadOptions, SwarmUserPlaylistsReaderOptions } from "./types"
 import type { SwarmPlaylist, SwarmUserPlaylistsRaw } from "@definitions/swarm-playlist"
 
@@ -55,43 +54,25 @@ export default class SwarmUserPlaylistsReader {
   }
 
   private async resolveChannel() {
-    this.channelPlaylist = await this.resolvePlaylistOrDefault(this.rawPlaylists?.channel, {
-      id: "__channel",
-      reference: null,
-      name: "",
-      owner: this.owner,
-      type: "public",
-      videos: [],
-      created_at: +new Date(),
-      updated_at: +new Date(),
-    })
+    this.channelPlaylist = await this.resolvePlaylistOrDefault(
+      this.rawPlaylists?.channel,
+      SwarmUserPlaylistsIO.getDefaultChannelPlaylist(this.owner)
+    )
   }
 
   private async resolveSaved() {
-    this.savedPlaylist = await this.resolvePlaylistOrDefault(this.rawPlaylists?.saved, {
-      id: "__saved",
-      reference: null,
-      name: "",
-      owner: this.owner,
-      type: "public",
-      videos: [],
-      created_at: +new Date(),
-      updated_at: +new Date(),
-    })
+    this.savedPlaylist = await this.resolvePlaylistOrDefault(
+      this.rawPlaylists?.saved,
+      SwarmUserPlaylistsIO.getDefaultSavedPlaylist(this.owner)
+    )
   }
 
   private async resolveCustom() {
     this.customPlaylists = await Promise.all(
-      (this.rawPlaylists?.custom ?? []).map(reference => this.resolvePlaylistOrDefault(reference, {
-        id: uuidv4(),
+      (this.rawPlaylists?.custom ?? []).map(reference => this.resolvePlaylistOrDefault(
         reference,
-        name: "Untitle",
-        owner: this.owner,
-        type: "public",
-        videos: [],
-        created_at: +new Date(),
-        updated_at: +new Date(),
-      }))
+        SwarmUserPlaylistsIO.getDefaultCustomPlaylist(this.owner)
+      ))
     )
   }
 

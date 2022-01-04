@@ -28,6 +28,7 @@ import type { SwarmPlaylistRaw, SwarmPlaylist, EncryptedSwarmPlaylistData } from
  */
 export default class SwarmImageWriter {
   playlist: SwarmPlaylist
+  playlistRaw: SwarmPlaylistRaw
 
   private isFeedManifest: boolean
   private beeClient: SwarmBeeClient
@@ -35,6 +36,7 @@ export default class SwarmImageWriter {
 
   constructor(playlist: SwarmPlaylist, opts: SwarmPlaylistWriterOptions) {
     this.playlist = playlist
+    this.playlistRaw = this.parsePlaylistToRaw(playlist, playlist.encryptedReference)
     this.beeClient = opts.beeClient
     this.currentIndex = urlOrigin(opts.indexUrl)!
     this.isFeedManifest = opts.initialType === "public" && !!playlist.reference
@@ -52,7 +54,7 @@ export default class SwarmImageWriter {
 
     const batchId = await this.beeClient.getBatchId()
 
-    let encryptedReference: string
+    let encryptedReference: string | undefined
     if (this.playlist.type === "private") {
       const playlistData: EncryptedSwarmPlaylistData = {
         videos: this.playlist.videos ?? [],
@@ -62,26 +64,10 @@ export default class SwarmImageWriter {
       encryptedReference = (await this.beeClient.uploadFile(batchId, encryptedData.toString())).reference
     }
 
-    const rawPlaylist: SwarmPlaylistRaw = this.playlist.type === "private" ? {
-      type: "private",
-      id: this.playlist.id,
-      name: this.playlist.name,
-      created_at: this.playlist.created_at,
-      updated_at: this.playlist.updated_at,
-      owner: this.playlist.owner,
-      encryptedReference: encryptedReference!,
-    } : {
-      type: this.playlist.type,
-      id: this.playlist.id,
-      name: this.playlist.name,
-      created_at: this.playlist.created_at,
-      updated_at: this.playlist.updated_at,
-      owner: this.playlist.owner,
-      videos: this.playlist.videos ?? [],
-      description: this.playlist.description ?? null,
-    }
+    this.playlistRaw = this.parsePlaylistToRaw(this.playlist, encryptedReference)
+    this.playlistRaw.updated_at = +new Date()
 
-    let { reference } = await this.beeClient.uploadFile(batchId, JSON.stringify(rawPlaylist))
+    let { reference } = await this.beeClient.uploadFile(batchId, JSON.stringify(this.playlistRaw))
 
     if (this.playlist.type === "public") {
       // create public feed for playlist subscription
@@ -97,5 +83,26 @@ export default class SwarmImageWriter {
     }
 
     return reference
+  }
+
+  private parsePlaylistToRaw(playlist: SwarmPlaylist, encryptedReference: string | undefined): SwarmPlaylistRaw {
+    return playlist.type === "private" ? {
+      type: "private",
+      id: playlist.id,
+      name: playlist.name || undefined,
+      created_at: playlist.created_at,
+      updated_at: playlist.updated_at,
+      owner: playlist.owner,
+      encryptedReference: encryptedReference!,
+    } : {
+      type: playlist.type,
+      id: playlist.id,
+      name: playlist.name,
+      created_at: playlist.created_at,
+      updated_at: playlist.updated_at,
+      owner: playlist.owner,
+      videos: playlist.videos ?? [],
+      description: playlist.description ?? null,
+    }
   }
 }

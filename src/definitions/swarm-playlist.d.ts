@@ -26,8 +26,8 @@ export type SwarmUserPlaylistsRaw = {
 export type SwarmPlaylistRaw = {
   /** Playlist id (used for feed update) */
   id: string
-  /** Playlist name */
-  name: string
+  /** Playlist name (undefined for __channel & __saved) */
+  name: string | undefined
   /** Playlist owner */
   owner: string
   /** Playlist creation timestamp */
@@ -45,7 +45,7 @@ export type SwarmPlaylistRaw = {
   /** Reference list of the playlist videos */
   videos: string[]
   /** Playlist description */
-  description: string | null
+  description?: string | null
 })
 
 export type EncryptedSwarmPlaylistData = {
@@ -70,7 +70,7 @@ export type SwarmPlaylist = {
   updated_at: number
 
   /** Playlist visibility: public (show in channel), unlisted (not in channel), private (encrypted) */
-  type: "public" | "unlisted" | "private"
+  type: SwarmPlaylistType
   /** Reference to the encrypted data of the playlist (only for private playlists) */
   encryptedReference?: string
   /** Password used to decrypt the data */
@@ -82,3 +82,5 @@ export type SwarmPlaylist = {
   /** Playlist description */
   description?: string
 }
+
+export type SwarmPlaylistType = "public" | "unlisted" | "private"

@@ -68,7 +68,7 @@ export default class SwarmPlaylistReader {
     const playlist: SwarmPlaylist = {
       id: rawPlaylist.id,
       reference: this.reference,
-      name: rawPlaylist.name,
+      name: rawPlaylist.name || "",
       owner: rawPlaylist.owner || this.owner || "",
       created_at: rawPlaylist.created_at,
       updated_at: rawPlaylist.updated_at,
