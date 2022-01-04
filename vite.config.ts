@@ -30,10 +30,7 @@ export default defineConfig(({ mode }) => ({
     outDir: "build",
   },
   server: {
-    https: mode === "development" &&
-      fs.existsSync("proxy/sslcert/key.pem") &&
-      fs.existsSync("proxy/sslcert/cert.pem") &&
-    {
+    https: fs.existsSync("proxy/sslcert/key.pem") && fs.existsSync("proxy/sslcert/cert.pem") && {
       key: fs.readFileSync("proxy/sslcert/key.pem"),
       cert: fs.readFileSync("proxy/sslcert/cert.pem"),
     },

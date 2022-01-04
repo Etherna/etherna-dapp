@@ -15,6 +15,7 @@
  */
 
 import type { SwarmImage, SwarmImageRaw } from "./swarm-image"
+import type { SwarmPlaylist, SwarmPlaylistsRaw } from "./swarm-playlist"
 
 export type ProfileRaw = {
   /**  Profile address */
@@ -33,6 +34,8 @@ export type ProfileRaw = {
   website?: string
   /** User's birthday */
   birthday?: string
+  /** User's playlists */
+  playlists?: SwarmPlaylistsRaw
 }
 
 export type Profile = {
@@ -52,4 +55,6 @@ export type Profile = {
   website?: string
   /** User's birthday */
   birthday?: string
+  /** User's playlists */
+  playlists: SwarmPlaylist[]
 }
