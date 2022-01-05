@@ -51,6 +51,11 @@ const InnerPlayer: React.FC<PlayerProps> = ({ title, sources, originalQuality, t
   const floating = !isTouchDevice()
 
   useEffect(() => {
+    dispatch({
+      type: PlayerReducerTypes.SET_SOURCE_QUALITIES,
+      qualities: sources.map(s => s.quality)
+    })
+
     if (originalQuality) {
       dispatch({
         type: PlayerReducerTypes.SET_CURRENT_QUALITY,
@@ -74,9 +79,18 @@ const InnerPlayer: React.FC<PlayerProps> = ({ title, sources, originalQuality, t
 
   useEffect(() => {
     if (videoElement) {
+      videoElement.onloadeddata = () => {
+        videoElement.currentTime = currentTime * videoElement.duration
+        isPlaying && videoElement.play()
+      }
+      videoElement.load()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [source, videoElement])
 
+  useEffect(() => {
+    if (videoElement) {
       watchControlChange(videoElement)
-
       dispatch({
         type: PlayerReducerTypes.SET_VIDEO_ELEMENT,
         videoEl: videoElement,
@@ -192,12 +206,13 @@ const InnerPlayer: React.FC<PlayerProps> = ({ title, sources, originalQuality, t
   }
 
   const onPlaybackError = async (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
-    if (!source) return
+    const currentSrc = e.currentTarget.src
+    if (!currentSrc) return
 
     // get error code
     try {
       let cancelToken: Canceler | undefined
-      await http.get(source, {
+      await http.get(currentSrc, {
         withCredentials: true,
         onDownloadProgress: p => {
           // cancel large responses
@@ -210,6 +225,8 @@ const InnerPlayer: React.FC<PlayerProps> = ({ title, sources, originalQuality, t
         }),
       })
     } catch (error: any) {
+      console.log(error)
+
       if (error.response) {
         renderError(error.response.status, error.response.data.message || error.response.data)
       } else {
@@ -226,10 +243,15 @@ const InnerPlayer: React.FC<PlayerProps> = ({ title, sources, originalQuality, t
 
   return (
     <PlayerShortcuts>
-      <div className={classNames(classes.player, {
-        [classes.playing]: isPlaying,
-        [classes.idle]: idle
-      })}>
+      <div
+        className={classNames(classes.player, {
+          [classes.playing]: isPlaying,
+          [classes.idle]: idle
+        })}
+        onMouseEnter={onMouseEnter}
+        onMouseMove={onMouseMouse}
+        onMouseLeave={onMouseLeave}
+      >
         <video
           ref={v => {
             if (v && v !== videoEl) {
@@ -241,9 +263,6 @@ const InnerPlayer: React.FC<PlayerProps> = ({ title, sources, originalQuality, t
           preload="metadata"
           poster={!error && thumbnail ? thumbnail : undefined}
           controls={false}
-          onMouseEnter={onMouseEnter}
-          onMouseMove={onMouseMouse}
-          onMouseLeave={onMouseLeave}
           onClick={togglePlay}
           onLoadedMetadata={onLoadMetadata}
           onProgress={onProgress}

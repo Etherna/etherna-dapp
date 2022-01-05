@@ -27,6 +27,7 @@ import PlayerPlaybackSpeed from "./PlayerPlaybackSpeed"
 import PlayerFullScreenButton from "./PlayerFullScreenButton"
 import PlayerPiPButton from "./PlayerPiPButton"
 import PlayerVolume from "./PlayerVolume"
+import PlayerQuality from "./PlayerQuality"
 
 type PlayerToolbarProps = {
   floating?: boolean
@@ -49,6 +50,7 @@ const PlayerToolbar: React.FC<PlayerToolbarProps> = ({ floating, idle }) => {
 
         <div className={classes.playerToolbarVideoSettingGroup}>
           <PlayerPlaybackSpeed />
+          <PlayerQuality />
         </div>
 
         <div className={classes.playerToolbarVideoSettingGroup}>

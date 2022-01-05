@@ -27,6 +27,7 @@ export type PlayerContextState = {
   }
   source?: string
   sourceSize?: number
+  sourceQualities: string[]
   currentQuality?: string
   isPlaying: boolean
   duration: number

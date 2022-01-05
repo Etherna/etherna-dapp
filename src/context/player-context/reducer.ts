@@ -20,6 +20,7 @@ import { clamp } from "@utils/math"
 export const PlayerReducerTypes = {
   SET_VIDEO_ELEMENT: "player/set-video-element",
   SET_SOURCE: "player/set-source",
+  SET_SOURCE_QUALITIES: "player/set-source-qualities",
   SET_CURRENT_QUALITY: "player/set-current-quality",
   SET_PLAYBACK_ERROR: "player/set-playback-error",
   TOGGLE_PLAY: "player/toggle-play",
@@ -43,6 +44,10 @@ type SetSourceAction = {
   type: typeof PlayerReducerTypes.SET_SOURCE
   source: string
   size?: number
+}
+type SetSourceQualitiesAction = {
+  type: typeof PlayerReducerTypes.SET_SOURCE_QUALITIES
+  qualities: string[]
 }
 type SetCurrentQualityAction = {
   type: typeof PlayerReducerTypes.SET_CURRENT_QUALITY
@@ -100,6 +105,7 @@ type RefreshBufferingAction = {
 export type AnyPlayerAction = (
   SetVideoElAction |
   SetSourceAction |
+  SetSourceQualitiesAction |
   SetCurrentQualityAction |
   SetPlaybackErrorAction |
   TogglePlayAction |
@@ -131,6 +137,15 @@ const playerContextReducer = (state: PlayerContextState, action: AnyPlayerAction
         sourceSize: action.size
       }
     }
+
+
+    case PlayerReducerTypes.SET_SOURCE_QUALITIES: {
+      return {
+        ...state,
+        sourceQualities: action.qualities,
+      }
+    }
+
     case PlayerReducerTypes.SET_CURRENT_QUALITY: {
       return {
         ...state,

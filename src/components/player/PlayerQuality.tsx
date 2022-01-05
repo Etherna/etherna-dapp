@@ -21,29 +21,32 @@ import PlayerToolbarSelect from "./PlayerToolbarSelect"
 import { PlayerReducerTypes } from "@context/player-context"
 import { usePlayerState } from "@context/player-context/hooks"
 
-const PlayerPlaybackSpeed: React.FC = () => {
+const PlayerQuality: React.FC = () => {
   const [state, dispatch] = usePlayerState()
-  const { playbackRate } = state
-  const playbackTicks = [0.25, 0.5, 1, 1.25, 1.5, 1.75, 2]
+  const { currentQuality, sourceQualities, videoEl } = state
 
-  const updatePlaybackRate = (option: { value: string }) => {
+  const updateQuality = (option: { value: string }) => {
+    // Fix video element height jump
+    videoEl!.style.height = `${videoEl!.clientHeight}px`
+    setTimeout(() => {
+      videoEl!.style.height = ""
+    }, 500)
+
     dispatch({
-      type: PlayerReducerTypes.UPDATE_PLAYBACK_RATE,
-      playbackRate: +option.value,
+      type: PlayerReducerTypes.SET_CURRENT_QUALITY,
+      currentQuality: option.value,
     })
   }
 
-  const optionLabel = (val: number) => `${val}`
-
   return (
     <PlayerToolbarSelect
-      value={playbackRate.toString()}
-      options={playbackTicks.map(tick => ({ value: tick.toString(), label: optionLabel(tick) }))}
-      onSelect={updatePlaybackRate}
+      value={currentQuality ?? ""}
+      options={sourceQualities.map(quality => ({ value: quality, label: quality }))}
+      onSelect={updateQuality}
     >
-      <span style={{ minWidth: "1.5rem" }}>{optionLabel(playbackRate)}⨉</span>
+      <span style={{ minWidth: "1.5rem" }}>{currentQuality}</span>
     </PlayerToolbarSelect>
   )
 }
 
-export default PlayerPlaybackSpeed
+export default PlayerQuality

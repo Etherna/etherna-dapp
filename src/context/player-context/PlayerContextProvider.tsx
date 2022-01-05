@@ -25,6 +25,7 @@ const PlayerContextProvider: React.FC = ({ children }) => {
   const stateReducer = import.meta.env.DEV ? logger(playerContextReducer) : playerContextReducer
   const store = useReducer(stateReducer, {
     videoEl: undefined,
+    sourceQualities: [],
     isPlaying: false,
     duration: 0,
     currentTime: 0,

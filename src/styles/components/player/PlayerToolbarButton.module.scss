@@ -16,13 +16,13 @@
 
 .playerToolbarButton {
   @apply relative;
-  @apply w-6 h-6 rounded-full;
+  @apply w-7 h-7 rounded-full;
   @apply p-1.5;
   @apply bg-gray-400/50 dark:bg-gray-500/50;
   @apply text-gray-700 dark:text-gray-200;
   @apply backdrop-blur;
   @apply md:w-8 md:h-8;
-  @apply md:p-2;
+  @apply md:p-[0.425rem];
 
   .floating & {
     @apply bg-transparent;
