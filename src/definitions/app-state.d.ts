@@ -77,7 +77,6 @@ export type UIState = {
 
   isConnectingWallet?: boolean
   isLoadingProfile?: boolean
-  showUnsupportedModal?: boolean
   showNetwokChangeModal?: boolean
   isEditingShortcut?: boolean
   isCroppingImage?: boolean

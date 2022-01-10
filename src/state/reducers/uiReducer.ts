@@ -26,7 +26,6 @@ export const UIActionTypes = {
   HIDE_EXTENSION_HOSTS_EDITOR: "UI_HIDE_EXTENSION_HOSTS_EDITOR",
   TOGGLE_CONNECTING_WALLET: "UI_TOGGLE_CONNECTING_WALLET",
   TOGGLE_LOADING_PROFILE: "UI_TOGGLE_LOADING_PROFILE",
-  TOGGLE_BROWSER_SUPPORT: "UI_TOGGLE_BROWSER_SUPPORT",
   TOGGLE_NETWORK_CHANGE: "UI_TOGGLE_NETWORK_CHANGE",
   TOGGLE_EDITING_SHORTCUT: "UI_TOGGLE_EDITING_SHORTCUT",
   TOGGLE_IMAGE_CROPPER: "UI_TOGGLE_IMAGE_CROPPER",
@@ -67,10 +66,6 @@ type ToggleLoadingProfileAction = {
   type: typeof UIActionTypes.TOGGLE_LOADING_PROFILE
   isLoadingProfile: boolean
 }
-type ToggleBrowserSupportAction = {
-  type: typeof UIActionTypes.TOGGLE_BROWSER_SUPPORT
-  showUnsupportedModal: boolean
-}
 type ToggleNetworkChangeAction = {
   type: typeof UIActionTypes.TOGGLE_NETWORK_CHANGE
   showNetwokChangeModal: boolean
@@ -101,7 +96,6 @@ export type UIActions = (
   HideExtensionHostsEditorAction |
   ToggleConnectingWalletAction |
   ToggleLoadingProfileAction |
-  ToggleBrowserSupportAction |
   ToggleNetworkChangeAction |
   ToggleEditingShortcutAction |
   ToggleImageCropperAction |
@@ -162,12 +156,6 @@ const uiReducer = (state: UIState = {}, action: UIActions): UIState => {
       return {
         ...state,
         isLoadingProfile: action.isLoadingProfile,
-      }
-
-    case UIActionTypes.TOGGLE_BROWSER_SUPPORT:
-      return {
-        ...state,
-        showUnsupportedModal: action.showUnsupportedModal,
       }
 
     case UIActionTypes.TOGGLE_NETWORK_CHANGE:
