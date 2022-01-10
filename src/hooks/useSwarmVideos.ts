@@ -120,10 +120,18 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
     }
   }
 
+  const refresh = () => {
+    setVideos([])
+    setHasMore(true)
+    setPage(0)
+    fetchVideos()
+  }
+
   return {
     videos,
     hasMore,
     isFetching,
-    loadMore
+    loadMore,
+    refresh,
   }
 }
