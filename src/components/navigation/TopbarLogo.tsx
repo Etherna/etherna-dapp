@@ -16,6 +16,7 @@
  */
 
 import React from "react"
+import { useLocation } from "react-router-dom"
 
 import classes from "@styles/components/navigation/TopbarLogo.module.scss"
 
@@ -27,9 +28,16 @@ type TopbarLogoProps = {
 }
 
 const TopbarLogo: React.FC<TopbarLogoProps> = ({ logo, logoCompact }) => {
+  const { pathname } = useLocation()
+
+  const dispatchRefresh = () => {
+    if (pathname !== "/") return
+    window.dispatchEvent(new Event("refresh"))
+  }
+
   return (
     <TopbarItem to="/" ignoreHoverState>
-      <figure className={classes.topbarLogo}>
+      <figure className={classes.topbarLogo} onClick={dispatchRefresh}>
         {logoCompact && (
           <div className={classes.topbarLogoMobile}>{logoCompact}</div>
         )}
