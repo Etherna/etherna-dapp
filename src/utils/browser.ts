@@ -15,6 +15,53 @@
  */
 
 /**
+ * Check if current browser doesn't support some features used within the app
+ * 
+ * @returns True if legacy browser
+ */
+export const checkIsLegacyBrowser = () => {
+  if (typeof MutationObserver === "undefined") return true
+  if (typeof ResizeObserver === "undefined") return true
+  if (typeof TextEncoder === "undefined") return true
+  if (typeof TextDecoder === "undefined") return true
+  if (typeof Uint8ClampedArray === "undefined") return true
+  if (typeof ArrayBuffer === "undefined") return true
+  if (typeof URL === "undefined") return true
+  if (typeof URLSearchParams === "undefined") return true
+  if (typeof URL.createObjectURL === "undefined") return true
+  if (typeof URL.revokeObjectURL === "undefined") return true
+  if (typeof fetch === "undefined") return true
+  if (
+    typeof (window.requestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.msRequestAnimationFrame) === "undefined"
+  ) return true
+  if (!supportCssGrid()) return true
+  if (!supportCssVariables()) return true
+  return false
+}
+
+const supportCssGrid = () => {
+  let supportsSmoothScrolling = false
+  document.body.style.display = "grid"
+  supportsSmoothScrolling = getComputedStyle(document.body).display === "grid"
+  document.body.style.display = ""
+  return supportsSmoothScrolling
+}
+
+const supportCssVariables = () => {
+  const s = document.createElement("style")
+  let support = true
+
+  s.innerHTML = ":root { --tmp-var: bold; }"
+  document.head.appendChild(s)
+  support = !!(window.CSS && window.CSS.supports && window.CSS.supports("font-weight", "var(--tmp-var)"))
+  s.parentNode!.removeChild(s)
+  return support
+}
+
+/**
  * Check if current browser is a mobile browser.
  */
 export const checkIsMobile = () => {
