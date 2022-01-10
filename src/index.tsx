@@ -20,15 +20,21 @@ import ReactDOM from "react-dom"
 
 import Root from "./app/Root"
 import prefetch from "./prefetch"
+import unsupportedRender from "./unsupported-render"
 import autoSigninSignout from "./utils/autoSigninSignout"
-
-const RenderDOM = () => {
-  ReactDOM.render(<Root />, document.getElementById("root"))
-}
 
 // Automatically redirect to signin/signout page
 autoSigninSignout()
 
 // Prefetch data for SEO
 // Once the data has been set to a window variable call RenderDOM
-prefetch(RenderDOM)
+prefetch(() => {
+  ReactDOM.render(<Root />, document.getElementById("root"))
+})
+
+// Check if the current browser has unsupported features
+// and show a notification modal.
+unsupportedRender(async () => {
+  const RootLegacy = (await import("./app/RootLegacy")).default
+  ReactDOM.render(<RootLegacy />, document.getElementById("root_legacy"))
+})

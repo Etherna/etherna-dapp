@@ -42,9 +42,32 @@
 <body class="">
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
+  <div id="root_legacy"></div>
+  <div class="fixed top-0 inset-x-0 bg-red-500 z-200 font-semibold p-4" id="unsupported-browser-message"
+    style="display: none;">
+    <span>You are using an old unsupported browser. To keep using this app please download the latest version of </span>
+    <span>Chrome, Safari, Firefox, Brave or any other modern browser.</span>
+  </div>
   <script type="module" src="/src/index.tsx"></script>
 
   <script>
+    /// check unsupported browser
+    function hasDynamicImport() {
+      try {
+        return new Function("return import('data:text/javascript;base64,Cg==').then(r => true)")();
+      } catch (e) {
+        return Promise.resolve(false);
+      }
+    }
+    hasDynamicImport().then(function (supported) {
+      if (!supported) {
+        var msg = document.getElementById("unsupported-browser-message")
+        if (msg) {
+          msg.style.display = ""
+        }
+      }
+    })
+
     /// don't run if __basename__ is empty
     if (window.__basename__) {
       fixCurrentUrls();
