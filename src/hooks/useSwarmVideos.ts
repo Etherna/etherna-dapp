@@ -22,6 +22,7 @@ import { wait } from "@utils/promise"
 import type { Profile } from "@definitions/swarm-profile"
 import type { Video } from "@definitions/swarm-video"
 import type { IndexVideo } from "@definitions/api-index"
+import { showError } from "@state/actions/modals"
 
 type SwarmVideosOptions = {
   seedLimit?: number
@@ -92,23 +93,28 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
 
     const { ownerAddress } = opts
     const take = page === 0 ? opts.seedLimit ?? DEFAULT_SEED_LIMIT : opts.fetchLimit ?? DEFAULT_FETCH_LIMIT
-    const indexVideos = ownerAddress
-      ? await indexClient.users.fetchUserVideos(ownerAddress, page, take)
-      : await indexClient.videos.fetchVideos(page, take)
 
-    const newVideos = await Promise.all(indexVideos.map(videoLoadPromise))
-    await wait(2000)
+    try {
+      const indexVideos = ownerAddress
+        ? await indexClient.users.fetchUserVideos(ownerAddress, page, take)
+        : await indexClient.videos.fetchVideos(page, take)
 
-    if (newVideos.length < take) {
-      setHasMore(false)
+      const newVideos = await Promise.all(indexVideos.map(videoLoadPromise))
+      await wait(2000)
+
+      if (newVideos.length < take) {
+        setHasMore(false)
+      }
+
+      setVideos(videos => {
+        return [
+          ...(videos ?? []),
+          ...newVideos
+        ].filter((vid, i, self) => self.indexOf(vid) === i)
+      })
+    } catch (error) {
+      showError("Fetch error", "Coudn't fetch the videos. Try again later.")
     }
-
-    setVideos(videos => {
-      return [
-        ...(videos ?? []),
-        ...newVideos
-      ].filter((vid, i, self) => self.indexOf(vid) === i)
-    })
 
     setIsFetching(false)
   }

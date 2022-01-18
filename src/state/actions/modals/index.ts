@@ -40,13 +40,6 @@ export const closeConnectingWalletModal = () => {
   })
 }
 
-export const closeUnsupportedBrowserModal = () => {
-  store.dispatch({
-    type: UIActionTypes.TOGGLE_BROWSER_SUPPORT,
-    showUnsupportedModal: false,
-  })
-}
-
 export const closeShortcutModal = () => {
   store.dispatch({
     type: UIActionTypes.TOGGLE_EDITING_SHORTCUT,
