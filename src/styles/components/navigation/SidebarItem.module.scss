@@ -40,16 +40,19 @@
 
 .sidebarItemIcon {
   @apply w-6 h-6;
-  @apply mx-auto lg:mx-0;
   @apply lg:w-5 lg:h-5;
 
-  svg {
-    @apply fill-current;
+  .responsive & {
+    @apply mx-auto lg:mx-0;
   }
 }
 
 .sidebarItemTitle {
-  @apply hidden;
+  @apply inline;
   @apply text-sm;
-  @apply lg:inline lg:font-semibold;
+  @apply lg:font-semibold;
+
+  .responsive & {
+    @apply hidden lg:inline;
+  }
 }

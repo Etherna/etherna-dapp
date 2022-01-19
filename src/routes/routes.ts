@@ -51,9 +51,6 @@ export const getProfileLink = (hash: string) => {
   return `/profile/${encodeURIComponent(hash)}`
 }
 
-export const getProfileEditingLink = (hash: string) => {
-  return `/profile/${encodeURIComponent(hash)}/edit`
-}
 
 export const getSearchLink = (query: string) => {
   return `/search?q=${encodeURIComponent(query)}`
@@ -66,16 +63,28 @@ export const getVideoLink = (hash: string, sourcePath?: string) => {
   return `/watch?v=${hash}${encodeURIComponent(sourcePath ? `/${sourcePath}` : ``)}`
 }
 
-export const getVideoSettingsLink = (hash: string) => {
-  return `/videoSettings?v=${encodeURIComponent(hash)}`
+/**
+ * Creator studio routes
+ */
+export const getStudioLink = () => {
+  return `/studio`
+}
+export const getStudioVideosLink = () => {
+  return `/studio/videos`
+}
+export const getStudioVideoEditLink = (id: string) => {
+  return `/studio/videos/${id}`
+}
+export const getStudioVideoUploadLink = () => {
+  return `/studio/videos/new`
+}
+export const getStudioCustomizeChannelLink = () => {
+  return `/studio/channel`
 }
 
 /**
  * Static routes
  */
-export const getVideoUploadLink = () => {
-  return `/upload`
-}
 export const getHowItWorksLink = () => {
   return `/how-it-works`
 }

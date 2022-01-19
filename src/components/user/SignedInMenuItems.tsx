@@ -20,6 +20,7 @@ import React from "react"
 import { ReactComponent as EditIcon } from "@assets/icons/edit.svg"
 import { ReactComponent as ProfileIcon } from "@assets/icons/profile.svg"
 import { ReactComponent as UploadIcon } from "@assets/icons/upload.svg"
+import { ReactComponent as SparklesIcon } from "@assets/icons/sparkles.svg"
 
 import DropdownItem from "@common/DropdownItem"
 import Avatar from "@components/user/Avatar"
@@ -50,10 +51,13 @@ const SignedInMenuItems: React.FC = () => {
       <DropdownItem href={routes.getProfileLink(address!)} icon={<ProfileIcon />}>
         View profile
       </DropdownItem>
-      <DropdownItem href={routes.getProfileEditingLink(address!)} icon={<EditIcon />}>
+      <DropdownItem href={routes.getStudioLink()} icon={<SparklesIcon />}>
+        Creator Studio
+      </DropdownItem>
+      <DropdownItem href={routes.getStudioCustomizeChannelLink()} icon={<EditIcon />}>
         Edit profile
       </DropdownItem>
-      <DropdownItem href={routes.getVideoUploadLink()} icon={<UploadIcon />}>
+      <DropdownItem href={routes.getStudioVideoUploadLink()} icon={<UploadIcon />}>
         Upload a video
       </DropdownItem>
 

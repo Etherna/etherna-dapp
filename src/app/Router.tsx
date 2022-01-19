@@ -15,6 +15,7 @@
  *  
  */
 
+import StudioLayout from "@components/layout/StudioLayout"
 import React, { lazy, Suspense } from "react"
 import { Switch, Route, useLocation } from "react-router-dom"
 
@@ -26,11 +27,12 @@ const AsyncFollowing = lazy(() => import("@pages/following"))
 const AsyncPlaylists = lazy(() => import("@pages/playlists"))
 const AsyncSaved = lazy(() => import("@pages/saved"))
 const AsyncProfile = lazy(() => import("@pages/profile"))
-const AsyncProfileEdit = lazy(() => import("@pages/profileEdit"))
+const AsyncStudio = lazy(() => import("@pages/studio/creator-studio"))
+const AsyncProfileEdit = lazy(() => import("@pages/studio/channel-editor"))
+const AsyncVideoSettings = lazy(() => import("@pages/studio/video-edit"))
+const AsyncUpload = lazy(() => import("@pages/upload"))
 const AsyncProfiles = lazy(() => import("@pages/profiles"))
 const AsyncWatch = lazy(() => import("@pages/watch"))
-const AsyncVideoSettings = lazy(() => import("@pages/videoSettings"))
-const AsyncUpload = lazy(() => import("@pages/upload"))
 const AsyncSearch = lazy(() => import("@pages/search"))
 const AsyncShortcuts = lazy(() => import("@pages/shortcuts"))
 const AsyncNotFound = lazy(() => import("@pages/404"))
@@ -53,14 +55,17 @@ const Saved = () => (
 const Profile = () => (
   <Suspense fallback={null}><AsyncProfile /></Suspense>
 )
-const ProfileEdit = () => (
-  <Suspense fallback={null}><AsyncProfileEdit /></Suspense>
-)
 const Profiles = () => (
   <Suspense fallback={null}><AsyncProfiles /></Suspense>
 )
 const Watch = () => (
   <Suspense fallback={null}><AsyncWatch /></Suspense>
+)
+const Studio = () => (
+  <Suspense fallback={null}><AsyncStudio /></Suspense>
+)
+const ProfileEdit = () => (
+  <Suspense fallback={null}><AsyncProfileEdit /></Suspense>
 )
 const VideoSettings = () => (
   <Suspense fallback={null}><AsyncVideoSettings /></Suspense>
@@ -108,24 +113,31 @@ const Router = () => {
         <Route path={"/profile/:id"} exact>
           <Profile />
         </Route>
-        <ProfileOwnerRoute path={"/profile/:id/edit"} exact>
-          <ProfileEdit />
-        </ProfileOwnerRoute>
         <WatchRoute path={"/watch"}>
           <Watch />
         </WatchRoute>
-        <SignedInRoute path={"/videoSettings"}>
-          <VideoSettings />
-        </SignedInRoute>
-        <SignedInRoute path={"/upload"}>
-          <Upload />
-        </SignedInRoute>
         <Route path={"/search"}>
           <Search />
         </Route>
         <Route path={"/shortcuts"}>
           <Shortcuts />
         </Route>
+
+        <StudioLayout>
+          <SignedInRoute path={"/studio"} exact>
+            <Studio />
+          </SignedInRoute>
+          <SignedInRoute path={"/studio/channel"} exact>
+            <ProfileEdit />
+          </SignedInRoute>
+          <SignedInRoute path={"/studio/videos/:id"} exact>
+            <VideoSettings />
+          </SignedInRoute>
+          <SignedInRoute path={"/studio/videos/new"} exact>
+            <Upload />
+          </SignedInRoute>
+        </StudioLayout>
+
         <Route path="*">
           <NotFound />
         </Route>

@@ -33,6 +33,7 @@ export type SidebarItemProps = {
   titleClassName?: string
   compact?: boolean
   isStatic?: boolean
+  isResponsive?: boolean
   isActive?: ((pathname: string) => boolean) | boolean
   onClick?: () => void
 }
@@ -50,6 +51,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   titleClassName,
   compact,
   isStatic,
+  isResponsive = true,
   isActive,
   onClick,
 }) => {
@@ -63,7 +65,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           <NavLink
             className={classNames(classes.sidebarItem, className, {
               [classes.static]: isStatic,
-              [classes.compact]: compact
+              [classes.responsive]: isResponsive,
+              [classes.compact]: compact,
             })}
             to={to}
             target={target}
@@ -87,7 +90,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         )}
       </>
     )
-  }, [to, isStatic, compact, target, rel, className, As, isCurrentPage, onClick])
+  }, [to, isStatic, isResponsive, compact, target, rel, className, As, isCurrentPage, onClick])
 
   return (
     <Wrapper>

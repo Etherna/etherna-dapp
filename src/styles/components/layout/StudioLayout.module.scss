@@ -1,0 +1,18 @@
+.title {
+  @apply flex items-center;
+
+  svg {
+    @apply h-[1em] mr-2;
+  }
+}
+
+.content {
+  @apply flex flex-col space-y-4;
+  @apply lg:flex-row lg:space-y-0 lg:space-x-4;
+}
+
+.sidebar {
+  @apply flex flex-row items-start space-x-2;
+  @apply overflow-x-auto lg:overscroll-x-none;
+  @apply lg:flex-col lg:space-x-0 lg:space-y-2 lg:max-w-xs;
+}
