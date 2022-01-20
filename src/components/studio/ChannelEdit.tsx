@@ -15,54 +15,40 @@
  *  
  */
 
-import React, { useState } from "react"
+import React, { useRef } from "react"
 import { Redirect } from "react-router-dom"
 
+import StudioEditView from "./StudioEditView"
 import ChannelEditor from "./channel-editor/ChannelEditor"
-import Routes from "@routes"
-import { useProfileUpdate } from "@state/hooks/profile"
-import { useErrorMessage } from "@state/hooks/ui"
 import useSelector from "@state/useSelector"
-import type { Profile } from "@definitions/swarm-profile"
+import routes from "@routes"
 
 const ChannelEdit: React.FC = () => {
   const address = useSelector(state => state.user.address)
-  const updateProfile = useProfileUpdate(address!)
-  const [isSavingProfile, setSavingProfile] = useState(false)
-  const [savedProfile, setSavedProfile] = useState(false)
-  const { showError } = useErrorMessage()
+  const saveCallback = useRef<() => Promise<void>>()
 
-  const handleSubmit = async (profileInfo: Profile) => {
-    setSavingProfile(true)
+  if (!address) return (
+    <Redirect to={routes.getHomeLink()} />
+  )
 
-    try {
-      await updateProfile(profileInfo)
-
-      // clear prefetch
-      window.prefetchData = undefined
-
-      setSavedProfile(true)
-    } catch (error: any) {
-      console.error(error)
-      showError("Cannot save profile", error.message)
-    }
-
-    setSavingProfile(false)
-  }
-
-  if (!address) {
-    return <Redirect to={Routes.getStudioLink()} />
-  }
-  if (savedProfile) {
-    return <Redirect to={Routes.getProfileLink(address)} />
+  const handleSave = async () => {
+    await saveCallback.current?.()
   }
 
   return (
-    <ChannelEditor
-      profileAddress={address}
-      isSubmitting={isSavingProfile}
-      onSubmit={handleSubmit}
-    />
+    <StudioEditView
+      title="Customize channel"
+      saveLabel="Save"
+      canSave={true}
+      onSave={handleSave}
+    >
+      <ChannelEditor
+        profileAddress={address}
+        ref={ref => {
+          saveCallback.current = ref?.handleSubmit
+        }}
+      />
+    </StudioEditView>
   )
 }
 

@@ -15,11 +15,11 @@
  *  
  */
 
-import React, { useRef, useState } from "react"
+import React, { forwardRef, useImperativeHandle, useRef, useState } from "react"
 import classNames from "classnames"
 
 import classes from "@styles/components/studio/channel-editor/ChannelEditor.module.scss"
-import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
+import { ReactComponent as TrashIcon } from "@assets/icons/trash.svg"
 
 import Button from "@common/Button"
 import MarkdownEditor from "@common/MarkdownEditor"
@@ -31,14 +31,16 @@ import { useErrorMessage, useImageCrop } from "@state/hooks/ui"
 import makeBlockies from "@utils/makeBlockies"
 import type { SwarmImage, SwarmImageRaw } from "@definitions/swarm-image"
 import type { Profile } from "@definitions/swarm-profile"
+import { useProfileUpdate } from "@state/hooks/profile"
 
 type ImageType = "avatar" | "cover"
 
+export type ChannelEditorHandler = {
+  handleSubmit(): Promise<void>
+}
+
 type ChannelEditorProps = {
   profileAddress: string
-  submitLabel?: string
-  isSubmitting?: boolean
-  onSubmit?: (profile: Profile) => void
 }
 
 type ImagesUtils = {
@@ -50,16 +52,14 @@ type ImagesUtils = {
   }
 }
 
-const ChannelEditor: React.FC<ChannelEditorProps> = ({
+const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
   profileAddress,
-  submitLabel = "Save",
-  isSubmitting,
-  onSubmit
-}) => {
+}, ref) => {
   const { beeClient } = useSelector(state => state.env)
   const { name, description, avatar, cover } = useSelector(state => state.profile)
   const { cropImage } = useImageCrop()
   const { showError } = useErrorMessage()
+  const updateProfile = useProfileUpdate(profileAddress)
 
   const avatarRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
@@ -87,15 +87,30 @@ const ChannelEditor: React.FC<ChannelEditorProps> = ({
     }
   }
 
-  const handleSubmit = () => {
-    if (onSubmit) {
-      onSubmit({
+  useImperativeHandle(ref, () => ({
+    handleSubmit
+  }))
+
+  const handleSubmit = async () => {
+    if (!profileName) {
+      return showError("Set your name", "Please provide a name for your channel before submitting.")
+    }
+
+    try {
+      const profileInfo: Profile = {
         address: profileAddress,
         name: profileName || "",
         description: profileDescription ?? null,
         avatar: profileAvatar ?? null,
         cover: profileCover ?? null,
-      })
+      }
+      await updateProfile(profileInfo)
+
+      // clear prefetch
+      window.prefetchData = undefined
+    } catch (error: any) {
+      console.error(error)
+      showError("Cannot save profile", error.message)
     }
   }
 
@@ -184,7 +199,7 @@ const ChannelEditor: React.FC<ChannelEditorProps> = ({
                 modifier="secondary"
                 onClick={e => handleRemoveImage(e, "cover")}
               >
-                &#10005;
+                <TrashIcon />
               </Button>
             )}
             <Button as="div" modifier="secondary" className={classNames(classes.btn)}>
@@ -194,8 +209,8 @@ const ChannelEditor: React.FC<ChannelEditorProps> = ({
         </label>
       </div>
 
-      <div className="row items-center px-4">
-        <label htmlFor="avatar-input">
+      <div className="w-full">
+        <label className="inline-block w-auto" htmlFor="avatar-input">
           <div className={classes.profileAvatar} data-label="Change Avatar">
             <img
               src={avatarPreview || swarmImageUrl(profileAvatar) || makeBlockies(profileAddress)}
@@ -214,36 +229,28 @@ const ChannelEditor: React.FC<ChannelEditorProps> = ({
             />
           </div>
         </label>
-        {!isSubmitting && (
-          <Button className="ml-auto" onClick={handleSubmit} disabled={profileName === ""}>
-            {submitLabel}
-          </Button>
-        )}
-        {isSubmitting && (
-          <Spinner className="ml-auto" width="30" />
-        )}
       </div>
 
-      <div className="row">
-        <div className="col max-w-xxs p-4">
-          <TextField
-            type="text"
-            placeholder="Profile name"
-            value={profileName || ""}
-            onChange={val => setProfileName(val || "")}
-          />
-        </div>
-        <div className="flex-1 p-4">
-          <label htmlFor="description">Profile description</label>
-          <MarkdownEditor
-            placeholder="Something about you or your profile"
-            value={profileDescription || ""}
-            onChange={value => setProfileDescription(value)}
-          />
-        </div>
+      <div>
+        <label htmlFor="description">Channel name</label>
+        <TextField
+          type="text"
+          value={profileName || ""}
+          onChange={val => setProfileName(val || "")}
+        />
+      </div>
+
+      <div>
+        <label htmlFor="description">Channel description</label>
+        <MarkdownEditor
+          placeholder="Write something about you"
+          value={profileDescription || ""}
+          onChange={value => setProfileDescription(value)}
+        />
       </div>
     </div>
   )
-}
+})
+ChannelEditor.displayName = "ChannelEditor"
 
 export default ChannelEditor

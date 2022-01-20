@@ -15,13 +15,18 @@
  */
 
 .channelEditor {
-  @apply flex flex-wrap;
+  @apply flex flex-col flex-wrap;
+  @apply space-y-6;
 }
 
 .cover {
   @apply relative;
-  @apply w-full min-h-44 -mb-8;
+  @apply w-full min-h-44;
   @apply bg-gray-200/90 dark:bg-gray-800/50;
+
+  &, img {
+    @apply rounded-md overflow-hidden;
+  }
 }
 
 .coverImage {
@@ -41,24 +46,33 @@
 }
 
 .coverActions {
-  @apply flex absolute bottom-0 right-0 mb-3 mr-3;
+  @apply flex items-center justify-center;
+  @apply absolute bottom-0 right-0 mb-3 mr-3;
 
   .btn {
     @apply h-8 py-1 rounded-full mx-2 normal-case cursor-pointer;
+    svg {
+      @apply h-4;
+    }
   }
   .removeButton {
     @apply w-8 p-0 justify-center;
+    svg {
+      @apply m-auto;
+    }
   }
 }
 
 .profileAvatar {
   @apply relative w-40 h-40 border-4 rounded-full overflow-hidden;
+  @apply cursor-pointer;
   @apply border-white bg-gray-200;
   @apply dark:border-gray-900 dark:bg-gray-700;
 
   &::after {
     content: attr(data-label);
-    @apply absolute left-0 top-0 w-full h-full cursor-pointer opacity-0 transition-all duration-200;
+    @apply absolute left-0 top-0 w-full h-full rounded-full;
+    @apply cursor-pointer opacity-0 transition-all duration-200;
     @apply bg-black bg-opacity-50 text-gray-200 text-center text-sm normal-case;
     line-height: theme("spacing.32");
   }

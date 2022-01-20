@@ -62,11 +62,13 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
 }) => {
   const [width, setWidth] = useState<number>()
+  const [height, setHeight] = useState<number>()
   const [buttonEl, setButtonEl] = useState<HTMLElement>()
 
   useEffect(() => {
     if (buttonEl && loading) {
       setWidth(buttonEl.clientWidth)
+      setHeight(buttonEl.clientHeight)
     }
   }, [buttonEl, loading])
 
@@ -124,7 +126,10 @@ const Button: React.FC<ButtonProps> = ({
           onClick={onClick}
           onKeyDown={handleKeyDown}
           disabled={disabled || loading}
-          style={{ width: loading && width ? `${width}px` : undefined }}
+          style={{
+            width: loading && width ? `${width}px` : undefined,
+            height: loading && height ? `${height}px` : undefined,
+          }}
           ref={(el: HTMLElement) => el && !buttonEl && setButtonEl(el)}
         >
           {loading ? (

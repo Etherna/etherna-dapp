@@ -75,10 +75,10 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
             {address === profileAddress && (
               <Button
                 as="a"
-                href={Routes.getProfileEditingLink(profileAddress)}
+                href={Routes.getStudioCustomizeChannelLink()}
                 className="ml-2"
               >
-                Customize profile
+                Customize
               </Button>
             )}
           </div>
