@@ -5,6 +5,7 @@ import { ReactComponent as SparklesIcon } from "@assets/icons/sparkles.svg"
 import { ReactComponent as VideoIcon } from "@assets/icons/movie.svg"
 import { ReactComponent as LightBulbIcon } from "@assets/icons/light-bulb.svg"
 
+import SEO from "./SEO"
 import Container from "@common/Container"
 import DropdownSidebar from "@components/navigation/DropdownSidebar"
 import SidebarItem from "@components/navigation/SidebarItem"
@@ -13,6 +14,8 @@ import routes from "@routes"
 const StudioLayout: React.FC = ({ children }) => {
   return (
     <Container fluid>
+      <SEO title="Creator Studio" />
+
       <h1 className={classes.title}><SparklesIcon /> Creator Studio</h1>
 
       <div className={classes.content}>

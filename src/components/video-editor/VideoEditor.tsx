@@ -15,11 +15,10 @@
  *  
  */
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useImperativeHandle, useState } from "react"
 import { Redirect } from "react-router"
 
 import classes from "@styles/components/video-editor/VideoEditor.module.scss"
-import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 import { ReactComponent as TrashIcon } from "@assets/icons/trash.svg"
 import { ReactComponent as NotesIcon } from "@assets/icons/notes.svg"
 import { ReactComponent as MovieIcon } from "@assets/icons/movie.svg"
@@ -33,8 +32,6 @@ import Button from "@common/Button"
 import ProgressTab from "@common/ProgressTab"
 import ProgressTabContent from "@common/ProgressTabContent"
 import ProgressTabLink from "@common/ProgressTabLink"
-import FieldDesrcription from "@common/FieldDesrcription"
-import Divider from "@common/Divider"
 import SwarmImageIO from "@classes/SwarmImage"
 import SwarmVideoIO from "@classes/SwarmVideo"
 import { useVideoEditorBaseActions, useVideoEditorState } from "@context/video-editor-context/hooks"
@@ -47,7 +44,14 @@ import type { Profile } from "@definitions/swarm-profile"
 
 const PORTAL_ID = "video-drag-portal"
 
-const VideoEditor = () => {
+export type VideoEditorHandle = {
+  canSubmitVideo: boolean
+  isEmpty: boolean
+  submitVideo(): Promise<void>
+  resetState(): void
+}
+
+const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const { waitConfirmation } = useConfirmation()
   const profile = useSelector(state => state.profile)
   const { address } = useSelector(state => state.user)
@@ -56,7 +60,7 @@ const VideoEditor = () => {
   const [{ reference, queue, videoWriter }] = useVideoEditorState()
   const hasQueuedProcesses = queue.filter(q => !q.reference).length > 0
   const hasOriginalVideo = videoWriter.originalQuality && videoWriter.sources.length > 0
-  const canPublishVideo = videoWriter.videoRaw.title && hasOriginalVideo
+  const canPublishVideo = !!videoWriter.videoRaw.title && hasOriginalVideo
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -79,6 +83,14 @@ const VideoEditor = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address])
+
+  useImperativeHandle(ref, () => ({
+    isEmpty: queue.length === 0,
+    canSubmitVideo: canPublishVideo && !hasQueuedProcesses && !isDeleting,
+    submitVideo,
+    resetState,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }))
 
   const submitVideo = async () => {
     const { duration, originalQuality } = videoWriter.videoRaw
@@ -169,26 +181,6 @@ const VideoEditor = () => {
     clear && resetState()
   }
 
-  const SaveButton = () => (
-    <>
-      {isSubmitting ? (
-        <Spinner width={30} />
-      ) : (
-        <Button
-          onClick={submitVideo}
-          disabled={
-            !canPublishVideo ||
-            hasQueuedProcesses ||
-            isDeleting
-          }
-          large
-        >
-          {reference ? "Update video" : "Publish video"}
-        </Button>
-      )}
-    </>
-  )
-
   const usePortal = VideoEditorCache.isCacheEmptyOrDefault && queue.length === 0 && !reference
 
   return (
@@ -233,28 +225,8 @@ const VideoEditor = () => {
               </ProgressTabContent>
             </ProgressTab>
 
-            <Divider className="mt-10" bottom />
-
             <div className={classes.videoEditorActionBar}>
-              <div className={classes.videoEditorActionSave}>
-                <SaveButton />
-                {(!canPublishVideo && !reference) && (
-                  <FieldDesrcription smaller>
-                    Before publishing a video you must upload a <wbr />
-                    <strong>video source</strong> and insert a <strong>title</strong>.
-                  </FieldDesrcription>
-                )}
-              </div>
-
-              {reference ? (
-                <Button
-                  modifier="danger"
-                  disabled={isSubmitting}
-                  onClick={() => setShowDeleteModal(true)}
-                >
-                  Delete Video
-                </Button>
-              ) : (
+              {!reference && (
                 <Button aspect="link" modifier="secondary" onClick={askToClearState}><TrashIcon /> Clear all</Button>
               )}
             </div>
@@ -277,6 +249,7 @@ const VideoEditor = () => {
       )}
     </>
   )
-}
+})
+VideoEditor.displayName = "VideoEditor"
 
 export default VideoEditor

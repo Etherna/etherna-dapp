@@ -29,7 +29,7 @@
   @apply focus:outline-none;
 
   @apply lg:static lg:flex lg:mt-0 lg:p-0;
-  @apply lg:border-none lg:bg-transparent lg:shadow-none;
+  @apply lg:border-none lg:bg-transparent lg:dark:bg-transparent lg:shadow-none;
 
   &.open {
     @apply flex;
@@ -37,6 +37,7 @@
 }
 
 .dropdownSidebarOption {
+  @apply min-w-[12rem];
   @apply focus:outline-none;
 
   span.active {

@@ -19,7 +19,7 @@ import StudioLayout from "@components/layout/StudioLayout"
 import React, { lazy, Suspense } from "react"
 import { Switch, Route, useLocation } from "react-router-dom"
 
-import { ProfileOwnerRoute, SignedInRoute, WatchRoute } from "./ProtectedRoutes"
+import { SignedInRoute, WatchRoute } from "./ProtectedRoutes"
 
 const AsyncHome = lazy(() => import("@pages/home"))
 const AsyncFrames = lazy(() => import("@pages/frames"))
@@ -29,8 +29,7 @@ const AsyncSaved = lazy(() => import("@pages/saved"))
 const AsyncProfile = lazy(() => import("@pages/profile"))
 const AsyncStudio = lazy(() => import("@pages/studio/creator-studio"))
 const AsyncProfileEdit = lazy(() => import("@pages/studio/channel-editor"))
-const AsyncVideoSettings = lazy(() => import("@pages/studio/video-edit"))
-const AsyncUpload = lazy(() => import("@pages/upload"))
+const AsyncVideoEdit = lazy(() => import("@pages/studio/video-edit"))
 const AsyncProfiles = lazy(() => import("@pages/profiles"))
 const AsyncWatch = lazy(() => import("@pages/watch"))
 const AsyncSearch = lazy(() => import("@pages/search"))
@@ -67,11 +66,8 @@ const Studio = () => (
 const ProfileEdit = () => (
   <Suspense fallback={null}><AsyncProfileEdit /></Suspense>
 )
-const VideoSettings = () => (
-  <Suspense fallback={null}><AsyncVideoSettings /></Suspense>
-)
-const Upload = () => (
-  <Suspense fallback={null}><AsyncUpload /></Suspense>
+const VideoEdit = () => (
+  <Suspense fallback={null}><AsyncVideoEdit /></Suspense>
 )
 const Shortcuts = () => (
   <Suspense fallback={null}><AsyncShortcuts /></Suspense>
@@ -131,10 +127,7 @@ const Router = () => {
             <ProfileEdit />
           </SignedInRoute>
           <SignedInRoute path={"/studio/videos/:id"} exact>
-            <VideoSettings />
-          </SignedInRoute>
-          <SignedInRoute path={"/studio/videos/new"} exact>
-            <Upload />
+            <VideoEdit />
           </SignedInRoute>
         </StudioLayout>
 

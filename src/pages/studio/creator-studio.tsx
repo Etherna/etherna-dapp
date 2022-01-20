@@ -16,19 +16,14 @@
  */
 
 import React from "react"
+import { Redirect } from "react-router-dom"
 
-import Container from "@common/Container"
 import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
-import SEO from "@components/layout/SEO"
+import routes from "@routes"
 
 const CreatorStudio = () => (
   <AppLayoutWrapper>
-    <SEO
-      title="Creator Studio"
-    />
-    <Container fluid>
-
-    </Container>
+    <Redirect to={routes.getStudioVideosLink()} />
   </AppLayoutWrapper>
 )
 

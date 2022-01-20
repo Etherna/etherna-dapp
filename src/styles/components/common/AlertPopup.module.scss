@@ -27,12 +27,11 @@
 }
 
 .alertPopup {
-  @apply flex flex-col flex-shrink flex-grow-0 shadow-2xl;
+  @apply flex flex-col flex-shrink flex-grow-0 basis-72 shadow-2xl;
   @apply max-w-full p-5 -m-2 rounded-lg;
-  @apply bg-gray-300 border border-gray-400;
+  @apply bg-gray-100 border border-gray-400;
   @apply dark:bg-gray-800 dark:border-gray-600;
   @apply opacity-0 transform scale-90 transition duration-300 delay-75;
-  flex-basis: 18rem;
 
   > * {
     @apply m-2;

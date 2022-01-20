@@ -1,0 +1,25 @@
+.studioEdit {
+  @apply max-w-screen-lg;
+}
+
+.studioEditToolbar {
+  @apply flex items-center mb-4;
+  @apply flex-wrap md:flex-nowrap;
+}
+
+.studioEditTitle {
+  @apply text-lg lg:text-xl;
+  @apply mb-0;
+}
+
+.studioEditBackButton {
+  @apply flex p-1 w-8 h-8 rounded-full;
+  @apply mr-3;
+  @apply bg-gray-200 dark:bg-gray-700;
+  @apply text-gray-700 dark:text-gray-100;
+  @apply hover:text-inherit;
+
+  svg {
+    @apply h-5 m-auto;
+  }
+}

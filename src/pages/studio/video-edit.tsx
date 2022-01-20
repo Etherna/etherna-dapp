@@ -16,32 +16,26 @@
  */
 
 import React from "react"
-import { useLocation } from "react-router-dom"
+import { useParams } from "react-router-dom"
 
 import Container from "@common/Container"
 import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
-import SEO from "@components/layout/SEO"
-import VideoUpdate from "@components/video/VideoUpdate"
+import VideoEdit from "@components/studio/VideoEdit"
 import useRouteState from "@hooks/useRouteState"
 import type { Video } from "@definitions/swarm-video"
 
-const VideoSettings = () => {
-  const location = useLocation()
-  const query = new URLSearchParams(location.search)
-  const hash = query.get("v")
+const StudioVideoEdit = () => {
+  const params = useParams<{ id: string }>()
+  const hash = params.id !== "new" ? params.id : undefined
   const routeState = useRouteState<Video>()
-
-  if (!hash) return null
 
   return (
     <AppLayoutWrapper>
-      <SEO title="Edit Video" />
-
-      <Container>
-        <VideoUpdate reference={hash} routeState={routeState} />
+      <Container noPaddingX noPaddingY>
+        <VideoEdit reference={hash} routeState={routeState} />
       </Container>
     </AppLayoutWrapper>
   )
 }
 
-export default VideoSettings
+export default StudioVideoEdit
