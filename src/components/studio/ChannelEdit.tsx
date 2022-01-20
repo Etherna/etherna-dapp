@@ -18,18 +18,16 @@
 import React, { useState } from "react"
 import { Redirect } from "react-router-dom"
 
-import ProfileInfoEdit from "@components/profile/ProfileInfoEdit"
+import ChannelEditor from "./channel-editor/ChannelEditor"
 import Routes from "@routes"
 import { useProfileUpdate } from "@state/hooks/profile"
 import { useErrorMessage } from "@state/hooks/ui"
+import useSelector from "@state/useSelector"
 import type { Profile } from "@definitions/swarm-profile"
 
-type ProfileEditorProps = {
-  address: string
-}
-
-const ProfileEditor: React.FC<ProfileEditorProps> = ({ address }) => {
-  const updateProfile = useProfileUpdate(address)
+const ChannelEdit: React.FC = () => {
+  const address = useSelector(state => state.user.address)
+  const updateProfile = useProfileUpdate(address!)
   const [isSavingProfile, setSavingProfile] = useState(false)
   const [savedProfile, setSavedProfile] = useState(false)
   const { showError } = useErrorMessage()
@@ -52,12 +50,15 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ address }) => {
     setSavingProfile(false)
   }
 
+  if (!address) {
+    return <Redirect to={Routes.getStudioLink()} />
+  }
   if (savedProfile) {
     return <Redirect to={Routes.getProfileLink(address)} />
   }
 
   return (
-    <ProfileInfoEdit
+    <ChannelEditor
       profileAddress={address}
       isSubmitting={isSavingProfile}
       onSubmit={handleSubmit}
@@ -65,4 +66,4 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ address }) => {
   )
 }
 
-export default ProfileEditor
+export default ChannelEdit

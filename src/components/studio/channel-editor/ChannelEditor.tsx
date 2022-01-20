@@ -18,7 +18,7 @@
 import React, { useRef, useState } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/profile/ProfileInfoEdit.module.scss"
+import classes from "@styles/components/studio/channel-editor/ChannelEditor.module.scss"
 import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 
 import Button from "@common/Button"
@@ -34,7 +34,7 @@ import type { Profile } from "@definitions/swarm-profile"
 
 type ImageType = "avatar" | "cover"
 
-type ProfileInfoEditProps = {
+type ChannelEditorProps = {
   profileAddress: string
   submitLabel?: string
   isSubmitting?: boolean
@@ -50,7 +50,7 @@ type ImagesUtils = {
   }
 }
 
-const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
+const ChannelEditor: React.FC<ChannelEditorProps> = ({
   profileAddress,
   submitLabel = "Save",
   isSubmitting,
@@ -150,7 +150,7 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
   }
 
   return (
-    <div className={classes.profileInfoEdit}>
+    <div className={classes.channelEditor}>
       <div className={classes.cover}>
         <label
           className={classNames(classes.coverInput, {
@@ -246,4 +246,4 @@ const ProfileInfoEdit: React.FC<ProfileInfoEditProps> = ({
   )
 }
 
-export default ProfileInfoEdit
+export default ChannelEditor

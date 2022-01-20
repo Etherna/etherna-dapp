@@ -28,7 +28,7 @@ const AsyncPlaylists = lazy(() => import("@pages/playlists"))
 const AsyncSaved = lazy(() => import("@pages/saved"))
 const AsyncProfile = lazy(() => import("@pages/profile"))
 const AsyncStudio = lazy(() => import("@pages/studio/creator-studio"))
-const AsyncProfileEdit = lazy(() => import("@pages/studio/channel-editor"))
+const AsyncChannelEdit = lazy(() => import("@pages/studio/channel-edit"))
 const AsyncVideoEdit = lazy(() => import("@pages/studio/video-edit"))
 const AsyncProfiles = lazy(() => import("@pages/profiles"))
 const AsyncWatch = lazy(() => import("@pages/watch"))
@@ -63,8 +63,8 @@ const Watch = () => (
 const Studio = () => (
   <Suspense fallback={null}><AsyncStudio /></Suspense>
 )
-const ProfileEdit = () => (
-  <Suspense fallback={null}><AsyncProfileEdit /></Suspense>
+const ChannelEdit = () => (
+  <Suspense fallback={null}><AsyncChannelEdit /></Suspense>
 )
 const VideoEdit = () => (
   <Suspense fallback={null}><AsyncVideoEdit /></Suspense>
@@ -124,7 +124,7 @@ const Router = () => {
             <Studio />
           </SignedInRoute>
           <SignedInRoute path={"/studio/channel"} exact>
-            <ProfileEdit />
+            <ChannelEdit />
           </SignedInRoute>
           <SignedInRoute path={"/studio/videos/:id"} exact>
             <VideoEdit />

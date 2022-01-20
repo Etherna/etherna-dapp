@@ -18,7 +18,7 @@
 import React, { useEffect, useImperativeHandle, useState } from "react"
 import { Redirect } from "react-router"
 
-import classes from "@styles/components/video-editor/VideoEditor.module.scss"
+import classes from "@styles/components/studio/video-editor/VideoEditor.module.scss"
 import { ReactComponent as TrashIcon } from "@assets/icons/trash.svg"
 import { ReactComponent as NotesIcon } from "@assets/icons/notes.svg"
 import { ReactComponent as MovieIcon } from "@assets/icons/movie.svg"

@@ -4,13 +4,13 @@ import { Redirect } from "react-router-dom"
 import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 
 import StudioEditView from "./StudioEditView"
-import VideoEditor from "@components/video-editor/VideoEditor"
+import VideoEditor from "./video-editor/VideoEditor"
 import { VideoEditorContextProvider } from "@context/video-editor-context"
 import useSwarmVideo from "@hooks/useSwarmVideo"
 import routes from "@routes"
 import useSelector from "@state/useSelector"
-import type { Video } from "@definitions/swarm-video"
 import { useConfirmation } from "@state/hooks/ui"
+import type { Video } from "@definitions/swarm-video"
 
 type VideoEditProps = {
   reference: string | undefined

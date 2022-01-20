@@ -18,7 +18,7 @@
 import React, { useImperativeHandle, useState, createRef, useEffect } from "react"
 import { Canceler } from "axios"
 
-import classes from "@styles/components/video-editor/VideoSourcesUpload.module.scss"
+import classes from "@styles/components/studio/video-editor/VideoSourcesUpload.module.scss"
 import { ReactComponent as PlusIcon } from "@assets/icons/plus.svg"
 
 import Button from "@common/Button"
