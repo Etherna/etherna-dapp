@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react"
-
-import classes from "@styles/components/studio/StudioTableView.module.scss"
 import classNames from "classnames"
 
+import classes from "@styles/components/studio/StudioTableView.module.scss"
+
+import Pagination from "@common/Pagination"
+
 type StudioTableViewProps<T = any> = {
+  className?: string
   title?: string
   page?: number
   total?: number
@@ -18,12 +21,13 @@ type StudioTableViewProps<T = any> = {
   }>
   showSelection?: boolean
   selectionActions?: React.ReactNode
-  onPageChange?(page: number): void
+  onPageChange?(page: number, perPage?: number): void
   onSelectionChange?(selectedItems: T[]): void
 }
 
 const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
   const {
+    className,
     title,
     items,
     columns,
@@ -66,7 +70,7 @@ const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
   }
 
   return (
-    <div className={classes.studioTableContainer}>
+    <div className={classNames(classes.studioTableContainer, className)}>
       {(title || selectionActions) && (
         <div className={classes.studioTableToolbar}>
           {(title || selectionActions) && (
@@ -135,6 +139,14 @@ const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
           ))}
         </tbody>
       </table>
+
+      <Pagination
+        className="mt-4"
+        defaultPage={page}
+        defaultItemsPerPage={itemsPerPage}
+        totalItems={total}
+        onChange={(page, count) => onPageChange?.(page, count)}
+      />
     </div>
   )
 }

@@ -4,7 +4,7 @@
 
 .videoTitleThumb {
   @apply relative overflow-hidden;
-  @apply w-14 md:w-24;
+  @apply w-14 md:w-20;
   @apply after:block after:pb-[62%];
 }
 
@@ -12,7 +12,7 @@
   @apply flex flex-col items-start space-y-2;
 
   .videoTitleStatus {
-    @apply md:hidden;
+    @apply xl:hidden;
   }
 }
 
@@ -25,7 +25,10 @@
   @apply text-2xs md:text-xs font-semibold;
   @apply px-1 py-0.5 rounded;
   @apply md:px-1.5 md:py-1;
-  @apply bg-gray-500 dark:bg-gray-600;
+  @apply bg-gray-300 dark:bg-gray-600;
   @apply text-gray-700 dark:text-gray-300;
 }
 
+.videoTable {
+  @apply sm:text-sm;
+}

@@ -63,7 +63,7 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
     <Modal
       show={show}
       showCancelButton={!isDeleting}
-      title={`Delete ${videos.length} ${videos.length > 1 ? "videos" : "videos"}`}
+      title={`Delete ${videos.length} ${videos.length > 1 ? "videos" : "video"}`}
       footerButtons={
         <Button modifier="danger" loading={isDeleting} onClick={handleDelete}>
           Yes, Delete

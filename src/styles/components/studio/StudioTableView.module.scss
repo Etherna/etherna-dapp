@@ -22,7 +22,7 @@
     @apply border-b border-gray-300 dark:border-gray-700;
 
     &.hideMobile {
-      @apply hidden md:table-cell;
+      @apply hidden xl:table-cell;
     }
   }
 
@@ -31,10 +31,10 @@
   }
 
   th, td {
-    @apply py-4;
+    @apply py-2;
 
     &.hideMobile {
-      @apply hidden md:table-cell;
+      @apply hidden xl:table-cell;
     }
   }
 }

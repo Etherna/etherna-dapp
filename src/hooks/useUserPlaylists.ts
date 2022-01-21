@@ -67,16 +67,16 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
     setIsFetchingPlaylists(false)
   }
 
-  const addVideoToPlaylist = async (playlistId: string, videoReference: string) => {
+  const addVideosToPlaylist = async (playlistId: string, videosReferences: string[]) => {
     const initialPlaylist = allPlaylists.find(playlist => playlist.id === playlistId)
 
     if (!initialPlaylist) return showError("Playlist not loaded", "")
 
     const newPlaylist = deepCloneObject(initialPlaylist)
     newPlaylist.videos = [
-      videoReference,
+      ...videosReferences,
       ...(newPlaylist.videos ?? []),
-    ]
+    ].filter((ref, i, self) => self.indexOf(ref) === i)
     await updatePlaylistAndUser(initialPlaylist, newPlaylist)
   }
 
@@ -139,7 +139,7 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
     savedPlaylist,
     customPlaylists,
     loadPlaylists,
-    addVideoToPlaylist,
+    addVideosToPlaylist,
     removeVideosFromPlaylist,
   }
 }

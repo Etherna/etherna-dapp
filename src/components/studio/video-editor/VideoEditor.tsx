@@ -64,7 +64,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
 
   const { showError } = useErrorMessage()
   const { resetState } = useVideoEditorBaseActions()
-  const { channelPlaylist, loadPlaylists, addVideoToPlaylist } = useUserPlaylists(address!, { resolveChannel: true })
+  const { channelPlaylist, loadPlaylists, addVideosToPlaylist } = useUserPlaylists(address!, { resolveChannel: true })
 
   useEffect(() => {
     if (address) {
@@ -114,7 +114,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
       const videoReference = await videoWriter.update(ownerProfile)
 
       // update channel playlist
-      !reference && await addVideoToPlaylist(channelPlaylist.id, videoReference)
+      !reference && await addVideosToPlaylist(channelPlaylist.id, [videoReference])
 
       // update route state for redirect
       window.routeState = videoWriter.video

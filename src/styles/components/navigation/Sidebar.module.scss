@@ -19,12 +19,9 @@
   @apply bg-gray-100 dark:bg-gray-800;
   @apply z-20;
 
-  @screen sm {
-    @apply fixed left-0 inset-y-0 flex w-20;
-  }
-  @screen lg {
-    @apply w-64;
-  }
+  @apply sm:fixed sm:left-0 sm:inset-y-0 sm:flex w-20;
+  @apply lg:w-52;
+  @apply xl:w-64;
 
   &.floating {
     @apply transform -translate-x-full;
@@ -50,19 +47,13 @@
 }
 
 .sidebar:not(.floating) + * {
-  @screen sm {
-    @apply pl-20;
-  }
-  @screen lg {
-    @apply pl-64;
-  }
+  @apply sm:pl-20;
+  @apply lg:pl-52;
+  @apply xl:pl-64;
 
   > [data-topbar] {
-    @screen sm {
-      @apply left-20;
-    }
-    @screen lg {
-      @apply left-64;
-    }
+    @apply sm:left-20;
+    @apply lg:left-52;
+    @apply xl:left-64;
   }
 }
