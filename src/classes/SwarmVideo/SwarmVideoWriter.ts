@@ -161,7 +161,9 @@ export default class SwarmVideoWriter {
         ...this._videoRaw.sources.map(source => this.beeClient.unpin(source.reference))
       ])
     } catch { }
-    await this.indexClient.videos.deleteVideo(this.reference)
+    try {
+      await this.indexClient.videos.deleteVideo(this.reference)
+    } catch { }
   }
 
   async addVideoSource(video: ArrayBuffer, contentType: string, opts?: SwarmVideoUploadOptions) {

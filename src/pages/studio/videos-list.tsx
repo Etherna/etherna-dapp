@@ -16,27 +16,19 @@
  */
 
 import React from "react"
-import { useParams } from "react-router-dom"
 
 import Container from "@common/Container"
 import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
-import SEO from "@components/layout/SEO"
-import ProfileEditor from "@components/profile/ProfileEditor"
-import useSelector from "@state/useSelector"
+import Videos from "@components/studio/Videos"
 
-const ProfileEditPage = () => {
-  const { id } = useParams<{ id: string }>()
-  const { name } = useSelector(state => state.profile)
-
+const StudioVideoEdit = () => {
   return (
     <AppLayoutWrapper>
-      <SEO title={`Editing profile ${name || id}`} />
-
-      <Container noPaddingX noPaddingY fluid>
-        <ProfileEditor address={id} />
+      <Container noPaddingX noPaddingY>
+        <Videos />
       </Container>
     </AppLayoutWrapper>
   )
 }
 
-export default ProfileEditPage
+export default StudioVideoEdit

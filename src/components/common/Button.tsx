@@ -15,11 +15,12 @@
  *  
  */
 
-import React from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 import classNames from "classnames"
 
 import classes from "@styles/components/common/Button.module.scss"
+import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 
 type ButtonProps = {
   as?: React.ElementType
@@ -34,6 +35,7 @@ type ButtonProps = {
   small?: boolean
   large?: boolean
   lighter?: boolean
+  loading?: boolean
   iconOnly?: boolean
   disabled?: boolean
   style?: React.CSSProperties
@@ -50,6 +52,7 @@ const Button: React.FC<ButtonProps> = ({
   small,
   large,
   lighter,
+  loading,
   iconOnly,
   aspect = "fill",
   modifier = "primary",
@@ -58,6 +61,17 @@ const Button: React.FC<ButtonProps> = ({
   rounded,
   onClick,
 }) => {
+  const [width, setWidth] = useState<number>()
+  const [height, setHeight] = useState<number>()
+  const [buttonEl, setButtonEl] = useState<HTMLElement>()
+
+  useEffect(() => {
+    if (buttonEl && loading) {
+      setWidth(buttonEl.clientWidth)
+      setHeight(buttonEl.clientHeight)
+    }
+  }, [buttonEl, loading])
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLElement | HTMLAnchorElement>) => {
     const isActiveElement = e.target === document.activeElement
     const triggers = ["Enter", "Space"]
@@ -111,9 +125,18 @@ const Button: React.FC<ButtonProps> = ({
           role="button"
           onClick={onClick}
           onKeyDown={handleKeyDown}
-          disabled={disabled ? true : false}
+          disabled={disabled || loading}
+          style={{
+            width: loading && width ? `${width}px` : undefined,
+            height: loading && height ? `${height}px` : undefined,
+          }}
+          ref={(el: HTMLElement) => el && !buttonEl && setButtonEl(el)}
         >
-          {children}
+          {loading ? (
+            <Spinner className={classes.btnSpinner} />
+          ) : (
+            <>{children}</>
+          )}
         </As>
       )}
     </>

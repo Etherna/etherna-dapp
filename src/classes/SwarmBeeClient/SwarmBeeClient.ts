@@ -94,7 +94,6 @@ export default class SwarmBeeClient extends Bee {
       await http.get(`${import.meta.env.VITE_APP_GATEWAY_URL}/pins`, {
         signal: controller.signal,
         onDownloadProgress: (p) => {
-          console.log("p", p)
           controller.abort()
         },
       })

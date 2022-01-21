@@ -30,6 +30,8 @@ $btn-modifiers: (
 
   svg {
     @apply h-[1.2em];
+  }
+  svg:not(.btnSpinner) {
     @apply mr-1.5;
   }
 

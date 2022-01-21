@@ -16,7 +16,7 @@
 
 import type { Dispatch } from "react"
 
-import { THUMBNAIL_QUEUE_NAME } from "@components/video-editor/ThumbnailUpload"
+import { THUMBNAIL_QUEUE_NAME } from "@components/studio/video-editor/ThumbnailUpload"
 import type { AnyVideoEditorAction } from "@context/video-editor-context"
 import type SwarmVideoWriter from "@classes/SwarmVideo/SwarmVideoWriter"
 import type { SwarmVideoQuality } from "./swarm-video"

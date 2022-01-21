@@ -44,6 +44,7 @@
     "uuid": "8.3.2"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "0.4.0",
     "@types/classnames": "2.3.1",
     "@types/draft-js": "0.11.7",
     "@types/lodash": "4.14.177",

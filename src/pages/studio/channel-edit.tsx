@@ -19,17 +19,16 @@ import React from "react"
 
 import Container from "@common/Container"
 import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
-import SEO from "@components/layout/SEO"
-import VideoCreate from "@components/video/VideoCreate"
+import ChannelEditor from "@components/studio/ChannelEdit"
 
-const UploadPage = () => (
-  <AppLayoutWrapper>
-    <SEO title="Upload a video" />
+const ChannelEditPage = () => {
+  return (
+    <AppLayoutWrapper>
+      <Container noPaddingX noPaddingY fluid>
+        <ChannelEditor />
+      </Container>
+    </AppLayoutWrapper>
+  )
+}
 
-    <Container fluid>
-      <VideoCreate />
-    </Container>
-  </AppLayoutWrapper>
-)
-
-export default UploadPage
+export default ChannelEditPage

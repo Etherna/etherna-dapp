@@ -1,4 +1,4 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,19 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *  
  */
 
-import { checkIsLegacyBrowser } from "@utils/browser"
+import React from "react"
+import { Redirect } from "react-router-dom"
 
-export default function unsupportedRender(renderFunc: () => void) {
-  if (checkIsLegacyBrowser()) {
-    renderFunc()
-  }
-}
+import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
+import routes from "@routes"
+
+const CreatorStudio = () => (
+  <AppLayoutWrapper>
+    <Redirect to={routes.getStudioVideosLink()} />
+  </AppLayoutWrapper>
+)
+
+export default CreatorStudio

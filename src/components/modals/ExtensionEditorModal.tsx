@@ -32,16 +32,18 @@ const ExtensionEditorModal = () => {
   const STORAGE_SELECTED_KEY = `setting:${extensionName}-url`
 
   const { hideEditor } = useExtensionEditor()
+  const [openModal, setOpenModal] = useState(false)
+  const [editingExtension, setEditingExtension] = useState<string>()
   const [isEditing, setIsEditing] = useState(false)
   const [selectedUrl, setSelectedUrl] = useState("")
 
   const defaultUrl = useMemo(() => {
-    switch (extensionName) {
+    switch (editingExtension) {
       case "index": return import.meta.env.VITE_APP_INDEX_URL
       case "gateway": return import.meta.env.VITE_APP_GATEWAY_URL
       default: return ""
     }
-  }, [extensionName])
+  }, [editingExtension])
   const initialSelectedUrl = useMemo(() => {
     if (localStorage.getItem(STORAGE_SELECTED_KEY)) {
       return JSON.parse(localStorage.getItem(STORAGE_SELECTED_KEY)!)
@@ -50,13 +52,18 @@ const ExtensionEditorModal = () => {
   }, [defaultUrl, STORAGE_SELECTED_KEY])
 
   useEffect(() => {
+    extensionName && setEditingExtension(extensionName)
+    setOpenModal(!!extensionName)
+  }, [extensionName])
+
+  useEffect(() => {
     if (initialSelectedUrl) {
       setSelectedUrl(initialSelectedUrl)
     }
   }, [initialSelectedUrl])
 
   const description = useMemo(() => {
-    switch (extensionName) {
+    switch (editingExtension) {
       case "index":
         return `The index is information provider, or rather the list of videos,
         users and comments of the platform.
@@ -67,7 +74,7 @@ const ExtensionEditorModal = () => {
         By changing the gateway you decide how the data is gathered in the app, hence a different payment system.`
       default: return ""
     }
-  }, [extensionName])
+  }, [editingExtension])
 
   const closeModal = () => {
     hideEditor()
@@ -79,14 +86,14 @@ const ExtensionEditorModal = () => {
 
   return (
     <Modal
-      show={!!extensionName}
+      show={openModal}
       showCloseButton={false}
       showCancelButton={false}
-      title={`Edit current ${extensionName}`}
+      title={`Edit current ${editingExtension}`}
       icon={
-        extensionName === "index" ? (
+        editingExtension === "index" ? (
           <IndexIcon />
-        ) : extensionName === "gateway" ? (
+        ) : editingExtension === "gateway" ? (
           <GatewayIcon />
         ) : null
       }
@@ -105,7 +112,7 @@ const ExtensionEditorModal = () => {
         listStorageKey={STORAGE_LIST_KEY}
         currentStorageKey={STORAGE_SELECTED_KEY}
         defaultUrl={defaultUrl}
-        initialValue={{ name: `Etherna ${extensionName}`, url: defaultUrl }}
+        initialValue={{ name: `Etherna ${editingExtension}`, url: defaultUrl }}
         description={description}
         onChange={host => setSelectedUrl(host.url)}
         onToggleEditing={setIsEditing}

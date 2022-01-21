@@ -53,7 +53,7 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
     const video = await videoReader.download()
     setVideo(video)
 
-    setIsloading(true)
+    setIsloading(false)
   }
 
   return {

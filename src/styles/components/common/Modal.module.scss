@@ -52,12 +52,6 @@
   @apply text-center;
   @apply space-y-2;
   @apply sm:text-left;
-
-  @screen sm {
-    max-width: calc(
-      100% - theme("spacing.4") - theme("spacing.12")
-    ); // icon + space-x-4
-  }
 }
 
 .modalIcon {
@@ -80,6 +74,14 @@
   }
   .modalSuccess & {
     @apply bg-green-100 text-green-600;
+  }
+}
+
+.modalIcon + .modalContent {
+  @screen sm {
+    max-width: calc(
+      100% - theme("spacing.4") - theme("spacing.12")
+    ); // icon + space-x-4
   }
 }
 

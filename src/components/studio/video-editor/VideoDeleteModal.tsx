@@ -17,6 +17,7 @@
 
 import React, { useState } from "react"
 
+import classes from "@styles/components/studio/video-editor/VideoDeleteModal.module.scss"
 import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 import { ReactComponent as ThumbPlaceholder } from "@assets/backgrounds/thumb-placeholder.svg"
 
@@ -25,19 +26,18 @@ import Button from "@common/Button"
 import Image from "@common/Image"
 import { useErrorMessage } from "@state/hooks/ui"
 import { encodedSvg } from "@utils/svg"
+import type { Video } from "@definitions/swarm-video"
 
 type VideoDeleteModalProps = {
   show: boolean
-  imagePreview?: string
-  title: string
+  videos: Video[]
   deleteHandler: () => Promise<void>
   onCancel?: () => void
 }
 
 const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
   show,
-  imagePreview,
-  title,
+  videos,
   deleteHandler,
   onCancel
 }) => {
@@ -63,38 +63,41 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
     <Modal
       show={show}
       showCancelButton={!isDeleting}
-      title="Delete Video"
+      title={`Delete ${videos.length} ${videos.length > 1 ? "videos" : "video"}`}
       footerButtons={
-        <>
-          {!isDeleting && (
-            <>
-              <Button modifier="danger" onClick={handleDelete}>
-                Yes, Delete
-              </Button>
-            </>
-          )}
-          {isDeleting && (
-            <Spinner width="30" />
-          )}
-        </>
+        <Button modifier="danger" loading={isDeleting} onClick={handleDelete}>
+          Yes, Delete
+        </Button>
       }
       onClose={onCancel}
     >
-      <div className="flex my-4">
-        <div className="col relative sm:w-1/4 min-h-16">
-          <Image
-            src={imagePreview ?? encodedSvg(<ThumbPlaceholder />)}
-            fallbackSrc={encodedSvg(<ThumbPlaceholder />)}
-            className="rounded min-h-16 bg-gray-500"
-            alt=""
-          />
+      <div className={classes.videoDeleteContent}>
+        <div className={classes.videoDeleteThumbs}>
+          {videos.slice(0, 3).map((video, i) => (
+            <div className={classes.videoDeleteThumbWrapper} key={i}>
+              <div className={classes.videoDeleteThumb} key={i}>
+                <Image
+                  src={encodedSvg(<ThumbPlaceholder />)}
+                  sources={video.thumbnail?.sources}
+                  fallbackSrc={encodedSvg(<ThumbPlaceholder />)}
+                  placeholder="blur"
+                  blurredDataURL={video.thumbnail?.blurredBase64}
+                />
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="col sm:w-3/4">
-          <h4 className="ml-2 mt-3 font-semibold">{title || "Untitled"}</h4>
+        <div className={classes.videoDeleteTitleList}>
+          {videos.map((video, i) => (
+            <h4 className={classes.videoDeleteTitle} key={i}>
+              {video.title || "Untitled"}
+            </h4>
+          ))}
         </div>
       </div>
-      <p className="block leading-tight mt-2">
-        Do you confirm to delete this video? <br />
+
+      <p className={classes.videoDeleteMessage}>
+        Do you confirm to delete this {videos.length > 1 ? "videos" : "video"}? <br />
         This operation cannot be undone.
       </p>
     </Modal>

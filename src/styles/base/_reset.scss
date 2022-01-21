@@ -49,3 +49,12 @@ kbd {
   @apply text-gray-600 bg-gray-200 border-gray-300;
   @apply dark:text-gray-300 dark:bg-gray-800 dark:border-gray-700;
 }
+
+input[type=checkbox] {
+  @apply p-0.5;
+  @apply rounded text-primary-600;
+  @apply bg-gray-200 dark:bg-gray-700;
+  @apply border-gray-300 dark:border-gray-600;
+  @apply checked:bg-primary-600 checked:dark:bg-primary-600;
+  @apply checked:border-primary-600 checked:dark:border-primary-600;
+}

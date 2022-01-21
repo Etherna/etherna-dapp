@@ -27,16 +27,18 @@ type PlaylistVideosOptions = {
   owner?: Profile
   waitProfile?: boolean
   limit?: number
+  autofetch?: boolean
 }
 
 export default function usePlaylistVideos(
   playlist: SwarmPlaylist | undefined,
-  opts: PlaylistVideosOptions = { limit: -1 }
+  opts: PlaylistVideosOptions = { limit: -1, autofetch: true }
 ) {
   const { beeClient, indexClient } = useSelector(state => state.env)
   const [videos, setVideos] = useState<Video[]>()
   const [isFetching, setIsFetching] = useState(false)
   const [hasMore, setHasMore] = useState(false)
+  const [total, setTotal] = useState(0)
   const [isEncrypted, setIsEncrypted] = useState(playlist?.type === "private" && !playlist.videos)
 
   useEffect(() => {
@@ -51,22 +53,24 @@ export default function usePlaylistVideos(
     if (opts.waitProfile) {
       setIsFetching(true)
     }
-    if (opts.waitProfile && opts.owner) {
+    if (opts.waitProfile && opts.owner && opts.autofetch) {
       loadMore()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [opts.owner])
 
-  const loadMore = async () => {
-    if (!hasMore) return setIsFetching(false)
-    if (!playlist?.videos) return setIsFetching(false)
-    if (opts.waitProfile && !opts.owner) return setIsFetching(false)
+  const fetchVideos = async (from: number, to: number): Promise<Video[]> => {
+    if (
+      !playlist?.videos ||
+      (opts.waitProfile && !opts.owner)
+    ) {
+      setIsFetching(false)
+      return []
+    }
 
+    setTotal(playlist.videos.length)
     setIsFetching(true)
     try {
-      const limit = opts.limit!
-      const from = videos?.length ?? 0
-      const to = from + (limit === -1 ? playlist.videos.length : limit)
       const references = playlist.videos.slice(from, to)
       const newVideos = await Promise.all(references.map(ref => {
         const reader = new SwarmVideoIO.Reader(ref, playlist.owner, {
@@ -77,21 +81,46 @@ export default function usePlaylistVideos(
         })
         return reader.download()
       }))
-      setVideos([
-        ...(videos ?? []),
-        ...newVideos,
-      ])
+
+      setIsFetching(false)
+
+      return newVideos
     } catch (error) {
       showError("Fetching error", "Coudn't fetch playlist video")
+      setIsFetching(false)
+      return []
     }
-    setIsFetching(false)
+  }
+
+  const fetchPage = async (page: number) => {
+    const limit = opts.limit
+    if (!limit || limit < 1) throw new Error("Limit must be set to be greater than 1")
+    const from = ((page - 1) * limit)
+    const to = from + limit
+    const newVideos = await fetchVideos(from, to)
+    setVideos(newVideos)
+  }
+
+  const loadMore = async () => {
+    if (!hasMore) return
+
+    const limit = opts.limit!
+    const from = videos?.length ?? 0
+    const to = from + (limit === -1 ? playlist?.videos?.length ?? 0 : limit)
+    const newVideos = await fetchVideos(from, to)
+    setVideos([
+      ...(videos ?? []),
+      ...newVideos,
+    ])
   }
 
   return {
     videos,
+    total,
     isFetching,
     isEncrypted,
     hasMore,
     loadMore,
+    fetchPage,
   }
 }
