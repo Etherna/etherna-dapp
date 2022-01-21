@@ -39,6 +39,21 @@
   }
 }
 
+.studioTableToolbar {
+  @apply flex items-center flex-wrap;
+  @apply py-1;
+}
+
+.studioTableToolbarActions {
+  @apply invisible;
+  @apply flex items-center ml-auto;
+  @apply space-x-3;
+
+  &.show {
+    @apply visible;
+  }
+}
+
 .studioTableTitle {
   @apply text-lg lg:text-xl;
   @apply mb-0;

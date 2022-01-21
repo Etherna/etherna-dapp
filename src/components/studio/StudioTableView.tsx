@@ -17,6 +17,7 @@ type StudioTableViewProps<T = any> = {
     render(item: T): React.ReactNode
   }>
   showSelection?: boolean
+  selectionActions?: React.ReactNode
   onPageChange?(page: number): void
   onSelectionChange?(selectedItems: T[]): void
 }
@@ -31,6 +32,7 @@ const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
     itemsPerPage = 20,
     isLoading,
     showSelection,
+    selectionActions,
     onPageChange,
     onSelectionChange,
   } = props
@@ -46,24 +48,39 @@ const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItems])
 
-  const toggleSelection = (item?: T) => {
+  const toggleSelection = (item?: T, selected?: boolean) => {
     if (!item) {
       if (selectedItems.length) setSelectedItems([])
       else setSelectedItems(items ?? [])
     } else {
-      const index = selectedItems.indexOf(item)
-      if (index >= 0) {
-        selectedItems.splice(index, 1)
-        setSelectedItems([...selectedItems])
-      } else {
+      if (selected) {
         setSelectedItems(items => [...items, item])
+      } else {
+        const index = selectedItems.indexOf(item)
+        if (index >= 0) {
+          selectedItems.splice(index, 1)
+          setSelectedItems([...selectedItems])
+        }
       }
     }
   }
 
   return (
     <div className={classes.studioTableContainer}>
-      <h2 className={classes.studioTableTitle}>{title}</h2>
+      {(title || selectionActions) && (
+        <div className={classes.studioTableToolbar}>
+          {(title || selectionActions) && (
+            <h2 className={classes.studioTableTitle}>{title}</h2>
+          )}
+          {selectionActions && (
+            <div className={classNames(classes.studioTableToolbarActions, {
+              [classes.show]: selectedItems.length > 0
+            })}>
+              {selectionActions}
+            </div>
+          )}
+        </div>
+      )}
 
       <table className={classNames(classes.studioTable, {
         [classes.loading]: isLoading
@@ -75,7 +92,7 @@ const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
                 <input
                   type="checkbox"
                   checked={selectedItems.length == items?.length}
-                  onClick={() => toggleSelection()}
+                  onChange={() => toggleSelection()}
                 />
               </th>
             )}
@@ -100,7 +117,7 @@ const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
                   <input
                     type="checkbox"
                     checked={selectedItems.indexOf(item) >= 0}
-                    onClick={() => toggleSelection(item)}
+                    onChange={e => toggleSelection(item, e.target.checked)}
                   />
                 </td>
               )}

@@ -27,12 +27,10 @@ import { ReactComponent as EyeIcon } from "@assets/icons/eye.svg"
 import VideoDetails from "./VideoDetails"
 import VideoSources from "./VideoSources"
 import VideoExtra from "./VideoExtra"
-import VideoDeleteModal from "./VideoDeleteModal"
 import Button from "@common/Button"
 import ProgressTab from "@common/ProgressTab"
 import ProgressTabContent from "@common/ProgressTabContent"
 import ProgressTabLink from "@common/ProgressTabLink"
-import SwarmImageIO from "@classes/SwarmImage"
 import SwarmVideoIO from "@classes/SwarmVideo"
 import { useVideoEditorBaseActions, useVideoEditorState } from "@context/video-editor-context/hooks"
 import VideoEditorCache from "@context/video-editor-context/VideoEditorCache"
@@ -55,7 +53,6 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const { waitConfirmation } = useConfirmation()
   const profile = useSelector(state => state.profile)
   const { address } = useSelector(state => state.user)
-  const { beeClient } = useSelector(state => state.env)
 
   const [{ reference, queue, videoWriter }] = useVideoEditorState()
   const hasQueuedProcesses = queue.filter(q => !q.reference).length > 0
@@ -63,18 +60,11 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const canPublishVideo = !!videoWriter.videoRaw.title && hasOriginalVideo
 
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [saved, setSaved] = useState(false)
 
   const { showError } = useErrorMessage()
   const { resetState } = useVideoEditorBaseActions()
-  const {
-    channelPlaylist,
-    loadPlaylists,
-    addVideoToPlaylist,
-    removeVideoFromPlaylist
-  } = useUserPlaylists(address!, { resolveChannel: true })
+  const { channelPlaylist, loadPlaylists, addVideoToPlaylist } = useUserPlaylists(address!, { resolveChannel: true })
 
   useEffect(() => {
     if (address) {
@@ -85,7 +75,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
 
   useImperativeHandle(ref, () => ({
     isEmpty: queue.length === 0,
-    canSubmitVideo: canPublishVideo && !hasQueuedProcesses && !isDeleting,
+    canSubmitVideo: canPublishVideo && !hasQueuedProcesses,
     submitVideo,
     resetState,
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -137,28 +127,6 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
       showError("Linking error", error.message)
       setIsSubmitting(false)
     }
-  }
-
-  const deleteVideo = async () => {
-    if (!channelPlaylist) {
-      return showError(
-        "Channel error",
-        "Channel video list not fetched."
-      )
-    }
-
-    setIsDeleting(true)
-
-    try {
-      await videoWriter.deleteVideo()
-      await removeVideoFromPlaylist(channelPlaylist.id, reference!)
-
-      setSaved(true)
-    } catch (error: any) {
-      showError("Cannot delete the video", error.message)
-    }
-
-    setIsDeleting(false)
   }
 
   const askToClearState = async () => {
@@ -227,20 +195,6 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
           </div>
         </div>
       </div>
-
-      {reference && (
-        <VideoDeleteModal
-          show={showDeleteModal}
-          imagePreview={
-            videoWriter.thumbnail
-              ? beeClient.getBzzUrl(SwarmImageIO.Reader.getOriginalSourceReference(videoWriter.thumbnail)!)
-              : undefined
-          }
-          title={videoWriter.title ?? "Undefined"}
-          deleteHandler={deleteVideo}
-          onCancel={() => setShowDeleteModal(false)}
-        />
-      )}
     </>
   )
 })

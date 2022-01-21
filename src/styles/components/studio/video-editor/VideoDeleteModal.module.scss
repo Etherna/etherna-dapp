@@ -1,0 +1,42 @@
+.videoDelete {
+
+}
+
+.videoDeleteThumbs {
+  @apply relative w-full sm:w-1/3 sm:min-h-24;
+}
+
+.videoDeleteThumbWrapper {
+  @apply absolute w-[91%] h-[80%] top-0 left-0;
+  @apply z-[2];
+
+  &:nth-child(2) {
+    @apply ml-[3%] mt-[3%] z-[1];
+  }
+  &:nth-child(3) {
+    @apply ml-[6%] mt-[6%] z-[0];
+  }
+}
+
+.videoDeleteThumb {
+  @apply relative w-full h-full;
+}
+
+.videoDeleteContent {
+  @apply flex flex-col;
+  @apply sm:flex-row;
+}
+
+.videoDeleteTitleList {
+  @apply flex-grow;
+  @apply max-h-40 overflow-y-auto;
+  @apply sm:pl-4;
+}
+
+.videoDeleteTitle {
+  @apply text-base font-semibold mb-0;
+}
+
+.videoDeleteMessage {
+  @apply block leading-tight mt-2;
+}
