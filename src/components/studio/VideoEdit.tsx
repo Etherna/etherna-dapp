@@ -40,7 +40,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   }, [reference])
 
   const backPrompt = async () => {
-    if (isEmpty) return true
+    if (isEmpty || reference) return true
     const continueEditing = await waitConfirmation(
       "Cancel upload",
       "Are you sure you want to cancel this upload. The progress will be lost.",
@@ -50,8 +50,12 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
     return !continueEditing
   }
 
-  if (video && video.owner !== address) {
+  if (video && video.owner?.address !== address) {
     return <Redirect to={routes.getStudioVideosLink()} />
+  }
+
+  const handleSave = async () => {
+    await saveCallback.current?.()
   }
 
   return (
@@ -61,7 +65,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
       canSave={canSave}
       backTo={routes.getStudioVideosLink()}
       backPrompt={backPrompt}
-      onSave={saveCallback.current}
+      onSave={handleSave}
     >
       {isLoading || (reference && !video) ? (
         <Spinner className="mt-10 mx-auto w-10 text-primary-500" />
@@ -69,6 +73,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
         <VideoEditorContextProvider reference={reference} videoData={video!}>
           <VideoEditor ref={ref => {
             if (!ref) return
+
             saveCallback.current = ref.submitVideo
             resetState.current = ref.resetState
             ref.isEmpty !== isEmpty && setIsEmpty(ref.isEmpty)

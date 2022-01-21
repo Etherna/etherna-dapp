@@ -36,7 +36,7 @@ import SwarmImageIO from "@classes/SwarmImage"
 import SwarmVideoIO from "@classes/SwarmVideo"
 import { useVideoEditorBaseActions, useVideoEditorState } from "@context/video-editor-context/hooks"
 import VideoEditorCache from "@context/video-editor-context/VideoEditorCache"
-import Routes from "@routes"
+import routes from "@routes"
 import useUserPlaylists from "@hooks/useUserPlaylists"
 import useSelector from "@state/useSelector"
 import { useConfirmation, useErrorMessage } from "@state/hooks/ui"
@@ -66,7 +66,6 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const [isDeleting, setIsDeleting] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [saved, setSaved] = useState(false)
-  const [videoLink, setVideoLink] = useState<string>()
 
   const { showError } = useErrorMessage()
   const { resetState } = useVideoEditorBaseActions()
@@ -98,7 +97,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     if (!channelPlaylist) {
       return showError(
         "Channel error",
-        "Channel video list not fetched."
+        "Channel video list not fetched correctly."
       )
     }
 
@@ -131,14 +130,13 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
       window.routeState = videoWriter.video
 
       resetState()
-      setVideoLink(Routes.getVideoLink(videoReference))
+      setIsSubmitting(false)
       setSaved(true)
     } catch (error: any) {
       console.error(error)
       showError("Linking error", error.message)
+      setIsSubmitting(false)
     }
-
-    setIsSubmitting(false)
   }
 
   const deleteVideo = async () => {
@@ -163,14 +161,6 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     setIsDeleting(false)
   }
 
-  if (saved) {
-    return videoLink ? (
-      <Redirect to={videoLink!} />
-    ) : (
-      <Redirect to={Routes.getProfileLink(address!)} />
-    )
-  }
-
   const askToClearState = async () => {
     const clear = await waitConfirmation(
       "Clear all",
@@ -182,6 +172,10 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   }
 
   const usePortal = VideoEditorCache.isCacheEmptyOrDefault && queue.length === 0 && !reference
+
+  if (saved) {
+    return <Redirect to={routes.getStudioVideosLink()} />
+  }
 
   return (
     <>

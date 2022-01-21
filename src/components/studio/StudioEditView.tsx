@@ -5,6 +5,7 @@ import classes from "@styles/components/studio/StudioEditView.module.scss"
 import { ReactComponent as ArrowLeftIcon } from "@assets/icons/arrow-left.svg"
 
 import Button from "@common/Button"
+import useMounted from "@hooks/useMounted"
 
 type StudioEditViewProps = {
   title: string
@@ -26,6 +27,7 @@ const StudioEditView: React.FC<StudioEditViewProps> = ({
 }) => {
   const [saving, setSaving] = useState(false)
   const { push } = useHistory()
+  const mounted = useMounted()
 
   const handleBack = async (e: React.MouseEvent) => {
     if (backPrompt) {
@@ -40,7 +42,7 @@ const StudioEditView: React.FC<StudioEditViewProps> = ({
     if (onSave) {
       await onSave()
     }
-    setSaving(false)
+    mounted.current && setSaving(false)
   }
 
   return (

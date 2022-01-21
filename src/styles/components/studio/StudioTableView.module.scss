@@ -1,0 +1,45 @@
+.studioTableContainer {
+  @apply w-full;
+  @apply overflow-x-auto;
+}
+
+.studioTable {
+  @apply min-w-full;
+  @apply mt-5;
+  @apply transition-opacity duration-200 ease-out;
+
+  &.loading {
+    @apply opacity-30 pointer-events-none;
+  }
+
+  thead {
+    @apply pb-4;
+  }
+  
+  tr > th {
+    @apply font-medium text-left;
+    @apply text-gray-600 dark:text-gray-300;
+    @apply border-b border-gray-300 dark:border-gray-700;
+
+    &.hideMobile {
+      @apply hidden md:table-cell;
+    }
+  }
+
+  tr + tr > td {
+    @apply border-t border-gray-200 dark:border-gray-800;
+  }
+
+  th, td {
+    @apply py-4;
+
+    &.hideMobile {
+      @apply hidden md:table-cell;
+    }
+  }
+}
+
+.studioTableTitle {
+  @apply text-lg lg:text-xl;
+  @apply mb-0;
+}

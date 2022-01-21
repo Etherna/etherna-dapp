@@ -1,0 +1,31 @@
+.videoTitle {
+  @apply flex items-center space-x-2;
+}
+
+.videoTitleThumb {
+  @apply relative overflow-hidden;
+  @apply w-14 md:w-24;
+  @apply after:block after:pb-[62%];
+}
+
+.videoTitleInfo {
+  @apply flex flex-col items-start space-y-2;
+
+  .videoTitleStatus {
+    @apply md:hidden;
+  }
+}
+
+.videoTitleTitle {
+  @apply text-base mb-0;
+  @apply font-bold leading-tight;
+}
+
+.videoTitleStatus {
+  @apply text-2xs md:text-xs font-semibold;
+  @apply px-1 py-0.5 rounded;
+  @apply md:px-1.5 md:py-1;
+  @apply bg-gray-500 dark:bg-gray-600;
+  @apply text-gray-700 dark:text-gray-300;
+}
+
