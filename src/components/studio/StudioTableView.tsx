@@ -112,7 +112,7 @@ const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
               <th style={{ width: "32px" }}>
                 <input
                   type="checkbox"
-                  checked={selectedItems.length == items?.length}
+                  checked={selectedItems.length == items?.length && selectedItems.length > 0}
                   onChange={() => toggleSelection()}
                 />
               </th>

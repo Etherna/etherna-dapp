@@ -19,7 +19,6 @@ import React from "react"
 
 import { ReactComponent as MoreIcon } from "@assets/icons/more-circle.svg"
 
-import Button from "@common/Button"
 import Dropdown from "@common/Dropdown"
 import DropdownToggle from "@common/DropdownToggle"
 import DropdownItem from "@common/DropdownItem"
@@ -38,7 +37,7 @@ const VideoMenu: React.FC<VideoMenuProps> = ({ video }) => {
       <DropdownToggle>
         <MoreIcon className="w-5 h-5" />
       </DropdownToggle>
-      <DropdownMenu className="!w-44">
+      <DropdownMenu className="!w-44 !mt-0">
         <DropdownItem>
           <StateLink to={Routes.getStudioVideoEditLink(video.reference)} state={video}>Video Settings</StateLink>
         </DropdownItem>
