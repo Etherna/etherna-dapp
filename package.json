@@ -67,7 +67,7 @@
     "ftp-deploy": "^2.3.6",
     "http-proxy-middleware": "^1.0.6",
     "https": "^1.0.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.1.1",
     "node-sass": "^4.13.1",
     "nodemon": "^2.0.7",
     "postcss": "^8.2.8",
