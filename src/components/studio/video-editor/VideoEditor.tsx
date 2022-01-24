@@ -169,12 +169,12 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
                   completed: !!q.reference
                 }))}
               />
-              <ProgressTabLink
+              {/* <ProgressTabLink
                 tabKey="extra"
                 title="Extra"
                 iconSvg={<EyeIcon />}
                 text="Audience, visibility, ..."
-              />
+              /> */}
 
               <ProgressTabContent tabKey="details">
                 <VideoDetails isSubmitting={isSubmitting} />
@@ -182,9 +182,9 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
               <ProgressTabContent tabKey="sources">
                 <VideoSources initialDragPortal={`#${PORTAL_ID}`} isSubmitting={isSubmitting} />
               </ProgressTabContent>
-              <ProgressTabContent tabKey="extra">
+              {/* <ProgressTabContent tabKey="extra">
                 <VideoExtra isSubmitting={isSubmitting} />
-              </ProgressTabContent>
+              </ProgressTabContent> */}
             </ProgressTab>
 
             <div className={classes.videoEditorActionBar}>
