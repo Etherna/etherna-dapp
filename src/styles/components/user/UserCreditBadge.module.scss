@@ -19,7 +19,8 @@
   @apply flex items-baseline;
   @apply h-9 px-4 py-1.5 overflow-hidden;
   @apply rounded-full cursor-pointer;
-  @apply bg-gray-100 dark:bg-gray-800;
+  @apply bg-gray-200/70 dark:bg-gray-800/70;
+  @apply backdrop-blur;
 
   &.expandable {
     &:after {

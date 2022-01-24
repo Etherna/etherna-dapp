@@ -29,6 +29,7 @@ import TopbarLogo from "@components/navigation/TopbarLogo"
 import TopbarItem from "@components/navigation/TopbarItem"
 import TopbarSpace from "@components/navigation/TopbarSpace"
 import TopbarPopupItem from "@components/navigation/TopbarPopupItem"
+import AlphaWarning from "@components/navigation/AlphaWarning"
 import UserCredit from "@components/user/UserCredit"
 import UserMenu from "@components/user/UserMenu"
 import { LayoutReducerTypes } from "@context/layout-context"
@@ -73,13 +74,17 @@ const TopbarNavigation: React.FC = () => {
 
       <TopbarSpace flexible />
 
+      <AlphaWarning />
+
+      <TopbarSpace flexible />
+
       {isSignedIn === true && !isLoadingProfile && (
         <TopbarItem ignoreHoverState>
           <UserCredit />
         </TopbarItem>
       )}
 
-      <TopbarItem ignoreHoverState>
+      <TopbarItem className="!-mr-2" ignoreHoverState>
         <UserMenu />
       </TopbarItem>
     </Topbar>

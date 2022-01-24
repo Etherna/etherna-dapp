@@ -1,0 +1,80 @@
+.alphaButton {
+  @apply md:absolute-center;
+  @apply flex items-center;
+  @apply text-sm font-semibold tracking-tight;
+  @apply px-2.5 py-0.5 rounded-full;
+  @apply bg-orange-400 border border-orange-500 text-orange-800;
+
+  svg {
+    @apply h-[1.2em] mr-1.5;
+  }
+}
+
+.alphaDialogContainer {
+  @apply fixed inset-0;
+  @apply flex p-6 z-50 isolate;
+  @apply items-start md:items-stretch;
+  @apply overflow-auto;
+}
+
+.alphaDialog {
+  @apply mx-auto;
+  @apply mt-0 md:my-auto;
+  @apply w-full max-w-xs rounded-lg z-1;
+  @apply p-4;
+  @apply bg-orange-500;
+  @apply shadow-lg shadow-orange-500/20;
+}
+
+.alphaDialogBody {
+  @apply flex flex-col items-center;
+}
+
+.alphaDialogTitle {
+  @apply text-xl text-center;
+  @apply text-orange-900;
+}
+
+.alphaDialogText {
+  @apply leading-[1.1] text-center font-medium;
+  @apply text-orange-800;
+}
+
+.alphaDialogActions {
+  @apply flex flex-col;
+  @apply mt-10;
+}
+
+.alphaDialogButton {
+  @apply flex items-center justify-center;
+  @apply text-sm font-semibold;
+  @apply px-3 py-3 rounded;
+
+  svg {
+    @apply w-[1.25em] h-[1.25em] mr-2;
+  }
+}
+
+.alphaDialogAction {
+  @apply border border-orange-800 text-orange-800;
+  @apply hover:text-orange-800;
+  @apply active:bg-orange-700/20;
+
+  & + & {
+    @apply mt-2;
+  }
+}
+
+.alphaDialogContinue {
+  @apply bg-orange-600 text-orange-900;
+  @apply active:bg-orange-700;
+  @apply transition-colors duration-75;
+  @apply mt-8;
+}
+
+.alphaDialogOveraly {
+  @apply fixed inset-0;
+  @apply bg-gray-500 bg-opacity-75 dark:bg-gray-800 dark:bg-opacity-50;
+  @apply backdrop-blur-sm;
+  @apply transition-opacity;
+}

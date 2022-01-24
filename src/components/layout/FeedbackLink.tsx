@@ -38,9 +38,7 @@ const FeedbackLink = () => {
   }, [])
 
   const handleFeedback = () => {
-    const atl = window.ATL_JQ_PAGE_PROPS || {}
-    const showCollectorDialog = atl.showCollectorDialog
-    showCollectorDialog?.()
+    window.ATL_JQ_PAGE_PROPS?.showCollectorDialog?.()
   }
 
   return (

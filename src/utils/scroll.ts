@@ -20,11 +20,6 @@ type SmoothScrollOptions = {
   duration?: number
 }
 
-type WindowRequestAnimationFrame = typeof window & {
-  mozRequestAnimationFrame?: typeof window.requestAnimationFrame
-  msRequestAnimationFrame?: typeof window.requestAnimationFrame
-}
-
 let supportsSmoothScrolling = false
 
 if (typeof window !== "undefined") {
