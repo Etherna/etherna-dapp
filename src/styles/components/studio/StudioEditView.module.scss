@@ -39,3 +39,10 @@
     @apply h-5 m-auto;
   }
 }
+
+.studioEditActions {
+  @apply flex items-center;
+  @apply flex-wrap md:flex-nowrap;
+  @apply space-x-4 my-1;
+  @apply ml-auto;
+}

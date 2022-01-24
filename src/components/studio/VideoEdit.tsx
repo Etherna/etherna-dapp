@@ -19,9 +19,11 @@ import React, { useEffect, useRef, useState } from "react"
 import { Redirect } from "react-router-dom"
 
 import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
+import { ReactComponent as TrashIcon } from "@assets/icons/trash.svg"
 
 import StudioEditView from "./StudioEditView"
 import VideoEditor from "./video-editor/VideoEditor"
+import Button from "@common/Button"
 import { VideoEditorContextProvider } from "@context/video-editor-context"
 import useSwarmVideo from "@hooks/useSwarmVideo"
 import routes from "@routes"
@@ -38,6 +40,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   const [isEmpty, setIsEmpty] = useState<boolean>()
   const [canSave, setCanSave] = useState<boolean>()
   const saveCallback = useRef<() => Promise<void>>()
+  const clearCallback = useRef<() => Promise<void>>()
   const resetState = useRef<() => void>()
   const { address } = useSelector(state => state.user)
 
@@ -75,11 +78,20 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
     await saveCallback.current?.()
   }
 
+  const askToClearState = async () => {
+    await clearCallback.current?.()
+  }
+
   return (
     <StudioEditView
       title={reference ? "Edit video" : "Publish new video"}
       saveLabel={reference ? "Update" : "Publish"}
       canSave={canSave}
+      actions={
+        <Button aspect="link" modifier="secondary" onClick={askToClearState}>
+          <TrashIcon /> Clear all
+        </Button>
+      }
       backTo={routes.getStudioVideosLink()}
       backPrompt={backPrompt}
       onSave={handleSave}
@@ -92,6 +104,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
             if (!ref) return
 
             saveCallback.current = ref.submitVideo
+            clearCallback.current = ref.askToClearState
             resetState.current = ref.resetState
             ref.isEmpty !== isEmpty && setIsEmpty(ref.isEmpty)
             ref.canSubmitVideo !== canSave && setCanSave(ref.canSubmitVideo)

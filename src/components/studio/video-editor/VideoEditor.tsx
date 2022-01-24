@@ -18,16 +18,13 @@
 import React, { useEffect, useImperativeHandle, useState } from "react"
 import { Redirect } from "react-router"
 
-import classes from "@styles/components/studio/video-editor/VideoEditor.module.scss"
-import { ReactComponent as TrashIcon } from "@assets/icons/trash.svg"
 import { ReactComponent as NotesIcon } from "@assets/icons/notes.svg"
 import { ReactComponent as MovieIcon } from "@assets/icons/movie.svg"
-import { ReactComponent as EyeIcon } from "@assets/icons/eye.svg"
+// import { ReactComponent as EyeIcon } from "@assets/icons/eye.svg"
 
 import VideoDetails from "./VideoDetails"
 import VideoSources from "./VideoSources"
-import VideoExtra from "./VideoExtra"
-import Button from "@common/Button"
+// import VideoExtra from "./VideoExtra"
 import ProgressTab from "@common/ProgressTab"
 import ProgressTabContent from "@common/ProgressTabContent"
 import ProgressTabLink from "@common/ProgressTabLink"
@@ -46,6 +43,7 @@ export type VideoEditorHandle = {
   canSubmitVideo: boolean
   isEmpty: boolean
   submitVideo(): Promise<void>
+  askToClearState(): Promise<void>
   resetState(): void
 }
 
@@ -78,6 +76,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     canSubmitVideo: canPublishVideo && !hasQueuedProcesses,
     submitVideo,
     resetState,
+    askToClearState,
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }))
 
@@ -169,12 +168,12 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
                   completed: !!q.reference
                 }))}
               />
-              <ProgressTabLink
+              {/* <ProgressTabLink
                 tabKey="extra"
                 title="Extra"
                 iconSvg={<EyeIcon />}
                 text="Audience, visibility, ..."
-              />
+              /> */}
 
               <ProgressTabContent tabKey="details">
                 <VideoDetails isSubmitting={isSubmitting} />
@@ -182,16 +181,10 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
               <ProgressTabContent tabKey="sources">
                 <VideoSources initialDragPortal={`#${PORTAL_ID}`} isSubmitting={isSubmitting} />
               </ProgressTabContent>
-              <ProgressTabContent tabKey="extra">
+              {/* <ProgressTabContent tabKey="extra">
                 <VideoExtra isSubmitting={isSubmitting} />
-              </ProgressTabContent>
+              </ProgressTabContent> */}
             </ProgressTab>
-
-            <div className={classes.videoEditorActionBar}>
-              {!reference && (
-                <Button aspect="link" modifier="secondary" onClick={askToClearState}><TrashIcon /> Clear all</Button>
-              )}
-            </div>
           </div>
         </div>
       </div>
