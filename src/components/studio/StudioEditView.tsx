@@ -29,6 +29,7 @@ type StudioEditViewProps = {
   saveLabel?: string
   backTo?: string
   canSave?: boolean
+  actions?: React.ReactNode
   backPrompt?(): Promise<boolean>
   onSave?(): Promise<void>
 }
@@ -39,6 +40,7 @@ const StudioEditView: React.FC<StudioEditViewProps> = ({
   saveLabel = "Save",
   canSave,
   backTo,
+  actions,
   backPrompt,
   onSave,
 }) => {
@@ -73,7 +75,8 @@ const StudioEditView: React.FC<StudioEditViewProps> = ({
 
         <h2 className={classes.studioEditTitle}>{title}</h2>
 
-        <div className="ml-auto">
+        <div className={classes.studioEditActions}>
+          {actions}
           <Button loading={saving} onClick={handleSave} disabled={canSave !== undefined && !canSave}>
             {saveLabel}
           </Button>
