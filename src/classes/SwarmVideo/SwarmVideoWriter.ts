@@ -273,7 +273,9 @@ export default class SwarmVideoWriter {
       duration: video.duration,
       originalQuality: video.originalQuality ?? `${NaN}p`,
       ownerAddress: video.ownerAddress ?? "0x0",
-      thumbnail: video.thumbnail,
+      thumbnail: video.thumbnail ? new SwarmImageIO.Reader(video.thumbnail, {
+        beeClient: this.beeClient
+      }).imageRaw : null,
       sources: video.sources.map(source => ({
         reference: source.reference,
         quality: source.quality,
