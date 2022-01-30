@@ -15,7 +15,7 @@ const AlphaWarning: React.FC = () => {
   const [toggleButton, setToggleButton] = useState<HTMLButtonElement>()
   const [dialogEl, setDialogEl] = useState<HTMLDivElement>()
   const cancelButton = useRef<HTMLButtonElement>(null)
-  const initialState = useRef<boolean | null>(open)
+  const initialState = useRef<boolean | null>(hide ? false : null)
 
   useEffect(() => {
     if (open === initialState.current) return
