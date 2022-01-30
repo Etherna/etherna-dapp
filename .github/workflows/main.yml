@@ -2,12 +2,16 @@ name: Deploy Dapp
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - main
+      - develop
   workflow_dispatch:
 
 jobs:
   build:
     name: Deploy
+    environment:
+      name: ${{ endsWith(github.ref, '/main') && 'production' || 'development' }}
     env:
       VITE_APP_NAME: "Etherna"
       VITE_APP_TAGLINE: "Eyes wide open"
@@ -38,7 +42,7 @@ jobs:
         user: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         localDir: build
-        remoteDir: ${{ secrets.REMOTE_DIR }}
+        remoteDir: ${{ secrets.FTP_REMOTE_DIR }}
         options: "--delete -X cgi-bin/ -X .well-known/"
     - name: Upload to Swarm
       uses: Etherna/swarm-upload-action@0.2
