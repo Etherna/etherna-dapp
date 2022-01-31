@@ -42,7 +42,7 @@ const ProfileVideos: React.FC<ProfileVideosProps> = ({ videos, isFetching, hasMo
         scrollThreshold={30}
         loader={<div />}
       >
-        <VideoGrid videos={videos} mini={true} isFetching={isFetching} />
+        <VideoGrid videos={videos} mini={true} isFetching={isFetching} decentralizedLink />
       </InfiniteScroller>
     </>
   )

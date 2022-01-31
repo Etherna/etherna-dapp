@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { getDefaultRawVideo, getDefaultVideo } from "."
+import SwarmVideoIO, { getDefaultRawVideo, getDefaultVideo } from "."
 import EthernaIndexClient from "@classes/EthernaIndexClient"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
 import SwarmImageIO from "@classes/SwarmImage"
@@ -22,13 +22,14 @@ import SwarmProfileIO from "@classes/SwarmProfile"
 import type { SwarmVideoReaderOptions } from "./types"
 import type { Profile } from "@definitions/swarm-profile"
 import type { IndexVideo } from "@definitions/api-index"
-import type { SwarmVideo, SwarmVideoRaw, Video } from "@definitions/swarm-video"
+import type { SwarmVideoRaw, Video } from "@definitions/swarm-video"
 
 /**
  * Load/Update video info over swarm
  */
 export default class SwarmVideoReader {
   reference: string
+  indexReference?: string
   ownerAddress?: string
   video: Video
   videoRaw: SwarmVideoRaw
@@ -44,10 +45,12 @@ export default class SwarmVideoReader {
 
   constructor(reference: string, ownerAddress: string | undefined, opts: SwarmVideoReaderOptions) {
     this.reference = reference
+    // FIXME: use index hash identifier as indexReference when implemented
+    this.indexReference = reference//!SwarmVideoIO.isSwarmReference(reference) ? reference : undefined
     this.ownerAddress = ownerAddress
     this.beeClient = opts.beeClient
     this.indexClient = opts.indexClient
-    this.indexData = opts.indexData
+    this.indexData = opts.indexData ?? undefined
     this.profileData = opts.profileData
     this.fetchProfile = opts.fetchProfile || true
     this.fetchFromCache = opts.fetchFromCache || true
@@ -86,13 +89,11 @@ export default class SwarmVideoReader {
     if (this.loadedFromPrefetch && !forced) return this.video
 
     const [indexData, rawVideo, ownerProfile] = await Promise.all([
-      this.indexData ? Promise.resolve(this.indexData) : this.fetchIndexVideo(),
+      this.fetchIndexVideo(),
       this.fetchRawVideo(),
-      this.profileData
-        ? Promise.resolve(this.profileData)
-        : this.fetchProfile && this.ownerAddress
-          ? this.fetchOwnerProfile(this.ownerAddress)
-          : Promise.resolve(undefined)
+      this.ownerAddress
+        ? this.fetchOwnerProfile(this.ownerAddress)
+        : Promise.resolve(undefined)
     ])
 
     // Add owner address if empty
@@ -126,8 +127,9 @@ export default class SwarmVideoReader {
 
     return {
       reference: this.reference,
-      id: rawVideo.id,
+      indexReference: indexData?.manifestHash,
       title: rawVideo.title,
+      createdAt: indexData?.creationDateTime ? +new Date(indexData.creationDateTime) : rawVideo.createdAt,
       description: rawVideo.description,
       originalQuality: rawVideo.originalQuality,
       ownerAddress: rawVideo.ownerAddress || indexData?.ownerAddress || "",
@@ -155,9 +157,9 @@ export default class SwarmVideoReader {
     }
 
     return {
-      id: video.id,
       title: video.title ?? "",
       description: video.description ?? "",
+      createdAt: video.createdAt ?? +new Date(),
       originalQuality: video.originalQuality ?? `${NaN}p`,
       ownerAddress: video.ownerAddress ?? this.ownerAddress ?? "",
       duration: video.duration,
@@ -176,14 +178,16 @@ export default class SwarmVideoReader {
   // Private methods
 
   private async fetchIndexVideo(): Promise<IndexVideo | null> {
+    if (this.indexData) return this.indexData
+    if (!this.indexReference) return null
     try {
-      return await this.indexClient.videos.fetchVideo(this.reference)
+      return await this.indexClient.videos.fetchVideo(this.indexReference)
     } catch {
       return null
     }
   }
 
-  private async fetchRawVideo() {
+  private async fetchRawVideo(): Promise<SwarmVideoRaw> {
     try {
       const resp = await this.beeClient.downloadFile(this.reference)
       const meta = resp.data.json() as SwarmVideoRaw
@@ -194,14 +198,16 @@ export default class SwarmVideoReader {
     return this.parseVideo(null)
   }
 
-  private async fetchOwnerProfile(address: string) {
+  private async fetchOwnerProfile(address: string): Promise<Profile | null> {
+    if (this.profileData) return this.profileData
+    if (!this.fetchProfile) return null
     try {
       const profile = new SwarmProfileIO.Reader(address, {
         beeClient: this.beeClient
       })
-      return await profile.download()
+      return await profile.download() ?? null
     } catch {
-      return undefined
+      return null
     }
   }
 

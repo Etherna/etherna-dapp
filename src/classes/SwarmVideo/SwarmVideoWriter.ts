@@ -21,7 +21,6 @@ import EthernaIndexClient from "@classes/EthernaIndexClient"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
 import SwarmImageIO from "@classes/SwarmImage"
 import { getVideoDuration, getVideoResolution } from "@utils/media"
-import uuidv4 from "@utils/uuid"
 import type { SwarmVideoUploadOptions, SwarmVideoWriterOptions } from "./types"
 import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@definitions/swarm-video"
 import type { SwarmImageRaw } from "@definitions/swarm-image"
@@ -34,6 +33,7 @@ import type { Profile } from "@definitions/swarm-profile"
 export default class SwarmVideoWriter {
   ownerAddress: string
   reference?: string
+  indexReference?: string
   video?: Video
 
   private _videoRaw: SwarmVideoRaw
@@ -47,9 +47,9 @@ export default class SwarmVideoWriter {
     this.indexClient = opts.indexClient
     this.ownerAddress = ownerAddress
     this.reference = video?.reference
+    this.indexReference = video?.indexReference
     this.video = video
     this._videoRaw = this.parseVideo(video) ?? {
-      id: uuidv4(),
       title: "",
       description: "",
       createdAt: +new Date(),
@@ -122,24 +122,17 @@ export default class SwarmVideoWriter {
     if (!this.beeClient.signer) throw new Error("Enable your wallet to update your profile")
 
     // update meta
-    this.videoRaw.createdAt = +new Date()
+    if (!this.reference) {
+      this.videoRaw.createdAt = +new Date()
+    }
     const rawVideo = this.videoRaw
     const batchId = await this.beeClient.getBatchId()
-    const metaReference = (await this.beeClient.uploadFile(batchId, JSON.stringify(rawVideo))).reference
+    const videoReference = (await this.beeClient.uploadFile(batchId, JSON.stringify(rawVideo))).reference
 
-    // update feed
-    const topic = this.beeClient.makeFeedTopic(SwarmVideoIO.getVideoFeedTopicName(rawVideo.id))
-    const writer = this.beeClient.makeFeedWriter("sequence", topic)
-    await writer.upload(batchId, metaReference)
-    const videoReference = await this.beeClient.createFeedManifest(batchId, "sequence", topic, rawVideo.ownerAddress)
+    // update index video
+    const indexVideo = await this.updateCreateIndexVideo(videoReference)
 
-    let indexVideo: IndexVideo
-    if (this.reference) {
-      indexVideo = await this.indexClient.videos.updateVideo(this.reference, videoReference) // both should be the same
-    } else {
-      indexVideo = await this.indexClient.videos.createVideo(videoReference)
-    }
-
+    // update local instances
     this.reference = videoReference
 
     const reader = new SwarmVideoIO.Reader(videoReference, this.ownerAddress, {
@@ -266,10 +259,24 @@ export default class SwarmVideoWriter {
 
   // Private methods
 
+  private async updateCreateIndexVideo(newReference: string): Promise<IndexVideo | null> {
+    try {
+      let indexVideo: IndexVideo
+      if (this.indexReference) {
+        indexVideo = await this.indexClient.videos.updateVideo(this.indexReference, newReference)
+      } else {
+        indexVideo = await this.indexClient.videos.createVideo(newReference)
+      }
+      return indexVideo
+    } catch (error) {
+      console.error(error)
+      return null
+    }
+  }
+
   private parseVideo(video: Video | undefined): SwarmVideoRaw | null {
     if (!video) return null
     return {
-      id: video.id,
       title: video.title ?? "",
       description: video.description ?? "",
       duration: video.duration,

@@ -87,7 +87,29 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
         publishedAt: publishedAt,
       } as SwarmPlaylistVideo)),
       ...(newPlaylist.videos ?? []),
-    ].filter((ref, i, self) => self.indexOf(ref) === i)
+    ].filter((vid, i, self) => self.findIndex(vid2 => vid2.reference === vid.reference) === i)
+    await updatePlaylistAndUser(initialPlaylist, newPlaylist)
+  }
+
+  const updateVideoInPlaylist = async (playlistId: string, previousReference: string, newVideo: Video) => {
+    const initialPlaylist = allPlaylists.find(playlist => playlist.id === playlistId)
+
+    if (!initialPlaylist) return showError("Playlist not loaded", "")
+
+    const newPlaylist = deepCloneObject(initialPlaylist)
+    const index = newPlaylist.videos?.findIndex(video => video.reference === previousReference)
+
+    if (index != null && index >= 0) {
+      newPlaylist.videos!.splice(index, 1, {
+        reference: newVideo.reference,
+        title: newVideo.title || "",
+        addedAt: newVideo.createdAt,
+        publishedAt: newPlaylist.videos![index].publishedAt,
+      })
+    }
+    newPlaylist.videos = [
+      ...(newPlaylist.videos ?? []),
+    ].filter((vid, i, self) => self.findIndex(vid2 => vid2.reference === vid.reference) === i)
     await updatePlaylistAndUser(initialPlaylist, newPlaylist)
   }
 
@@ -151,6 +173,7 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
     customPlaylists,
     loadPlaylists,
     addVideosToPlaylist,
+    updateVideoInPlaylist,
     removeVideosFromPlaylist,
   }
 }

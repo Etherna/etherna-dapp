@@ -26,7 +26,7 @@ export type SwarmVideoReaderOptions = {
   beeClient: SwarmBeeClient
   indexClient: EthernaIndexClient
   videoData?: Video | SwarmVideoRaw
-  indexData?: IndexVideo
+  indexData?: IndexVideo | null
   profileData?: Profile
   fetchProfile?: boolean
   fetchFromCache?: boolean
