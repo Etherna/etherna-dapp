@@ -50,7 +50,7 @@ export default class SwarmVideoReader {
     this.ownerAddress = ownerAddress
     this.beeClient = opts.beeClient
     this.indexClient = opts.indexClient
-    this.indexData = opts.indexData
+    this.indexData = opts.indexData ?? undefined
     this.profileData = opts.profileData
     this.fetchProfile = opts.fetchProfile || true
     this.fetchFromCache = opts.fetchFromCache || true

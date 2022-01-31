@@ -33,6 +33,7 @@ import type { Profile } from "@definitions/swarm-profile"
 export default class SwarmVideoWriter {
   ownerAddress: string
   reference?: string
+  indexReference?: string
   video?: Video
 
   private _videoRaw: SwarmVideoRaw
@@ -46,6 +47,7 @@ export default class SwarmVideoWriter {
     this.indexClient = opts.indexClient
     this.ownerAddress = ownerAddress
     this.reference = video?.reference
+    this.indexReference = video?.indexReference
     this.video = video
     this._videoRaw = this.parseVideo(video) ?? {
       title: "",
@@ -120,18 +122,17 @@ export default class SwarmVideoWriter {
     if (!this.beeClient.signer) throw new Error("Enable your wallet to update your profile")
 
     // update meta
-    this.videoRaw.createdAt = +new Date()
+    if (!this.reference) {
+      this.videoRaw.createdAt = +new Date()
+    }
     const rawVideo = this.videoRaw
     const batchId = await this.beeClient.getBatchId()
     const videoReference = (await this.beeClient.uploadFile(batchId, JSON.stringify(rawVideo))).reference
 
-    let indexVideo: IndexVideo
-    if (this.reference) {
-      indexVideo = await this.indexClient.videos.updateVideo(this.reference, videoReference)
-    } else {
-      indexVideo = await this.indexClient.videos.createVideo(videoReference)
-    }
+    // update index video
+    const indexVideo = await this.updateCreateIndexVideo(videoReference)
 
+    // update local instances
     this.reference = videoReference
 
     const reader = new SwarmVideoIO.Reader(videoReference, this.ownerAddress, {
@@ -257,6 +258,21 @@ export default class SwarmVideoWriter {
   }
 
   // Private methods
+
+  private async updateCreateIndexVideo(newReference: string): Promise<IndexVideo | null> {
+    try {
+      let indexVideo: IndexVideo
+      if (this.indexReference) {
+        indexVideo = await this.indexClient.videos.updateVideo(this.indexReference, newReference)
+      } else {
+        indexVideo = await this.indexClient.videos.createVideo(newReference)
+      }
+      return indexVideo
+    } catch (error) {
+      console.error(error)
+      return null
+    }
+  }
 
   private parseVideo(video: Video | undefined): SwarmVideoRaw | null {
     if (!video) return null
