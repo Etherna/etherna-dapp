@@ -21,8 +21,6 @@ import type { SwarmImage, SwarmImageRaw } from "./swarm-image"
 import type { Profile } from "./swarm-profile"
 
 export type SwarmVideoRaw = {
-  /**  UUID v4 of the video (Used for feed topic) */
-  id: string
   /**  Title of the video */
   title: string
   /**  Description of the video */
@@ -57,8 +55,6 @@ export type SwarmVideoSourceRaw = {
 export type SwarmVideo = {
   /**  Hash of the video */
   reference: string
-  /**  UUID v4 of the video (Used for feed topic) */
-  id: string
   /**  Title of the video */
   title: string | null
   /**  Description of the video */
@@ -83,6 +79,8 @@ export type VideoSource = SwarmVideoSourceRaw & {
 }
 
 export type VideoIndexed = {
+  /** Id of the video */
+  id?: string
   /** When the video was created */
   creationDateTime?: string
   /** Video encryption key */

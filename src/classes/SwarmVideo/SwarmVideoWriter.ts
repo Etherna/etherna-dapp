@@ -49,7 +49,6 @@ export default class SwarmVideoWriter {
     this.reference = video?.reference
     this.video = video
     this._videoRaw = this.parseVideo(video) ?? {
-      id: uuidv4(),
       title: "",
       description: "",
       createdAt: +new Date(),
@@ -125,17 +124,11 @@ export default class SwarmVideoWriter {
     this.videoRaw.createdAt = +new Date()
     const rawVideo = this.videoRaw
     const batchId = await this.beeClient.getBatchId()
-    const metaReference = (await this.beeClient.uploadFile(batchId, JSON.stringify(rawVideo))).reference
-
-    // update feed
-    const topic = this.beeClient.makeFeedTopic(SwarmVideoIO.getVideoFeedTopicName(rawVideo.id))
-    const writer = this.beeClient.makeFeedWriter("sequence", topic)
-    await writer.upload(batchId, metaReference)
-    const videoReference = await this.beeClient.createFeedManifest(batchId, "sequence", topic, rawVideo.ownerAddress)
+    const videoReference = (await this.beeClient.uploadFile(batchId, JSON.stringify(rawVideo))).reference
 
     let indexVideo: IndexVideo
     if (this.reference) {
-      indexVideo = await this.indexClient.videos.updateVideo(this.reference, videoReference) // both should be the same
+      indexVideo = await this.indexClient.videos.updateVideo(this.reference, videoReference)
     } else {
       indexVideo = await this.indexClient.videos.createVideo(videoReference)
     }
@@ -269,7 +262,6 @@ export default class SwarmVideoWriter {
   private parseVideo(video: Video | undefined): SwarmVideoRaw | null {
     if (!video) return null
     return {
-      id: video.id,
       title: video.title ?? "",
       description: video.description ?? "",
       duration: video.duration,
