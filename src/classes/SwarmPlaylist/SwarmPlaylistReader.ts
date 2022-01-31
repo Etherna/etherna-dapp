@@ -76,8 +76,8 @@ export default class SwarmPlaylistReader {
       reference: this.reference,
       name: rawPlaylist.name || "",
       owner: rawPlaylist.owner || this.owner || "",
-      created_at: rawPlaylist.created_at,
-      updated_at: rawPlaylist.updated_at,
+      createdAt: rawPlaylist.createdAt,
+      updatedAt: rawPlaylist.updatedAt,
       type: rawPlaylist.type,
       encryptedReference: rawPlaylist.type === "private" ? rawPlaylist.encryptedReference : undefined,
       encryptionPassword: undefined,
@@ -124,8 +124,8 @@ export default class SwarmPlaylistReader {
     return videos.map(video => ({
       reference: video.r,
       title: video.t,
-      added_at: video.a,
-      published_at: video.p,
+      addedAt: video.a,
+      publishedAt: video.p,
     }))
   }
 }

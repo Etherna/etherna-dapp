@@ -31,9 +31,9 @@ export type SwarmPlaylistRaw = {
   /** Playlist owner */
   owner: string
   /** Playlist creation timestamp */
-  created_at: number
+  createdAt: number
   /** Playlist update timestamp */
-  updated_at: number
+  updatedAt: number
 } & ({
   /** Playlist visibility: public (show in channel), unlisted (not in channel), private (encrypted) */
   type: "private"
@@ -76,9 +76,9 @@ export type SwarmPlaylist = {
   /** Playlist owner */
   owner: string
   /** Playlist creation timestamp */
-  created_at: number
+  createdAt: number
   /** Playlist update timestamp */
-  updated_at: number
+  updatedAt: number
 
   /** Playlist visibility: public (show in channel), unlisted (not in channel), private (encrypted) */
   type: SwarmPlaylistType
@@ -100,9 +100,9 @@ export type SwarmPlaylistVideo = {
   /** Video Title */
   title: string
   /** Timestamp of when the videos has been added to playlist */
-  added_at: number
+  addedAt: number
   /** Timestamp of when the video should be visible */
-  published_at?: number
+  publishedAt?: number
 }
 
 export type SwarmPlaylistType = "public" | "unlisted" | "private"

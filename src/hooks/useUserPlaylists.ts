@@ -83,8 +83,8 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
       ...videos.map(video => ({
         reference: video.reference,
         title: video.title,
-        added_at: +new Date(),
-        published_at: publishedAt,
+        addedAt: +new Date(),
+        publishedAt: publishedAt,
       } as SwarmPlaylistVideo)),
       ...(newPlaylist.videos ?? []),
     ].filter((ref, i, self) => self.indexOf(ref) === i)

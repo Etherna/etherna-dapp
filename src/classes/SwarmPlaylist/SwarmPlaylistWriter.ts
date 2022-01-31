@@ -71,7 +71,7 @@ export default class SwarmImageWriter {
     }
 
     this.playlistRaw = this.parsePlaylistToRaw(this.playlist, encryptedReference)
-    this.playlistRaw.updated_at = +new Date()
+    this.playlistRaw.updatedAt = +new Date()
 
     let { reference } = await this.beeClient.uploadFile(batchId, JSON.stringify(this.playlistRaw))
 
@@ -96,16 +96,16 @@ export default class SwarmImageWriter {
       type: "private",
       id: playlist.id,
       name: playlist.name || undefined,
-      created_at: playlist.created_at,
-      updated_at: playlist.updated_at,
+      createdAt: playlist.createdAt,
+      updatedAt: playlist.updatedAt,
       owner: playlist.owner,
       encryptedReference: encryptedReference!,
     } : {
       type: playlist.type,
       id: playlist.id,
       name: playlist.name,
-      created_at: playlist.created_at,
-      updated_at: playlist.updated_at,
+      createdAt: playlist.createdAt,
+      updatedAt: playlist.updatedAt,
       owner: playlist.owner,
       videos: this.parseVideos(playlist.videos ?? []),
       description: playlist.description ?? null,
@@ -116,8 +116,8 @@ export default class SwarmImageWriter {
     return videos.map(video => ({
       r: video.reference,
       t: video.title,
-      a: video.added_at,
-      p: video.published_at,
+      a: video.addedAt,
+      p: video.publishedAt,
     }))
   }
 }
