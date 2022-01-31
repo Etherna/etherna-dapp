@@ -110,10 +110,10 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
         location: profile.location,
         website: profile.website,
       }
-      const videoReference = await videoWriter.update(ownerProfile)
+      await videoWriter.update(ownerProfile)
 
       // update channel playlist
-      !reference && await addVideosToPlaylist(channelPlaylist.id, [videoReference])
+      !reference && await addVideosToPlaylist(channelPlaylist.id, [videoWriter.video!])
 
       // update route state for redirect
       window.routeState = videoWriter.video

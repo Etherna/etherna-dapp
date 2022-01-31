@@ -43,6 +43,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
   const { videos, hasMore, isFetching, loadMore } = usePlaylistVideos(channelPlaylist, {
     owner: profile,
     waitProfile: true,
+    autofetch: true,
     limit: 20,
   })
 

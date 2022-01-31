@@ -31,9 +31,9 @@ export type SwarmPlaylistRaw = {
   /** Playlist owner */
   owner: string
   /** Playlist creation timestamp */
-  created_at: number
+  createdAt: number
   /** Playlist update timestamp */
-  updated_at: number
+  updatedAt: number
 } & ({
   /** Playlist visibility: public (show in channel), unlisted (not in channel), private (encrypted) */
   type: "private"
@@ -42,17 +42,28 @@ export type SwarmPlaylistRaw = {
 } | {
   /** Playlist visibility: public (show in channel), unlisted (not in channel), private (encrypted) */
   type: "public" | "unlisted"
-  /** Reference list of the playlist videos */
-  videos: string[]
+  /** List of the playlist videos */
+  videos: SwarmPlaylistVideoRaw[]
   /** Playlist description */
   description?: string | null
 })
 
 export type EncryptedSwarmPlaylistData = {
-  /** Reference list of the playlist videos */
-  videos: string[]
+  /** List of the playlist videos */
+  videos: SwarmPlaylistVideoRaw[]
   /** Playlist description */
   description?: string | null
+}
+
+export type SwarmPlaylistVideoRaw = {
+  /** Video reference */
+  r: string
+  /** Video Title */
+  t: string
+  /** Timestamp of when the videos has been added to playlist */
+  a: number
+  /** Timestamp of when the video should be visible */
+  p?: number
 }
 
 export type SwarmPlaylist = {
@@ -65,9 +76,9 @@ export type SwarmPlaylist = {
   /** Playlist owner */
   owner: string
   /** Playlist creation timestamp */
-  created_at: number
+  createdAt: number
   /** Playlist update timestamp */
-  updated_at: number
+  updatedAt: number
 
   /** Playlist visibility: public (show in channel), unlisted (not in channel), private (encrypted) */
   type: SwarmPlaylistType
@@ -77,10 +88,21 @@ export type SwarmPlaylist = {
   encryptionPassword?: string
   /** Ecrypted data fetched from `encryptedReference` */
   encryptedData?: string
-  /** Reference list of the playlist videos */
-  videos?: string[]
+  /** List of the playlist videos */
+  videos?: SwarmPlaylistVideo[]
   /** Playlist description */
   description?: string
+}
+
+export type SwarmPlaylistVideo = {
+  /** Video reference */
+  reference: string
+  /** Video Title */
+  title: string
+  /** Timestamp of when the videos has been added to playlist */
+  addedAt: number
+  /** Timestamp of when the video should be visible */
+  publishedAt?: number
 }
 
 export type SwarmPlaylistType = "public" | "unlisted" | "private"

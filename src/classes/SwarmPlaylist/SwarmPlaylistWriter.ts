@@ -21,7 +21,13 @@ import SwarmPlaylistIO from "."
 import SwarmBeeClient from "@classes/SwarmBeeClient"
 import { urlOrigin } from "@utils/urls"
 import type { SwarmPlaylistWriterOptions } from "./types"
-import type { SwarmPlaylistRaw, SwarmPlaylist, EncryptedSwarmPlaylistData } from "@definitions/swarm-playlist"
+import type {
+  SwarmPlaylistRaw,
+  SwarmPlaylist,
+  EncryptedSwarmPlaylistData,
+  SwarmPlaylistVideo,
+  SwarmPlaylistVideoRaw
+} from "@definitions/swarm-playlist"
 
 /**
  * Handles upload of images on swarm and created responsive source
@@ -57,7 +63,7 @@ export default class SwarmImageWriter {
     let encryptedReference: string | undefined
     if (this.playlist.type === "private") {
       const playlistData: EncryptedSwarmPlaylistData = {
-        videos: this.playlist.videos ?? [],
+        videos: this.parseVideos(this.playlist.videos ?? []),
         description: this.playlist.description,
       }
       const encryptedData = AES.encrypt(JSON.stringify(playlistData), this.playlist.encryptionPassword!)
@@ -65,7 +71,7 @@ export default class SwarmImageWriter {
     }
 
     this.playlistRaw = this.parsePlaylistToRaw(this.playlist, encryptedReference)
-    this.playlistRaw.updated_at = +new Date()
+    this.playlistRaw.updatedAt = +new Date()
 
     let { reference } = await this.beeClient.uploadFile(batchId, JSON.stringify(this.playlistRaw))
 
@@ -90,19 +96,28 @@ export default class SwarmImageWriter {
       type: "private",
       id: playlist.id,
       name: playlist.name || undefined,
-      created_at: playlist.created_at,
-      updated_at: playlist.updated_at,
+      createdAt: playlist.createdAt,
+      updatedAt: playlist.updatedAt,
       owner: playlist.owner,
       encryptedReference: encryptedReference!,
     } : {
       type: playlist.type,
       id: playlist.id,
       name: playlist.name,
-      created_at: playlist.created_at,
-      updated_at: playlist.updated_at,
+      createdAt: playlist.createdAt,
+      updatedAt: playlist.updatedAt,
       owner: playlist.owner,
-      videos: playlist.videos ?? [],
+      videos: this.parseVideos(playlist.videos ?? []),
       description: playlist.description ?? null,
     }
+  }
+
+  private parseVideos(videos: SwarmPlaylistVideo[]): SwarmPlaylistVideoRaw[] {
+    return videos.map(video => ({
+      r: video.reference,
+      t: video.title,
+      a: video.addedAt,
+      p: video.publishedAt,
+    }))
   }
 }
