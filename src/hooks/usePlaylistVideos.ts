@@ -72,8 +72,8 @@ export default function usePlaylistVideos(
     setIsFetching(true)
     try {
       const references = playlist.videos.slice(from, to)
-      const newVideos = await Promise.all(references.map(ref => {
-        const reader = new SwarmVideoIO.Reader(ref, playlist.owner, {
+      const newVideos = await Promise.all(references.map(video => {
+        const reader = new SwarmVideoIO.Reader(video.reference, playlist.owner, {
           beeClient,
           indexClient,
           fetchProfile: !opts.owner,

@@ -23,7 +23,13 @@ import { showError } from "@state/actions/modals"
 import { deepCloneObject } from "@utils/object"
 import { deepCloneArray } from "@utils/array"
 import type { SwarmUserPlaylistsDownloadOptions } from "@classes/SwarmUserPlaylists/types"
-import type { SwarmPlaylist, SwarmPlaylistType, SwarmUserPlaylistsRaw } from "@definitions/swarm-playlist"
+import type { Video } from "@definitions/swarm-video"
+import type {
+  SwarmPlaylist,
+  SwarmPlaylistType,
+  SwarmPlaylistVideo,
+  SwarmUserPlaylistsRaw
+} from "@definitions/swarm-playlist"
 
 export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylistsDownloadOptions) {
   const { beeClient, indexUrl } = useSelector(state => state.env)
@@ -67,14 +73,19 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
     setIsFetchingPlaylists(false)
   }
 
-  const addVideosToPlaylist = async (playlistId: string, videosReferences: string[]) => {
+  const addVideosToPlaylist = async (playlistId: string, videos: Video[], publishedAt?: number) => {
     const initialPlaylist = allPlaylists.find(playlist => playlist.id === playlistId)
 
     if (!initialPlaylist) return showError("Playlist not loaded", "")
 
     const newPlaylist = deepCloneObject(initialPlaylist)
     newPlaylist.videos = [
-      ...videosReferences,
+      ...videos.map(video => ({
+        reference: video.reference,
+        title: video.title,
+        added_at: +new Date(),
+        published_at: publishedAt,
+      } as SwarmPlaylistVideo)),
       ...(newPlaylist.videos ?? []),
     ].filter((ref, i, self) => self.indexOf(ref) === i)
     await updatePlaylistAndUser(initialPlaylist, newPlaylist)
@@ -87,7 +98,7 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
 
     const newPlaylist = deepCloneObject(initialPlaylist)
     const newVideos = deepCloneArray(newPlaylist.videos ?? [])
-      .filter(reference => !videosReferences.includes(reference))
+      .filter(video => !videosReferences.includes(video.reference))
     newPlaylist.videos = newVideos
     await updatePlaylistAndUser(initialPlaylist, newPlaylist)
   }

@@ -20,7 +20,13 @@ import SwarmPlaylistIO from "."
 import SwarmBeeClient from "@classes/SwarmBeeClient"
 import { urlOrigin } from "@utils/urls"
 import type { SwarmPlaylistReaderOptions } from "./types"
-import type { SwarmPlaylistRaw, SwarmPlaylist, EncryptedSwarmPlaylistData } from "@definitions/swarm-playlist"
+import type {
+  SwarmPlaylistRaw,
+  SwarmPlaylist,
+  EncryptedSwarmPlaylistData,
+  SwarmPlaylistVideoRaw,
+  SwarmPlaylistVideo
+} from "@definitions/swarm-playlist"
 
 /**
  * Load playlist data
@@ -76,7 +82,7 @@ export default class SwarmPlaylistReader {
       encryptedReference: rawPlaylist.type === "private" ? rawPlaylist.encryptedReference : undefined,
       encryptionPassword: undefined,
       encryptedData: undefined,
-      videos: rawPlaylist.type !== "private" ? rawPlaylist.videos : undefined,
+      videos: rawPlaylist.type !== "private" ? this.parseVideos(rawPlaylist.videos) : undefined,
       description: rawPlaylist.type !== "private" ? rawPlaylist.description || "" : undefined,
     }
 
@@ -106,10 +112,20 @@ export default class SwarmPlaylistReader {
       const decryptedData = AES.decrypt(this.playlist.encryptedData, password).toString(enc.Utf8)
       const playlistData = JSON.parse(decryptedData) as EncryptedSwarmPlaylistData
       this.playlist.encryptionPassword = password
-      this.playlist.videos = playlistData.videos
+      this.playlist.videos = this.parseVideos(playlistData.videos)
       this.playlist.description = playlistData.description || ""
     } catch (error) {
       throw new Error("Cannot unlock playlist. Make sure the password is correct.")
     }
+  }
+
+  // Private
+  private parseVideos(videos: SwarmPlaylistVideoRaw[]): SwarmPlaylistVideo[] {
+    return videos.map(video => ({
+      reference: video.r,
+      title: video.t,
+      added_at: video.a,
+      published_at: video.p,
+    }))
   }
 }

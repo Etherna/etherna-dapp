@@ -27,6 +27,8 @@ export type SwarmVideoRaw = {
   title: string
   /**  Description of the video */
   description: string
+  /** Video creation timestamp */
+  created_at: number
   /**  Quality of the original video */
   originalQuality: SwarmVideoQuality
   /**  Address of the owner of the video */
