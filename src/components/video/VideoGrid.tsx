@@ -30,6 +30,7 @@ type VideoGridProps = {
   isFetching?: boolean
   fetchingPreviewCount?: number
   mini?: boolean
+  decentralizedLink?: boolean
 }
 
 const VideoGrid: React.FC<VideoGridProps> = ({
@@ -37,6 +38,7 @@ const VideoGrid: React.FC<VideoGridProps> = ({
   videos,
   mini,
   isFetching,
+  decentralizedLink,
   fetchingPreviewCount = 4,
 }) => {
   const LabelTag = mini ? "h5" : "h3"
@@ -49,7 +51,7 @@ const VideoGrid: React.FC<VideoGridProps> = ({
       )}
       <div className={classNames(classes.videoGrid, { [classes.mini]: mini })}>
         {videos && videos.map(video => (
-          <VideoPreview video={video} hideProfile={mini} key={video.reference} />
+          <VideoPreview video={video} hideProfile={mini} decentralizedLink={decentralizedLink} key={video.reference} />
         ))}
         {isFetching && (
           Array(fetchingPreviewCount).fill(0).map((_, i) => (

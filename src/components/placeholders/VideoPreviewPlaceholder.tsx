@@ -16,9 +16,9 @@
  */
 
 import React from "react"
+import classNames from "classnames"
 
 import Placeholder from "@common/Placeholder"
-import classNames from "classnames"
 
 type VideoPreviewPlaceholderProps = {
   mini?: boolean

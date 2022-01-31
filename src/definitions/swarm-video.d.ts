@@ -26,7 +26,7 @@ export type SwarmVideoRaw = {
   /**  Description of the video */
   description: string
   /** Video creation timestamp */
-  createdAt: number | undefined
+  createdAt: number
   /**  Quality of the original video */
   originalQuality: SwarmVideoQuality
   /**  Address of the owner of the video */
@@ -79,8 +79,8 @@ export type VideoSource = SwarmVideoSourceRaw & {
 }
 
 export type VideoIndexed = {
-  /** Id of the video */
-  id?: string
+  /** Hash Id of the video on index */
+  indexReference?: string
   /** When the video was created */
   creationDateTime?: string
   /** Video encryption key */

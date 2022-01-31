@@ -23,6 +23,7 @@ import type { IndexVideo } from "@definitions/api-index"
 const SwarmVideoIO = {
   Reader: SwarmVideoReader,
   Writer: SwarmVideoWriter,
+  isSwarmReference: (reference: string) => /^[A-Fa-f0-9]{64}$/.test(reference),
   getSourceName: (quality: string | number | null): SwarmVideoQuality => {
     return quality
       ? `${parseInt(`${quality}`)}p`
@@ -39,9 +40,10 @@ export const getDefaultVideo = (
   bee: SwarmBeeClient
 ): Video => ({
   reference,
+  indexReference: indexData?.manifestHash,
   title: null,
   description: null,
-  createdAt: +new Date(),
+  createdAt: indexData?.creationDateTime ? +new Date(indexData.creationDateTime) : +new Date(),
   originalQuality: null,
   ownerAddress: indexData?.ownerAddress ?? null,
   duration: NaN,

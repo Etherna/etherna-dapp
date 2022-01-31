@@ -36,9 +36,10 @@ import type { Video } from "@definitions/swarm-video"
 type VideoPreviewProps = {
   video: Video
   hideProfile?: boolean
+  decentralizedLink?: boolean
 }
 
-const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile }) => {
+const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile, decentralizedLink }) => {
   const { address } = useSelector(state => state.user)
 
   const ownerAddress = video.ownerAddress
@@ -46,7 +47,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile }) => {
   const profileAvatar = video.owner?.avatar
 
   const profileLink = ownerAddress ? Routes.getProfileLink(ownerAddress) : null
-  const videoLink = Routes.getVideoLink(video.reference)
+  const videoLink = Routes.getVideoLink(decentralizedLink ? video.reference : video.indexReference ?? video.reference)
   const videoSearch = new URL(videoLink, document.baseURI).search
   const videoPath = videoLink.replace(videoSearch, "")
 
