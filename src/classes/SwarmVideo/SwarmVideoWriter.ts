@@ -52,6 +52,7 @@ export default class SwarmVideoWriter {
       id: uuidv4(),
       title: "",
       description: "",
+      createdAt: +new Date(),
       duration: NaN,
       originalQuality: `${NaN}p`,
       ownerAddress,
@@ -121,7 +122,8 @@ export default class SwarmVideoWriter {
     if (!this.beeClient.signer) throw new Error("Enable your wallet to update your profile")
 
     // update meta
-    const rawVideo = this._videoRaw
+    this.videoRaw.createdAt = +new Date()
+    const rawVideo = this.videoRaw
     const batchId = await this.beeClient.getBatchId()
     const metaReference = (await this.beeClient.uploadFile(batchId, JSON.stringify(rawVideo))).reference
 
@@ -273,6 +275,7 @@ export default class SwarmVideoWriter {
       duration: video.duration,
       originalQuality: video.originalQuality ?? `${NaN}p`,
       ownerAddress: video.ownerAddress ?? "0x0",
+      createdAt: video.creationDateTime ? +new Date(video.creationDateTime) : video.createdAt,
       thumbnail: video.thumbnail ? new SwarmImageIO.Reader(video.thumbnail, {
         beeClient: this.beeClient
       }).imageRaw : null,
