@@ -31,8 +31,8 @@ const SwarmUserPlaylistsIO = {
     owner,
     type: "public",
     videos: [],
-    created_at: +new Date(),
-    updated_at: +new Date(),
+    createdAt: +new Date(),
+    updatedAt: +new Date(),
   }),
   getDefaultSavedPlaylist: (owner: string): SwarmPlaylist => ({
     id: "__saved",
@@ -41,8 +41,8 @@ const SwarmUserPlaylistsIO = {
     owner,
     type: "unlisted",
     videos: [],
-    created_at: +new Date(),
-    updated_at: +new Date(),
+    createdAt: +new Date(),
+    updatedAt: +new Date(),
   }),
   getDefaultCustomPlaylist: (owner: string): SwarmPlaylist => ({
     id: uuidv4(),
@@ -51,8 +51,8 @@ const SwarmUserPlaylistsIO = {
     owner,
     type: "unlisted",
     videos: [],
-    created_at: +new Date(),
-    updated_at: +new Date(),
+    createdAt: +new Date(),
+    updatedAt: +new Date(),
   })
 }
 

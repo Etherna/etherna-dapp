@@ -119,10 +119,9 @@ const Videos: React.FC = () => {
 
     const start = (channelPlaylist!.videos?.length ?? 0) + 1
 
-    let newReferences: string[] = []
+    let newVideos: Video[] = []
     for (let i = 0; i < +count; i++) {
       const newvideo: Video = { ...video }
-      newvideo.id = uuidv4()
       newvideo.reference = ""
       newvideo.title = video.title!.replace(/( - \d)?$/, ` - ${start + i}`)
 
@@ -130,11 +129,11 @@ const Videos: React.FC = () => {
         beeClient,
         indexClient,
       })
-      const reference = await writer.update(profile)
-      newReferences.push(reference)
+      await writer.update(profile)
+      newVideos.push(writer.video!)
     }
 
-    await addVideosToPlaylist(channelPlaylist!.id, newReferences)
+    await addVideosToPlaylist(channelPlaylist!.id, newVideos)
 
     alert("Copy completed!")
   }
