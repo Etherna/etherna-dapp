@@ -1,0 +1,19 @@
+.notFound {
+  @apply min-h-screen;
+  @apply flex flex-col items-center justify-center;
+}
+
+.notFoundTitle {
+  @apply text-2xl;
+  @apply flex items-center;
+  @apply -mt-16;
+}
+
+.notFoundCode {
+  @apply py-3 pr-6 mr-6;
+  @apply border-r border-gray-300 dark:border-gray-600;
+}
+
+.notFoundMessage {
+  @apply font-normal text-base;
+}

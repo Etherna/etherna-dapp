@@ -29,6 +29,7 @@ import useSwarmVideo from "@hooks/useSwarmVideo"
 import { useErrorMessage } from "@state/hooks/ui"
 import type { Video } from "@definitions/swarm-video"
 import SwarmImageIO from "@classes/SwarmImage"
+import NotFound from "@common/NotFound"
 
 type VideoViewProps = {
   reference: string
@@ -70,11 +71,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState }) => {
   }
 
   if (notFound || !video) {
-    return (
-      <div className="flex items-center justify-center">
-        <NotFoundImage className="max-w-xs" aria-label="Not Found" />
-      </div>
-    )
+    return <NotFound message="This video cannot be found" />
   }
 
   return (
