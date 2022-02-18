@@ -15,7 +15,13 @@
  */
 
 import http from "@utils/request"
-import type { IndexVideo, IndexVideoComment, IndexVideoCreation, IndexVideoManifest, IndexVideoValidation, VoteValue } from "@definitions/api-index"
+import type {
+  IndexVideo,
+  IndexVideoComment,
+  IndexVideoManifest,
+  IndexVideoValidation,
+  VoteValue
+} from "@definitions/api-index"
 
 export default class IndexVideosClient {
   url: string
@@ -119,11 +125,11 @@ export default class IndexVideosClient {
    * 
    * @param hash Hash of the manifest/feed with the video metadata
    * @param encryptionKey Encryption key
-   * @returns Video info
+   * @returns Video id
    */
   async createVideo(hash: string, encryptionKey?: string) {
     const endpoint = `${this.url}/videos`
-    const resp = await http.post<IndexVideoCreation>(endpoint, {
+    const resp = await http.post<string>(endpoint, {
       manifestHash: hash,
       encryptionKey,
       encryptionType: encryptionKey ? "AES256" : "Plain",
@@ -131,7 +137,7 @@ export default class IndexVideosClient {
       withCredentials: true
     })
 
-    if (typeof resp.data !== "object") {
+    if (typeof resp.data !== "string") {
       throw new Error("Cannot create the video")
     }
 
@@ -143,7 +149,7 @@ export default class IndexVideosClient {
    * 
    * @param id Id of the video on Index
    * @param newHash New manifest hash with video metadata
-   * @returns Video manifest
+   * @returns Video id
    */
   async updateVideo(id: string, newHash: string) {
     const endpoint = `${this.url}/videos/${id}`

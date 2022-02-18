@@ -32,6 +32,7 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
   const [reference, setReference] = useState(opts.reference)
   const [video, setVideo] = useState<Video | null>(opts.routeState ?? null)
   const [isLoading, setIsloading] = useState(false)
+  const [notFound, setNotFound] = useState(true)
 
   useEffect(() => {
     if (reference !== opts.reference) {
@@ -51,13 +52,19 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
       fetchFromCache: opts.fetchFromCache,
     })
     const video = await videoReader.download()
-    setVideo(video)
+
+    if (video.indexReference && !video.isVideoOnIndex) {
+      setNotFound(true)
+    } else {
+      setVideo(video)
+    }
 
     setIsloading(false)
   }
 
   return {
     video,
+    notFound,
     isLoading,
     loadVideo,
   }

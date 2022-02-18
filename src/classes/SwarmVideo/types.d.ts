@@ -24,7 +24,7 @@ import type { SwarmVideoRaw, Video } from "@definitions/swarm-video"
 
 export type SwarmVideoReaderOptions = {
   beeClient: SwarmBeeClient
-  indexClient: EthernaIndexClient
+  indexClient?: EthernaIndexClient
   videoData?: Video | SwarmVideoRaw
   indexData?: IndexVideo | null
   profileData?: Profile
@@ -35,7 +35,6 @@ export type SwarmVideoReaderOptions = {
 
 export type SwarmVideoWriterOptions = {
   beeClient: SwarmBeeClient
-  indexClient: EthernaIndexClient
 }
 
 export type SwarmVideoUploadOptions = {

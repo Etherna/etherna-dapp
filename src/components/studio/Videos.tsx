@@ -17,6 +17,7 @@
 
 import React, { useEffect, useState } from "react"
 import { Redirect } from "react-router-dom"
+import classNames from "classnames"
 
 import classes from "@styles/components/studio/Videos.module.scss"
 import { ReactComponent as ThumbPlaceholder } from "@assets/backgrounds/thumb-placeholder.svg"
@@ -98,10 +99,14 @@ const Videos: React.FC = () => {
     for (const video of selectedVideos) {
       const videoWriter = new SwarmVideoIO.Writer(video, video.ownerAddress || address!, {
         beeClient,
-        indexClient,
       })
       try {
-        await videoWriter.deleteVideo()
+        await Promise.allSettled([
+          videoWriter.unpinVideo(),
+          video.indexReference
+            ? await indexClient.videos.deleteVideo(video.indexReference)
+            : Promise.resolve(true)
+        ])
         removedReferences.push(video.reference)
       } catch (error: any) {
         showError(`Cannot delete the video: ${video.title}`, error.message)
@@ -126,7 +131,6 @@ const Videos: React.FC = () => {
 
       const writer = new SwarmVideoIO.Writer(newvideo, address!, {
         beeClient,
-        indexClient,
       })
       await writer.update(profile)
       newVideos.push(writer.video!)
@@ -135,6 +139,22 @@ const Videos: React.FC = () => {
     await addVideosToPlaylist(channelPlaylist!.id, newVideos)
 
     alert("Copy completed!")
+  }
+
+  const renderVideoStatus = (video: Video) => {
+    const status = video.isVideoOnIndex
+      ? video.isValidatedOnIndex
+        ? "public"
+        : "processing"
+      : "unindexed"
+    return (
+      <span className={classNames(classes.videoStatus, {
+        [classes.public]: status === "public",
+        [classes.processing]: status === "processing",
+      })}>
+        {status.replace(/^[a-z]{1}/, letter => letter.toUpperCase())}
+      </span>
+    )
   }
 
   if (!address) {
@@ -167,9 +187,7 @@ const Videos: React.FC = () => {
               </div>
               <div className={classes.videoTitleInfo}>
                 <h3 className={classes.videoTitleTitle}>{item.title}</h3>
-                <span className={classes.videoTitleStatus}>
-                  {item.isVideoOnIndex ? "Published" : "Unindex"}
-                </span>
+                {renderVideoStatus(item)}
               </div>
             </div>
           )
@@ -180,11 +198,7 @@ const Videos: React.FC = () => {
         }, {
           title: "Status",
           hideOnMobile: true,
-          render: item => (
-            <span className={classes.videoTitleStatus}>
-              {item.isVideoOnIndex ? "Published" : "Unindex"}
-            </span>
-          )
+          render: item => renderVideoStatus(item)
         }, {
           title: "Date",
           hideOnMobile: true,

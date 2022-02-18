@@ -44,7 +44,7 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video }) => {
 
       <VideoStatusBadge status={video.isVideoOnIndex ? "available" : "unindexed"} />
 
-      <VideoDetailsInfoBar creationDateTime={video.creationDateTime} />
+      <VideoDetailsInfoBar createdAt={video.createdAt ? video.createdAt : null} />
 
       <VideoDetailsProfile owner={video.owner} />
 

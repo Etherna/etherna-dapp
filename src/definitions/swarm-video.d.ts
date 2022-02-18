@@ -60,7 +60,7 @@ export type SwarmVideo = {
   /**  Description of the video */
   description: string | null
   /** Video creation timestamp */
-  createdAt: number
+  createdAt: number | null
   /**  Quality of the original video */
   originalQuality: SwarmVideoQuality | null
   /**  Address of the owner of the video */

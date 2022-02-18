@@ -19,6 +19,7 @@ import React, { useState, useEffect } from "react"
 import classNames from "classnames"
 
 import classes from "@styles/components/video/VideoView.module.scss"
+import { ReactComponent as NotFoundImage } from "@assets/backgrounds/404-illustration.svg"
 
 import SEO from "@components/layout/SEO"
 import Player from "@components/player/Player"
@@ -35,7 +36,7 @@ type VideoViewProps = {
 }
 
 const VideoView: React.FC<VideoViewProps> = ({ reference, routeState }) => {
-  const { video, loadVideo } = useSwarmVideo({
+  const { video, notFound, loadVideo } = useSwarmVideo({
     reference,
     routeState,
     fetchFromCache: true,
@@ -45,7 +46,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState }) => {
   const { showError } = useErrorMessage()
 
   useEffect(() => {
-    if (!video?.reference) {
+    if (!video) {
       fetchVideo()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,8 +65,16 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState }) => {
     setIsFetchingVideo(false)
   }
 
-  if (isFetchingVideo || !video) {
+  if (isFetchingVideo) {
     return <div />
+  }
+
+  if (notFound || !video) {
+    return (
+      <div className="flex items-center justify-center">
+        <NotFoundImage className="max-w-xs" aria-label="Not Found" />
+      </div>
+    )
   }
 
   return (

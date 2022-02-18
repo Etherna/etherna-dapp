@@ -70,7 +70,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
     return !continueEditing
   }
 
-  if (video && video.owner?.address !== address) {
+  if (video && video.ownerAddress !== address) {
     return <Redirect to={routes.getStudioVideosLink()} />
   }
 

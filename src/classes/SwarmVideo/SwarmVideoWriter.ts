@@ -24,7 +24,6 @@ import { getVideoDuration, getVideoResolution } from "@utils/media"
 import type { SwarmVideoUploadOptions, SwarmVideoWriterOptions } from "./types"
 import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@definitions/swarm-video"
 import type { SwarmImageRaw } from "@definitions/swarm-image"
-import type { IndexVideo } from "@definitions/api-index"
 import type { Profile } from "@definitions/swarm-profile"
 
 /**
@@ -38,13 +37,11 @@ export default class SwarmVideoWriter {
 
   private _videoRaw: SwarmVideoRaw
   private beeClient: SwarmBeeClient
-  private indexClient: EthernaIndexClient
 
   static thumbnailResponsiveSizes = [480, 960, 1440, 2400]
 
   constructor(video: Video | undefined, ownerAddress: string, opts: SwarmVideoWriterOptions) {
     this.beeClient = opts.beeClient
-    this.indexClient = opts.indexClient
     this.ownerAddress = ownerAddress
     this.reference = video?.reference
     this.indexReference = video?.indexReference
@@ -129,17 +126,11 @@ export default class SwarmVideoWriter {
     const batchId = await this.beeClient.getBatchId()
     const videoReference = (await this.beeClient.uploadFile(batchId, JSON.stringify(rawVideo))).reference
 
-    // update index video
-    const indexSuccess = await this.updateCreateIndexVideo(videoReference)
-
-    if (!indexSuccess) throw new Error("Cannot add video on the current Index")
-
     // update local instances
     this.reference = videoReference
 
     const reader = new SwarmVideoIO.Reader(videoReference, this.ownerAddress, {
       beeClient: this.beeClient,
-      indexClient: this.indexClient,
       videoData: rawVideo,
       profileData: this.video?.owner ?? ownerProfile,
     })
@@ -148,17 +139,16 @@ export default class SwarmVideoWriter {
     return videoReference
   }
 
-  async deleteVideo() {
+  async unpinVideo() {
     if (!this.reference) throw new Error("Please provide a video reference before")
 
     try {
       await Promise.allSettled([
         this.beeClient.unpin(this.reference),
-        ...this._videoRaw.sources.map(source => this.beeClient.unpin(source.reference))
+        ...Object.entries(this._videoRaw.thumbnail?.sources ?? {})
+          .map(([_, reference]) => this.beeClient.unpin(reference)),
+        ...this._videoRaw.sources.map(source => this.beeClient.unpin(source.reference)),
       ])
-    } catch { }
-    try {
-      await this.indexClient.videos.deleteVideo(this.reference)
     } catch { }
   }
 
@@ -253,26 +243,11 @@ export default class SwarmVideoWriter {
 
   resetCopy() {
     return new SwarmVideoWriter(undefined, this.ownerAddress, {
-      beeClient: this.beeClient,
-      indexClient: this.indexClient,
+      beeClient: this.beeClient
     })
   }
 
   // Private methods
-
-  private async updateCreateIndexVideo(newReference: string): Promise<boolean> {
-    try {
-      if (this.indexReference) {
-        await this.indexClient.videos.updateVideo(this.indexReference, newReference)
-      } else {
-        await this.indexClient.videos.createVideo(newReference)
-      }
-      return true
-    } catch (error) {
-      console.error(error)
-      return false
-    }
-  }
 
   private parseVideo(video: Video | undefined): SwarmVideoRaw | null {
     if (!video) return null
@@ -282,7 +257,7 @@ export default class SwarmVideoWriter {
       duration: video.duration,
       originalQuality: video.originalQuality ?? `${NaN}p`,
       ownerAddress: video.ownerAddress ?? "0x0",
-      createdAt: video.creationDateTime ? +new Date(video.creationDateTime) : video.createdAt,
+      createdAt: video.creationDateTime ? +new Date(video.creationDateTime) : video.createdAt ?? +new Date(),
       thumbnail: video.thumbnail ? new SwarmImageIO.Reader(video.thumbnail, {
         beeClient: this.beeClient
       }).imageRaw : null,
