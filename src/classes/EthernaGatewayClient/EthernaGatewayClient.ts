@@ -28,6 +28,7 @@ export default class EthernaGatewayClient {
 
   /**
    * Init an gateway client
+   * 
    * @param options Client options
    */
   constructor(options: GatewayClientOptions) {
@@ -43,6 +44,7 @@ export default class EthernaGatewayClient {
 
   /**
    * Redirect to login page
+   * 
    * @param returnUrl Redirect url after login (default = null)
    */
   loginRedirect(returnUrl: string | null = null) {
@@ -52,6 +54,7 @@ export default class EthernaGatewayClient {
 
   /**
    * Redirect to logout page
+   * 
    * @param returnUrl Redirect url after logout (default = null)
    */
   logoutRedirect(returnUrl: string | null = null) {

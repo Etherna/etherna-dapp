@@ -38,7 +38,6 @@ import dayjs from "@utils/dayjs"
 import { shortenEthAddr } from "@utils/ethereum"
 import { convertTime } from "@utils/converters"
 import { encodedSvg } from "@utils/svg"
-import uuidv4 from "@utils/uuid"
 import type { Profile } from "@definitions/swarm-profile"
 import type { Video } from "@definitions/swarm-video"
 

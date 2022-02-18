@@ -130,7 +130,9 @@ export default class SwarmVideoWriter {
     const videoReference = (await this.beeClient.uploadFile(batchId, JSON.stringify(rawVideo))).reference
 
     // update index video
-    const indexVideo = await this.updateCreateIndexVideo(videoReference)
+    const indexSuccess = await this.updateCreateIndexVideo(videoReference)
+
+    if (!indexSuccess) throw new Error("Cannot add video on the current Index")
 
     // update local instances
     this.reference = videoReference
@@ -140,7 +142,6 @@ export default class SwarmVideoWriter {
       indexClient: this.indexClient,
       videoData: rawVideo,
       profileData: this.video?.owner ?? ownerProfile,
-      indexData: indexVideo
     })
     this.video = reader.video
 
@@ -259,18 +260,17 @@ export default class SwarmVideoWriter {
 
   // Private methods
 
-  private async updateCreateIndexVideo(newReference: string): Promise<IndexVideo | null> {
+  private async updateCreateIndexVideo(newReference: string): Promise<boolean> {
     try {
-      let indexVideo: IndexVideo
       if (this.indexReference) {
-        indexVideo = await this.indexClient.videos.updateVideo(this.indexReference, newReference)
+        await this.indexClient.videos.updateVideo(this.indexReference, newReference)
       } else {
-        indexVideo = await this.indexClient.videos.createVideo(newReference)
+        await this.indexClient.videos.createVideo(newReference)
       }
-      return indexVideo
+      return true
     } catch (error) {
       console.error(error)
-      return null
+      return false
     }
   }
 

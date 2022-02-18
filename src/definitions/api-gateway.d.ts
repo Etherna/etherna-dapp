@@ -29,5 +29,5 @@ export type GatewayCurrentUser = {
 
 export type GatewayCredit = {
   isUnlimited: boolean
-  value: number
+  balance: number
 }
