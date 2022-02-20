@@ -19,17 +19,16 @@ import React, { useState, useEffect } from "react"
 import classNames from "classnames"
 
 import classes from "@styles/components/video/VideoView.module.scss"
-import { ReactComponent as NotFoundImage } from "@assets/backgrounds/404-illustration.svg"
 
+import NotFound from "@common/NotFound"
 import SEO from "@components/layout/SEO"
 import Player from "@components/player/Player"
 import VideoComments from "@components/video/VideoComments"
 import VideoDetails from "@components/video/VideoDetails"
 import useSwarmVideo from "@hooks/useSwarmVideo"
 import { useErrorMessage } from "@state/hooks/ui"
-import type { Video } from "@definitions/swarm-video"
 import SwarmImageIO from "@classes/SwarmImage"
-import NotFound from "@common/NotFound"
+import type { Video } from "@definitions/swarm-video"
 
 type VideoViewProps = {
   reference: string

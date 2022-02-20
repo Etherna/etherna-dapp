@@ -32,7 +32,7 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
   const [reference, setReference] = useState(opts.reference)
   const [video, setVideo] = useState<Video | null>(opts.routeState ?? null)
   const [isLoading, setIsloading] = useState(false)
-  const [notFound, setNotFound] = useState(true)
+  const [notFound, setNotFound] = useState(false)
 
   useEffect(() => {
     if (reference !== opts.reference) {
