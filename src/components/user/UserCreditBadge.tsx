@@ -55,7 +55,7 @@ const UserCreditBadge: React.FC<UserCreditBadgeProps> = ({ credit }) => {
       onMouseEnter={() => setIsHover(!isTouch)}
       onMouseLeave={() => setIsHover(false)}
     >
-      <span className={classes.userCreditCurrency}>USD</span>
+      {/* <span className={classes.userCreditCurrency}>CHF</span> */}
       <div className={classes.userCreditValue}>
         <span className={classes.userCreditValueInteger}>
           {integer}.

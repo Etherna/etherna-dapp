@@ -40,6 +40,7 @@ const UserMenu: React.FC = () => {
   const { signout } = useSignout()
 
   const isSigningIn = isSignedIn === undefined || isSignedInGateway === undefined || isLoadingProfile
+  const isFullySignedIn = isSignedIn === true && isSignedInGateway === true
 
   if (isSigningIn) {
     return (
@@ -52,23 +53,23 @@ const UserMenu: React.FC = () => {
       <Dropdown>
         <DropdownToggle>
           <Button as="div" modifier="transparent" rounded iconOnly>
-            {isSignedIn === false ? (
-              <MoreIcon />
-            ) : (
+            {isFullySignedIn ? (
               <Avatar image={avatar} address={address} size={36} />
+            ) : (
+              <MoreIcon />
             )}
           </Button>
         </DropdownToggle>
 
         <DropdownMenu>
           <>
-            {isSignedIn === true && (
+            {isFullySignedIn && (
               <SignedInMenuItems />
             )}
 
             <SharedMenuItems />
 
-            {isSignedIn === true && (
+            {isFullySignedIn && (
               <>
                 <hr />
                 <DropdownItem action={signout} icon={<SignoutIcon />}>
@@ -80,7 +81,7 @@ const UserMenu: React.FC = () => {
         </DropdownMenu>
       </Dropdown>
 
-      {isSignedIn === false && (
+      {!isFullySignedIn && (
         <SigninButton>Sign in</SigninButton>
       )}
     </>

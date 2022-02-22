@@ -104,7 +104,20 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <>
-      {As === "a" && href ? (
+      {As === "a" && href && href.startsWith("https") ? (
+        <a
+          href={href}
+          rel={rel}
+          target={target}
+          className={btnClassName}
+          type={type}
+          role="button"
+          onClick={onClick}
+          onKeyDown={e => handleKeyDown(e as any)}
+        >
+          {children}
+        </a>
+      ) : As === "a" && href && !href.startsWith("https") ? (
         <Link
           to={href}
           rel={rel}

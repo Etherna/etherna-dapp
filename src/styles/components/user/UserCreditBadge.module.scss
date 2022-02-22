@@ -41,11 +41,12 @@
   @apply hidden xs:inline;
   @apply text-xs tracking-tighter;
   @apply text-gray-600 dark:text-gray-400;
+  @apply mr-1;
 }
 
 .userCreditValue {
   @apply flex items-baseline;
-  @apply relative ml-1 overflow-hidden;
+  @apply relative overflow-hidden;
   @apply text-gray-900 dark:text-gray-200;
 }
 

@@ -15,7 +15,7 @@
  *  
  */
 
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import classNames from "classnames"
 import {
   Editor,
@@ -37,7 +37,7 @@ import Label from "@common/Label"
 
 type MarkdownEditorProps = {
   id?: string
-  value: string
+  value: string | null | undefined
   label?: string
   placeholder?: string
   disabled?: boolean
@@ -76,11 +76,12 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const [markdown, setMarkdown] = useState(value)
   const [hasFocus, setHasFocus] = useState(false)
   const [state, setState] = useState<EditorState>(() => {
-    const rawData = markdownToDraft(value)
+    const rawData = markdownToDraft(value ?? "")
     const contentState = convertFromRaw(rawData)
     const newEditorState = EditorState.createWithContent(contentState)
     return newEditorState
   })
+  const previousValue = useRef(!value)
   const textLength = useMemo(() => {
     return state.getCurrentContent().getPlainText("").length
   }, [state])
@@ -90,6 +91,15 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       // reset state
       setState(EditorState.createEmpty())
       setMarkdown(value)
+    }
+    else if (value && !previousValue.current) {
+      previousValue.current = true
+      setState(() => {
+        const rawData = markdownToDraft(value)
+        const contentState = convertFromRaw(rawData)
+        const newEditorState = EditorState.createWithContent(contentState)
+        return newEditorState
+      })
     }
   }, [value])
 

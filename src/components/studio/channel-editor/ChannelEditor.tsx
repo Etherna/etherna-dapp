@@ -15,7 +15,7 @@
  *  
  */
 
-import React, { forwardRef, useImperativeHandle, useRef, useState } from "react"
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
 import classNames from "classnames"
 
 import classes from "@styles/components/studio/channel-editor/ChannelEditor.module.scss"
@@ -56,21 +56,28 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
   profileAddress,
 }, ref) => {
   const { beeClient } = useSelector(state => state.env)
-  const { name, description, avatar, cover } = useSelector(state => state.profile)
+  const profile = useSelector(state => state.profile)
   const { cropImage } = useImageCrop()
   const { showError } = useErrorMessage()
   const updateProfile = useProfileUpdate(profileAddress)
 
   const avatarRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
-  const [profileName, setProfileName] = useState(name)
-  const [profileDescription, setProfileDescription] = useState(description)
-  const [profileAvatar, setProfileAvatar] = useState(avatar)
-  const [profileCover, setProfileCover] = useState(cover)
+  const [profileName, setProfileName] = useState(profile.name)
+  const [profileDescription, setProfileDescription] = useState(profile.description)
+  const [profileAvatar, setProfileAvatar] = useState(profile.avatar)
+  const [profileCover, setProfileCover] = useState(profile.cover)
   const [avatarPreview, setAvatarPreview] = useState<string>()
   const [coverPreview, setCoverPreview] = useState<string>()
   const [isUploadingCover, setUploadingCover] = useState(false)
   const [isUploadingAvatar, setUploadingAvatar] = useState(false)
+
+  useEffect(() => {
+    setProfileName(profile.name)
+    setProfileDescription(profile.description)
+    setProfileAvatar(profile.avatar)
+    setProfileCover(profile.cover)
+  }, [profile])
 
   const imagesUtils: ImagesUtils = {
     avatar: {
@@ -244,7 +251,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
         <label htmlFor="description">Channel description</label>
         <MarkdownEditor
           placeholder="Write something about you"
-          value={profileDescription || ""}
+          value={profileDescription}
           onChange={value => setProfileDescription(value)}
         />
       </div>

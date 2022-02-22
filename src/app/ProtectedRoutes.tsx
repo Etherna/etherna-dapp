@@ -29,14 +29,16 @@ type RouteProps = {
 }
 
 export const SignedInRoute = ({ path, exact, children }: RouteProps) => {
-  const { isSignedIn } = useSelector(state => state.user)
+  const { isSignedIn, isSignedInGateway } = useSelector(state => state.user)
+  const isSigningIn = isSignedIn === undefined || isSignedInGateway === undefined
+  const isFullySignedIn = isSignedIn === true && isSignedInGateway === true
 
   return (
     <Route
       path={path}
       exact={exact}
       render={() =>
-        isSignedIn === undefined ? null : isSignedIn === true ? (
+        isSigningIn ? null : isFullySignedIn ? (
           children
         ) : (
           <SigninMessage />
