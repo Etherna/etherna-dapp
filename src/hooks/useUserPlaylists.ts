@@ -103,7 +103,7 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
       newPlaylist.videos!.splice(index, 1, {
         reference: newVideo.reference,
         title: newVideo.title || "",
-        addedAt: newVideo.createdAt,
+        addedAt: newPlaylist.videos![index].addedAt,
         publishedAt: newPlaylist.videos![index].publishedAt,
       })
     }

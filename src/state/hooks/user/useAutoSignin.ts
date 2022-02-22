@@ -17,6 +17,7 @@
 import { useEffect } from "react"
 import { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
+import type { AxiosError } from "axios"
 import type { EthAddress } from "@ethersphere/bee-js/dist/src/utils/eth"
 
 import SwarmProfileIO from "@classes/SwarmProfile"
@@ -28,15 +29,16 @@ import { ProfileActions, ProfileActionTypes } from "@state/reducers/profileReduc
 import { UIActions, UIActionTypes } from "@state/reducers/uiReducer"
 import useSelector from "@state/useSelector"
 import { addressBytes, signMessage } from "@utils/ethereum"
-import type { IndexCurrentUser } from "@definitions/api-index"
 import type { AuthIdentity } from "@definitions/api-sso"
-import { showError } from "@state/actions/modals"
+import type { GatewayBatch } from "@definitions/api-gateway"
 
 type AutoSigninOpts = {
   forceSignin?: boolean
   service?: "index" | "gateway"
   isStatusPage?: boolean
 }
+
+let batchesFetchTries = 0
 
 export default function useAutoSignin(opts: AutoSigninOpts = {}) {
   const { indexClient, gatewayClient, authClient, beeClient } = useSelector(state => state.env)
@@ -76,7 +78,10 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
 
     if (currentUser && identity) {
       const address = identity.etherLoginAddress || identity.etherAddress
-      await fetchProfile(address, identity)
+      fetchProfile(address, identity)
+    }
+    if (hasCredit) {
+      fetchBatches()
     }
   }
 
@@ -206,6 +211,61 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
     dispatch({
       type: UIActionTypes.TOGGLE_LOADING_PROFILE,
       isLoadingProfile: false,
+    })
+  }
+
+  const fetchBatches = async () => {
+    batchesFetchTries++
+
+    let userBatches: GatewayBatch[] = []
+
+    try {
+      const batchesPreview = await gatewayClient.users.fetchBatches()
+
+      if (batchesPreview.length === 0) {
+        // waiting to auto create default batch
+        console.warn("Still no batches. Re-Trying in 10 seconds.")
+        batchesFetchTries < 5 && setTimeout(() => {
+          fetchBatches()
+        }, 10000)
+
+        return
+      }
+
+      userBatches = await Promise.all(
+        batchesPreview.map(batchPreview => gatewayClient.users.fetchBatch(batchPreview.batchId))
+      )
+    } catch (error) {
+      if (import.meta.env.DEV) {
+        // In local execution return the initial batch id
+        const batches = await beeClient.getAllPostageBatch()
+        const usableBatches = batches.filter(batch => batch.usable)
+        userBatches = usableBatches.map(batch => ({
+          id: batch.batchID,
+          depth: batch.depth,
+          bucketDepth: batch.bucketDepth,
+          amountPaid: +batch.amount,
+          normalisedBalance: 0,
+          batchTTL: -1,
+          usable: batch.usable,
+          utilization: batch.utilization,
+          blockNumber: batch.blockNumber,
+          exists: true,
+          immutableFlag: batch.immutableFlag,
+          label: batch.label,
+          ownerAddress: null,
+        }))
+      }
+    }
+
+    dispatch({
+      type: EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES,
+      batches: userBatches,
+    })
+
+    dispatch({
+      type: UserActionTypes.USER_SET_BATCHES,
+      batches: userBatches,
     })
   }
 }

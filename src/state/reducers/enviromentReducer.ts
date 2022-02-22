@@ -26,12 +26,14 @@ import { checkIsMobile } from "@utils/browser"
 import { parseLocalStorage } from "@utils/local-storage"
 import type { EnvState } from "@definitions/app-state"
 import type { Keymap, KeymapNamespace } from "@definitions/keyboard"
+import { GatewayBatch } from "@definitions/api-gateway"
 
 export const EnvActionTypes = {
   SET_IS_MOBILE: "ENV_SET_IS_MOBILE",
   UPDATE_INDEXHOST: "ENV_UPDATE_INDEXHOST",
   UPDATE_GATEWAY_HOST: "ENV_UPDATE_GATEWAY_HOST",
   UPDATE_BEE_CLIENT: "ENV_UPDATE_BEE_CLIENT",
+  UPDATE_BEE_CLIENT_BATCHES: "ENV_UPDATE_BEE_CLIENT_BATCHES",
   UPDATE_KEYMAP: "ENV_UPDATE_KEYMAP",
   EDIT_SHORTCUT: "ENV_EDIT_SHORTCUT",
   TOGGLE_DARK_MODE: "ENV_TOGGLE_DARK_MODE",
@@ -57,6 +59,10 @@ type UpdateBeeClientAction = {
   type: typeof EnvActionTypes.UPDATE_BEE_CLIENT
   beeClient: SwarmBeeClient
 }
+type UpdateBeeClientBatchesAction = {
+  type: typeof EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES
+  batches: GatewayBatch[]
+}
 type UpdateKeymapAction = {
   type: typeof EnvActionTypes.UPDATE_KEYMAP
   keymap: Keymap
@@ -80,6 +86,7 @@ export type EnvActions = (
   UpdateIndexHostAction |
   UpdateGatewayHostAction |
   UpdateBeeClientAction |
+  UpdateBeeClientBatchesAction |
   UpdateKeymapAction |
   EditShortcutsAction |
   ToggleDarkModeAction |
@@ -149,6 +156,15 @@ const enviromentReducer = (state: EnvState = initialState, action: EnvActions): 
       return {
         ...state,
         beeClient: action.beeClient
+      }
+
+    case EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES:
+      return {
+        ...state,
+        beeClient: new SwarmBeeClient(state.beeClient.url, {
+          signer: state.beeClient.signer,
+          userBatches: action.batches,
+        })
       }
 
     case EnvActionTypes.UPDATE_BYTE_PRICE:

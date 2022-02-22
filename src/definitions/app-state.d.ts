@@ -23,6 +23,7 @@ import type EthernaAuthClient from "@classes/EthernaAuthClient"
 import type SwarmBeeClient from "@classes/SwarmBeeClient"
 import type { SwarmImage } from "./swarm-image"
 import type { Keymap, KeymapNamespace } from "./keyboard"
+import type { GatewayBatch } from "./api-gateway"
 
 export type AppState = {
   env: EnvState
@@ -97,4 +98,5 @@ export type UserState = {
   creditUnlimited?: boolean
   isSignedIn?: boolean
   isSignedInGateway?: boolean
+  batches?: GatewayBatch[]
 }

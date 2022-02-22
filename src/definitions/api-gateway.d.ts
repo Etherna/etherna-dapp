@@ -48,7 +48,7 @@ export type GatewayBatch = {
   immutableFlag: boolean
   label: string
   normalisedBalance: number
-  ownerAddress: string
+  ownerAddress: string | null
   usable: boolean
   utilization: number
 }
