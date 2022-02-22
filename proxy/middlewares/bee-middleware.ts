@@ -17,9 +17,9 @@
 import fs from "fs"
 import path from "path"
 import { createProxyMiddleware } from "http-proxy-middleware"
-import { Request as ProxyRequest, Response as ProxyResponse } from "http-proxy-middleware/dist/types"
 import { ClientRequest, IncomingHttpHeaders } from "http"
 import fetch, { Response, RequestInit, BodyInit } from "node-fetch"
+import type { Request as ProxyRequest, Response as ProxyResponse } from "http-proxy-middleware/dist/types"
 
 import "../utils/env.js"
 import { unzipJSON } from "../utils/unzip.js"
@@ -27,24 +27,24 @@ import FilterTransformStream from "../classes/FilterTransformStream.js"
 import type { ValidationResponse } from "./validator"
 
 // Consts
-const GatewayValidPathsRegex = /^\/(bytes|chunks|bzz|tags|pins|soc|feeds|pss|stamps)\/?.*/
+const BeeValidPathsRegex = /^\/(bytes|chunks|bzz|tags|pins|soc|feeds|pss)\/?.*/
 const MaxBodySizeCap = 5000000 //5MB
-const ValidatorHost = process.env.GATEWAY_VALIDATOR_PROXY_HOST
-const SwarmHost = process.env.GATEWAY_SWARM_PROXY_HOST
+const ValidatorHost = process.env.GATEWAY_PROXY_VALIDATOR_HOST
+const BeeHost = process.env.GATEWAY_PROXY_BEE_HOST
 const SeedDataFolder = path.resolve(process.cwd() + "/../") + "/seed"
 
 // Middleware
-const SwarmMiddleware = createProxyMiddleware(
+const BeeMiddleware = createProxyMiddleware(
   pathname => {
-    return GatewayValidPathsRegex.test(pathname)
+    return BeeValidPathsRegex.test(pathname)
   },
   {
-    target: SwarmHost,
+    target: BeeHost,
     changeOrigin: true,
     secure: false,
     logLevel: "error",
     selfHandleResponse: true,
-    onProxyReq: handleRequest as any
+    onProxyReq: handleRequest
   }
 )
 
@@ -53,7 +53,6 @@ const SwarmMiddleware = createProxyMiddleware(
  * Fetch and return the request body
  */
 async function handleRequest(proxyReq: ClientRequest, req: ProxyRequest, res: ProxyResponse) {
-  // Wrap your script in a try/catch and return the error stack to view error information.
   try {
     const response = await handleValidatorRequest(req, res)
 
@@ -79,20 +78,14 @@ async function handleRequest(proxyReq: ClientRequest, req: ProxyRequest, res: Pr
  */
 async function handleValidatorRequest(req: ProxyRequest, res: ProxyResponse) {
   // Run requests.
-  const gatewayResponsePromise = forwardRequestToGateway(req) //start async request to gateway
+  const beeResponsePromise = forwardRequestToGateway(req) //start async request to gateway
 
   // Check if request should not be validated
   const disableRequestValidation = process.env.DISABLE_REQUEST_VALIDATION === "true" || req.method !== "GET"
 
   if (disableRequestValidation) {
-    return await gatewayResponsePromise
+    return await beeResponsePromise
   }
-
-  // FIXME:
-  // Gateway filter validator is yet to be updated to the new
-  // bee api.
-  // So we must return the un-filtered response in the meantime.
-  return await gatewayResponsePromise
 
   // Get Validator response.
   const validatorResponse = await forwardRequestToValidator(req) //get response from validator
@@ -106,23 +99,24 @@ async function handleValidatorRequest(req: ProxyRequest, res: ProxyResponse) {
   // Decode data from validator response.
   const validationData = await validatorResponse.json() as ValidationResponse
 
+  console.log(validationData)
+
   // Elaborate result.
   switch (validationData.result) {
     case "AllowFree": //execute free request on gateway, as is
-      return await gatewayResponsePromise
-
+      return await beeResponsePromise
+    case "AllowPayed": //execute free request on gateway, as is
+      return await beeResponsePromise
     case "DenyForbidden": //403 error code: Forbidden
       return new Response("Forbidden request", { status: 403 })
-
+    case "DenyNotOfferedContent": //403 error code: Forbidden
+      return new Response("Content not offered", { status: 402 })
     case "DenyPaymentRequired": //402 error code: Payment Required
       return new Response("Insufficient credit. Please add more", { status: 402 })
-
     case "DenyUnauthenticated": //401 error code: Unauthorized
       return new Response("Unauthenticated user. Please login", { status: 401 })
-
     case "Limit": //execute request on gateway, and limit result
-      return await limitGatewayResponse(gatewayResponsePromise, validationData)
-
+      return await limitGatewayResponse(beeResponsePromise, validationData)
     default: //not implemented exception
       return new Response("Invalid response from validator", { status: 500 })
   }
@@ -131,13 +125,13 @@ async function handleValidatorRequest(req: ProxyRequest, res: ProxyResponse) {
 /**
  * Execute a limited request, validate result, and report to validator consumed data ammount
  */
-async function limitGatewayResponse(gatewayResponsePromise: Promise<Response>, validationData: ValidationResponse) {
+async function limitGatewayResponse(beeResponsePromise: Promise<Response>, validationData: ValidationResponse) {
   const maxBodySize = Math.min(validationData.maxBodySize, MaxBodySizeCap) //put an hard cap on body size
   const requestId = validationData.id
   const requestSecret = validationData.secret
 
   // Elaborate response.
-  return gatewayResponsePromise.then((response) => {
+  return beeResponsePromise.then((response) => {
     let streamedBytes = 0
 
     // Don't limit if response is not ok (out of range [200,299]).
@@ -210,16 +204,16 @@ async function notifyEndOfLimitedRequest(requestId: string, bodySize: number, se
 async function forwardRequestToGateway(request: ProxyRequest) {
   // Strip cookies.
   const headers = { ...request.headers }
-  headers.host = SwarmHost.replace(/^https?:\/\//, "")
+  headers.host = BeeHost.replace(/^https?:\/\//, "")
   delete headers.cookie
 
   const options = parseFetchOptions(headers, request.method, request.body)
   options.compress = false
 
   if (request.method === "POST" && /^\/(soc|bzz|feeds)/.test(request.path) && process.env.BEE_SEED_ENABLED === "true") {
-    return await saveSeedData(request, await fetch(SwarmHost + request.url, options))
+    return await saveSeedData(request, await fetch(BeeHost + request.url, options))
   }
-  return await fetch(SwarmHost + request.url, options)
+  return await fetch(BeeHost + request.url, options)
 }
 
 /**
@@ -312,4 +306,4 @@ const parseFetchOptions = (headers: IncomingHttpHeaders, method: string, body: B
   return options
 }
 
-export default SwarmMiddleware
+export default BeeMiddleware

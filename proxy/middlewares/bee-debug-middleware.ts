@@ -19,21 +19,20 @@ import { createProxyMiddleware } from "http-proxy-middleware"
 import "../utils/env.js"
 
 // Consts
-// eslint-disable-next-line max-len
-const BeeValidPathsRegex = /^\/(bytes|chunks|bzz|tags|pins|soc|feeds|pss|addresses|balances|chequebook|reservestate|settlements|transactions|stamps)\/?.*/
-const ValidatorHost = process.env.GATEWAY_PROXY_VALIDATOR_HOST
+const BeeDebugValidPathsRegex = /^\/(addresses|balances|chequebook|reservestate|settlements|transactions|stamps)\/?.*/
+const BeeDebugHost = process.env.GATEWAY_PROXY_BEE_DEBUG_HOST
 
 // Middleware
-const ValidatorMiddleware = createProxyMiddleware(
+const BeeDebugMiddleware = createProxyMiddleware(
   (pathname, req) => {
-    return !BeeValidPathsRegex.test(pathname)
+    return BeeDebugValidPathsRegex.test(pathname)
   },
   {
-    target: ValidatorHost,
+    target: BeeDebugHost,
     changeOrigin: true,
     secure: false,
     logLevel: "error"
   }
 )
 
-export default ValidatorMiddleware
+export default BeeDebugMiddleware
