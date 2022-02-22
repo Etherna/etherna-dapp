@@ -22,16 +22,16 @@ import classes from "@styles/components/video/VideoDetailsInfoBar.module.scss"
 import dayjs from "@utils/dayjs"
 
 type VideoDetailsInfoBarProps = {
-  creationDateTime?: string
+  createdAt?: number | null
 }
 
-const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ creationDateTime }) => {
+const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ createdAt }) => {
   return (
     <div className={classes.videoDetailsInfoBar}>
       <div className={classes.videoDetailsStats}>
-        {creationDateTime && (
+        {createdAt && (
           <span className={classes.videoDetailsPublishTime}>
-            {dayjs(creationDateTime).format("LLL")}
+            {dayjs(createdAt).format("LLL")}
           </span>
         )}
       </div>

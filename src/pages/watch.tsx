@@ -27,9 +27,9 @@ import type { Video } from "@definitions/swarm-video"
 
 const WatchPage = () => {
   const location = useLocation()
+  const routeState = useRouteState<Video>()
   const query = new URLSearchParams(location.search)
   const hash = query.get("v")
-  const routeState = useRouteState<Video>()
 
   if (!hash) return null
 

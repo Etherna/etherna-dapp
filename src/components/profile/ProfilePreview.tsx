@@ -24,7 +24,8 @@ import Avatar from "@components/user/Avatar"
 import VideoGrid from "@components/video/VideoGrid"
 import Routes from "@routes"
 import useSwarmProfile from "@hooks/useSwarmProfile"
-import useSwarmVideos from "@hooks/useSwarmVideos"
+import useUserPlaylists from "@hooks/useUserPlaylists"
+import usePlaylistVideos from "@hooks/usePlaylistVideos"
 import { shortenEthAddr } from "@utils/ethereum"
 
 type ProfilePreviewProps = {
@@ -33,12 +34,23 @@ type ProfilePreviewProps = {
 
 const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress }) => {
   const { profile, loadProfile } = useSwarmProfile({ address: profileAddress })
-  const { videos } = useSwarmVideos({ ownerAddress: profileAddress, profileData: profile ?? undefined, seedLimit: 5 })
+  const { channelPlaylist, loadPlaylists } = useUserPlaylists(profileAddress, { resolveChannel: true })
+  const { videos, isFetching, loadMore } = usePlaylistVideos(channelPlaylist, {
+    owner: profile ? profile : undefined,
+    waitProfile: true,
+    autofetch: true,
+    limit: 5,
+  })
 
   useEffect(() => {
     loadProfile()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileAddress])
+
+  useEffect(() => {
+    profile && loadPlaylists()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile])
 
   if (!profile) return null
 
@@ -53,7 +65,7 @@ const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress }) => {
         </Link>
       </div>
       {videos && (
-        <VideoGrid videos={videos} mini={true} />
+        <VideoGrid videos={videos} mini={true} isFetching={isFetching} fetchingPreviewCount={5} />
       )}
       {videos && !videos.length && (
         <p className="text-gray-600 italic">No videos uploaded yet</p>

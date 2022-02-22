@@ -22,6 +22,7 @@ export default class GatewayUsersClient {
 
   /**
    * Init an gateway user client
+   * 
    * @param {string} url Api host + api url
    */
   constructor(url: string) {
@@ -48,6 +49,7 @@ export default class GatewayUsersClient {
 
   /**
    * Get current user's credit
+   * 
    * @returns User's credit amount
    */
   async fetchCredit() {
@@ -59,6 +61,25 @@ export default class GatewayUsersClient {
 
     if (typeof resp.data !== "object") {
       throw new Error("Cannot fetch user's credit")
+    }
+
+    return resp.data
+  }
+
+  /**
+   * Get current user's offered resources
+   * 
+   * @returns Reference list of offered resources
+   */
+  async fetchOfferedResources() {
+    const endpoint = `${this.url}/users/current/offeredResources`
+
+    const resp = await http.get<string[]>(endpoint, {
+      withCredentials: true
+    })
+
+    if (typeof resp.data !== "object") {
+      throw new Error("Cannot fetch user's offered resources")
     }
 
     return resp.data

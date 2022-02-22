@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import { SwarmVideoRaw } from "./swarm-video"
+
 export type IndexClientOptions = {
   host: string
   apiPath?: string
@@ -38,14 +40,32 @@ export type IndexUserVideos = IndexUser & {
 }
 
 export type IndexVideo = {
+  id: string
   creationDateTime: string
-  encryptionKey: string
+  encryptionKey: string | null
   encryptionType: IndexEncryptionType
-  manifestHash: string
   ownerAddress: string
   ownerIdentityManifest: string
+  lastValidManifest: IndexVideoManifest | null
   totDownvotes: number
   totUpvotes: number
+}
+
+export type IndexVideoManifest = Omit<SwarmVideoRaw, "createdAt" | "ownerAddress"> & { hash: string }
+
+export type IndexVideoCreation = {
+  id: string
+  creationDateTime: string
+  encryptionKey: string | null
+  encryptionType: IndexEncryptionType
+  manifestHash: string
+}
+
+export type IndexVideoValidation = {
+  errorDetails: Array<{ errorMessage: string, errorNumber: string | number }>
+  hash: string
+  isValid: boolean
+  validationTime: string
 }
 
 export type IndexVideoComment = {

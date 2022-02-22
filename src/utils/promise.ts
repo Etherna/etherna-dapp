@@ -25,6 +25,17 @@ export const nullablePromise = async <T>(promise: Promise<T>) =>
     promise.then(result => resolve(result)).catch(() => resolve(null))
   })
 
+/**
+ * Get & filter fullfilled promises
+ * 
+ * @param promises Settled promises array
+ * @returns The filtered fullfilled results
+ */
+export const fullfilledPromisesResult = <T>(promises: PromiseSettledResult<T>[]): T[] => {
+  return promises.filter(promise => promise.status === "fulfilled")
+    .map(promise => (promise as PromiseFulfilledResult<T>).value)
+}
+
 export const wait = (delay = 1000) =>
   new Promise<void>(res => {
     if (import.meta.env.DEV) {

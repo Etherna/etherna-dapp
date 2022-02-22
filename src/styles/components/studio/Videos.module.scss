@@ -22,12 +22,13 @@
   @apply relative overflow-hidden;
   @apply w-14 md:w-20;
   @apply after:block after:pb-[62%];
+  @apply bg-gray-300 dark:bg-gray-600;
 }
 
 .videoTitleInfo {
   @apply flex flex-col items-start space-y-2;
 
-  .videoTitleStatus {
+  .videoStatus {
     @apply xl:hidden;
   }
 }
@@ -37,12 +38,22 @@
   @apply font-bold leading-tight;
 }
 
-.videoTitleStatus {
+.videoStatus {
   @apply text-2xs md:text-xs font-semibold;
   @apply px-1 py-0.5 rounded;
   @apply md:px-1.5 md:py-1;
   @apply bg-gray-300 dark:bg-gray-600;
   @apply text-gray-700 dark:text-gray-300;
+
+  &.public {
+    @apply bg-green-500 text-white dark:text-white;
+  }
+  &.processing {
+    @apply bg-blue-500 text-white dark:text-white;
+  }
+  &.deleted {
+    @apply bg-red-500 text-white dark:text-white;
+  }
 }
 
 .videoTable {

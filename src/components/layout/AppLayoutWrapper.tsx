@@ -15,7 +15,7 @@
  *  
  */
 
-import React, { useEffect, useState } from "react"
+import React, { useLayoutEffect, useState } from "react"
 
 import { LayoutReducerTypes } from "@context/layout-context"
 import { useLayoutState } from "@context/layout-context/hooks"
@@ -35,7 +35,7 @@ const AppLayoutWrapper: React.FC<AppLayoutWrapperProps> = ({
   const [, dispatch] = useLayoutState()
   const [loaded, setLoaded] = useState(false)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     dispatch({
       type: LayoutReducerTypes.SET_EMPTY_LAYOUT,
       emptyLayout,

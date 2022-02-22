@@ -21,6 +21,7 @@ export default class GatewaySettingsClient {
 
   /**
    * Init an gateway settings client
+   * 
    * @param url Api host + api url
    */
   constructor(url: string) {
@@ -29,6 +30,7 @@ export default class GatewaySettingsClient {
 
   /**
    * Get the current byte price
+   * 
    * @returns Dollar price per single byte
    */
   async fetchCurrentBytePrice() {

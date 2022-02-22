@@ -60,7 +60,7 @@ export type SwarmVideo = {
   /**  Description of the video */
   description: string | null
   /** Video creation timestamp */
-  createdAt: number
+  createdAt: number | null
   /**  Quality of the original video */
   originalQuality: SwarmVideoQuality | null
   /**  Address of the owner of the video */
@@ -84,7 +84,7 @@ export type VideoIndexed = {
   /** When the video was created */
   creationDateTime?: string
   /** Video encryption key */
-  encryptionKey?: string
+  encryptionKey?: string | null
   /** Video encryption type */
   encryptionType?: IndexEncryptionType
   /** Number of down votes */
@@ -96,6 +96,8 @@ export type VideoIndexed = {
 export type Video = SwarmVideo & VideoIndexed & {
   /** Whether the video is indexed */
   isVideoOnIndex: boolean
+  /** Whether the video has been correctly validated on the index */
+  isValidatedOnIndex: boolean
   /** Owner info */
   owner?: Profile
 }

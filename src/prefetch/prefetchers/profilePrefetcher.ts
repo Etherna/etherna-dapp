@@ -14,49 +14,60 @@
  *  limitations under the License.
  */
 
-import { store } from "@state/store"
-import { nullablePromise } from "@utils/promise"
 import SwarmProfileIO from "@classes/SwarmProfile"
 import SwarmVideoIO from "@classes/SwarmVideo"
+import SwarmUserPlaylistsIO from "@classes/SwarmUserPlaylists"
+import { store } from "@state/store"
+import { fullfilledPromisesResult } from "@utils/promise"
 import type { Profile } from "@definitions/swarm-profile"
 import type { Video } from "@definitions/swarm-video"
 
 const match = /\/profile\/([^/]+)/
 
 const fetch = async () => {
-  const { beeClient, indexClient } = store.getState().env
+  const { beeClient, indexClient, indexUrl } = store.getState().env
 
   const matches = window.location.pathname.match(match)
   if (matches && matches.length >= 2) {
     const address = matches[1]
 
-    const [user, userVideos] = await Promise.all([
-      nullablePromise(indexClient.users.fetchUser(address)),
-      nullablePromise(indexClient.users.fetchUserVideos(address, 0, 50))
+    // Fetch user's playlists & profile
+    const playlistsReader = new SwarmUserPlaylistsIO.Reader(address, {
+      beeClient,
+      indexUrl,
+    })
+    const swarmProfileReader = new SwarmProfileIO.Reader(address, { beeClient })
+
+    const [profilePromise] = await Promise.allSettled([
+      swarmProfileReader.download(true),
+      playlistsReader.download({ resolveChannel: true }),
     ])
+    const profile = profilePromise.status === "fulfilled" ? profilePromise.value : {
+      address,
+      avatar: null,
+      cover: null,
+      description: null,
+      name: null,
+    }
 
-    const swarmProfileReader = user
-      ? new SwarmProfileIO.Reader(user.address, { beeClient })
-      : null
-    const profile = swarmProfileReader
-      ? await nullablePromise(swarmProfileReader.download(true))
-      : null
+    // Fetch channel playlists videos
+    const references = playlistsReader.channelPlaylist?.videos?.slice(0, 50) ?? []
+    const videosPromises = await Promise.allSettled(references.map(video => {
+      const reader = new SwarmVideoIO.Reader(video.reference, address, {
+        beeClient,
+        indexClient,
+        fetchProfile: false,
+        profileData: profile,
+      })
+      return reader.download()
+    }))
 
-    const videos = userVideos
-      ? await Promise.all(userVideos.map(video => (
-        nullablePromise(new SwarmVideoIO.Reader(video.manifestHash, user?.address ?? "0x0", {
-          beeClient,
-          indexClient,
-          profileData: profile ?? undefined,
-          indexData: video,
-        }).download(true))
-      )))
-      : null
+    const videos = fullfilledPromisesResult(videosPromises)
 
     // set prefetch data
     window.prefetchData = {}
     window.prefetchData.profile = profile
-    window.prefetchData.videos = videos ? videos.filter(Boolean) as Video[] : null
+    window.prefetchData.videos = videos
   }
 }
 

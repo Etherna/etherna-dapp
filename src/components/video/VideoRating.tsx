@@ -15,23 +15,24 @@
  *  
  */
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useMemo } from "react"
 import classNames from "classnames"
 
 import classes from "@styles/components/video/VideoRating.module.scss"
+import { ReactComponent as VoteIcon } from "@assets/icons/player/upvote.svg"
 import { ReactComponent as ThumbUpIcon } from "@assets/icons/player/thumb-up.svg"
 
 import useSelector from "@state/useSelector"
 import type { VoteValue } from "@definitions/api-index"
 
 type VideoRatingProps = {
-  videoHash: string
+  videoId: string
   upvotes?: number
   downvotes?: number
 }
 
 const VideoRating: React.FC<VideoRatingProps> = ({
-  videoHash,
+  videoId,
   upvotes,
   downvotes,
 }) => {
@@ -40,14 +41,15 @@ const VideoRating: React.FC<VideoRatingProps> = ({
   const [isUpdatingVote, setIsUpdatingVote] = useState(false)
   const [currentVote, setCurrentVote] = useState<VoteValue>("Neutral")
 
-  const { indexClient } = useSelector((state) => state.env)
+  const { indexClient } = useSelector(state => state.env)
 
-  const progress =
-    currentUpvotes < currentDownvotes
-      ? Math.round((currentUpvotes - currentDownvotes) / (currentUpvotes + currentDownvotes))
-      : currentUpvotes > currentDownvotes
-        ? Math.round((currentDownvotes - currentUpvotes) / (currentUpvotes + currentDownvotes))
-        : 0.5
+  const progress = useMemo(() => {
+    const totalVotes = currentUpvotes + currentDownvotes
+    if (totalVotes === 0) {
+      return 0.5
+    }
+    return Math.round(currentUpvotes / totalVotes)
+  }, [currentDownvotes, currentUpvotes])
 
   useEffect(() => {
     setCurrentUpvotes(upvotes ?? 0)
@@ -71,7 +73,7 @@ const VideoRating: React.FC<VideoRatingProps> = ({
     setCurrentVote(vote)
 
     try {
-      await indexClient.videos.vote(videoHash, vote)
+      await indexClient.videos.vote(videoId, vote)
 
       udpateCounters(vote, oldVote)
     } catch {
@@ -82,22 +84,14 @@ const VideoRating: React.FC<VideoRatingProps> = ({
   }
 
   const udpateCounters = (newVote: VoteValue, oldVote: VoteValue) => {
-    switch (oldVote) {
-      case "Up":
+    if (oldVote === "Neutral") {
+      setCurrentUpvotes(votes => votes + 1)
+    } else {
+      if (newVote === oldVote) {
         setCurrentUpvotes(votes => votes - 1)
-        break
-      case "Down":
-        setCurrentDownvotes(votes => votes - 1)
-        break
-    }
-
-    switch (newVote) {
-      case "Up":
+      } else {
         setCurrentUpvotes(votes => votes + 1)
-        break
-      case "Down":
-        setCurrentDownvotes(votes => votes + 1)
-        break
+      }
     }
   }
 
@@ -114,22 +108,28 @@ const VideoRating: React.FC<VideoRatingProps> = ({
     <div className={classes.videoRating}>
       <div className={classes.videoRatingButtons}>
         <button
-          className={classNames(classes.videoRatingBtn)}
+          className={classNames(classes.videoRatingBtn, {
+            [classes.active]: currentVote === "Up"
+          })}
           onClick={giveThumbsUp}
           disabled={isUpdatingVote}
+          aria-label="Upvote"
         >
           <span className={classes.thumbIcon}>
-            <ThumbUpIcon />
+            <VoteIcon aria-hidden />
           </span>
           <span className={classes.counter}>{shortNumber(currentUpvotes)}</span>
         </button>
         <button
-          className={classNames(classes.videoRatingBtn, classes.ratingDown)}
+          className={classNames(classes.videoRatingBtn, classes.ratingDown, {
+            [classes.active]: currentVote === "Down"
+          })}
           onClick={giveThumbsDown}
           disabled={isUpdatingVote}
+          aria-label="Downvote"
         >
           <span className={classes.thumbIcon}>
-            <ThumbUpIcon />
+            <VoteIcon aria-hidden />
           </span>
           <span className={classes.counter}>{shortNumber(currentDownvotes)}</span>
         </button>

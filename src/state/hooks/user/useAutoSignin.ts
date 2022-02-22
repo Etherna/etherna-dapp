@@ -107,11 +107,11 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
 
   const fetchCurrentUserCredit = async () => {
     try {
-      const { value, isUnlimited } = await gatewayClient.users.fetchCredit()
+      const { balance, isUnlimited } = await gatewayClient.users.fetchCredit()
 
       dispatch({
         type: UserActionTypes.USER_UPDATE_CREDIT,
-        credit: value,
+        credit: balance,
         creditUnlimited: isUnlimited,
       })
 

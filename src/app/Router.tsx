@@ -113,30 +113,36 @@ const Router = () => {
         <Route path={"/profile/:id"} exact>
           <Profile />
         </Route>
-        <WatchRoute path={"/watch"}>
+        <WatchRoute path={"/watch"} exact>
           <Watch />
         </WatchRoute>
-        <Route path={"/search"}>
+        <Route path={"/search"} exact>
           <Search />
         </Route>
-        <Route path={"/shortcuts"}>
+        <Route path={"/shortcuts"} exact>
           <Shortcuts />
         </Route>
 
-        <StudioLayout>
-          <SignedInRoute path={"/studio"} exact>
+        <SignedInRoute path={"/studio"} exact>
+          <StudioLayout>
             <Studio />
-          </SignedInRoute>
-          <SignedInRoute path={"/studio/channel"} exact>
+          </StudioLayout>
+        </SignedInRoute>
+        <SignedInRoute path={"/studio/channel"} exact>
+          <StudioLayout>
             <ChannelEdit />
-          </SignedInRoute>
-          <SignedInRoute path={"/studio/videos"} exact>
+          </StudioLayout>
+        </SignedInRoute>
+        <SignedInRoute path={"/studio/videos"} exact>
+          <StudioLayout>
             <VideosList />
-          </SignedInRoute>
-          <SignedInRoute path={"/studio/videos/:id"} exact>
+          </StudioLayout>
+        </SignedInRoute>
+        <SignedInRoute path={"/studio/videos/:id"} exact>
+          <StudioLayout>
             <VideoEdit />
-          </SignedInRoute>
-        </StudioLayout>
+          </StudioLayout>
+        </SignedInRoute>
 
         <Route path="*">
           <NotFound />
@@ -145,7 +151,7 @@ const Router = () => {
 
       {/* mini player */}
       {background && (
-        <WatchRoute path={"/watch"}>
+        <WatchRoute path={"/watch"} exact>
           <div className="todo-mini-player-wrapper">
             <Watch />
           </div>

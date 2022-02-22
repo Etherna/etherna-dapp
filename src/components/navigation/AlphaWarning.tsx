@@ -116,7 +116,7 @@ const AlphaWarning: React.FC = () => {
           initialFocus={cancelButton}
           open={open && !!toggleButton}
           onClose={() => setOpen(false)}
-          style={{ zIndex: open ? undefined : -1 }}
+          style={{ zIndex: open ? undefined : -1, pointerEvents: open ? undefined : "none" }}
           static
         >
           <Transition

@@ -33,9 +33,9 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video }) => {
   return (
     <div>
       <VideoDetailsTitleBar title={video.title}>
-        {video.isVideoOnIndex && (
+        {(video.isVideoOnIndex && video.indexReference) && (
           <VideoRating
-            videoHash={video.reference}
+            videoId={video.indexReference}
             upvotes={video.totUpvotes}
             downvotes={video.totDownvotes}
           />
@@ -44,7 +44,7 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video }) => {
 
       <VideoStatusBadge status={video.isVideoOnIndex ? "available" : "unindexed"} />
 
-      <VideoDetailsInfoBar creationDateTime={video.creationDateTime} />
+      <VideoDetailsInfoBar createdAt={video.createdAt ? video.createdAt : null} />
 
       <VideoDetailsProfile owner={video.owner} />
 

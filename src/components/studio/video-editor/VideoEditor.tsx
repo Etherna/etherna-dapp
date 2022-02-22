@@ -51,6 +51,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const { waitConfirmation } = useConfirmation()
   const profile = useSelector(state => state.profile)
   const { address } = useSelector(state => state.user)
+  const { indexClient } = useSelector(state => state.env)
 
   const [{ reference, queue, videoWriter }] = useVideoEditorState()
   const hasQueuedProcesses = queue.filter(q => !q.reference).length > 0
@@ -115,7 +116,13 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
         location: profile.location,
         website: profile.website,
       }
-      await videoWriter.update(ownerProfile)
+      const newReference = await videoWriter.update(ownerProfile)
+
+      // update on index
+      const indexed = await updateOrCreateIndexVideo(newReference)
+      if (!indexed) {
+        throw new Error(`Cannot ${reference ? "update" : "add"} video on the current Index`,)
+      }
 
       // update channel playlist
       !reference && await addVideosToPlaylist(channelPlaylist.id, [videoWriter.video!])
@@ -126,8 +133,21 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
       setSaved(true)
     } catch (error: any) {
       console.error(error)
-      showError("Linking error", error.message)
+      showError("Publishing error", error.message)
       setIsSubmitting(false)
+    }
+  }
+
+  const updateOrCreateIndexVideo = async (newReference: string) => {
+    try {
+      if (videoWriter.indexReference) {
+        await indexClient.videos.updateVideo(videoWriter.indexReference, newReference)
+      } else {
+        await indexClient.videos.createVideo(newReference)
+      }
+      return true
+    } catch (error) {
+      return false
     }
   }
 
@@ -194,6 +214,5 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     </>
   )
 })
-VideoEditor.displayName = "VideoEditor"
 
 export default VideoEditor

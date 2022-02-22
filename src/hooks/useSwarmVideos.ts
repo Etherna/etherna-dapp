@@ -28,7 +28,6 @@ type SwarmVideosOptions = {
   seedLimit?: number
   fetchLimit?: number
   profileData?: Profile
-  ownerAddress?: string
   waitProfile?: boolean
 }
 
@@ -41,12 +40,6 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
   const [page, setPage] = useState(0)
   const [isFetching, setIsFetching] = useState(false)
   const [hasMore, setHasMore] = useState(true)
-
-  useEffect(() => {
-    setPage(0)
-    setVideos([])
-    setHasMore(true)
-  }, [opts.ownerAddress])
 
   useEffect(() => {
     if (opts.waitProfile && !opts.profileData) {
@@ -72,14 +65,14 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
   }
 
   const videoLoadPromise = (indexData: IndexVideo) => {
-    const { ownerAddress, profileData } = opts
-    const fetchProfile = !ownerAddress && !profileData
-    const swarmVideoReader = new SwarmVideoIO.Reader(indexData.manifestHash, ownerAddress, {
+    const { profileData } = opts
+    const fetchProfile = !profileData
+    const swarmVideoReader = new SwarmVideoIO.Reader(indexData.id, indexData.ownerAddress, {
       beeClient,
       indexClient,
       indexData,
       profileData,
-      fetchProfile
+      fetchProfile,
     })
     return swarmVideoReader.download()
   }
@@ -91,16 +84,12 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
 
     setIsFetching(true)
 
-    const { ownerAddress } = opts
     const take = page === 0 ? opts.seedLimit ?? DEFAULT_SEED_LIMIT : opts.fetchLimit ?? DEFAULT_FETCH_LIMIT
 
     try {
-      const indexVideos = ownerAddress
-        ? await indexClient.users.fetchUserVideos(ownerAddress, page, take)
-        : await indexClient.videos.fetchVideos(page, take)
-
+      const indexVideos = await indexClient.videos.fetchVideos(page, take)
       const newVideos = await Promise.all(indexVideos.map(videoLoadPromise))
-      await wait(2000)
+      import.meta.env.DEV && await wait(1500)
 
       if (newVideos.length < take) {
         setHasMore(false)

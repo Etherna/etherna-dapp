@@ -39,8 +39,8 @@ export const getDefaultVideo = (
   indexData: IndexVideo | null | undefined,
   bee: SwarmBeeClient
 ): Video => ({
-  reference,
-  indexReference: indexData?.manifestHash,
+  reference: reference || indexData?.lastValidManifest?.hash || "",
+  indexReference: indexData?.id,
   title: null,
   description: null,
   createdAt: indexData?.creationDateTime ? +new Date(indexData.creationDateTime) : +new Date(),
@@ -48,6 +48,7 @@ export const getDefaultVideo = (
   ownerAddress: indexData?.ownerAddress ?? null,
   duration: NaN,
   isVideoOnIndex: !!indexData,
+  isValidatedOnIndex: !!indexData?.lastValidManifest,
   thumbnail: null,
   sources: [{
     reference,

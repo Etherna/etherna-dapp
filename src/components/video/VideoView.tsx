@@ -20,14 +20,15 @@ import classNames from "classnames"
 
 import classes from "@styles/components/video/VideoView.module.scss"
 
+import NotFound from "@common/NotFound"
 import SEO from "@components/layout/SEO"
 import Player from "@components/player/Player"
 import VideoComments from "@components/video/VideoComments"
 import VideoDetails from "@components/video/VideoDetails"
 import useSwarmVideo from "@hooks/useSwarmVideo"
 import { useErrorMessage } from "@state/hooks/ui"
-import type { Video } from "@definitions/swarm-video"
 import SwarmImageIO from "@classes/SwarmImage"
+import type { Video } from "@definitions/swarm-video"
 
 type VideoViewProps = {
   reference: string
@@ -35,7 +36,7 @@ type VideoViewProps = {
 }
 
 const VideoView: React.FC<VideoViewProps> = ({ reference, routeState }) => {
-  const { video, loadVideo } = useSwarmVideo({
+  const { video, notFound, loadVideo } = useSwarmVideo({
     reference,
     routeState,
     fetchFromCache: true,
@@ -45,7 +46,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState }) => {
   const { showError } = useErrorMessage()
 
   useEffect(() => {
-    if (!video?.reference) {
+    if (!video) {
       fetchVideo()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,8 +65,12 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState }) => {
     setIsFetchingVideo(false)
   }
 
-  if (isFetchingVideo || !video) {
+  if (isFetchingVideo) {
     return <div />
+  }
+
+  if (notFound || !video) {
+    return <NotFound message="This video cannot be found" />
   }
 
   return (
