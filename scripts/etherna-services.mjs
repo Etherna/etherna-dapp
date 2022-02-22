@@ -140,7 +140,7 @@ const waitService = (projectPath, name) => {
     if (host) {
       waitOn({
         resources: [host],
-        delay: 100,
+        delay: 120,
         timeout: 30000,
         validateStatus: function (status) {
           // if returns any status code then server is up
@@ -177,12 +177,13 @@ const run = async () => {
 
   const args = process.argv.slice(2, process.argv.length)
 
+  const shouldRunBeeNode = process.env.BEE_LOCAL_INSTANCE === "true" && (args.length === 0 || args.includes("--bee"))
   const shouldRunEthernaSSO = args.length === 0 || args.includes("--sso")
   const shouldRunEthernaIndex = args.length === 0 || args.includes("--index")
   const shouldRunEthernaCredit = args.length === 0 || args.includes("--credit")
-  const shouldRunEthernaValidator = args.length === 0 || args.includes("--val")
+  const shouldRunEthernaGateway = args.length === 0 || args.includes("--gateway")
+  const shouldRunEthernaBeehive = args.length === 0 || args.includes("--beehive")
   const shouldRunProxy = args.length === 0 || args.includes("--proxy")
-  const shouldRunBeeNode = process.env.BEE_LOCAL_INSTANCE === "true" && (args.length === 0 || args.includes("--bee"))
 
   if (shouldRunBeeNode) {
     const beeProcess = execBee()
@@ -208,9 +209,14 @@ const run = async () => {
     processes.push(creditProcess)
   }
 
-  if (shouldRunEthernaValidator) {
-    const validatorProcess = execProject(process.env.ETHERNA_GATEWAY_PROJECT_PATH)
-    processes.push(validatorProcess)
+  if (shouldRunEthernaGateway) {
+    const gatewayProcess = execProject(process.env.ETHERNA_GATEWAY_PROJECT_PATH)
+    processes.push(gatewayProcess)
+  }
+
+  if (shouldRunEthernaBeehive) {
+    const beehiveProcess = execProject(process.env.ETHERNA_BEEHIVE_PROJECT_PATH)
+    processes.push(beehiveProcess)
   }
 
   if (shouldRunProxy) {
@@ -237,8 +243,10 @@ const run = async () => {
     await waitService(process.env.ETHERNA_INDEX_PROJECT_PATH, "Etherna Index")
   shouldRunEthernaCredit &&
     await waitService(process.env.ETHERNA_CREDIT_PROJECT_PATH, "Etherna Credit")
-  shouldRunEthernaValidator &&
-    await waitService(process.env.ETHERNA_GATEWAY_PROJECT_PATH, "Etherna Gateway Validator")
+  shouldRunEthernaGateway &&
+    await waitService(process.env.ETHERNA_GATEWAY_PROJECT_PATH, "Etherna Gateway")
+  shouldRunEthernaBeehive &&
+    await waitService(process.env.ETHERNA_BEEHIVE_PROJECT_PATH, "Etherna Beehive")
   shouldRunProxy &&
     await waitService(`https://localhost:${process.env.BEE_DEBUG_PORT}`, "Bee Debug Https Proxy")
   shouldRunProxy &&
