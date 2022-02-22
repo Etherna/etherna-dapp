@@ -177,13 +177,16 @@ const run = async () => {
 
   const args = process.argv.slice(2, process.argv.length)
 
-  const shouldRunBeeNode = process.env.BEE_LOCAL_INSTANCE === "true" && (args.length === 0 || args.includes("--bee"))
-  const shouldRunEthernaSSO = args.length === 0 || args.includes("--sso")
-  const shouldRunEthernaIndex = args.length === 0 || args.includes("--index")
-  const shouldRunEthernaCredit = args.length === 0 || args.includes("--credit")
-  const shouldRunEthernaGateway = args.length === 0 || args.includes("--gateway")
-  const shouldRunEthernaBeehive = args.length === 0 || args.includes("--beehive")
-  const shouldRunProxy = args.length === 0 || args.includes("--proxy")
+  const verbose = args.includes("--verbose")
+  const runAllServices = args.filter(arg => arg !== "--verbose").length === 0
+
+  const shouldRunBeeNode = process.env.BEE_LOCAL_INSTANCE === "true" && (runAllServices || args.includes("--bee"))
+  const shouldRunEthernaSSO = runAllServices || args.includes("--sso")
+  const shouldRunEthernaIndex = runAllServices || args.includes("--index")
+  const shouldRunEthernaCredit = runAllServices || args.includes("--credit")
+  const shouldRunEthernaGateway = runAllServices || args.includes("--gateway")
+  const shouldRunEthernaBeehive = runAllServices || args.includes("--beehive")
+  const shouldRunProxy = runAllServices || args.includes("--proxy")
 
   if (shouldRunBeeNode) {
     const beeProcess = execBee()
@@ -201,21 +204,25 @@ const run = async () => {
 
   if (shouldRunEthernaIndex) {
     const indexProcess = execProject(process.env.ETHERNA_INDEX_PROJECT_PATH)
+    verbose && indexProcess.stdout.on("data", data => console.log("Index: " + chalk.blue(data)))
     processes.push(indexProcess)
   }
 
   if (shouldRunEthernaCredit) {
     const creditProcess = execProject(process.env.ETHERNA_CREDIT_PROJECT_PATH)
+    verbose && creditProcess.stdout.on("data", data => console.log("Credit: " + chalk.blue(data)))
     processes.push(creditProcess)
   }
 
   if (shouldRunEthernaGateway) {
     const gatewayProcess = execProject(process.env.ETHERNA_GATEWAY_PROJECT_PATH)
+    verbose && gatewayProcess.stdout.on("data", data => console.log("Gateway: " + chalk.blue(data)))
     processes.push(gatewayProcess)
   }
 
   if (shouldRunEthernaBeehive) {
     const beehiveProcess = execProject(process.env.ETHERNA_BEEHIVE_PROJECT_PATH)
+    verbose && beehiveProcess.stdout.on("data", data => console.log("Beehive: " + chalk.blue(data)))
     processes.push(beehiveProcess)
   }
 
@@ -227,6 +234,7 @@ const run = async () => {
       },
       execCallback
     )
+    verbose && validatorProcess.stdout.on("data", data => console.log("Proxy: " + chalk.blue(data)))
     processes.push(validatorProcess)
   }
 
@@ -235,12 +243,10 @@ const run = async () => {
     await waitService(process.env.ETHERNA_INDEX_PROJECT_PATH, "Etherna Index")
   shouldRunEthernaCredit &&
     await waitService(process.env.ETHERNA_CREDIT_PROJECT_PATH, "Etherna Credit")
-  shouldRunEthernaGateway &&
-    await waitService(process.env.ETHERNA_GATEWAY_PROJECT_PATH, "Etherna Gateway")
   shouldRunEthernaBeehive &&
     await waitService(process.env.ETHERNA_BEEHIVE_PROJECT_PATH, "Etherna Beehive")
-  shouldRunProxy &&
-    await waitService(`https://localhost:${process.env.BEE_DEBUG_PORT}`, "Bee Debug Https Proxy")
+  shouldRunEthernaGateway &&
+    await waitService(process.env.ETHERNA_GATEWAY_PROJECT_PATH, "Etherna Gateway")
   shouldRunProxy &&
     await waitService(`https://localhost:${process.env.GATEWAY_PORT}`, "Etherna Gateway Proxy")
 
