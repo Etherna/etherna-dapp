@@ -227,15 +227,7 @@ const run = async () => {
       },
       execCallback
     )
-    const beeDebugProcess = exec(
-      "npm run start:bee-debug",
-      {
-        cwd: path.resolve("proxy")
-      },
-      execCallback
-    )
     processes.push(validatorProcess)
-    processes.push(beeDebugProcess)
   }
 
   // await services async

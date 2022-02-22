@@ -25,5 +25,4 @@ interface ImportMetaEnv {
   VITE_APP_GATEWAY_URL: string
   VITE_APP_AUTH_URL: string
   VITE_APP_CREDIT_URL: string
-  VITE_APP_POSTAGE_URL?: string
 }

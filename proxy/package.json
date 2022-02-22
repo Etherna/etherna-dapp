@@ -4,8 +4,7 @@
   "license": "Apache-2.0",
   "type": "module",
   "scripts": {
-    "start": "tsc && node build/gateway-proxy.js",
-    "start:bee-debug": "tsc && node build/bee-proxy.js"
+    "start": "tsc && node build/gateway-proxy.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
