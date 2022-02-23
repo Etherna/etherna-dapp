@@ -163,9 +163,12 @@ const Videos: React.FC = () => {
 
   return (
     <>
+      <Button as="a" href={routes.getStudioVideoUploadLink()} modifier="inverted">
+        Create new video
+      </Button>
+
       <StudioTableView
         className={classes.videoTable}
-        title="Videos"
         isLoading={isFetching}
         page={page}
         total={total}
