@@ -16,7 +16,7 @@
 
 const BYTES_MAP = {
   b: 0.125,
-  byte: 1,
+  bytes: 1,
   kb: 1024,
   mb: 1024 * 1024,
   gb: 1024 * 1024 * 1024,
@@ -29,25 +29,27 @@ type BytesScale = keyof typeof BYTES_MAP
  * Convert bytes into bits, kbytes, mbytes etc...
  * 
  * @param fromBytes Bytes reference value
- * @param decimals Number of decimal palces
+ * @param decimals Number of decimal palces (default = 2)
  * @returns Each converted amount
  */
 export const convertBytes = (fromBytes: number | string, decimals = 2) => {
   const normalizedValue = `${fromBytes}`.toLowerCase()
   const matches = normalizedValue.match(/^(?<val>[0-9]+\.?[0-9]*|\.[0-9]+)[ ]*(?<scale>bytes|kb|mb|gb|tb)?/)
   const value = +(matches?.groups?.val ?? fromBytes)
-  const scale = (matches?.groups?.scale ?? "byte").replace(/s?/, "") as BytesScale
+  const scale = (matches?.groups?.scale ?? "bytes").replace(/s?/, "") as BytesScale
   const k = 1024
   const scales = Object.keys(BYTES_MAP)
 
   const bits = value * BYTES_MAP[scale] / BYTES_MAP["b"]
-  const bytes = value * BYTES_MAP[scale] / BYTES_MAP["byte"]
+  const bytes = value * BYTES_MAP[scale] / BYTES_MAP["bytes"]
   const kbytes = value * BYTES_MAP[scale] / BYTES_MAP["kb"]
   const mbytes = value * BYTES_MAP[scale] / BYTES_MAP["mb"]
   const gbytes = value * BYTES_MAP[scale] / BYTES_MAP["gb"]
 
   const dm = decimals < 0 ? 0 : decimals
-  const i = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), scales.length - 2)
+  const i = bytes <= 0 || isNaN(bytes)
+    ? 0
+    : Math.min(Math.floor(Math.log(bytes) / Math.log(k)), scales.length - 2)
   const readableValue = parseFloat((bytes / Math.pow(k, i)).toFixed(dm))
   const readable = `${readableValue} ${scales[i + 1].toUpperCase()}`
 

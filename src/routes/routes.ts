@@ -81,6 +81,9 @@ export const getStudioVideoUploadLink = () => {
 export const getStudioCustomizeChannelLink = () => {
   return `/studio/channel`
 }
+export const getStudioStorageLink = () => {
+  return `/studio/storage`
+}
 
 /**
  * Static routes

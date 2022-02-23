@@ -1,0 +1,71 @@
+.storageBatch {
+  @apply bg-gray-100 dark:bg-gray-800;
+  @apply text-gray-600 dark:text-gray-400;
+  @apply text-sm;
+  @apply rounded-lg;
+  @apply p-4;
+}
+
+.storageBatchHeader {
+  @apply flex flex-wrap items-baseline;
+}
+
+.storageBatchTitle {
+  @apply text-gray-800 dark:text-gray-300;
+  @apply text-xl font-semibold;
+  @apply mr-2;
+}
+
+.storageBatchSubtitle {
+  @apply text-gray-800 dark:text-gray-300;
+  @apply text-base font-semibold;
+}
+
+.storageBatchSize {
+  @apply text-2xl font-semibold font-mono uppercase;
+  @apply text-gray-400 dark:text-gray-500;
+  @apply ml-auto;
+}
+
+.storageBatchExpiring {
+  @apply ml-3;
+  @apply text-gray-600 dark:text-gray-300;
+  @apply font-medium;
+}
+
+.storageBatchProgress {
+  .storageBatch & {
+    @apply h-6 rounded-md overflow-hidden;
+
+    > * {
+      @apply bg-gray-800 dark:bg-gray-200;
+      @apply rounded-none;
+    }
+  }
+
+
+  &.warning {
+    > * {
+      @apply bg-orange-400 dark:bg-orange-400;
+    }
+  }
+  &.danger {
+    > * {
+      @apply bg-red-600 dark:bg-red-600;
+    }
+  }
+}
+
+.storageBatchDataList {
+  @apply flex items-baseline;
+  @apply mt-2;
+  @apply uppercase font-medium;
+
+  dt {
+    @apply text-2xs;
+  }
+  dd {
+    @apply font-mono text-sm font-semibold;
+    @apply ml-2 mr-5;
+  }
+}

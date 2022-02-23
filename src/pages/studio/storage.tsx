@@ -16,23 +16,19 @@
  */
 
 import React from "react"
-import classNames from "classnames"
 
-import classes from "@styles/components/common/ProgressBar.module.scss"
+import Container from "@common/Container"
+import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
+import Storage from "@components/studio/Storage"
 
-import { clamp } from "@utils/math"
-
-type ProgressBarProps = {
-  progress: number
-  className?: string
-}
-
-const ProgressBar: React.FC<ProgressBarProps> = ({ progress, className }) => {
+const StoragePage = () => {
   return (
-    <div className={classNames(classes.progress, className)}>
-      <div className={classes.progressBar} style={{ width: `${clamp(progress, 0, 100)}%` }}></div>
-    </div>
+    <AppLayoutWrapper>
+      <Container noPaddingX noPaddingY fluid>
+        <Storage />
+      </Container>
+    </AppLayoutWrapper>
   )
 }
 
-export default ProgressBar
+export default StoragePage
