@@ -17,11 +17,11 @@
 .videoStatusBadge {
   @apply inline-flex items-center;
   @apply text-gray-800 bg-gray-400;
-  @apply my-1 px-2 py-px;
-  @apply rounded-sm text-xs font-semibold;
+  @apply px-2 py-1;
+  @apply rounded text-xs font-semibold;
 
   svg {
-    @apply w-5 h-5 mr-1;
+    @apply w-[1.25em] h-[1.25em] mr-1;
   }
 
   &.unlisted {

@@ -16,9 +16,9 @@
 
 import { useEffect, useState } from "react"
 
+import { parseReaderStatus } from "./useVideoOffers"
 import SwarmResourcesIO from "@classes/SwarmResources"
 import useSelector from "@state/useSelector"
-import type SwarmResourcesReader from "@classes/SwarmResources/SwarmResourcesReader"
 import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
 
 export default function useVideosResources(videos: Video[] | undefined) {
@@ -45,40 +45,12 @@ export default function useVideosResources(videos: Video[] | undefined) {
       const statuses: Record<string, VideoOffersStatus> = {}
 
       for (const reader of readers) {
-        statuses[reader.video.reference] = parseReaderStatus(reader)
+        statuses[reader.video.reference] = parseReaderStatus(reader, address)
       }
 
       setVideosOffersStatus(statuses)
     } catch (error) {
       console.error(error)
-    }
-  }
-
-  const parseReaderStatus = (reader: SwarmResourcesReader): VideoOffersStatus => {
-    const resourcesCount = reader.resourcesStatus?.length ?? 0
-    const offeredResourcesCount = (reader.resourcesStatus ?? [])
-      .filter(status => status.isOffered).length
-    const allSourcesOffered = reader.video.sources
-      .map(source => reader.getReferenceStatus(source.reference))
-      .every(status => status?.isOffered)
-
-    return {
-      offersStatus: offeredResourcesCount > 0
-        ? resourcesCount === offeredResourcesCount
-          ? "full"
-          : allSourcesOffered
-            ? "sources"
-            : "partial"
-        : "none",
-      globalOffers: reader.resourcesStatus ?? [],
-      userOfferedResourses: address
-        ? (reader.resourcesStatus?.map(status => status.reference) ?? [])
-          .filter(reference => reader.getReferenceStatus(reference)?.offeredBy.includes(address))
-        : [],
-      userUnOfferedResourses: address
-        ? (reader.resourcesStatus?.map(status => status.reference) ?? [])
-          .filter(reference => !reader.getReferenceStatus(reference)?.offeredBy.includes(address))
-        : [],
     }
   }
 
@@ -88,7 +60,7 @@ export default function useVideosResources(videos: Video[] | undefined) {
     const reader = new SwarmResourcesIO.Reader(video, { gatewayClient })
     await reader.download()
     const statuses = { ...videosOffersStatus }
-    statuses[reader.video.reference] = parseReaderStatus(reader)
+    statuses[reader.video.reference] = parseReaderStatus(reader, address)
     setVideosOffersStatus(statuses)
   }
 
@@ -98,7 +70,7 @@ export default function useVideosResources(videos: Video[] | undefined) {
     const reader = new SwarmResourcesIO.Reader(video, { gatewayClient })
     await reader.download()
     const statuses = { ...videosOffersStatus }
-    statuses[reader.video.reference] = parseReaderStatus(reader)
+    statuses[reader.video.reference] = parseReaderStatus(reader, address)
     setVideosOffersStatus(statuses)
   }
 

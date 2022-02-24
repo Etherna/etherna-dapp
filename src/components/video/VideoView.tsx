@@ -38,10 +38,11 @@ type VideoViewProps = {
 const VideoView: React.FC<VideoViewProps> = ({ reference, routeState }) => {
   const { video, notFound, loadVideo } = useSwarmVideo({
     reference,
-    routeState,
+    routeState: routeState?.video,
     fetchFromCache: true,
     fetchProfile: true
   })
+
   const [isFetchingVideo, setIsFetchingVideo] = useState(false)
   const { showError } = useErrorMessage()
 
