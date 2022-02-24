@@ -21,9 +21,10 @@ import VideoOffersBadge from "./VideoOffersBadge"
 import VideoDetailsInfoBar from "./VideoDetailsInfoBar"
 import VideoDetailsProfile from "./VideoDetailsProfile"
 import VideoDetailsDescription from "./VideoDetailsDescription"
+import VideoReport from "./VideoReport"
+import VideoStatusBadge from "./VideoStatusBadge"
 import VideoDetailsTitleBar from "./VideoDetailsTitleBar"
-import VideoStatusBadge from "@components/video/VideoStatusBadge"
-import VideoRating from "@components/video/VideoRating"
+import VideoRating from "./VideoRating"
 import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
 
 type VideoDetailsProps = {
@@ -36,11 +37,17 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video, videoOffers }) => {
     <div>
       <VideoDetailsTitleBar title={video.title}>
         {(video.isVideoOnIndex && video.indexReference) && (
-          <VideoRating
-            videoId={video.indexReference}
-            upvotes={video.totUpvotes}
-            downvotes={video.totDownvotes}
-          />
+          <>
+            <VideoReport
+              videoId={video.indexReference}
+              videoReference={video.reference}
+            />
+            <VideoRating
+              videoId={video.indexReference}
+              upvotes={video.totUpvotes}
+              downvotes={video.totDownvotes}
+            />
+          </>
         )}
       </VideoDetailsTitleBar>
 

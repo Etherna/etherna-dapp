@@ -241,4 +241,23 @@ export default class IndexVideosClient {
 
     return resp.data
   }
+
+  /**
+   * Report a video
+   * 
+   * @param id Id of the video
+   * @param manifestReference Reference of the manifest to report
+   * @param code Report code
+   */
+  async reportVideo(id: string, manifestReference: string, code: string) {
+    const endpoint = `${this.url}/videos/${id}/manifest/${manifestReference}/reports`
+    const resp = await http.post(endpoint, null, {
+      params: {
+        description: code
+      },
+      withCredentials: true
+    })
+
+    return resp.data
+  }
 }
