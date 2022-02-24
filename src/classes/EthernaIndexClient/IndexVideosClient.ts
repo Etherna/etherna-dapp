@@ -42,8 +42,8 @@ export default class IndexVideosClient {
    * @param take Number of videos to fetch (default = 25)
    * @returns The list of videos
    */
-  async fetchVideos(page = 0, take = 25) {
-    const endpoint = `${this.url}/videos`
+  async fetchLatestVideos(page = 0, take = 25) {
+    const endpoint = `${this.url}/videos/latest`
     const resp = await http.get<IndexVideo[]>(endpoint, {
       params: { page, take },
     })
