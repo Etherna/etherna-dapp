@@ -77,7 +77,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState }) => {
   return (
     <>
       <SEO title={video.title || reference} />
-      <div className={classNames(classes.videoWatch, "container")}>
+      <div className={classNames(classes.videoWatch)}>
         <div className="row justify-center">
           <div className="col lg:w-3/4">
             <Player
