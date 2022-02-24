@@ -37,7 +37,7 @@ const WatchPage = () => {
     <AppLayoutWrapper hideSidebar floatingSidebar>
       <SEO title="Watch" />
 
-      <Container noPaddingX noPaddingY>
+      <Container noPaddingY>
         <VideoView reference={hash} routeState={routeState} />
       </Container>
     </AppLayoutWrapper>
