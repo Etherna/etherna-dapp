@@ -24,7 +24,7 @@ import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
 export default function useVideosResources(videos: Video[] | undefined) {
   const { gatewayClient } = useSelector(state => state.env)
   const { address } = useSelector(state => state.user)
-  const [videosStatus, setVideosStatus] = useState<Record<string, VideoOffersStatus>>()
+  const [videosOffersStatus, setVideosOffersStatus] = useState<Record<string, VideoOffersStatus>>()
 
   useEffect(() => {
     if (videos) {
@@ -48,7 +48,7 @@ export default function useVideosResources(videos: Video[] | undefined) {
         statuses[reader.video.reference] = parseReaderStatus(reader)
       }
 
-      setVideosStatus(statuses)
+      setVideosOffersStatus(statuses)
     } catch (error) {
       console.error(error)
     }
@@ -87,9 +87,9 @@ export default function useVideosResources(videos: Video[] | undefined) {
     await writer.offerResources()
     const reader = new SwarmResourcesIO.Reader(video, { gatewayClient })
     await reader.download()
-    const statuses = { ...videosStatus }
+    const statuses = { ...videosOffersStatus }
     statuses[reader.video.reference] = parseReaderStatus(reader)
-    setVideosStatus(statuses)
+    setVideosOffersStatus(statuses)
   }
 
   const unofferVideoResources = async (video: Video) => {
@@ -97,13 +97,13 @@ export default function useVideosResources(videos: Video[] | undefined) {
     await writer.unofferResources()
     const reader = new SwarmResourcesIO.Reader(video, { gatewayClient })
     await reader.download()
-    const statuses = { ...videosStatus }
+    const statuses = { ...videosOffersStatus }
     statuses[reader.video.reference] = parseReaderStatus(reader)
-    setVideosStatus(statuses)
+    setVideosOffersStatus(statuses)
   }
 
   return {
-    videosStatus,
+    videosOffersStatus,
     offerVideoResources,
     unofferVideoResources,
   }

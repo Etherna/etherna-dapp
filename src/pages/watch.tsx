@@ -23,11 +23,11 @@ import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import SEO from "@components/layout/SEO"
 import VideoView from "@components/video/VideoView"
 import useRouteState from "@hooks/useRouteState"
-import type { Video } from "@definitions/swarm-video"
+import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
 
 const WatchPage = () => {
   const location = useLocation()
-  const routeState = useRouteState<Video>()
+  const routeState = useRouteState<{ video: Video, videoOffers: VideoOffersStatus }>()
   const query = new URLSearchParams(location.search)
   const hash = query.get("v")
 

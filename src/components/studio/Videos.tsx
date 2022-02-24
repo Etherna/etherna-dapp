@@ -71,7 +71,7 @@ const Videos: React.FC = () => {
     limit: perPage,
   })
 
-  const { videosStatus, offerVideoResources, unofferVideoResources } = useVideosResources(videos)
+  const { videosOffersStatus, offerVideoResources, unofferVideoResources } = useVideosResources(videos)
 
   useEffect(() => {
     if (address) {
@@ -95,13 +95,13 @@ const Videos: React.FC = () => {
   }, [channelPlaylist, profile, page, perPage])
 
   useEffect(() => {
-    if (videosStatus && selectedVideoOffers) {
+    if (videosOffersStatus && selectedVideoOffers) {
       const video = selectedVideoOffers.video
-      const offersStatus = videosStatus[video.reference]
+      const offersStatus = videosOffersStatus[video.reference]
       setSelectedVideoOffers(offersStatus ? { video, offersStatus } : undefined)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [videosStatus])
+  }, [videosOffersStatus])
 
   const deleteSelectedVideos = async () => {
     if (!channelPlaylist) {
@@ -174,11 +174,11 @@ const Videos: React.FC = () => {
   }
 
   const renderOffersStatus = (video: Video) => {
-    if (videosStatus === undefined) {
+    if (videosOffersStatus === undefined) {
       return <Spinner className="w-5 h-5" />
     }
 
-    const videoResourcesStatus = videosStatus[video.reference]
+    const videoResourcesStatus = videosOffersStatus[video.reference]
     const status = videoResourcesStatus.offersStatus
 
     return (

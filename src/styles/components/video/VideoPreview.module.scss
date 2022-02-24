@@ -33,7 +33,7 @@
     padding-bottom: 62%;
   }
 
-  > *:not(.videoThumbnailDuration) {
+  > *:first-child {
     @apply absolute inset-0;
     @apply bg-gray-200;
     @apply dark:bg-gray-700;
@@ -46,6 +46,18 @@
   @apply leading-none text-2xs font-semibold;
   @apply bg-gray-900 text-gray-100;
   @apply sm:text-xs sm:py-0.5;
+}
+
+.videoOfferedBadge {
+  @apply absolute right-2 top-2;
+  @apply inline-flex items-center;
+  @apply text-sm font-semibold;
+  @apply bg-emerald-500 border border-emerald-800/50 text-white;
+  @apply px-2 py-px rounded;
+
+  svg {
+    @apply w-[1.2em] h-[1.2em] mr-1;
+  }
 }
 
 .videoInfo {

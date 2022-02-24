@@ -45,7 +45,10 @@ const ExploreView = () => {
       loader={<div />}
       style={{ overflow: "unset" }}
     >
-      <VideoGrid videos={videos} isFetching={isFetching} />
+      <VideoGrid
+        videos={videos}
+        isFetching={isFetching}
+      />
     </InfiniteScroller>
   )
 }
