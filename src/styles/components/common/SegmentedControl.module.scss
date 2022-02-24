@@ -1,0 +1,28 @@
+.segmentedControl {
+  @apply flex w-full relative;
+  @apply select-none rounded-lg;
+  @apply text-sm font-semibold text-white;
+  @apply bg-gray-700/10 dark:bg-gray-100/10;
+
+  input {
+    @apply hidden;
+
+    + label {
+      @apply m-1 rounded-md text-sm;
+      @apply text-gray-600 dark:text-gray-300;
+    }
+
+    &:checked {
+      + label {
+        @apply text-white bg-indigo-500;
+      }
+    }
+  }
+
+  label {
+    @apply flex-1 py-1;
+    @apply text-center truncate;
+    @apply cursor-pointer;
+    @apply transition-colors duration-200 ease-out;
+  }
+}

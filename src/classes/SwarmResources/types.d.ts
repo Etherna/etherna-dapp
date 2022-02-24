@@ -14,14 +14,20 @@
  *  limitations under the License.
  */
 
-@tailwind base;
-@tailwind components;
+import type EthernaGatewayClient from "@classes/EthernaGatewayClient"
+import type { VideoOffersStatus } from "@definitions/swarm-video"
 
-@import "../../node_modules/react-image-crop/src/ReactCrop.scss";
-@import "../../node_modules/tippy.js/dist/tippy.css";
-@import "./base/tw-fix";
-@import "./base/reset";
-@import "./base/typography";
-@import "./base/grid";
+export type SwarmResourcesReaderOptions = {
+  gatewayClient: EthernaGatewayClient
+  videoOffersStatus?: VideoOffersStatus
+}
 
-@tailwind utilities;
+export type SwarmResourcesWriterOptions = {
+  gatewayClient: EthernaGatewayClient
+}
+
+export type SwarmResourceStatus = {
+  reference: string
+  isOffered: boolean
+  offeredBy: string[]
+}

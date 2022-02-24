@@ -101,3 +101,10 @@ export type Video = SwarmVideo & VideoIndexed & {
   /** Owner info */
   owner?: Profile
 }
+
+export type VideoOffersStatus = {
+  offersStatus: "full" | "partial" | "sources" | "none"
+  userOfferedResourses: string[]
+  userUnOfferedResourses: string[]
+  globalOffers: { reference: string, offeredBy: string[] }[]
+}

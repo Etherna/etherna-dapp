@@ -1,4 +1,4 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,25 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *  
  */
 
-@tailwind base;
-@tailwind components;
+.offersModalTable {
+  @apply w-full mt-4;
+}
 
-@import "../../node_modules/react-image-crop/src/ReactCrop.scss";
-@import "../../node_modules/tippy.js/dist/tippy.css";
-@import "./base/tw-fix";
-@import "./base/reset";
-@import "./base/typography";
-@import "./base/grid";
+.offersModalStatus {
+  @apply inline-flex rounded-full;
+  @apply text-xs font-semibold;
+  @apply bg-gray-200 dark:bg-gray-400;
+  @apply text-gray-600 dark:text-gray-800;
+  @apply px-1 w-4 h-4;
 
-@tailwind utilities;
+  &.offered {
+    @apply bg-emerald-500 dark:bg-emerald-500;
+    @apply text-white dark:text-white;
+  }
+  &.counter {
+    @apply px-2 w-auto;
+  }
+}
