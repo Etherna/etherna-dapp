@@ -140,7 +140,7 @@ const Modal: React.FC<ModalProps> = ({
                 {footerButtons}
 
                 {showCancelButton && (
-                  <Button modifier="secondary" onClick={handleCancel}>Cancel</Button>
+                  <Button modifier="muted" onClick={handleCancel}>Cancel</Button>
                 )}
               </div>
             </div>

@@ -102,7 +102,7 @@ const ExtensionEditorModal = () => {
           <Button onClick={applyChanges} disabled={isEditing || selectedUrl === initialSelectedUrl}>
             Apply changes
           </Button>
-          <Button modifier="secondary" onClick={closeModal} disabled={isEditing}>
+          <Button modifier="muted" onClick={closeModal} disabled={isEditing}>
             Cancel
           </Button>
         </>

@@ -84,7 +84,7 @@ const ShortcutModal = ({ show = false }) => {
             Delete
           </Button>
           <Button
-            modifier="secondary"
+            modifier="muted"
             onClick={overrideShortcut}
             disabled={!!existingShortcut}
           >

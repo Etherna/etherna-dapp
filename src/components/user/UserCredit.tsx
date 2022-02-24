@@ -61,7 +61,7 @@ const UserCredit: React.FC = () => {
               href={urlOrigin(creditUrl)! + "/manage/deposit"}
               rel="noreferrer noopener"
               target="_blank"
-              modifier="secondary"
+              modifier="muted"
             >
               Get more credit
             </Button>

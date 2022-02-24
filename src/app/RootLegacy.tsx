@@ -41,7 +41,7 @@ const RootLegacy: React.FC = () => {
       onClose={() => setOpen(false)}
       footerButtons={
         <>
-          <Button modifier="secondary" onClick={close}>Continue</Button>
+          <Button modifier="muted" onClick={close}>Continue</Button>
           <Button modifier="warning" onClick={closeAndDontShowAgain}>Don&apos;t show again</Button>
         </>
       }

@@ -80,7 +80,7 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
       title="Video offers"
       footerButtons={
         <>
-          <Button modifier="secondary" onClick={onClose}>
+          <Button modifier="muted" onClick={onClose}>
             OK
           </Button>
           {offersStatus && (
@@ -91,7 +91,7 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
                 </Button>
               )}
               {offersStatus.userUnOfferedResourses.length > 0 && (
-                <Button modifier="primary" onClick={offerAllResources} loading={isAddingOffers}>
+                <Button modifier="secondary" onClick={offerAllResources} loading={isAddingOffers}>
                   {offersStatus.userOfferedResourses.length > 0 ? "Offer missing resources" : "Offer resources"}
                 </Button>
               )}

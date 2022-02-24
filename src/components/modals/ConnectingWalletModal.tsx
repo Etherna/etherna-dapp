@@ -33,7 +33,7 @@ const ConnectingWalletModal = ({ show = false }) => {
       title="Connecting wallet"
       icon={<SignatureIcon />}
       footerButtons={
-        <Button modifier="secondary" onClick={closeConnectingWalletModal}>
+        <Button modifier="muted" onClick={closeConnectingWalletModal}>
           Close
         </Button>
       }

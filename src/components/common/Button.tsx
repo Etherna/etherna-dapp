@@ -29,7 +29,7 @@ type ButtonProps = {
   target?: "_blank"
   className?: string
   aspect?: "fill" | "outline" | "link"
-  modifier?: "primary" | "transparent" | "secondary" | "inverted" | "warning" | "danger"
+  modifier?: "primary" | "transparent" | "secondary" | "muted" | "inverted" | "warning" | "danger"
   type?: "button" | "submit" | "reset"
   rounded?: boolean
   small?: boolean
@@ -89,6 +89,7 @@ const Button: React.FC<ButtonProps> = ({
       [classes.btnLink]: aspect === "link",
       [classes.btnPrimary]: modifier === "primary",
       [classes.btnSecondary]: modifier === "secondary",
+      [classes.btnMuted]: modifier === "muted",
       [classes.btnDanger]: modifier === "danger",
       [classes.btnWarning]: modifier === "warning",
       [classes.btnInverted]: modifier === "inverted",

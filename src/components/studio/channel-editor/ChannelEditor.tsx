@@ -203,13 +203,13 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
               <Button
                 className={classNames(classes.btn, classes.removeButton)}
                 type="button"
-                modifier="secondary"
+                modifier="muted"
                 onClick={e => handleRemoveImage(e, "cover")}
               >
                 <TrashIcon />
               </Button>
             )}
-            <Button as="div" modifier="secondary" className={classNames(classes.btn)}>
+            <Button as="div" modifier="muted" className={classNames(classes.btn)}>
               Change cover
             </Button>
           </div>
