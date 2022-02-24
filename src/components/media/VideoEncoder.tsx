@@ -116,7 +116,7 @@ const VideoEncoder: React.FC<VideoEncoderProps> = ({
           </p>
           <div className="flex flex-col items-center mt-4">
             <Spinner className="mx-auto" width="30" />
-            <Button modifier="secondary" className="mt-4" onClick={onCancel} small>
+            <Button modifier="muted" className="mt-4" onClick={onCancel} small>
               Cancel
             </Button>
           </div>

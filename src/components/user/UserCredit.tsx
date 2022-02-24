@@ -48,7 +48,7 @@ const UserCredit: React.FC = () => {
           <p className="text-xs mb-4">You current balance is:</p>
           <p className="text-2xl font-bold break-all">
             {credit}
-            <span className="text-sm text-gray-600 dark:text-gray-400 tracking-tighter">USD</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400 tracking-tighter">CHF</span>
           </p>
           {bytePrice && (
             <p className="my-3 text-gray-600 dark:text-gray-400 text-sm">
@@ -58,10 +58,10 @@ const UserCredit: React.FC = () => {
           <div className="mt-8 mb-4">
             <Button
               as="a"
-              href={urlOrigin(creditUrl)!}
+              href={urlOrigin(creditUrl)! + "/manage/deposit"}
               rel="noreferrer noopener"
               target="_blank"
-              modifier="secondary"
+              modifier="muted"
             >
               Get more credit
             </Button>

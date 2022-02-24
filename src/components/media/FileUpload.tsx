@@ -93,7 +93,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
           <Alert type="danger" title="Upload error">
             {errorMessage}
           </Alert>
-          <Button modifier="secondary" className="mt-2" onClick={handleRemoveFile} small>
+          <Button modifier="muted" className="mt-2" onClick={handleRemoveFile} small>
             Retry
           </Button>
         </>

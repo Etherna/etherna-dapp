@@ -17,19 +17,21 @@
 
 import React from "react"
 
+import VideoOffersBadge from "./VideoOffersBadge"
 import VideoDetailsInfoBar from "./VideoDetailsInfoBar"
 import VideoDetailsProfile from "./VideoDetailsProfile"
 import VideoDetailsDescription from "./VideoDetailsDescription"
 import VideoDetailsTitleBar from "./VideoDetailsTitleBar"
 import VideoStatusBadge from "@components/video/VideoStatusBadge"
 import VideoRating from "@components/video/VideoRating"
-import type { Video } from "@definitions/swarm-video"
+import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
 
 type VideoDetailsProps = {
   video: Video
+  videoOffers?: VideoOffersStatus
 }
 
-const VideoDetails: React.FC<VideoDetailsProps> = ({ video }) => {
+const VideoDetails: React.FC<VideoDetailsProps> = ({ video, videoOffers }) => {
   return (
     <div>
       <VideoDetailsTitleBar title={video.title}>
@@ -42,7 +44,10 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video }) => {
         )}
       </VideoDetailsTitleBar>
 
-      <VideoStatusBadge status={video.isVideoOnIndex ? "available" : "unindexed"} />
+      <div className="flex items-center space-x-2 my-2">
+        <VideoStatusBadge status={video.isVideoOnIndex ? "available" : "unindexed"} />
+        <VideoOffersBadge video={video} videoOffers={videoOffers} />
+      </div>
 
       <VideoDetailsInfoBar createdAt={video.createdAt ? video.createdAt : null} />
 

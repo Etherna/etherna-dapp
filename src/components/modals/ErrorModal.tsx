@@ -46,7 +46,7 @@ const ErrorModal = ({ title, error = "", show = false }: ErrorModalProps) => {
       title={isMetaMaskSignError || isMozillaError ? "Sign in" : title}
       icon={isMetaMaskSignError || isMozillaError ? <SignatureIcon /> : <ErrorIcon />}
       footerButtons={
-        <Button modifier="secondary" onClick={hideError}>
+        <Button modifier="muted" onClick={hideError}>
           Close
         </Button>
       }

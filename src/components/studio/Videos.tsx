@@ -19,9 +19,11 @@ import React, { useEffect, useState } from "react"
 import { Redirect } from "react-router-dom"
 import classNames from "classnames"
 
-import classes from "@styles/components/studio/Videos.module.scss"
+import classes, { videoStatus } from "@styles/components/studio/Videos.module.scss"
+import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 import { ReactComponent as ThumbPlaceholder } from "@assets/backgrounds/thumb-placeholder.svg"
 import { ReactComponent as EditIcon } from "@assets/icons/edit.svg"
+import { ReactComponent as CreditIcon } from "@assets/icons/credit.svg"
 import { ReactComponent as TrashIcon } from "@assets/icons/trash.svg"
 import { ReactComponent as CopyIcon } from "@assets/icons/copy.svg"
 
@@ -32,6 +34,7 @@ import Image from "@common/Image"
 import SwarmVideoIO from "@classes/SwarmVideo"
 import usePlaylistVideos from "@hooks/usePlaylistVideos"
 import useUserPlaylists from "@hooks/useUserPlaylists"
+import useVideosResources from "@hooks/useVideosResources"
 import routes from "@routes"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
@@ -40,7 +43,8 @@ import { shortenEthAddr } from "@utils/ethereum"
 import { convertTime } from "@utils/converters"
 import { encodedSvg } from "@utils/svg"
 import type { Profile } from "@definitions/swarm-profile"
-import type { Video } from "@definitions/swarm-video"
+import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
+import VideoOffersModal from "@components/modals/VideoOffersModal"
 
 const Videos: React.FC = () => {
   const profileInfo = useSelector(state => state.profile)
@@ -51,6 +55,7 @@ const Videos: React.FC = () => {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
   const [selectedVideos, setSelectedVideos] = useState<Video[]>([])
+  const [selectedVideoOffers, setSelectedVideoOffers] = useState<{ video: Video, offersStatus: VideoOffersStatus }>()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   const {
@@ -65,6 +70,8 @@ const Videos: React.FC = () => {
     autofetch: false,
     limit: perPage,
   })
+
+  const { videosOffersStatus, offerVideoResources, unofferVideoResources } = useVideosResources(videos)
 
   useEffect(() => {
     if (address) {
@@ -86,6 +93,15 @@ const Videos: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channelPlaylist, profile, page, perPage])
+
+  useEffect(() => {
+    if (videosOffersStatus && selectedVideoOffers) {
+      const video = selectedVideoOffers.video
+      const offersStatus = videosOffersStatus[video.reference]
+      setSelectedVideoOffers(offersStatus ? { video, offersStatus } : undefined)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [videosOffersStatus])
 
   const deleteSelectedVideos = async () => {
     if (!channelPlaylist) {
@@ -157,15 +173,47 @@ const Videos: React.FC = () => {
     )
   }
 
+  const renderOffersStatus = (video: Video) => {
+    if (videosOffersStatus === undefined) {
+      return <Spinner className="w-5 h-5" />
+    }
+
+    const videoResourcesStatus = videosOffersStatus[video.reference]
+    const status = videoResourcesStatus.offersStatus
+
+    return (
+      <button
+        className={classNames(classes.offersStatus, {
+          [classes.fullOffered]: status === "full",
+          [classes.partialOffered]: status === "partial",
+          [classes.sourcesOffered]: status === "sources",
+        })}
+        onClick={() => setSelectedVideoOffers({
+          video,
+          offersStatus: videoResourcesStatus,
+        })}
+      >
+        <CreditIcon aria-hidden />
+        {status === "none" && "None (viewers cost)"}
+        {status === "full" && "Fully offered"}
+        {status === "sources" && "Video sources offered"}
+        {status === "partial" && "Partially offered"}
+      </button>
+    )
+  }
+
   if (!address) {
     return <Redirect to={routes.getHomeLink()} />
   }
 
   return (
     <>
+      <Button as="a" href={routes.getStudioVideoUploadLink()} modifier="inverted">
+        Create new video
+      </Button>
+
       <StudioTableView
         className={classes.videoTable}
-        title="Videos"
         isLoading={isFetching}
         page={page}
         total={total}
@@ -188,6 +236,7 @@ const Videos: React.FC = () => {
               <div className={classes.videoTitleInfo}>
                 <h3 className={classes.videoTitleTitle}>{item.title}</h3>
                 {renderVideoStatus(item)}
+                {renderOffersStatus(item)}
               </div>
             </div>
           )
@@ -199,6 +248,10 @@ const Videos: React.FC = () => {
           title: "Status",
           hideOnMobile: true,
           render: item => renderVideoStatus(item)
+        }, {
+          title: "Offered",
+          hideOnMobile: true,
+          render: item => renderOffersStatus(item)
         }, {
           title: "Date",
           hideOnMobile: true,
@@ -253,6 +306,15 @@ const Videos: React.FC = () => {
         videos={selectedVideos}
         deleteHandler={deleteSelectedVideos}
         onCancel={() => setShowDeleteModal(false)}
+      />
+
+      <VideoOffersModal
+        show={!!selectedVideoOffers}
+        offersStatus={selectedVideoOffers?.offersStatus}
+        video={selectedVideoOffers?.video}
+        offerResources={async () => await offerVideoResources(selectedVideoOffers!.video)}
+        unofferResources={async () => await unofferVideoResources(selectedVideoOffers!.video)}
+        onClose={() => setSelectedVideoOffers(undefined)}
       />
     </>
   )

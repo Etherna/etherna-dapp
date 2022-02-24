@@ -59,7 +59,6 @@ export default class VideoEditorCache {
     const { reference, queue, videoRaw, pinContent, ownerAddress } = JSON.parse(value) as CacheState
     const videoWriter = new SwarmVideoIO.Writer(undefined, ownerAddress, {
       beeClient,
-      indexClient,
     })
     videoWriter.reference = reference
     videoWriter.videoRaw = videoRaw

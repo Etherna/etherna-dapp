@@ -53,7 +53,6 @@ const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
   if (!initialState) {
     const videoWriter = new SwarmVideoIO.Writer(videoData, address!, {
       beeClient,
-      indexClient,
     })
 
     initialState = {

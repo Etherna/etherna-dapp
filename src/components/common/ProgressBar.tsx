@@ -16,6 +16,7 @@
  */
 
 import React from "react"
+import classNames from "classnames"
 
 import classes from "@styles/components/common/ProgressBar.module.scss"
 
@@ -23,13 +24,13 @@ import { clamp } from "@utils/math"
 
 type ProgressBarProps = {
   progress: number
+  className?: string
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
-  progress = clamp(progress, 0, 100)
+const ProgressBar: React.FC<ProgressBarProps> = ({ progress, className }) => {
   return (
-    <div className={classes.progress}>
-      <div className={classes.progressBar} style={{ width: `${progress}%` }}></div>
+    <div className={classNames(classes.progress, className)}>
+      <div className={classes.progressBar} style={{ width: `${clamp(progress, 0, 100)}%` }}></div>
     </div>
   )
 }

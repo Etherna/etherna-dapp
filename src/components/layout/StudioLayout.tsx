@@ -21,6 +21,7 @@ import classes from "@styles/components/layout/StudioLayout.module.scss"
 import { ReactComponent as SparklesIcon } from "@assets/icons/sparkles.svg"
 import { ReactComponent as VideoIcon } from "@assets/icons/movie.svg"
 import { ReactComponent as LightBulbIcon } from "@assets/icons/light-bulb.svg"
+import { ReactComponent as ServerIcon } from "@assets/icons/server.svg"
 
 import SEO from "./SEO"
 import Container from "@common/Container"
@@ -49,6 +50,13 @@ const StudioLayout: React.FC = ({ children }) => {
             title="Customize"
             iconSvg={<LightBulbIcon />}
             isActive={pathname => /\/studio\/channel/.test(pathname)}
+            isResponsive={false}
+          />
+          <SidebarItem
+            to={routes.getStudioStorageLink()}
+            title="Storage"
+            iconSvg={<ServerIcon />}
+            isActive={pathname => /\/studio\/storage/.test(pathname)}
             isResponsive={false}
           />
         </DropdownSidebar>

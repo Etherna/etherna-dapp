@@ -16,6 +16,7 @@
     "@testing-library/jest-dom": "5.16.1",
     "@testing-library/react": "12.1.2",
     "@testing-library/user-event": "13.5.0",
+    "@tippyjs/react": "4.2.6",
     "axios": "0.24.0",
     "blurhash": "1.1.4",
     "classnames": "2.3.1",

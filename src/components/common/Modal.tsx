@@ -32,6 +32,7 @@ type ModalProps = {
   status?: "danger" | "warning" | "success"
   showCloseButton?: boolean
   showCancelButton?: boolean
+  large?: boolean
   setShow?(show: boolean): void
   onClose?(): void
 }
@@ -45,6 +46,7 @@ const Modal: React.FC<ModalProps> = ({
   footerButtons,
   showCloseButton,
   showCancelButton,
+  large,
   setShow,
   onClose
 }) => {
@@ -64,6 +66,7 @@ const Modal: React.FC<ModalProps> = ({
           [classes.modalDanger]: status === "danger",
           [classes.modalWarning]: status === "warning",
           [classes.modalSuccess]: status === "success",
+          [classes.large]: large,
         })}
         initialFocus={cancelButtonRef}
         open={show}
@@ -137,7 +140,7 @@ const Modal: React.FC<ModalProps> = ({
                 {footerButtons}
 
                 {showCancelButton && (
-                  <Button modifier="secondary" onClick={handleCancel}>Cancel</Button>
+                  <Button modifier="muted" onClick={handleCancel}>Cancel</Button>
                 )}
               </div>
             </div>

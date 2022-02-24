@@ -176,7 +176,7 @@ const FileDragContent: React.FC<FileDragProps> = ({
             <Button
               className={classes.fileDragProcessingCancel}
               aspect="link"
-              modifier="secondary"
+              modifier="muted"
               onClick={handleCancel}
               disabled={disabled}
             >

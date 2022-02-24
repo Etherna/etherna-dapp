@@ -14,11 +14,13 @@
  *  limitations under the License.
  */
 
-import { BatchId, Bee, PostageBatch, UploadResult } from "@ethersphere/bee-js"
+import { Bee } from "@ethersphere/bee-js"
+import type { BatchId, BeeOptions, PostageBatch, UploadResult } from "@ethersphere/bee-js"
 
 import { AxiosUploadOptions, CustomUploadOptions } from "./customUpload"
 import http, { createRequest } from "@utils/request"
 import { buildAxiosFetch } from "@utils/fetch"
+import type { GatewayBatch } from "@definitions/api-gateway"
 
 export type MultipleFileUpload = { buffer: Uint8Array, type?: string }[]
 
@@ -27,6 +29,16 @@ export type MultipleFileUpload = { buffer: Uint8Array, type?: string }[]
  */
 export default class SwarmBeeClient extends Bee {
 
+  public userBatches: GatewayBatch[]
+
+  constructor(url: string, options?: BeeOptions & { userBatches?: GatewayBatch[] }) {
+    super(url, {
+      ...options,
+      fetch: (input, init) => fetch(input, { ...init, credentials: "include" })
+    })
+    this.userBatches = options?.userBatches ?? []
+  }
+
   /**
    * Create custom fetch implementation that accept upload progress and canceler
    */
@@ -34,9 +46,9 @@ export default class SwarmBeeClient extends Bee {
     const request = createRequest()
     request.defaults.onUploadProgress = options?.onUploadProgress
     request.defaults.cancelToken = options?.cancelToken
+    request.defaults.withCredentials = true
     return buildAxiosFetch(request) as typeof fetch
   }
-
   /**
    * Add content to a directory returning the new hash
    * 
@@ -124,10 +136,16 @@ export default class SwarmBeeClient extends Bee {
     }]
   }
 
-  async getBatchId() {
+  async getBatchId(): Promise<string> {
+    if (this.userBatches) {
+      const batch = this.userBatches.filter(batch => batch.usable)[0]
+      if (batch) {
+        return batch.id
+      }
+    }
     const batches = await this.getAllPostageBatch()
     const usableBatches = batches.filter(batch => batch.usable)
-    return usableBatches[0]?.batchID
+    return usableBatches[0].batchID
   }
 
   /**

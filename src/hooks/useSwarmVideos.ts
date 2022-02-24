@@ -87,7 +87,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
     const take = page === 0 ? opts.seedLimit ?? DEFAULT_SEED_LIMIT : opts.fetchLimit ?? DEFAULT_FETCH_LIMIT
 
     try {
-      const indexVideos = await indexClient.videos.fetchVideos(page, take)
+      const indexVideos = await indexClient.videos.fetchLatestVideos(page, take)
       const newVideos = await Promise.all(indexVideos.map(videoLoadPromise))
       import.meta.env.DEV && await wait(1500)
 

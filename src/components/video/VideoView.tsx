@@ -28,20 +28,21 @@ import VideoDetails from "@components/video/VideoDetails"
 import useSwarmVideo from "@hooks/useSwarmVideo"
 import { useErrorMessage } from "@state/hooks/ui"
 import SwarmImageIO from "@classes/SwarmImage"
-import type { Video } from "@definitions/swarm-video"
+import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
 
 type VideoViewProps = {
   reference: string
-  routeState?: Video
+  routeState?: { video: Video, videoOffers: VideoOffersStatus }
 }
 
 const VideoView: React.FC<VideoViewProps> = ({ reference, routeState }) => {
   const { video, notFound, loadVideo } = useSwarmVideo({
     reference,
-    routeState,
+    routeState: routeState?.video,
     fetchFromCache: true,
     fetchProfile: true
   })
+
   const [isFetchingVideo, setIsFetchingVideo] = useState(false)
   const { showError } = useErrorMessage()
 

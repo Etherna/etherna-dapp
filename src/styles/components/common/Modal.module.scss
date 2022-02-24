@@ -35,6 +35,10 @@
   @apply shadow-xl;
   @apply transform transition-all;
   @apply sm:my-8 sm:align-middle sm:max-w-lg;
+
+  .large & {
+    @apply sm:max-w-xl;
+  }
 }
 
 .modalMain {

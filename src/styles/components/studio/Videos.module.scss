@@ -31,6 +31,9 @@
   .videoStatus {
     @apply xl:hidden;
   }
+  .offersStatus {
+    @apply xl:hidden;
+  }
 }
 
 .videoTitleTitle {
@@ -46,13 +49,41 @@
   @apply text-gray-700 dark:text-gray-300;
 
   &.public {
-    @apply bg-green-500 text-white dark:text-white;
+    @apply bg-emerald-500 text-white dark:text-white;
   }
   &.processing {
     @apply bg-blue-500 text-white dark:text-white;
   }
   &.deleted {
     @apply bg-red-500 text-white dark:text-white;
+  }
+}
+
+.offersStatus {
+  @apply flex items-center;
+  @apply text-2xs md:text-xs font-semibold;
+  @apply px-1 py-0.5 rounded;
+  @apply md:px-1.5 md:py-1;
+  @apply border border-gray-500 dark:border-gray-400;
+  @apply text-gray-500 dark:text-gray-400;
+  @apply transition-colors duration-100 ease-out;
+  @apply hover:bg-gray-500/40 dark:hover:bg-gray-400/40;
+
+  svg {
+    @apply w-[1.25em] h-[1.25em] mr-1;
+  }
+
+  &.fullOffered {
+    @apply border-emerald-500 text-emerald-500 dark:text-emerald-500;
+    @apply hover:bg-emerald-500/40 dark:hover:bg-emerald-500/40;
+  }
+  &.partialOffered {
+    @apply border-indigo-500 text-indigo-500 dark:text-indigo-500;
+    @apply hover:bg-indigo-500/40 dark:hover:bg-indigo-500/40;
+  }
+  &.sourcesOffered {
+    @apply border-sky-500 text-sky-500 dark:text-sky-500;
+    @apply hover:bg-sky-500/40 dark:hover:bg-sky-500/40;
   }
 }
 

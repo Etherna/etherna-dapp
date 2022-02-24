@@ -31,3 +31,24 @@ export type GatewayCredit = {
   isUnlimited: boolean
   balance: number
 }
+
+export type GatewayBatchPreview = {
+  batchId: string
+  ownerNodeId: string
+}
+
+export type GatewayBatch = {
+  id: string
+  amountPaid: number
+  batchTTL: number
+  blockNumber: number
+  bucketDepth: number
+  depth: number
+  exists: boolean
+  immutableFlag: boolean
+  label: string
+  normalisedBalance: number
+  ownerAddress: string | null
+  usable: boolean
+  utilization: number
+}

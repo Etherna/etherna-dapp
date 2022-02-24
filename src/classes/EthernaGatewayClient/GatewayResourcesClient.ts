@@ -77,8 +77,8 @@ export default class GatewayResourcesClient {
   async offer(reference: string) {
     const endpoint = `${this.url}/resources/${reference}/offers`
 
-    await http.post(endpoint, {
-      withCredentials: true
+    await http.post(endpoint, undefined, {
+      withCredentials: true,
     })
 
     return true

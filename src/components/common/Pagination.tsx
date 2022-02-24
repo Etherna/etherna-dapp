@@ -25,6 +25,7 @@ import { ReactComponent as ChevronLeft } from "@assets/icons/chevron-left.svg"
 import { ReactComponent as ChevronDoubleLeft } from "@assets/icons/chevron-double-left.svg"
 
 import Button from "./Button"
+import { clamp } from "@utils/math"
 
 type PaginationProps = {
   className?: string
@@ -62,7 +63,7 @@ const Pagination: React.FC<PaginationProps> = ({
     onChange?.(1, +count)
   }
 
-  const pagesCount = Math.ceil(totalItems / +itemsPerPage)
+  const pagesCount = clamp(Math.ceil(totalItems / +itemsPerPage), 1, Number.MAX_SAFE_INTEGER)
 
   return (
     <div className={classNames(classes.pagination, className)}>
@@ -116,13 +117,15 @@ const Pagination: React.FC<PaginationProps> = ({
         </Button>
       </div>
 
-      <span className={classes.paginationInfo}>
-        <span>{(+currentPage - 1) * +itemsPerPage + 1}</span>
-        <span> - </span>
-        <span>{Math.min(totalItems, (+currentPage - 1) * +itemsPerPage + +itemsPerPage)}</span>
-        <span> of </span>
-        <span>{totalItems}</span>
-      </span>
+      {totalItems > 0 && (
+        <span className={classes.paginationInfo}>
+          <span>{(+currentPage - 1) * +itemsPerPage + 1}</span>
+          <span> - </span>
+          <span>{Math.min(totalItems, (+currentPage - 1) * +itemsPerPage + +itemsPerPage)}</span>
+          <span> of </span>
+          <span>{totalItems}</span>
+        </span>
+      )}
     </div>
   )
 }

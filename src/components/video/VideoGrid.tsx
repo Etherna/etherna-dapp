@@ -22,6 +22,7 @@ import classes from "@styles/components/video/VideoGrid.module.scss"
 
 import VideoPreviewPlaceholder from "@components/placeholders/VideoPreviewPlaceholder"
 import VideoPreview from "@components/video/VideoPreview"
+import useVideosResources from "@hooks/useVideosResources"
 import type { Video } from "@definitions/swarm-video"
 
 type VideoGridProps = {
@@ -41,7 +42,10 @@ const VideoGrid: React.FC<VideoGridProps> = ({
   decentralizedLink,
   fetchingPreviewCount = 4,
 }) => {
+  const { videosOffersStatus } = useVideosResources(videos)
+
   const LabelTag = mini ? "h5" : "h3"
+
   return (
     <>
       {label && (
@@ -51,7 +55,13 @@ const VideoGrid: React.FC<VideoGridProps> = ({
       )}
       <div className={classNames(classes.videoGrid, { [classes.mini]: mini })}>
         {videos && videos.map(video => (
-          <VideoPreview video={video} hideProfile={mini} decentralizedLink={decentralizedLink} key={video.reference} />
+          <VideoPreview
+            video={video}
+            videoOffers={videosOffersStatus?.[video.reference]}
+            hideProfile={mini}
+            decentralizedLink={decentralizedLink}
+            key={video.reference}
+          />
         ))}
         {isFetching && (
           Array(fetchingPreviewCount).fill(0).map((_, i) => (

@@ -22,7 +22,8 @@ import cors from "cors"
 
 import "./utils/env.js"
 import ValidatorMiddleware from "./middlewares/validator-middleware.js"
-import SwarmMiddleware from "./middlewares/swarm-middleware.js"
+import BeeMiddleware from "./middlewares/bee-middleware.js"
+import BeeDebugMiddleware from "./middlewares/bee-debug-middleware.js"
 
 /**
  * Setup node server
@@ -42,8 +43,9 @@ app.use(
     origin: true
   })
 )
-app.use(SwarmMiddleware)
 app.use(ValidatorMiddleware)
+app.use(BeeMiddleware)
+app.use(BeeDebugMiddleware)
 
 const PrivateKeyPath = path.resolve("..", process.env.SSL_KEY_FILE)
 const CertificatePath = path.resolve("..", process.env.SSL_CRT_FILE)

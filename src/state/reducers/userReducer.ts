@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+import type { GatewayBatch } from "@definitions/api-gateway"
 import type { UserState } from "@definitions/app-state"
 
 export const UserActionTypes = {
@@ -22,6 +23,7 @@ export const UserActionTypes = {
   USER_UPDATE_IDENTITY: "USER_UPDATE_IDENTITY",
   USER_UPDATE_CREDIT: "USER_UPDATE_CREDIT",
   USER_UPDATE_SIGNEDIN: "USER_UPDATE_SIGNEDIN",
+  USER_SET_BATCHES: "USER_SET_BATCHES",
 } as const
 
 // Export dispatch actions
@@ -47,13 +49,18 @@ type UpdateSignedInAction = {
   isSignedIn: boolean
   isSignedInGateway: boolean
 }
+type SetBatchesAction = {
+  type: typeof UserActionTypes.USER_SET_BATCHES
+  batches: GatewayBatch[]
+}
 
 export type UserActions = (
   UpdateEnsAction |
   UserSignoutAction |
   UpdateIdentityAction |
   UpdateCreditAction |
-  UpdateSignedInAction
+  UpdateSignedInAction |
+  SetBatchesAction
 )
 
 
@@ -90,6 +97,12 @@ const userReducer = (state: UserState = {}, action: UserActions): UserState => {
         ...state,
         isSignedIn: action.isSignedIn,
         isSignedInGateway: action.isSignedInGateway,
+      }
+
+    case UserActionTypes.USER_SET_BATCHES:
+      return {
+        ...state,
+        batches: action.batches,
       }
 
     default:

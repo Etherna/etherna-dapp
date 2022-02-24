@@ -19,6 +19,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import classes from "@styles/components/video/VideoPreview.module.scss"
+import { ReactComponent as CreditIcon } from "@assets/icons/credit.svg"
 import { ReactComponent as ThumbPlaceholder } from "@assets/backgrounds/thumb-placeholder.svg"
 
 import VideoMenu from "./VideoMenu"
@@ -31,15 +32,21 @@ import useSelector from "@state/useSelector"
 import { shortenEthAddr, checkIsEthAddress } from "@utils/ethereum"
 import dayjs from "@utils/dayjs"
 import { encodedSvg } from "@utils/svg"
-import type { Video } from "@definitions/swarm-video"
+import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
 
 type VideoPreviewProps = {
   video: Video
+  videoOffers?: VideoOffersStatus
   hideProfile?: boolean
   decentralizedLink?: boolean
 }
 
-const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile, decentralizedLink }) => {
+const VideoPreview: React.FC<VideoPreviewProps> = ({
+  video,
+  videoOffers,
+  hideProfile,
+  decentralizedLink
+}) => {
   const { address } = useSelector(state => state.user)
 
   const ownerAddress = video.ownerAddress
@@ -57,7 +64,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile, decentr
         pathname: videoPath,
         search: videoSearch,
       }}
-      state={video}
+      state={{ video, videoOffers }}
     >
       {children}
     </StateLink>
@@ -78,6 +85,12 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ video, hideProfile, decentr
             <div className={classes.videoThumbnailDuration}>
               <Time duration={video.duration} />
             </div>
+          )}
+          {(videoOffers?.offersStatus === "full" || videoOffers?.offersStatus === "sources") && (
+            <span className={classes.videoOfferedBadge}>
+              <CreditIcon aria-hidden />
+              Free to watch
+            </span>
           )}
         </div>
       </VideoLink>

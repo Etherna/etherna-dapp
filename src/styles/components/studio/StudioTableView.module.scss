@@ -16,6 +16,10 @@
 
 .studioTableContainer {
   @apply w-full;
+}
+
+.studioTableWrapper {
+  @apply w-full;
   @apply overflow-x-auto;
 }
 

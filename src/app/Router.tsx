@@ -31,6 +31,7 @@ const AsyncStudio = lazy(() => import("@pages/studio/creator-studio"))
 const AsyncChannelEdit = lazy(() => import("@pages/studio/channel-edit"))
 const AsyncVideosList = lazy(() => import("@pages/studio/videos-list"))
 const AsyncVideoEdit = lazy(() => import("@pages/studio/video-edit"))
+const AsyncStorage = lazy(() => import("@pages/studio/storage"))
 const AsyncProfiles = lazy(() => import("@pages/profiles"))
 const AsyncWatch = lazy(() => import("@pages/watch"))
 const AsyncSearch = lazy(() => import("@pages/search"))
@@ -72,6 +73,9 @@ const VideosList = () => (
 )
 const VideoEdit = () => (
   <Suspense fallback={null}><AsyncVideoEdit /></Suspense>
+)
+const Storage = () => (
+  <Suspense fallback={null}><AsyncStorage /></Suspense>
 )
 const Shortcuts = () => (
   <Suspense fallback={null}><AsyncShortcuts /></Suspense>
@@ -141,6 +145,11 @@ const Router = () => {
         <SignedInRoute path={"/studio/videos/:id"} exact>
           <StudioLayout>
             <VideoEdit />
+          </StudioLayout>
+        </SignedInRoute>
+        <SignedInRoute path={"/studio/storage"} exact>
+          <StudioLayout>
+            <Storage />
           </StudioLayout>
         </SignedInRoute>
 

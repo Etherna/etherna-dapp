@@ -103,59 +103,61 @@ const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
         </div>
       )}
 
-      <table className={classNames(classes.studioTable, {
-        [classes.loading]: isLoading
-      })}>
-        <thead>
-          <tr>
-            {showSelection && (
-              <th style={{ width: "32px" }}>
-                <input
-                  type="checkbox"
-                  checked={selectedItems.length == items?.length && selectedItems.length > 0}
-                  onChange={() => toggleSelection()}
-                />
-              </th>
-            )}
-            {columns?.map((col, i) => (
-              <th
-                className={classNames({
-                  [classes.hideMobile]: col.hideOnMobile
-                })}
-                style={{ width: col.width }}
-                key={i}
-              >
-                {col.title}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {items?.map((item, i) => (
-            <tr key={i}>
+      <div className={classes.studioTableWrapper}>
+        <table className={classNames(classes.studioTable, {
+          [classes.loading]: isLoading
+        })}>
+          <thead>
+            <tr>
               {showSelection && (
-                <td>
+                <th style={{ width: "32px" }}>
                   <input
                     type="checkbox"
-                    checked={selectedItems.indexOf(item) >= 0}
-                    onChange={e => toggleSelection(item, e.target.checked)}
+                    checked={selectedItems.length == items?.length && selectedItems.length > 0}
+                    onChange={() => toggleSelection()}
                   />
-                </td>
+                </th>
               )}
               {columns?.map((col, i) => (
-                <td
+                <th
                   className={classNames({
                     [classes.hideMobile]: col.hideOnMobile
                   })}
+                  style={{ width: col.width }}
                   key={i}
                 >
-                  {col.render(item)}
-                </td>
+                  {col.title}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {items?.map((item, i) => (
+              <tr key={i}>
+                {showSelection && (
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={selectedItems.indexOf(item) >= 0}
+                      onChange={e => toggleSelection(item, e.target.checked)}
+                    />
+                  </td>
+                )}
+                {columns?.map((col, i) => (
+                  <td
+                    className={classNames({
+                      [classes.hideMobile]: col.hideOnMobile
+                    })}
+                    key={i}
+                  >
+                    {col.render(item)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <Pagination
         className="mt-4"
