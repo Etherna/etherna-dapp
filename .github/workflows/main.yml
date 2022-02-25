@@ -21,7 +21,6 @@ jobs:
       VITE_APP_GATEWAY_URL: "https://gateway.etherna.io/api/v0.3"
       VITE_APP_CREDIT_URL: "https://credit.etherna.io"
       VITE_APP_AUTH_URL: "https://sso.etherna.io/api/v0.3"
-      VITE_APP_POSTAGE_URL: "https://gateway.etherna.io/api/v0.3/stamps"
       VITE_APP_MATOMO_URL: "https://analytics.etherna.io"
       VITE_APP_MATOMO_SITE_ID: "2"
       GENERATE_SOURCEMAP: false

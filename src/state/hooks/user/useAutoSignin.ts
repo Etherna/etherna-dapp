@@ -17,7 +17,6 @@
 import { useEffect } from "react"
 import { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
-import type { AxiosError } from "axios"
 import type { EthAddress } from "@ethersphere/bee-js/dist/src/utils/eth"
 
 import SwarmProfileIO from "@classes/SwarmProfile"
@@ -30,7 +29,7 @@ import { UIActions, UIActionTypes } from "@state/reducers/uiReducer"
 import useSelector from "@state/useSelector"
 import { addressBytes, signMessage } from "@utils/ethereum"
 import type { AuthIdentity } from "@definitions/api-sso"
-import type { GatewayBatch } from "@definitions/api-gateway"
+import type { GatewayBatch, GatewayBatchPreview } from "@definitions/api-gateway"
 
 type AutoSigninOpts = {
   forceSignin?: boolean
@@ -218,9 +217,10 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
     batchesFetchTries++
 
     let userBatches: GatewayBatch[] = []
+    let batchesPreview: GatewayBatchPreview[] = []
 
     try {
-      const batchesPreview = await gatewayClient.users.fetchBatches()
+      batchesPreview = await gatewayClient.users.fetchBatches()
 
       if (batchesPreview.length === 0) {
         // waiting to auto create default batch
@@ -253,6 +253,22 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
           exists: true,
           immutableFlag: batch.immutableFlag,
           label: batch.label,
+          ownerAddress: null,
+        }))
+      } else {
+        userBatches = batchesPreview.map(batchPreview => ({
+          id: batchPreview.batchId,
+          depth: 20,
+          bucketDepth: 0,
+          amountPaid: 0,
+          normalisedBalance: 0,
+          batchTTL: 0,
+          usable: false,
+          utilization: 0,
+          blockNumber: 0,
+          exists: false,
+          immutableFlag: false,
+          label: "",
           ownerAddress: null,
         }))
       }

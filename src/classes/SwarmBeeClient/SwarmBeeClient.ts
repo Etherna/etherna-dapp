@@ -17,9 +17,9 @@
 import { Bee } from "@ethersphere/bee-js"
 import type { BatchId, BeeOptions, PostageBatch, UploadResult } from "@ethersphere/bee-js"
 
-import { AxiosUploadOptions, CustomUploadOptions } from "./customUpload"
 import http, { createRequest } from "@utils/request"
 import { buildAxiosFetch } from "@utils/fetch"
+import type { AxiosUploadOptions, CustomUploadOptions } from "./bee-client.d.ts"
 import type { GatewayBatch } from "@definitions/api-gateway"
 
 export type MultipleFileUpload = { buffer: Uint8Array, type?: string }[]
@@ -125,10 +125,12 @@ export default class SwarmBeeClient extends Bee {
     const emptyBatchId = "0000000000000000000000000000000000000000000000000000000000000000" as BatchId
     return [{
       batchID: emptyBatchId,
+      batchTTL: -1,
       amount: "0",
       depth: 0,
       blockNumber: 0,
       bucketDepth: 0,
+      exists: false,
       immutableFlag: false,
       label: "",
       usable: true,

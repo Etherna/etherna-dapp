@@ -83,5 +83,6 @@ const ProgressTabLink: React.FC<ProgressTabLinkProps> = ({
     </button>
   )
 }
+ProgressTabLink.displayName = "ProgressTabLink"
 
 export default ProgressTabLink

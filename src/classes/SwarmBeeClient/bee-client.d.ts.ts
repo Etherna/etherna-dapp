@@ -1,4 +1,4 @@
-/*
+/* 
  *  Copyright 2021-present Etherna Sagl
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,32 +12,24 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
  */
 
-import React from "react"
-import classNames from "classnames"
+import type { CancelToken } from "axios"
+import type { UploadHeaders, UploadOptions } from "@ethersphere/bee-js"
 
-import classes from "@styles/components/common/ProgressTabContent.module.scss"
-
-export type ProgressTabContentProps = {
-  children: React.ReactNode
-  tabKey: string
-  active?: boolean
-  title?: string
+export interface CustomUploadOptions extends UploadOptions, AxiosUploadOptions {
+  reference?: string
+  endpoint?: "files" | "dirs"
+  defaultIndexPath?: string
+  defaultErrorPath?: string
 }
 
-const ProgressTabContent: React.FC<ProgressTabContentProps> = ({ children, active }) => {
-  return (
-    <div
-      className={classNames(classes.progresstabContent, {
-        [classes.active]: active,
-      })}
-    >
-      {children}
-    </div>
-  )
+export interface AxiosUploadOptions {
+  onUploadProgress?: (progressEvent: { loaded: number, total: number }) => void
+  cancelToken?: CancelToken
 }
-ProgressTabContent.displayName = "ProgressTabContent"
 
-export default ProgressTabContent
+export interface CustomUploadHeaders extends UploadHeaders {
+  "swarm-index-document"?: string
+  "swarm-error-document"?: string
+}
