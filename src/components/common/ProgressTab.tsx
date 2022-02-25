@@ -40,9 +40,9 @@ const ProgressTab: React.FC<ProgressTabProps> = ({
   const [activeKey, setActiveKey] = useState(defaultKey)
 
   const links = React.Children.toArray(children)
-    .filter((child: any) => child.type.name === "ProgressTabLink") as RFCE<ProgressTabLinkProps>[]
+    .filter((child: any) => child.type.displayName === "ProgressTabLink") as RFCE<ProgressTabLinkProps>[]
   const contents = React.Children.toArray(children)
-    .filter((child: any) => child.type.name === "ProgressTabContent") as RFCE<ProgressTabContentProps>[]
+    .filter((child: any) => child.type.displayName === "ProgressTabContent") as RFCE<ProgressTabContentProps>[]
 
   return (
     <div className={classNames(classes.progresstab, className)} id={id}>

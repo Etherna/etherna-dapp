@@ -38,5 +38,6 @@ const ProgressTabContent: React.FC<ProgressTabContentProps> = ({ children, activ
     </div>
   )
 }
+ProgressTabContent.displayName = "ProgressTabContent"
 
 export default ProgressTabContent
