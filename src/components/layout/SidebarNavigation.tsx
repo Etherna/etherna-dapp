@@ -96,14 +96,17 @@ const SidebarNavigation: React.FC = () => {
         <SidebarLinksItem
           title="Index Api"
           to={urlPath(import.meta.env.VITE_APP_INDEX_URL, "/swagger")}
+          target="_blank"
         />
         <SidebarLinksItem
           title="Gateway"
           to={urlOrigin(import.meta.env.VITE_APP_GATEWAY_URL)}
+          target="_blank"
         />
         <SidebarLinksItem
           title="Credit"
           to={urlOrigin(import.meta.env.VITE_APP_CREDIT_URL)}
+          target="_blank"
         />
         <SidebarLinksItem
           title="Privacy Policy"
