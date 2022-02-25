@@ -54,7 +54,17 @@ const SidebarLinksItem: React.FC<SidebarLinksItemProps> = ({
   const Wrapper: React.FC = useMemo(() => {
     return ({ children }) => (
       <>
-        {to ? (
+        {(to && to.startsWith("http")) ? (
+          <a
+            className={classNames(classes.sidebarLinkItem, className)}
+            id={id}
+            href={to}
+            target={target}
+            rel={rel}
+          >
+            {children}
+          </a>
+        ) : to ? (
           <NavLink
             className={classNames(classes.sidebarLinkItem, className)}
             id={id}
