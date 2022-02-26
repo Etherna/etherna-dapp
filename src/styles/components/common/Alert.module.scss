@@ -19,25 +19,51 @@
 
   &.alertSuccess {
     @apply bg-green-100 border-green-200 text-green-600;
+
+    button,
+    [role=button] {
+      @apply bg-green-600 text-white;
+      @apply dark:bg-green-600 dark:text-white;
+    }
   }
   &.alertDanger {
     @apply bg-red-100 border-red-200 text-red-600;
+
+    button,
+    [role=button] {
+      @apply bg-red-600 text-white;
+      @apply dark:bg-red-600 dark:text-white;
+    }
   }
   &.alertWarning {
     @apply bg-orange-100 border-orange-200 text-orange-600;
+
+    button,
+    [role=button] {
+      @apply bg-orange-600 text-white;
+      @apply dark:bg-orange-600 dark:text-white;
+    }
   }
   &.alertInfo {
     @apply bg-blue-100 border-blue-200 text-blue-600;
-  }
 
-  .alertHeader {
-    @apply flex justify-between items-center;
-
-    .alertTitle {
-      @apply font-bold block;
-    }
-    .close {
-      @apply bg-transparent rounded-full p-2 text-2xl;
+    button,
+    [role=button] {
+      @apply bg-blue-600 text-white;
+      @apply dark:bg-blue-600 dark:text-white;
     }
   }
+}
+
+.alertHeader {
+  @apply flex justify-between items-center;
+}
+
+.alertTitle {
+  @apply font-bold block;
+  @apply mb-3;
+}
+
+.close {
+  @apply bg-transparent rounded-full p-2 text-2xl;
 }

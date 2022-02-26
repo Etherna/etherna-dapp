@@ -39,6 +39,7 @@ const ChannelEdit: React.FC = () => {
   return (
     <>
       <CantUploadAlert />
+
       <StudioEditView
         title="Customize channel"
         saveLabel="Save"

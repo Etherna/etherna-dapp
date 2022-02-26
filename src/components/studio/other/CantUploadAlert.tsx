@@ -1,8 +1,8 @@
 import React, { useMemo } from "react"
 
 import Alert from "@common/Alert"
-import useSelector from "@state/useSelector"
 import Button from "@common/Button"
+import useSelector from "@state/useSelector"
 import routes from "@routes"
 
 const CantUploadAlert: React.FC = () => {
@@ -26,7 +26,13 @@ const CantUploadAlert: React.FC = () => {
   return (
     <Alert className="my-6" type="warning" title={title}>
       You might not be able to upload yet. <br />
-      <Button href={routes.getStudioStorageLink()} modifier="warning">Check your storage</Button>
+      Come back when your storage is ready.
+
+      <div className="mt-3">
+        <Button as="a" href={routes.getStudioStorageLink()}>
+          Check your storage
+        </Button>
+      </div>
     </Alert>
   )
 }
