@@ -23,6 +23,7 @@ import { ReactComponent as TrashIcon } from "@assets/icons/trash.svg"
 
 import StudioEditView from "./StudioEditView"
 import VideoEditor from "./video-editor/VideoEditor"
+import CantUploadAlert from "./other/CantUploadAlert"
 import Button from "@common/Button"
 import { VideoEditorContextProvider } from "@context/video-editor-context"
 import useSwarmVideo from "@hooks/useSwarmVideo"
@@ -83,35 +84,39 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   }
 
   return (
-    <StudioEditView
-      title={reference ? "Edit video" : "Publish new video"}
-      saveLabel={reference ? "Update" : "Publish"}
-      canSave={canSave}
-      actions={
-        <Button aspect="link" modifier="muted" onClick={askToClearState}>
-          <TrashIcon /> Clear all
-        </Button>
-      }
-      backTo={routes.getStudioVideosLink()}
-      backPrompt={backPrompt}
-      onSave={handleSave}
-    >
-      {isLoading || (reference && !video) ? (
-        <Spinner className="mt-10 mx-auto w-10 text-primary-500" />
-      ) : (
-        <VideoEditorContextProvider reference={reference} videoData={video!}>
-          <VideoEditor ref={ref => {
-            if (!ref) return
+    <>
+      <CantUploadAlert />
 
-            saveCallback.current = ref.submitVideo
-            clearCallback.current = ref.askToClearState
-            resetState.current = ref.resetState
-            ref.isEmpty !== isEmpty && setIsEmpty(ref.isEmpty)
-            ref.canSubmitVideo !== canSave && setCanSave(ref.canSubmitVideo)
-          }} />
-        </VideoEditorContextProvider>
-      )}
-    </StudioEditView>
+      <StudioEditView
+        title={reference ? "Edit video" : "Publish new video"}
+        saveLabel={reference ? "Update" : "Publish"}
+        canSave={canSave}
+        actions={
+          <Button aspect="link" modifier="muted" onClick={askToClearState}>
+            <TrashIcon /> Clear all
+          </Button>
+        }
+        backTo={routes.getStudioVideosLink()}
+        backPrompt={backPrompt}
+        onSave={handleSave}
+      >
+        {isLoading || (reference && !video) ? (
+          <Spinner className="mt-10 mx-auto w-10 text-primary-500" />
+        ) : (
+          <VideoEditorContextProvider reference={reference} videoData={video!}>
+            <VideoEditor ref={ref => {
+              if (!ref) return
+
+              saveCallback.current = ref.submitVideo
+              clearCallback.current = ref.askToClearState
+              resetState.current = ref.resetState
+              ref.isEmpty !== isEmpty && setIsEmpty(ref.isEmpty)
+              ref.canSubmitVideo !== canSave && setCanSave(ref.canSubmitVideo)
+            }} />
+          </VideoEditorContextProvider>
+        )}
+      </StudioEditView>
+    </>
   )
 }
 

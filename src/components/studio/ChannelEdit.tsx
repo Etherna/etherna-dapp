@@ -20,6 +20,7 @@ import { Redirect } from "react-router-dom"
 
 import StudioEditView from "./StudioEditView"
 import ChannelEditor from "./channel-editor/ChannelEditor"
+import CantUploadAlert from "./other/CantUploadAlert"
 import useSelector from "@state/useSelector"
 import routes from "@routes"
 
@@ -36,19 +37,22 @@ const ChannelEdit: React.FC = () => {
   }
 
   return (
-    <StudioEditView
-      title="Customize channel"
-      saveLabel="Save"
-      canSave={true}
-      onSave={handleSave}
-    >
-      <ChannelEditor
-        profileAddress={address}
-        ref={ref => {
-          saveCallback.current = ref?.handleSubmit
-        }}
-      />
-    </StudioEditView>
+    <>
+      <CantUploadAlert />
+      <StudioEditView
+        title="Customize channel"
+        saveLabel="Save"
+        canSave={true}
+        onSave={handleSave}
+      >
+        <ChannelEditor
+          profileAddress={address}
+          ref={ref => {
+            saveCallback.current = ref?.handleSubmit
+          }}
+        />
+      </StudioEditView>
+    </>
   )
 }
 
