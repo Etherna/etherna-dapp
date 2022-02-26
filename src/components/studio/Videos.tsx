@@ -29,6 +29,7 @@ import { ReactComponent as CopyIcon } from "@assets/icons/copy.svg"
 
 import StudioTableView from "./StudioTableView"
 import VideoDeleteModal from "./video-editor/VideoDeleteModal"
+import CantUploadAlert from "./other/CantUploadAlert"
 import Button from "@common/Button"
 import Image from "@common/Image"
 import VideoOffersModal from "@components/modals/VideoOffersModal"
@@ -211,6 +212,8 @@ const Videos: React.FC = () => {
       <Button as="a" href={routes.getStudioVideoUploadLink()} modifier="inverted">
         Create new video
       </Button>
+
+      <CantUploadAlert />
 
       <StudioTableView
         className={classes.videoTable}

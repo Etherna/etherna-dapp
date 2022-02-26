@@ -22,25 +22,32 @@ import classes from "@styles/components/common/Alert.module.scss"
 
 type AlertProps = {
   title?: string
+  className?: string
   type: "success" | "danger" | "warning" | "info"
   onClose?: () => void
 }
 
-const Alert: React.FC<AlertProps> = ({ children, type = "info", title, onClose }) => {
+const Alert: React.FC<AlertProps> = ({
+  children,
+  type = "info",
+  className,
+  title,
+  onClose,
+}) => {
   return (
     <div
-      className={classNames(classes.alert, {
+      className={classNames(classes.alert, className, {
         [classes.alertSuccess]: type === "success",
         [classes.alertDanger]: type === "danger",
         [classes.alertWarning]: type === "warning",
         [classes.alertInfo]: type === "info",
       })}
     >
-      <div className="alert-header">
-        {title && <div className="alert-title">{title}</div>}
+      <div className={classes.alertHeader}>
+        {title && <div className={classes.alertTitle}>{title}</div>}
 
         {onClose && (
-          <button className="close" onClick={onClose}>
+          <button className={classes.close} onClick={onClose}>
             <span className="m-auto" aria-hidden="true">
               &times;
             </span>

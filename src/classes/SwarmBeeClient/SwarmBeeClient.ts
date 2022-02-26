@@ -133,7 +133,7 @@ export default class SwarmBeeClient extends Bee {
       exists: false,
       immutableFlag: false,
       label: "",
-      usable: true,
+      usable: false,
       utilization: 0,
     }]
   }
