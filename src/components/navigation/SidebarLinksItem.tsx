@@ -21,6 +21,7 @@ import { NavLink } from "react-router-dom"
 import classNames from "classnames"
 
 import classes from "@styles/components/navigation/SidebarLinksListItem.module.scss"
+import Tippy from "@tippyjs/react"
 
 type SidebarLinksItemProps = {
   as?: ElementType
@@ -30,8 +31,10 @@ type SidebarLinksItemProps = {
   className?: string
   target?: "_blank"
   rel?: "noreferrer" | "noopener" | "nofollow"
+  tooltip?: string
   activeClassName?: string
   isActive?: ((pathname: string) => boolean) | boolean
+  disabled?: boolean
   onClick?: () => void
 }
 
@@ -44,8 +47,10 @@ const SidebarLinksItem: React.FC<SidebarLinksItemProps> = ({
   title,
   target,
   rel,
+  tooltip,
   activeClassName = "active",
   isActive,
+  disabled,
   onClick,
 }) => {
   const { pathname } = useLocation()
@@ -56,7 +61,9 @@ const SidebarLinksItem: React.FC<SidebarLinksItemProps> = ({
       <>
         {(to && to.startsWith("http")) ? (
           <a
-            className={classNames(classes.sidebarLinkItem, className)}
+            className={classNames(classes.sidebarLinkItem, className, {
+              [classes.disabled]: disabled
+            })}
             id={id}
             href={to}
             target={target}
@@ -66,7 +73,9 @@ const SidebarLinksItem: React.FC<SidebarLinksItemProps> = ({
           </a>
         ) : to ? (
           <NavLink
-            className={classNames(classes.sidebarLinkItem, className)}
+            className={classNames(classes.sidebarLinkItem, className, {
+              [classes.disabled]: disabled
+            })}
             id={id}
             to={to}
             target={target}
@@ -78,8 +87,9 @@ const SidebarLinksItem: React.FC<SidebarLinksItemProps> = ({
           </NavLink>
         ) : (
           <As
-            className={classNames(classes.sidebarLinkItem, {
+            className={classNames(classes.sidebarLinkItem, className, {
               [`${activeClassName}`]: isCurrentPage,
+              [classes.disabled]: disabled
             })}
             id={id}
             onClick={onClick}
@@ -89,14 +99,27 @@ const SidebarLinksItem: React.FC<SidebarLinksItemProps> = ({
         )}
       </>
     )
-  }, [to, target, rel, className, id, activeClassName, As, isCurrentPage, onClick])
+  }, [to, target, rel, className, id, activeClassName, disabled, As, isCurrentPage, onClick])
 
   return (
     <Wrapper>
-      {title && (
-        <span className={classes.sidebarLinkItemTitle}>{title}</span>
+      {tooltip ? (
+        <Tippy content={tooltip}>
+          <span>
+            {title && (
+              <span className={classes.sidebarLinkItemTitle}>{title}</span>
+            )}
+            {children}
+          </span>
+        </Tippy>
+      ) : (
+        <>
+          {title && (
+            <span className={classes.sidebarLinkItemTitle}>{title}</span>
+          )}
+          {children}
+        </>
       )}
-      {children}
     </Wrapper>
   )
 }

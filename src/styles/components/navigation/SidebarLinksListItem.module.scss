@@ -41,4 +41,9 @@
   > .sidebarLinkItemTitle {
     @apply lg:text-sm lg:font-normal;
   }
+
+  &.disabled {
+    @apply opacity-50 cursor-default;
+    @apply hover:text-gray-600 dark:hover:text-gray-400;
+  }
 }

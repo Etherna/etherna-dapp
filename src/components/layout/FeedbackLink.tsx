@@ -15,11 +15,13 @@
  *  
  */
 
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 
 import SidebarLinksItem from "@components/navigation/SidebarLinksItem"
 
 const FeedbackLink = () => {
+  const [blocked, setBlocked] = useState(false)
+
   useEffect(() => {
     if (import.meta.env.VITE_APP_FEEDBACK_URL) {
       const script = document.createElement("script")
@@ -31,6 +33,11 @@ const FeedbackLink = () => {
             window.ATL_JQ_PAGE_PROPS!.showCollectorDialog = showCollectorDialog
           }
         }
+        setTimeout(() => {
+          if (!window.ATL_JQ_PAGE_PROPS!.showCollectorDialog) {
+            setBlocked(true)
+          }
+        }, 500)
       }
 
       document.body.appendChild(script)
@@ -45,6 +52,8 @@ const FeedbackLink = () => {
     <SidebarLinksItem
       id="jira_feedback_btn"
       title="Feedback"
+      tooltip={blocked ? "The feedback script has been blocked by your AdBlocker" : undefined}
+      disabled={blocked}
       onClick={handleFeedback}
     />
   )
