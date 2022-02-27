@@ -26,8 +26,7 @@ const HomePage = () => (
   <AppLayoutWrapper>
     <SEO
       title="Etherna"
-      tagline="A transparent video platform"
-      description="A transparent video platform"
+      description="Etherna is a transparent video platform where you can freely express yourself"
     />
     <Container fluid>
       <ExploreView />

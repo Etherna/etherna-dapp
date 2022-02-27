@@ -23,7 +23,6 @@ type SEOProps = {
   description?: string
   lang?: string
   title: string
-  tagline?: string
   meta?: { name: string, content: string }[]
 }
 
@@ -32,13 +31,10 @@ function SEO({
   lang = "en",
   meta = [],
   title,
-  tagline
 }: SEOProps) {
   const darkMode = useSelector(state => state.env.darkMode)
   const siteTitle = import.meta.env.VITE_APP_NAME
   const siteTagline = import.meta.env.VITE_APP_TAGLINE
-
-  const metaDescription = description || siteTagline
 
   return (
     <Helmet
@@ -46,7 +42,7 @@ function SEO({
         lang,
       }}
       title={title}
-      titleTemplate={`%s – ${tagline || siteTitle}`}
+      titleTemplate={`%s – ${title === siteTitle ? siteTagline : siteTitle}`}
       meta={[
         {
           name: `theme-color`,
@@ -54,7 +50,7 @@ function SEO({
         },
         {
           name: `description`,
-          content: metaDescription,
+          content: description,
         },
         {
           property: `og:title`,
@@ -62,7 +58,7 @@ function SEO({
         },
         {
           property: `og:description`,
-          content: metaDescription,
+          content: description,
         },
         {
           property: `og:type`,
@@ -82,7 +78,7 @@ function SEO({
         },
         {
           name: `twitter:description`,
-          content: metaDescription,
+          content: description,
         },
       ].concat(meta)}
     />
