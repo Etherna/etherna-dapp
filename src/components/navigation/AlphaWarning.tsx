@@ -29,10 +29,17 @@ import useLocalStorage from "@hooks/useLocalStorage"
 const AlphaWarning: React.FC = () => {
   const [hide, setHide] = useLocalStorage("setting:hide-alpha-warning", false)
   const [open, setOpen] = useState(!hide)
+  const [feedbackBlocked, setFeedbackBlocked] = useState(false)
   const [toggleButton, setToggleButton] = useState<HTMLButtonElement>()
   const [dialogEl, setDialogEl] = useState<HTMLDivElement>()
   const cancelButton = useRef<HTMLButtonElement>(null)
   const initialState = useRef<boolean | null>(hide ? false : null)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setFeedbackBlocked(!window.ATL_JQ_PAGE_PROPS?.showCollectorDialog)
+    }, 1000)
+  }, [])
 
   useEffect(() => {
     if (open === initialState.current) return
@@ -164,6 +171,7 @@ const AlphaWarning: React.FC = () => {
                 <button
                   className={classNames(classes.alphaDialogButton, classes.alphaDialogAction)}
                   onClick={handleFeedback}
+                  disabled={feedbackBlocked}
                 >
                   <BugIcon /> Report bug
                 </button>
