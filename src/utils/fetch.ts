@@ -84,20 +84,26 @@ export const buildAxiosFetch = (axios: AxiosInstance): AxiosFetch => {
     const inputHeaders = isRequest ? input.headers : init.headers
     const lowerCasedHeaders = mapHeaders(inputHeaders)
     const url = isRequest ? input?.url : input
-    const method = (isRequest ? input?.method ?? "GET" : input) as Method
+    const method = (isRequest ? input?.method ?? "GET" : init.method ?? "GET").toUpperCase() as Method
     let data: any = isRequest ? input.body : init.body
 
     if (data instanceof ReadableStream) {
       data = await readAllChunks(data)
-      data = new Blob([data], { type: "video/mp4" })
+      data = new Blob([data])
     }
+    if (!data && isRequest && method !== "GET" && method !== "HEAD") {
+      data = await input.blob()
+    }
+
+    const withCredentials = init.credentials === "include" ||
+      axios.defaults.withCredentials
 
     const config: AxiosRequestConfig = {
       url,
       method,
       data,
       headers: lowerCasedHeaders,
-      withCredentials: init.credentials === "include",
+      withCredentials,
       responseType: "arraybuffer"
     }
 
