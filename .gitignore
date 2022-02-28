@@ -69,3 +69,4 @@ deploy.config.js
 
 # Test files
 test*.js
+deploy*
