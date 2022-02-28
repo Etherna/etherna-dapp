@@ -17,7 +17,6 @@
 import { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
 
-import useSwarmProfile from "@hooks/useSwarmProfile"
 import { ProfileActions, ProfileActionTypes } from "@state/reducers/profileReducer"
 import { UserActions, UserActionTypes } from "@state/reducers/userReducer"
 import useSelector from "@state/useSelector"
@@ -26,11 +25,8 @@ import type { Profile } from "@definitions/swarm-profile"
 export default function useProfileUpdate(address: string) {
   const dispatch = useDispatch<Dispatch<ProfileActions | UserActions>>()
   const { prevAddresses } = useSelector(state => state.user)
-  const { updateProfile: updateSwarmProfile } = useSwarmProfile({ address })
 
-  const updateProfile = async (profile: Profile) => {
-    const newReference = await updateSwarmProfile(profile)
-
+  const updateProfile = async (reference: string, profile: Profile) => {
     dispatch({
       type: ProfileActionTypes.PROFILE_SAVE,
       name: profile.name ?? "",
@@ -42,7 +38,7 @@ export default function useProfileUpdate(address: string) {
       type: UserActionTypes.USER_UPDATE_IDENTITY,
       address,
       prevAddresses,
-      manifest: newReference
+      manifest: reference
     })
   }
 

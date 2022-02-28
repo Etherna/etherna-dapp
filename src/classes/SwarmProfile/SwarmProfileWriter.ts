@@ -48,11 +48,13 @@ export default class SwarmProfileWriter {
 
   /**
    * Create or Update profile info
+   * 
    * @param profile The updated profile
    * @return The new hash of the profile
    */
   async update(profile: Profile) {
     if (!this.beeClient.signer) throw new Error("Enable your wallet to update your profile")
+    const fetch = this.beeClient.getFetch()
 
     // Get validated profiles
     const baseProfile = pick(this.validatedProfile(profile), ProfileProperties)
@@ -60,7 +62,7 @@ export default class SwarmProfileWriter {
     // Upload json
     const serializedJson = new TextEncoder().encode(JSON.stringify(baseProfile))
     const batchId = await this.beeClient.getBatchId()
-    const reference = (await this.beeClient.uploadFile(batchId, serializedJson)).reference
+    const reference = (await this.beeClient.uploadFile(batchId, serializedJson, undefined, { fetch })).reference
 
     // update feed
     const topic = this.beeClient.makeFeedTopic(SwarmProfileTopicName)
@@ -74,6 +76,7 @@ export default class SwarmProfileWriter {
 
   /**
    * Validate a profile by checking its props are in the correct format
+   * 
    * @param profile Profile to validate
    * @returns The validated profile
    */

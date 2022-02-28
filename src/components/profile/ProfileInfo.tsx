@@ -53,16 +53,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
 
   useEffect(() => {
     if (profile) {
-      onFetchedProfile({
-        name: profile.name,
-        address: profile.address,
-        avatar: profile.avatar,
-        cover: profile.cover,
-        description: profile.description,
-        birthday: profile.birthday,
-        location: profile.location,
-        website: profile.website,
-      })
+      onFetchedProfile(profile)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile])
