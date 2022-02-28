@@ -7,6 +7,7 @@ import routes from "@routes"
 
 const CantUploadAlert: React.FC = () => {
   const { batches } = useSelector(state => state.user)
+  const { isLoadingProfile } = useSelector(state => state.ui)
 
   const [loading, noBatches, noUsableBatches] = useMemo(() => {
     const loading = batches == null
@@ -21,6 +22,7 @@ const CantUploadAlert: React.FC = () => {
     if (noUsableBatches) return "Your storage is not usable"
   }, [loading, noBatches, noUsableBatches])
 
+  if (isLoadingProfile) return null
   if (!loading && !noBatches && !noUsableBatches) return null
 
   return (
@@ -28,11 +30,11 @@ const CantUploadAlert: React.FC = () => {
       You might not be able to upload yet. <br />
       Come back when your storage is ready.
 
-      <div className="mt-3">
+      <span className="block mt-3">
         <Button as="a" href={routes.getStudioStorageLink()}>
           Check your storage
         </Button>
-      </div>
+      </span>
     </Alert>
   )
 }
