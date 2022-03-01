@@ -16,13 +16,13 @@
 
 import Axios from "axios"
 import imageResize from "image-resizer-js"
+import type { UploadResult } from "@ethersphere/bee-js"
 
-import SwarmBeeClient, { MultipleFileUpload } from "@classes/SwarmBeeClient"
+import SwarmBeeClient from "@classes/SwarmBeeClient"
 import { bufferToDataURL, fileToBuffer } from "@utils/buffer"
 import { imageToBlurHash } from "@utils/blur-hash"
 import type { SwarmImageUploadOptions, SwarmImageWriterOptions } from "./types"
 import type { SwarmImageRaw } from "@definitions/swarm-image"
-import { UploadResult } from "@ethersphere/bee-js"
 
 /**
  * Handles upload of images on swarm and created responsive source

@@ -14,25 +14,15 @@
  *  limitations under the License.
  */
 
-import { createProxyMiddleware } from "http-proxy-middleware"
-
-import "../utils/env.js"
-
-// Consts
-const BeeDebugValidPathsRegex = /^\/(addresses|balances|chequebook|reservestate|settlements|transactions|stamps)\/?.*/
-const BeeDebugHost = process.env.GATEWAY_PROXY_BEE_DEBUG_HOST
-
-// Middleware
-const BeeDebugMiddleware = createProxyMiddleware(
-  (pathname, req) => {
-    return BeeDebugValidPathsRegex.test(pathname)
-  },
-  {
-    target: BeeDebugHost,
-    changeOrigin: true,
-    secure: false,
-    logLevel: "error"
-  }
-)
-
-export default BeeDebugMiddleware
+export type ValidationResponse = {
+  id: string
+  maxBodySize: number
+  result:
+  "AllowFree" |
+  "AllowPayed" |
+  "DenyForbidden" |
+  "DenyNotOfferedContent" |
+  "DenyPaymentRequired" |
+  "DenyUnauthenticated"
+  secret: string
+}

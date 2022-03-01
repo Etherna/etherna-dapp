@@ -18,6 +18,7 @@
 import React, { useImperativeHandle, useRef, useState } from "react"
 import { Canceler } from "axios"
 
+import Button from "@common/Button"
 import FileUploadFlow, { FileUploadFlowHandlers } from "@components/media/FileUploadFlow"
 import FileUploadProgress from "@components/media/FileUploadProgress"
 import ImageSourcePreview from "@components/media/ImageSourcePreview"
@@ -26,8 +27,6 @@ import {
   useVideoEditorQueueActions,
   useVideoEditorState
 } from "@context/video-editor-context/hooks"
-import { useErrorMessage } from "@state/hooks/ui"
-import Button from "@common/Button"
 
 type ThumbnailUploadProps = {
   disabled?: boolean
