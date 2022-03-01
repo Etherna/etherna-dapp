@@ -45,10 +45,11 @@ const VideoRating: React.FC<VideoRatingProps> = ({
 
   const progress = useMemo(() => {
     const totalVotes = currentUpvotes + currentDownvotes
+
     if (totalVotes === 0) {
-      return 0.5
+      return 50
     }
-    return Math.round(currentUpvotes / totalVotes)
+    return Math.round(currentUpvotes / totalVotes * 100)
   }, [currentDownvotes, currentUpvotes])
 
   useEffect(() => {
@@ -84,15 +85,16 @@ const VideoRating: React.FC<VideoRatingProps> = ({
   }
 
   const udpateCounters = (newVote: VoteValue, oldVote: VoteValue) => {
-    if (oldVote === "Neutral") {
-      setCurrentUpvotes(votes => votes + 1)
-    } else {
-      if (newVote === oldVote) {
-        setCurrentUpvotes(votes => votes - 1)
-      } else {
-        setCurrentUpvotes(votes => votes + 1)
-      }
-    }
+    let upVotes = currentUpvotes
+    let downVotes = currentDownvotes
+
+    if (oldVote === "Up") upVotes -= 1
+    if (oldVote === "Down") downVotes -= 1
+    if (newVote === "Up") upVotes += 1
+    if (newVote === "Down") downVotes += 1
+
+    setCurrentUpvotes(upVotes)
+    setCurrentDownvotes(downVotes)
   }
 
   const shortNumber = (n: number | undefined) => {
@@ -136,7 +138,7 @@ const VideoRating: React.FC<VideoRatingProps> = ({
       </div>
 
       <div className={classes.videoRatingProgressbar}>
-        <div className={classes.progress} style={{ width: `${progress * 100}%` }}></div>
+        <div className={classes.progress} style={{ width: `${progress}%` }}></div>
       </div>
     </div>
   )
