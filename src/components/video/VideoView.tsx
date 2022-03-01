@@ -66,12 +66,12 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState }) => {
     setIsFetchingVideo(false)
   }
 
-  if (isFetchingVideo) {
-    return <div />
+  if (notFound) {
+    return <NotFound message="This video cannot be found" />
   }
 
-  if (notFound || !video) {
-    return <NotFound message="This video cannot be found" />
+  if (isFetchingVideo || !video) {
+    return <div />
   }
 
   return (
