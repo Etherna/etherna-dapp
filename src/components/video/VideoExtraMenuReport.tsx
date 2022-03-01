@@ -17,18 +17,19 @@
 
 import React, { useState } from "react"
 
-import classes from "@styles/components/video/VideoReport.module.scss"
-import { ReactComponent as FlagIcon } from "@assets/icons/flag.svg"
+import classes from "@styles/components/video/VideoExtraMenuReport.module.scss"
 
+import AlertPopup from "@common/AlertPopup"
 import Button from "@common/Button"
 import Modal from "@common/Modal"
 import useSelector from "@state/useSelector"
 import { useErrorMessage } from "@state/hooks/ui"
-import AlertPopup from "@common/AlertPopup"
 
-type VideoReportProps = {
+type VideoExtraMenuReportProps = {
   videoId: string
   videoReference: string
+  show: boolean
+  setShow(show: boolean): void
 }
 
 const CODES: Record<string, string> = {
@@ -42,11 +43,15 @@ const CODES: Record<string, string> = {
   copyright: "Infringes my rights",
 }
 
-const VideoReport: React.FC<VideoReportProps> = ({ videoId, videoReference }) => {
+const VideoExtraMenuReport: React.FC<VideoExtraMenuReportProps> = ({
+  videoId,
+  videoReference,
+  show,
+  setShow,
+}) => {
   const { indexClient } = useSelector(state => state.env)
   const { showError } = useErrorMessage()
 
-  const [showModal, setShowModal] = useState(false)
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
   const [isReporting, setIsReporting] = useState(false)
   const [reportCode, setReportCode] = useState("")
@@ -56,7 +61,7 @@ const VideoReport: React.FC<VideoReportProps> = ({ videoId, videoReference }) =>
     try {
       await indexClient.videos.reportVideo(videoId, videoReference, reportCode)
 
-      setShowModal(false)
+      setShow(false)
       setShowSuccessMessage(true)
     } catch (error: any) {
       showError("Cannot report video", error.message)
@@ -66,15 +71,10 @@ const VideoReport: React.FC<VideoReportProps> = ({ videoId, videoReference }) =>
 
   return (
     <>
-      <button className={classes.reportButton} onClick={() => setShowModal(true)}>
-        <FlagIcon aria-hidden />
-        Report video
-      </button>
-
       <Modal
         title="Report video"
-        show={showModal}
-        setShow={setShowModal}
+        show={show}
+        setShow={setShow}
         footerButtons={
           <Button onClick={sendReport} loading={isReporting} disabled={!reportCode}>
             Report video
@@ -102,4 +102,4 @@ const VideoReport: React.FC<VideoReportProps> = ({ videoId, videoReference }) =>
   )
 }
 
-export default VideoReport
+export default VideoExtraMenuReport

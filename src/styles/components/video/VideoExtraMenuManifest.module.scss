@@ -14,11 +14,27 @@
  *  limitations under the License.
  */
 
-export default function parseJSON<T>(data: string): T | null {
-  try {
-    const json = JSON.parse(data) as T
-    return json
-  } catch (error) {
-    return null
+.sourcesList {
+  @apply flex flex-col;
+  @apply mt-4;
+}
+
+.sourcesListItem {
+  @apply flex flex-col;
+  @apply text-sm font-medium;
+  @apply mt-3;
+
+  svg {
+    @apply w-4 h-4 mr-1;
   }
+}
+
+.sourcesListItemTitle {
+  @apply flex items-center;
+  @apply text-base font-semibold;
+}
+
+.sourcesListItemLink {
+  @apply w-full block text-xs break-words;
+  @apply text-gray-400 dark:text-gray-400;
 }

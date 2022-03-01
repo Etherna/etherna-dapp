@@ -28,17 +28,28 @@ const SwarmResourcesIO = {
       ...Object.values(video.thumbnail?.sources ?? {}),
     ]
   },
-  getVideoReferenceLabel(video: Video, reference: string) {
-    if (reference === video.reference) return "Video metadata"
-
+  getVideoReferenceType(video: Video, reference: string): "metadata" | "video" | "thumb" | null {
+    // is metadata?
+    if (reference === video.reference) return "metadata"
+    // is video source?
     const videoSource = video.sources.find(source => source.reference === reference)
-    if (videoSource) return `Source ${videoSource.quality}`
-
+    if (videoSource) return "video"
+    // is thumb image source?
     const thumbSource = Object.entries(video.thumbnail?.sources ?? {})
       .find(([_, thumbReference]) => thumbReference === reference)
-    if (thumbSource) return `Thumbnail ${thumbSource[0]}`
-
-    return reference.slice(0, 8)
+    if (thumbSource) return "thumb"
+    // not found!
+    return null
+  },
+  getVideoReferenceLabel(video: Video, reference: string) {
+    const type = SwarmResourcesIO.getVideoReferenceType(video, reference)
+    switch (type) {
+      case "metadata": return "Video metadata"
+      case "video": return `Source ${video.sources.find(source => source.reference === reference)!.quality}`
+      case "thumb": return `Thumbnail ${Object.entries(video.thumbnail?.sources ?? {})
+        .find(([_, thumbReference]) => thumbReference === reference)![0]}`
+      default: return reference.slice(0, 8)
+    }
   },
 }
 
