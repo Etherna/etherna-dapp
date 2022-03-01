@@ -50,7 +50,7 @@ export default function usePlaylistVideos(
   }, [playlist])
 
   useEffect(() => {
-    if (opts.waitProfile) {
+    if (opts.waitProfile && !opts.owner) {
       setIsFetching(true)
     }
     if (opts.waitProfile && opts.owner && opts.autofetch) {
@@ -102,7 +102,10 @@ export default function usePlaylistVideos(
   }
 
   const loadMore = async () => {
-    if (!hasMore) return
+    if (!hasMore) {
+      setIsFetching(false)
+      return
+    }
 
     const limit = opts.limit!
     const from = videos?.length ?? 0

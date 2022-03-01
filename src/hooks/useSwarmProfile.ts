@@ -51,10 +51,20 @@ export default function useSwarmProfile(opts: SwarmProfileOptions) {
       updateCache,
     })
 
-    const profile = await profileReader.download()
-    await wait(1000)
-    setProfile(profile ?? getDefaultProfile(address))
+    let profile = getDefaultProfile(address)
 
+    try {
+      const profileInfo = await profileReader.download()
+      import.meta.env.DEV && await wait(1000)
+
+      if (profileInfo) {
+        profile = profileInfo
+      }
+    } catch (error) {
+      console.error(error)
+    }
+
+    setProfile(profile)
     setIsloading(false)
 
     return profile
@@ -66,9 +76,15 @@ export default function useSwarmProfile(opts: SwarmProfileOptions) {
     const profileWriter = new SwarmProfileIO.Writer(address, { beeClient })
 
     // save profile data on swarm
+    console.log("saving....")
     const newReference = await profileWriter.update(profile)
+    console.log("new ref", newReference)
+
     // update index
     await indexClient.users.updateCurrentUser(newReference)
+
+    console.log("index updated")
+
 
     setIsloading(false)
 

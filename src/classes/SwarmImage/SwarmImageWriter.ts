@@ -16,8 +16,9 @@
 
 import Axios from "axios"
 import imageResize from "image-resizer-js"
+import type { UploadResult } from "@ethersphere/bee-js"
 
-import SwarmBeeClient, { MultipleFileUpload } from "@classes/SwarmBeeClient"
+import SwarmBeeClient from "@classes/SwarmBeeClient"
 import { bufferToDataURL, fileToBuffer } from "@utils/buffer"
 import { imageToBlurHash } from "@utils/blur-hash"
 import type { SwarmImageUploadOptions, SwarmImageWriterOptions } from "./types"
@@ -82,19 +83,21 @@ export default class SwarmImageWriter {
       }),
     })
 
-    const uploads: MultipleFileUpload = Object.values(responsiveSourcesData).map(data => ({
-      buffer: data,
-      type: this.file.type,
-    }))
-
     // upload files and retrieve the new reference
-    const references = await this.beeClient.uploadMultipleFiles(batchId, uploads, { fetch })
+    let results: UploadResult[] = []
+    for (const data of Object.values(responsiveSourcesData)) {
+      const result = await this.beeClient.uploadFile(batchId, data, undefined, {
+        fetch,
+        contentType: this.file.type
+      })
+      results.push(result)
+    }
 
     // update raw image object
     imageRaw.sources = Object.keys(responsiveSourcesData).reduce(
       (obj, size, i) => ({
         ...obj,
-        [size]: references[i].reference,
+        [size]: results[i].reference,
       }),
       imageRaw.sources
     )

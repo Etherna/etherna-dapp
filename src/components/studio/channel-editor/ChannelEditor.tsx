@@ -26,12 +26,13 @@ import MarkdownEditor from "@common/MarkdownEditor"
 import TextField from "@common/TextField"
 import SwarmProfileIO from "@classes/SwarmProfile"
 import SwarmImageIO from "@classes/SwarmImage"
+import useSwarmProfile from "@hooks/useSwarmProfile"
 import useSelector from "@state/useSelector"
+import { useProfileUpdate } from "@state/hooks/profile"
 import { useErrorMessage, useImageCrop } from "@state/hooks/ui"
 import makeBlockies from "@utils/makeBlockies"
 import type { SwarmImage, SwarmImageRaw } from "@definitions/swarm-image"
 import type { Profile } from "@definitions/swarm-profile"
-import { useProfileUpdate } from "@state/hooks/profile"
 
 type ImageType = "avatar" | "cover"
 
@@ -60,6 +61,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
   const { cropImage } = useImageCrop()
   const { showError } = useErrorMessage()
   const updateProfile = useProfileUpdate(profileAddress)
+  const { updateProfile: updateSwarmProfile } = useSwarmProfile({ address: profileAddress })
 
   const avatarRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
@@ -111,7 +113,9 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
         avatar: profileAvatar ?? null,
         cover: profileCover ?? null,
       }
-      await updateProfile(profileInfo)
+      const newReference = await updateSwarmProfile(profileInfo)
+
+      updateProfile(newReference, profileInfo)
 
       // clear prefetch
       window.prefetchData = undefined

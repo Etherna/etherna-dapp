@@ -18,6 +18,7 @@
 import React, { useImperativeHandle, useRef, useState } from "react"
 import { Canceler } from "axios"
 
+import Button from "@common/Button"
 import FileUploadFlow, { FileUploadFlowHandlers } from "@components/media/FileUploadFlow"
 import FileUploadProgress from "@components/media/FileUploadProgress"
 import ImageSourcePreview from "@components/media/ImageSourcePreview"
@@ -26,7 +27,6 @@ import {
   useVideoEditorQueueActions,
   useVideoEditorState
 } from "@context/video-editor-context/hooks"
-import { useErrorMessage } from "@state/hooks/ui"
 
 type ThumbnailUploadProps = {
   disabled?: boolean
@@ -47,12 +47,11 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
 }, ref) => {
   const flowRef = useRef<FileUploadFlowHandlers>(null)
   const [{ queue, videoWriter }] = useVideoEditorState()
-  const [canceler, setCanceler] = useState<Canceler>()
   const [contentType, setContentType] = useState<string>("image/*")
+  const canceler = useRef<Canceler>()
 
   const { addToQueue, removeFromQueue, updateQueueCompletion } = useVideoEditorQueueActions()
   const { resetState } = useVideoEditorBaseActions()
-  const { showError } = useErrorMessage()
 
   const currentQueue = queue.find(q => !q.reference)
   const thumbnailQueue = queue.find(q => q.name === THUMBNAIL_QUEUE_NAME)
@@ -72,9 +71,10 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
 
   const uploadThumbnail = async (buffer: ArrayBuffer) => {
     const reference = await videoWriter.addThumbnail(buffer, contentType, {
-      onCancelToken: c => setCanceler(c),
+      onCancelToken: c => { canceler.current = c },
       onUploadProgress: p => updateQueueCompletion(THUMBNAIL_QUEUE_NAME, p),
     })
+
     updateQueueCompletion(THUMBNAIL_QUEUE_NAME, 100, reference)
 
     // Completion
@@ -86,13 +86,9 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
   const handleReset = async () => {
     removeFromQueue(THUMBNAIL_QUEUE_NAME)
 
-    canceler?.("Upload canceled by the user")
+    canceler.current?.("Upload canceled by the user")
 
-    try {
-      await videoWriter.removeThumbnail()
-    } catch (error: any) {
-      showError("Error", error.message)
-    }
+    videoWriter.removeThumbnail()
 
     onCancel?.()
   }
@@ -113,10 +109,13 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
         disabled={disabled}
       >
         {({ isUploading }) => (
-          isUploading ? (
+          (isUploading) ? (
             <FileUploadProgress progress={uploadProgress ?? 0} />
           ) : (
-            <ImageSourcePreview image={videoWriter.thumbnail} />
+            <>
+              <ImageSourcePreview image={videoWriter.thumbnail} />
+              <Button className="mt-4" aspect="link" modifier="inverted" onClick={handleReset}>Change thumbnail</Button>
+            </>
           )
         )}
       </FileUploadFlow>

@@ -32,9 +32,12 @@ export default class SwarmBeeClient extends Bee {
   public userBatches: GatewayBatch[]
 
   constructor(url: string, options?: BeeOptions & { userBatches?: GatewayBatch[] }) {
+    const request = createRequest()
+    request.defaults.withCredentials = true
+
     super(url, {
       ...options,
-      fetch: (input, init) => fetch(input, { ...init, credentials: "include" })
+      fetch: buildAxiosFetch(request)
     })
     this.userBatches = options?.userBatches ?? []
   }
@@ -42,12 +45,12 @@ export default class SwarmBeeClient extends Bee {
   /**
    * Create custom fetch implementation that accept upload progress and canceler
    */
-  getFetch(options?: AxiosUploadOptions) {
+  getFetch(options?: AxiosUploadOptions): typeof fetch {
     const request = createRequest()
     request.defaults.onUploadProgress = options?.onUploadProgress
     request.defaults.cancelToken = options?.cancelToken
     request.defaults.withCredentials = true
-    return buildAxiosFetch(request) as typeof fetch
+    return buildAxiosFetch(request)
   }
   /**
    * Add content to a directory returning the new hash
@@ -63,7 +66,12 @@ export default class SwarmBeeClient extends Bee {
     opts?: CustomUploadOptions
   ): Promise<UploadResult[]> {
     return await Promise.all(
-      data.map(data => this.uploadFile(batchId, data.buffer, undefined, { contentType: data.type }))
+      data.map(
+        data => this.uploadFile(batchId, data.buffer, undefined, {
+          ...opts,
+          contentType: data.type,
+        })
+      )
     )
   }
 

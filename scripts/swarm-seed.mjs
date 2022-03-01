@@ -69,10 +69,13 @@ export async function loadSeed(batchId) {
 
   console.log(chalk.blueBright(`Loading seed data...`))
 
+  let loadedItems = 0
+  let unloadedItems = 0
+
   for (const item of requests.items) {
     const url = `${process.env.BEE_ENDPOINT}${item.path}${item.search}`
     const body = item.dataId ? fs.readFileSync(SeedDataFolder + "/data/" + item.dataId) : undefined
-    await fetch(url, {
+    const resp = await fetch(url, {
       method: "POST",
       body,
       headers: {
@@ -80,9 +83,18 @@ export async function loadSeed(batchId) {
         "Content-Type": item.contentType
       }
     })
+    if (resp.ok) {
+      loadedItems++
+    } else {
+      console.log(await resp.json())
+      unloadedItems++
+    }
   }
 
-  console.log(chalk.blueBright(`Seed complete. Loaded ${requests.items.length} items.`))
+  console.log(chalk.blueBright(`Seed complete. Loaded ${loadedItems} items.`))
+  if (unloadedItems > 0) {
+    console.log(chalk.redBright(`${unloadedItems} items were not loaded correctly.`))
+  }
 }
 
 if (process.argv[1].endsWith(path.basename(import.meta.url))) {

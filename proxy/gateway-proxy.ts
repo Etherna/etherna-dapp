@@ -16,54 +16,60 @@
 
 import fs from "fs"
 import path from "path"
-import express from "express"
 import https from "https"
-import cors from "cors"
+import fetch from "node-fetch"
 
 import "./utils/env.js"
-import ValidatorMiddleware from "./middlewares/validator-middleware.js"
-import BeeMiddleware from "./middlewares/bee-middleware.js"
-import BeeDebugMiddleware from "./middlewares/bee-debug-middleware.js"
+import defaultProxyResponse from "./middlewares/default-proxy-response.js"
+import beeValidatorResponse from "./middlewares/bee-validator-response.js"
+import fixResponseHeaders from "./utils/fix-response-headers.js"
 
-/**
- * Setup node server
- */
-const app = express()
 const port = process.env.GATEWAY_PORT || 44362
-
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-app.use(express.raw({
-  type: "*/*",
-  limit: "100mb"
-}))
-app.use(
-  cors({
-    credentials: true,
-    origin: true
-  })
-)
-app.use(ValidatorMiddleware)
-app.use(BeeMiddleware)
-app.use(BeeDebugMiddleware)
 
 const PrivateKeyPath = path.resolve("..", process.env.SSL_KEY_FILE)
 const CertificatePath = path.resolve("..", process.env.SSL_CRT_FILE)
+const ProxyHosts = {
+  bee: process.env.GATEWAY_PROXY_BEE_HOST,
+  beeDebug: process.env.GATEWAY_PROXY_BEE_DEBUG_HOST,
+  gateway: process.env.GATEWAY_PROXY_VALIDATOR_HOST,
+}
 
 if (fs.existsSync(PrivateKeyPath) && fs.existsSync(CertificatePath)) {
   const privateKey = fs.readFileSync(PrivateKeyPath)
   const certificate = fs.readFileSync(CertificatePath)
 
-  const httpsServer = https.createServer({ key: privateKey, cert: certificate }, app)
+  const httpsServer = https.createServer({ key: privateKey, cert: certificate }, async (req, res) => {
+    if (!req.url) {
+      res.writeHead(500)
+      res.end("Server error")
+      return
+    }
 
-  // Proxy gateway validator/bee
+    const beeDebugRegex = /^\/(addresses|balances|chequebook|reservestate|settlements|transactions|stamps)\/?.*/
+    const beeRegex = /^\/(bytes|chunks|bzz|tags|pins|soc|feeds|pss)\/?.*/
+    const isBee = beeRegex.test(req.url)
+    const isBeeDebug = beeDebugRegex.test(req.url)
+    const shouldValidate = process.env.DISABLE_REQUEST_VALIDATION !== "true"
+
+    let hostType: keyof typeof ProxyHosts = "gateway"
+    if (isBee) hostType = "bee"
+    if (isBeeDebug) hostType = "beeDebug"
+
+    const host = ProxyHosts[hostType]
+
+    const resp = isBee && shouldValidate
+      ? await beeValidatorResponse(req, ProxyHosts.gateway, host)
+      : await defaultProxyResponse(req, host)
+    const data = await resp.arrayBuffer()
+    const respHeaders = fixResponseHeaders(req, resp)
+
+    res.writeHead(resp.status, resp.statusText, respHeaders)
+    res.end(new Uint8Array(data))
+  })
+
   httpsServer.listen(port, () => {
     console.log(`Proxy started at: https://localhost:${port}`)
   })
 } else {
-  app.listen(port, () => {
-    console.log(`Proxy started at: http://localhost:${port}`)
-  })
+  throw new Error("Cannot find ssl certificates. To create new certificates check /proxy/sslcert/README.md")
 }
-
-process.setMaxListeners(0)

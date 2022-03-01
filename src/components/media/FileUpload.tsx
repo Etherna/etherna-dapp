@@ -74,7 +74,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
         if (error && error.message === "Network Error") {
           setErrorMessage("Network Error. Check if the gateway is secured with a SSL certificate.")
         } else {
-          setErrorMessage(error.message)
+          setErrorMessage(error.message || "Cound't upload the selected file")
         }
       }
     }
@@ -99,10 +99,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
         </>
       )}
 
-      {typeof children === "function"
-        ? children({ isUploading })
-        : children
-      }
+      {!errorMessage && (
+        typeof children === "function"
+          ? children({ isUploading })
+          : children
+      )}
     </div>
   )
 }

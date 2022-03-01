@@ -226,10 +226,8 @@ export default class SwarmVideoWriter {
     this._videoRaw.sources.splice(sourceIndex, 1)
   }
 
-  async removeThumbnail() {
-    if (!this._videoRaw.thumbnail) {
-      throw new Error("There is no thumbnail to remove")
-    }
+  removeThumbnail() {
+    if (!this._videoRaw.thumbnail) return
     this._videoRaw.thumbnail = null
   }
 

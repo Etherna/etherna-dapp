@@ -116,7 +116,7 @@ const serviceHost = projectPath => {
  * @param {string} projectPath The service project path
  */
 const execProject = (projectPath) => {
-  const execCms = `dotnet watch -p ${projectPath} run`
+  const execCms = `dotnet run -p ${projectPath}`
   return exec(execCms, execCallback)
 }
 
@@ -140,7 +140,7 @@ const waitService = (projectPath, name) => {
     if (host) {
       waitOn({
         resources: [host],
-        delay: 120,
+        delay: 50,
         timeout: 30000,
         validateStatus: function (status) {
           // if returns any status code then server is up
@@ -160,6 +160,18 @@ const waitService = (projectPath, name) => {
   })
 }
 
+/**
+ * Show logs of errors
+ * @param {string} service 
+ * @param {string} errorData 
+ */
+const logServiceError = (service, errorData) => {
+  if (/[15:26:18 ERR]/.test(errorData)) {
+    console.log(chalk.red(`${service} Error:`))
+    console.log(chalk.red(errorData))
+  }
+}
+
 /** @type {import("child_process").ChildProcess[]} */
 let processes = []
 
@@ -169,10 +181,12 @@ let processes = []
 const run = async () => {
   console.log(chalk.gray("Starting services..."))
 
-  process.on("exit", () => {
+  process.on("SIGINT", () => {
+    console.log(chalk.yellow("Killing services..."))
     processes.forEach(process => {
       process.kill()
     })
+    process.exit()
   })
 
   const args = process.argv.slice(2, process.argv.length)
@@ -204,26 +218,34 @@ const run = async () => {
 
   if (shouldRunEthernaIndex) {
     const indexProcess = execProject(process.env.ETHERNA_INDEX_PROJECT_PATH)
-    verbose && indexProcess.stdout.on("data", data => console.log("Index: " + chalk.blue(data)))
+    verbose && indexProcess.stdout.on("data", data => logServiceError("Index: ", data))
     processes.push(indexProcess)
+
+    await waitService(process.env.ETHERNA_INDEX_PROJECT_PATH, "Etherna Index")
   }
 
   if (shouldRunEthernaCredit) {
     const creditProcess = execProject(process.env.ETHERNA_CREDIT_PROJECT_PATH)
-    verbose && creditProcess.stdout.on("data", data => console.log("Credit: " + chalk.blue(data)))
+    verbose && creditProcess.stdout.on("data", data => logServiceError("Credit: ", data))
     processes.push(creditProcess)
+
+    await waitService(process.env.ETHERNA_CREDIT_PROJECT_PATH, "Etherna Credit")
   }
 
   if (shouldRunEthernaGateway) {
     const gatewayProcess = execProject(process.env.ETHERNA_GATEWAY_PROJECT_PATH)
-    verbose && gatewayProcess.stdout.on("data", data => console.log("Gateway: " + chalk.blue(data)))
+    verbose && gatewayProcess.stdout.on("data", data => logServiceError("Gateway: ", data))
     processes.push(gatewayProcess)
+
+    await waitService(process.env.ETHERNA_GATEWAY_PROJECT_PATH, "Etherna Gateway")
   }
 
   if (shouldRunEthernaBeehive) {
     const beehiveProcess = execProject(process.env.ETHERNA_BEEHIVE_PROJECT_PATH)
-    verbose && beehiveProcess.stdout.on("data", data => console.log("Beehive: " + chalk.blue(data)))
+    verbose && beehiveProcess.stdout.on("data", data => logServiceError("Beehive: ", data))
     processes.push(beehiveProcess)
+
+    await waitService(process.env.ETHERNA_BEEHIVE_PROJECT_PATH, "Etherna Beehive")
   }
 
   if (shouldRunProxy) {
@@ -234,21 +256,11 @@ const run = async () => {
       },
       execCallback
     )
-    verbose && validatorProcess.stdout.on("data", data => console.log("Proxy: " + chalk.blue(data)))
+    verbose && validatorProcess.stdout.on("data", data => logServiceError("Proxy: ", data))
     processes.push(validatorProcess)
-  }
 
-  // await services async
-  shouldRunEthernaIndex &&
-    await waitService(process.env.ETHERNA_INDEX_PROJECT_PATH, "Etherna Index")
-  shouldRunEthernaCredit &&
-    await waitService(process.env.ETHERNA_CREDIT_PROJECT_PATH, "Etherna Credit")
-  shouldRunEthernaBeehive &&
-    await waitService(process.env.ETHERNA_BEEHIVE_PROJECT_PATH, "Etherna Beehive")
-  shouldRunEthernaGateway &&
-    await waitService(process.env.ETHERNA_GATEWAY_PROJECT_PATH, "Etherna Gateway")
-  shouldRunProxy &&
     await waitService(`https://localhost:${process.env.GATEWAY_PORT}`, "Etherna Gateway Proxy")
+  }
 
   console.log(`✅ All done!`)
 }
