@@ -14,20 +14,27 @@
  *  limitations under the License.
  */
 
-.videoDetailsTitlebar {
+.sourcesList {
   @apply flex flex-col;
-  @apply sm:flex-row;
+  @apply mt-4;
 }
 
-.videoDetailsTitle {
-  @apply mb-1 font-semibold text-2xl;
+.sourcesListItem {
+  @apply flex flex-col;
+  @apply text-sm font-medium;
+  @apply mt-3;
 
-  &.untitled {
-    @apply opacity-50;
+  svg {
+    @apply w-4 h-4 mr-1;
   }
 }
 
-.videoDetailsActions {
-  @apply ml-auto;
-  @apply flex items-center space-x-8;
+.sourcesListItemTitle {
+  @apply flex items-center;
+  @apply text-base font-semibold;
+}
+
+.sourcesListItemLink {
+  @apply w-full block text-xs break-words;
+  @apply text-gray-400 dark:text-gray-400;
 }

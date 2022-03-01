@@ -14,18 +14,6 @@
  *  limitations under the License.
  */
 
-.reportButton {
-  @apply bg-transparent border-none ring-0;
-  @apply inline-flex items-center;
-  @apply text-gray-500 dark:text-gray-400;
-  @apply text-sm font-medium;
-  @apply px-3 py-1;
-  
-  svg {
-    @apply w-[1.2em] h-[1.2em] mr-2;
-  }
-}
-
 .reportList {
   @apply flex flex-col space-y-1;
 }
