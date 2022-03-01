@@ -15,7 +15,7 @@
  *  
  */
 
-import React from "react"
+import React, { useMemo } from "react"
 import classNames from "classnames"
 
 import classes from "@styles/components/player/PlayerBytesCounter.module.scss"
@@ -31,15 +31,20 @@ const PlayerBytesCounter: React.FC = () => {
   const { bytePrice } = useSelector(state => state.env)
   const { credit } = useSelector(state => state.user)
 
-  if (!bytePrice || bytePrice === 0 || credit == null) return null
+  const [watchablePercent, remainingSeconds] = useMemo(() => {
+    if (!bytePrice || bytePrice === 0 || credit == null) return [null, null]
 
-  const remainingDuration = duration - currentTime
-  const remainingBytes = (sourceSize || 0) * (remainingDuration / duration)
-  const remainingCost = remainingBytes * bytePrice
-  const watchablePercent = remainingCost > 0 ? credit / remainingCost : 0
-  const remainingSeconds = Math.round(watchablePercent * remainingDuration)
+    const remainingDuration = duration - currentTime
+    const remainingBytes = (sourceSize || 0) * (remainingDuration / duration)
+    const remainingCost = remainingBytes * bytePrice
+    const watchablePercent = remainingCost > 0 ? credit / remainingCost : 0
+    const remainingSeconds = Math.round(watchablePercent * remainingDuration)
 
-  if (watchablePercent >= 1) return null
+    return [watchablePercent, remainingSeconds]
+  }, [bytePrice, credit, currentTime, duration, sourceSize])
+
+  if (!watchablePercent || watchablePercent >= 1) return null
+  if (!remainingSeconds) return null
 
   return (
     <div className={classNames(classes.counter, {
