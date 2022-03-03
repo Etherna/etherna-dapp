@@ -53,7 +53,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   const profileName = (video.owner?.name) || shortenEthAddr(ownerAddress)
   const profileAvatar = video.owner?.avatar
 
-  const profileLink = ownerAddress ? Routes.getProfileLink(ownerAddress) : null
+  const profileLink = ownerAddress ? Routes.getChannelLink(ownerAddress) : null
   const videoLink = Routes.getVideoLink(decentralizedLink ? video.reference : video.indexReference ?? video.reference)
   const videoSearch = new URL(videoLink, document.baseURI).search
   const videoPath = videoLink.replace(videoSearch, "")

@@ -23,12 +23,12 @@ import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import SEO from "@components/layout/SEO"
 import ProfileView from "@components/profile/ProfileView"
 
-const ProfilePage = () => {
+const ChannelPage = () => {
   const { id } = useParams<{ id: string }>()
 
   return (
     <AppLayoutWrapper>
-      <SEO title="Profile" />
+      <SEO title="Channel" />
 
       <Container noPaddingX noPaddingY fluid>
         <ProfileView profileAddress={id} />
@@ -37,4 +37,4 @@ const ProfilePage = () => {
   )
 }
 
-export default ProfilePage
+export default ChannelPage

@@ -47,8 +47,8 @@ export const getPlaylistsLink = () => {
   return `/playlists`
 }
 
-export const getProfileLink = (hash: string) => {
-  return `/profile/${encodeURIComponent(hash)}`
+export const getChannelLink = (hash: string) => {
+  return `/channel/${encodeURIComponent(hash)}`
 }
 
 
