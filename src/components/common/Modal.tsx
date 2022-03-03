@@ -71,6 +71,7 @@ const Modal: React.FC<ModalProps> = ({
         initialFocus={cancelButtonRef}
         open={show}
         onClose={handleCancel}
+        tabIndex={0}
       >
         <div className={classes.modalWrapper}>
           <Transition.Child

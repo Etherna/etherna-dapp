@@ -23,7 +23,6 @@ import classes from "@styles/components/navigation/AlphaWarning.module.scss"
 import { ReactComponent as BugIcon } from "@assets/icons/bug.svg"
 import { ReactComponent as DiscordLogo } from "@assets/brand/logo-discord.svg"
 
-import Portal from "@common/Portal"
 import useLocalStorage from "@hooks/useLocalStorage"
 
 const AlphaWarning: React.FC = () => {
@@ -133,68 +132,67 @@ const AlphaWarning: React.FC = () => {
         <BugIcon /> Alpha
       </button>
 
-      <Portal selector="#modals">
-        <Dialog
-          as="div"
-          className={classes.alphaDialogContainer}
-          initialFocus={cancelButton}
-          open={open && !!toggleButton}
-          onClose={() => setOpen(false)}
-          style={{ zIndex: open ? undefined : -1, pointerEvents: open ? undefined : "none" }}
-          static
+      <Dialog
+        as="div"
+        className={classes.alphaDialogContainer}
+        initialFocus={cancelButton}
+        open={open && !!toggleButton}
+        onClose={() => setOpen(false)}
+        style={{ zIndex: open ? undefined : -1, pointerEvents: open ? undefined : "none" }}
+        tabIndex={0}
+        static
+      >
+        <Transition
+          as={Fragment}
+          show={open}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
         >
-          <Transition
-            as={Fragment}
-            show={open}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className={classes.alphaDialogOveraly} />
-          </Transition>
+          <div className={classes.alphaDialogOveraly} />
+        </Transition>
 
-          <div className={classes.alphaDialog} ref={el => el && setDialogEl(el)} style={{ visibility: "hidden" }}>
-            <div className="transition-opacity duration-200">
-              <div className={classes.alphaDialogBody}>
-                <Dialog.Title className={classes.alphaDialogTitle}>Alpha Realease</Dialog.Title>
-                <Dialog.Description className={classes.alphaDialogText}>
-                  The current version of this application is in alpha,
-                  meaning it might have bugs as well as downtime moments. <br />
-                  We appreciate if you report any possible bug by clicking on the button below.
-                </Dialog.Description>
-              </div>
+        <div className={classes.alphaDialog} ref={el => el && setDialogEl(el)} style={{ visibility: "hidden" }}>
+          <div className="transition-opacity duration-200">
+            <div className={classes.alphaDialogBody}>
+              <Dialog.Title className={classes.alphaDialogTitle}>Alpha Realease</Dialog.Title>
+              <Dialog.Description className={classes.alphaDialogText}>
+                The current version of this application is in alpha,
+                meaning it might have bugs as well as downtime moments. <br />
+                We appreciate if you report any possible bug by clicking on the button below.
+              </Dialog.Description>
+            </div>
 
-              <div className={classes.alphaDialogActions}>
-                <button
-                  className={classNames(classes.alphaDialogButton, classes.alphaDialogAction)}
-                  onClick={handleFeedback}
-                  disabled={feedbackBlocked}
-                >
-                  <BugIcon /> Report bug
-                </button>
-                <a
-                  href="https://discord.gg/vfHYEXf"
-                  target="_blank"
-                  rel="noreferrer"
-                  className={classNames(classes.alphaDialogButton, classes.alphaDialogAction)}
-                >
-                  <DiscordLogo /> Discord support
-                </a>
+            <div className={classes.alphaDialogActions}>
+              <button
+                className={classNames(classes.alphaDialogButton, classes.alphaDialogAction)}
+                onClick={handleFeedback}
+                disabled={feedbackBlocked}
+              >
+                <BugIcon /> Report bug
+              </button>
+              <a
+                href="https://discord.gg/vfHYEXf"
+                target="_blank"
+                rel="noreferrer"
+                className={classNames(classes.alphaDialogButton, classes.alphaDialogAction)}
+              >
+                <DiscordLogo /> Discord support
+              </a>
 
-                <button
-                  className={classNames(classes.alphaDialogButton, classes.alphaDialogContinue)}
-                  onClick={handleClose}
-                >
-                  I understand
-                </button>
-              </div>
+              <button
+                className={classNames(classes.alphaDialogButton, classes.alphaDialogContinue)}
+                onClick={handleClose}
+              >
+                I understand
+              </button>
             </div>
           </div>
-        </Dialog>
-      </Portal>
+        </div>
+      </Dialog>
     </>
   )
 }
