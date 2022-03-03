@@ -84,7 +84,7 @@ export const parseReaderStatus = (reader: SwarmResourcesReader, userAddress: str
   const resourcesCount = reader.resourcesStatus?.length ?? 0
   const offeredResourcesCount = (reader.resourcesStatus ?? [])
     .filter(status => status.isOffered).length
-  const allSourcesOffered = reader.video.sources
+  const allSourcesOffered = reader.video.sources.length > 0 && reader.video.sources
     .map(source => reader.getReferenceStatus(source.reference))
     .every(status => status?.isOffered)
   const manifestOffers = reader.resourcesStatus?.find(offers => offers.reference === reader.video.reference)

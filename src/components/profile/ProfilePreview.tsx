@@ -57,10 +57,10 @@ const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress }) => {
   return (
     <div className={classes.profilePreview} key={profileAddress}>
       <div className={classes.profileInfo}>
-        <Link to={Routes.getProfileLink(profileAddress)}>
+        <Link to={Routes.getChannelLink(profileAddress)}>
           <Avatar image={profile?.avatar} address={profileAddress} />
         </Link>
-        <Link to={Routes.getProfileLink(profileAddress)}>
+        <Link to={Routes.getChannelLink(profileAddress)}>
           <h3>{profile.name || shortenEthAddr(profileAddress)}</h3>
         </Link>
       </div>

@@ -138,6 +138,10 @@ export default class SwarmVideoReader {
       return getDefaultVideo(this.reference, indexVideoData, this.beeClient)
     }
 
+    const sources = (indexVideoData?.lastValidManifest?.sources ?? []).length > 0
+      ? indexVideoData?.lastValidManifest?.sources
+      : videoData?.sources
+
     return {
       reference: indexVideoData?.lastValidManifest?.hash || (videoData as Video).reference || this.reference,
       indexReference: indexVideoData?.id || this.indexReference,
@@ -150,7 +154,7 @@ export default class SwarmVideoReader {
           beeClient: this.beeClient
         }).image
         : null,
-      sources: (indexVideoData?.lastValidManifest?.sources ?? videoData?.sources ?? []).map(rawSource => ({
+      sources: (sources ?? []).map(rawSource => ({
         ...rawSource,
         source: this.beeClient.getBzzUrl(rawSource.reference)
       })),

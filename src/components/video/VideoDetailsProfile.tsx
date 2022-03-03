@@ -33,7 +33,7 @@ const VideoDetailsProfile: React.FC<VideoDetailsProfileProps> = ({ owner }) => {
   return (
     <div className={classes.videoDetailsProfile}>
       {owner?.address && (
-        <Link to={routes.getProfileLink(owner.address)}>
+        <Link to={routes.getChannelLink(owner.address)}>
           <div className={classes.videoProfile}>
             <Avatar image={owner.avatar} address={owner.address} />
             <h3 className={classes.profileName}>

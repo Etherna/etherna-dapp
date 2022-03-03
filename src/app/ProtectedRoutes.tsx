@@ -64,7 +64,7 @@ export const ProfileOwnerRoute = ({ path, exact, children }: RouteProps) => {
           ) : (
             <Redirect
               to={{
-                pathname: Routes.getProfileLink(match.params.id!),
+                pathname: Routes.getChannelLink(match.params.id!),
                 state: {
                   from: location,
                 },

@@ -48,7 +48,7 @@ const SignedInMenuItems: React.FC = () => {
 
       <hr />
 
-      <DropdownItem href={routes.getProfileLink(address!)} icon={<ProfileIcon />}>
+      <DropdownItem href={routes.getChannelLink(address!)} icon={<ProfileIcon />}>
         View channel
       </DropdownItem>
       <DropdownItem href={routes.getStudioLink()} icon={<SparklesIcon />}>

@@ -26,7 +26,7 @@ const AsyncFrames = lazy(() => import("@pages/frames"))
 const AsyncFollowing = lazy(() => import("@pages/following"))
 const AsyncPlaylists = lazy(() => import("@pages/playlists"))
 const AsyncSaved = lazy(() => import("@pages/saved"))
-const AsyncProfile = lazy(() => import("@pages/profile"))
+const AsyncChannel = lazy(() => import("@pages/channel"))
 const AsyncStudio = lazy(() => import("@pages/studio/creator-studio"))
 const AsyncChannelEdit = lazy(() => import("@pages/studio/channel-edit"))
 const AsyncVideosList = lazy(() => import("@pages/studio/videos-list"))
@@ -53,8 +53,8 @@ const Playlists = () => (
 const Saved = () => (
   <Suspense fallback={null}><AsyncSaved /></Suspense>
 )
-const Profile = () => (
-  <Suspense fallback={null}><AsyncProfile /></Suspense>
+const Channel = () => (
+  <Suspense fallback={null}><AsyncChannel /></Suspense>
 )
 const Profiles = () => (
   <Suspense fallback={null}><AsyncProfiles /></Suspense>
@@ -114,8 +114,8 @@ const Router = () => {
         <Route path={"/profiles"} exact>
           <Profiles />
         </Route>
-        <Route path={"/profile/:id"} exact>
-          <Profile />
+        <Route path={"/channel/:id"} exact>
+          <Channel />
         </Route>
         <WatchRoute path={"/watch"} exact>
           <Watch />

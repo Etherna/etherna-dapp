@@ -52,12 +52,13 @@ export default function usePlaylistVideos(
   useEffect(() => {
     if (opts.waitProfile && !opts.owner) {
       setIsFetching(true)
+      return
     }
-    if (opts.waitProfile && opts.owner && opts.autofetch) {
+    if (playlist && opts.autofetch && hasMore) {
       loadMore()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts.owner])
+  }, [opts.owner, playlist, hasMore])
 
   const fetchVideos = async (from: number, to: number): Promise<Video[]> => {
     if (
