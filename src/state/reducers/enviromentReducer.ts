@@ -24,9 +24,9 @@ import { loadDarkMode } from "@state/actions/enviroment/dark-mode"
 import autoUpgradeEthernaService from "@utils/autoUpgradeEthernaService"
 import { checkIsMobile } from "@utils/browser"
 import { parseLocalStorage } from "@utils/local-storage"
-import type { EnvState } from "@definitions/app-state"
+import type { EnvState, WalletType } from "@definitions/app-state"
 import type { Keymap, KeymapNamespace } from "@definitions/keyboard"
-import { GatewayBatch } from "@definitions/api-gateway"
+import type { GatewayBatch } from "@definitions/api-gateway"
 
 export const EnvActionTypes = {
   SET_IS_MOBILE: "ENV_SET_IS_MOBILE",
@@ -58,6 +58,7 @@ type UpdateGatewayHostAction = {
 type UpdateBeeClientAction = {
   type: typeof EnvActionTypes.UPDATE_BEE_CLIENT
   beeClient: SwarmBeeClient
+  signerWallet: WalletType | null
 }
 type UpdateBeeClientBatchesAction = {
   type: typeof EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES
@@ -155,7 +156,8 @@ const enviromentReducer = (state: EnvState = initialState, action: EnvActions): 
     case EnvActionTypes.UPDATE_BEE_CLIENT:
       return {
         ...state,
-        beeClient: action.beeClient
+        beeClient: action.beeClient,
+        currentWallet: action.signerWallet,
       }
 
     case EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES:

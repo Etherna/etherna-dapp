@@ -28,12 +28,14 @@ import VideoSources from "./VideoSources"
 import ProgressTab from "@common/ProgressTab"
 import ProgressTabContent from "@common/ProgressTabContent"
 import ProgressTabLink from "@common/ProgressTabLink"
+import WalletState from "@components/studio/other/WalletState"
 import SwarmVideoIO from "@classes/SwarmVideo"
 import { useVideoEditorBaseActions, useVideoEditorState } from "@context/video-editor-context/hooks"
 import VideoEditorCache from "@context/video-editor-context/VideoEditorCache"
 import routes from "@routes"
 import useUserPlaylists from "@hooks/useUserPlaylists"
 import useSelector from "@state/useSelector"
+import { useWallet } from "@state/hooks/env"
 import { useConfirmation, useErrorMessage } from "@state/hooks/ui"
 import type { Profile } from "@definitions/swarm-profile"
 
@@ -63,6 +65,8 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
 
   const { showError } = useErrorMessage()
   const { resetState } = useVideoEditorBaseActions()
+  const { isLocked, selectedAddress } = useWallet()
+
   const {
     channelPlaylist,
     loadPlaylists,
@@ -87,6 +91,13 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   }))
 
   const submitVideo = async () => {
+    if (isLocked) {
+      return showError(
+        "Wallet Locked",
+        "Please unlock your wallet before saving."
+      )
+    }
+
     const { duration, originalQuality } = videoWriter.videoRaw
 
     if (!channelPlaylist) {
@@ -169,6 +180,14 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
 
   return (
     <>
+      <div className="my-6">
+        <WalletState
+          isLocked={isLocked}
+          selectedAddress={selectedAddress}
+          profileAddress={address!}
+        />
+      </div>
+
       {usePortal && (
         <div id={PORTAL_ID}></div>
       )}

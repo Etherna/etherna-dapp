@@ -30,9 +30,12 @@ import useSwarmProfile from "@hooks/useSwarmProfile"
 import useSelector from "@state/useSelector"
 import { useProfileUpdate } from "@state/hooks/profile"
 import { useErrorMessage, useImageCrop } from "@state/hooks/ui"
+import { useWallet } from "@state/hooks/env"
 import makeBlockies from "@utils/makeBlockies"
 import type { SwarmImage, SwarmImageRaw } from "@definitions/swarm-image"
 import type { Profile } from "@definitions/swarm-profile"
+import Alert from "@common/Alert"
+import WalletState from "../other/WalletState"
 
 type ImageType = "avatar" | "cover"
 
@@ -62,6 +65,8 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
   const { showError } = useErrorMessage()
   const updateProfile = useProfileUpdate(profileAddress)
   const { updateProfile: updateSwarmProfile } = useSwarmProfile({ address: profileAddress })
+
+  const { isLocked, selectedAddress } = useWallet()
 
   const avatarRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
@@ -101,6 +106,10 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
   }))
 
   const handleSubmit = async () => {
+    if (isLocked) {
+      return showError("Wallet Locked", "Please unlock your wallet before saving.")
+    }
+
     if (!profileName) {
       return showError("Set your name", "Please provide a name for your channel before submitting.")
     }
@@ -177,6 +186,12 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
 
   return (
     <div className={classes.channelEditor}>
+      <WalletState
+        isLocked={isLocked}
+        selectedAddress={selectedAddress}
+        profileAddress={profileAddress}
+      />
+
       <div className={classes.cover}>
         <label
           className={classNames(classes.coverInput, {
