@@ -47,8 +47,7 @@ export type EnvState = {
   isMobile: boolean
   darkMode: boolean
 
-  currentWallet?: string
-  currentWalletLogo?: string
+  currentWallet?: WalletType | null
   currentAddress?: string
   previusAddress?: string
 
@@ -86,7 +85,7 @@ export type UIState = {
   imageType?: "avatar" | "cover"
   image?: string
 
-  extensionName?: "index" | "gateway"
+  extensionName?: ExtensionType
   extensionUrl?: string
 }
 
@@ -100,3 +99,7 @@ export type UserState = {
   isSignedInGateway?: boolean
   batches?: GatewayBatch[]
 }
+
+export type WalletType = "etherna" | "metamask"
+
+export type ExtensionType = "index" | "gateway"

@@ -160,7 +160,8 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
 
       dispatch({
         type: EnvActionTypes.UPDATE_BEE_CLIENT,
-        beeClient: beeClientSigner
+        beeClient: beeClientSigner,
+        signerWallet: "etherna"
       })
     } else if (window.ethereum && window.ethereum.request) {
       const beeClientSigner = new SwarmBeeClient(beeClient.url, {
@@ -182,7 +183,8 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
 
       dispatch({
         type: EnvActionTypes.UPDATE_BEE_CLIENT,
-        beeClient: beeClientSigner
+        beeClient: beeClientSigner,
+        signerWallet: "metamask"
       })
     }
 

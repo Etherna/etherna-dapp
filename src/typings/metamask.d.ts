@@ -15,14 +15,32 @@
  */
 
 type ExternalProvider = {
+  _state?: {
+    accounts: string[] | null
+    initialized: boolean
+    isConnected: boolean
+    isPermanentlyDisconnected: boolean
+    isUnlocked: boolean
+  }
   isMetaMask?: boolean
   autoRefreshOnNetworkChange?: boolean
   chainId?: string
   networkVersion?: string
   selectedAddress?: string
+  on?(event: "accountsChanged", callback: (accounts: string[]) => void): void
+  on?(event: "chainChanged", callback: (chainId: string) => void): void
+  on?(event: "connect", callback: (connectInfo: any) => void): void
+  on?(event: "disconnect", callback: (error: ProviderRpcError) => void): void
+  removeListener?(event: string, callback: Function): void
   isConnected?(): Promise<boolean>
   enable?(): Promise<string[]>
   sendAsync?: (request: { method: string, params?: Array<any> }, callback: (error: any, response: any) => void) => void
   send?: (request: { method: string, params?: Array<any> }, callback: (error: any, response: any) => void) => void
   request?: (request: { method: string, params?: Array<any> }) => Promise<any>
+}
+
+interface ProviderRpcError extends Error {
+  message: string
+  code: number
+  data?: unknown
 }

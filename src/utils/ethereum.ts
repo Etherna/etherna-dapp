@@ -39,6 +39,12 @@ export const signMessage = async (digest: string, address: string): Promise<stri
   return data
 }
 
+/**
+ * Covert an ETH address to bytes
+ * 
+ * @param address Full address string (eg: 0xab...)
+ * @returns The address bytes
+ */
 export const addressBytes = (address: string) => {
   const bytes = address.replace(/^0x/, "").match(/.{1,2}/g) ?? []
   return new Uint8Array(bytes.map(b => parseInt(b, 16)))
@@ -83,6 +89,16 @@ export const checkUsingInjectedProvider = (provider: any) => {
 export const fetchAccounts = async () => {
   if (!window.ethereum || !window.ethereum.request) return []
   return await window.ethereum.request({ method: "eth_requestAccounts" })
+}
+
+/**
+ * Check if the wallet is locked
+ */
+export const checkWalletLocked = () => {
+  if (!window.ethereum || !window.ethereum.request) return false
+  if (window.ethereum._state?.accounts?.length) return false
+  if (window.ethereum.selectedAddress) return false
+  return true
 }
 
 /**
