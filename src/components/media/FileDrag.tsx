@@ -34,9 +34,7 @@ type FileDragProps = {
   mimeTypes?: string
   disabled?: boolean
   uploadLimit?: number
-  canAvoidEncoding?(contentType: string): boolean
-  canEncodeFile?(contentType: string): boolean
-  onSelectFile(file: File, encode: boolean): void
+  onSelectFile(file: File): void
 }
 
 const FileDrag: React.FC<FileDragProps> = (props) => {
@@ -64,8 +62,6 @@ const FileDragContent: React.FC<FileDragProps> = ({
   mimeTypes = "*",
   disabled,
   uploadLimit,
-  canAvoidEncoding,
-  canEncodeFile,
   onSelectFile,
 }) => {
   const [file, setFile] = useState<File>()
@@ -73,13 +69,6 @@ const FileDragContent: React.FC<FileDragProps> = ({
   const inputRef = useRef<HTMLInputElement>(null)
 
   const { showError } = useErrorMessage()
-
-  const [isBrowserCompatible, isEncodable] = useMemo(() => {
-    return [
-      file && (canAvoidEncoding?.(file.type) ?? true),
-      file && (canEncodeFile?.(file.type) ?? false),
-    ]
-  }, [file, canEncodeFile, canAvoidEncoding])
 
   const updateDragOver = (hasEntered: boolean) => {
     if ((hasEntered && !isDragOver) || (!hasEntered && isDragOver)) {
@@ -141,9 +130,9 @@ const FileDragContent: React.FC<FileDragProps> = ({
     }
   }
 
-  const handleFileProcessing = (encode: boolean) => {
+  const handleFileProcessing = () => {
     if (file) {
-      onSelectFile(file, encode)
+      onSelectFile(file)
     } else {
       console.error("No file selected. Cannot continue.")
     }
@@ -167,11 +156,7 @@ const FileDragContent: React.FC<FileDragProps> = ({
           <div className={classes.fileDragProcessingHeader}>
             <p className={classes.fileDragProcessingTitle}>
               <span>You selected <span className="text-black dark:text-white">{file.name}</span>. </span>
-              {isEncodable ? (
-                "Choose what you want to do with the file."
-              ) : (
-                "Are you sure you want to upload this file?"
-              )}
+              Are you sure you want to upload this file?
             </p>
             <Button
               className={classes.fileDragProcessingCancel}
@@ -184,34 +169,14 @@ const FileDragContent: React.FC<FileDragProps> = ({
             </Button>
           </div>
           <div className={classes.fileDragProcessingActionList}>
-            {isBrowserCompatible && (
-              <div>
-                <Button onClick={() => handleFileProcessing(!isBrowserCompatible)} disabled={disabled}>
-                  {isEncodable ? (
-                    "Upload as is"
-                  ) : (
-                    "Yes, upload"
-                  )}
-                </Button>
-                {isEncodable && (
-                  <FieldDesrcription>
-                    Upload this source as is without any encoding (make sure is optimized for the browser).
-                  </FieldDesrcription>
-                )}
-              </div>
-            )}
-
-            {isEncodable && (
-              <div>
-                <Button onClick={() => handleFileProcessing(true)} disabled={disabled}>
-                  Encode and upload
-                </Button>
-                <FieldDesrcription>
-                  Encoding will ensure the source is optimized and compitible with most browsers.
-                  It might take several minutes to encode a high resolution video.
-                </FieldDesrcription>
-              </div>
-            )}
+            <div>
+              <Button onClick={() => handleFileProcessing()} disabled={disabled}>
+                Upload
+              </Button>
+              <FieldDesrcription>
+                Upload this source as is without any encoding (make sure is optimized for the browser).
+              </FieldDesrcription>
+            </div>
           </div>
         </div>
       ) : (
@@ -251,6 +216,9 @@ const FileDragContent: React.FC<FileDragProps> = ({
               {uploadLimit && (
                 <small className={classNames(classes.dragSize, classes.dragSelect)}>{uploadLimit}MB</small>
               )}
+              <small className={classNames(classes.dragSize, classes.dragSelect)}>
+                {mimeTypes.split(",").map(mime => "." + mime.replace(/^[a-z0-9]+\//, "")).join(" ")}
+              </small>
             </div>
           </label>
         </div>

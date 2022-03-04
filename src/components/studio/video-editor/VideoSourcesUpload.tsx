@@ -34,7 +34,7 @@ import {
 } from "@context/video-editor-context/hooks"
 import { useErrorMessage } from "@state/hooks/ui"
 import { getVideoDuration, getVideoResolution } from "@utils/media"
-import { isMimeAudio, isMimeFFMpegEncodable, isMimeWebCompatible } from "@utils/mime-types"
+import { isMimeWebCompatible } from "@utils/mime-types"
 import type { SwarmVideoQuality, VideoSource } from "@definitions/swarm-video"
 
 type QueueSource = {
@@ -185,9 +185,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
 
     const newSources = [...sources]
     newSources[index].quality = SwarmVideoIO.getSourceName(quality)
-    newSources[index].contentType = isMimeFFMpegEncodable(file.type)
-      ? isMimeAudio(file.type) ? "audio/mpeg" : "video/mp4"
-      : file.type
+    newSources[index].contentType = file.type
     setSources(newSources)
 
     const queueName = SwarmVideoIO.getSourceName(quality)
@@ -259,7 +257,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
             fileDragPortal={i === 0 && initialDragPortal ? initialDragPortal : undefined}
             reference={thisQueue?.reference}
             dragLabel={"Drag your video here"}
-            acceptTypes={["video", "audio"]}
+            acceptTypes={["video"]}
             sizeLimit={100}
             canProcessFile={currentQueue?.name === queueName}
             uploadHandler={buffer => uploadSource(buffer, i)}

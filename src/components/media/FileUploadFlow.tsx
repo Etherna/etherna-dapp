@@ -21,12 +21,10 @@ import classes from "@styles/components/media/FileUploadFlow.module.scss"
 
 import FileDrag from "./FileDrag"
 import FileUpload from "./FileUpload"
-import VideoEncoder from "./VideoEncoder"
 import Label from "@common/Label"
 import { useErrorMessage } from "@state/hooks/ui"
 import { fileToBuffer } from "@utils/buffer"
-import { isMimeFFMpegEncodable, isMimeAudio, isMimeWebCompatible } from "@utils/mime-types"
-import { getVideoDuration, getVideoResolution } from "@utils/media"
+import { isMimeWebCompatible } from "@utils/mime-types"
 import type { FilePreviewRenderProps } from "@definitions/file-preview"
 
 type FileUploadFlowProps = {
@@ -61,15 +59,12 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
   canProcessFile = true,
   fileDragPortal,
   uploadHandler,
-  onEncodingComplete,
   onManifestUpdate,
   onFileSelected,
   onCancel,
 }, ref) => {
   const [buffer, setBuffer] = useState<ArrayBuffer>()
-  const [file, setFile] = useState<File>()
-  const [contentType, setContentType] = useState<string>()
-  const [status, setStatus] = useState<"select" | "encode" | "upload" | "preview">(reference ? "preview" : "select")
+  const [status, setStatus] = useState<"select" | "upload" | "preview">(reference ? "preview" : "select")
 
   const { showError } = useErrorMessage()
 
@@ -85,7 +80,6 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
   useImperativeHandle(ref, () => ({
     clear() {
       setBuffer(undefined)
-      setFile(undefined)
       setStatus("select")
     },
   }))
@@ -93,10 +87,10 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
   const getMime = () => {
     let mime: string[] = []
     if (acceptTypes.indexOf("video") >= 0) {
-      mime = mime.concat(["video/mp4", "video/m4v", "video/avi", "video/webm"])
+      mime = mime.concat(["video/mp4"])
     }
     if (acceptTypes.indexOf("audio") >= 0) {
-      mime = mime.concat(["audio/mp3", "audio/m4a"])
+      mime = mime.concat(["audio/mp3"])
     }
     if (acceptTypes.indexOf("image") >= 0) {
       mime = mime.concat(["image/png", "image/jpeg"])
@@ -104,50 +98,25 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
     return mime.join(",")
   }
 
-  const handleSelectFile = async (file: File, encode: boolean) => {
+  const handleSelectFile = async (file: File) => {
     if (!file) {
-      showError("Error", "The file selected is not supported")
-      return
+      return showError("Error", "The selected file is not supported")
     }
 
-    setContentType(() => {
-      if (!isMimeWebCompatible(file.type)) {
-        if (isMimeAudio(file.type)) return "audio/mpeg"
-        else return "video/mp4"
-      }
-      return file.type
-    })
-
-    // we need a buffer and encoding return a buffer.
-    // if we don't encode we need to get the buffer from file.
-    if (!encode) {
-      const buffer = await fileToBuffer(file)
-      setBuffer(buffer)
+    if (!isMimeWebCompatible(file.type)) {
+      return showError("Error", "The selected file is not supported")
     }
 
-    setFile(file)
+    const buffer = await fileToBuffer(file)
+    setBuffer(buffer)
     onFileSelected?.(file)
-
-    setStatus(encode ? "encode" : "upload")
+    setStatus("upload")
   }
 
   const handleCancel = () => {
     setBuffer(undefined)
-    setFile(undefined)
-    setContentType(undefined)
     setStatus("select")
     onCancel?.()
-  }
-
-  const handleCompleteEncoding = async (buffer: ArrayBuffer) => {
-    setBuffer(buffer)
-
-    const duration = await getVideoDuration(buffer)
-    const quality = await getVideoResolution(buffer)
-
-    onEncodingComplete?.(contentType!, duration, quality)
-
-    setStatus("upload")
   }
 
   const onUploadFinished = (hash: string) => {
@@ -164,22 +133,13 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
       <div className={classes.fileUploadFlow}>
         {status === "select" && (
           <FileDrag
-            id={`${label}-input`}
+            id={`${label || "new"}-input`}
             portal={fileDragPortal}
             label={dragLabel}
             mimeTypes={getMime()}
             disabled={disabled}
             uploadLimit={sizeLimit}
-            canEncodeFile={type => isMimeFFMpegEncodable(type)}
             onSelectFile={handleSelectFile}
-          />
-        )}
-        {status === "encode" && (
-          <VideoEncoder
-            file={file!}
-            canEncode={canProcessFile}
-            onEncodingComplete={handleCompleteEncoding}
-            onCancel={handleCancel}
           />
         )}
         {status === "upload" && (
