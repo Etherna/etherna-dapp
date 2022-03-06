@@ -32,7 +32,6 @@ export const EnvActionTypes = {
   SET_IS_MOBILE: "ENV_SET_IS_MOBILE",
   UPDATE_INDEXHOST: "ENV_UPDATE_INDEXHOST",
   UPDATE_GATEWAY_HOST: "ENV_UPDATE_GATEWAY_HOST",
-  SET_IS_STANDALONE_GATEWAY: "ENV_SET_IS_STANDALONE_GATEWAY",
   UPDATE_BEE_CLIENT: "ENV_UPDATE_BEE_CLIENT",
   UPDATE_BEE_CLIENT_BATCHES: "ENV_UPDATE_BEE_CLIENT_BATCHES",
   UPDATE_KEYMAP: "ENV_UPDATE_KEYMAP",
@@ -55,10 +54,6 @@ type UpdateGatewayHostAction = {
   type: typeof EnvActionTypes.UPDATE_GATEWAY_HOST
   gatewayUrl: string
   beeClient: SwarmBeeClient
-}
-type SetIsStandaloneGatewayAction = {
-  type: typeof EnvActionTypes.SET_IS_STANDALONE_GATEWAY
-  isStandalone: boolean
 }
 type UpdateBeeClientAction = {
   type: typeof EnvActionTypes.UPDATE_BEE_CLIENT
@@ -89,7 +84,6 @@ type UpdateBytePriceAction = {
 
 export type EnvActions = (
   SetIsMobileAction |
-  SetIsStandaloneGatewayAction |
   UpdateIndexHostAction |
   UpdateGatewayHostAction |
   UpdateBeeClientAction |
@@ -143,12 +137,6 @@ const enviromentReducer = (state: EnvState = initialState, action: EnvActions): 
       return {
         ...state,
         isMobile: action.isMobile,
-      }
-
-    case EnvActionTypes.SET_IS_STANDALONE_GATEWAY:
-      return {
-        ...state,
-        isStandaloneGateway: action.isStandalone,
       }
 
     case EnvActionTypes.UPDATE_INDEXHOST:

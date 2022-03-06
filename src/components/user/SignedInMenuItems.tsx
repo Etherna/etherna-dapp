@@ -46,12 +46,11 @@ const SignedInMenuItems: React.FC = () => {
         </div>
       </DropdownItem>
 
+      <hr />
+
       <DropdownItem href={routes.getChannelLink(address!)} icon={<ProfileIcon />}>
         View channel
       </DropdownItem>
-
-      <hr />
-
       <DropdownItem href={routes.getStudioLink()} icon={<SparklesIcon />}>
         Creator Studio
       </DropdownItem>

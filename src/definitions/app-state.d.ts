@@ -41,7 +41,6 @@ export type EnvState = {
   authClient: EthernaAuthClient
   beeClient: SwarmBeeClient
   bytePrice?: number
-  isStandaloneGateway?: boolean
 
   keymap: Keymap
   lang: Lang

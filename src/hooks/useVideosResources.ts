@@ -22,18 +22,16 @@ import useSelector from "@state/useSelector"
 import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
 
 export default function useVideosResources(videos: Video[] | undefined) {
-  const { gatewayClient, isStandaloneGateway } = useSelector(state => state.env)
+  const { gatewayClient } = useSelector(state => state.env)
   const { address } = useSelector(state => state.user)
   const [videosOffersStatus, setVideosOffersStatus] = useState<Record<string, VideoOffersStatus>>()
 
   useEffect(() => {
-    if (isStandaloneGateway) return
-
     if (videos) {
       fetchVideosStatus()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [videos, isStandaloneGateway])
+  }, [videos])
 
   const fetchVideosStatus = async () => {
     if (!videos) return

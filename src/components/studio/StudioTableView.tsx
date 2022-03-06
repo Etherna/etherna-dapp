@@ -35,7 +35,7 @@ type StudioTableViewProps<T = any> = {
     width?: string
     hideOnMobile?: boolean
     render(item: T): React.ReactNode
-  } | null>
+  }>
   showSelection?: boolean
   selectionActions?: React.ReactNode
   onPageChange?(page: number, perPage?: number): void
@@ -118,20 +118,17 @@ const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
                   />
                 </th>
               )}
-              {columns?.map((col, i) => {
-                if (!col) return null
-                return (
-                  <th
-                    className={classNames({
-                      [classes.hideMobile]: col.hideOnMobile
-                    })}
-                    style={{ width: col.width }}
-                    key={i}
-                  >
-                    {col.title}
-                  </th>
-                )
-              })}
+              {columns?.map((col, i) => (
+                <th
+                  className={classNames({
+                    [classes.hideMobile]: col.hideOnMobile
+                  })}
+                  style={{ width: col.width }}
+                  key={i}
+                >
+                  {col.title}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -146,19 +143,16 @@ const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
                     />
                   </td>
                 )}
-                {columns?.map((col, i) => {
-                  if (!col) return null
-                  return (
-                    <td
-                      className={classNames({
-                        [classes.hideMobile]: col.hideOnMobile
-                      })}
-                      key={i}
-                    >
-                      {col.render(item)}
-                    </td>
-                  )
-                })}
+                {columns?.map((col, i) => (
+                  <td
+                    className={classNames({
+                      [classes.hideMobile]: col.hideOnMobile
+                    })}
+                    key={i}
+                  >
+                    {col.render(item)}
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>
