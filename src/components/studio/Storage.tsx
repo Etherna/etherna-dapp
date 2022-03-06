@@ -22,18 +22,31 @@ import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 
 import StorageBatch from "./storage/StorageBatch"
 import useSelector from "@state/useSelector"
+import Alert from "@common/Alert"
 
 const Storage: React.FC = () => {
-  const { batches } = useSelector(state => state.user)
+  const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
+  const batches = useSelector(state => state.user.batches)
 
   return (
     <div className={classes.storage}>
+      {(isStandaloneGateway && batches?.length === 0) && (
+        <Alert title="No storage found" type="danger">
+          <p>
+            {`You don't have any storage on this gateway, or
+            the current gateway doesn't provide any.`}
+          </p>
+          <p>
+            {`Without storage you won't be able to upload any data.`}
+          </p>
+        </Alert>
+      )}
       {batches == null && (
         <p className={classes.storageLoading}>
           <Spinner aria-hidden /> We are loading your storage information
         </p>
       )}
-      {(batches && !batches.length) && (
+      {(batches && !batches.length && !isStandaloneGateway) && (
         <p className={classes.storageLoading}>
           <Spinner aria-hidden /> We are creating your first storage on Etherna. Refresh this page in a few seconds.
         </p>

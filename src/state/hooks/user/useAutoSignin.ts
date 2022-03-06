@@ -80,9 +80,18 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
       const address = identity.etherLoginAddress || identity.etherAddress
       fetchProfile(address, identity)
     }
-    if (hasCredit) {
-      fetchBatches()
-    }
+
+    let userBatches: GatewayBatch[] = await fetchBatches()
+
+    dispatch({
+      type: EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES,
+      batches: userBatches,
+    })
+
+    dispatch({
+      type: UserActionTypes.USER_SET_BATCHES,
+      batches: userBatches,
+    })
   }
 
   const fetchAuthIdentity = async () => {
@@ -241,15 +250,31 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
           fetchBatches()
         }, 10000)
 
-        return
+        return []
       }
 
       userBatches = await Promise.all(
         batchesPreview.map(batchPreview => gatewayClient.users.fetchBatch(batchPreview.batchId))
       )
     } catch (error) {
-      if (import.meta.env.DEV) {
-        // In local execution return the initial batch id
+      if (batchesPreview.length > 0) {
+        userBatches = batchesPreview.map(batchPreview => ({
+          id: batchPreview.batchId,
+          depth: 20,
+          bucketDepth: 0,
+          amountPaid: 0,
+          normalisedBalance: 0,
+          batchTTL: 0,
+          usable: false,
+          utilization: 0,
+          blockNumber: 0,
+          exists: false,
+          immutableFlag: false,
+          label: "",
+          ownerAddress: null,
+        }))
+      } else {
+        // Try to fetch from /stamps endpoint
         const batches = await beeClient.getAllPostageBatch()
         const usableBatches = batches.filter(batch => batch.usable)
         userBatches = usableBatches.map(batch => ({
@@ -267,33 +292,9 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
           label: batch.label,
           ownerAddress: null,
         }))
-      } else {
-        userBatches = batchesPreview.map(batchPreview => ({
-          id: batchPreview.batchId,
-          depth: 20,
-          bucketDepth: 0,
-          amountPaid: 0,
-          normalisedBalance: 0,
-          batchTTL: 0,
-          usable: false,
-          utilization: 0,
-          blockNumber: 0,
-          exists: false,
-          immutableFlag: false,
-          label: "",
-          ownerAddress: null,
-        }))
       }
     }
 
-    dispatch({
-      type: EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES,
-      batches: userBatches,
-    })
-
-    dispatch({
-      type: UserActionTypes.USER_SET_BATCHES,
-      batches: userBatches,
-    })
+    return userBatches
   }
 }
