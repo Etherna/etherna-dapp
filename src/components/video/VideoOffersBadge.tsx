@@ -23,6 +23,7 @@ import { ReactComponent as CreditIcon } from "@assets/icons/credit.svg"
 
 import VideoOffersModal from "@components/modals/VideoOffersModal"
 import useVideoOffers from "@hooks/useVideoOffers"
+import useSelector from "@state/useSelector"
 import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
 
 type VideoOffersBadgeProps = {
@@ -31,12 +32,14 @@ type VideoOffersBadgeProps = {
 }
 
 const VideoOffersBadge: React.FC<VideoOffersBadgeProps> = ({ video, videoOffers }) => {
+  const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
   const { videoOffersStatus, offerResources, unofferResources } = useVideoOffers(video, {
-    routeState: videoOffers
+    routeState: videoOffers,
+    disable: isStandaloneGateway,
   })
   const [showOffersModal, setShowOffersModal] = useState(false)
 
-  if (!video) return null
+  if (!video || isStandaloneGateway) return null
 
   const offersStatus = videoOffersStatus?.offersStatus
 

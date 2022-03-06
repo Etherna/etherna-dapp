@@ -23,6 +23,7 @@ import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
 
 type UseVideoOffersOpts = {
   routeState?: VideoOffersStatus
+  disable?: boolean
 }
 
 export default function useVideoOffers(video: Video | null | undefined, opts?: UseVideoOffersOpts) {
@@ -31,6 +32,8 @@ export default function useVideoOffers(video: Video | null | undefined, opts?: U
   const [videoOffersStatus, setVideoOffersStatus] = useState<VideoOffersStatus>()
 
   useEffect(() => {
+    if (opts?.disable) return
+
     if (video && !videoOffersStatus && !opts?.routeState) {
       fetchVideoStatus()
     }
