@@ -35,7 +35,8 @@ declare global {
       GATEWAY_PROXY_BEE_HOST: string
       GATEWAY_PROXY_BEE_DEBUG_HOST: string
       GATEWAY_PROXY_VALIDATOR_HOST: string
-      DISABLE_REQUEST_VALIDATION: string
+      GATEWAY_PROXY_STANDALONE: string
+      GATEWAY_PROXY_DISABLE_VALIDATION: string
     }
   }
 }
