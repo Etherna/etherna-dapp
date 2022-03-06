@@ -52,8 +52,8 @@ export type VideoEditorHandle = {
 const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const { waitConfirmation } = useConfirmation()
   const profile = useSelector(state => state.profile)
-  const { address } = useSelector(state => state.user)
-  const { indexClient } = useSelector(state => state.env)
+  const indexClient = useSelector(state => state.env.indexClient)
+  const { address, batches } = useSelector(state => state.user)
 
   const [{ reference, queue, videoWriter }] = useVideoEditorState()
   const hasQueuedProcesses = queue.filter(q => !q.reference).length > 0
@@ -91,6 +91,10 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   }))
 
   const submitVideo = async () => {
+    if (!batches || batches.length === 0) {
+      return showError("Cannot upload", "You don't have any storage yet.")
+    }
+
     if (isLocked) {
       return showError(
         "Wallet Locked",

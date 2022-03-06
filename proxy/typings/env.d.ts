@@ -37,6 +37,7 @@ declare global {
       GATEWAY_PROXY_VALIDATOR_HOST: string
       GATEWAY_PROXY_STANDALONE: string
       GATEWAY_PROXY_DISABLE_VALIDATION: string
+      GATEWAY_PROXY_DISABLE_DEBUG: string
     }
   }
 }

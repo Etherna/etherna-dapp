@@ -23,8 +23,9 @@ import useSelector from "@state/useSelector"
 import routes from "@routes"
 
 const CantUploadAlert: React.FC = () => {
-  const { batches } = useSelector(state => state.user)
-  const { isLoadingProfile } = useSelector(state => state.ui)
+  const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
+  const batches = useSelector(state => state.user.batches)
+  const isLoadingProfile = useSelector(state => state.ui.isLoadingProfile)
 
   const [loading, noBatches, noUsableBatches] = useMemo(() => {
     const loading = batches == null
@@ -35,9 +36,11 @@ const CantUploadAlert: React.FC = () => {
 
   const title = useMemo(() => {
     if (loading) return "You storage is loading"
+    if (noBatches && isStandaloneGateway) return "No storage found"
     if (noBatches) return "We are creating you first storage"
     if (noUsableBatches) return "Your storage is not usable"
-  }, [loading, noBatches, noUsableBatches])
+    return "No storage found"
+  }, [loading, noBatches, isStandaloneGateway, noUsableBatches])
 
   if (isLoadingProfile) return null
   if (!loading && !noBatches && !noUsableBatches) return null
