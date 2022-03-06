@@ -18,6 +18,7 @@ import { useEffect } from "react"
 import { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
 import type { EthAddress } from "@ethersphere/bee-js/dist/src/utils/eth"
+import type { AxiosError } from "axios"
 
 import SwarmProfileIO from "@classes/SwarmProfile"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
@@ -120,7 +121,16 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
       })
 
       return true
-    } catch {
+    } catch (error: any) {
+      const status = (error as AxiosError).response?.status
+
+      if (status === 404) {
+        dispatch({
+          type: EnvActionTypes.SET_IS_STANDALONE_GATEWAY,
+          isStandalone: true
+        })
+      }
+
       dispatch({
         type: UserActionTypes.USER_UPDATE_CREDIT,
         credit: null,

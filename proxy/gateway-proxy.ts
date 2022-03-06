@@ -17,7 +17,6 @@
 import fs from "fs"
 import path from "path"
 import https from "https"
-import fetch from "node-fetch"
 
 import "./utils/env.js"
 import defaultProxyResponse from "./middlewares/default-proxy-response.js"
@@ -49,9 +48,10 @@ if (fs.existsSync(PrivateKeyPath) && fs.existsSync(CertificatePath)) {
     const beeRegex = /^\/(bytes|chunks|bzz|tags|pins|soc|feeds|pss)\/?.*/
     const isBee = beeRegex.test(req.url)
     const isBeeDebug = beeDebugRegex.test(req.url)
-    const shouldValidate = process.env.DISABLE_REQUEST_VALIDATION !== "true"
+    const standaloneNode = process.env.GATEWAY_PROXY_STANDALONE === "true"
+    const shouldValidate = !standaloneNode && process.env.GATEWAY_PROXY_DISABLE_VALIDATION !== "true"
 
-    let hostType: keyof typeof ProxyHosts = "gateway"
+    let hostType: keyof typeof ProxyHosts = standaloneNode ? "bee" : "gateway"
     if (isBee) hostType = "bee"
     if (isBeeDebug) hostType = "beeDebug"
 

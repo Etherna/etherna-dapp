@@ -50,7 +50,7 @@ import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
 const Videos: React.FC = () => {
   const profileInfo = useSelector(state => state.profile)
   const address = useSelector(state => state.user.address)
-  const { beeClient, indexClient } = useSelector(state => state.env)
+  const { beeClient, indexClient, isStandaloneGateway } = useSelector(state => state.env)
 
   const [profile, setProfile] = useState<Profile>()
   const [page, setPage] = useState(1)
@@ -175,6 +175,10 @@ const Videos: React.FC = () => {
   }
 
   const renderOffersStatus = (video: Video) => {
+    if (isStandaloneGateway) {
+      return null
+    }
+
     if (videosOffersStatus === undefined) {
       return <Spinner className="w-5 h-5" />
     }
@@ -251,7 +255,7 @@ const Videos: React.FC = () => {
           title: "Status",
           hideOnMobile: true,
           render: item => renderVideoStatus(item)
-        }, {
+        }, isStandaloneGateway ? null : {
           title: "Offered",
           hideOnMobile: true,
           render: item => renderOffersStatus(item)

@@ -76,7 +76,7 @@ Update the following keys with the paths to the .csproj file (example '/path/to/
 To use the public gateway set the following keys in the .env:
 
 - `BEE_LOCAL_INSTANCE=false`
-- `DISABLE_REQUEST_VALIDATION=true`
+- `GATEWAY_PROXY_DISABLE_VALIDATION=true`
 - `GATEWAY_SWARM_PROXY_HOST="https://gateway.ethswarm.org"`
 
 To use a local gateway, first setup bee locally. More info here (https://docs.ethswarm.org/docs/installation/quick-start).
@@ -85,7 +85,7 @@ Then set the following keys in the .env:
 - `BEE_LOCAL_INSTANCE=true`
 - `BEE_ENDPOINT="http://localhost:1633"`
 - `GATEWAY_SWARM_PROXY_HOST="http://localhost:1633"`
-- `DISABLE_REQUEST_VALIDATION=false`
+- `GATEWAY_PROXY_DISABLE_VALIDATION=false`
 
 ### 7. Setup the proxy enviroment
 

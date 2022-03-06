@@ -35,12 +35,12 @@ import useSignout from "@state/hooks/user/useSignout"
 
 const UserMenu: React.FC = () => {
   const { avatar } = useSelector(state => state.profile)
-  const { isSignedIn, isSignedInGateway, address } = useSelector(state => state.user)
+  const { isSignedIn, address } = useSelector(state => state.user)
   const { isLoadingProfile } = useSelector(state => state.ui)
   const { signout } = useSignout()
 
-  const isSigningIn = isSignedIn === undefined || isSignedInGateway === undefined || isLoadingProfile
-  const isFullySignedIn = isSignedIn === true && isSignedInGateway === true
+  const isSigningIn = isSignedIn === undefined || isLoadingProfile
+  const isFullySignedIn = isSignedIn === true
 
   if (isSigningIn) {
     return (
