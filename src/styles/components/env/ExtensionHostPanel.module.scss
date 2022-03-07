@@ -18,6 +18,20 @@
   @apply text-left; // fix modal text-center on mobile
 }
 
+.extensionHostPanelAuth {
+  @apply inline-block;
+  @apply px-3 py-1 rounded;
+  @apply border-2 font-semibold;
+  @apply border-gray-400 text-gray-400;
+  @apply dark:border-gray-500 dark:text-gray-500;
+  @apply mt-1 mb-3;
+
+  &.auth {
+    @apply border-green-600 text-green-600;
+    @apply dark:border-green-600 dark:text-green-600;
+  }
+}
+
 .extensionHostPanelDescription {
   @apply text-sm;
   @apply text-gray-700 dark:text-gray-400;

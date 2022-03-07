@@ -32,6 +32,7 @@ import useLocalStorage from "@hooks/useLocalStorage"
 import { useErrorMessage } from "@state/hooks/ui"
 import { isSafeURL, urlHostname } from "@utils/urls"
 import type { ExtensionHost } from "@definitions/extension-host"
+import classNames from "classnames"
 
 type ExtensionHostPanelProps = {
   listStorageKey: string
@@ -39,6 +40,8 @@ type ExtensionHostPanelProps = {
   initialValue?: ExtensionHost
   defaultUrl?: string
   description?: string
+  isSignedIn: boolean
+  signInUrl?: string | null
   onChange?(extension: ExtensionHost): void
   onToggleEditing?(editing: boolean): void
 }
@@ -49,6 +52,8 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
   initialValue,
   defaultUrl,
   description,
+  isSignedIn,
+  signInUrl,
   onChange,
   onToggleEditing
 }) => {
@@ -133,8 +138,25 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
     onChange?.(selectedHost!)
   }
 
+  const signin = () => {
+    const retUrl = encodeURIComponent(window.location.href)
+    window.location.href = signInUrl! + `?ReturnUrl=${retUrl}`
+  }
+
   return (
     <div className={classes.extensionHostPanel}>
+      <div className={classNames(classes.extensionHostPanelAuth, {
+        [classes.auth]: isSignedIn
+      })}>
+        {isSignedIn ? "Authenticated" : "Not authenticated"}
+      </div>
+
+      {!isSignedIn && signInUrl && (
+        <Button className="ml-3" modifier="primary" small onClick={signin}>
+          Sign in
+        </Button>
+      )}
+
       <p className={classes.extensionHostPanelDescription}>{description}</p>
 
       <div className={classes.extensionHostPanelListContainer}>
