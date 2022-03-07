@@ -96,7 +96,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
 
   return (
     <div className={classes.extensionHostsList}>
-      {canScrollPrev && (
+      {(canScrollPrev && !editing) && (
         <button className={classNames(classes.extensionHostsListNav, classes.prev)} onClick={() => scrollList("prev")}>
           <ChevronLeftIcon />
         </button>
@@ -125,7 +125,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
         ))}
       </div>
 
-      {canScrollNext && (
+      {(canScrollNext && !editing) && (
         <button className={classNames(classes.extensionHostsListNav, classes.next)} onClick={() => scrollList("next")}>
           <ChevronLeftIcon />
         </button>

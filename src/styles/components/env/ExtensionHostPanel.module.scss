@@ -54,6 +54,9 @@
   .btn {
     @apply px-1.5 py-1;
   }
+  .btnText {
+    @apply px-0;
+  }
 }
 
 .extensionHostPanelActionsRight {

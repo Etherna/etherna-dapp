@@ -38,7 +38,6 @@ const ExtensionEditorModal = () => {
   const [openModal, setOpenModal] = useState(false)
   const [editingExtension, setEditingExtension] = useState<string>()
   const [isEditing, setIsEditing] = useState(false)
-  const [selectedUrl, setSelectedUrl] = useState("")
 
   const defaultUrl = useMemo(() => {
     switch (editingExtension) {
@@ -47,13 +46,6 @@ const ExtensionEditorModal = () => {
       default: return ""
     }
   }, [editingExtension])
-
-  const initialSelectedUrl = useMemo(() => {
-    if (localStorage.getItem(STORAGE_SELECTED_KEY)) {
-      return JSON.parse(localStorage.getItem(STORAGE_SELECTED_KEY)!)
-    }
-    return defaultUrl
-  }, [defaultUrl, STORAGE_SELECTED_KEY])
 
   const [signedIn, signInUrl] = useMemo(() => {
     switch (editingExtension) {
@@ -67,12 +59,6 @@ const ExtensionEditorModal = () => {
     extensionName && setEditingExtension(extensionName)
     setOpenModal(!!extensionName)
   }, [extensionName])
-
-  useEffect(() => {
-    if (initialSelectedUrl) {
-      setSelectedUrl(initialSelectedUrl)
-    }
-  }, [initialSelectedUrl])
 
   const description = useMemo(() => {
     switch (editingExtension) {
@@ -113,11 +99,11 @@ const ExtensionEditorModal = () => {
       }
       footerButtons={
         <>
-          <Button onClick={applyChanges} disabled={isEditing || selectedUrl === initialSelectedUrl}>
-            Apply changes
+          <Button onClick={applyChanges} disabled={isEditing}>
+            Switch {editingExtension}
           </Button>
           <Button modifier="muted" onClick={closeModal} disabled={isEditing}>
-            Cancel
+            Done
           </Button>
         </>
       }
@@ -130,7 +116,6 @@ const ExtensionEditorModal = () => {
         description={description}
         isSignedIn={signedIn}
         signInUrl={signInUrl}
-        onChange={host => setSelectedUrl(host.url)}
         onToggleEditing={setIsEditing}
       />
     </Modal>

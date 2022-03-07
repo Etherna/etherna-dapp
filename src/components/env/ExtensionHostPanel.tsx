@@ -179,37 +179,37 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
       <div className={classes.extensionHostPanelUpdate}>
         <div className={classes.extensionHostPanelActions}>
           {isEditing ? (
-            <>
+            <div className="space-x-3">
               <Button className={classes.btn} modifier="secondary" onClick={saveSelectedHost} small>
                 <CheckIcon />
                 <span>Save</span>
               </Button>
-              <div className={classes.extensionHostPanelActionsRight}>
-                <Button className={classes.btn} modifier="transparent" onClick={deleteSelectedHost} small>
-                  <TrashIcon />
-                  <span>Remove</span>
-                </Button>
-              </div>
-            </>
+              <Button className={classes.btnText} modifier="transparent" onClick={deleteSelectedHost} small>
+                <TrashIcon />
+                <span>Remove</span>
+              </Button>
+            </div>
           ) : (
             <>
-              <Button className={classes.btn} modifier="inverted" aspect="outline" onClick={addNewHost} small>
-                <PlusIcon />
-                <span>Add</span>
-              </Button>
-
               {!isVerifiedOrigin(selectedUrl) && (
-                <div className={classes.extensionHostPanelActionsRight}>
-                  <Button className={classes.btn} modifier="transparent" onClick={toggleEditSelectedHost} small>
+                <div className="space-x-3">
+                  <Button className={classes.btnText} modifier="transparent" onClick={toggleEditSelectedHost} small>
                     <EditIcon />
                     <span>Edit</span>
                   </Button>
-                  <Button className={classes.btn} modifier="transparent" onClick={deleteSelectedHost} small>
+                  <Button className={classes.btnText} modifier="transparent" onClick={deleteSelectedHost} small>
                     <TrashIcon />
                     <span>Remove</span>
                   </Button>
                 </div>
               )}
+
+              <div className={classes.extensionHostPanelActionsRight}>
+                <Button className={classes.btn} modifier="inverted" aspect="outline" onClick={addNewHost} small>
+                  <PlusIcon />
+                  <span>Add</span>
+                </Button>
+              </div>
             </>
           )}
         </div>
