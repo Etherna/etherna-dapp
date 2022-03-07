@@ -16,6 +16,7 @@
  */
 
 import React, { useMemo, useState } from "react"
+import classNames from "classnames"
 
 import classes from "@styles/components/env/ExtensionHostPanel.module.scss"
 import { ReactComponent as EditIcon } from "@assets/icons/edit.svg"
@@ -32,7 +33,6 @@ import useLocalStorage from "@hooks/useLocalStorage"
 import { useErrorMessage } from "@state/hooks/ui"
 import { isSafeURL, urlHostname } from "@utils/urls"
 import type { ExtensionHost } from "@definitions/extension-host"
-import classNames from "classnames"
 
 type ExtensionHostPanelProps = {
   listStorageKey: string
@@ -59,8 +59,10 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
 }) => {
   const verifiedOrigins = import.meta.env.VITE_APP_VERIFIED_ORIGINS.split(";")
   const defaultValue = initialValue ? [initialValue] : []
-  const [hosts, setHosts] = useLocalStorage(listStorageKey, defaultValue)
-  const [selectedUrl, setSelectedUrl] = useLocalStorage(currentStorageKey, defaultUrl)
+  const [storageHosts, setStorageHosts] = useLocalStorage(listStorageKey, defaultValue)
+  const [storageSelectedUrl, setStorageSelectedUrl] = useLocalStorage(currentStorageKey, defaultUrl)
+  const [hosts, setHosts] = useState(storageHosts)
+  const [selectedUrl, setSelectedUrl] = useState(storageSelectedUrl)
   const { showError } = useErrorMessage()
 
   const selectedHost = useMemo(() => {
@@ -84,6 +86,7 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
   const selectHost = (newHost: ExtensionHost) => {
     const selectedHostIndex = hosts!.findIndex(host => host.url === newHost.url)
     setSelectedUrl(hosts![selectedHostIndex].url)
+    setStorageSelectedUrl(hosts![selectedHostIndex].url)
     setName(newHost.name)
     setUrl(newHost.url)
     onChange?.(newHost)
@@ -111,7 +114,9 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
     const nextIndex = selectedHostIndex < newHosts.length ? selectedHostIndex : 0
 
     setHosts(newHosts)
+    setStorageHosts(newHosts)
     setSelectedUrl(newHosts[nextIndex].url)
+    setStorageSelectedUrl(newHosts[nextIndex].url)
     setName(newHosts[nextIndex].name)
     setUrl(newHosts[nextIndex].url)
     onChange?.(selectedHost!)
@@ -133,7 +138,9 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
 
     toggleEditSelectedHost()
     setHosts(newHosts)
+    setStorageHosts(newHosts)
     setSelectedUrl(url)
+    setStorageSelectedUrl(url)
     setIsEditing(false)
     onChange?.(selectedHost!)
   }
@@ -151,7 +158,7 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
         {isSignedIn ? "Authenticated" : "Not authenticated"}
       </div>
 
-      {!isSignedIn && signInUrl && (
+      {!isSignedIn && signInUrl && selectedUrl === initialValue?.url && (
         <Button className="ml-3" modifier="primary" small onClick={signin}>
           Sign in
         </Button>
@@ -163,6 +170,7 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
         <ExtensionHostsList
           hosts={hosts ?? []}
           selectedHost={selectedHost}
+          editing={isEditing}
           isVerifiedOrigin={isVerifiedOrigin}
           onHostSelected={selectHost}
         />
@@ -172,7 +180,7 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
         <div className={classes.extensionHostPanelActions}>
           {isEditing ? (
             <>
-              <Button className={classes.btn} modifier="transparent" onClick={saveSelectedHost} small>
+              <Button className={classes.btn} modifier="secondary" onClick={saveSelectedHost} small>
                 <CheckIcon />
                 <span>Save</span>
               </Button>
@@ -185,7 +193,7 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
             </>
           ) : (
             <>
-              <Button className={classes.btn} modifier="transparent" onClick={addNewHost} small>
+              <Button className={classes.btn} modifier="inverted" aspect="outline" onClick={addNewHost} small>
                 <PlusIcon />
                 <span>Add</span>
               </Button>

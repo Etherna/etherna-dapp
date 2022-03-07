@@ -89,16 +89,20 @@
   }
 
   &.active {
-    @apply border-blue-400 dark:border-blue-500;
-    @apply bg-blue-400 dark:bg-blue-500;
+    @apply border-indigo-400 dark:border-indigo-500;
+    @apply bg-indigo-400 dark:bg-indigo-500;
 
     .name,
     .host {
       @apply text-white;
     }
     .verified {
-      @apply text-blue-700 dark:text-blue-800;
+      @apply text-indigo-700 dark:text-indigo-800;
     }
+  }
+
+  &.disabled {
+    @apply opacity-30 pointer-events-none;
   }
 
   & + & {
