@@ -30,6 +30,7 @@ import type { ExtensionHost } from "@definitions/extension-host"
 type ExtensionHostsListProps = {
   hosts: ExtensionHost[]
   selectedHost: ExtensionHost | undefined
+  editing?: boolean
   isVerifiedOrigin(url: string | null): boolean
   onHostSelected?(host: ExtensionHost): void
 }
@@ -37,6 +38,7 @@ type ExtensionHostsListProps = {
 const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
   hosts,
   selectedHost,
+  editing,
   isVerifiedOrigin,
   onHostSelected
 }) => {
@@ -94,7 +96,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
 
   return (
     <div className={classes.extensionHostsList}>
-      {canScrollPrev && (
+      {(canScrollPrev && !editing) && (
         <button className={classNames(classes.extensionHostsListNav, classes.prev)} onClick={() => scrollList("prev")}>
           <ChevronLeftIcon />
         </button>
@@ -104,7 +106,8 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
         {hosts?.map((host, i) => (
           <button
             className={classNames(classes.extensionHostsListButton, {
-              [classes.active]: host.url === selectedHost?.url
+              [classes.active]: host.url === selectedHost?.url,
+              [classes.disabled]: editing && host.url !== selectedHost?.url,
             })}
             onClick={() => onHostSelected?.(host)}
             key={i}
@@ -122,7 +125,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
         ))}
       </div>
 
-      {canScrollNext && (
+      {(canScrollNext && !editing) && (
         <button className={classNames(classes.extensionHostsListNav, classes.next)} onClick={() => scrollList("next")}>
           <ChevronLeftIcon />
         </button>
