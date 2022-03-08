@@ -34,6 +34,8 @@ export type VideoEditorContextState = {
   queue: VideoEditorQueue[]
   /** Pin content on Swarm */
   pinContent: boolean | undefined
+  /** Whether the user made come changes */
+  hasChanges: boolean
 }
 
 export type VideoEditorQueueName = SwarmVideoQuality | typeof THUMBNAIL_QUEUE_NAME

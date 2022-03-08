@@ -146,7 +146,8 @@ const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEdit
         queue: [],
         ownerAddress: state.ownerAddress,
         pinContent: state.pinContent,
-        videoWriter: state.videoWriter.resetCopy()
+        videoWriter: state.videoWriter.resetCopy(),
+        hasChanges: false,
       }
       break
   }
@@ -154,6 +155,7 @@ const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEdit
   if (action.type === VideoEditorActionTypes.RESET) {
     VideoEditorCache.deleteCache()
   } else {
+    newState.hasChanges = true
     VideoEditorCache.saveState(newState)
   }
 

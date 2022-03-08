@@ -55,7 +55,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const indexClient = useSelector(state => state.env.indexClient)
   const { address, batches } = useSelector(state => state.user)
 
-  const [{ reference, queue, videoWriter }] = useVideoEditorState()
+  const [{ reference, queue, videoWriter, hasChanges }] = useVideoEditorState()
   const hasQueuedProcesses = queue.filter(q => !q.reference).length > 0
   const hasOriginalVideo = videoWriter.originalQuality && videoWriter.sources.length > 0
   const canPublishVideo = !!videoWriter.videoRaw.title && hasOriginalVideo
@@ -176,7 +176,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     clear && resetState()
   }
 
-  const usePortal = VideoEditorCache.isCacheEmptyOrDefault && queue.length === 0 && !reference
+  const usePortal = !reference && !hasChanges
 
   if (saved) {
     return <Redirect to={routes.getStudioVideosLink()} />

@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "type": "module",
   "scripts": {
-    "start": "tsc && nodemon build/gateway-proxy.js --experimental-specifier-resolution=node"
+    "start": "tsc && nodemon -x 'node build/gateway-proxy.js || touch build/gateway-proxy.js'"
   },
   "dependencies": {
     "cors": "2.8.5",
