@@ -18,15 +18,14 @@
 import React from "react"
 
 import SEO from "@components/layout/SEO"
-import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import NotFound from "@common/NotFound"
 
 const NotFoundPage = () => {
   return (
-    <AppLayoutWrapper emptyLayout>
+    <>
       <SEO title="404 - Not Found" />
       <NotFound showBackLink />
-    </AppLayoutWrapper>
+    </>
   )
 }
 

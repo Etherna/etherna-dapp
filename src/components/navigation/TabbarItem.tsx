@@ -61,8 +61,6 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
             to={to}
             target={target}
             rel={rel}
-            isActive={() => isCurrentPage}
-            activeClassName={classes.active}
           >
             {children}
           </NavLink>

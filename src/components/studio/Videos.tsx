@@ -16,7 +16,7 @@
  */
 
 import React, { useEffect, useState } from "react"
-import { Redirect } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 import classNames from "classnames"
 
 import classes from "@styles/components/studio/Videos.module.scss"
@@ -208,7 +208,7 @@ const Videos: React.FC = () => {
   }
 
   if (!address) {
-    return <Redirect to={routes.getHomeLink()} />
+    return <Navigate to={routes.getHomeLink()} />
   }
 
   return (

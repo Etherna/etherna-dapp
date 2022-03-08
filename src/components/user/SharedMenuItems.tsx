@@ -26,14 +26,13 @@ import DarkModeToggle from "./DarkModeToggle"
 import DropdownItem from "@common/DropdownItem"
 // import IndexExtension from "@components/env/IndexExtension"
 import GatewayExtension from "@components/env/GatewayExtension"
+import { useDarkMode } from "@state/hooks/env"
 import routes from "@routes"
-import { toggleDarkMode } from "@state/actions/enviroment/dark-mode"
-import useSelector from "@state/useSelector"
 
 type SharedMenuItemsProps = {}
 
 const SharedMenuItems: React.FC<SharedMenuItemsProps> = () => {
-  const darkMode = useSelector(state => state.env.darkMode)
+  const { darkMode, toggleDarkMode } = useDarkMode()
 
   const handleDarkModeChange = () => {
     toggleDarkMode(!darkMode)

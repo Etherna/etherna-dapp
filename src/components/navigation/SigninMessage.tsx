@@ -25,7 +25,7 @@ const SigninMessage: React.FC = () => {
   return (
     <div className={classes.signinMessage}>
       <div className={classes.signinMessageText}>
-        You must signin to visit this page.
+        You must sign in to visit this page.
       </div>
 
       <div>

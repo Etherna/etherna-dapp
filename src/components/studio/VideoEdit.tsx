@@ -16,7 +16,7 @@
  */
 
 import React, { useEffect, useRef, useState } from "react"
-import { Redirect } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 
 import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 import { ReactComponent as TrashIcon } from "@assets/icons/trash.svg"
@@ -72,7 +72,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   }
 
   if (video && video.ownerAddress !== address) {
-    return <Redirect to={routes.getStudioVideosLink()} />
+    return <Navigate to={routes.getStudioVideosLink()} />
   }
 
   const handleSave = async () => {

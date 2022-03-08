@@ -16,7 +16,7 @@
  */
 
 import React from "react"
-import { useHistory, useLocation } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { Listbox } from "@headlessui/react"
 
 import classes from "@styles/components/navigation/DropdownSidebar.module.scss"
@@ -30,7 +30,7 @@ type DropdownSidebarProps = {
 
 const DropdownSidebar: React.FC<DropdownSidebarProps> = ({ className, defaultTitle, children }) => {
   const { pathname } = useLocation()
-  const { push } = useHistory()
+  const navigate = useNavigate()
 
   const isActive = (item: React.ReactElement): boolean => typeof item.props.isActive === "function"
     ? item.props.isActive(pathname)
@@ -39,7 +39,7 @@ const DropdownSidebar: React.FC<DropdownSidebarProps> = ({ className, defaultTit
     .find(item => isActive(item as any)) as React.ReactElement | undefined
 
   const goTo = (path: string) => {
-    push(path)
+    navigate(path)
   }
 
   return (

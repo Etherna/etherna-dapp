@@ -74,14 +74,13 @@ const SidebarLinksItem: React.FC<SidebarLinksItemProps> = ({
         ) : to ? (
           <NavLink
             className={classNames(classes.sidebarLinkItem, className, {
-              [classes.disabled]: disabled
+              [activeClassName]: isCurrentPage,
+              [classes.disabled]: disabled,
             })}
             id={id}
             to={to}
             target={target}
             rel={rel}
-            isActive={() => isCurrentPage}
-            activeClassName={activeClassName}
           >
             {children}
           </NavLink>
