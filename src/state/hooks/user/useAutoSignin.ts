@@ -257,7 +257,7 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
         batchesPreview.map(batchPreview => gatewayClient.users.fetchBatch(batchPreview.batchId))
       )
     } catch (error) {
-      if (batchesPreview.length > 0) {
+      if (batchesPreview.length > 0 && import.meta.env.PROD) {
         userBatches = batchesPreview.map(batchPreview => ({
           id: batchPreview.batchId,
           depth: 20,
