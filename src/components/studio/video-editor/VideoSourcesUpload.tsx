@@ -77,7 +77,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
   const [sources, setSources] = useState<QueueSource[]>([defaultSource()])
 
   const { resetState, updateOriginalQuality, updateVideoDuration } = useVideoEditorBaseActions()
-  const { addToQueue, removeFromQueue, updateQueueCompletion, updateQueueName } = useVideoEditorQueueActions()
+  const { addToQueue, removeFromQueue, updateQueueCompletion } = useVideoEditorQueueActions()
   const { showError } = useErrorMessage()
 
   useEffect(() => {
@@ -176,43 +176,56 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
     if (isMimeWebCompatible(file.type)) {
       duration = await getVideoDuration(file)
       quality = await getVideoResolution(file)
-
-      if (index === 0) {
-        updateVideoDuration(duration)
-        updateOriginalQuality(SwarmVideoIO.getSourceName(quality))
-      }
     }
 
-    const newSources = [...sources]
-    newSources[index].quality = SwarmVideoIO.getSourceName(quality)
-    newSources[index].contentType = file.type
-    setSources(newSources)
-
     const queueName = SwarmVideoIO.getSourceName(quality)
-    addToQueue(queueName)
-  }
+    const sourceQueue = queue.find(q => q.name === queueName)
+    const hasQuality = typeof sourceQueue?.completion === "number" && sourceQueue.completion >= 0
+    const currentOriginalQuality = SwarmVideoIO.getSourceQuality(videoWriter.videoRaw.originalQuality)
 
-  const handleFileEncoded = (contentType: string, duration: number, quality: number, index: number) => {
-    if (index !== 0) return
-
-    const originalQueueName = SwarmVideoIO.getSourceName(sources[index].quality)
-    const queueName = SwarmVideoIO.getSourceName(quality)
-
-    if (originalQueueName !== queueName) {
-      updateQueueName(originalQueueName, queueName)
+    if (hasQuality) {
+      return showError("Cannot add source", `There is already a source with the quality ${quality}p`)
     }
 
-    if (index === 0) {
+    if (sourceQueue) {
+      removeFromQueue(sourceQueue.name)
+    }
+
+    if (isNaN(currentOriginalQuality) || quality > currentOriginalQuality) {
       updateVideoDuration(duration)
-      updateOriginalQuality(queueName)
+      updateOriginalQuality(SwarmVideoIO.getSourceName(quality))
     }
 
     const newSources = [...sources]
     newSources[index].quality = queueName
-    newSources[index].contentType = contentType
+    newSources[index].contentType = file.type
     setSources(newSources)
 
     addToQueue(queueName)
+  }
+
+  const canSelectFile = async (file: File) => {
+    if (!file) {
+      showError("Error", "The selected file is not supported")
+      return false
+    }
+
+    if (!isMimeWebCompatible(file.type)) {
+      showError("Error", "The selected file is not supported")
+      return false
+    }
+
+    const quality = await getVideoResolution(file)
+    const queueName = SwarmVideoIO.getSourceName(quality)
+    const sourceQueue = queue.find(q => q.name === queueName)
+    const hasQuality = typeof sourceQueue?.completion === "number" && sourceQueue.completion >= 0
+
+    if (hasQuality) {
+      showError("Cannot add source", `There is already a source with the quality ${quality}p`)
+      return false
+    }
+
+    return true
   }
 
   const handleCancelUpload = (index: number) => {
@@ -224,18 +237,14 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
 
     ref.current?.clear()
 
-    if (index > 0) {
-      removeSource(index)
-    } else {
-      const newSources = [...sources]
-      newSources[index].quality = null
-      newSources[index].contentType = null
+    const newSources = [...sources]
+    newSources[index].quality = null
+    newSources[index].contentType = null
 
-      setSources(newSources)
+    setSources(newSources)
 
-      const sourceName = SwarmVideoIO.getSourceName(quality)
-      updateQueueCompletion(sourceName, 0, undefined)
-    }
+    const sourceName = SwarmVideoIO.getSourceName(quality)
+    removeFromQueue(sourceName)
   }
 
   const handleSourceReset = (name: SwarmVideoQuality) => {
@@ -262,9 +271,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
             canProcessFile={currentQueue?.name === queueName}
             uploadHandler={buffer => uploadSource(buffer, i)}
             onFileSelected={file => handleFileSelected(file, i)}
-            onEncodingComplete={
-              (contentType, duration, quality) => handleFileEncoded(contentType, duration, quality, i)
-            }
+            canSelectFile={canSelectFile}
             onCancel={() => handleSourceReset(queueName)}
             disabled={disabled}
             key={source.key}

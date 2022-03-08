@@ -24,7 +24,6 @@ import FileUpload from "./FileUpload"
 import Label from "@common/Label"
 import { useErrorMessage } from "@state/hooks/ui"
 import { fileToBuffer } from "@utils/buffer"
-import { isMimeWebCompatible } from "@utils/mime-types"
 import type { FilePreviewRenderProps } from "@definitions/file-preview"
 
 type FileUploadFlowProps = {
@@ -40,7 +39,7 @@ type FileUploadFlowProps = {
   uploadHandler: (buffer: ArrayBuffer) => Promise<string>
   onManifestUpdate?: (manifest?: string) => void
   onFileSelected?: (file: File) => void
-  onEncodingComplete?: (contentType: string, duration: number, quality: number) => void
+  canSelectFile?: (file: File) => Promise<boolean>
   onCancel?: () => void
 }
 
@@ -61,6 +60,7 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
   uploadHandler,
   onManifestUpdate,
   onFileSelected,
+  canSelectFile,
   onCancel,
 }, ref) => {
   const [buffer, setBuffer] = useState<ArrayBuffer>()
@@ -99,12 +99,14 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
   }
 
   const handleSelectFile = async (file: File) => {
-    if (!file) {
-      return showError("Error", "The selected file is not supported")
-    }
+    const canUpload = canSelectFile
+      ? await canSelectFile(file)
+      : true
 
-    if (!isMimeWebCompatible(file.type)) {
-      return showError("Error", "The selected file is not supported")
+    if (!canUpload) {
+      setBuffer(undefined)
+      setStatus("select")
+      return
     }
 
     const buffer = await fileToBuffer(file)

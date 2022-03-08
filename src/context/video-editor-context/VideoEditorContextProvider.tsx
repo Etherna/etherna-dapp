@@ -40,10 +40,10 @@ const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
   videoData
 }) => {
   const { address } = useSelector(state => state.user)
-  const { beeClient, indexClient } = useSelector(state => state.env)
+  const { beeClient } = useSelector(state => state.env)
 
   let initialState = VideoEditorCache.hasCache
-    ? VideoEditorCache.loadState(beeClient, indexClient)
+    ? VideoEditorCache.loadState(beeClient)
     : null
 
   if (initialState && initialState.reference !== reference) {
@@ -69,6 +69,7 @@ const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
         completion: 100,
         name: THUMBNAIL_QUEUE_NAME
       }] : []),
+      hasChanges: false,
     }
   }
 

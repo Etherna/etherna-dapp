@@ -27,6 +27,8 @@ import {
   useVideoEditorQueueActions,
   useVideoEditorState
 } from "@context/video-editor-context/hooks"
+import { useErrorMessage } from "@state/hooks/ui"
+import { isMimeWebCompatible } from "@utils/mime-types"
 
 type ThumbnailUploadProps = {
   disabled?: boolean
@@ -52,6 +54,7 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
 
   const { addToQueue, removeFromQueue, updateQueueCompletion } = useVideoEditorQueueActions()
   const { resetState } = useVideoEditorBaseActions()
+  const { showError } = useErrorMessage()
 
   const currentQueue = queue.find(q => !q.reference)
   const thumbnailQueue = queue.find(q => q.name === THUMBNAIL_QUEUE_NAME)
@@ -67,6 +70,20 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
   const handleFileSelected = (file: File) => {
     setContentType(file.type)
     addToQueue(THUMBNAIL_QUEUE_NAME)
+  }
+
+  const canSelectFile = async (file: File) => {
+    if (!file) {
+      showError("Error", "The selected file is not supported")
+      return false
+    }
+
+    if (!isMimeWebCompatible(file.type)) {
+      showError("Error", "The selected file is not supported")
+      return false
+    }
+
+    return true
   }
 
   const uploadThumbnail = async (buffer: ArrayBuffer) => {
@@ -105,6 +122,7 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
         canProcessFile={currentQueue?.name === THUMBNAIL_QUEUE_NAME}
         uploadHandler={uploadThumbnail}
         onFileSelected={handleFileSelected}
+        canSelectFile={canSelectFile}
         onCancel={handleReset}
         disabled={disabled}
       >
