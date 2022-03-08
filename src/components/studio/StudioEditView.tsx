@@ -16,7 +16,7 @@
  */
 
 import React, { useState } from "react"
-import { Link, useHistory } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 import classes from "@styles/components/studio/StudioEditView.module.scss"
 import { ReactComponent as ArrowLeftIcon } from "@assets/icons/arrow-left.svg"
@@ -45,14 +45,14 @@ const StudioEditView: React.FC<StudioEditViewProps> = ({
   onSave,
 }) => {
   const [saving, setSaving] = useState(false)
-  const { push } = useHistory()
+  const navigate = useNavigate()
   const mounted = useMounted()
 
   const handleBack = async (e: React.MouseEvent) => {
     if (backPrompt) {
       e.preventDefault()
       const ok = await backPrompt()
-      ok && push(backTo!)
+      ok && navigate(backTo!)
     }
   }
 

@@ -15,9 +15,10 @@
  *  
  */
 
-import useSelector from "@state/useSelector"
 import React from "react"
 import { Helmet } from "react-helmet-async"
+
+import useSelector from "@state/useSelector"
 
 type SEOProps = {
   description?: string

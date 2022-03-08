@@ -16,8 +16,9 @@
  */
 
 import React, { useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import classNames from "classnames"
+import { useMatomo } from "@datapunt/matomo-tracker-react"
 
 import classes from "@styles/components/layout/SearchItem.module.scss"
 import { ReactComponent as CrossIcon } from "@assets/icons/cross.svg"
@@ -26,17 +27,16 @@ import { ReactComponent as SearchIcon } from "@assets/icons/navigation/search.sv
 import TopbarItem from "@components/navigation/TopbarItem"
 import TextField from "@common/TextField"
 import routes from "@routes"
-import { useMatomo } from "@datapunt/matomo-tracker-react"
 
 const SearchItem: React.FC = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
   const { trackSiteSearch } = useMatomo()
   const [showInput, setShowInput] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.code === "Enter" && searchQuery) {
-      history.push(routes.getSearchLink(searchQuery))
+      navigate(routes.getSearchLink(searchQuery))
       trackSiteSearch({
         keyword: searchQuery.toLowerCase(),
       })

@@ -15,3 +15,4 @@
  */
 
 export { default as useWallet } from "./useWallet"
+export { default as useDarkMode } from "./useDarkMode"

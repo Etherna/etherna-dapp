@@ -21,38 +21,20 @@ import { HelmetProvider } from "react-helmet-async"
 
 import "@styles/theme.scss"
 
-import AnalyticsProvider from "./AnalyticsProvider"
 import Router from "./Router"
-import AppLayout from "@components/layout/AppLayout"
-import ShortcutWrapper from "@keyboard/shortcutWrapper"
-import StateProviderWrapper from "@state/StateProviderWrapper"
-import useAutoSignin from "@state/hooks/user/useAutoSignin"
+import AnalyticsProvider from "./AnalyticsProvider"
 import { getBasename } from "@routes"
 
 const Root: React.FC = () => {
-  useAutoSignin({
-    isStatusPage: /^\/404/.test(window.location.pathname)
-  })
-
   return (
-    <BrowserRouter basename={getBasename()}>
-      <HelmetProvider context={{}}>
-        <AnalyticsProvider>
-          <AppLayout>
-            <Router />
-          </AppLayout>
-        </AnalyticsProvider>
-      </HelmetProvider>
-    </BrowserRouter>
+    <HelmetProvider context={{}}>
+      <AnalyticsProvider>
+        <BrowserRouter basename={getBasename()}>
+          <Router />
+        </BrowserRouter>
+      </AnalyticsProvider>
+    </HelmetProvider>
   )
 }
 
-const StateRoot: React.FC = () => (
-  <StateProviderWrapper>
-    <ShortcutWrapper>
-      <Root />
-    </ShortcutWrapper>
-  </StateProviderWrapper>
-)
-
-export default StateRoot
+export default Root

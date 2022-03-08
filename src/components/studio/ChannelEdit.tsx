@@ -16,7 +16,7 @@
  */
 
 import React, { useRef } from "react"
-import { Redirect } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 
 import StudioEditView from "./StudioEditView"
 import ChannelEditor from "./channel-editor/ChannelEditor"
@@ -29,7 +29,7 @@ const ChannelEdit: React.FC = () => {
   const saveCallback = useRef<() => Promise<void>>()
 
   if (!address) return (
-    <Redirect to={routes.getHomeLink()} />
+    <Navigate to={routes.getHomeLink()} />
   )
 
   const handleSave = async () => {

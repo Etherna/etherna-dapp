@@ -54,13 +54,12 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
         {to ? (
           <NavLink
             className={classNames(classes.topbarItem, className, {
-              [classes.topbarItemStatic]: ignoreHoverState
+              [classes.active]: isCurrentPage,
+              [classes.topbarItemStatic]: ignoreHoverState,
             })}
             to={to}
             target={target}
             rel={rel}
-            isActive={() => isCurrentPage}
-            activeClassName={classes.active}
           >
             {children}
           </NavLink>

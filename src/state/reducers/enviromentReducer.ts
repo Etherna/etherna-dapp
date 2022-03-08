@@ -20,9 +20,9 @@ import EthernaGatewayClient from "@classes/EthernaGatewayClient"
 import EthernaIndexClient from "@classes/EthernaIndexClient"
 import EthernaAuthClient from "@classes/EthernaAuthClient"
 import SwarmBeeClient from "@classes/SwarmBeeClient"
-import { loadDarkMode } from "@state/actions/enviroment/dark-mode"
 import autoUpgradeEthernaService from "@utils/autoUpgradeEthernaService"
 import { checkIsMobile } from "@utils/browser"
+import { loadColorScheme } from "@utils/dark-mode"
 import { parseLocalStorage } from "@utils/local-storage"
 import type { EnvState, WalletType } from "@definitions/app-state"
 import type { Keymap, KeymapNamespace } from "@definitions/keyboard"
@@ -132,7 +132,7 @@ const initialState: EnvState = {
   authClient,
   beeClient,
   keymap: baseKeymap,
-  darkMode: loadDarkMode(),
+  darkMode: loadColorScheme(),
   isMobile: checkIsMobile(),
   lang,
 }

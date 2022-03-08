@@ -14,6 +14,5 @@
  *  limitations under the License.
  */
 
-export * from "./dark-mode"
 export * from "./device"
 export * from "./shortcuts"

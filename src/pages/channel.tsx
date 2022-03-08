@@ -31,7 +31,7 @@ const ChannelPage = () => {
       <SEO title="Channel" />
 
       <Container noPaddingX noPaddingY fluid>
-        <ProfileView profileAddress={id} />
+        <ProfileView profileAddress={id!} />
       </Container>
     </AppLayoutWrapper>
   )

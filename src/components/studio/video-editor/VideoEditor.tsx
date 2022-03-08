@@ -16,7 +16,7 @@
  */
 
 import React, { useEffect, useImperativeHandle, useState } from "react"
-import { Redirect } from "react-router"
+import { Navigate } from "react-router"
 
 import { ReactComponent as NotesIcon } from "@assets/icons/notes.svg"
 import { ReactComponent as MovieIcon } from "@assets/icons/movie.svg"
@@ -179,7 +179,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const usePortal = !reference && !hasChanges
 
   if (saved) {
-    return <Redirect to={routes.getStudioVideosLink()} />
+    return <Navigate to={routes.getStudioVideosLink()} />
   }
 
   return (
