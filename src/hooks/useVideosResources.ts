@@ -17,6 +17,7 @@
 import { useEffect, useState } from "react"
 
 import { parseReaderStatus } from "./useVideoOffers"
+import useMounted from "./useMounted"
 import SwarmResourcesIO from "@classes/SwarmResources"
 import useSelector from "@state/useSelector"
 import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
@@ -25,6 +26,7 @@ export default function useVideosResources(videos: Video[] | undefined) {
   const { gatewayClient, isStandaloneGateway } = useSelector(state => state.env)
   const { address } = useSelector(state => state.user)
   const [videosOffersStatus, setVideosOffersStatus] = useState<Record<string, VideoOffersStatus>>()
+  const mounted = useMounted()
 
   useEffect(() => {
     if (isStandaloneGateway) return
@@ -37,6 +39,7 @@ export default function useVideosResources(videos: Video[] | undefined) {
 
   const fetchVideosStatus = async () => {
     if (!videos) return
+    if (!mounted.current) return
 
     try {
       const readers = videos.map(video => new SwarmResourcesIO.Reader(video, { gatewayClient }))
@@ -50,7 +53,7 @@ export default function useVideosResources(videos: Video[] | undefined) {
         statuses[reader.video.reference] = parseReaderStatus(reader, address)
       }
 
-      setVideosOffersStatus(statuses)
+      mounted.current && setVideosOffersStatus(statuses)
     } catch (error) {
       console.error(error)
     }
