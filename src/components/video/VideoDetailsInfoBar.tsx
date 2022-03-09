@@ -19,21 +19,47 @@ import React from "react"
 
 import classes from "@styles/components/video/VideoDetailsInfoBar.module.scss"
 
+import VideoRating from "./VideoRating"
+import VideoStatusBadge from "./VideoStatusBadge"
+import VideoOffersBadge from "./VideoOffersBadge"
 import dayjs from "@utils/dayjs"
+import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
 
 type VideoDetailsInfoBarProps = {
-  createdAt?: number | null
+  video: Video
+  videoOffers?: VideoOffersStatus
 }
 
-const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ createdAt }) => {
+const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoOffers }) => {
   return (
     <div className={classes.videoDetailsInfoBar}>
-      <div className={classes.videoDetailsStats}>
-        {createdAt && (
-          <span className={classes.videoDetailsPublishTime}>
-            {dayjs(createdAt).format("LLL")}
-          </span>
-        )}
+      <div className={classes.videoDetailsTop}>
+        <div className={classes.videoDetailsBadges}>
+          <VideoStatusBadge status={video.isVideoOnIndex ? "available" : "unindexed"} />
+          <VideoOffersBadge video={video} videoOffers={videoOffers} />
+        </div>
+      </div>
+
+      <div className={classes.videoDetailsBottom}>
+        <div className={classes.videoDetailsStats}>
+          {video.createdAt && (
+            <span className={classes.videoDetailsPublishTime}>
+              {dayjs(video.createdAt).format("LLL")}
+            </span>
+          )}
+        </div>
+
+        <div className={classes.videoDetailsActions}>
+          <div className={classes.videoDetailsActionsWrapper}>
+            {video.indexReference && (
+              <VideoRating
+                videoId={video.indexReference}
+                upvotes={video.totUpvotes}
+                downvotes={video.totDownvotes}
+              />
+            )}
+          </div>
+        </div>
       </div>
     </div>
   )

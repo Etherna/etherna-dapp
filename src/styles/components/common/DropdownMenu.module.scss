@@ -15,7 +15,7 @@
  */
 
 .dropdownMenu {
-  @apply absolute right-0 mt-2 py-1;
+  @apply absolute right-0 mt-2 py-1 z-1;
   @apply w-72 rounded-md shadow-lg;
   @apply border border-transparent;
   @apply bg-white ring-1 ring-black ring-opacity-5;

@@ -15,12 +15,15 @@
  */
 
 .videoDetailsTitlebar {
-  @apply flex flex-col;
+  @apply flex;
   @apply sm:flex-row;
+  @apply mb-5;
 }
 
 .videoDetailsTitle {
-  @apply mb-1 font-semibold text-2xl;
+  @apply flex-1;
+  @apply font-semibold text-2xl;
+  @apply mb-0;
 
   &.untitled {
     @apply opacity-50;

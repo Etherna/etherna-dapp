@@ -35,7 +35,8 @@
 }
 
 .videoCommentAvatar {
-  @apply w-10 h-10 rounded-full;
+  @apply w-8 h-8 rounded-full;
+  @apply md:w-10 md:h-10;
   @apply bg-gray-300 dark:bg-gray-700;
 
   > * {

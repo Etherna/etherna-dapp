@@ -23,13 +23,12 @@ import classes from "@styles/components/video/VideoView.module.scss"
 import NotFound from "@common/NotFound"
 import SEO from "@components/layout/SEO"
 import Player from "@components/player/Player"
-import VideoComments from "@components/video/VideoComments"
 import VideoDetails from "@components/video/VideoDetails"
-import useSwarmVideo from "@hooks/useSwarmVideo"
-import { useErrorMessage } from "@state/hooks/ui"
 import SwarmImageIO from "@classes/SwarmImage"
-import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
+import useSwarmVideo from "@hooks/useSwarmVideo"
 import useSelector from "@state/useSelector"
+import { useErrorMessage } from "@state/hooks/ui"
+import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
 
 type VideoViewProps = {
   reference: string
@@ -112,10 +111,6 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
               />
 
               <VideoDetails video={video} />
-
-              {video.isVideoOnIndex && (
-                <VideoComments videoHash={reference} videoAuthorAddress={video.ownerAddress} />
-              )}
             </div>
 
             <aside className="lg:w-1/4 hidden">

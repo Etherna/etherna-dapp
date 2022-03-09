@@ -320,7 +320,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
         )}
 
         {(!isPlaying && currentTime === 0) && (
-          <PlayerPlayLayer thumbnailUrl={thumbnailUrl} onPlay={togglePlay} />
+          <PlayerPlayLayer thumbnailUrl={thumbnailUrl} floating={floating} onPlay={togglePlay} />
         )}
 
         {error && (

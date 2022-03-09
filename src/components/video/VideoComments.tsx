@@ -26,11 +26,11 @@ import useSelector from "@state/useSelector"
 import type { IndexVideoComment } from "@definitions/api-index"
 
 type VideoCommentsProps = {
-  videoHash: string
+  indexReference: string
   videoAuthorAddress?: string | null
 }
 
-const VideoComments: React.FC<VideoCommentsProps> = ({ videoHash, videoAuthorAddress }) => {
+const VideoComments: React.FC<VideoCommentsProps> = ({ indexReference, videoAuthorAddress }) => {
   const [comments, setComments] = useState<IndexVideoComment[]>([])
   const [isFetchingComments, setIsFetchingComments] = useState(false)
 
@@ -39,13 +39,13 @@ const VideoComments: React.FC<VideoCommentsProps> = ({ videoHash, videoAuthorAdd
   useEffect(() => {
     fetchComments()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [videoHash])
+  }, [indexReference])
 
   const fetchComments = async () => {
     setIsFetchingComments(true)
 
     try {
-      const comments = await indexClient.videos.fetchComments(videoHash, 0, 100)
+      const comments = await indexClient.videos.fetchComments(indexReference, 0, 100)
       setComments(comments)
     } catch { }
 
@@ -68,7 +68,7 @@ const VideoComments: React.FC<VideoCommentsProps> = ({ videoHash, videoAuthorAdd
       )}
 
       {!isFetchingComments && (
-        <CommentForm videoHash={videoHash} onCommentPosted={onCommentPosted} />
+        <CommentForm indexReference={indexReference} onCommentPosted={onCommentPosted} />
       )}
 
       <div className={classes.videoComments}>

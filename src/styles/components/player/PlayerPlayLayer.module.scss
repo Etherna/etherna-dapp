@@ -15,7 +15,7 @@
  */
 
 .playerPlayLayer {
-  @apply absolute inset-0;
+  @apply absolute inset-0 bottom-10;
   @apply flex;
 
   @apply after:block after:absolute after:inset-0;
@@ -27,6 +27,10 @@
     .playerPlayLayerCommand {
       @apply text-primary-500;
     }
+  }
+
+  &.floating {
+    @apply bottom-0;
   }
 }
 

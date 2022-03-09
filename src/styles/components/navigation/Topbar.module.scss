@@ -16,7 +16,7 @@
 
 .topbar {
   @apply fixed flex items-center top-0 inset-x-0;
-  @apply h-14 px-4 py-2.5;
+  @apply h-14 px-container py-2.5;
   @apply bg-gray-50/80;
   @apply dark:bg-gray-900/80;
   @apply backdrop-filter backdrop-blur-lg;

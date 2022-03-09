@@ -15,14 +15,16 @@
  */
 
 .player {
-  @apply relative my-6 overflow-hidden z-0;
+  @apply relative overflow-hidden z-0;
+  @apply mb-6 lg:mt-6;
+  @apply -mx-4 md:mx-0;
 
   &.idle {
     @apply cursor-[none];
   }
 
   &.embed {
-    @apply my-0;
+    @apply my-0 lg:my-0;
   }
 }
 
