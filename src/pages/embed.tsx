@@ -18,28 +18,14 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 
-import Container from "@common/Container"
-import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
-import SEO from "@components/layout/SEO"
 import VideoView from "@components/video/VideoView"
-import useRouteState from "@hooks/useRouteState"
-import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
 
-const WatchPage = () => {
+const EmbedPage = () => {
   const { hash } = useParams()
-  const routeState = useRouteState<{ video: Video, videoOffers: VideoOffersStatus }>()
 
   if (!hash) return null
 
-  return (
-    <AppLayoutWrapper hideSidebar floatingSidebar>
-      <SEO title="Watch" />
-
-      <Container noPaddingY>
-        <VideoView reference={hash} routeState={routeState} />
-      </Container>
-    </AppLayoutWrapper>
-  )
+  return <VideoView reference={hash} />
 }
 
-export default WatchPage
+export default EmbedPage

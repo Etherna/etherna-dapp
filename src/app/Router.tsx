@@ -39,6 +39,7 @@ const AsyncVideoEdit = lazy(() => import("@pages/studio/video-edit"))
 const AsyncStorage = lazy(() => import("@pages/studio/storage"))
 const AsyncProfiles = lazy(() => import("@pages/profiles"))
 const AsyncWatch = lazy(() => import("@pages/watch"))
+const AsyncEmbed = lazy(() => import("@pages/embed"))
 const AsyncSearch = lazy(() => import("@pages/search"))
 const AsyncShortcuts = lazy(() => import("@pages/shortcuts"))
 const AsyncNotFound = lazy(() => import("@pages/404"))
@@ -66,6 +67,9 @@ const Profiles = () => (
 )
 const Watch = () => (
   <Suspense fallback={null}><AsyncWatch /></Suspense>
+)
+const Embed = () => (
+  <Suspense fallback={null}><AsyncEmbed /></Suspense>
 )
 const ChannelEdit = () => (
   <Suspense fallback={null}><AsyncChannelEdit /></Suspense>
@@ -112,7 +116,7 @@ const Router = () => {
               <Route path="/shortcuts" element={<Shortcuts />} />
 
               <Route path="/watch" element={<VideoRoute />}>
-                <Route path="" element={<Watch />} />
+                <Route path=":hash" element={<Watch />} />
               </Route>
 
               <Route path="/studio" element={<SignedInRoute />}>
@@ -126,6 +130,10 @@ const Router = () => {
               </Route>
 
             </Route>
+          </Route>
+
+          <Route path="/embed" element={<VideoRoute />}>
+            <Route path=":hash" element={<Embed />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />
