@@ -1,0 +1,11 @@
+.playerWatchOn {
+  @apply inline-flex items-center space-x-3;
+  @apply bg-black/60 text-white hover:text-white;
+  @apply font-medium text-base tracking-tight;
+  @apply p-4;
+
+  svg {
+    @apply h-5;
+    @apply grayscale;
+  }
+}

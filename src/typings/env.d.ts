@@ -17,6 +17,7 @@
 interface ImportMetaEnv {
   VITE_APP_NAME: string
   VITE_APP_TAGLINE: string
+  VITE_APP_PUBLIC_URL: string
   VITE_APP_MATOMO_URL?: string
   VITE_APP_MATOMO_SITE_ID?: number
   VITE_APP_FEEDBACK_URL?: string

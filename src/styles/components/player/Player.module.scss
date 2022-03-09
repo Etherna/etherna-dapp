@@ -20,6 +20,10 @@
   &.idle {
     @apply cursor-[none];
   }
+
+  &.embed {
+    @apply my-0;
+  }
 }
 
 .playerVideo {
@@ -41,5 +45,33 @@
     .player.playing.idle & {
       @apply opacity-0;
     }
+  }
+}
+
+.playerVideoInfoWrapper {
+  @apply absolute top-3 left-3;
+  @apply z-1;
+
+  .player:not(.playing) &,
+    .player:hover & {
+      @apply opacity-100;
+    }
+    .player.playing.idle & {
+      @apply opacity-0;
+    }
+}
+
+.playerVideoWatchOnWrapper {
+  @apply absolute left-0 bottom-4;
+  @apply -translate-x-full;
+  @apply transition-transform duration-200 ease-out;
+  @apply z-1;
+
+  &.floating {
+    @apply bottom-24;
+  }
+
+  .player:not(.playing) & {
+    @apply translate-x-0;
   }
 }

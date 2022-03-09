@@ -1,0 +1,20 @@
+.playerVideoInfo {
+  @apply flex items-center;
+  @apply text-lg font-medium;
+}
+
+.playerVideoInfoAvatar {
+  @apply relative w-8 h-8 rounded-full shadow-sm shadow-black/25;
+  @apply mr-3;
+  @apply md:w-12 md:h-12;
+
+  > * {
+    @apply w-full h-full;
+  }
+}
+
+.playerVideoInfoTitle {
+  @apply inline-flex items-baseline space-x-2;
+  @apply text-white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
+}

@@ -25,7 +25,7 @@ const EmbedPage = () => {
 
   if (!hash) return null
 
-  return <VideoView reference={hash} />
+  return <VideoView reference={hash} embed />
 }
 
 export default EmbedPage

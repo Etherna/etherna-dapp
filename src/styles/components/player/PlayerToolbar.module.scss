@@ -24,10 +24,6 @@
     @apply bg-transparent;
     @apply bg-gradient-to-t from-gray-900 to-gray-900/0;
   }
-
-  &.idle.floating {
-    @apply opacity-0;
-  }
 }
 
 .playerToolbarContent {

@@ -15,31 +15,46 @@
  *  
  */
 
-import React, { useRef, useState, useEffect, useCallback } from "react"
+import React, { useRef, useState, useEffect, useCallback, useMemo } from "react"
 import classNames from "classnames"
 import Axios, { Canceler } from "axios"
 
-import classes from "@styles/components/player/Player.module.scss"
+import classes, { playing } from "@styles/components/player/Player.module.scss"
 
 import PlayerShortcuts from "./PlayerShortcuts"
 import PlayerErrorBanner from "./PlayerErrorBanner"
 import PlayerBytesCounter from "./PlayerBytesCounter"
 import PlayerToolbar from "./PlayerToolbar"
+import PlayerVideoInfo from "./PlayerVideoInfo"
 import PlayerPlaceholder from "@components/placeholders/PlayerPlaceholder"
 import { PlayerContextProvider, PlayerReducerTypes } from "@context/player-context"
 import { usePlayerState } from "@context/player-context/hooks"
 import http from "@utils/request"
 import { isTouchDevice } from "@utils/browser"
 import type { VideoSource } from "@definitions/swarm-video"
+import type { Profile } from "@definitions/swarm-profile"
+import PlayerWatchOn from "./PlayerWatchOn"
+import PlayerPlayLayer from "./PlayerPlayLayer"
 
 type PlayerProps = {
-  title?: string
+  hash: string
+  title: string | undefined
+  owner: Profile | undefined
   sources: VideoSource[]
   originalQuality?: string | null
-  thumbnail?: string | null
+  thumbnailUrl?: string | null
+  embed?: boolean
 }
 
-const InnerPlayer: React.FC<PlayerProps> = ({ title, sources, originalQuality, thumbnail }) => {
+const InnerPlayer: React.FC<PlayerProps> = ({
+  hash,
+  title,
+  owner,
+  sources,
+  originalQuality,
+  thumbnailUrl,
+  embed,
+}) => {
   const [state, dispatch] = usePlayerState()
   const { source, currentQuality, isPlaying, currentTime, error, videoEl } = state
 
@@ -49,6 +64,13 @@ const InnerPlayer: React.FC<PlayerProps> = ({ title, sources, originalQuality, t
   const videoMutationObserverRef = useRef<MutationObserver>()
   const idleTimeoutRef = useRef<number>()
   const floating = !isTouchDevice()
+
+  const showControls = useMemo(() => {
+    const defaultShow = !hiddenControls && videoElement && !error
+    if (embed) {
+      return defaultShow && currentTime > 0
+    }
+  }, [embed, currentTime, error, hiddenControls, videoElement])
 
   useEffect(() => {
     dispatch({
@@ -246,7 +268,8 @@ const InnerPlayer: React.FC<PlayerProps> = ({ title, sources, originalQuality, t
       <div
         className={classNames(classes.player, {
           [classes.playing]: isPlaying,
-          [classes.idle]: idle
+          [classes.idle]: idle,
+          [classes.embed]: embed,
         })}
         onMouseEnter={onMouseEnter}
         onMouseMove={onMouseMouse}
@@ -259,9 +282,10 @@ const InnerPlayer: React.FC<PlayerProps> = ({ title, sources, originalQuality, t
             }
           }}
           className={classes.playerVideo}
+          src={source}
           autoPlay={false}
           preload="metadata"
-          poster={!error && thumbnail ? thumbnail : undefined}
+          poster={!error && thumbnailUrl ? thumbnailUrl : undefined}
           controls={false}
           onClick={togglePlay}
           onLoadedMetadata={onLoadMetadata}
@@ -270,20 +294,32 @@ const InnerPlayer: React.FC<PlayerProps> = ({ title, sources, originalQuality, t
           onTimeUpdate={onTimeUpdate}
           onError={onPlaybackError}
           data-matomo-title={title}
-        >
-          <source src={source} />
-          <p className="text-center block">
-            It&apos;s time to upgrade your browser!!! <br />
-            <a href="https://www.google.com/chrome" target="_blank" rel="noopener noreferrer">
-              Download Chrome
-            </a>
-          </p>
-        </video>
+        />
 
-        {!hiddenControls && videoElement && !error && (
-          <div className={classNames(classes.playerToolbarWrapper, { floating })}>
-            <PlayerToolbar floating={floating} idle={idle} />
+        {showControls && (
+          <div className={classNames(classes.playerToolbarWrapper, { [classes.floating]: floating })}>
+            <PlayerToolbar floating={floating} />
           </div>
+        )}
+
+        {embed && (
+          <div className={classes.playerVideoInfoWrapper}>
+            <PlayerVideoInfo hash={hash} title={title || "Untitled"} owner={owner} />
+          </div>
+        )}
+
+        {embed && (
+          <div
+            className={classNames(classes.playerVideoWatchOnWrapper, {
+              [classes.floating]: floating && currentTime > 0
+            })}
+          >
+            <PlayerWatchOn hash={hash} />
+          </div>
+        )}
+
+        {(!isPlaying && currentTime === 0) && (
+          <PlayerPlayLayer thumbnailUrl={thumbnailUrl} onPlay={togglePlay} />
         )}
 
         {error && (

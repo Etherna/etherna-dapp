@@ -1,0 +1,33 @@
+.playerPlayLayer {
+  @apply absolute inset-0;
+  @apply flex;
+
+  @apply after:block after:absolute after:inset-0;
+  @apply after:bg-black/5;
+  @apply after:transition-colors after:duration-200 after:ease-out;
+  @apply hover:after:bg-black/0;
+
+  &:hover {
+    .playerPlayLayerCommand {
+      @apply text-primary-500;
+    }
+  }
+}
+
+.playerPlayLayerPoster {
+  @apply absolute inset-0;
+  @apply bg-center bg-cover bg-no-repeat;
+}
+
+.playerPlayLayerCommand {
+  @apply m-auto;
+  @apply bg-white p-4;
+  @apply text-gray-700;
+  @apply rounded rotate-45;
+  @apply transition-colors duration-200 ease-out;
+
+  svg {
+    @apply w-8 h-8;
+    @apply -rotate-45;
+  }
+}

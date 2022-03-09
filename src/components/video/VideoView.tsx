@@ -15,7 +15,7 @@
  *  
  */
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useMemo } from "react"
 import classNames from "classnames"
 
 import classes from "@styles/components/video/VideoView.module.scss"
@@ -29,22 +29,33 @@ import useSwarmVideo from "@hooks/useSwarmVideo"
 import { useErrorMessage } from "@state/hooks/ui"
 import SwarmImageIO from "@classes/SwarmImage"
 import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
+import useSelector from "@state/useSelector"
 
 type VideoViewProps = {
   reference: string
   routeState?: { video: Video, videoOffers: VideoOffersStatus }
+  embed?: boolean
 }
 
-const VideoView: React.FC<VideoViewProps> = ({ reference, routeState }) => {
+const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) => {
   const { video, notFound, loadVideo } = useSwarmVideo({
     reference,
     routeState: routeState?.video,
     fetchFromCache: true,
     fetchProfile: true
   })
+  const beeClient = useSelector(state => state.env.beeClient)
 
   const [isFetchingVideo, setIsFetchingVideo] = useState(false)
   const { showError } = useErrorMessage()
+
+  const posterUrl = useMemo(() => {
+    const thumbReference = SwarmImageIO.Reader.getOriginalSourceReference(video?.thumbnail)
+    if (thumbReference) {
+      return beeClient.getBzzUrl(thumbReference)
+    }
+    return null
+  }, [video, beeClient])
 
   useEffect(() => {
     if (!video) {
@@ -77,28 +88,42 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState }) => {
   return (
     <>
       <SEO title={video.title || reference} />
-      <div className={classNames(classes.videoWatch)}>
-        <div className="row justify-center">
-          <div className="col lg:w-3/4">
-            <Player
-              title={video.title || reference}
-              sources={video.sources}
-              originalQuality={video.originalQuality}
-              thumbnail={SwarmImageIO.Reader.getOriginalSourceReference(video.thumbnail)}
-            />
+      {embed ? (
+        <Player
+          hash={reference}
+          title={video.title || reference}
+          owner={video.owner}
+          sources={video.sources}
+          originalQuality={video.originalQuality}
+          thumbnailUrl={posterUrl}
+          embed
+        />
+      ) : (
+        <div className={classNames(classes.videoWatch)}>
+          <div className="row justify-center">
+            <div className="col lg:w-3/4">
+              <Player
+                hash={reference}
+                title={video.title || reference}
+                owner={video.owner}
+                sources={video.sources}
+                originalQuality={video.originalQuality}
+                thumbnailUrl={posterUrl}
+              />
 
-            <VideoDetails video={video} />
+              <VideoDetails video={video} />
 
-            {video.isVideoOnIndex && (
-              <VideoComments videoHash={reference} videoAuthorAddress={video.ownerAddress} />
-            )}
+              {video.isVideoOnIndex && (
+                <VideoComments videoHash={reference} videoAuthorAddress={video.ownerAddress} />
+              )}
+            </div>
+
+            <aside className="lg:w-1/4 hidden">
+              {/* Eventually a sidebar */}
+            </aside>
           </div>
-
-          <aside className="lg:w-1/4 hidden">
-            {/* Eventually a sidebar */}
-          </aside>
         </div>
-      </div>
+      )}
     </>
   )
 }
