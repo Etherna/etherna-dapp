@@ -70,6 +70,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
     if (embed) {
       return defaultShow && currentTime > 0
     }
+    return defaultShow
   }, [embed, currentTime, error, hiddenControls, videoElement])
 
   useEffect(() => {

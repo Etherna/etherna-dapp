@@ -15,7 +15,7 @@
  */
 
 .player {
-  @apply relative my-6 overflow-hidden;
+  @apply relative my-6 overflow-hidden z-0;
 
   &.idle {
     @apply cursor-[none];
@@ -36,7 +36,7 @@
   &.floating {
     @apply absolute bottom-0 inset-x-0;
     @apply opacity-0 transition duration-100;
-    @apply z-10;
+    @apply z-1;
 
     .player:not(.playing) &,
     .player:hover & {

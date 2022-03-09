@@ -19,7 +19,6 @@
   @apply bg-gray-400/20 dark:bg-gray-700/50;
 
   &.floating {
-    @apply absolute inset-x-0 bottom-0 z-0;
     @apply pt-12 px-3;
     @apply bg-transparent;
     @apply bg-gradient-to-t from-gray-900 to-gray-900/0;
