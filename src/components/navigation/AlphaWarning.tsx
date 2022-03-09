@@ -129,7 +129,8 @@ const AlphaWarning: React.FC = () => {
         style={{ visibility: open || !hide ? "hidden" : undefined }}
         ref={el => el && setToggleButton(el)}
       >
-        <BugIcon /> Alpha
+        <BugIcon />
+        <span className={classes.alphaButtonLabel}>Alpha</span>
       </button>
 
       <Dialog

@@ -22,13 +22,6 @@
   @apply backdrop-filter backdrop-blur-lg;
   @apply z-10;
   @apply lg:h-16 lg:py-3.5;
-
-  > :first-child:not([hidden]) {
-    @apply ml-0;
-  }
-  > :last-child:not([hidden]) {
-    @apply mr-0;
-  }
 }
 
 .topbar ~ main {
