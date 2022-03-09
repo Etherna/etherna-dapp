@@ -14,9 +14,7 @@
  *  limitations under the License.
  */
 
-import * as routes from "./routes"
-import getBasename from "./getBasename"
+import routes from "./routes"
 
+export { default as getBasename } from "./getBasename"
 export default routes
-
-export { getBasename }

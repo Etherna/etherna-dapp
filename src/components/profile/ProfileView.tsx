@@ -24,7 +24,7 @@ import NavPills from "@common/NavPills"
 import NavPillsItem from "@common/NavPillsItem"
 import SEO from "@components/layout/SEO"
 import ProfileInfo from "@components/profile/ProfileInfo"
-import Routes from "@routes"
+import routes from "@routes"
 import usePlaylistVideos from "@hooks/usePlaylistVideos"
 import useUserPlaylists from "@hooks/useUserPlaylists"
 import useSelector from "@state/useSelector"
@@ -76,7 +76,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
             {address === profileAddress && (
               <Button
                 as="a"
-                href={Routes.getStudioCustomizeChannelLink()}
+                href={routes.studioChannel}
                 className="ml-2"
               >
                 Customize

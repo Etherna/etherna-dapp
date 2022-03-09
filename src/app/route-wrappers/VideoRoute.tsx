@@ -6,7 +6,7 @@ import routes from "@routes"
 const VideoRoute: React.FC = () => {
   const { hash } = useParams()
 
-  return hash ? <Outlet /> : <Navigate replace to={routes.getHomeLink()} />
+  return hash ? <Outlet /> : <Navigate replace to={routes.home} />
 }
 
 export default VideoRoute

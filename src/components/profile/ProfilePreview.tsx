@@ -22,7 +22,7 @@ import classes from "@styles/components/profile/ProfilePreview.module.scss"
 
 import Avatar from "@components/user/Avatar"
 import VideoGrid from "@components/video/VideoGrid"
-import Routes from "@routes"
+import routes from "@routes"
 import useSwarmProfile from "@hooks/useSwarmProfile"
 import useUserPlaylists from "@hooks/useUserPlaylists"
 import usePlaylistVideos from "@hooks/usePlaylistVideos"
@@ -57,10 +57,10 @@ const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress }) => {
   return (
     <div className={classes.profilePreview} key={profileAddress}>
       <div className={classes.profileInfo}>
-        <Link to={Routes.getChannelLink(profileAddress)}>
+        <Link to={routes.channel(profileAddress)}>
           <Avatar image={profile?.avatar} address={profileAddress} />
         </Link>
-        <Link to={Routes.getChannelLink(profileAddress)}>
+        <Link to={routes.channel(profileAddress)}>
           <h3>{profile.name || shortenEthAddr(profileAddress)}</h3>
         </Link>
       </div>

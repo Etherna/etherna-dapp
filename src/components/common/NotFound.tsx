@@ -38,7 +38,7 @@ const NotFound: React.FC<NotFoundProps> = ({
         <span className={classes.notFoundMessage}>{message}</span>
       </h1>
       {showBackLink && (
-        <Link to={routes.getHomeLink()}>
+        <Link to={routes.home}>
           ← Back to Etherna
         </Link>
       )}

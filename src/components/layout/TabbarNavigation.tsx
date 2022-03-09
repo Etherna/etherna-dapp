@@ -41,26 +41,26 @@ const TabbarNavigation: React.FC = () => {
       />
       <TabbarItem
         title="Frames"
-        to={routes.getFramesLink()}
+        to={routes.frames}
         isActive={pathname => /^\/frames\//.test(pathname)}
         iconSvg={<FramesIcon />}
       />
       <TabbarItem
         title="Following"
-        to={routes.getFollowingLink()}
+        to={routes.following}
         isActive={pathname => /^\/following\//.test(pathname)}
         iconSvg={<UserIcon />}
       />
       <TabbarItem
         title="Playlists"
-        to={routes.getPlaylistsLink()}
+        to={routes.playlists}
         isActive={pathname => /^\/playlists\//.test(pathname)}
         iconSvg={<PlaylistIcon />}
       />
       <TabbarMenuItem as="div" title="More">
         <TabbarItem
           title="Saved"
-          to={routes.getSavedLink()}
+          to={routes.saved}
           isActive={pathname => /^\/saved\//.test(pathname)}
           iconSvg={<BookmarkIcon />}
           isSubmenu

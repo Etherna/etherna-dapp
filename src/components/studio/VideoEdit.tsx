@@ -72,7 +72,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   }
 
   if (video && video.ownerAddress !== address) {
-    return <Navigate to={routes.getStudioVideosLink()} />
+    return <Navigate to={routes.studioVideos} />
   }
 
   const handleSave = async () => {
@@ -96,7 +96,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
             <TrashIcon /> Clear all
           </Button>
         }
-        backTo={routes.getStudioVideosLink()}
+        backTo={routes.studioVideos}
         backPrompt={backPrompt}
         onSave={handleSave}
       >

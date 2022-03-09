@@ -179,7 +179,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const usePortal = !reference && !hasChanges
 
   if (saved) {
-    return <Navigate to={routes.getStudioVideosLink()} />
+    return <Navigate to={routes.studioVideos} />
   }
 
   return (

@@ -208,12 +208,12 @@ const Videos: React.FC = () => {
   }
 
   if (!address) {
-    return <Navigate to={routes.getHomeLink()} />
+    return <Navigate to={routes.home} />
   }
 
   return (
     <>
-      <Button as="a" href={routes.getStudioVideoUploadLink()} modifier="inverted">
+      <Button as="a" href={routes.studioVideoNew} modifier="inverted">
         Create new video
       </Button>
 
@@ -279,7 +279,7 @@ const Videos: React.FC = () => {
               )}
               <Button
                 as="a"
-                href={routes.getStudioVideoEditLink(item.reference)}
+                href={routes.studioVideoEdit(item.reference)}
                 modifier="transparent"
                 iconOnly
               >
