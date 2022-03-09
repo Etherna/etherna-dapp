@@ -23,8 +23,8 @@
   @apply h-5 rounded;
   @apply flex items-center;
   @apply px-1.5;
-  @apply bg-gray-400/50 dark:bg-gray-500/50;
-  @apply text-gray-700 dark:text-gray-200;
+  @apply bg-gray-500/50;
+  @apply text-gray-200;
   @apply text-xs font-semibold text-center;
   @apply backdrop-blur;
   @apply md:h-7;
@@ -52,7 +52,7 @@
 .playerToolbarSelectListMenu {
   @apply flex flex-col;
   @apply px-2 py-4 space-y-2;
-  @apply bg-gray-800/75;
+  @apply bg-gray-800/75 text-gray-200;
   @apply backdrop-blur;
   @apply rounded;
 }

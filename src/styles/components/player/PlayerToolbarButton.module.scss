@@ -18,8 +18,8 @@
   @apply relative;
   @apply w-7 h-7 rounded-full;
   @apply p-1.5;
-  @apply bg-gray-400/50 dark:bg-gray-500/50;
-  @apply text-gray-700 dark:text-gray-200;
+  @apply bg-gray-500/50;
+  @apply text-gray-200;
   @apply backdrop-blur;
   @apply md:w-8 md:h-8;
   @apply md:p-[0.425rem];
@@ -45,7 +45,7 @@
 .playerToolbarButtonMenuList {
   @apply flex flex-col;
   @apply px-2 py-4 space-y-2;
-  @apply bg-gray-800/75;
+  @apply bg-gray-800/75 text-gray-200;
   @apply backdrop-blur;
   @apply rounded-full;
 
