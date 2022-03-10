@@ -29,6 +29,7 @@ export type TopbarItemProps = {
   rel?: "noreferrer" | "noopener" | "nofollow"
   iconSvg?: React.ReactNode
   ignoreHoverState?: boolean
+  dataToggle?: boolean
   isActive?: ((pathname: string) => boolean) | boolean
   onClick?: () => void
 }
@@ -42,6 +43,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
   className,
   iconSvg,
   ignoreHoverState,
+  dataToggle,
   isActive,
   onClick,
 }) => {
@@ -60,6 +62,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
             to={to}
             target={target}
             rel={rel}
+            data-toggle={dataToggle}
           >
             {children}
           </NavLink>
@@ -70,6 +73,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
               [classes.active]: isCurrentPage
             })}
             onClick={onClick}
+            data-toggle={dataToggle}
           >
             {children}
           </button>
@@ -80,6 +84,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
               [classes.active]: isCurrentPage
             })}
             onClick={onClick}
+            data-toggle={dataToggle}
           >
             {children}
           </div>

@@ -22,6 +22,10 @@
   @apply backdrop-filter backdrop-blur-lg;
   @apply z-10;
   @apply lg:h-16 lg:py-3.5;
+
+  > [data-toggle] {
+    @apply -ml-2.5 md:-ml-3 lg:ml-0;
+  }
 }
 
 .topbar ~ main {

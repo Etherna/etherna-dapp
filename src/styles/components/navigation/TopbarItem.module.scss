@@ -34,15 +34,10 @@
 
   &:not(.topbarItemStatic) {
     @apply px-2.5 md:px-3;
-    @apply sm:mx-px; // fix empty space caused by padding
     @apply active:bg-opacity-50 active:text-gray-900;
     @apply hover:bg-gray-200 hover:text-gray-900;
     @apply dark:active:text-gray-100;
     @apply dark:hover:bg-gray-800 dark:hover:text-gray-100;
-
-    &:first-child {
-      @apply -ml-2.5 md:-ml-3;
-    }
   }
 
   &.active {
