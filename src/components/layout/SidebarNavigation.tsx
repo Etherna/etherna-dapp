@@ -66,25 +66,25 @@ const SidebarNavigation: React.FC = () => {
       />
       <SidebarItem
         title="Frames"
-        to={routes.getFramesLink()}
+        to={routes.frames}
         isActive={pathname => /^\/frames\/?/.test(pathname)}
         iconSvg={<FramesIcon />}
       />
       <SidebarItem
         title="Following"
-        to={routes.getFollowingLink()}
+        to={routes.following}
         isActive={pathname => /^\/following\/?/.test(pathname)}
         iconSvg={<UserIcon />}
       />
       <SidebarItem
         title="Playlists"
-        to={routes.getPlaylistsLink()}
+        to={routes.playlists}
         isActive={pathname => /^\/playlists\/?/.test(pathname)}
         iconSvg={<PlaylistIcon />}
       />
       <SidebarItem
         title="Saved"
-        to={routes.getSavedLink()}
+        to={routes.saved}
         isActive={pathname => /^\/saved\/?/.test(pathname)}
         iconSvg={<BookmarkIcon />}
       />
@@ -110,7 +110,7 @@ const SidebarNavigation: React.FC = () => {
         />
         <SidebarLinksItem
           title="Privacy Policy"
-          to={routes.getPrivacyPolicyLink()}
+          to={routes.privacyPolicy}
         />
       </SidebarLinks>
     </Sidebar>

@@ -28,11 +28,11 @@ import { showError } from "@state/actions/modals"
 import type { IndexVideoComment } from "@definitions/api-index"
 
 type CommentFormProps = {
-  videoHash: string
+  indexReference: string
   onCommentPosted?(comment: IndexVideoComment): void
 }
 
-const CommentForm: React.FC<CommentFormProps> = ({ videoHash, onCommentPosted }) => {
+const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPosted }) => {
   const [text, setText] = useState("")
   const [isFocused, setIsFocused] = useState(false)
   const [isPosting, setIsPosting] = useState(false)
@@ -50,7 +50,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ videoHash, onCommentPosted })
     setIsPosting(true)
 
     try {
-      const comment = await indexClient.videos.postComment(videoHash, text)
+      const comment = await indexClient.videos.postComment(indexReference, text)
 
       onCommentPosted?.(comment)
       setText("")

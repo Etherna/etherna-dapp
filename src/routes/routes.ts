@@ -14,93 +14,43 @@
  *  limitations under the License.
  */
 
-/**
- * Home route
- */
-export const getHomeLink = () => {
-  return `/`
+const routes = {
+  /** `/` */
+  home: `/`,
+  /** `/frames` */
+  frames: `/frames`,
+  /** `/frames/{id}` */
+  frame: (id: string) => `/frames/${id}`,
+  /** `/following` */
+  following: `/following`,
+  /** `/saved` */
+  saved: `/saved`,
+  /** `/playlists` */
+  playlists: `/playlists`,
+  /** `/channels/{id}` */
+  channel: (id: string) => `/channels/${id}`,
+  /** `/watch/{hash}` */
+  watch: (hash: string) => `/watch/${hash}`,
+  /** `/embed/{hash}` */
+  embed: (hash: string) => `/embed/${hash}`,
+  /** `/search?q={query}` */
+  search: (query: string) => `/search?q=${encodeURIComponent(query)}`,
+  /** `/shortcuts` */
+  shortcuts: `/shortcuts`,
+  /** `/privacy-policy` */
+  privacyPolicy: `/privacy-policy`,
+  /** `/studio` */
+  studio: `/studio`,
+  /** `/studio/videos` */
+  studioVideos: `/studio/videos`,
+  /** `/studio/videos/{id}` */
+  studioVideoEdit: (id: string) => `/studio/videos/${id}`,
+  /** `/studio/videos/new` */
+  studioVideoNew: `/studio/videos/new`,
+  /** `/studio/channel` */
+  studioChannel: `/studio/channel`,
+  /** `/studio/storage` */
+  studioStorage: `/studio/storage`,
 }
 
-/**
- * Frames routes
- */
-export const getFramesLink = () => {
-  return `/frames`
-}
-
-/**
- * User routes
- */
-export const getProfilesLink = () => {
-  return `/profiles`
-}
-
-export const getFollowingLink = () => {
-  return `/following`
-}
-
-export const getSavedLink = () => {
-  return `/saved`
-}
-
-export const getPlaylistsLink = () => {
-  return `/playlists`
-}
-
-export const getChannelLink = (hash: string) => {
-  return `/channel/${encodeURIComponent(hash)}`
-}
-
-
-export const getSearchLink = (query: string) => {
-  return `/search?q=${encodeURIComponent(query)}`
-}
-
-/**
- * Video routes
- */
-export const getVideoLink = (hash: string, sourcePath?: string) => {
-  return `/watch?v=${hash}${encodeURIComponent(sourcePath ? `/${sourcePath}` : ``)}`
-}
-
-/**
- * Creator studio routes
- */
-export const getStudioLink = () => {
-  return `/studio`
-}
-export const getStudioVideosLink = () => {
-  return `/studio/videos`
-}
-export const getStudioVideoEditLink = (id: string) => {
-  return `/studio/videos/${id}`
-}
-export const getStudioVideoUploadLink = () => {
-  return `/studio/videos/new`
-}
-export const getStudioCustomizeChannelLink = () => {
-  return `/studio/channel`
-}
-export const getStudioStorageLink = () => {
-  return `/studio/storage`
-}
-
-/**
- * Static routes
- */
-export const getHowItWorksLink = () => {
-  return `/how-it-works`
-}
-export const getShortcutsLink = () => {
-  return `/shortcuts`
-}
-export const getPrivacyPolicyLink = () => {
-  return `/privacy-policy`
-}
-
-/**
- * Fallback routes
- */
-export const getNotFoundLink = () => {
-  return `/notfound`
-}
+export default routes

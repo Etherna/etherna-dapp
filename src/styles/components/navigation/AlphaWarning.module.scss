@@ -22,7 +22,11 @@
   @apply bg-orange-400 border border-orange-500 text-orange-800;
 
   svg {
-    @apply h-[1.2em] mr-1.5;
+    @apply h-[1.2em];
+  }
+
+  &Label {
+    @apply hidden sm:inline sm:ml-1.5;
   }
 }
 

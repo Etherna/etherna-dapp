@@ -14,17 +14,23 @@
  *  limitations under the License.
  */
 
-interface ImportMetaEnv {
-  VITE_APP_NAME: string
-  VITE_APP_TAGLINE: string
-  VITE_APP_PUBLIC_URL: string
-  VITE_APP_MATOMO_URL?: string
-  VITE_APP_MATOMO_SITE_ID?: number
-  VITE_APP_FEEDBACK_URL?: string
-  VITE_APP_VERIFIED_ORIGINS: string
-  VITE_APP_INDEX_URL: string
-  VITE_APP_GATEWAY_URL: string
-  VITE_APP_AUTH_URL: string
-  VITE_APP_CREDIT_URL: string
-  VITE_APP_POSTAGE_URL?: string
+.playerVideoInfo {
+  @apply flex items-center;
+  @apply text-lg font-medium;
+}
+
+.playerVideoInfoAvatar {
+  @apply relative w-8 h-8 rounded-full shadow-sm shadow-black/25;
+  @apply mr-3;
+  @apply md:w-12 md:h-12;
+
+  > * {
+    @apply w-full h-full;
+  }
+}
+
+.playerVideoInfoTitle {
+  @apply inline-flex items-baseline space-x-2;
+  @apply text-white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75);
 }

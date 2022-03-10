@@ -29,7 +29,7 @@ const ChannelEdit: React.FC = () => {
   const saveCallback = useRef<() => Promise<void>>()
 
   if (!address) return (
-    <Navigate to={routes.getHomeLink()} />
+    <Navigate to={routes.home} />
   )
 
   const handleSave = async () => {

@@ -51,7 +51,7 @@ const CantUploadAlert: React.FC = () => {
       Come back when your storage is ready.
 
       <span className="block mt-3">
-        <Button as="a" href={routes.getStudioStorageLink()}>
+        <Button as="a" href={routes.studioStorage}>
           Check your storage
         </Button>
       </span>

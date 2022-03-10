@@ -31,14 +31,12 @@ import PlayerQuality from "./PlayerQuality"
 
 type PlayerToolbarProps = {
   floating?: boolean
-  idle?: boolean
 }
 
-const PlayerToolbar: React.FC<PlayerToolbarProps> = ({ floating, idle }) => {
+const PlayerToolbar: React.FC<PlayerToolbarProps> = ({ floating }) => {
   return (
     <div className={classNames(classes.playerToolbar, {
       [classes.floating]: floating,
-      [classes.idle]: idle
     })}>
       <PlayerToolbarProgress />
 

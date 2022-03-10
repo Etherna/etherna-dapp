@@ -24,7 +24,7 @@ import DropdownToggle from "@common/DropdownToggle"
 import DropdownItem from "@common/DropdownItem"
 import DropdownMenu from "@common/DropdownMenu"
 import StateLink from "@common/StateLink"
-import Routes from "@routes"
+import routes from "@routes"
 import type { Video } from "@definitions/swarm-video"
 
 type VideoMenuProps = {
@@ -39,7 +39,7 @@ const VideoMenu: React.FC<VideoMenuProps> = ({ video }) => {
       </DropdownToggle>
       <DropdownMenu className="!w-44 !mt-0">
         <DropdownItem>
-          <StateLink to={Routes.getStudioVideoEditLink(video.reference)} state={video}>Video Settings</StateLink>
+          <StateLink to={routes.studioVideoEdit(video.reference)} state={video}>Video Settings</StateLink>
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>

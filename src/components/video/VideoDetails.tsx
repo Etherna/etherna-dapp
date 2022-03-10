@@ -17,14 +17,12 @@
 
 import React from "react"
 
-import VideoOffersBadge from "./VideoOffersBadge"
 import VideoDetailsInfoBar from "./VideoDetailsInfoBar"
 import VideoDetailsProfile from "./VideoDetailsProfile"
 import VideoDetailsDescription from "./VideoDetailsDescription"
-import VideoStatusBadge from "./VideoStatusBadge"
 import VideoDetailsTitleBar from "./VideoDetailsTitleBar"
 import VideoExtraMenu from "./VideoExtraMenu"
-import VideoRating from "./VideoRating"
+import VideoComments from "./VideoComments"
 import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
 
 type VideoDetailsProps = {
@@ -36,28 +34,18 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video, videoOffers }) => {
   return (
     <div>
       <VideoDetailsTitleBar title={video.title}>
-        {(video.isVideoOnIndex && video.indexReference) && (
-          <>
-            <VideoRating
-              videoId={video.indexReference}
-              upvotes={video.totUpvotes}
-              downvotes={video.totDownvotes}
-            />
-            <VideoExtraMenu video={video} />
-          </>
-        )}
+        <VideoExtraMenu video={video} />
       </VideoDetailsTitleBar>
 
-      <div className="flex items-center space-x-2 my-2">
-        <VideoStatusBadge status={video.isVideoOnIndex ? "available" : "unindexed"} />
-        <VideoOffersBadge video={video} videoOffers={videoOffers} />
-      </div>
-
-      <VideoDetailsInfoBar createdAt={video.createdAt ? video.createdAt : null} />
+      <VideoDetailsInfoBar video={video} videoOffers={videoOffers} />
 
       <VideoDetailsProfile owner={video.owner} />
 
       <VideoDetailsDescription description={video.description} />
+
+      {video.indexReference && (
+        <VideoComments indexReference={video.indexReference} videoAuthorAddress={video.ownerAddress} />
+      )}
     </div>
   )
 }

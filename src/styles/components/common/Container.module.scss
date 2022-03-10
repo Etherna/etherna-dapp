@@ -16,7 +16,7 @@
 
 .container,
 .containerFluid {
-  @apply p-4;
+  @apply p-container;
 
   &.noXpadding {
     @apply px-0;

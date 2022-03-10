@@ -57,7 +57,7 @@ const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({ comment, videoAut
       </div>
       <div className={classes.videoCommentContent}>
         <Link
-          to={routes.getChannelLink(ownerAddress)}
+          to={routes.channel(ownerAddress)}
           className={classNames(classes.videoCommentAuthor, {
             [classes.isVideoAuthor]: videoAuthorAddress === ownerAddress
           })}

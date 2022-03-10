@@ -56,7 +56,7 @@ const SharedMenuItems: React.FC<SharedMenuItemsProps> = () => {
       <DropdownItem btnAs="div" icon={<DarkModeIcon />} inactive>
         <DarkModeToggle enabled={darkMode} onChange={handleDarkModeChange} />
       </DropdownItem>
-      <DropdownItem href={routes.getShortcutsLink()} icon={<ShortcutsIcon />}>
+      <DropdownItem href={routes.shortcuts} icon={<ShortcutsIcon />}>
         Shortcuts
       </DropdownItem>
     </>

@@ -53,6 +53,7 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
             delay={150}
             placement="top"
             content={entry.tip}
+            visible={!!entry.tip}
           >
             <label htmlFor={`entry-${name}-${entry.value}`}>
               {entry.label}

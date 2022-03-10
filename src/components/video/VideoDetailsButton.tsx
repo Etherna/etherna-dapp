@@ -1,4 +1,4 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,29 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *  
  */
 
-interface ImportMetaEnv {
-  VITE_APP_NAME: string
-  VITE_APP_TAGLINE: string
-  VITE_APP_PUBLIC_URL: string
-  VITE_APP_MATOMO_URL?: string
-  VITE_APP_MATOMO_SITE_ID?: number
-  VITE_APP_FEEDBACK_URL?: string
-  VITE_APP_VERIFIED_ORIGINS: string
-  VITE_APP_INDEX_URL: string
-  VITE_APP_GATEWAY_URL: string
-  VITE_APP_AUTH_URL: string
-  VITE_APP_CREDIT_URL: string
-  VITE_APP_POSTAGE_URL?: string
+import React from "react"
+import classNames from "classnames"
+
+import classes from "@styles/components/video/VideoDetailsButton.module.scss"
+
+type VideoDetailsButtonProps = {
+  className?: string
+  onClick?(): void
 }
+
+const VideoDetailsButton: React.FC<VideoDetailsButtonProps> = ({
+  children,
+  className,
+  onClick
+}) => {
+  return (
+    <button className={classNames(classes.videoDetailsBtn, className)} onClick={onClick}>
+      {children}
+    </button>
+  )
+}
+
+export default VideoDetailsButton

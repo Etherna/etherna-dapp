@@ -39,6 +39,7 @@ module.exports = {
         },
       },
       spacing: {
+        container: "1rem",
         120: "30rem",
       },
       hueRotate: {

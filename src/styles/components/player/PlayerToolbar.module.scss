@@ -16,27 +16,22 @@
 
 .playerToolbar {
   @apply flex flex-col;
-  @apply bg-gray-400/20 dark:bg-gray-700/50;
+  @apply bg-slate-700 dark:bg-slate-800;
 
   &.floating {
-    @apply absolute inset-x-0 bottom-0 z-0;
     @apply pt-12 px-3;
-    @apply bg-transparent;
+    @apply bg-transparent dark:bg-transparent;
     @apply bg-gradient-to-t from-gray-900 to-gray-900/0;
-  }
-
-  &.idle.floating {
-    @apply opacity-0;
   }
 }
 
 .playerToolbarContent {
   @apply flex items-center;
   @apply space-x-3 sm:space-x-4 md:space-x-8;
-  @apply p-1 sm:p-3;
+  @apply px-1.5 xs:px-container py-1 sm:p-3;
 
   .floating & {
-    @apply px-0;
+    @apply px-0 xs:px-0;
   }
 }
 

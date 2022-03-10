@@ -39,21 +39,21 @@ const StudioLayout: React.FC = ({ children }) => {
       <div className={classes.content}>
         <DropdownSidebar>
           <SidebarItem
-            to={routes.getStudioVideosLink()}
+            to={routes.studioVideos}
             title="Videos"
             iconSvg={<VideoIcon />}
             isActive={pathname => /\/studio\/videos/.test(pathname)}
             isResponsive={false}
           />
           <SidebarItem
-            to={routes.getStudioCustomizeChannelLink()}
+            to={routes.studioChannel}
             title="Customize"
             iconSvg={<LightBulbIcon />}
             isActive={pathname => /\/studio\/channel/.test(pathname)}
             isResponsive={false}
           />
           <SidebarItem
-            to={routes.getStudioStorageLink()}
+            to={routes.studioStorage}
             title="Storage"
             iconSvg={<ServerIcon />}
             isActive={pathname => /\/studio\/storage/.test(pathname)}

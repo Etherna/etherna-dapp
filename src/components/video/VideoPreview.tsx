@@ -27,7 +27,7 @@ import StateLink from "@common/StateLink"
 import Image from "@common/Image"
 import Time from "@components/media/Time"
 import Avatar from "@components/user/Avatar"
-import Routes from "@routes"
+import routes from "@routes"
 import useSelector from "@state/useSelector"
 import { shortenEthAddr, checkIsEthAddress } from "@utils/ethereum"
 import dayjs from "@utils/dayjs"
@@ -53,8 +53,8 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   const profileName = (video.owner?.name) || shortenEthAddr(ownerAddress)
   const profileAvatar = video.owner?.avatar
 
-  const profileLink = ownerAddress ? Routes.getChannelLink(ownerAddress) : null
-  const videoLink = Routes.getVideoLink(decentralizedLink ? video.reference : video.indexReference ?? video.reference)
+  const profileLink = ownerAddress ? routes.channel(ownerAddress) : null
+  const videoLink = routes.watch(decentralizedLink ? video.reference : video.indexReference ?? video.reference)
   const videoSearch = new URL(videoLink, document.baseURI).search
   const videoPath = videoLink.replace(videoSearch, "")
 

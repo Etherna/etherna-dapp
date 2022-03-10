@@ -15,11 +15,13 @@
  *  
  */
 
-import React from "react"
+import React, { useRef, useState } from "react"
 import { Listbox } from "@headlessui/react"
 import classNames from "classnames"
 
 import classes from "@styles/components/player/PlayerToolbarSelect.module.scss"
+
+import { isTouchDevice } from "@utils/browser"
 
 type PlayerToolbarSelectProps = {
   value: string
@@ -31,30 +33,62 @@ const PlayerToolbarSelect: React.FC<PlayerToolbarSelectProps> = ({
   children,
   value,
   options,
-  onSelect
+  onSelect,
 }) => {
-  return (
-    <div className={classes.playerToolbarSelect}>
-      <Listbox value={value} onChange={val => onSelect?.(val)}>
-        <Listbox.Button as="div" role="button" className={classes.playerToolbarSelectBtn}>
-          {children}
-        </Listbox.Button>
+  const [isTouch] = useState(isTouchDevice())
+  const toggleEl = useRef<HTMLDivElement>(null)
 
-        <div className={classes.playerToolbarSelectList}>
-          <Listbox.Options className={classes.playerToolbarSelectListMenu} static>
-            {options.map(option => (
-              <Listbox.Option
-                className={classNames(classes.playerToolbarSelectListItem, {
-                  [classes.active]: option.value === value
-                })}
-                key={option.value}
-                value={option}
-              >
-                {option.label}
-              </Listbox.Option>
-            ))}
-          </Listbox.Options>
-        </div>
+  const toggleOpen = () => {
+    const toggle = toggleEl.current
+    const isOpen = toggle?.ariaExpanded === "true"
+
+    !isOpen && toggleEl.current?.click()
+  }
+
+  const toggleExit = () => {
+    const toggle = toggleEl.current
+    const isOpen = toggle?.ariaExpanded === "true"
+
+    isOpen && toggleEl.current?.click()
+  }
+
+  return (
+    <div
+      className={classes.playerToolbarSelect}
+      onMouseEnter={!isTouch ? toggleOpen : undefined}
+      onMouseLeave={!isTouch ? toggleExit : undefined}
+    >
+      <Listbox value={value} onChange={val => onSelect?.(val)}>
+        {({ open }) => (
+          <>
+            <Listbox.Button
+              as="div"
+              role="button"
+              className={classes.playerToolbarSelectBtn}
+              ref={toggleEl}
+            >
+              {children}
+            </Listbox.Button>
+
+            <div className={classNames(classes.playerToolbarSelectList, {
+              [classes.open]: open,
+            })}>
+              <Listbox.Options className={classes.playerToolbarSelectListMenu} static>
+                {options.map(option => (
+                  <Listbox.Option
+                    className={classNames(classes.playerToolbarSelectListItem, {
+                      [classes.active]: option.value === value
+                    })}
+                    key={option.value}
+                    value={option}
+                  >
+                    {option.label}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </div>
+          </>
+        )}
       </Listbox>
     </div>
   )
