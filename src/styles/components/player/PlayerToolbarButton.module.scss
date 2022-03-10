@@ -16,7 +16,7 @@
 
 .playerToolbarButton {
   @apply relative;
-  @apply w-7 h-7 rounded-full;
+  @apply w-7 h-7 rounded-full z-1;
   @apply p-1.5;
   @apply bg-gray-500/50;
   @apply text-gray-200;
@@ -33,7 +33,7 @@
   @apply invisible opacity-0;
   @apply absolute left-1/2 bottom-0;
   @apply transform -translate-x-1/2;
-  @apply pb-10;
+  @apply pb-10 z-20;
 
   &:hover,
   .playerToolbarButton:hover & {
@@ -44,7 +44,7 @@
 
 .playerToolbarButtonMenuList {
   @apply flex flex-col;
-  @apply px-2 py-4 space-y-2;
+  @apply px-4 py-4 space-y-2;
   @apply bg-gray-800/75 text-gray-200;
   @apply backdrop-blur;
   @apply rounded-full;

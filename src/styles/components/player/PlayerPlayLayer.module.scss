@@ -44,6 +44,7 @@
   @apply bg-white p-4;
   @apply text-gray-700;
   @apply rounded rotate-45;
+  @apply shadow-lg;
   @apply transition-colors duration-200 ease-out;
 
   svg {

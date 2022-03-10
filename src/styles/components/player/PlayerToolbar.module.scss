@@ -28,10 +28,10 @@
 .playerToolbarContent {
   @apply flex items-center;
   @apply space-x-3 sm:space-x-4 md:space-x-8;
-  @apply p-1 sm:p-3;
+  @apply px-1.5 xs:px-container py-1 sm:p-3;
 
   .floating & {
-    @apply px-0;
+    @apply px-0 xs:px-0;
   }
 }
 

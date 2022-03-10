@@ -15,7 +15,7 @@
  *  
  */
 
-import React from "react"
+import React, { useState } from "react"
 
 import { ReactComponent as MutedIcon } from "@assets/icons/player/muted.svg"
 import { ReactComponent as VolumeLowIcon } from "@assets/icons/player/volume-low.svg"
@@ -25,8 +25,10 @@ import PlayerToolbarButton from "./PlayerToolbarButton"
 import Slider from "@common/Slider"
 import { PlayerReducerTypes } from "@context/player-context"
 import { usePlayerState } from "@context/player-context/hooks"
+import { isTouchDevice } from "@utils/browser"
 
 const PlayerVolume: React.FC = () => {
+  const [isTouch] = useState(isTouchDevice())
   const [state, dispatch] = usePlayerState()
   const { muted, volume } = state
 
@@ -55,7 +57,7 @@ const PlayerVolume: React.FC = () => {
           <VolumeIcon />
         )
       }
-      onClick={toggleMute}
+      onClick={isTouch ? undefined : toggleMute}
       hasMenu
     >
       <Slider
