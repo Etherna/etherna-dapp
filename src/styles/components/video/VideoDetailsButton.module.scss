@@ -1,0 +1,12 @@
+.videoDetailsBtn {
+  @apply inline-flex items-center;
+  @apply bg-transparent border-none;
+  @apply font-medium;
+  @apply px-2 py-1 rounded;
+  @apply text-gray-800 dark:text-gray-200;
+  @apply active:bg-gray-300 dark:active:bg-gray-700;
+
+  svg {
+    @apply w-[1.2em] h-[1.2em] mr-2;
+  }
+}

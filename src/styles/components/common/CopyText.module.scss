@@ -1,0 +1,43 @@
+.copyText {
+  @apply flex items-start p-2 rounded;
+  @apply bg-gray-100 dark:bg-gray-600;
+  @apply text-gray-800 dark:text-gray-300;
+  @apply font-mono;
+}
+
+.copyTextLabel {
+  @apply block text-sm font-semibold;
+  @apply mb-1.5;
+}
+
+.copyTextContent {
+  @apply flex-1 my-auto;
+  @apply break-words break-all leading-tight;
+}
+
+.copyTextBtn {
+  @apply relative inline-flex items-center rounded;
+  @apply bg-transparent border-none;
+  @apply p-1 ml-3;
+  @apply text-gray-500 dark:text-gray-300;
+  @apply bg-gray-300 dark:bg-gray-500;
+  @apply active:bg-gray-700/40 dark:active:bg-gray-700/20;
+
+  svg {
+    @apply w-5 h-5;
+  }
+
+  &.copied {
+    svg:not(.checkIcon) {
+      @apply opacity-0;
+    }
+    .checkIcon {
+      @apply block;
+    }
+  }
+
+  .checkIcon {
+    @apply hidden;
+    @apply w-5 h-5 absolute-center text-green-500;
+  }
+}
