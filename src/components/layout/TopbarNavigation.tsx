@@ -57,6 +57,7 @@ const TopbarNavigation: React.FC = () => {
         <TopbarItem
           iconSvg={<MenuIcon />}
           onClick={toggleSidebar}
+          hideMobile
         />
       )}
 

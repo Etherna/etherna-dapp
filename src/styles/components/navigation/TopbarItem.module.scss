@@ -25,28 +25,36 @@
 
   @apply lg:justify-items-stretch;
 
-  &:first-child {
+  &:not(.hideMobile):first-child {
     @apply ml-0;
   }
-  &:last-child {
+  &:not(.hideMobile):last-child {
     @apply mr-0;
+  }
+  @screen md {
+    &:first-child {
+      @apply ml-0;
+    }
+    &:last-child {
+      @apply mr-0;
+    }
   }
 
   &:not(.topbarItemStatic) {
+    @apply mx-0 sm:mx-0;
     @apply px-2.5 md:px-3;
-    @apply sm:mx-px; // fix empty space caused by padding
     @apply active:bg-opacity-50 active:text-gray-900;
     @apply hover:bg-gray-200 hover:text-gray-900;
     @apply dark:active:text-gray-100;
     @apply dark:hover:bg-gray-800 dark:hover:text-gray-100;
-
-    &:first-child {
-      @apply -ml-2.5 md:-ml-3;
-    }
   }
 
   &.active {
     @apply text-gray-100;
+  }
+
+  &.hideMobile {
+    @apply hidden md:flex; // same as tabbar
   }
 }
 

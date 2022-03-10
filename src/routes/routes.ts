@@ -28,7 +28,7 @@ const routes = {
   /** `/playlists` */
   playlists: `/playlists`,
   /** `/channels/{id}` */
-  channel: (id: string) => `/channels/${id}`,
+  channel: (id: string) => `/channel/${id}`,
   /** `/watch/{hash}` */
   watch: (hash: string) => `/watch/${hash}`,
   /** `/embed/{hash}` */

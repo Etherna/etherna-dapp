@@ -19,7 +19,7 @@ import React from "react"
 
 import classes from "@styles/components/navigation/TopbarPopupItem.module.scss"
 
-import { TopbarItemProps } from "./TopbarItem"
+import TopbarItem, { TopbarItemProps } from "./TopbarItem"
 import TopbarPopupItemToggle from "./TopbarPopupItemToggle"
 import Popup from "@common/Popup"
 
@@ -29,7 +29,7 @@ type TopbarPopupItemProps = TopbarItemProps & {
 
 const TopbarPopupItem: React.FC<TopbarPopupItemProps> = props => {
   return (
-    <div className={classes.topbarPopupItem}>
+    <TopbarItem className={classes.topbarPopupItem}>
       <Popup
         toggle={
           <TopbarPopupItemToggle {...props} className={classes.popupTopbarItem}>
@@ -43,7 +43,7 @@ const TopbarPopupItem: React.FC<TopbarPopupItemProps> = props => {
       >
         {props.children}
       </Popup>
-    </div>
+    </TopbarItem>
   )
 }
 

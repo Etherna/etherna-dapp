@@ -16,6 +16,7 @@
 
 .sidebarLinkItem {
   @apply text-gray-600 dark:text-gray-400;
+  @apply text-left;
   @apply lg:inline-block;
   @apply lg:w-auto;
   @apply lg:px-0 py-0;

@@ -29,6 +29,7 @@ export type TopbarItemProps = {
   rel?: "noreferrer" | "noopener" | "nofollow"
   iconSvg?: React.ReactNode
   ignoreHoverState?: boolean
+  hideMobile?: boolean
   isActive?: ((pathname: string) => boolean) | boolean
   onClick?: () => void
 }
@@ -42,6 +43,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
   className,
   iconSvg,
   ignoreHoverState,
+  hideMobile,
   isActive,
   onClick,
 }) => {
@@ -56,6 +58,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
             className={classNames(classes.topbarItem, className, {
               [classes.active]: isCurrentPage,
               [classes.topbarItemStatic]: ignoreHoverState,
+              [classes.hideMobile]: hideMobile,
             })}
             to={to}
             target={target}
@@ -67,6 +70,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
           <button
             className={classNames(classes.topbarItem, className, {
               [classes.topbarItemStatic]: ignoreHoverState,
+              [classes.hideMobile]: hideMobile,
               [classes.active]: isCurrentPage
             })}
             onClick={onClick}
@@ -77,6 +81,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
           <div
             className={classNames(classes.topbarItem, className, {
               [classes.topbarItemStatic]: ignoreHoverState,
+              [classes.hideMobile]: hideMobile,
               [classes.active]: isCurrentPage
             })}
             onClick={onClick}
@@ -86,7 +91,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
         )}
       </>
     )
-  }, [to, ignoreHoverState, target, rel, className, isCurrentPage, onClick])
+  }, [isCurrentPage, to, className, ignoreHoverState, hideMobile, target, rel, onClick])
 
   return (
     <Wrapper>

@@ -25,6 +25,7 @@ import VideoCommentPlaceholder from "@components/placeholders/VideoCommentPlaceh
 import Avatar from "@components/user/Avatar"
 import useSwarmProfile from "@hooks/useSwarmProfile"
 import routes from "@routes"
+import { shortenEthAddr } from "@utils/ethereum"
 import dayjs from "@utils/dayjs"
 import type { IndexVideoComment } from "@definitions/api-index"
 
@@ -62,7 +63,7 @@ const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({ comment, videoAut
             [classes.isVideoAuthor]: videoAuthorAddress === ownerAddress
           })}
         >
-          {profile?.name ?? ownerAddress}
+          {profile?.name || shortenEthAddr(ownerAddress)}
         </Link>
         <span className={classes.videoCommentTime}>
           {dayjs.duration(dayjs(creationDateTime).diff(dayjs())).humanize(true)}
