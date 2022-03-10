@@ -111,7 +111,8 @@ const VideoRating: React.FC<VideoRatingProps> = ({
       <div className={classes.videoRatingButtons}>
         <button
           className={classNames(classes.videoRatingBtn, {
-            [classes.active]: currentVote === "Up"
+            [classes.active]: currentVote === "Up",
+            [classes.inactive]: currentVote === "Down",
           })}
           onClick={giveThumbsUp}
           disabled={isUpdatingVote}
@@ -124,7 +125,8 @@ const VideoRating: React.FC<VideoRatingProps> = ({
         </button>
         <button
           className={classNames(classes.videoRatingBtn, classes.ratingDown, {
-            [classes.active]: currentVote === "Down"
+            [classes.active]: currentVote === "Down",
+            [classes.inactive]: currentVote === "Up",
           })}
           onClick={giveThumbsDown}
           disabled={isUpdatingVote}
