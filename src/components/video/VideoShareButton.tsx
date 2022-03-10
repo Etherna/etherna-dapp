@@ -3,11 +3,11 @@ import React, { useState } from "react"
 import { ReactComponent as ShareIcon } from "@assets/icons/share.svg"
 
 import VideoDetailsButton from "./VideoDetailsButton"
+import CopyText from "@common/CopyText"
 import Modal from "@common/Modal"
 import Button from "@common/Button"
 import SegmentedControl from "@common/SegmentedControl"
 import routes from "@routes"
-import CopyText from "@common/CopyText"
 
 type VideoShareButtonProps = {
   reference: string
@@ -17,6 +17,13 @@ type VideoShareButtonProps = {
 const VideoShareButton: React.FC<VideoShareButtonProps> = ({ reference, indexReference }) => {
   const [showModal, setShowModal] = useState(false)
   const [sharePage, setSharePage] = useState<"link" | "embed">("link")
+
+  const getIFrame = (src: string) => {
+    return "<iframe " +
+      `src=\"${src}\" ` +
+      "allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" " +
+      "allowfullscreen></iframe>"
+  }
 
   return (
     <>
@@ -64,20 +71,12 @@ const VideoShareButton: React.FC<VideoShareButtonProps> = ({ reference, indexRef
 
           {sharePage === "embed" && indexReference && (
             <CopyText label="Index">
-              {`<iframe
-                  src="${import.meta.env.VITE_APP_PUBLIC_URL + routes.embed(indexReference)}"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen
-                ></iframe>`}
+              {getIFrame(import.meta.env.VITE_APP_PUBLIC_URL + routes.embed(indexReference))}
             </CopyText>
           )}
           {sharePage === "embed" && (
             <CopyText label="Decentralized">
-              {`<iframe
-                  src="${import.meta.env.VITE_APP_PUBLIC_URL + routes.embed(reference)}"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen
-                ></iframe>`}
+              {getIFrame(import.meta.env.VITE_APP_PUBLIC_URL + routes.embed(reference))}
             </CopyText>
           )}
         </div>
