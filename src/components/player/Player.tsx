@@ -19,13 +19,15 @@ import React, { useRef, useState, useEffect, useCallback, useMemo } from "react"
 import classNames from "classnames"
 import Axios, { Canceler } from "axios"
 
-import classes, { playing } from "@styles/components/player/Player.module.scss"
+import classes from "@styles/components/player/Player.module.scss"
 
 import PlayerShortcuts from "./PlayerShortcuts"
 import PlayerErrorBanner from "./PlayerErrorBanner"
 import PlayerBytesCounter from "./PlayerBytesCounter"
 import PlayerToolbar from "./PlayerToolbar"
 import PlayerVideoInfo from "./PlayerVideoInfo"
+import PlayerWatchOn from "./PlayerWatchOn"
+import PlayerPlayLayer from "./PlayerPlayLayer"
 import PlayerPlaceholder from "@components/placeholders/PlayerPlaceholder"
 import { PlayerContextProvider, PlayerReducerTypes } from "@context/player-context"
 import { usePlayerState } from "@context/player-context/hooks"
@@ -33,8 +35,6 @@ import http from "@utils/request"
 import { isTouchDevice } from "@utils/browser"
 import type { VideoSource } from "@definitions/swarm-video"
 import type { Profile } from "@definitions/swarm-profile"
-import PlayerWatchOn from "./PlayerWatchOn"
-import PlayerPlayLayer from "./PlayerPlayLayer"
 
 type PlayerProps = {
   hash: string
