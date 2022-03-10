@@ -25,22 +25,23 @@
 
   @apply lg:justify-items-stretch;
 
-  &:not(.hideMobile):first-of-type {
+  &:not(.hideMobile):first-child {
     @apply ml-0;
   }
-  &:not(.hideMobile):last-of-type {
+  &:not(.hideMobile):last-child {
     @apply mr-0;
   }
   @screen md {
-    &:first-of-type {
+    &:first-child {
       @apply ml-0;
     }
-    &:last-of-type {
+    &:last-child {
       @apply mr-0;
     }
   }
 
   &:not(.topbarItemStatic) {
+    @apply mx-0 sm:mx-0;
     @apply px-2.5 md:px-3;
     @apply active:bg-opacity-50 active:text-gray-900;
     @apply hover:bg-gray-200 hover:text-gray-900;
