@@ -25,11 +25,19 @@
 
   @apply lg:justify-items-stretch;
 
-  &:first-child {
+  &:not(.hideMobile):first-of-type {
     @apply ml-0;
   }
-  &:last-child {
+  &:not(.hideMobile):last-of-type {
     @apply mr-0;
+  }
+  @screen md {
+    &:first-of-type {
+      @apply ml-0;
+    }
+    &:last-of-type {
+      @apply mr-0;
+    }
   }
 
   &:not(.topbarItemStatic) {
@@ -42,6 +50,10 @@
 
   &.active {
     @apply text-gray-100;
+  }
+
+  &.hideMobile {
+    @apply hidden md:flex; // same as tabbar
   }
 }
 

@@ -42,7 +42,7 @@
     height: calc(theme("spacing.16") + var(--safe-area-inset-bottom));
   }
 
-  @screen sm {
+  @screen md {
     @apply hidden;
   }
 }

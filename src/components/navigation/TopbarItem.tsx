@@ -29,7 +29,7 @@ export type TopbarItemProps = {
   rel?: "noreferrer" | "noopener" | "nofollow"
   iconSvg?: React.ReactNode
   ignoreHoverState?: boolean
-  dataToggle?: boolean
+  hideMobile?: boolean
   isActive?: ((pathname: string) => boolean) | boolean
   onClick?: () => void
 }
@@ -43,7 +43,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
   className,
   iconSvg,
   ignoreHoverState,
-  dataToggle,
+  hideMobile,
   isActive,
   onClick,
 }) => {
@@ -58,11 +58,11 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
             className={classNames(classes.topbarItem, className, {
               [classes.active]: isCurrentPage,
               [classes.topbarItemStatic]: ignoreHoverState,
+              [classes.hideMobile]: hideMobile,
             })}
             to={to}
             target={target}
             rel={rel}
-            data-toggle={dataToggle}
           >
             {children}
           </NavLink>
@@ -70,10 +70,10 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
           <button
             className={classNames(classes.topbarItem, className, {
               [classes.topbarItemStatic]: ignoreHoverState,
+              [classes.hideMobile]: hideMobile,
               [classes.active]: isCurrentPage
             })}
             onClick={onClick}
-            data-toggle={dataToggle}
           >
             {children}
           </button>
@@ -81,17 +81,17 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
           <div
             className={classNames(classes.topbarItem, className, {
               [classes.topbarItemStatic]: ignoreHoverState,
+              [classes.hideMobile]: hideMobile,
               [classes.active]: isCurrentPage
             })}
             onClick={onClick}
-            data-toggle={dataToggle}
           >
             {children}
           </div>
         )}
       </>
     )
-  }, [to, ignoreHoverState, target, rel, className, isCurrentPage, onClick])
+  }, [isCurrentPage, to, className, ignoreHoverState, hideMobile, target, rel, onClick])
 
   return (
     <Wrapper>

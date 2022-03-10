@@ -19,7 +19,8 @@
   @apply bg-gray-100 dark:bg-gray-800;
   @apply z-20;
 
-  @apply sm:fixed sm:left-0 sm:inset-y-0 sm:flex w-20;
+  @apply md:flex md:w-20;
+  @apply md:fixed md:left-0 md:inset-y-0;
   @apply lg:w-52;
   @apply xl:w-64;
 
@@ -47,12 +48,12 @@
 }
 
 .sidebar:not(.floating) + * {
-  @apply sm:pl-20;
+  @apply md:pl-20;
   @apply lg:pl-52;
   @apply xl:pl-64;
 
   > [data-topbar] {
-    @apply sm:left-20;
+    @apply md:left-20;
     @apply lg:left-52;
     @apply xl:left-64;
   }
