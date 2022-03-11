@@ -25,6 +25,7 @@ export const VideoEditorActionTypes = {
   ADD_QUEUE: "videoeditor/add-queue",
   UPDATE_QUEUE: "videoeditor/update-queue",
   UPDATE_QUEUE_NAME: "videoeditor/update-queue-name",
+  SET_QUEUE_ERROR: "videoeditor/set-queue-error",
   REMOVE_QUEUE: "videoeditor/remove-queue",
   UPDATE_ORIGINAL_QUALITY: "videoeditor/update-original-quality",
   UPDATE_DURATION: "videoeditor/update-duration",
@@ -43,6 +44,11 @@ type UpdateQueueAction = {
   name: VideoEditorQueueName
   completion: number
   reference?: string
+}
+type SetQueueError = {
+  type: typeof VideoEditorActionTypes.SET_QUEUE_ERROR
+  name: VideoEditorQueueName
+  errorMessage: string | undefined
 }
 type UpdateQueueNameAction = {
   type: typeof VideoEditorActionTypes.UPDATE_QUEUE_NAME
@@ -80,6 +86,7 @@ type ResetAction = {
 export type AnyVideoEditorAction = (
   AddQueueAction |
   UpdateQueueAction |
+  SetQueueError |
   UpdateQueueNameAction |
   RemoveQueueAction |
   UpdateOriginalQualityAction |
@@ -108,6 +115,13 @@ const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEdit
       if (updateQueueElement) updateQueueElement.completion = action.completion
       if (updateQueueElement) updateQueueElement.reference = action.reference
       newState = { ...state, queue: updateQueue }
+      break
+    case VideoEditorActionTypes.SET_QUEUE_ERROR:
+      const setErrorQueue = deepCloneArray(state.queue)
+      const setErrorQueueElement = setErrorQueue.find(q => q.name === action.name)
+      if (setErrorQueueElement) setErrorQueueElement.error = action.errorMessage
+      if (setErrorQueueElement) setErrorQueueElement.completion = null
+      newState = { ...state, queue: setErrorQueue }
       break
     case VideoEditorActionTypes.UPDATE_QUEUE_NAME:
       const updateNameQueue = deepCloneArray(state.queue)

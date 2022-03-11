@@ -30,6 +30,7 @@ export type MultipleFileUpload = { buffer: Uint8Array, type?: string }[]
 export default class SwarmBeeClient extends Bee {
 
   public userBatches: GatewayBatch[]
+  public emptyBatchId = "0000000000000000000000000000000000000000000000000000000000000000" as BatchId
 
   constructor(url: string, options?: BeeOptions & { userBatches?: GatewayBatch[] }) {
     const request = createRequest()
@@ -130,9 +131,8 @@ export default class SwarmBeeClient extends Bee {
         return postageResp.data.stamps
       } catch { }
     }
-    const emptyBatchId = "0000000000000000000000000000000000000000000000000000000000000000" as BatchId
     return [{
-      batchID: emptyBatchId,
+      batchID: this.emptyBatchId,
       batchTTL: -1,
       amount: "0",
       depth: 0,
@@ -155,7 +155,7 @@ export default class SwarmBeeClient extends Bee {
     }
     const batches = await this.getAllPostageBatch()
     const usableBatches = batches.filter(batch => batch.usable)
-    return usableBatches[0].batchID
+    return usableBatches[0]?.batchID || this.emptyBatchId
   }
 
   /**

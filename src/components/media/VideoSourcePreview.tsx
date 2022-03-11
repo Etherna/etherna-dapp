@@ -22,10 +22,17 @@ import classes from "@styles/components/media/VideoSourcePreview.module.scss"
 type VideoSourcePreviewProps = {
   name?: string
   statusText?: string
+  error?: string
   actionsRender?: React.ReactNode
 }
 
-const VideoSourcePreview: React.FC<VideoSourcePreviewProps> = ({ children, name, statusText, actionsRender }) => {
+const VideoSourcePreview: React.FC<VideoSourcePreviewProps> = ({
+  children,
+  name,
+  statusText,
+  error,
+  actionsRender,
+}) => {
   return (
     <div className={classes.videoSourcePreview}>
       <div className={classes.videoSourcePreviewHeader}>
@@ -35,6 +42,9 @@ const VideoSourcePreview: React.FC<VideoSourcePreviewProps> = ({ children, name,
           {actionsRender && (
             <span className={classes.videoSourcePreviewActions}>{actionsRender}</span>
           )}
+          {/* {error && (
+            <span className={classes.videoSourcePreviewError}>{error}</span>
+          )} */}
           {statusText && (
             <span className={classes.videoSourcePreviewStatus}>{statusText}</span>
           )}

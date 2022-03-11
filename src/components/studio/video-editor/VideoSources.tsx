@@ -29,15 +29,13 @@ const VideoSources: React.FC<VideoSourcesProps> = ({ isSubmitting, initialDragPo
   const videoFlow = useRef<VideoSourcesUploadHandlers>(null)
 
   return (
-    <>
-      <FormGroup>
-        <VideoSourcesUpload
-          ref={videoFlow}
-          initialDragPortal={initialDragPortal}
-          disabled={isSubmitting}
-        />
-      </FormGroup>
-    </>
+    <FormGroup>
+      <VideoSourcesUpload
+        ref={videoFlow}
+        initialDragPortal={initialDragPortal}
+        disabled={isSubmitting}
+      />
+    </FormGroup>
   )
 }
 

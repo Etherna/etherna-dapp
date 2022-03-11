@@ -77,11 +77,24 @@ const useVideoEditorQueueActions = () => {
     })
   }
 
+  /**
+   * Set a queue error
+   * @param name Queue name
+   */
+  const setQueueError = (name: VideoEditorQueueName, errorMessage: string | undefined) => {
+    dispatch({
+      type: VideoEditorActionTypes.SET_QUEUE_ERROR,
+      name,
+      errorMessage,
+    })
+  }
+
   return {
     addToQueue,
     removeFromQueue,
     updateQueueName,
-    updateQueueCompletion
+    updateQueueCompletion,
+    setQueueError,
   }
 }
 

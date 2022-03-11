@@ -44,6 +44,12 @@
   @apply ml-3;
 }
 
+.videoSourcePreviewError {
+  @apply text-sm font-medium;
+  @apply text-red-500;
+  @apply ml-3;
+}
+
 .videoSourcePreviewContent {
   @apply mt-3;
 }
