@@ -52,7 +52,7 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
   const [contentType, setContentType] = useState<string>("image/*")
   const canceler = useRef<Canceler>()
 
-  const { addToQueue, removeFromQueue, updateQueueCompletion } = useVideoEditorQueueActions()
+  const { addToQueue, removeFromQueue, updateQueueCompletion, setQueueError } = useVideoEditorQueueActions()
   const { resetState } = useVideoEditorBaseActions()
   const { showError } = useErrorMessage()
 
@@ -89,7 +89,7 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
   const uploadThumbnail = async (buffer: ArrayBuffer) => {
     const reference = await videoWriter.addThumbnail(buffer, contentType, {
       onCancelToken: c => { canceler.current = c },
-      onUploadProgress: p => updateQueueCompletion(THUMBNAIL_QUEUE_NAME, p),
+      onUploadProgress: p => { updateQueueCompletion(THUMBNAIL_QUEUE_NAME, p) },
     })
 
     updateQueueCompletion(THUMBNAIL_QUEUE_NAME, 100, reference)
@@ -110,6 +110,10 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
     onCancel?.()
   }
 
+  const handleUploadError = (errorMessage: string) => {
+    setQueueError(THUMBNAIL_QUEUE_NAME, errorMessage)
+  }
+
   return (
     <>
       <FileUploadFlow
@@ -124,6 +128,7 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
         onFileSelected={handleFileSelected}
         canSelectFile={canSelectFile}
         onCancel={handleReset}
+        onUploadError={handleUploadError}
         disabled={disabled}
       >
         {({ isUploading }) => (

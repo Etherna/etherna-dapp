@@ -136,7 +136,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
           return newSources
         })
       },
-      onUploadProgress: p => updateQueueCompletion(queueName, p)
+      onUploadProgress: p => { updateQueueCompletion(queueName, p) }
     })
 
     updateQueueCompletion(queueName, 100, reference)
