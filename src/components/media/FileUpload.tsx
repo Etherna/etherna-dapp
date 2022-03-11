@@ -33,6 +33,7 @@ type FileUploadProps = {
   onUploadStart?: () => void
   onUploadFinished: (hash: string) => void
   onCancel: () => void
+  onUploadError: (errorMessage: string) => void
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({
@@ -44,6 +45,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
   onUploadStart,
   onUploadFinished,
   onCancel,
+  onUploadError,
 }) => {
   const [isUploading, setIsUploading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string>()
@@ -70,13 +72,19 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
       setIsUploading(false)
 
+      let errorMessage = "Cound't upload the selected file"
+
       if (!axios.isCancel(error)) {
         if (error && error.message === "Network Error") {
-          setErrorMessage("Network Error. Check if the gateway is secured with a SSL certificate.")
-        } else {
-          setErrorMessage(error.message || "Cound't upload the selected file")
+          errorMessage = "Network Error. Check if the gateway is online."
+        } else if (error.message) {
+          errorMessage = error.message
         }
+
+        setErrorMessage(errorMessage)
       }
+
+      onUploadError(errorMessage)
     }
   }
 

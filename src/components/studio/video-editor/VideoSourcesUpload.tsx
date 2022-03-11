@@ -77,7 +77,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
   const [sources, setSources] = useState<QueueSource[]>([defaultSource()])
 
   const { resetState, updateOriginalQuality, updateVideoDuration } = useVideoEditorBaseActions()
-  const { addToQueue, removeFromQueue, updateQueueCompletion } = useVideoEditorQueueActions()
+  const { addToQueue, removeFromQueue, updateQueueCompletion, setQueueError } = useVideoEditorQueueActions()
   const { showError } = useErrorMessage()
 
   useEffect(() => {
@@ -136,7 +136,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
           return newSources
         })
       },
-      onUploadProgress: p => updateQueueCompletion(queueName, p)
+      onUploadProgress: p => { updateQueueCompletion(queueName, p) }
     })
 
     updateQueueCompletion(queueName, 100, reference)
@@ -247,6 +247,10 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
     removeFromQueue(sourceName)
   }
 
+  const handleUploadError = (name: SwarmVideoQuality, errorMessage: string) => {
+    setQueueError(name, errorMessage)
+  }
+
   const handleSourceReset = (name: SwarmVideoQuality) => {
     removeFromQueue(name)
     onCancel?.(name)
@@ -273,6 +277,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
             onFileSelected={file => handleFileSelected(file, i)}
             canSelectFile={canSelectFile}
             onCancel={() => handleSourceReset(queueName)}
+            onUploadError={error => handleUploadError(queueName, error)}
             disabled={disabled}
             key={source.key}
           >
@@ -280,6 +285,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
               <VideoSourcePreview
                 name={queueName}
                 statusText={finished ? undefined : isUploading ? "uploading" : "queued"}
+                error={thisQueue?.error}
                 actionsRender={
                   <>
                     {(i > 0 && !isUploading) && (

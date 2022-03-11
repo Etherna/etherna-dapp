@@ -39,7 +39,8 @@ if (fs.existsSync(PrivateKeyPath) && fs.existsSync(CertificatePath)) {
 
   const httpsServer = https.createServer({ key: privateKey, cert: certificate }, async (req, res) => {
     if (!req.url) {
-      res.writeHead(500)
+      const respHeaders = fixResponseHeaders(req, null)
+      res.writeHead(500, "Server error", respHeaders)
       res.end("Server error")
       return
     }

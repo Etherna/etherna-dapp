@@ -44,4 +44,5 @@ export type VideoEditorQueue = {
   name: VideoEditorQueueName
   completion: number | null
   reference?: string
+  error?: string
 }

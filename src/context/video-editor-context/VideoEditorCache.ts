@@ -62,10 +62,13 @@ export default class VideoEditorCache {
     videoWriter.reference = reference
     videoWriter.videoRaw = videoRaw
 
+    // only keep successful uploads
+    const filteredQueue = queue.filter(queue => !!queue.reference)
+
     const state: VideoEditorContextState = {
       reference,
       ownerAddress,
-      queue,
+      queue: filteredQueue,
       videoWriter,
       pinContent,
       hasChanges,

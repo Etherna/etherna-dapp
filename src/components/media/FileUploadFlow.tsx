@@ -41,6 +41,7 @@ type FileUploadFlowProps = {
   onFileSelected?: (file: File) => void
   canSelectFile?: (file: File) => Promise<boolean>
   onCancel?: () => void
+  onUploadError: (errorMessage: string) => void
 }
 
 export type FileUploadFlowHandlers = {
@@ -62,11 +63,10 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
   onFileSelected,
   canSelectFile,
   onCancel,
+  onUploadError,
 }, ref) => {
   const [buffer, setBuffer] = useState<ArrayBuffer>()
   const [status, setStatus] = useState<"select" | "upload" | "preview">(reference ? "preview" : "select")
-
-  const { showError } = useErrorMessage()
 
   useEffect(() => {
     setStatus(status => {
@@ -152,6 +152,7 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
             uploadHandler={uploadHandler}
             onUploadFinished={onUploadFinished}
             onCancel={handleCancel}
+            onUploadError={onUploadError}
           >
             {children}
           </FileUpload>
