@@ -303,13 +303,13 @@ const InnerPlayer: React.FC<PlayerProps> = ({
           </div>
         )}
 
-        {embed && (
+        {(embed && !error) && (
           <div className={classes.playerVideoInfoWrapper}>
             <PlayerVideoInfo hash={hash} title={title || "Untitled"} owner={owner} />
           </div>
         )}
 
-        {embed && (
+        {(embed && !error) && (
           <div
             className={classNames(classes.playerVideoWatchOnWrapper, {
               [classes.floating]: floating && currentTime > 0
@@ -319,7 +319,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
           </div>
         )}
 
-        {(!isPlaying && currentTime === 0) && (
+        {(!isPlaying && currentTime === 0 && !error) && (
           <PlayerPlayLayer thumbnailUrl={thumbnailUrl} floating={floating} onPlay={togglePlay} />
         )}
 
