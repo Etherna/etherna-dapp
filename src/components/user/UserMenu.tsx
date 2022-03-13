@@ -22,14 +22,15 @@ import { ReactComponent as MoreIcon } from "@assets/icons/more.svg"
 
 import SharedMenuItems from "./SharedMenuItems"
 import SignedInMenuItems from "./SignedInMenuItems"
+import AlphaPassButton from "./AlphaPassButton"
+// import SigninButton from "./SigninButton"
+import Avatar from "./Avatar"
 import Button from "@common/Button"
 import Dropdown from "@common/Dropdown"
 import DropdownItem from "@common/DropdownItem"
 import DropdownMenu from "@common/DropdownMenu"
 import DropdownToggle from "@common/DropdownToggle"
 import Placeholder from "@common/Placeholder"
-import Avatar from "@components/user/Avatar"
-import SigninButton from "@components/user/SigninButton"
 import useSelector from "@state/useSelector"
 import useSignout from "@state/hooks/user/useSignout"
 
@@ -82,7 +83,8 @@ const UserMenu: React.FC = () => {
       </Dropdown>
 
       {!isFullySignedIn && (
-        <SigninButton>Sign in</SigninButton>
+        // <SigninButton>Sign in</SigninButton>
+        <AlphaPassButton>Request invitation</AlphaPassButton>
       )}
     </>
   )

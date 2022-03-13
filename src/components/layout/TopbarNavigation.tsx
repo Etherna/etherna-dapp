@@ -66,7 +66,7 @@ const TopbarNavigation: React.FC = () => {
         logoCompact={<LogoCompact />}
       />
 
-      <TopbarPopupItem toggle={<PlusIcon />}>
+      <TopbarPopupItem toggle={<PlusIcon />} hideMobile>
         <TopbarItem to={routes.studioVideoNew} iconSvg={<UploadIcon />}>
           Upload a video
         </TopbarItem>
