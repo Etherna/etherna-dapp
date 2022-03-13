@@ -17,5 +17,8 @@
 .alphaPassButton {
   @apply appearance-none whitespace-nowrap;
   background: linear-gradient(45deg, theme('colors.indigo.600'), theme('colors.pink.600'));
-  @apply text-white;
+  
+  &:not([hidden]) {
+    @apply text-white;
+  }
 }
