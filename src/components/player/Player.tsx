@@ -31,6 +31,7 @@ import PlayerPlayLayer from "./PlayerPlayLayer"
 import PlayerPlaceholder from "@components/placeholders/PlayerPlaceholder"
 import { PlayerContextProvider, PlayerReducerTypes } from "@context/player-context"
 import { usePlayerState } from "@context/player-context/hooks"
+import useVideoTracking from "@hooks/useVideoTracking"
 import http from "@utils/request"
 import { isTouchDevice } from "@utils/browser"
 import type { VideoSource } from "@definitions/swarm-video"
@@ -57,6 +58,8 @@ const InnerPlayer: React.FC<PlayerProps> = ({
 }) => {
   const [state, dispatch] = usePlayerState()
   const { source, currentQuality, isPlaying, currentTime, error, videoEl } = state
+
+  useVideoTracking(videoEl)
 
   const [hiddenControls, setHiddenControls] = useState(false)
   const [idle, setIdle] = useState(false)
