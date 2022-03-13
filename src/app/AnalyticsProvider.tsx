@@ -19,10 +19,7 @@ import React from "react"
 import { MatomoProvider, createInstance } from "@datapunt/matomo-tracker-react"
 
 const AnalyticsProvider: React.FC = ({ children }) => {
-  console.log("IN")
-
   if (import.meta.env.VITE_APP_MATOMO_URL && import.meta.env.VITE_APP_MATOMO_SITE_ID) {
-    console.log("IN 2")
     const instance = createInstance({
       urlBase: import.meta.env.VITE_APP_MATOMO_URL,
       siteId: import.meta.env.VITE_APP_MATOMO_SITE_ID,
