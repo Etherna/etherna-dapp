@@ -24,7 +24,8 @@
   }
 
   &.embed {
-    @apply my-0 lg:my-0;
+    @apply w-screen h-screen;
+    @apply m-0 lg:m-0;
   }
 }
 
@@ -32,6 +33,10 @@
   @apply max-h-[80vh] w-full;
   @apply object-cover;
   @apply bg-gray-200 dark:bg-gray-700;
+
+  .embed & {
+    @apply max-h-screen;
+  }
 }
 
 .playerToolbarWrapper {
