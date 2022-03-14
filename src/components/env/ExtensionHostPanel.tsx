@@ -150,6 +150,12 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost,
       return showError("URL Error", "Please insert a valid URL")
     }
 
+    for (const param of hostParams) {
+      if (param.mandatory && !paramsValues[param.key]) {
+        return showError(`Field ${param.label} is mandatory`, `Please enter a value`)
+      }
+    }
+
     const newHosts = [...hosts!]
     const selectedHostIndex = newHosts.findIndex(host => host.url === selectedUrl)
 
