@@ -22,6 +22,7 @@ import classNames from "classnames"
 import classes from "@styles/components/navigation/TopbarItem.module.scss"
 
 export type TopbarItemProps = {
+  as?: React.ElementType
   title?: string
   className?: string
   to?: string
@@ -36,6 +37,7 @@ export type TopbarItemProps = {
 
 const TopbarItem: React.FC<TopbarItemProps> = ({
   children,
+  as: As = "button",
   title,
   to,
   target,
@@ -67,7 +69,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
             {children}
           </NavLink>
         ) : !ignoreHoverState ? (
-          <button
+          <As
             className={classNames(classes.topbarItem, className, {
               [classes.topbarItemStatic]: ignoreHoverState,
               [classes.hideMobile]: hideMobile,
@@ -76,7 +78,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
             onClick={onClick}
           >
             {children}
-          </button>
+          </As>
         ) : (
           <div
             className={classNames(classes.topbarItem, className, {
@@ -91,7 +93,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
         )}
       </>
     )
-  }, [isCurrentPage, to, className, ignoreHoverState, hideMobile, target, rel, onClick])
+  }, [As, isCurrentPage, to, className, ignoreHoverState, hideMobile, target, rel, onClick])
 
   return (
     <Wrapper>

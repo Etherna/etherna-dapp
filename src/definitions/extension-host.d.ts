@@ -18,3 +18,10 @@ export interface ExtensionHost {
   name: string
   url: string
 }
+
+export interface IndexExtensionHost extends ExtensionHost {
+}
+
+export interface GatewayExtensionHost extends ExtensionHost {
+  stampsUrl?: string
+}

@@ -32,23 +32,25 @@ import TextField from "@common/TextField"
 import useLocalStorage from "@hooks/useLocalStorage"
 import { useErrorMessage } from "@state/hooks/ui"
 import { isSafeURL, urlHostname } from "@utils/urls"
-import type { ExtensionHost } from "@definitions/extension-host"
+import type { GatewayExtensionHost, IndexExtensionHost } from "@definitions/extension-host"
 
-type ExtensionHostPanelProps = {
+type ExtensionHostPanelProps<T> = {
   listStorageKey: string
   currentStorageKey: string
-  initialValue?: ExtensionHost
+  hostParams: Array<{ key: string, label: string, mandatory: boolean }>
+  initialValue?: T
   defaultUrl?: string
   description?: string
   isSignedIn: boolean
   signInUrl?: string | null
-  onChange?(extension: ExtensionHost): void
+  onChange?(extension: T): void
   onToggleEditing?(editing: boolean): void
 }
 
-const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
+const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost,>({
   listStorageKey,
   currentStorageKey,
+  hostParams,
   initialValue,
   defaultUrl,
   description,
@@ -56,7 +58,7 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
   signInUrl,
   onChange,
   onToggleEditing
-}) => {
+}: ExtensionHostPanelProps<T>) => {
   const verifiedOrigins = import.meta.env.VITE_APP_VERIFIED_ORIGINS.split(";")
   const defaultValue = initialValue ? [initialValue] : []
   const [storageHosts, setStorageHosts] = useLocalStorage(listStorageKey, defaultValue)
@@ -69,13 +71,22 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
     return hosts?.find(host => host.url === selectedUrl)
   }, [hosts, selectedUrl])
 
+  const reduceHostValues = (host: T | undefined) => {
+    return hostParams.reduce(
+      (values, param) => ({
+        ...values,
+        [param.key]: (host?.[param.key as keyof T] ?? "") as string
+      }),
+      {} as Record<string, string>
+    )
+  }
+
   const [isEditing, setIsEditing] = useState(false)
-  const [name, setName] = useState(selectedHost?.name ?? "")
-  const [url, setUrl] = useState(selectedHost?.url ?? "")
+  const [paramsValues, setParamsValues] = useState(reduceHostValues(selectedHost))
 
   const isVerifiedOrigin = (url: string | null) => {
     const hostname = urlHostname(url ?? "")
-    return verifiedOrigins.some(origin => origin === hostname)
+    return verifiedOrigins.some(origin => origin === hostname || hostname?.endsWith("." + origin))
   }
 
   const toggleEditSelectedHost = () => {
@@ -83,22 +94,20 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
     setIsEditing(editing => !editing)
   }
 
-  const selectHost = (newHost: ExtensionHost) => {
+  const selectHost = (newHost: T) => {
     const selectedHostIndex = hosts!.findIndex(host => host.url === newHost.url)
     setSelectedUrl(hosts![selectedHostIndex].url)
     setStorageSelectedUrl(hosts![selectedHostIndex].url)
-    setName(newHost.name)
-    setUrl(newHost.url)
+    updateParamsValuesForHost(newHost)
     onChange?.(newHost)
   }
 
   const addNewHost = () => {
-    const newHost = { name: "New host", url: "https://" }
+    const newHost = { name: "New host", url: "https://" } as T
 
     setHosts([...hosts!, newHost])
     setSelectedUrl(newHost.url)
-    setName(newHost.name)
-    setUrl(newHost.url)
+    updateParamsValuesForHost(newHost)
     toggleEditSelectedHost()
   }
 
@@ -117,30 +126,51 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
     setStorageHosts(newHosts)
     setSelectedUrl(newHosts[nextIndex].url)
     setStorageSelectedUrl(newHosts[nextIndex].url)
-    setName(newHosts[nextIndex].name)
-    setUrl(newHosts[nextIndex].url)
+    updateParamsValuesForHost(newHosts[nextIndex])
     onChange?.(selectedHost!)
     isEditing && toggleEditSelectedHost()
   }
 
+  const updateParamsValuesForHost = (host: T) => {
+    const values = reduceHostValues(host)
+    setParamsValues(values)
+  }
+
+  const updateParamsValuesForKey = (key: string, value: string) => {
+    const values = { ...paramsValues }
+    values[key] = value
+    setParamsValues(values)
+  }
+
   const saveSelectedHost = () => {
-    if (!name) {
+    if (!paramsValues.name) {
       return showError("Host name error", "Please type a host name")
     }
-    if (!isSafeURL(url)) {
+    if (!isSafeURL(paramsValues.url)) {
       return showError("URL Error", "Please insert a valid URL")
+    }
+    if (!paramsValues.url.startsWith("https")) {
+      return showError("URL Error", "The URL must be over https")
+    }
+
+    for (const param of hostParams) {
+      if (param.mandatory && !paramsValues[param.key]) {
+        return showError(`Field ${param.label} is mandatory`, `Please enter a value`)
+      }
     }
 
     const newHosts = [...hosts!]
     const selectedHostIndex = newHosts.findIndex(host => host.url === selectedUrl)
-    newHosts[selectedHostIndex].name = name
-    newHosts[selectedHostIndex].url = url
+
+    for (const param of hostParams) {
+      newHosts[selectedHostIndex][param.key as keyof T] = paramsValues[param.key] as any
+    }
 
     toggleEditSelectedHost()
     setHosts(newHosts)
     setStorageHosts(newHosts)
-    setSelectedUrl(url)
-    setStorageSelectedUrl(url)
+    setSelectedUrl(paramsValues.url)
+    setStorageSelectedUrl(paramsValues.url)
     setIsEditing(false)
     onChange?.(selectedHost!)
   }
@@ -191,7 +221,7 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
             </div>
           ) : (
             <>
-              {!isVerifiedOrigin(selectedUrl) && (
+              {selectedUrl !== defaultUrl && (
                 <div className="space-x-3">
                   <Button className={classes.btnText} modifier="transparent" onClick={toggleEditSelectedHost} small>
                     <EditIcon />
@@ -215,22 +245,24 @@ const ExtensionHostPanel: React.FC<ExtensionHostPanelProps> = ({
         </div>
 
         <form className={classes.extensionHostPanelFields}>
-          <FormGroup>
-            <Label htmlFor="name">Name</Label>
-            {isEditing ? (
-              <TextField id="name" type="text" value={name} onChange={setName} autoFocus />
-            ) : (
-              <div className={classes.extensionHostPanelValue}>{name}</div>
-            )}
-          </FormGroup>
-          <FormGroup>
-            <Label htmlFor="url">Url</Label>
-            {isEditing ? (
-              <TextField id="url" type="text" value={url} onChange={setUrl} />
-            ) : (
-              <div className={classes.extensionHostPanelValue}>{url}</div>
-            )}
-          </FormGroup>
+          {hostParams.map(param => (
+            <FormGroup key={param.key}>
+              {(!!paramsValues[param.key] || isEditing) && (
+                <Label htmlFor={param.key}>{param.label}</Label>
+              )}
+              {isEditing ? (
+                <TextField
+                  id={param.key}
+                  type="text"
+                  value={paramsValues[param.key]}
+                  onChange={val => updateParamsValuesForKey(param.key, val)}
+                  autoFocus
+                />
+              ) : paramsValues[param.key] ? (
+                <div className={classes.extensionHostPanelValue}>{paramsValues[param.key]}</div>
+              ) : null}
+            </FormGroup>
+          ))}
         </form>
       </div>
     </div>

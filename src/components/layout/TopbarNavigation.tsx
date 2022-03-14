@@ -85,7 +85,7 @@ const TopbarNavigation: React.FC = () => {
         </TopbarItem>
       )}
 
-      <TopbarItem className="!-mr-2" ignoreHoverState>
+      <TopbarItem ignoreHoverState>
         <UserMenu />
       </TopbarItem>
     </Topbar>

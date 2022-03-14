@@ -65,9 +65,9 @@ const TabbarNavigation: React.FC = () => {
           iconSvg={<BookmarkIcon />}
           isSubmenu
         />
-        <TabbarItem isSubmenu>
+        {/* <TabbarItem isSubmenu>
           <IndexExtension />
-        </TabbarItem>
+        </TabbarItem> */}
         <TabbarItem isSubmenu>
           <GatewayExtension />
         </TabbarItem>

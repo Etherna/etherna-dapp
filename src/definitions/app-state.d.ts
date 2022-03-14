@@ -35,6 +35,7 @@ export type AppState = {
 export type EnvState = {
   indexUrl: string
   gatewayUrl: string
+  gatewayStampsUrl?: string
   creditUrl: string
   indexClient: EthernaIndexClient
   gatewayClient: EthernaGatewayClient
