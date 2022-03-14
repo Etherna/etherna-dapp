@@ -25,6 +25,7 @@ import Button from "@common/Button"
 import ExtensionHostPanel from "@components/env/ExtensionHostPanel"
 import useSelector from "@state/useSelector"
 import useExtensionEditor from "@state/hooks/ui/useExtensionEditor"
+import { GatewayExtensionHost, IndexExtensionHost } from "@definitions/extension-host"
 
 const ExtensionEditorModal = () => {
   const { extensionName } = useSelector(state => state.ui)
@@ -55,10 +56,28 @@ const ExtensionEditorModal = () => {
     }
   }, [editingExtension, gatewayClient, indexClient, isSignedIn, isSignedInGateway, isStandaloneGateway])
 
-  useEffect(() => {
-    extensionName && setEditingExtension(extensionName)
-    setOpenModal(!!extensionName)
-  }, [extensionName])
+  const initialValue = useMemo(() => {
+    switch (editingExtension) {
+      case "index":
+        return { name: `Etherna ${editingExtension}`, url: defaultUrl } as IndexExtensionHost
+      case "gateway":
+        return { name: `Etherna ${editingExtension}`, url: defaultUrl } as GatewayExtensionHost
+    }
+  }, [editingExtension, defaultUrl])
+
+  const hostParams = useMemo(() => {
+    const defaultParams = [
+      { key: "name", label: "Name", mandatory: true },
+      { key: "url", label: "Url", mandatory: true },
+    ]
+    switch (editingExtension) {
+      case "index":
+        return defaultParams
+      case "gateway":
+        return [...defaultParams, { key: "stampsUrl", label: "Stamps url", mandatory: false }]
+      default: return defaultParams
+    }
+  }, [editingExtension])
 
   const description = useMemo(() => {
     switch (editingExtension) {
@@ -75,6 +94,11 @@ const ExtensionEditorModal = () => {
       default: return ""
     }
   }, [editingExtension])
+
+  useEffect(() => {
+    extensionName && setEditingExtension(extensionName)
+    setOpenModal(!!extensionName)
+  }, [extensionName])
 
   const closeModal = () => {
     hideEditor()
@@ -111,8 +135,9 @@ const ExtensionEditorModal = () => {
       <ExtensionHostPanel
         listStorageKey={STORAGE_LIST_KEY}
         currentStorageKey={STORAGE_SELECTED_KEY}
+        hostParams={hostParams}
         defaultUrl={defaultUrl}
-        initialValue={{ name: `Etherna ${editingExtension}`, url: defaultUrl }}
+        initialValue={initialValue}
         description={description}
         isSignedIn={signedIn}
         signInUrl={signInUrl}
