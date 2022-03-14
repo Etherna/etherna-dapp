@@ -29,10 +29,11 @@ export type MultipleFileUpload = { buffer: Uint8Array, type?: string }[]
  */
 export default class SwarmBeeClient extends Bee {
 
+  public stampsUrl?: string
   public userBatches: GatewayBatch[]
   public emptyBatchId = "0000000000000000000000000000000000000000000000000000000000000000" as BatchId
 
-  constructor(url: string, options?: BeeOptions & { userBatches?: GatewayBatch[] }) {
+  constructor(url: string, options?: BeeOptions & { userBatches?: GatewayBatch[], stampsUrl?: string }) {
     const request = createRequest()
     request.defaults.withCredentials = true
 
@@ -40,6 +41,7 @@ export default class SwarmBeeClient extends Bee {
       ...options,
       fetch: buildAxiosFetch(request)
     })
+    this.stampsUrl = options?.stampsUrl
     this.userBatches = options?.userBatches ?? []
   }
 
@@ -125,12 +127,14 @@ export default class SwarmBeeClient extends Bee {
   }
 
   async getAllPostageBatch(): Promise<PostageBatch[]> {
-    if (import.meta.env.VITE_APP_POSTAGE_URL) {
-      try {
-        const postageResp = await http.get<{ stamps: PostageBatch[] }>(import.meta.env.VITE_APP_POSTAGE_URL)
-        return postageResp.data.stamps
-      } catch { }
-    }
+    const stampsUrl = this.stampsUrl || this.url + "/stamps"
+    console.log("STAMPS", this.stampsUrl)
+
+    try {
+      const postageResp = await http.get<{ stamps: PostageBatch[] }>(stampsUrl)
+      return postageResp.data.stamps
+    } catch { }
+
     return [{
       batchID: this.emptyBatchId,
       batchTTL: -1,

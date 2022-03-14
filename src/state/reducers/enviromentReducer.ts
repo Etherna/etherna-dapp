@@ -27,6 +27,7 @@ import { parseLocalStorage } from "@utils/local-storage"
 import type { EnvState, WalletType } from "@definitions/app-state"
 import type { Keymap, KeymapNamespace } from "@definitions/keyboard"
 import type { GatewayBatch } from "@definitions/api-gateway"
+import type { GatewayExtensionHost } from "@definitions/extension-host"
 
 export const EnvActionTypes = {
   SET_IS_MOBILE: "ENV_SET_IS_MOBILE",
@@ -108,6 +109,9 @@ autoUpgradeEthernaService("setting:credit-url", import.meta.env.VITE_APP_CREDIT_
 // Init reducer
 const indexUrl = parseLocalStorage<string>("setting:index-url") || import.meta.env.VITE_APP_INDEX_URL
 const gatewayUrl = parseLocalStorage<string>("setting:gateway-url") || import.meta.env.VITE_APP_GATEWAY_URL
+const gatewayStampsUrl = parseLocalStorage<GatewayExtensionHost[]>("setting:gateway-hosts")
+  ?.find(host => host.url === gatewayUrl)
+  ?.stampsUrl
 const creditUrl = parseLocalStorage<string>("setting:credit-url") || import.meta.env.VITE_APP_CREDIT_URL
 const indexClient = new EthernaIndexClient({
   host: EthernaIndexClient.defaultHost,
@@ -121,11 +125,14 @@ const authClient = new EthernaAuthClient({
   host: EthernaAuthClient.defaultHost,
   apiPath: EthernaAuthClient.defaultApiPath
 })
-const beeClient = new SwarmBeeClient(EthernaGatewayClient.defaultHost)
+const beeClient = new SwarmBeeClient(EthernaGatewayClient.defaultHost, {
+  stampsUrl: gatewayStampsUrl
+})
 
 const initialState: EnvState = {
   indexUrl,
   gatewayUrl,
+  gatewayStampsUrl,
   creditUrl,
   indexClient,
   gatewayClient,
@@ -178,6 +185,7 @@ const enviromentReducer = (state: EnvState = initialState, action: EnvActions): 
         beeClient: new SwarmBeeClient(state.beeClient.url, {
           signer: state.beeClient.signer,
           userBatches: action.batches,
+          stampsUrl: state.beeClient.stampsUrl,
         })
       }
 

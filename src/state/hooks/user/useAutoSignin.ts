@@ -41,7 +41,7 @@ type AutoSigninOpts = {
 let batchesFetchTries = 0
 
 export default function useAutoSignin(opts: AutoSigninOpts = {}) {
-  const { indexClient, gatewayClient, authClient, beeClient } = useSelector(state => state.env)
+  const { indexClient, gatewayClient, authClient, beeClient, gatewayStampsUrl } = useSelector(state => state.env)
   const dispatch = useDispatch<Dispatch<UserActions | EnvActions | UIActions | ProfileActions>>()
 
   useEffect(() => {
@@ -174,7 +174,8 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
     // update bee client with signer for feed update
     if (identity?.etherManagedPrivateKey) {
       const beeClientSigner = new SwarmBeeClient(beeClient.url, {
-        signer: identity.etherManagedPrivateKey
+        signer: identity.etherManagedPrivateKey,
+        stampsUrl: gatewayStampsUrl
       })
 
       dispatch({
@@ -197,7 +198,8 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
               }
             }
           }
-        }
+        },
+        stampsUrl: gatewayStampsUrl
       })
 
       dispatch({

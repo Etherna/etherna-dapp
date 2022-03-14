@@ -24,7 +24,7 @@ const TopbarPopupItemToggle: React.FC<TopbarItemProps> = props => {
   const itemProps = { ...omit(props, "children") }
 
   return (
-    <TopbarItem {...itemProps}>
+    <TopbarItem {...itemProps} ignoreHoverState>
       {props.children && (
         props.children
       )}
