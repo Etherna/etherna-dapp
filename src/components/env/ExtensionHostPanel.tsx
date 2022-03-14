@@ -149,6 +149,9 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost,
     if (!isSafeURL(paramsValues.url)) {
       return showError("URL Error", "Please insert a valid URL")
     }
+    if (!paramsValues.url.startsWith("https")) {
+      return showError("URL Error", "The URL must be over https")
+    }
 
     for (const param of hostParams) {
       if (param.mandatory && !paramsValues[param.key]) {
