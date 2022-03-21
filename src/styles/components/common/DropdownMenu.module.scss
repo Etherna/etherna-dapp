@@ -16,12 +16,19 @@
 
 .dropdownMenu {
   @apply absolute right-0 mt-2 py-1 z-1;
-  @apply w-72 rounded-md shadow-lg;
+  @apply w-72 max-w-[90vw];
+  @apply rounded-md shadow-lg;
   @apply border border-transparent;
   @apply bg-white ring-1 ring-black ring-opacity-5;
   @apply origin-top-right;
   @apply focus:outline-none;
   @apply dark:bg-gray-800 dark:border-gray-700;
+  @apply opacity-0 scale-y-95 origin-top pointer-events-none;
+  @apply transition duration-200 ease-out;
+
+  &.open {
+    @apply opacity-100 scale-y-100 pointer-events-auto;
+  }
 
   hr {
     @apply my-2;
