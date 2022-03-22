@@ -21,6 +21,7 @@ import classNames from "classnames"
 import classes from "@styles/components/studio/channel-editor/ChannelEditor.module.scss"
 import { ReactComponent as TrashIcon } from "@assets/icons/trash.svg"
 
+import WalletState from "../other/WalletState"
 import Button from "@common/Button"
 import MarkdownEditor from "@common/MarkdownEditor"
 import TextField from "@common/TextField"
@@ -34,8 +35,6 @@ import { useWallet } from "@state/hooks/env"
 import makeBlockies from "@utils/makeBlockies"
 import type { SwarmImage, SwarmImageRaw } from "@definitions/swarm-image"
 import type { Profile } from "@definitions/swarm-profile"
-import Alert from "@common/Alert"
-import WalletState from "../other/WalletState"
 
 type ImageType = "avatar" | "cover"
 
@@ -149,6 +148,9 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>, type: ImageType) => {
     const file = e.currentTarget.files![0]
     if (!file) return
+
+    // reset input
+    e.target.value = ""
 
     const img = await cropImage(file, type)
 

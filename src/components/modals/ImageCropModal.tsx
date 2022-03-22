@@ -15,8 +15,8 @@
  *  
  */
 
-import React, { useState, useRef, useCallback, useEffect } from "react"
-import ReactCrop, { Crop } from "react-image-crop"
+import React, { useState, useRef } from "react"
+import ReactCrop, { centerCrop, Crop, makeAspectCrop } from "react-image-crop"
 
 import Modal from "@common/Modal"
 import Button from "@common/Button"
@@ -30,21 +30,32 @@ type ImageCropModalProps = {
 const ImageCropModal: React.FC<ImageCropModalProps> = ({ show = false }) => {
   const imgRef = useRef<HTMLImageElement>()
   const { imageType, image } = useSelector(state => state.ui)
-  const [crop, setCrop] = useState<Partial<Crop>>()
+  const [crop, setCrop] = useState<Crop>()
   const { finishCropping } = useImageCrop()
 
-  useEffect(() => {
-    setCrop({
-      unit: "px",
-      width: imageType === "avatar" ? 500 : undefined,
-      height: imageType === "avatar" ? undefined : 450,
-      aspect: imageType === "avatar" ? 1 : 1920 / 450,
-    })
-  }, [imageType])
+  const aspectRatio = imageType === "avatar" ? 1 : 1920 / 450
 
-  const onLoad = useCallback((img: HTMLImageElement) => {
-    imgRef.current = img
-  }, [])
+  const imageLoaded = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    imgRef.current = e.currentTarget
+
+    const { width, height } = e.currentTarget
+
+    const crop = centerCrop(
+      makeAspectCrop(
+        {
+          unit: "%",
+          width: 90,
+        },
+        aspectRatio,
+        width,
+        height,
+      ),
+      width,
+      height,
+    )
+
+    setCrop(crop)
+  }
 
   const handleCancel = () => {
     finishCropping(undefined)
@@ -78,14 +89,18 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ show = false }) => {
         </Button>
       }
       onClose={handleCancel}
+      large
     >
       <div className="flex justify-center my-6">
         <ReactCrop
-          src={image!}
-          onImageLoaded={onLoad}
-          crop={crop ?? {}}
-          onChange={crop => setCrop(crop)}
-        />
+          crop={crop}
+          onChange={setCrop}
+          aspect={aspectRatio}
+        >
+          {image && (
+            <img src={image} onLoad={imageLoaded} />
+          )}
+        </ReactCrop>
       </div>
     </Modal>
   )
