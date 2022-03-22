@@ -19,14 +19,9 @@
 }
 
 .videoDescription {
-  @apply relative;
-  @apply mt-4 text-gray-800;
+  @apply relative mt-4;
+  @apply text-gray-800;
   @apply dark:text-gray-200;
-
-  * {
-    @apply text-gray-800;
-    @apply dark:text-gray-200;
-  }
 
   .compress & {
     @apply max-h-[7.5rem] overflow-hidden; // 24px line height x 5

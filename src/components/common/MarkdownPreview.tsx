@@ -17,9 +17,10 @@
 
 import React, { useMemo } from "react"
 import classNames from "classnames"
-import snarkdown from "snarkdown"
 
 import classes from "@styles/components/common/MarkdownPreview.module.scss"
+
+import microdown from "@utils/microdown"
 
 type MarkdownPreviewProps = {
   value: string
@@ -33,7 +34,7 @@ type MarkdownPreviewProps = {
 
 const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({
   value,
-  as: As = "p",
+  as: As = "div",
   role,
   forceNewLine,
   className,
@@ -44,7 +45,7 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({
     const formattedMarkdown = forceNewLine
       ? value.replace(/\n/g, "<br />")
       : value
-    return snarkdown(formattedMarkdown)
+    return microdown(formattedMarkdown)
   }, [value, forceNewLine])
 
   return (

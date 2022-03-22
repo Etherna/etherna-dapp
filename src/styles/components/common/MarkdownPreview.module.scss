@@ -15,6 +15,10 @@
  */
 
 .markdownPreview {
+  @apply prose max-w-none;
+  @apply prose-a:no-underline prose-a:text-primary-500 hover:prose-a:text-primary-400;
+  @apply dark:prose-invert;
+
   &.noHeading {
     h1,
     h2,
