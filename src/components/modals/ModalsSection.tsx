@@ -24,6 +24,7 @@ import useSelector from "@state/useSelector"
 
 const ModalsSection = () => {
   const { isEditingShortcut, isCroppingImage } = useSelector(state => state.ui)
+
   return (
     <section id="modals">
       <ShortcutModal show={isEditingShortcut} />

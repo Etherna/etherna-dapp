@@ -59,7 +59,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ children, className, open }
         [classes.open]: open
       })}
       style={style}
-      ref={(el: HTMLDivElement) => el && setMenuEl(el)}
+      ref={(el: HTMLDivElement | null) => el && setMenuEl(el)}
       static
     >
       {children}

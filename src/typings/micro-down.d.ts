@@ -14,20 +14,12 @@
  *  limitations under the License.
  */
 
-.markdownPreview {
-  @apply prose max-w-none;
-  @apply prose-a:no-underline prose-a:text-primary-500 hover:prose-a:text-primary-400;
-  @apply dark:prose-invert;
-
-  &.noHeading {
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      font-size: 1em;
-      font-weight: inherit;
-    }
+declare module "micro-down" {
+  type MicroDownOptions = {
+    preCode?: string
   }
+  export function parse(text: string, options?: MicroDownOptions): string
+  export function block(text: string, options?: MicroDownOptions): string
+  export function inline(text: string): string
+  export function inlineBlock(text: string, dontInline: boolean): string
 }

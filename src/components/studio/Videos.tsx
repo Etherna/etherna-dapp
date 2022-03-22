@@ -16,7 +16,7 @@
  */
 
 import React, { useEffect, useState } from "react"
-import { Navigate } from "react-router-dom"
+import { Link, Navigate } from "react-router-dom"
 import classNames from "classnames"
 
 import classes from "@styles/components/studio/Videos.module.scss"
@@ -241,7 +241,9 @@ const Videos: React.FC = () => {
                 />
               </div>
               <div className={classes.videoTitleInfo}>
-                <h3 className={classes.videoTitleTitle}>{item.title}</h3>
+                <Link className={classes.videoTitleText} to={routes.watch(item.indexReference || item.reference)}>
+                  <h3>{item.title}</h3>
+                </Link>
                 {renderVideoStatus(item)}
                 {renderOffersStatus(item)}
               </div>

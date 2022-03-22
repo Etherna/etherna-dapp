@@ -15,8 +15,13 @@
  *  
  */
 
-import React from "react"
+import React, { useEffect, useState } from "react"
+import classNames from "classnames"
 
+import classes from "@styles/components/video/VideoDetailsDescription.module.scss"
+import { ReactComponent as ChevronDownIcon } from "@assets/icons/chevron-down.svg"
+
+import Button from "@common/Button"
 import MarkdownPreview from "@common/MarkdownPreview"
 
 type VideoDetailsDescriptionProps = {
@@ -24,14 +29,63 @@ type VideoDetailsDescriptionProps = {
 }
 
 const VideoDetailsDescription: React.FC<VideoDetailsDescriptionProps> = ({ description }) => {
+  const [descriptionEl, setDescriptionEl] = useState<HTMLDivElement>()
+  const [shouldCompress, setShouldCompress] = useState(false)
+  const [showMore, setShowMore] = useState(false)
+
+  useEffect(() => {
+    if (!descriptionEl) return
+
+    function updateShouldCompress() {
+      const lineHeight = parseInt(getComputedStyle(descriptionEl!).lineHeight)
+      const lines = Math.ceil(descriptionEl!.scrollHeight / lineHeight)
+
+      setShouldCompress(lines > 5)
+    }
+
+    const resizeObserver = new ResizeObserver(updateShouldCompress)
+    resizeObserver.observe(document.documentElement)
+
+    updateShouldCompress()
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [descriptionEl])
+
   return (
-    <div className="video-details-description">
-      {description ? (
-        <MarkdownPreview value={description} disableHeading={true} />
-      ) : (
-        <p className="video-details-empty">
-          <em>This video doesn&apos;t have a description</em>
-        </p>
+    <div className={classNames(classes.videoDescriptionWrapper, {
+      [classes.compress]: shouldCompress,
+      [classes.showMore]: showMore,
+    })}>
+      <div
+        className={classNames(classes.videoDescription, {
+          [classes.compress]: shouldCompress,
+          [classes.showMore]: showMore,
+        })}
+        style={{
+          maxHeight: showMore && shouldCompress ? `${descriptionEl!.scrollHeight}px` : ""
+        }}
+        ref={el => el && setDescriptionEl(el)}
+      >
+        {description ? (
+          <MarkdownPreview value={description} disableHeading={true} />
+        ) : (
+          <p className={classes.videoDescriptionEmpty}>
+            <em>{"This video doesn't have a description"}</em>
+          </p>
+        )}
+      </div>
+
+      {shouldCompress && (
+        <Button
+          className={classes.videoDescriptionShowMore}
+          modifier="transparent"
+          onClick={() => setShowMore(!showMore)}
+        >
+          {showMore ? "Show less" : "Show more"}
+          <ChevronDownIcon aria-hidden />
+        </Button>
       )}
     </div>
   )

@@ -14,20 +14,22 @@
  *  limitations under the License.
  */
 
-.markdownPreview {
-  @apply prose max-w-none;
-  @apply prose-a:no-underline prose-a:text-primary-500 hover:prose-a:text-primary-400;
-  @apply dark:prose-invert;
+import { parse } from "micro-down"
 
-  &.noHeading {
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      font-size: 1em;
-      font-weight: inherit;
-    }
-  }
+/**
+ * Extend microdown capabilities
+ *
+ * @param md Markdown
+ * @returns Markdown html
+ */
+export default function microdownEnhanced(md: string) {
+  const htmls = md
+    .split(/(?:\r?\n){2,}/)
+    .map(l =>
+      [" ", "\t", "#", "-", "*"].some(ch => l.startsWith(ch))
+        ? parse(l)
+        : `<p>${parse(l)}</p>`,
+    )
+
+  return htmls.join("\n\n")
 }
