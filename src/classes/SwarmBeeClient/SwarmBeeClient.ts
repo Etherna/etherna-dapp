@@ -128,7 +128,6 @@ export default class SwarmBeeClient extends Bee {
 
   async getAllPostageBatch(): Promise<PostageBatch[]> {
     const stampsUrl = this.stampsUrl || this.url + "/stamps"
-    console.log("STAMPS", this.stampsUrl)
 
     try {
       const postageResp = await http.get<{ stamps: PostageBatch[] }>(stampsUrl)
