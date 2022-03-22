@@ -36,9 +36,16 @@
   }
 }
 
-.videoTitleTitle {
-  @apply text-base mb-0;
-  @apply font-bold leading-tight;
+.videoTitleText {
+  &,
+  &:is(a) > * {
+    @apply text-base mb-0;
+    @apply font-bold leading-tight;
+  }
+
+  &:is(a) {
+    @apply text-gray-900 dark:text-gray-50;
+  }
 }
 
 .videoStatus {
