@@ -32,6 +32,7 @@ export const VideoEditorActionTypes = {
   UPDATE_TITLE: "videoeditor/update-title",
   UPDATE_DESCRIPTION: "videoeditor/update-description",
   UPDATE_PIN_CONTENT: "videoeditor/update-pin-content",
+  UPDATE_SAVE_TO: "videoeditor/update-save-to",
   RESET: "videoeditor/reset",
 } as const
 
@@ -71,6 +72,10 @@ type UpdatePinContentAction = {
   type: typeof VideoEditorActionTypes.UPDATE_PIN_CONTENT
   pinContent: boolean
 }
+type UpdateSaveToAction = {
+  type: typeof VideoEditorActionTypes.UPDATE_SAVE_TO
+  saveTo: VideoEditorContextState["saveTo"]
+}
 type UpdateTitleAction = {
   type: typeof VideoEditorActionTypes.UPDATE_TITLE
   title: string
@@ -92,6 +97,7 @@ export type AnyVideoEditorAction = (
   UpdateOriginalQualityAction |
   UpdateDurationAction |
   UpdatePinContentAction |
+  UpdateSaveToAction |
   UpdateTitleAction |
   UpdateDescriptionAction |
   ResetAction
@@ -151,6 +157,9 @@ const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEdit
       state.videoWriter.description = action.description
       newState = { ...state }
       break
+    case VideoEditorActionTypes.UPDATE_SAVE_TO:
+      newState = { ...state, saveTo: action.saveTo }
+      break
     case VideoEditorActionTypes.UPDATE_PIN_CONTENT:
       newState = { ...state, pinContent: action.pinContent }
       break
@@ -162,6 +171,7 @@ const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEdit
         pinContent: state.pinContent,
         videoWriter: state.videoWriter.resetCopy(),
         hasChanges: false,
+        saveTo: "channel-index",
       }
       break
   }

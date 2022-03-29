@@ -67,10 +67,19 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
       setChannelPlaylist(reader.channelPlaylist)
       setSavedPlaylist(reader.savedPlaylist)
       setCustomPlaylists(reader.customPlaylists)
+
+      setIsFetchingPlaylists(false)
+
+      return {
+        rawPlaylists: reader.rawPlaylists,
+        channelPlaylist: reader.channelPlaylist,
+        savedPlaylist: reader.savedPlaylist,
+        customPlaylists: reader.customPlaylists,
+      }
     } catch (error: any) {
       console.error(error)
+      setIsFetchingPlaylists(false)
     }
-    setIsFetchingPlaylists(false)
   }
 
   const addVideosToPlaylist = async (playlistId: string, videos: Video[], publishedAt?: number) => {

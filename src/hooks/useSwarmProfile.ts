@@ -76,15 +76,10 @@ export default function useSwarmProfile(opts: SwarmProfileOptions) {
     const profileWriter = new SwarmProfileIO.Writer(address, { beeClient })
 
     // save profile data on swarm
-    console.log("saving....")
     const newReference = await profileWriter.update(profile)
-    console.log("new ref", newReference)
 
     // update index
     await indexClient.users.updateCurrentUser(newReference)
-
-    console.log("index updated")
-
 
     setIsloading(false)
 
