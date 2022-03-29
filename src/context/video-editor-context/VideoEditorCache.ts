@@ -55,7 +55,15 @@ export default class VideoEditorCache {
 
   static loadState(beeClient: SwarmBeeClient) {
     const value = window.localStorage.getItem(STORAGE_KEY)!
-    const { reference, queue, videoRaw, pinContent, ownerAddress, hasChanges } = JSON.parse(value) as CacheState
+    const {
+      reference,
+      queue,
+      videoRaw,
+      pinContent,
+      ownerAddress,
+      hasChanges,
+      saveTo,
+    } = JSON.parse(value) as CacheState
     const videoWriter = new SwarmVideoIO.Writer(undefined, ownerAddress, {
       beeClient,
     })
@@ -71,6 +79,7 @@ export default class VideoEditorCache {
       queue: filteredQueue,
       videoWriter,
       pinContent,
+      saveTo,
       hasChanges,
     }
 
@@ -78,7 +87,15 @@ export default class VideoEditorCache {
   }
 
   static saveState(state: VideoEditorContextState) {
-    const { reference, queue, videoWriter, pinContent, ownerAddress, hasChanges } = state
+    const {
+      reference,
+      queue,
+      videoWriter,
+      pinContent,
+      ownerAddress,
+      saveTo,
+      hasChanges,
+    } = state
     const videoRaw = videoWriter.videoRaw
 
     const cacheState: CacheState = {
@@ -87,7 +104,8 @@ export default class VideoEditorCache {
       queue,
       videoRaw,
       pinContent,
-      hasChanges
+      saveTo,
+      hasChanges,
     }
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(cacheState))
   }

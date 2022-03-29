@@ -34,6 +34,8 @@ export type VideoEditorContextState = {
   queue: VideoEditorQueue[]
   /** Pin content on Swarm */
   pinContent: boolean | undefined
+  /** Where to save the video manifest */
+  saveTo: "channel" | "channel-index" | "none"
   /** Whether the user made come changes */
   hasChanges: boolean
 }

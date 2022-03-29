@@ -20,24 +20,27 @@ import { Navigate } from "react-router"
 
 import { ReactComponent as NotesIcon } from "@assets/icons/notes.svg"
 import { ReactComponent as MovieIcon } from "@assets/icons/movie.svg"
-// import { ReactComponent as EyeIcon } from "@assets/icons/eye.svg"
+import { ReactComponent as EyeIcon } from "@assets/icons/eye.svg"
 
 import VideoDetails from "./VideoDetails"
 import VideoSources from "./VideoSources"
-// import VideoExtra from "./VideoExtra"
+import VideoExtra from "./VideoExtra"
+import Alert from "@common/Alert"
+import Button from "@common/Button"
 import ProgressTab from "@common/ProgressTab"
 import ProgressTabContent from "@common/ProgressTabContent"
 import ProgressTabLink from "@common/ProgressTabLink"
 import WalletState from "@components/studio/other/WalletState"
 import SwarmVideoIO from "@classes/SwarmVideo"
-import { useVideoEditorBaseActions, useVideoEditorState } from "@context/video-editor-context/hooks"
-import VideoEditorCache from "@context/video-editor-context/VideoEditorCache"
+import {
+  useVideoEditorBaseActions,
+  useVideoEditorSaveActions,
+  useVideoEditorState
+} from "@context/video-editor-context/hooks"
 import routes from "@routes"
-import useUserPlaylists from "@hooks/useUserPlaylists"
 import useSelector from "@state/useSelector"
 import { useWallet } from "@state/hooks/env"
-import { useConfirmation, useErrorMessage } from "@state/hooks/ui"
-import type { Profile } from "@definitions/swarm-profile"
+import { useConfirmation } from "@state/hooks/ui"
 
 const PORTAL_ID = "video-drag-portal"
 
@@ -45,125 +48,59 @@ export type VideoEditorHandle = {
   canSubmitVideo: boolean
   isEmpty: boolean
   submitVideo(): Promise<void>
+  saveVideoToChannel(): Promise<void>
+  saveVideoToIndex(): Promise<void>
   askToClearState(): Promise<void>
   resetState(): void
 }
 
 const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
-  const { waitConfirmation } = useConfirmation()
-  const profile = useSelector(state => state.profile)
-  const indexClient = useSelector(state => state.env.indexClient)
-  const { address, batches } = useSelector(state => state.user)
+  const { address } = useSelector(state => state.user)
+  const [{ reference, queue, videoWriter, hasChanges, saveTo }] = useVideoEditorState()
+  const [privateLink, setPrivateLink] = useState<string>()
 
-  const [{ reference, queue, videoWriter, hasChanges }] = useVideoEditorState()
+  const {
+    reference: newReference,
+    isSaving,
+    addedToChannel,
+    addedToIndex,
+    saveVideo,
+    saveVideoToChannel,
+    saveVideoToIndex,
+    resetState: resetSaveState,
+  } = useVideoEditorSaveActions()
+
+  const { isLocked, selectedAddress } = useWallet()
+  const { resetState } = useVideoEditorBaseActions()
+  const { waitConfirmation } = useConfirmation()
+
   const hasQueuedProcesses = queue.filter(q => !q.reference).length > 0
   const hasOriginalVideo = videoWriter.originalQuality && videoWriter.sources.length > 0
   const canPublishVideo = !!videoWriter.videoRaw.title && hasOriginalVideo
-
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [saved, setSaved] = useState(false)
-
-  const { showError } = useErrorMessage()
-  const { resetState } = useVideoEditorBaseActions()
-  const { isLocked, selectedAddress } = useWallet()
-
-  const {
-    channelPlaylist,
-    loadPlaylists,
-    addVideosToPlaylist,
-    updateVideoInPlaylist
-  } = useUserPlaylists(address!, { resolveChannel: true })
-
-  useEffect(() => {
-    if (address) {
-      loadPlaylists()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address])
+  const saveRedirect = newReference && saveTo !== "none" && (
+    (saveTo === "channel" && addedToChannel) ||
+    (saveTo === "channel-index" && addedToChannel && addedToIndex)
+  )
 
   useImperativeHandle(ref, () => ({
     isEmpty: queue.length === 0,
     canSubmitVideo: canPublishVideo && !hasQueuedProcesses,
-    submitVideo,
-    resetState,
+    submitVideo: saveVideo,
+    saveVideoToChannel,
+    saveVideoToIndex,
+    resetState: resetAll,
     askToClearState,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }))
 
-  const submitVideo = async () => {
-    if (!batches || batches.length === 0) {
-      return showError("Cannot upload", "You don't have any storage yet.")
-    }
+  useEffect(() => {
+    if (newReference && saveTo === "none") setPrivateLink(location.origin + routes.watch(newReference))
+    if (newReference) resetAll()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newReference])
 
-    if (isLocked) {
-      return showError(
-        "Wallet Locked",
-        "Please unlock your wallet before saving."
-      )
-    }
-
-    const { duration, originalQuality } = videoWriter.videoRaw
-
-    if (!channelPlaylist) {
-      return showError(
-        "Channel error",
-        "Channel video list not fetched correctly."
-      )
-    }
-
-    if (!duration || !originalQuality) {
-      return showError(
-        "Metadata error",
-        "There was a problem loading the video metadata. Try to re-upload the original video."
-      )
-    }
-
-    setIsSubmitting(true)
-
-    try {
-      const ownerProfile: Profile = {
-        address: address!,
-        name: profile.name ?? null,
-        description: profile.description ?? null,
-        avatar: profile.avatar ?? null,
-        cover: profile.cover ?? null,
-        birthday: profile.birthday,
-        location: profile.location,
-        website: profile.website,
-      }
-      const newReference = await videoWriter.update(ownerProfile)
-
-      // update on index
-      const indexed = await updateOrCreateIndexVideo(newReference)
-      if (!indexed) {
-        throw new Error(`Cannot ${reference ? "update" : "add"} video on the current Index`,)
-      }
-
-      // update channel playlist
-      !reference && await addVideosToPlaylist(channelPlaylist.id, [videoWriter.video!])
-      reference && await updateVideoInPlaylist(channelPlaylist.id, reference, videoWriter.video!)
-
-      resetState()
-      setIsSubmitting(false)
-      setSaved(true)
-    } catch (error: any) {
-      console.error(error)
-      showError("Publishing error", error.message)
-      setIsSubmitting(false)
-    }
-  }
-
-  const updateOrCreateIndexVideo = async (newReference: string) => {
-    try {
-      if (videoWriter.indexReference) {
-        await indexClient.videos.updateVideo(videoWriter.indexReference, newReference)
-      } else {
-        await indexClient.videos.createVideo(newReference)
-      }
-      return true
-    } catch (error) {
-      return false
-    }
+  const resetAll = () => {
+    resetState()
+    resetSaveState()
   }
 
   const askToClearState = async () => {
@@ -173,23 +110,48 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
       "Yes, clear",
       "destructive"
     )
-    clear && resetState()
+    clear && resetAll()
+  }
+
+  if (saveRedirect) {
+    return <Navigate to={routes.studioVideos} />
   }
 
   const usePortal = !reference && !hasChanges
 
-  if (saved) {
-    return <Navigate to={routes.studioVideos} />
-  }
-
   return (
     <>
-      <div className="my-6">
+      <div className="my-6 space-y-4">
         <WalletState
           isLocked={isLocked}
           selectedAddress={selectedAddress}
           profileAddress={address!}
         />
+
+        {addedToChannel === false && (
+          <Alert title="Video not added to channel" type="warning">
+            Try again! <br />
+            <Button loading={isSaving} onClick={saveVideoToChannel}>Add to channel</Button>
+          </Alert>
+        )}
+
+        {(addedToIndex === false && newReference) && (
+          <Alert title="Video not added to index" type="warning">
+            Try again! <br />
+            <Button loading={isSaving} onClick={saveVideoToIndex}>Add to index</Button>
+          </Alert>
+        )}
+
+        {privateLink && (
+          <Alert title="Video saved" type="info" onClose={() => setPrivateLink(undefined)}>
+            Your private video is ready to be shared. <br />
+            { /* eslint-disable-next-line react/no-unescaped-entities */}
+            Remeber that if you lose this link you won't be able to retrieve it again: <br />
+            <a href={privateLink} target="_blank" rel="noreferrer">
+              {privateLink}
+            </a>
+          </Alert>
+        )}
       </div>
 
       {usePortal && (
@@ -214,22 +176,22 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
                   completed: !!q.reference
                 }))}
               />
-              {/* <ProgressTabLink
+              <ProgressTabLink
                 tabKey="extra"
                 title="Extra"
                 iconSvg={<EyeIcon />}
                 text="Audience, visibility, ..."
-              /> */}
+              />
 
               <ProgressTabContent tabKey="details">
-                <VideoDetails isSubmitting={isSubmitting} />
+                <VideoDetails isSubmitting={isSaving} />
               </ProgressTabContent>
               <ProgressTabContent tabKey="sources">
-                <VideoSources initialDragPortal={`#${PORTAL_ID}`} isSubmitting={isSubmitting} />
+                <VideoSources initialDragPortal={`#${PORTAL_ID}`} isSubmitting={isSaving} />
               </ProgressTabContent>
-              {/* <ProgressTabContent tabKey="extra">
-                <VideoExtra isSubmitting={isSubmitting} />
-              </ProgressTabContent> */}
+              <ProgressTabContent tabKey="extra">
+                <VideoExtra isSubmitting={isSaving} />
+              </ProgressTabContent>
             </ProgressTab>
           </div>
         </div>

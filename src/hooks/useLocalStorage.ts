@@ -28,7 +28,7 @@ export default function useLocalStorage<T>(key: string, defaultValue: T | null =
       const item = window.localStorage.getItem(key)
       return item ? JSON.parse(item) as T : defaultValue
     } catch (error: any) {
-      console.log(error)
+      console.error(error)
       return defaultValue
     }
   })
@@ -40,7 +40,7 @@ export default function useLocalStorage<T>(key: string, defaultValue: T | null =
       // Save to local storage
       window.localStorage.setItem(key, JSON.stringify(value))
     } catch (error: any) {
-      console.log(error)
+      console.error(error)
     }
   }
 

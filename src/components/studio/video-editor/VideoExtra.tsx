@@ -17,31 +17,35 @@
 
 import React from "react"
 
-import PinContentField from "./PinContentField"
-import AudienceSelector from "./AudienceSelector"
-import VisibilitySelector from "./VisibilitySelector"
+// import PinContentField from "./PinContentField"
+// import AudienceSelector from "./AudienceSelector"
+// import VisibilitySelector from "./VisibilitySelector"
+import SaveToSelector from "./SaveToSelector"
 import FormGroup from "@common/FormGroup"
-import { useVideoEditorInfoActions } from "@context/video-editor-context/hooks"
 
 type VideoExtraProps = {
   isSubmitting: boolean
 }
 
-const VideoExtra: React.FC<VideoExtraProps> = ({ isSubmitting }) => {
+const VideoExtra: React.FC<VideoExtraProps> = ({ }) => {
   // const { updatePinContent } = useVideoEditorInfoActions()
 
   return (
     <>
-      <FormGroup disabled>
+      {/* <FormGroup disabled>
         <AudienceSelector />
-      </FormGroup>
-
-      {/* <FormGroup>
-        <PinContentField onChange={pin => updatePinContent(pin)} />
       </FormGroup> */}
 
-      <FormGroup disabled>
+      {/* <FormGroup>
+        <PinContentField />
+      </FormGroup> */}
+
+      {/* <FormGroup disabled>
         <VisibilitySelector />
+      </FormGroup> */}
+
+      <FormGroup>
+        <SaveToSelector />
       </FormGroup>
     </>
   )

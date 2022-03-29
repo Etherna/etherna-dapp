@@ -37,7 +37,7 @@ type VideoEditorContextProviderProps = {
 const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
   children,
   reference,
-  videoData
+  videoData,
 }) => {
   const { address } = useSelector(state => state.user)
   const { beeClient } = useSelector(state => state.env)
@@ -69,6 +69,7 @@ const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
         completion: 100,
         name: THUMBNAIL_QUEUE_NAME
       }] : []),
+      saveTo: videoData && !videoData.indexReference ? "channel" : "channel-index",
       hasChanges: false,
     }
   }

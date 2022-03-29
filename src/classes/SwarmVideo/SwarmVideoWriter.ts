@@ -112,7 +112,7 @@ export default class SwarmVideoWriter {
    * Update video meta on swarm & reference on index.
    * 
    * @param ownerProfile Profile data of the owner (assigned to `this.video` object) - optional when updating
-   * @returns The reference hash of the video feed  
+   * @returns The reference hash of the video  
    */
   async update(ownerProfile?: Profile): Promise<string> {
     if (!this._videoRaw.sources.length) throw new Error("Please add at least 1 video source")

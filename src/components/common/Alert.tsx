@@ -54,7 +54,7 @@ const Alert: React.FC<AlertProps> = ({
           </button>
         )}
       </div>
-      <div>{children}</div>
+      <div className={classes.alertBody}>{children}</div>
     </div>
   )
 }
