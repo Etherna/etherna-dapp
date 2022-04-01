@@ -9,7 +9,9 @@
     ],
     "types": [
       "vite/client",
-      "vite-plugin-pwa/client"
+      "vite-plugin-pwa/client",
+      "react/next",
+      "react-dom/next",
     ],
     "plugins": [
       {
