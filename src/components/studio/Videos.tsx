@@ -280,8 +280,11 @@ const Videos: React.FC = () => {
                 </Button>
               )}
               <Button
-                as="a"
                 href={routes.studioVideoEdit(item.reference)}
+                routeState={{
+                  video: item,
+                  hasOffers: videosOffersStatus ? videosOffersStatus[item.reference].offersStatus !== "none" : false
+                }}
                 modifier="transparent"
                 iconOnly
               >

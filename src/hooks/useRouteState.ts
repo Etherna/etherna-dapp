@@ -14,6 +14,9 @@
  *  limitations under the License.
  */
 
+import { useLocation } from "react-router-dom"
+
 export default function useRouteState<T>(): T | undefined {
-  return window.routeState
+  const { state } = useLocation()
+  return state ?? window.routeState
 }

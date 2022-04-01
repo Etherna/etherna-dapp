@@ -16,6 +16,7 @@
  */
 
 import React from "react"
+import { Link } from "react-router-dom"
 
 import { ReactComponent as MoreIcon } from "@assets/icons/more-circle.svg"
 
@@ -23,15 +24,15 @@ import Dropdown from "@common/Dropdown"
 import DropdownToggle from "@common/DropdownToggle"
 import DropdownItem from "@common/DropdownItem"
 import DropdownMenu from "@common/DropdownMenu"
-import StateLink from "@common/StateLink"
 import routes from "@routes"
 import type { Video } from "@definitions/swarm-video"
 
 type VideoMenuProps = {
   video: Video
+  hasOffers: boolean
 }
 
-const VideoMenu: React.FC<VideoMenuProps> = ({ video }) => {
+const VideoMenu: React.FC<VideoMenuProps> = ({ video, hasOffers }) => {
   return (
     <Dropdown>
       <DropdownToggle>
@@ -39,7 +40,7 @@ const VideoMenu: React.FC<VideoMenuProps> = ({ video }) => {
       </DropdownToggle>
       <DropdownMenu className="!w-44 !mt-0">
         <DropdownItem>
-          <StateLink to={routes.studioVideoEdit(video.reference)} state={video}>Video Settings</StateLink>
+          <Link to={routes.studioVideoEdit(video.reference)} state={{ video, hasOffers }}>Video Settings</Link>
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>

@@ -21,6 +21,7 @@ import React from "react"
 // import AudienceSelector from "./AudienceSelector"
 // import VisibilitySelector from "./VisibilitySelector"
 import SaveToSelector from "./SaveToSelector"
+import OfferResourcesToggle from "./OfferResourcesToggle"
 import FormGroup from "@common/FormGroup"
 
 type VideoExtraProps = {
@@ -43,6 +44,10 @@ const VideoExtra: React.FC<VideoExtraProps> = ({ }) => {
       {/* <FormGroup disabled>
         <VisibilitySelector />
       </FormGroup> */}
+
+      <FormGroup>
+        <OfferResourcesToggle />
+      </FormGroup>
 
       <FormGroup>
         <SaveToSelector />

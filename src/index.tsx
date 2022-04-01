@@ -16,7 +16,7 @@
  */
 
 import React from "react"
-import ReactDOM from "react-dom"
+import ReactDOM from "react-dom/client"
 
 import Root from "./app/Root"
 import prefetch from "./prefetch"
@@ -29,8 +29,7 @@ autoSigninSignout()
 // Prefetch data for SEO
 // Once the data has been set to a window variable call RenderDOM
 prefetch(() => {
-  // @ts-ignore
-  const root = ReactDOM.createRoot(document.getElementById("root"))
+  const root = ReactDOM.createRoot(document.getElementById("root")!)
   root.render(<Root />)
 })
 
@@ -38,5 +37,6 @@ prefetch(() => {
 // and show a notification modal.
 unsupportedRender(async () => {
   const RootLegacy = (await import("./app/RootLegacy")).default
-  ReactDOM.render(<RootLegacy />, document.getElementById("root_legacy"))
+  const root = ReactDOM.createRoot(document.getElementById("root_legacy")!)
+  root.render(<RootLegacy />)
 })

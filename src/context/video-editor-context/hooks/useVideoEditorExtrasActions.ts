@@ -14,7 +14,17 @@ export default function useVideoEditorExtrasActions() {
     dispatch({ type: VideoEditorActionTypes.UPDATE_SAVE_TO, saveTo })
   )
 
+  /**
+   * Update whethere to offer video resources
+   * 
+   * @param offerResources Offer resoruces
+   */
+  const updateOfferResources = (offerResources: boolean) => (
+    dispatch({ type: VideoEditorActionTypes.UPDATE_OFFER_RESOURCES, offerResources })
+  )
+
   return {
     updateSaveTo,
+    updateOfferResources,
   }
 }

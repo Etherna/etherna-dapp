@@ -27,7 +27,7 @@ import type { Video } from "@definitions/swarm-video"
 const StudioVideoEdit = () => {
   const params = useParams<{ id: string }>()
   const hash = params.id !== "new" ? params.id : undefined
-  const routeState = useRouteState<Video>()
+  const routeState = useRouteState<{ video: Video, hasOffers: boolean }>()
 
   return (
     <AppLayoutWrapper>

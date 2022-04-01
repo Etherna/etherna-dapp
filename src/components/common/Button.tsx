@@ -38,6 +38,7 @@ type ButtonProps = {
   loading?: boolean
   iconOnly?: boolean
   disabled?: boolean
+  routeState?: any
   style?: React.CSSProperties
   onClick?: (e: React.SyntheticEvent) => void
 }
@@ -59,6 +60,7 @@ const Button: React.FC<ButtonProps> = ({
   type,
   disabled,
   rounded,
+  routeState,
   onClick,
 }) => {
   const [width, setWidth] = useState<number>()
@@ -105,7 +107,7 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <>
-      {As === "a" && href && href.startsWith("https") ? (
+      {href && href.startsWith("https") ? (
         <a
           href={href}
           rel={rel}
@@ -118,7 +120,7 @@ const Button: React.FC<ButtonProps> = ({
         >
           {children}
         </a>
-      ) : As === "a" && href && !href.startsWith("https") ? (
+      ) : href && !href.startsWith("https") ? (
         <Link
           to={href}
           rel={rel}
@@ -126,6 +128,7 @@ const Button: React.FC<ButtonProps> = ({
           className={btnClassName}
           type={type}
           role="button"
+          state={routeState}
           onClick={onClick}
           onKeyDown={e => handleKeyDown(e as any)}
         >
