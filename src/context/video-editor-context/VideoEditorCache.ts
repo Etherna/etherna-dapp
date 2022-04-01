@@ -62,6 +62,7 @@ export default class VideoEditorCache {
       pinContent,
       ownerAddress,
       hasChanges,
+      offerResources,
       saveTo,
     } = JSON.parse(value) as CacheState
     const videoWriter = new SwarmVideoIO.Writer(undefined, ownerAddress, {
@@ -80,6 +81,7 @@ export default class VideoEditorCache {
       videoWriter,
       pinContent,
       saveTo,
+      offerResources,
       hasChanges,
     }
 
@@ -94,6 +96,7 @@ export default class VideoEditorCache {
       pinContent,
       ownerAddress,
       saveTo,
+      offerResources,
       hasChanges,
     } = state
     const videoRaw = videoWriter.videoRaw
@@ -105,6 +108,7 @@ export default class VideoEditorCache {
       videoRaw,
       pinContent,
       saveTo,
+      offerResources,
       hasChanges,
     }
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(cacheState))

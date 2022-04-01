@@ -36,6 +36,8 @@ export type VideoEditorContextState = {
   pinContent: boolean | undefined
   /** Where to save the video manifest */
   saveTo: "channel" | "channel-index" | "none"
+  /** Whether the video resources should be offered */
+  offerResources: boolean
   /** Whether the user made come changes */
   hasChanges: boolean
 }

@@ -59,7 +59,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   const videoPath = videoLink.replace(videoSearch, "")
 
   const VideoLink: React.FC = ({ children }) => (
-    <StateLink
+    <Link
       to={{
         pathname: videoPath,
         search: videoSearch,
@@ -67,7 +67,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
       state={{ video, videoOffers }}
     >
       {children}
-    </StateLink>
+    </Link>
   )
 
   return (
@@ -126,7 +126,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
           )}
         </div>
         {address === ownerAddress && (
-          <VideoMenu video={video} />
+          <VideoMenu video={video} hasOffers={videoOffers ? videoOffers.offersStatus !== "none" : false} />
         )}
       </div>
     </div>

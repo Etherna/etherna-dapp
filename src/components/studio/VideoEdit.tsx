@@ -34,7 +34,10 @@ import type { Video } from "@definitions/swarm-video"
 
 type VideoEditProps = {
   reference: string | undefined
-  routeState?: Video
+  routeState?: {
+    video: Video
+    hasOffers: boolean
+  }
 }
 
 const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
@@ -45,12 +48,15 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   const resetState = useRef<() => void>()
   const { address } = useSelector(state => state.user)
 
+  const stateVideo = routeState?.video
+  const stateHasOffers = routeState?.hasOffers
+
   const { waitConfirmation } = useConfirmation()
   const { video, isLoading, loadVideo } = useSwarmVideo({
     reference: reference || "",
     fetchProfile: false,
     fetchFromCache: false,
-    routeState,
+    routeState: stateVideo,
   })
 
   useEffect(() => {
@@ -103,7 +109,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
         {isLoading || (reference && !video) ? (
           <Spinner className="mt-10 mx-auto w-10 text-primary-500" />
         ) : (
-          <VideoEditorContextProvider reference={reference} videoData={video!}>
+          <VideoEditorContextProvider reference={reference} videoData={video!} hasOffers={stateHasOffers}>
             <VideoEditor ref={ref => {
               if (!ref) return
 

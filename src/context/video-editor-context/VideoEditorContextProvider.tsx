@@ -32,12 +32,14 @@ type VideoEditorContextProviderProps = {
   children: React.ReactNode
   reference: string | undefined
   videoData?: Video
+  hasOffers?: boolean
 }
 
 const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
   children,
   reference,
   videoData,
+  hasOffers = false,
 }) => {
   const { address } = useSelector(state => state.user)
   const { beeClient } = useSelector(state => state.env)
@@ -70,6 +72,7 @@ const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
         name: THUMBNAIL_QUEUE_NAME
       }] : []),
       saveTo: videoData && !videoData.indexReference ? "channel" : "channel-index",
+      offerResources: hasOffers,
       hasChanges: false,
     }
   }

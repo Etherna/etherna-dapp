@@ -56,7 +56,7 @@ export type VideoEditorHandle = {
 
 const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const { address } = useSelector(state => state.user)
-  const [{ reference, queue, videoWriter, hasChanges, saveTo }] = useVideoEditorState()
+  const [{ reference, queue, videoWriter, hasChanges, saveTo, offerResources }] = useVideoEditorState()
   const [privateLink, setPrivateLink] = useState<string>()
 
   const {
@@ -64,9 +64,11 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     isSaving,
     addedToChannel,
     addedToIndex,
+    resourcesOffered,
     saveVideo,
     saveVideoToChannel,
     saveVideoToIndex,
+    saveVideoResources,
     resetState: resetSaveState,
   } = useVideoEditorSaveActions()
 
@@ -85,12 +87,13 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   useImperativeHandle(ref, () => ({
     isEmpty: queue.length === 0,
     canSubmitVideo: canPublishVideo && !hasQueuedProcesses,
-    submitVideo: saveVideo,
+    submitVideo: () => saveVideo(offerResources),
     saveVideoToChannel,
     saveVideoToIndex,
     resetState: resetAll,
     askToClearState,
-  }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [canPublishVideo, hasQueuedProcesses, offerResources, queue, saveVideo, saveVideoToChannel, saveVideoToIndex])
 
   useEffect(() => {
     if (newReference && saveTo === "none") setPrivateLink(location.origin + routes.watch(newReference))
@@ -139,6 +142,13 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
           <Alert title="Video not added to index" type="warning">
             Try again! <br />
             <Button loading={isSaving} onClick={saveVideoToIndex}>Add to index</Button>
+          </Alert>
+        )}
+
+        {(resourcesOffered === false && newReference) && (
+          <Alert title="Video resources not offered" type="warning">
+            Try again! <br />
+            <Button loading={isSaving} onClick={saveVideoResources}>Offer resources</Button>
           </Alert>
         )}
 
