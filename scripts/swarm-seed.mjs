@@ -21,8 +21,8 @@ import DotEnv from "dotenv"
 import BeeJs from "@ethersphere/bee-js"
 
 DotEnv.config({
-  path: fs.existsSync(path.resolve(`.env.development`))
-    ? `.env.development`
+  path: fs.existsSync(path.resolve(".env.development"))
+    ? ".env.development"
     : ".env",
 })
 

@@ -29,7 +29,9 @@ autoSigninSignout()
 // Prefetch data for SEO
 // Once the data has been set to a window variable call RenderDOM
 prefetch(() => {
-  ReactDOM.render(<Root />, document.getElementById("root"))
+  // @ts-ignore
+  const root = ReactDOM.createRoot(document.getElementById("root"))
+  root.render(<Root />)
 })
 
 // Check if the current browser has unsupported features
