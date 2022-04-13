@@ -22,6 +22,7 @@ import classNames from "classnames"
 import classes from "@styles/components/navigation/SidebarItem.module.scss"
 
 export type SidebarItemProps = {
+  children?: React.ReactNode
   as?: ElementType
   title?: string
   to?: string
@@ -58,7 +59,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   const { pathname } = useLocation()
   const isCurrentPage = (typeof isActive === "function" ? isActive(pathname) : isActive) ?? false
 
-  const Wrapper: React.FC = useMemo(() => {
+  const Wrapper: React.FC<{ children: React.ReactNode }> = useMemo(() => {
     return ({ children }) => (
       <>
         {to ? (

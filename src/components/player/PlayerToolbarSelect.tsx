@@ -24,6 +24,7 @@ import classes from "@styles/components/player/PlayerToolbarSelect.module.scss"
 import { isTouchDevice } from "@utils/browser"
 
 type PlayerToolbarSelectProps = {
+  children?: React.ReactNode
   value: string
   options: { value: string, label: string }[]
   onSelect?(optionValue?: string | { value: string } | undefined): void

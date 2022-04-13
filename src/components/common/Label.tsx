@@ -20,6 +20,7 @@ import React from "react"
 import classes from "@styles/components/common/Label.module.scss"
 
 type LabelProps = {
+  children?: React.ReactNode
   htmlFor?: string
   title?: string
 }

@@ -21,7 +21,11 @@ import classes from "@styles/components/user/AlphaPassButton.module.scss"
 
 import Button from "@common/Button"
 
-const AlphaPassButton: React.FC = ({ children }) => {
+type AlphaPassButtonProps = {
+  children?: React.ReactNode
+}
+
+const AlphaPassButton: React.FC<AlphaPassButtonProps> = ({ children }) => {
   return (
     <Button
       className={classes.alphaPassButton}

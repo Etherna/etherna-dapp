@@ -28,7 +28,11 @@ import { LayoutContextProvider } from "@context/layout-context"
 import { useLayoutState } from "@context/layout-context/hooks"
 import usePageTracking from "@hooks/usePageTracking"
 
-const AppLayout: React.FC = ({ children }) => {
+type AppLayoutProps = {
+  children?: React.ReactNode
+}
+
+const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   usePageTracking()
 
   return (
@@ -40,7 +44,7 @@ const AppLayout: React.FC = ({ children }) => {
   )
 }
 
-const AppLayoutContent: React.FC = ({ children }) => {
+const AppLayoutContent: React.FC<AppLayoutProps> = ({ children }) => {
   const [{ emptyLayout }] = useLayoutState()
 
   if (emptyLayout) {

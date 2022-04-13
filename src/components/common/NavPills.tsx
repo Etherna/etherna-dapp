@@ -21,6 +21,7 @@ import classNames from "classnames"
 import classes from "@styles/components/common/NavPills.module.scss"
 
 type NavPillsProps = {
+  children?: React.ReactNode
   className?: string
   vertical?: boolean
 }

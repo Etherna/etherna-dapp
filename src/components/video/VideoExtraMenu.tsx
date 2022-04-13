@@ -17,8 +17,7 @@
 
 import React, { useState } from "react"
 
-import { ReactComponent as MoreIcon } from "@assets/icons/more.svg"
-import { ReactComponent as FlagIcon } from "@assets/icons/flag.svg"
+import { FlagIcon, DotsVerticalIcon } from "@heroicons/react/solid"
 import { ReactComponent as ManifestIcon } from "@assets/icons/manifest.svg"
 
 import VideoExtraMenuReport from "./VideoExtraMenuReport"
@@ -41,7 +40,7 @@ const VideoExtraMenu: React.FC<VideoExtraMenuProps> = ({ video }) => {
     <>
       <Dropdown>
         <DropdownToggle>
-          <MoreIcon className="w-5 h-5 rotate-90" aria-hidden />
+          <DotsVerticalIcon className="w-5 h-5 rotate-90" aria-hidden />
         </DropdownToggle>
         <DropdownMenu>
           <DropdownItem

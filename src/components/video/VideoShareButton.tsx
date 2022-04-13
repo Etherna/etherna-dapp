@@ -17,7 +17,7 @@
 
 import React, { useState } from "react"
 
-import { ReactComponent as ShareIcon } from "@assets/icons/share.svg"
+import { ShareIcon } from "@heroicons/react/solid"
 
 import VideoDetailsButton from "./VideoDetailsButton"
 import CopyText from "@common/CopyText"

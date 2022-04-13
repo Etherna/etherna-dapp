@@ -21,6 +21,7 @@ import { LayoutReducerTypes } from "@context/layout-context"
 import { useLayoutState } from "@context/layout-context/hooks"
 
 type AppLayoutWrapperProps = {
+  children?: React.ReactNode
   emptyLayout?: boolean
   hideSidebar?: boolean
   floatingSidebar?: boolean

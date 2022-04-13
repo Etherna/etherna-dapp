@@ -19,7 +19,11 @@ import React from "react"
 
 import classes from "@styles/components/navigation/Topbar.module.scss"
 
-const Topbar: React.FC = ({ children }) => {
+type TopbarProps = {
+  children?: React.ReactNode
+}
+
+const Topbar: React.FC<TopbarProps> = ({ children }) => {
   return (
     <nav className={classes.topbar} data-topbar>
       {children}

@@ -18,10 +18,7 @@
 import React from "react"
 
 import classes from "@styles/components/layout/StudioLayout.module.scss"
-import { ReactComponent as SparklesIcon } from "@assets/icons/sparkles.svg"
-import { ReactComponent as VideoIcon } from "@assets/icons/movie.svg"
-import { ReactComponent as LightBulbIcon } from "@assets/icons/light-bulb.svg"
-import { ReactComponent as ServerIcon } from "@assets/icons/server.svg"
+import { SparklesIcon, LightBulbIcon, FilmIcon, ServerIcon } from "@heroicons/react/solid"
 
 import SEO from "./SEO"
 import Container from "@common/Container"
@@ -29,7 +26,11 @@ import DropdownSidebar from "@components/navigation/DropdownSidebar"
 import SidebarItem from "@components/navigation/SidebarItem"
 import routes from "@routes"
 
-const StudioLayout: React.FC = ({ children }) => {
+type StudioLayoutProps = {
+  children?: React.ReactNode
+}
+
+const StudioLayout: React.FC<StudioLayoutProps> = ({ children }) => {
   return (
     <Container fluid>
       <SEO title="Creator Studio" />
@@ -41,7 +42,7 @@ const StudioLayout: React.FC = ({ children }) => {
           <SidebarItem
             to={routes.studioVideos}
             title="Videos"
-            iconSvg={<VideoIcon />}
+            iconSvg={<FilmIcon />}
             isActive={pathname => /\/studio\/videos/.test(pathname)}
             isResponsive={false}
           />

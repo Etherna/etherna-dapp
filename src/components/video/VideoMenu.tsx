@@ -18,7 +18,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
-import { ReactComponent as MoreIcon } from "@assets/icons/more-circle.svg"
+import { DotsCircleHorizontalIcon } from "@heroicons/react/solid"
 
 import Dropdown from "@common/Dropdown"
 import DropdownToggle from "@common/DropdownToggle"
@@ -36,7 +36,7 @@ const VideoMenu: React.FC<VideoMenuProps> = ({ video, hasOffers }) => {
   return (
     <Dropdown>
       <DropdownToggle>
-        <MoreIcon className="w-5 h-5" />
+        <DotsCircleHorizontalIcon className="w-5 h-5" />
       </DropdownToggle>
       <DropdownMenu className="!w-44 !mt-0">
         <DropdownItem>

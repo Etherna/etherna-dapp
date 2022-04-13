@@ -17,6 +17,7 @@
 
 import React from "react"
 import { Provider } from "react-redux"
+import type { ProviderProps } from "react-redux"
 
 import { store } from "./store"
 
@@ -24,8 +25,10 @@ type WrapperProps = {
   children: React.ReactNode
 }
 
+const ProviderFix = Provider as unknown as React.FC<ProviderProps>
+
 const StateProviderWrapper = ({ children }: WrapperProps) => (
-  <Provider store={store}>{children}</Provider>
+  <ProviderFix store={store}>{children}</ProviderFix>
 )
 
 export default StateProviderWrapper

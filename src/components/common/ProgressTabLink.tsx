@@ -21,6 +21,7 @@ import classNames from "classnames"
 import classes from "@styles/components/common/ProgressTabLink.module.scss"
 
 export type ProgressTabLinkProps = {
+  children?: React.ReactNode
   tabKey: string
   title?: string
   text?: string

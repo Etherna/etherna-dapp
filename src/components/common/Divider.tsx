@@ -22,6 +22,7 @@ import classes from "@styles/components/common/Divider.module.scss"
 import { ReactComponent as DividerPattern } from "@assets/backgrounds/divider.svg"
 
 type DividerProps = {
+  children?: React.ReactNode
   className?: string
   top?: boolean
   bottom?: boolean

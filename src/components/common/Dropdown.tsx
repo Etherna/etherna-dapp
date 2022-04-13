@@ -23,6 +23,7 @@ import classes from "@styles/components/common/Dropdown.module.scss"
 import DropdownMenu from "./DropdownMenu"
 
 type DropdownProps = {
+  children?: React.ReactNode
   forceOpen?: boolean
 }
 
@@ -30,12 +31,16 @@ const Dropdown: React.FC<DropdownProps> = ({ children, forceOpen }) => {
   return (
     <Menu as="div" className={classes.dropdown}>
       {({ open }) => {
-        return React.Children.map(children, child => {
-          if (React.isValidElement(child) && (child as React.ReactElement).type === DropdownMenu) {
-            return React.cloneElement(child, { open: forceOpen || open })
-          }
-          return child
-        })
+        return (
+          <>
+            {React.Children.map(children, child => {
+              if (React.isValidElement(child) && (child as React.ReactElement).type === DropdownMenu) {
+                return React.cloneElement(child, { open: forceOpen || open })
+              }
+              return child
+            })}
+          </>
+        )
       }}
     </Menu>
   )

@@ -19,13 +19,13 @@ import React, { useEffect, useState } from "react"
 import classNames from "classnames"
 
 import classes from "@styles/components/player/PlayerErrorBanner.module.scss"
+import { ExclamationCircleIcon } from "@heroicons/react/outline"
+import { LockClosedIcon } from "@heroicons/react/solid"
 import { ReactComponent as CreditErrorIcon } from "@assets/icons/credit-error.svg"
-import { ReactComponent as ServerErrorIcon } from "@assets/icons/server-error.svg"
-import { ReactComponent as UnauthorizedIcon } from "@assets/icons/unauthorized-error.svg"
 
 import { usePlayerState } from "@context/player-context/hooks"
 
-const PlayerErrorBanner = () => {
+const PlayerErrorBanner: React.FC = () => {
   const [description, setDescription] = useState("")
   const [state] = usePlayerState()
   const { error } = state
@@ -51,10 +51,10 @@ const PlayerErrorBanner = () => {
 
   const ErrorIcon = () => {
     switch (error!.code) {
-      case 401: return <UnauthorizedIcon />
+      case 401: return <LockClosedIcon />
       case 402: return <CreditErrorIcon />
-      case 403: return <UnauthorizedIcon />
-      default: return <ServerErrorIcon />
+      case 403: return <LockClosedIcon />
+      default: return <ExclamationCircleIcon />
     }
   }
 

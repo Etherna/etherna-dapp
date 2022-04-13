@@ -18,12 +18,13 @@
 import React from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { Listbox } from "@headlessui/react"
-
-import classes from "@styles/components/navigation/DropdownSidebar.module.scss"
-import { ReactComponent as SelectorIcon } from "@assets/icons/selector.svg"
 import classNames from "classnames"
 
+import classes from "@styles/components/navigation/DropdownSidebar.module.scss"
+import { SelectorIcon } from "@heroicons/react/solid"
+
 type DropdownSidebarProps = {
+  children?: React.ReactNode
   defaultTitle?: string
   className?: string
 }

@@ -20,7 +20,7 @@ import { Transition } from "@headlessui/react"
 import omit from "lodash/omit"
 
 import classes from "@styles/components/navigation/TabbarMenuItem.module.scss"
-import { ReactComponent as MenuIcon } from "@assets/icons/navigation/menu.svg"
+import { MenuAlt4Icon } from "@heroicons/react/outline"
 
 import TabbarItem, { TabbarItemProps } from "@components/navigation/TabbarItem"
 
@@ -39,7 +39,7 @@ const TabbarMenuItem: React.FC<TabbarMenuItemProps> = (props) => {
     <div className={classes.tabbarMenuItem}>
       <TabbarItem
         {...(omit(props, "children"))}
-        iconSvg={<MenuIcon />}
+        iconSvg={<MenuAlt4Icon />}
         onClick={toggleShowMenu}
       />
 

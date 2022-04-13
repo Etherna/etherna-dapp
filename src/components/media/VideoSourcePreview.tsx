@@ -20,6 +20,7 @@ import React from "react"
 import classes from "@styles/components/media/VideoSourcePreview.module.scss"
 
 type VideoSourcePreviewProps = {
+  children?: React.ReactNode
   name?: string
   statusText?: string
   error?: string

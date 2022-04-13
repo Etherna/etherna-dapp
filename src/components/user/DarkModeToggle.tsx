@@ -17,8 +17,7 @@
 
 import React from "react"
 
-import { ReactComponent as DarkModeIcon } from "@assets/icons/dark-mode.svg"
-import { ReactComponent as LightModeIcon } from "@assets/icons/light-mode.svg"
+import { MoonIcon, SunIcon } from "@heroicons/react/outline"
 
 import Toggle from "@common/Toggle"
 
@@ -34,8 +33,8 @@ const DarkModeToggle: React.FC<DarkModeToggleProps> = ({ enabled, onChange }) =>
 
       <Toggle
         className="ml-auto"
-        checkedIcon={<DarkModeIcon />}
-        uncheckedIcon={<LightModeIcon />}
+        checkedIcon={<MoonIcon />}
+        uncheckedIcon={<SunIcon />}
         checked={enabled}
         onChange={onChange}
       />

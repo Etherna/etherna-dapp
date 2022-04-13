@@ -20,8 +20,7 @@ import Tippy from "@tippyjs/react"
 import classNames from "classnames"
 
 import classes from "@styles/components/common/CopyText.module.scss"
-import { ReactComponent as ClipboardIcon } from "@assets/icons/clipboard.svg"
-import { ReactComponent as CheckIcon } from "@assets/icons/check.svg"
+import { CheckIcon, ClipboardIcon } from "@heroicons/react/solid"
 
 type CopyTextProps = {
   children?: string

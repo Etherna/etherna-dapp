@@ -19,7 +19,11 @@ import React from "react"
 
 import classes from "@styles/components/navigation/Tabbar.module.scss"
 
-const Tabbar: React.FC = ({ children }) => {
+type TabbarProps = {
+  children?: React.ReactNode
+}
+
+const Tabbar: React.FC<TabbarProps> = ({ children }) => {
   return (
     <nav className={classes.tabbar} data-tabbar>
       {children}

@@ -18,9 +18,8 @@
 import React, { useEffect, useImperativeHandle, useState } from "react"
 import { Navigate } from "react-router"
 
-import { ReactComponent as NotesIcon } from "@assets/icons/notes.svg"
-import { ReactComponent as MovieIcon } from "@assets/icons/movie.svg"
-import { ReactComponent as EyeIcon } from "@assets/icons/eye.svg"
+import { EyeIcon, FilmIcon } from "@heroicons/react/solid"
+import { ClipboardListIcon } from "@heroicons/react/outline"
 
 import VideoDetails from "./VideoDetails"
 import VideoSources from "./VideoSources"
@@ -174,13 +173,13 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
               <ProgressTabLink
                 tabKey="details"
                 title="Details"
-                iconSvg={<NotesIcon />}
+                iconSvg={<ClipboardListIcon />}
                 text="Title, description, ..."
               />
               <ProgressTabLink
                 tabKey="sources"
                 title="Sources"
-                iconSvg={<MovieIcon />}
+                iconSvg={<FilmIcon />}
                 progressList={queue.filter(q => SwarmVideoIO.getSourceQuality(q.name) > 0).map(q => ({
                   progress: q.completion ? q.completion / 100 : null,
                   completed: !!q.reference

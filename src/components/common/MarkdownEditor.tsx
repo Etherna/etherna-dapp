@@ -27,6 +27,7 @@ import {
   convertToRaw
 } from "draft-js"
 import { draftToMarkdown, markdownToDraft } from "markdown-draft-js"
+import type { EditorProps } from "draft-js"
 
 import "@styles/overrides/draft-js.scss"
 import classes from "@styles/components/common/MarkdownEditor.module.scss"
@@ -34,6 +35,8 @@ import textfieldClasses from "@styles/components/common/TextField.module.scss"
 
 import MarkdownEditorButton, { MarkdownButtonConfig } from "./MarkdownEditorButton"
 import Label from "@common/Label"
+
+const EditorFix = Editor as unknown as React.FC<EditorProps>
 
 type MarkdownEditorProps = {
   id?: string
@@ -163,7 +166,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         </div>
 
         <div className={classes.markdownEditorContent}>
-          <Editor
+          <EditorFix
             placeholder={placeholder}
             editorState={state}
             handleBeforeInput={handleBeforeInput}

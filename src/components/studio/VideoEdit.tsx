@@ -18,8 +18,8 @@
 import React, { useEffect, useRef, useState } from "react"
 import { Navigate } from "react-router-dom"
 
+import { TrashIcon } from "@heroicons/react/outline"
 import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
-import { ReactComponent as TrashIcon } from "@assets/icons/trash.svg"
 
 import StudioEditView from "./StudioEditView"
 import VideoEditor from "./video-editor/VideoEditor"

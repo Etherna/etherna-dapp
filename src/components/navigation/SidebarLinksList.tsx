@@ -19,7 +19,11 @@ import React from "react"
 
 import classes from "@styles/components/navigation/SidebarLinksList.module.scss"
 
-const SidebarLinksList: React.FC = ({ children }) => {
+type SidebarLinksListProps = {
+  children?: React.ReactNode
+}
+
+const SidebarLinksList: React.FC<SidebarLinksListProps> = ({ children }) => {
   return (
     <div className={classes.sidebarLinksList}>
       {children}

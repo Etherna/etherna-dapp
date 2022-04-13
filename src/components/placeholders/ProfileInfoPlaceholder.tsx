@@ -21,7 +21,7 @@ import profileClasses from "@styles/components/profile/ProfileInfo.module.scss"
 
 import Placeholder from "@common/Placeholder"
 
-const ProfileInfoPlaceholder: React.FC = ({ children }) => {
+const ProfileInfoPlaceholder: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <>
       <div className="row items-center">

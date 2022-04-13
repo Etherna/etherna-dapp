@@ -19,7 +19,7 @@ import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } f
 import classNames from "classnames"
 
 import classes from "@styles/components/studio/channel-editor/ChannelEditor.module.scss"
-import { ReactComponent as TrashIcon } from "@assets/icons/trash.svg"
+import { TrashIcon } from "@heroicons/react/outline"
 
 import WalletState from "../other/WalletState"
 import Button from "@common/Button"

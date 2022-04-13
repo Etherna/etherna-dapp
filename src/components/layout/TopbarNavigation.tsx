@@ -17,11 +17,10 @@
 
 import React from "react"
 
+import { PlusIcon } from "@heroicons/react/solid"
+import { UploadIcon, MenuAlt4Icon } from "@heroicons/react/outline"
 import { ReactComponent as Logo } from "@assets/logo.svg"
 import { ReactComponent as LogoCompact } from "@assets/logo-compact.svg"
-import { ReactComponent as PlusIcon } from "@assets/icons/plus.svg"
-import { ReactComponent as MenuIcon } from "@assets/icons/navigation/menu.svg"
-import { ReactComponent as UploadIcon } from "@assets/icons/upload.svg"
 
 import SearchItem from "./SearchItem"
 import Topbar from "@components/navigation/Topbar"
@@ -55,7 +54,7 @@ const TopbarNavigation: React.FC = () => {
     <Topbar>
       {floatingSidebar && (
         <TopbarItem
-          iconSvg={<MenuIcon />}
+          iconSvg={<MenuAlt4Icon />}
           onClick={toggleSidebar}
           hideMobile
         />

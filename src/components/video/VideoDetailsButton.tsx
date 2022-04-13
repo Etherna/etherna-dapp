@@ -21,6 +21,7 @@ import classNames from "classnames"
 import classes from "@styles/components/video/VideoDetailsButton.module.scss"
 
 type VideoDetailsButtonProps = {
+  children?: React.ReactNode
   className?: string
   onClick?(): void
 }

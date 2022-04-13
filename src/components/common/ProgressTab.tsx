@@ -24,6 +24,7 @@ import ProgressTabContent, { ProgressTabContentProps } from "./ProgressTabConten
 import ProgressTabLink, { ProgressTabLinkProps } from "./ProgressTabLink"
 
 type ProgressTabProps = {
+  children?: React.ReactNode
   defaultKey: string
   id?: string
   className?: string

@@ -21,6 +21,7 @@ import classNames from "classnames"
 import classes from "@styles/components/common/FieldDescription.module.scss"
 
 type FieldDesrcriptionProps = {
+  children?: React.ReactNode
   smaller?: boolean
 }
 

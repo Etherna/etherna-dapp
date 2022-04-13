@@ -17,8 +17,8 @@
 
 import React from "react"
 
+import { ShieldCheckIcon } from "@heroicons/react/outline"
 import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
-import { ReactComponent as SignatureIcon } from "@assets/icons/signature-required.svg"
 
 import Modal from "@common/Modal"
 import Button from "@common/Button"
@@ -31,7 +31,7 @@ const ConnectingWalletModal = ({ show = false }) => {
       showCloseButton={false}
       showCancelButton={false}
       title="Connecting wallet"
-      icon={<SignatureIcon />}
+      icon={<ShieldCheckIcon />}
       footerButtons={
         <Button modifier="muted" onClick={closeConnectingWalletModal}>
           Close

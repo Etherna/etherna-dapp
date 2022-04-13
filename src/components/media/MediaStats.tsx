@@ -19,7 +19,7 @@ import React, { useRef, useState } from "react"
 import classNames from "classnames"
 
 import classes from "@styles/components/media/MediaStats.module.scss"
-import { ReactComponent as ChevronDownIcon } from "@assets/icons/chevron-down.svg"
+import { ChevronDownIcon } from "@heroicons/react/solid"
 
 type MediaStatsProps = {
   stats: Array<{ label: string, value: string | JSX.Element }>
