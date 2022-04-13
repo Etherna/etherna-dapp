@@ -20,8 +20,7 @@ import { Listbox, Transition } from "@headlessui/react"
 import classNames from "classnames"
 
 import classes from "@styles/components/common/CustomSelect.module.scss"
-import { ReactComponent as CheckIcon } from "@assets/icons/check.svg"
-import { ReactComponent as ChevronDownIcon } from "@assets/icons/chevron-down.svg"
+import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid"
 
 type Option = {
   label: string | JSX.Element

@@ -19,10 +19,7 @@ import React, { useMemo, useState } from "react"
 import classNames from "classnames"
 
 import classes from "@styles/components/env/ExtensionHostPanel.module.scss"
-import { ReactComponent as EditIcon } from "@assets/icons/edit.svg"
-import { ReactComponent as TrashIcon } from "@assets/icons/trash.svg"
-import { ReactComponent as CheckIcon } from "@assets/icons/check.svg"
-import { ReactComponent as PlusIcon } from "@assets/icons/plus.svg"
+import { CheckIcon, PencilIcon, TrashIcon, PlusIcon } from "@heroicons/react/solid"
 
 import ExtensionHostsList from "./ExtensionHostsList"
 import Button from "@common/Button"
@@ -224,7 +221,7 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost,
               {selectedUrl !== defaultUrl && (
                 <div className="space-x-3">
                   <Button className={classes.btnText} modifier="transparent" onClick={toggleEditSelectedHost} small>
-                    <EditIcon />
+                    <PencilIcon />
                     <span>Edit</span>
                   </Button>
                   <Button className={classes.btnText} modifier="transparent" onClick={deleteSelectedHost} small>

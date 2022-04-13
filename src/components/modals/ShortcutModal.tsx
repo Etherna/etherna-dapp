@@ -19,7 +19,7 @@ import React, { useEffect, useState, useRef } from "react"
 import classNames from "classnames"
 
 import classes from "@styles/components/modals/ShortcutModal.module.scss"
-import { ReactComponent as WarningIcon } from "@assets/icons/warning.svg"
+import { ExclamationIcon } from "@heroicons/react/solid"
 
 import Modal from "@components/common/Modal"
 import Button from "@components/common/Button"
@@ -107,7 +107,7 @@ const ShortcutModal = ({ show = false }) => {
       </div>
       {existingShortcut && (
         <div className="flex items-center my-4">
-          <WarningIcon className="mr-2" width="16" />
+          <ExclamationIcon className="mr-2" width="16" />
           <span>
             Shortcut already set for: <strong>{lang.get(`player.${existingShortcut}`)}</strong>
           </span>

@@ -19,7 +19,7 @@ import React, { useEffect, useState } from "react"
 import classNames from "classnames"
 
 import classes from "@styles/components/video/VideoDetailsDescription.module.scss"
-import { ReactComponent as ChevronDownIcon } from "@assets/icons/chevron-down.svg"
+import { ChevronDownIcon } from "@heroicons/react/solid"
 
 import Button from "@common/Button"
 import MarkdownPreview from "@common/MarkdownPreview"

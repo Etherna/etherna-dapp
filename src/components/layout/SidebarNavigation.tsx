@@ -17,11 +17,9 @@
 
 import React from "react"
 
-import { ReactComponent as HomeIcon } from "@assets/icons/navigation/home.svg"
+import { BookmarkIcon, HomeIcon, UserIcon } from "@heroicons/react/solid"
 import { ReactComponent as FramesIcon } from "@assets/icons/navigation/frames.svg"
-import { ReactComponent as UserIcon } from "@assets/icons/navigation/user.svg"
 import { ReactComponent as PlaylistIcon } from "@assets/icons/navigation/playlists.svg"
-import { ReactComponent as BookmarkIcon } from "@assets/icons/navigation/bookmark.svg"
 
 import FeedbackLink from "./FeedbackLink"
 import Sidebar from "@components/navigation/Sidebar"

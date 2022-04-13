@@ -19,8 +19,7 @@ import React, { useEffect } from "react"
 import classNames from "classnames"
 
 import classes from "@styles/components/common/AlertPopup.module.scss"
-import { ReactComponent as ErrorIcon } from "@assets/icons/warning.svg"
-import { ReactComponent as SuccessIcon } from "@assets/icons/check-circle.svg"
+import { CheckCircleIcon, ExclamationIcon } from "@heroicons/react/solid"
 
 type AlertAction = {
   title: string
@@ -55,13 +54,13 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
 
   const Icon = () => {
     if (icon === "info") {
-      return <SuccessIcon />
+      return <CheckCircleIcon />
     }
     if (icon === "success") {
-      return <SuccessIcon />
+      return <CheckCircleIcon />
     }
     if (icon === "error") {
-      return <ErrorIcon />
+      return <ExclamationIcon />
     }
     if (typeof icon === "string") {
       return <img src={icon} alt="" />

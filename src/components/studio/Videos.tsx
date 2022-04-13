@@ -20,12 +20,10 @@ import { Link, Navigate } from "react-router-dom"
 import classNames from "classnames"
 
 import classes from "@styles/components/studio/Videos.module.scss"
+import { TrashIcon, DocumentDuplicateIcon, PencilIcon } from "@heroicons/react/solid"
 import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 import { ReactComponent as ThumbPlaceholder } from "@assets/backgrounds/thumb-placeholder.svg"
-import { ReactComponent as EditIcon } from "@assets/icons/edit.svg"
 import { ReactComponent as CreditIcon } from "@assets/icons/credit.svg"
-import { ReactComponent as TrashIcon } from "@assets/icons/trash.svg"
-import { ReactComponent as CopyIcon } from "@assets/icons/copy.svg"
 
 import StudioTableView from "./StudioTableView"
 import VideoDeleteModal from "./video-editor/VideoDeleteModal"
@@ -276,7 +274,7 @@ const Videos: React.FC = () => {
                   onClick={() => duplicateVideo(item)}
                   iconOnly
                 >
-                  <CopyIcon />
+                  <DocumentDuplicateIcon />
                 </Button>
               )}
               <Button
@@ -288,7 +286,7 @@ const Videos: React.FC = () => {
                 modifier="transparent"
                 iconOnly
               >
-                <EditIcon />
+                <PencilIcon />
               </Button>
             </div>
           )

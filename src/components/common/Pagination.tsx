@@ -20,9 +20,7 @@ import { Listbox } from "@headlessui/react"
 import classNames from "classnames"
 
 import classes from "@styles/components/common/Pagination.module.scss"
-import { ReactComponent as SelectorIcon } from "@assets/icons/selector.svg"
-import { ReactComponent as ChevronLeft } from "@assets/icons/chevron-left.svg"
-import { ReactComponent as ChevronDoubleLeft } from "@assets/icons/chevron-double-left.svg"
+import { SelectorIcon, ChevronLeftIcon, ChevronDoubleLeftIcon } from "@heroicons/react/solid"
 
 import Button from "./Button"
 import { clamp } from "@utils/math"
@@ -89,7 +87,7 @@ const Pagination: React.FC<PaginationProps> = ({
           onClick={() => changeCurrentPage("1")}
           iconOnly
         >
-          <ChevronDoubleLeft />
+          <ChevronDoubleLeftIcon />
         </Button>
         <Button
           modifier="transparent"
@@ -97,7 +95,7 @@ const Pagination: React.FC<PaginationProps> = ({
           onClick={() => changeCurrentPage(`${+currentPage - 1}`)}
           iconOnly
         >
-          <ChevronLeft />
+          <ChevronLeftIcon />
         </Button>
         <Button
           modifier="transparent"
@@ -105,7 +103,7 @@ const Pagination: React.FC<PaginationProps> = ({
           onClick={() => changeCurrentPage(`${+currentPage + 1}`)}
           iconOnly
         >
-          <ChevronLeft className="rotate-180" />
+          <ChevronLeftIcon className="rotate-180" />
         </Button>
         <Button
           modifier="transparent"
@@ -113,7 +111,7 @@ const Pagination: React.FC<PaginationProps> = ({
           onClick={() => changeCurrentPage(`${pagesCount}`)}
           iconOnly
         >
-          <ChevronDoubleLeft className="rotate-180" />
+          <ChevronDoubleLeftIcon className="rotate-180" />
         </Button>
       </div>
 

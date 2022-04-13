@@ -20,7 +20,6 @@ import classNames from "classnames"
 
 import classes from "@styles/components/video/VideoRating.module.scss"
 import { ReactComponent as VoteIcon } from "@assets/icons/player/upvote.svg"
-import { ReactComponent as ThumbUpIcon } from "@assets/icons/player/thumb-up.svg"
 
 import useSelector from "@state/useSelector"
 import type { VoteValue } from "@definitions/api-index"

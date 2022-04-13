@@ -17,8 +17,8 @@
 
 import React from "react"
 
-import { ReactComponent as SignoutIcon } from "@assets/icons/signout.svg"
-import { ReactComponent as MoreIcon } from "@assets/icons/more.svg"
+import { LogoutIcon } from "@heroicons/react/outline"
+import { DotsVerticalIcon } from "@heroicons/react/solid"
 
 import SharedMenuItems from "./SharedMenuItems"
 import SignedInMenuItems from "./SignedInMenuItems"
@@ -57,7 +57,7 @@ const UserMenu: React.FC = () => {
             {isFullySignedIn ? (
               <Avatar image={avatar} address={address} size={36} />
             ) : (
-              <MoreIcon />
+              <DotsVerticalIcon />
             )}
           </Button>
         </DropdownToggle>
@@ -73,7 +73,7 @@ const UserMenu: React.FC = () => {
             {isFullySignedIn && (
               <>
                 <hr />
-                <DropdownItem action={signout} icon={<SignoutIcon />}>
+                <DropdownItem action={signout} icon={<LogoutIcon />}>
                   Sign out
                 </DropdownItem>
               </>

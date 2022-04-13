@@ -19,7 +19,7 @@ import React, { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 
 import classes from "@styles/components/studio/StudioEditView.module.scss"
-import { ReactComponent as ArrowLeftIcon } from "@assets/icons/arrow-left.svg"
+import { ArrowNarrowLeftIcon } from "@heroicons/react/solid"
 
 import Button from "@common/Button"
 import useMounted from "@hooks/useMounted"
@@ -69,7 +69,7 @@ const StudioEditView: React.FC<StudioEditViewProps> = ({
       <div className={classes.studioEditToolbar}>
         {backTo && (
           <Link to={backTo} className={classes.studioEditBackButton} onClick={handleBack}>
-            <ArrowLeftIcon />
+            <ArrowNarrowLeftIcon />
           </Link>
         )}
 

@@ -17,10 +17,8 @@
 
 import React from "react"
 
-import { ReactComponent as EditIcon } from "@assets/icons/edit.svg"
-import { ReactComponent as ProfileIcon } from "@assets/icons/profile.svg"
-import { ReactComponent as UploadIcon } from "@assets/icons/upload.svg"
-import { ReactComponent as SparklesIcon } from "@assets/icons/sparkles.svg"
+import { PencilIcon, SparklesIcon } from "@heroicons/react/solid"
+import { UserCircleIcon, UploadIcon } from "@heroicons/react/outline"
 
 import DropdownItem from "@common/DropdownItem"
 import Avatar from "@components/user/Avatar"
@@ -46,7 +44,7 @@ const SignedInMenuItems: React.FC = () => {
         </div>
       </DropdownItem>
 
-      <DropdownItem href={routes.channel(address!)} icon={<ProfileIcon />}>
+      <DropdownItem href={routes.channel(address!)} icon={<UserCircleIcon />}>
         View channel
       </DropdownItem>
 
@@ -55,7 +53,7 @@ const SignedInMenuItems: React.FC = () => {
       <DropdownItem href={routes.studio} icon={<SparklesIcon />}>
         Creator Studio
       </DropdownItem>
-      <DropdownItem href={routes.studioChannel} icon={<EditIcon />}>
+      <DropdownItem href={routes.studioChannel} icon={<PencilIcon />}>
         Customize channel
       </DropdownItem>
       <DropdownItem href={routes.studioVideoNew} icon={<UploadIcon />}>

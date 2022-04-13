@@ -17,8 +17,8 @@
 
 import React from "react"
 
-import { ReactComponent as SignatureIcon } from "@assets/icons/signature-required.svg"
-import { ReactComponent as ErrorIcon } from "@assets/icons/error.svg"
+import { ShieldCheckIcon } from "@heroicons/react/outline"
+import { ExclamationCircleIcon } from "@heroicons/react/solid"
 
 import Modal from "@common/Modal"
 import Button from "@common/Button"
@@ -44,7 +44,7 @@ const ErrorModal = ({ title, error = "", show = false }: ErrorModalProps) => {
       showCancelButton={false}
       status="danger"
       title={isMetaMaskSignError || isMozillaError ? "Sign in" : title}
-      icon={isMetaMaskSignError || isMozillaError ? <SignatureIcon /> : <ErrorIcon />}
+      icon={isMetaMaskSignError || isMozillaError ? <ShieldCheckIcon /> : <ExclamationCircleIcon />}
       footerButtons={
         <Button modifier="muted" onClick={hideError}>
           Close

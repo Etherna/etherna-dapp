@@ -18,8 +18,8 @@
 import React from "react"
 
 import classes from "@styles/components/settings/ShortcutsEditor.module.scss"
-import { ReactComponent as EditIcon } from "@assets/icons/edit.svg"
-import { ReactComponent as ResetIcon } from "@assets/icons/reset.svg"
+import { PencilIcon } from "@heroicons/react/solid"
+import { BackspaceIcon } from "@heroicons/react/outline"
 
 import Button from "@common/Button"
 import Kbd from "@common/Kbd"
@@ -57,7 +57,7 @@ const ShortcutsEditor = ({ namespace }: ShortcutsEditorProps) => {
                       rounded
                     >
                       <div className="m-auto">
-                        <EditIcon />
+                        <PencilIcon />
                       </div>
                     </Button>
                   </div>
@@ -72,7 +72,7 @@ const ShortcutsEditor = ({ namespace }: ShortcutsEditorProps) => {
                       rounded
                     >
                       <div className="m-auto">
-                        <ResetIcon />
+                        <BackspaceIcon />
                       </div>
                     </Button>
                   </div>

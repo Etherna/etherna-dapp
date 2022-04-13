@@ -21,8 +21,8 @@ import classNames from "classnames"
 import { useMatomo } from "@datapunt/matomo-tracker-react"
 
 import classes from "@styles/components/layout/SearchItem.module.scss"
-import { ReactComponent as CrossIcon } from "@assets/icons/cross.svg"
-import { ReactComponent as SearchIcon } from "@assets/icons/navigation/search.svg"
+import { XIcon } from "@heroicons/react/solid"
+import { SearchIcon } from "@heroicons/react/outline"
 
 import TopbarItem from "@components/navigation/TopbarItem"
 import TextField from "@common/TextField"
@@ -62,7 +62,7 @@ const SearchItem: React.FC = () => {
             autoFocus
           />
           <button className={classes.searchItemClose} onClick={() => setShowInput(false)}>
-            <CrossIcon aria-hidden />
+            <XIcon aria-hidden />
           </button>
         </>
       )}

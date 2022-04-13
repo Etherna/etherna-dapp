@@ -18,9 +18,8 @@
 import React, { useMemo } from "react"
 
 import classes from "@styles/components/video/VideoExtraMenuManifest.module.scss"
+import { FilmIcon, PhotographIcon } from "@heroicons/react/solid"
 import { ReactComponent as ManifestIcon } from "@assets/icons/manifest.svg"
-import { ReactComponent as MovieIcon } from "@assets/icons/movie.svg"
-import { ReactComponent as ImgIcon } from "@assets/icons/image.svg"
 
 import Button from "@common/Button"
 import Modal from "@common/Modal"
@@ -79,8 +78,8 @@ const VideoExtraMenuManifest: React.FC<VideoExtraMenuManifestProps> = ({ video, 
           <li className={classes.sourcesListItem} key={source.reference}>
             <div className={classes.sourcesListItemTitle}>
               {source.type === "metadata" && <ManifestIcon aria-hidden />}
-              {source.type === "video" && <MovieIcon aria-hidden />}
-              {source.type === "thumb" && <ImgIcon aria-hidden />}
+              {source.type === "video" && <FilmIcon aria-hidden />}
+              {source.type === "thumb" && <PhotographIcon aria-hidden />}
               {source.label}
             </div>
             <span className={classes.sourcesListItemLink}>
