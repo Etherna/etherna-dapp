@@ -24,6 +24,7 @@ import classes from "@styles/components/navigation/DropdownSidebar.module.scss"
 import { SelectorIcon } from "@heroicons/react/solid"
 
 type DropdownSidebarProps = {
+  children?: React.ReactNode
   defaultTitle?: string
   className?: string
 }

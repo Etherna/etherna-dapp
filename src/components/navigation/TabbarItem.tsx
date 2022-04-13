@@ -23,6 +23,7 @@ import classNames from "classnames"
 import classes from "@styles/components/navigation/TabbarItem.module.scss"
 
 export type TabbarItemProps = {
+  children?: React.ReactNode
   as?: ElementType
   title?: string
   to?: string
@@ -49,7 +50,7 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
   const { pathname } = useLocation()
   const isCurrentPage = (typeof isActive === "function" ? isActive(pathname) : isActive) ?? false
 
-  const Wrapper: React.FC = useMemo(() => {
+  const Wrapper: React.FC<{ children: React.ReactNode }> = useMemo(() => {
     return ({ children }) => (
       <>
         {to ? (

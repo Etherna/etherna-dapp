@@ -21,7 +21,11 @@ import { PlayerContext } from "."
 import playerContextReducer from "./reducer"
 import logger from "@utils/context-logger"
 
-const PlayerContextProvider: React.FC = ({ children }) => {
+type PlayerContextProviderProps = {
+  children?: React.ReactNode
+}
+
+const PlayerContextProvider: React.FC<PlayerContextProviderProps> = ({ children }) => {
   const stateReducer = import.meta.env.DEV ? logger(playerContextReducer) : playerContextReducer
   const store = useReducer(stateReducer, {
     videoEl: undefined,

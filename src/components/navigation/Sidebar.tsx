@@ -23,6 +23,7 @@ import { Transition } from "@headlessui/react"
 import classes from "@styles/components/navigation/Sidebar.module.scss"
 
 type SidebarProps = {
+  children?: React.ReactNode
   floating?: boolean
   show?: boolean
   onClose?(): void

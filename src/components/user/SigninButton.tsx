@@ -20,7 +20,11 @@ import React from "react"
 import Button from "@common/Button"
 import loginRedirect from "@state/actions/user/login-redirect"
 
-const SigninButton: React.FC = ({ children }) => {
+type SigninButtonProps = {
+  children?: React.ReactNode
+}
+
+const SigninButton: React.FC<SigninButtonProps> = ({ children }) => {
   return (
     <Button type="button" onClick={() => loginRedirect()} lighter>
       {children}

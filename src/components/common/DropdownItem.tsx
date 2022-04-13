@@ -23,6 +23,7 @@ import { Link } from "react-router-dom"
 import classes from "@styles/components/common/DropdownItem.module.scss"
 
 type DropdownItemProps = {
+  children?: React.ReactNode
   href?: string
   icon?: React.ReactNode
   suffix?: React.ReactNode

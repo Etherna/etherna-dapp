@@ -26,7 +26,11 @@ import DropdownSidebar from "@components/navigation/DropdownSidebar"
 import SidebarItem from "@components/navigation/SidebarItem"
 import routes from "@routes"
 
-const StudioLayout: React.FC = ({ children }) => {
+type StudioLayoutProps = {
+  children?: React.ReactNode
+}
+
+const StudioLayout: React.FC<StudioLayoutProps> = ({ children }) => {
   return (
     <Container fluid>
       <SEO title="Creator Studio" />

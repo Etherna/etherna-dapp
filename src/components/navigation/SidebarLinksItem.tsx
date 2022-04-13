@@ -19,11 +19,12 @@ import React, { ElementType, useMemo } from "react"
 import { useLocation } from "react-router"
 import { NavLink } from "react-router-dom"
 import classNames from "classnames"
-
-import classes from "@styles/components/navigation/SidebarLinksListItem.module.scss"
 import Tippy from "@tippyjs/react"
 
+import classes from "@styles/components/navigation/SidebarLinksListItem.module.scss"
+
 type SidebarLinksItemProps = {
+  children?: React.ReactNode
   as?: ElementType
   to?: string
   title?: string
@@ -56,7 +57,7 @@ const SidebarLinksItem: React.FC<SidebarLinksItemProps> = ({
   const { pathname } = useLocation()
   const isCurrentPage = (typeof isActive === "function" ? isActive(pathname) : isActive) ?? false
 
-  const Wrapper: React.FC = useMemo(() => {
+  const Wrapper: React.FC<{ children: React.ReactNode }> = useMemo(() => {
     return ({ children }) => (
       <>
         {(to && to.startsWith("http")) ? (

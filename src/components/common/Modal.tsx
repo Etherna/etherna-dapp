@@ -25,6 +25,7 @@ import { XIcon } from "@heroicons/react/solid"
 import Button from "@common/Button"
 
 type ModalProps = {
+  children?: React.ReactNode
   show?: boolean
   title?: string
   icon?: React.ReactNode

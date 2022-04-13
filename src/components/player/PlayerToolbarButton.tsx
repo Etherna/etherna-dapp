@@ -20,6 +20,7 @@ import React from "react"
 import classes from "@styles/components/player/PlayerToolbarButton.module.scss"
 
 type PlayerToolbarButtonProps = {
+  children?: React.ReactNode
   hasMenu?: boolean
   icon?: React.ReactElement<React.SVGAttributes<SVGElement>>
   onClick?(): void

@@ -22,6 +22,7 @@ import classNames from "classnames"
 import classes from "@styles/components/navigation/TopbarItem.module.scss"
 
 export type TopbarItemProps = {
+  children?: React.ReactNode
   as?: React.ElementType
   title?: string
   className?: string
@@ -52,7 +53,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
   const { pathname } = useLocation()
   const isCurrentPage = (typeof isActive === "function" ? isActive(pathname) : isActive) ?? false
 
-  const Wrapper: React.FC = useMemo(() => {
+  const Wrapper: React.FC<{ children: React.ReactNode }> = useMemo(() => {
     return ({ children }) => (
       <>
         {to ? (

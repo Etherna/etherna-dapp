@@ -25,7 +25,7 @@ import SidebarItem from "@components/navigation/SidebarItem"
 import Popup from "@common/Popup"
 
 type SidebarLinksProps = {
-
+  children?: React.ReactNode
 }
 
 const SidebarLinks: React.FC<SidebarLinksProps> = ({ children }) => {

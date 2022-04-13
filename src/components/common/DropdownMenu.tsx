@@ -15,13 +15,14 @@
  *  
  */
 
-import React, { Fragment, useEffect, useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 import classNames from "classnames"
-import { Menu, Transition } from "@headlessui/react"
+import { Menu } from "@headlessui/react"
 
 import classes from "@styles/components/common/DropdownMenu.module.scss"
 
 export type DropdownMenuProps = {
+  children?: React.ReactNode
   className?: string
   open?: boolean
 }

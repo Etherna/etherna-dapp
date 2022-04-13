@@ -21,13 +21,20 @@ import classNames from "classnames"
 import classes from "@styles/components/common/Container.module.scss"
 
 type ContainerProps = {
+  children?: React.ReactNode
   className?: string
   fluid?: boolean
   noPaddingX?: boolean
   noPaddingY?: boolean
 }
 
-const Container: React.FC<ContainerProps> = ({ children, className, fluid, noPaddingX, noPaddingY }) => {
+const Container: React.FC<ContainerProps> = ({
+  children,
+  className,
+  fluid,
+  noPaddingX,
+  noPaddingY
+}) => {
   return (
     <div className={classNames(className, {
       [classes.container]: !fluid,

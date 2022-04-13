@@ -25,6 +25,7 @@ import Button from "@common/Button"
 import useMounted from "@hooks/useMounted"
 
 type StudioEditViewProps = {
+  children?: React.ReactNode
   title: string
   saveLabel?: string
   backTo?: string

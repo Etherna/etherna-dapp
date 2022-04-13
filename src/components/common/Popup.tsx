@@ -23,6 +23,7 @@ import { usePopper } from "react-popper"
 import classes from "@styles/components/common/Popup.module.scss"
 
 type PopupProps = {
+  children?: React.ReactNode
   toggle: React.ReactNode
   placement?: "left" | "top" | "right" | "bottom"
   className?: string

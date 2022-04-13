@@ -21,6 +21,7 @@ import classNames from "classnames"
 import classes from "@styles/components/video/VideoDetailsTitleBar.module.scss"
 
 type VideoDetailsTitleBarProps = {
+  children?: React.ReactNode
   title?: string | null
 }
 

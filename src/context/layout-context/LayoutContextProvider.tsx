@@ -22,6 +22,7 @@ import layoutReducer from "./reducer"
 import logger from "@utils/context-logger"
 
 type LayoutContextProviderProps = {
+  children?: React.ReactNode
   emptyLayout?: boolean
   hideSidebar?: boolean
   floatingSidebar?: boolean

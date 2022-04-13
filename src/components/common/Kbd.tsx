@@ -24,7 +24,7 @@ type KbdProps = {
   className?: string
 }
 
-const Kbd = ({ shortcut, className }: KbdProps) => {
+const Kbd: React.FC<KbdProps> = ({ shortcut, className }) => {
   const isApple = /(Mac|iPhone|iPod|iPad|iPhone|iPod|iPad)/i.test(navigator.platform)
   const multiKeys = shortcut.split("+").map(k => {
     let key = k.trim().toLowerCase()

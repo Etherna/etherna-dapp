@@ -18,7 +18,6 @@
 import React, { useState } from "react"
 
 import classes from "@styles/components/studio/video-editor/VideoDeleteModal.module.scss"
-import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 import { ReactComponent as ThumbPlaceholder } from "@assets/backgrounds/thumb-placeholder.svg"
 
 import Modal from "@common/Modal"

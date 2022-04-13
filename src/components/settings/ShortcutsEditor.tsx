@@ -32,7 +32,7 @@ type ShortcutsEditorProps = {
   namespace: KeymapNamespace
 }
 
-const ShortcutsEditor = ({ namespace }: ShortcutsEditorProps) => {
+const ShortcutsEditor: React.FC<ShortcutsEditorProps> = ({ namespace }) => {
   const { lang, keymap } = useSelector(state => state.env)
   const { [namespace]: shortcuts } = keymap
   const shortChunks = splitArray(Object.keys(shortcuts), 10)

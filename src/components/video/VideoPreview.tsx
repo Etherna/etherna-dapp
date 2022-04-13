@@ -58,7 +58,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   const videoSearch = new URL(videoLink, document.baseURI).search
   const videoPath = videoLink.replace(videoSearch, "")
 
-  const VideoLink: React.FC = ({ children }) => (
+  const VideoLink: React.FC<{ children: React.ReactNode }> = ({ children }) => (
     <Link
       to={{
         pathname: videoPath,

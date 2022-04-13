@@ -24,7 +24,6 @@ import { ReactComponent as ManifestIcon } from "@assets/icons/manifest.svg"
 import Button from "@common/Button"
 import Modal from "@common/Modal"
 import SwarmResourcesIO from "@classes/SwarmResources"
-import useSelector from "@state/useSelector"
 import type { Video } from "@definitions/swarm-video"
 
 type VideoExtraMenuManifestProps = {
@@ -34,8 +33,6 @@ type VideoExtraMenuManifestProps = {
 }
 
 const VideoExtraMenuManifest: React.FC<VideoExtraMenuManifestProps> = ({ video, show, setShow }) => {
-  const { beeClient } = useSelector(state => state.env)
-
   const sources = useMemo(() => {
     const references = SwarmResourcesIO.getVideoReferences(video)
     return references.map(reference => ({

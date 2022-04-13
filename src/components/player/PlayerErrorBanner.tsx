@@ -25,7 +25,7 @@ import { ReactComponent as CreditErrorIcon } from "@assets/icons/credit-error.sv
 
 import { usePlayerState } from "@context/player-context/hooks"
 
-const PlayerErrorBanner = () => {
+const PlayerErrorBanner: React.FC = () => {
   const [description, setDescription] = useState("")
   const [state] = usePlayerState()
   const { error } = state
