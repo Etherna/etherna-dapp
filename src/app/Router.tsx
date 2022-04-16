@@ -16,11 +16,10 @@
  */
 
 import React, { lazy, Suspense } from "react"
-import { Routes, Route, useLocation, BrowserRouter, Navigate } from "react-router-dom"
-
-import { getBasename } from "@routes"
+import { Routes, Route, useLocation, Navigate } from "react-router-dom"
 
 import AppLayoutRoute from "./route-wrappers/AppLayoutRoute"
+import PWARoute from "./route-wrappers/PWARoute"
 import StudioLayoutRoute from "./route-wrappers/StudioLayoutRoute"
 import StateProviderRoute from "./route-wrappers/StateProviderRoute"
 import AuthenticateRoute from "./route-wrappers/AuthenticateRoute"
@@ -102,41 +101,43 @@ const Router = () => {
       <Routes location={backgroundLocation || location}>
 
         <Route path="" element={<StateProviderRoute />}>
-          <Route path="/" element={<AuthenticateRoute />}>
-            <Route path="/" element={<AppLayoutRoute />}>
+          <Route path="" element={<PWARoute />}>
+            <Route path="/" element={<AuthenticateRoute />}>
+              <Route path="/" element={<AppLayoutRoute />}>
 
-              <Route path="/" element={<Home />} />
-              <Route path="/frames" element={<Frames />} />
-              <Route path="/following" element={<Following />} />
-              <Route path="/playlists" element={<Playlists />} />
-              <Route path="/saved" element={<Saved />} />
-              <Route path="/profiles" element={<Profiles />} />
-              <Route path="/channel/:id" element={<Channel />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/shortcuts" element={<Shortcuts />} />
+                <Route path="/" element={<Home />} />
+                <Route path="/frames" element={<Frames />} />
+                <Route path="/following" element={<Following />} />
+                <Route path="/playlists" element={<Playlists />} />
+                <Route path="/saved" element={<Saved />} />
+                <Route path="/profiles" element={<Profiles />} />
+                <Route path="/channel/:id" element={<Channel />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/shortcuts" element={<Shortcuts />} />
 
-              <Route path="/watch" element={<VideoRoute />}>
-                <Route path=":hash" element={<Watch />} />
-              </Route>
-
-              <Route path="/studio" element={<SignedInRoute />}>
-                <Route path="" element={<StudioLayoutRoute />}>
-                  <Route path="" element={<Navigate replace to="/studio/videos" />} />
-                  <Route path="channel" element={<ChannelEdit />} />
-                  <Route path="videos" element={<VideosList />} />
-                  <Route path="videos/:id" element={<VideoEdit />} />
-                  <Route path="storage" element={<Storage />} />
+                <Route path="/watch" element={<VideoRoute />}>
+                  <Route path=":hash" element={<Watch />} />
                 </Route>
+
+                <Route path="/studio" element={<SignedInRoute />}>
+                  <Route path="" element={<StudioLayoutRoute />}>
+                    <Route path="" element={<Navigate replace to="/studio/videos" />} />
+                    <Route path="channel" element={<ChannelEdit />} />
+                    <Route path="videos" element={<VideosList />} />
+                    <Route path="videos/:id" element={<VideoEdit />} />
+                    <Route path="storage" element={<Storage />} />
+                  </Route>
+                </Route>
+
               </Route>
-
             </Route>
-          </Route>
 
-          <Route path="/embed" element={<VideoRoute />}>
-            <Route path=":hash" element={<Embed />} />
-          </Route>
+            <Route path="/embed" element={<VideoRoute />}>
+              <Route path=":hash" element={<Embed />} />
+            </Route>
 
-          <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
         </Route>
       </Routes>
 

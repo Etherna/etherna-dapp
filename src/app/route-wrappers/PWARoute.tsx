@@ -1,4 +1,4 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,18 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *  
  */
 
-import { registerSW } from "virtual:pwa-register"
+import React from "react"
+import { Outlet } from "react-router-dom"
 
-const registerPWA = () => {
-  registerSW({
-    onNeedRefresh: () => {
-      window.dispatchEvent(new Event("pwaupdate"))
-    },
-    onOfflineReady: () => {
-      window.dispatchEvent(new Event("pwaofflineready"))
-    },
-  })
+import useAppUpdate from "@hooks/useAppUpdate"
+
+const PWARoute: React.FC = () => {
+  useAppUpdate()
+
+  return <Outlet />
 }
 
-export default registerPWA
+export default PWARoute
