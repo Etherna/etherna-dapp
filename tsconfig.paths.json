@@ -21,7 +21,7 @@
       "@state/*": ["state/*"],
       "@styles/*": ["styles/*"],
       "@typings/*": ["typings/*"],
-      "@utils/*": ["utils/*"],
+      "@utils/*": ["utils/*"]
     }
   }
 }

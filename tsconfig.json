@@ -2,16 +2,12 @@
   "extends": "./tsconfig.paths.json",
   "compilerOptions": {
     "target": "ESNext",
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ESNext"
-    ],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": [
       "vite/client",
       "vite-plugin-pwa/client",
       "react/next",
-      "react-dom/next",
+      "react-dom/next"
     ],
     "plugins": [
       {
@@ -33,16 +29,13 @@
     "noImplicitThis": false,
     "noEmit": true,
     "jsx": "react",
-    "typeRoots": [
-      "src/typings"
-    ]
+    "typeRoots": ["src/typings"]
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "build",
-    "node_modules",
-    "public"
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx"],
+  "exclude": ["build", "node_modules", "public"],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
   ]
 }
