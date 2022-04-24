@@ -55,6 +55,32 @@ export default defineConfig(({ mode }) => ({
     eslintPlugin({ cache: false }),
     VitePWA({
       registerType: "prompt",
+      manifest: {
+        short_name: "Etherna",
+        name: "Etherna",
+        icons: [
+          {
+            "src": "images/icon.png",
+            "sizes": "64x64",
+            "type": "image/png"
+          },
+          {
+            "src": "images/icon-192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+          },
+          {
+            "src": "images/icon-512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+          }
+        ],
+        display: "standalone",
+        background_color: "#f9fafb",
+        theme_color: "#03CEA4",
+        start_url: ".",
+        lang: "en"
+      },
     }),
   ],
 }))
