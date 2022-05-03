@@ -152,7 +152,7 @@ const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEdit
       newState = { ...state }
       break
     case VideoEditorActionTypes.UPDATE_DURATION:
-      state.videoWriter.duration = action.duration
+      state.videoWriter.duration = Math.round(action.duration)
       newState = { ...state }
       break
     case VideoEditorActionTypes.UPDATE_TITLE:

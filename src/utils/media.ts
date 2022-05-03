@@ -30,7 +30,7 @@ export const getVideoDuration = (videoObj: string | File | ArrayBuffer) => {
     video.onloadedmetadata = () => {
       try {
         window.URL.revokeObjectURL(video.src)
-        const duration = video.duration
+        const duration = Math.round(video.duration)
 
         resolve(duration)
       } catch (error: any) {
