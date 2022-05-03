@@ -85,7 +85,7 @@ export default class SwarmVideoWriter {
     return this._videoRaw.duration
   }
   set duration(value: number) {
-    this._videoRaw.duration = value
+    this._videoRaw.duration = Math.round(value)
   }
 
   get thumbnail(): SwarmImageRaw | null {
