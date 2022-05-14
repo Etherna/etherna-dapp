@@ -232,20 +232,20 @@ const run = async () => {
     await waitService(process.env.ETHERNA_CREDIT_PROJECT_PATH, "Etherna Credit")
   }
 
-  if (shouldRunEthernaGateway) {
-    const gatewayProcess = execProject(process.env.ETHERNA_GATEWAY_PROJECT_PATH)
-    verbose && gatewayProcess.stdout.on("data", data => logServiceError("Gateway: ", data))
-    processes.push(gatewayProcess)
-
-    await waitService(process.env.ETHERNA_GATEWAY_PROJECT_PATH, "Etherna Gateway")
-  }
-
   if (shouldRunEthernaBeehive) {
     const beehiveProcess = execProject(process.env.ETHERNA_BEEHIVE_PROJECT_PATH)
     verbose && beehiveProcess.stdout.on("data", data => logServiceError("Beehive: ", data))
     processes.push(beehiveProcess)
 
     await waitService(process.env.ETHERNA_BEEHIVE_PROJECT_PATH, "Etherna Beehive")
+  }
+
+  if (shouldRunEthernaGateway) {
+    const gatewayProcess = execProject(process.env.ETHERNA_GATEWAY_PROJECT_PATH)
+    verbose && gatewayProcess.stdout.on("data", data => logServiceError("Gateway: ", data))
+    processes.push(gatewayProcess)
+
+    await waitService(process.env.ETHERNA_GATEWAY_PROJECT_PATH, "Etherna Gateway")
   }
 
   if (shouldRunProxy) {
