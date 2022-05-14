@@ -36,6 +36,8 @@ type ModalProps = {
   large?: boolean
   setShow?(show: boolean): void
   onClose?(): void
+  onAppeared?(): void
+  onDisappeared?(): void
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -49,7 +51,9 @@ const Modal: React.FC<ModalProps> = ({
   showCancelButton,
   large,
   setShow,
-  onClose
+  onClose,
+  onAppeared,
+  onDisappeared,
 }) => {
   const cancelButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -100,6 +104,8 @@ const Modal: React.FC<ModalProps> = ({
             leave="ease-in duration-200"
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            afterEnter={onAppeared}
+            afterLeave={onDisappeared}
           >
             <div className={classes.modalDialog}>
               {showCloseButton && (
