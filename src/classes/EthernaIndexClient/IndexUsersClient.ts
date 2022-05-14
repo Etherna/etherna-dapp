@@ -79,21 +79,4 @@ export default class IndexUsersClient {
 
     return resp.data
   }
-
-  /**
-   * Update the current logged user's manifest
-   * @param newManifest The hash of the new manifest (null to remove)
-   */
-  async updateCurrentUser(newManifest: string) {
-    const endpoint = `${this.url}/users/current`
-
-    await http.put(endpoint, null, {
-      params: {
-        manifestHash: newManifest
-      },
-      withCredentials: true
-    })
-
-    return true
-  }
 }
