@@ -43,8 +43,9 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ show = false }) => {
     const crop = centerCrop(
       makeAspectCrop(
         {
-          unit: "%",
-          width: 90,
+          unit: "px",
+          width,
+          height,
         },
         aspectRatio,
         width,

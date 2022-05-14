@@ -110,14 +110,14 @@ const applyImageCropping = (src: string, cropData: Partial<Crop>) =>
 
 const getCroppedBlob = (image: CanvasImageSource, crop: Partial<Crop>, fileName = "image") => {
   const canvas = document.createElement("canvas")
-  canvas.width = crop.width || 0
-  canvas.height = crop.height || 0
+  canvas.width = crop.width || +image.width
+  canvas.height = crop.height || +image.height
   const ctx = canvas.getContext("2d")!
 
   const x = crop.x || 0
   const y = crop.y || 0
-  const width = crop.width || 0
-  const height = crop.height || 0
+  const width = crop.width || +image.width
+  const height = crop.height || +image.height
 
   ctx.drawImage(image, x, y, width, height, 0, 0, width, height)
 

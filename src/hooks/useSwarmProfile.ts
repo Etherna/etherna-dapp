@@ -78,9 +78,6 @@ export default function useSwarmProfile(opts: SwarmProfileOptions) {
     // save profile data on swarm
     const newReference = await profileWriter.update(profile)
 
-    // update index
-    await indexClient.users.updateCurrentUser(newReference)
-
     setIsloading(false)
 
     return newReference
