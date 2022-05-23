@@ -1,0 +1,60 @@
+/* 
+ *  Copyright 2021-present Etherna Sagl
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.sidebar {
+  @apply hidden px-2.5 py-3;
+  @apply bg-gray-100 dark:bg-gray-800;
+  @apply z-20;
+
+  @apply md:flex md:w-20;
+  @apply md:fixed md:left-0 md:inset-y-0;
+  @apply lg:w-52;
+  @apply xl:w-64;
+
+  &.floating {
+    @apply transform -translate-x-full;
+  }
+
+  &.animateSlide {
+    @apply transition-transform duration-300;
+  }
+
+  &.show {
+    @apply translate-x-0;
+  }
+}
+
+.sidebarContainer {
+  @apply flex flex-col w-full space-y-3;
+}
+
+.sidebarBackdrop {
+  @apply fixed inset-0;
+  @apply bg-gray-900 bg-opacity-30;
+  @apply z-20;
+}
+
+.sidebar:not(.floating) + * {
+  @apply md:pl-20;
+  @apply lg:pl-52;
+  @apply xl:pl-64;
+
+  > [data-topbar] {
+    @apply md:left-20;
+    @apply lg:left-52;
+    @apply xl:left-64;
+  }
+}

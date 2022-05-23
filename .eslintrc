@@ -1,10 +1,33 @@
 {
   "env": {
     "browser": true,
-    "es2021": true,
+    "es2020": true,
     "jest": true
   },
-  "extends": ["react-app", "react-app/jest"],
+  "extends": [
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "settings": {
+    "react": {
+      "version": "17"
+    }
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react",
+    "@typescript-eslint"
+  ],
+  "ignorePatterns": [
+    "*/build/**/*.js"
+  ],
   "rules": {
     "max-len": [
       "warn",
@@ -12,14 +35,21 @@
         "code": 120
       }
     ],
-    "semi": ["error", "never"],
+    "semi": [
+      "error",
+      "never"
+    ],
     "react/react-in-jsx-scope": "off",
-    "indent": [
+    "react/prop-types": "off",
+    "react/display-name": "off",
+    "@typescript-eslint/indent": [
       "error",
       2,
       {
         "SwitchCase": 1,
-        "ignoredNodes": ["ConditionalExpression"],
+        "ignoredNodes": [
+          "ConditionalExpression"
+        ],
         "ignoreComments": true
       }
     ],

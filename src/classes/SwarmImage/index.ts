@@ -14,6 +14,12 @@
  *  limitations under the License.
  */
 
-import SwarmImage from "./SwarmImage"
+import SwarmImageReader from "./SwarmImageReader"
+import SwarmImageWriter from "./SwarmImageWriter"
 
-export default SwarmImage
+const SwarmImageIO = {
+  Reader: SwarmImageReader,
+  Writer: SwarmImageWriter,
+}
+
+export default SwarmImageIO

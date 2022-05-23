@@ -15,36 +15,35 @@
  *  
  */
 
-import React, { useRef } from "react"
+import React from "react"
+import { Link } from "react-router-dom"
 
-import { ReactComponent as MoreIcon } from "@svg/icons/more-icon.svg"
+import { DotsCircleHorizontalIcon } from "@heroicons/react/solid"
 
-import { DropDown, DropDownMenuToggle, DropDownItem, DropDownMenu } from "@common/DropDown"
-import Button from "@common/Button"
-import StateLink from "@common/StateLink"
-import Routes from "@routes"
-import { Video } from "@classes/SwarmVideo/types"
+import Dropdown from "@common/Dropdown"
+import DropdownToggle from "@common/DropdownToggle"
+import DropdownItem from "@common/DropdownItem"
+import DropdownMenu from "@common/DropdownMenu"
+import routes from "@routes"
+import type { Video } from "@definitions/swarm-video"
 
 type VideoMenuProps = {
   video: Video
+  hasOffers: boolean
 }
 
-const VideoMenu = ({ video }: VideoMenuProps) => {
-  const menuRef = useRef<HTMLDivElement>(null)
-
+const VideoMenu: React.FC<VideoMenuProps> = ({ video, hasOffers }) => {
   return (
-    <DropDown>
-      <DropDownMenuToggle menuRef={menuRef}>
-        <Button aspect="transparent" rounded={true} size="small" className="w-2 h-2">
-          <MoreIcon className="m-auto" />
-        </Button>
-      </DropDownMenuToggle>
-      <DropDownMenu menuRef={menuRef}>
-        <DropDownItem>
-          <StateLink to={Routes.getVideoSettingsLink(video.hash)} state={video}>Video Settings</StateLink>
-        </DropDownItem>
-      </DropDownMenu>
-    </DropDown>
+    <Dropdown>
+      <DropdownToggle>
+        <DotsCircleHorizontalIcon className="w-5 h-5" />
+      </DropdownToggle>
+      <DropdownMenu className="!w-44 !mt-0">
+        <DropdownItem>
+          <Link to={routes.studioVideoEdit(video.reference)} state={{ video, hasOffers }}>Video Settings</Link>
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
   )
 }
 

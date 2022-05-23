@@ -1,41 +1,41 @@
 {
   "extends": "./tsconfig.paths.json",
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": [
+      "vite/client",
+      "vite-plugin-pwa/client",
+      "react/next",
+      "react-dom/next"
     ],
-    "allowJs": true,
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules"
+      }
+    ],
+    "allowJs": false,
     "skipLibCheck": true,
-    "esModuleInterop": true,
+    "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "strictNullChecks": true,
     "noImplicitAny": true,
     "noImplicitReturns": false,
     "noImplicitThis": false,
     "noEmit": true,
-    "experimentalDecorators": true,
-    "downlevelIteration": true,
-    "jsx": "react-jsx",
-    "typeRoots": [
-      "src/typings"
-    ]
+    "jsx": "react",
+    "typeRoots": ["src/typings"]
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "build",
-    "node_modules",
-    "public"
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx"],
+  "exclude": ["build", "node_modules", "public"],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
   ]
 }

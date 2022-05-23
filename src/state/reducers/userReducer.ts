@@ -14,7 +14,8 @@
  *  limitations under the License.
  */
 
-import { UserState } from "@state/types"
+import type { GatewayBatch } from "@definitions/api-gateway"
+import type { UserState } from "@definitions/app-state"
 
 export const UserActionTypes = {
   USER_ENS_UPDATE: "USER_ENS_UPDATE",
@@ -22,12 +23,13 @@ export const UserActionTypes = {
   USER_UPDATE_IDENTITY: "USER_UPDATE_IDENTITY",
   USER_UPDATE_CREDIT: "USER_UPDATE_CREDIT",
   USER_UPDATE_SIGNEDIN: "USER_UPDATE_SIGNEDIN",
+  USER_SET_BATCHES: "USER_SET_BATCHES",
 } as const
 
 // Export dispatch actions
 type UpdateEnsAction = {
   type: typeof UserActionTypes.USER_ENS_UPDATE
-  ens: string|null|undefined
+  ens: string | null | undefined
 }
 type UserSignoutAction = {
   type: typeof UserActionTypes.USER_SIGNOUT
@@ -35,17 +37,21 @@ type UserSignoutAction = {
 type UpdateIdentityAction = {
   type: typeof UserActionTypes.USER_UPDATE_IDENTITY
   address?: string
-  manifest?: string
   prevAddresses?: string[]
 }
 type UpdateCreditAction = {
   type: typeof UserActionTypes.USER_UPDATE_CREDIT
-  credit: number
+  credit: number | null
+  creditUnlimited: boolean
 }
 type UpdateSignedInAction = {
   type: typeof UserActionTypes.USER_UPDATE_SIGNEDIN
   isSignedIn: boolean
   isSignedInGateway: boolean
+}
+type SetBatchesAction = {
+  type: typeof UserActionTypes.USER_SET_BATCHES
+  batches: GatewayBatch[]
 }
 
 export type UserActions = (
@@ -53,7 +59,8 @@ export type UserActions = (
   UserSignoutAction |
   UpdateIdentityAction |
   UpdateCreditAction |
-  UpdateSignedInAction
+  UpdateSignedInAction |
+  SetBatchesAction
 )
 
 
@@ -75,7 +82,6 @@ const userReducer = (state: UserState = {}, action: UserActions): UserState => {
       return {
         ...state,
         address: action.address,
-        identityManifest: action.manifest,
         prevAddresses: action.prevAddresses,
       }
 
@@ -83,6 +89,7 @@ const userReducer = (state: UserState = {}, action: UserActions): UserState => {
       return {
         ...state,
         credit: action.credit,
+        creditUnlimited: action.creditUnlimited,
       }
 
     case UserActionTypes.USER_UPDATE_SIGNEDIN:
@@ -90,6 +97,12 @@ const userReducer = (state: UserState = {}, action: UserActions): UserState => {
         ...state,
         isSignedIn: action.isSignedIn,
         isSignedInGateway: action.isSignedInGateway,
+      }
+
+    case UserActionTypes.USER_SET_BATCHES:
+      return {
+        ...state,
+        batches: action.batches,
       }
 
     default:

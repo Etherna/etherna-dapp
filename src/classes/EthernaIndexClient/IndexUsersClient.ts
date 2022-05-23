@@ -15,7 +15,7 @@
  */
 
 import http from "@utils/request"
-import { IndexCurrentUser, IndexUser, IndexUserVideos, IndexVideo } from "./types"
+import { IndexCurrentUser, IndexUser, IndexUserVideos, IndexVideo } from "@definitions/api-index"
 
 export default class IndexUsersClient {
   url: string
@@ -45,24 +45,6 @@ export default class IndexUsersClient {
     }
 
     return resp.data
-  }
-
-  /**
-   * Get a list of recent users with the recent videos
-   * @param page Page offset (default = 0)
-   * @param take Count of users to get (default = 25)
-   * @param videosTake Count of videos to get (default = 5)
-   * @returns List of users with videos
-   */
-  async fetchUsersWithVideos(page = 0, take = 25, videosTake = 5) {
-    const users = (await this.fetchUsers(page, take)) as IndexUserVideos[]
-    const usersVideos = await Promise.all(
-      users.map(user => this.fetchUserVideos(user.address, 0, videosTake))
-    )
-    users.forEach((user, i) => {
-      user.videos = usersVideos[i]
-    })
-    return users
   }
 
   /**
@@ -96,42 +78,5 @@ export default class IndexUsersClient {
     }
 
     return resp.data
-  }
-
-  /**
-   * Get a list of recent videos by a user
-   * @param address User's address
-   * @param page Page offset (default = 0)
-   * @param take Count of videos to get (default = 25)
-   */
-  async fetchUserVideos(address: string, page = 0, take = 25) {
-    const endpoint = `${this.url}/users/${address}/videos`
-
-    const resp = await http.get<IndexVideo[]>(endpoint, {
-      params: { page, take },
-    })
-
-    if (!Array.isArray(resp.data)) {
-      throw new Error("Cannot fetch user's videos")
-    }
-
-    return resp.data
-  }
-
-  /**
-   * Update the current logged user's manifest
-   * @param newManifest The hash of the new manifest (null to remove)
-   */
-  async updateCurrentUser(newManifest: string) {
-    const endpoint = `${this.url}/users/current`
-
-    await http.put(endpoint, null, {
-      params: {
-        manifestHash: newManifest
-      },
-      withCredentials: true
-    })
-
-    return true
   }
 }

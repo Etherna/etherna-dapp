@@ -15,29 +15,34 @@
  *  
  */
 
-// set dynamic app url before any imports
-import "./app/publicPath"
-
 import React from "react"
-import ReactDOM from "react-dom"
+import ReactDOM from "react-dom/client"
 
 import Root from "./app/Root"
 import prefetch from "./prefetch"
-import * as serviceWorker from "./serviceWorker"
+import unsupportedRender from "./unsupported-render"
+import registerPWA from "./service-worker"
 import autoSigninSignout from "./utils/autoSigninSignout"
-
-const RenderDOM = () => {
-  ReactDOM.render(<Root />, document.getElementById("root"))
-}
 
 // Automatically redirect to signin/signout page
 autoSigninSignout()
 
 // Prefetch data for SEO
 // Once the data has been set to a window variable call RenderDOM
-prefetch(RenderDOM)
+prefetch(() => {
+  const root = ReactDOM.createRoot(document.getElementById("root")!)
+  root.render(<Root />)
+})
+
+// Check if the current browser has unsupported features
+// and show a notification modal.
+unsupportedRender(async () => {
+  const RootLegacy = (await import("./app/RootLegacy")).default
+  const root = ReactDOM.createRoot(document.getElementById("root_legacy")!)
+  root.render(<RootLegacy />)
+})
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister()
+registerPWA()

@@ -1,0 +1,141 @@
+/* 
+ *  Copyright 2021-present Etherna Sagl
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.modal {
+  @apply fixed inset-0;
+  @apply overflow-y-auto;
+  @apply z-100;
+}
+
+.modalWrapper {
+  @apply flex items-end justify-center;
+  @apply min-h-screen pt-4 px-4 pb-20;
+  @apply text-center;
+  @apply sm:block sm:p-0;
+}
+
+.modalDialog {
+  @apply relative;
+  @apply inline-block align-bottom rounded-lg text-left overflow-hidden;
+  @apply w-full;
+  @apply bg-white dark:bg-gray-700;
+  @apply shadow-xl;
+  @apply sm:my-8 sm:align-middle sm:max-w-lg;
+
+  .large & {
+    @apply sm:max-w-xl;
+  }
+}
+
+.modalMain {
+  @apply px-4 pt-5 pb-4;
+  @apply sm:p-6 sm:pb-4;
+}
+
+.modalBody {
+  @apply sm:space-x-4;
+  @apply sm:flex sm:items-start;
+}
+
+.modalContent {
+  @apply flex-1;
+  @apply text-center;
+  @apply space-y-2;
+  @apply sm:text-left;
+}
+
+.modalIcon {
+  @apply flex-shrink-0 flex items-center justify-center;
+  @apply mx-auto;
+  @apply h-12 w-12;
+  @apply rounded-full bg-gray-100 text-gray-500;
+  @apply dark:bg-gray-600 dark:text-gray-200;
+  @apply sm:mx-0 sm:h-10 sm:w-10;
+
+  svg {
+    @apply h-6 w-6;
+  }
+
+  .modalDanger & {
+    @apply bg-red-100 text-red-600;
+  }
+  .modalWarning & {
+    @apply bg-yellow-100 text-yellow-600;
+  }
+  .modalSuccess & {
+    @apply bg-green-100 text-green-600;
+  }
+}
+
+.modalIcon + .modalContent {
+  @screen sm {
+    max-width: calc(
+      100% - theme("spacing.4") - theme("spacing.12")
+    ); // icon + space-x-4
+  }
+}
+
+.modalTitle {
+  @apply text-lg leading-6 font-medium;
+  @apply text-gray-900 dark:text-gray-100;
+}
+
+.modalText {
+  @apply text-sm text-gray-500 dark:text-gray-300;
+}
+
+.modalClose {
+  @apply hidden;
+  @apply absolute top-0 right-0;
+  @apply pt-4 pr-4;
+  @apply sm:block;
+}
+
+.modalCloseBtn {
+  @apply bg-transparent;
+  @apply rounded-md;
+  @apply text-gray-400 hover:text-gray-500;
+  @apply focus:outline-none;
+  @apply focus:ring-2 focus:ring-offset-2 focus:ring-green-500;
+  @apply focus:ring-offset-white dark:focus:ring-offset-gray-700;
+}
+
+.modalFooter {
+  @apply px-4 py-3;
+  @apply bg-gray-50 dark:bg-gray-900/30;
+  @apply space-y-3 sm:space-y-0;
+  @apply sm:px-6 sm:flex sm:flex-row-reverse;
+
+  > * {
+    @apply w-full;
+    @apply sm:w-auto;
+  }
+
+  > *:not(:last-child) {
+    @apply sm:ml-3;
+  }
+}
+
+.modalOverlay {
+  @apply fixed inset-0;
+  @apply bg-gray-500 bg-opacity-75 dark:bg-gray-800 dark:bg-opacity-50;
+  @apply transition-opacity;
+}
+
+.modalSpacer {
+  @apply hidden;
+  @apply sm:inline-block sm:align-middle sm:h-screen;
+}

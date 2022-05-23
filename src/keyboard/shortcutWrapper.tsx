@@ -20,8 +20,8 @@ import PropTypes from "prop-types"
 import { connect, MapStateToPropsParam } from "react-redux"
 import { ShortcutManager, ShortcutsKeymap } from "react-shortcuts"
 
-import { AppState } from "@state/types"
-import { Keymap } from "./typings"
+import type { AppState } from "@definitions/app-state"
+import type { Keymap } from "@definitions/keyboard"
 
 type ShortcutWrapperProps = {
   children: JSX.Element

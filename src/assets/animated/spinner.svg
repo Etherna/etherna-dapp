@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+  <g fill="none" fill-rule="evenodd" stroke="currentColor" stroke-width="8">
+    <circle stroke-opacity=".3" cx="40" cy="40" r="36" />
+    <path d="M76 40C76 20.118 59.882 4 40 4" stroke-opacity=".8" stroke-linecap="round">
+      <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 40 40" to="360 40 40"
+        dur=".85s" begin="0s" repeatCount="indefinite" fill="freeze" />
+    </path>
+  </g>
+</svg>

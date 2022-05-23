@@ -15,29 +15,51 @@
  *  
  */
 
-import { lazy, Suspense } from "react"
-import { Switch, Route, useLocation } from "react-router-dom"
+import React, { lazy, Suspense } from "react"
+import { Routes, Route, useLocation, Navigate } from "react-router-dom"
 
-import { ProfileOwnerRoute, SignedInRoute, WatchRoute } from "./ProtectedRoutes"
+import AppLayoutRoute from "./route-wrappers/AppLayoutRoute"
+import PWARoute from "./route-wrappers/PWARoute"
+import StudioLayoutRoute from "./route-wrappers/StudioLayoutRoute"
+import StateProviderRoute from "./route-wrappers/StateProviderRoute"
+import AuthenticateRoute from "./route-wrappers/AuthenticateRoute"
+import SignedInRoute from "./route-wrappers/SignedInRoute"
+import VideoRoute from "./route-wrappers/VideoRoute"
 
 const AsyncHome = lazy(() => import("@pages/home"))
-const AsyncProfile = lazy(() => import("@pages/profile"))
-const AsyncProfileEdit = lazy(() => import("@pages/profileEdit"))
+const AsyncFrames = lazy(() => import("@pages/frames"))
+const AsyncFollowing = lazy(() => import("@pages/following"))
+const AsyncPlaylists = lazy(() => import("@pages/playlists"))
+const AsyncSaved = lazy(() => import("@pages/saved"))
+const AsyncChannel = lazy(() => import("@pages/channel"))
+const AsyncChannelEdit = lazy(() => import("@pages/studio/channel-edit"))
+const AsyncVideosList = lazy(() => import("@pages/studio/videos-list"))
+const AsyncVideoEdit = lazy(() => import("@pages/studio/video-edit"))
+const AsyncStorage = lazy(() => import("@pages/studio/storage"))
 const AsyncProfiles = lazy(() => import("@pages/profiles"))
 const AsyncWatch = lazy(() => import("@pages/watch"))
-const AsyncVideoSettings = lazy(() => import("@pages/videoSettings"))
-const AsyncUpload = lazy(() => import("@pages/upload"))
+const AsyncEmbed = lazy(() => import("@pages/embed"))
+const AsyncSearch = lazy(() => import("@pages/search"))
 const AsyncShortcuts = lazy(() => import("@pages/shortcuts"))
 const AsyncNotFound = lazy(() => import("@pages/404"))
 
 const Home = () => (
   <Suspense fallback={null}><AsyncHome /></Suspense>
 )
-const Profile = () => (
-  <Suspense fallback={null}><AsyncProfile /></Suspense>
+const Frames = () => (
+  <Suspense fallback={null}><AsyncFrames /></Suspense>
 )
-const ProfileEdit = () => (
-  <Suspense fallback={null}><AsyncProfileEdit /></Suspense>
+const Following = () => (
+  <Suspense fallback={null}><AsyncFollowing /></Suspense>
+)
+const Playlists = () => (
+  <Suspense fallback={null}><AsyncPlaylists /></Suspense>
+)
+const Saved = () => (
+  <Suspense fallback={null}><AsyncSaved /></Suspense>
+)
+const Channel = () => (
+  <Suspense fallback={null}><AsyncChannel /></Suspense>
 )
 const Profiles = () => (
   <Suspense fallback={null}><AsyncProfiles /></Suspense>
@@ -45,64 +67,92 @@ const Profiles = () => (
 const Watch = () => (
   <Suspense fallback={null}><AsyncWatch /></Suspense>
 )
-const VideoSettings = () => (
-  <Suspense fallback={null}><AsyncVideoSettings /></Suspense>
+const Embed = () => (
+  <Suspense fallback={null}><AsyncEmbed /></Suspense>
 )
-const Upload = () => (
-  <Suspense fallback={null}><AsyncUpload /></Suspense>
+const ChannelEdit = () => (
+  <Suspense fallback={null}><AsyncChannelEdit /></Suspense>
+)
+const VideosList = () => (
+  <Suspense fallback={null}><AsyncVideosList /></Suspense>
+)
+const VideoEdit = () => (
+  <Suspense fallback={null}><AsyncVideoEdit /></Suspense>
+)
+const Storage = () => (
+  <Suspense fallback={null}><AsyncStorage /></Suspense>
 )
 const Shortcuts = () => (
   <Suspense fallback={null}><AsyncShortcuts /></Suspense>
+)
+const Search = () => (
+  <Suspense fallback={null}><AsyncSearch /></Suspense>
 )
 const NotFound = () => (
   <Suspense fallback={null}><AsyncNotFound /></Suspense>
 )
 
-type RouterLocation = ReturnType<typeof useLocation>
-
 const Router = () => {
-  const location = useLocation<{ background: RouterLocation }>()
-  const background = location.state?.background
+  const location = useLocation() as any
+  const backgroundLocation = location.state?.backgroundLocation
 
   return (
     <>
-      <Switch location={background || location}>
-        <Route path={"/"} exact>
-          <Home />
+      <Routes location={backgroundLocation || location}>
+
+        <Route path="" element={<StateProviderRoute />}>
+          <Route path="" element={<PWARoute />}>
+            <Route path="/" element={<AuthenticateRoute />}>
+              <Route path="/" element={<AppLayoutRoute />}>
+
+                <Route path="/" element={<Home />} />
+                <Route path="/frames" element={<Frames />} />
+                <Route path="/following" element={<Following />} />
+                <Route path="/playlists" element={<Playlists />} />
+                <Route path="/saved" element={<Saved />} />
+                <Route path="/profiles" element={<Profiles />} />
+                <Route path="/channel/:id" element={<Channel />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/shortcuts" element={<Shortcuts />} />
+
+                <Route path="/watch" element={<VideoRoute />}>
+                  <Route path=":hash" element={<Watch />} />
+                </Route>
+
+                <Route path="/studio" element={<SignedInRoute />}>
+                  <Route path="" element={<StudioLayoutRoute />}>
+                    <Route path="" element={<Navigate replace to="/studio/videos" />} />
+                    <Route path="channel" element={<ChannelEdit />} />
+                    <Route path="videos" element={<VideosList />} />
+                    <Route path="videos/:id" element={<VideoEdit />} />
+                    <Route path="storage" element={<Storage />} />
+                  </Route>
+                </Route>
+
+              </Route>
+            </Route>
+
+            <Route path="/embed" element={<VideoRoute />}>
+              <Route path=":hash" element={<Embed />} />
+            </Route>
+
+            <Route path="*" element={<NotFound />} />
+          </Route>
         </Route>
-        <Route path={"/profiles"} exact>
-          <Profiles />
-        </Route>
-        <Route path={"/profile/:id"} exact>
-          <Profile />
-        </Route>
-        <ProfileOwnerRoute path={"/profile/:id/edit"} exact>
-          <ProfileEdit />
-        </ProfileOwnerRoute>
-        <WatchRoute path={"/watch"}>
-          <Watch />
-        </WatchRoute>
-        <SignedInRoute path={"/videoSettings"}>
-          <VideoSettings />
-        </SignedInRoute>
-        <SignedInRoute path={"/upload"}>
-          <Upload />
-        </SignedInRoute>
-        <Route path={"/shortcuts"}>
-          <Shortcuts />
-        </Route>
-        <Route path="*">
-          <NotFound />
-        </Route>
-      </Switch>
+      </Routes>
 
       {/* mini player */}
-      {background && (
-        <WatchRoute path={"/watch"}>
-          <div className="todo-mini-player-wrapper">
-            <Watch />
-          </div>
-        </WatchRoute>
+      {backgroundLocation && (
+        <Routes>
+          <Route
+            path={"/watch"}
+            element={
+              <div className="todo-mini-player-wrapper">
+                <Watch />
+              </div>
+            }
+          />
+        </Routes>
       )}
     </>
   )

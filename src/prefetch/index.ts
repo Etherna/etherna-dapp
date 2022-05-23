@@ -14,18 +14,24 @@
  *  limitations under the License.
  */
 
+import profilePrefetcher from "./prefetchers/profilePrefetcher"
+import videoPrefetcher from "./prefetchers/videoPrefetcher"
+import { isBotUserAgent } from "@utils/browser"
+
 const prefetchers = [
-  require("./prefetchers/profilePrefetcher").default,
-  require("./prefetchers/videoPrefetcher").default,
+  profilePrefetcher,
+  videoPrefetcher,
 ]
 
 const prefetch = async (renderCallback: () => void) => {
   window.prefetchData = undefined
 
-  for (const prefetcher of prefetchers) {
-    if (prefetcher.match.test(window.location.pathname)) {
-      await prefetcher.fetch()
-      break
+  if (isBotUserAgent()) {
+    for (const prefetcher of prefetchers) {
+      if (prefetcher.match.test(window.location.pathname)) {
+        await prefetcher.fetch()
+        break
+      }
     }
   }
 

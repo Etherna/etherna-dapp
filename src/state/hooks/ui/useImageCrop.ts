@@ -16,13 +16,13 @@
 
 import { Dispatch } from "redux"
 import { useDispatch, useStore } from "react-redux"
-import { Crop } from "react-image-crop"
+import type { Crop } from "react-image-crop"
 
-import { AppState } from "@state/types"
 import { UIActionTypes, UIActions } from "@state/reducers/uiReducer"
 import { fileToDataURL } from "@utils/buffer"
+import type { AppState } from "@definitions/app-state"
 
-const useImageCrop = () => {
+export default function useImageCrop() {
   const getState = useStore<AppState>().getState
   const dispatch = useDispatch<Dispatch<UIActions>>()
 
@@ -30,26 +30,26 @@ const useImageCrop = () => {
     const img = await fileToDataURL(file)
 
     dispatch({
-      type: UIActionTypes.UI_SET_CROP_IMAGE,
+      type: UIActionTypes.SET_CROP_IMAGE,
       imageType: type,
       image: img,
     })
     dispatch({
-      type: UIActionTypes.UI_TOGGLE_IMAGE_CROPPER,
+      type: UIActionTypes.TOGGLE_IMAGE_CROPPER,
       isCroppingImage: true,
     })
 
     const image = await getCroppedImage(img, getState)
 
     dispatch({
-      type: UIActionTypes.UI_UPDATE_IMAGE_CROP,
+      type: UIActionTypes.UPDATE_IMAGE_CROP,
     })
     dispatch({
-      type: UIActionTypes.UI_TOGGLE_IMAGE_CROPPER,
+      type: UIActionTypes.TOGGLE_IMAGE_CROPPER,
       isCroppingImage: false,
     })
     dispatch({
-      type: UIActionTypes.UI_SET_CROP_IMAGE,
+      type: UIActionTypes.SET_CROP_IMAGE,
       imageType: type,
       image: img,
     })
@@ -57,15 +57,15 @@ const useImageCrop = () => {
     return image
   }
 
-  const finishCropping = (cropData: Crop|undefined) => {
+  const finishCropping = (cropData: Partial<Crop> | undefined) => {
     dispatch({
-      type: UIActionTypes.UI_UPDATE_IMAGE_CROP,
+      type: UIActionTypes.UPDATE_IMAGE_CROP,
       imageCrop: cropData,
     })
 
     if (!cropData) {
       dispatch({
-        type: UIActionTypes.UI_TOGGLE_IMAGE_CROPPER,
+        type: UIActionTypes.TOGGLE_IMAGE_CROPPER,
         isCroppingImage: false,
       })
     }
@@ -88,7 +88,7 @@ const getCroppedImage = async (src: string, getState: () => AppState) => {
 }
 
 const waitCropData = (getState: () => AppState) =>
-  new Promise<Crop>(resolve => {
+  new Promise<Partial<Crop>>(resolve => {
     const id = setInterval(() => {
       const { imageCrop } = getState().ui
       if (imageCrop !== undefined) {
@@ -98,8 +98,8 @@ const waitCropData = (getState: () => AppState) =>
     }, 1000)
   })
 
-const applyImageCropping = (src: string, cropData: Crop) =>
-  new Promise<Blob|null>(resolve => {
+const applyImageCropping = (src: string, cropData: Partial<Crop>) =>
+  new Promise<Blob | null>(resolve => {
     let image = new Image()
     image.src = src
     image.onload = async () => {
@@ -108,21 +108,21 @@ const applyImageCropping = (src: string, cropData: Crop) =>
     }
   })
 
-const getCroppedBlob = (image: CanvasImageSource, crop: Crop, fileName = "image") => {
+const getCroppedBlob = (image: CanvasImageSource, crop: Partial<Crop>, fileName = "image") => {
   const canvas = document.createElement("canvas")
-  canvas.width = crop.width || 0
-  canvas.height = crop.height || 0
+  canvas.width = crop.width || +image.width
+  canvas.height = crop.height || +image.height
   const ctx = canvas.getContext("2d")!
 
   const x = crop.x || 0
   const y = crop.y || 0
-  const width = crop.width || 0
-  const height = crop.height || 0
+  const width = crop.width || +image.width
+  const height = crop.height || +image.height
 
   ctx.drawImage(image, x, y, width, height, 0, 0, width, height)
 
   // As a blob
-  return new Promise<Blob|null>(resolve => {
+  return new Promise<Blob | null>(resolve => {
     canvas.toBlob(
       blob => {
         if (blob) {
@@ -135,6 +135,3 @@ const getCroppedBlob = (image: CanvasImageSource, crop: Crop, fileName = "image"
     )
   })
 }
-
-
-export default useImageCrop

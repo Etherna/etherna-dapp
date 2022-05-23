@@ -16,34 +16,25 @@
 
 import { useEffect, useState } from "react"
 
-import SwarmVideo from "@classes/SwarmVideo"
-import { Profile } from "@classes/SwarmProfile/types"
-import { Video } from "@classes/SwarmVideo/types"
+import SwarmVideoIO from "@classes/SwarmVideo"
 import useSelector from "@state/useSelector"
-import { IndexVideo } from "@classes/EthernaIndexClient/types"
+import { wait } from "@utils/promise"
+import type { Profile } from "@definitions/swarm-profile"
+import type { Video } from "@definitions/swarm-video"
+import type { IndexVideo } from "@definitions/api-index"
+import { showError } from "@state/actions/modals"
 
 type SwarmVideosOptions = {
   seedLimit?: number
   fetchLimit?: number
   profileData?: Profile
-  ownerAddress?: string
-}
-
-type UseVideos = {
-  /** Videos list */
-  videos: Video[] | undefined
-  /** Whether more videos can be fetched */
-  hasMore: boolean
-  /** Is fetching videos */
-  isFetching: boolean
-  /** Load more videos */
-  loadMore: () => void
+  waitProfile?: boolean
 }
 
 const DEFAULT_SEED_LIMIT = 50
 const DEFAULT_FETCH_LIMIT = 20
 
-const useSwarmVideos = (opts: SwarmVideosOptions = {}): UseVideos => {
+export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
   const { beeClient, indexClient } = useSelector(state => state.env)
   const [videos, setVideos] = useState<Video[]>()
   const [page, setPage] = useState(0)
@@ -51,15 +42,14 @@ const useSwarmVideos = (opts: SwarmVideosOptions = {}): UseVideos => {
   const [hasMore, setHasMore] = useState(true)
 
   useEffect(() => {
-    setPage(0)
-    setVideos([])
-    setHasMore(true)
-  }, [opts.ownerAddress])
-
-  useEffect(() => {
+    if (opts.waitProfile && !opts.profileData) {
+      // waiting profile is fetching
+      setIsFetching(true)
+      return
+    }
     fetchVideos()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, opts.waitProfile, opts.profileData])
 
   useEffect(() => {
     if (opts.profileData) {
@@ -70,43 +60,50 @@ const useSwarmVideos = (opts: SwarmVideosOptions = {}): UseVideos => {
   const updateVideosProfile = (profile: Profile) => {
     setVideos(videos => videos?.map(video => ({
       ...video,
-      owner: {
-        ownerAddress: profile.address,
-        ownerIdentityManifest: profile.manifest,
-        profileData: profile
-      }
+      owner: profile
     })))
   }
 
   const videoLoadPromise = (indexData: IndexVideo) => {
-    const { ownerAddress, profileData } = opts
-    const fetchProfile = !ownerAddress && !profileData
-    const swarmVideo = new SwarmVideo(indexData.manifestHash, {
+    const { profileData } = opts
+    const fetchProfile = !profileData
+    const swarmVideoReader = new SwarmVideoIO.Reader(indexData.id, indexData.ownerAddress, {
       beeClient,
       indexClient,
       indexData,
       profileData,
-      fetchProfile
+      fetchProfile,
     })
-    return swarmVideo.downloadVideo()
+    return swarmVideoReader.download()
   }
 
   const fetchVideos = async () => {
-    setIsFetching(true)
-
-    const { ownerAddress } = opts
-    const take = page === 0 ? opts.seedLimit ?? DEFAULT_SEED_LIMIT : opts.fetchLimit ?? DEFAULT_FETCH_LIMIT
-    const indexVideos = ownerAddress
-      ? await indexClient.users.fetchUserVideos(ownerAddress, page, take)
-      : await indexClient.videos.fetchVideos(page, take)
-
-    const newVideos = await Promise.all(indexVideos.map(videoLoadPromise))
-
-    if (newVideos.length < take) {
-      setHasMore(false)
+    if (!hasMore) {
+      return setIsFetching(false)
     }
 
-    setVideos((videos ?? []).concat(newVideos))
+    setIsFetching(true)
+
+    const take = page === 0 ? opts.seedLimit ?? DEFAULT_SEED_LIMIT : opts.fetchLimit ?? DEFAULT_FETCH_LIMIT
+
+    try {
+      const indexVideos = await indexClient.videos.fetchLatestVideos(page, take)
+      const newVideos = await Promise.all(indexVideos.map(videoLoadPromise))
+      import.meta.env.DEV && await wait(1500)
+
+      if (newVideos.length < take) {
+        setHasMore(false)
+      }
+
+      setVideos(videos => {
+        return [
+          ...(videos ?? []),
+          ...newVideos
+        ].filter((vid, i, self) => self.indexOf(vid) === i)
+      })
+    } catch (error) {
+      showError("Fetch error", "Coudn't fetch the videos. Try again later.")
+    }
 
     setIsFetching(false)
   }
@@ -118,12 +115,18 @@ const useSwarmVideos = (opts: SwarmVideosOptions = {}): UseVideos => {
     }
   }
 
+  const refresh = () => {
+    setVideos([])
+    setHasMore(true)
+    setPage(0)
+    fetchVideos()
+  }
+
   return {
     videos,
     hasMore,
     isFetching,
-    loadMore
+    loadMore,
+    refresh,
   }
 }
-
-export default useSwarmVideos

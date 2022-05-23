@@ -16,13 +16,14 @@
  */
 
 import React from "react"
-import Helmet from "react-helmet"
+import { Helmet } from "react-helmet-async"
+
+import useSelector from "@state/useSelector"
 
 type SEOProps = {
   description?: string
   lang?: string
   title: string
-  tagline?: string
   meta?: { name: string, content: string }[]
 }
 
@@ -31,12 +32,10 @@ function SEO({
   lang = "en",
   meta = [],
   title,
-  tagline
 }: SEOProps) {
-  const siteTitle = process.env.REACT_APP_NAME
-  const siteTagline = process.env.REACT_APP_TAGLINE
-
-  const metaDescription = description || siteTagline
+  const darkMode = useSelector(state => state.env.darkMode)
+  const siteTitle = import.meta.env.VITE_APP_NAME
+  const siteTagline = import.meta.env.VITE_APP_TAGLINE
 
   return (
     <Helmet
@@ -44,11 +43,15 @@ function SEO({
         lang,
       }}
       title={title}
-      titleTemplate={`%s – ${tagline || siteTitle}`}
+      titleTemplate={`%s – ${title === siteTitle ? siteTagline : siteTitle}`}
       meta={[
         {
+          name: `theme-color`,
+          content: darkMode ? `#111827` : `#f9fafb`,
+        },
+        {
           name: `description`,
-          content: metaDescription,
+          content: description,
         },
         {
           property: `og:title`,
@@ -56,7 +59,7 @@ function SEO({
         },
         {
           property: `og:description`,
-          content: metaDescription,
+          content: description,
         },
         {
           property: `og:type`,
@@ -76,7 +79,7 @@ function SEO({
         },
         {
           name: `twitter:description`,
-          content: metaDescription,
+          content: description,
         },
       ].concat(meta)}
     />

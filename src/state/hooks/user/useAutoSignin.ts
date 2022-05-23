@@ -17,17 +17,20 @@
 import { useEffect } from "react"
 import { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
+import type { EthAddress } from "@ethersphere/bee-js/dist/src/utils/eth"
+import type { AxiosError } from "axios"
 
-import { AuthIdentity } from "@classes/EthernaAuthClient/types"
-import SwarmProfile from "@classes/SwarmProfile"
-import loginRedirect from "@state/actions/user/loginRedirect"
+import SwarmProfileIO from "@classes/SwarmProfile"
+import SwarmBeeClient from "@classes/SwarmBeeClient"
+import loginRedirect from "@state/actions/user/login-redirect"
 import { UserActions, UserActionTypes } from "@state/reducers/userReducer"
 import { EnvActions, EnvActionTypes } from "@state/reducers/enviromentReducer"
 import { ProfileActions, ProfileActionTypes } from "@state/reducers/profileReducer"
 import { UIActions, UIActionTypes } from "@state/reducers/uiReducer"
 import useSelector from "@state/useSelector"
-import SwarmBeeClient from "@classes/SwarmBeeClient"
-import { IndexCurrentUser } from "@classes/EthernaIndexClient/types"
+import { addressBytes, signMessage } from "@utils/ethereum"
+import type { AuthIdentity } from "@definitions/api-sso"
+import type { GatewayBatch, GatewayBatchPreview } from "@definitions/api-gateway"
 
 type AutoSigninOpts = {
   forceSignin?: boolean
@@ -35,8 +38,10 @@ type AutoSigninOpts = {
   isStatusPage?: boolean
 }
 
-const useAutoSignin = (opts: AutoSigninOpts = {}) => {
-  const { indexClient, gatewayClient, authClient, beeClient } = useSelector(state => state.env)
+let batchesFetchTries = 0
+
+export default function useAutoSignin(opts: AutoSigninOpts = {}) {
+  const { indexClient, gatewayClient, authClient, beeClient, gatewayStampsUrl } = useSelector(state => state.env)
   const dispatch = useDispatch<Dispatch<UserActions | EnvActions | UIActions | ProfileActions>>()
 
   useEffect(() => {
@@ -54,12 +59,16 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
   }, [])
 
   const fetchIdentity = async () => {
-    const [identity, currentUser, hasCredit] = await Promise.all([
+    const [identityResult, currentUserResult, hasCreditResult] = await Promise.allSettled([
       fetchAuthIdentity(),
       fetchIndexCurrentUser(),
       fetchCurrentUserCredit(),
       fetchCurrentBytePrice(),
     ])
+
+    const identity = identityResult.status === "fulfilled" && identityResult.value
+    const currentUser = currentUserResult.status === "fulfilled" && currentUserResult.value
+    const hasCredit = hasCreditResult.status === "fulfilled" && hasCreditResult.value
 
     dispatch({
       type: UserActionTypes.USER_UPDATE_SIGNEDIN,
@@ -67,14 +76,34 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
       isSignedInGateway: hasCredit
     })
 
-    if (currentUser) {
-      await fetchProfile(currentUser, identity)
+    if (currentUser && identity) {
+      const address = identity.etherLoginAddress || identity.etherAddress
+      fetchProfile(address, identity)
     }
+
+    let userBatches: GatewayBatch[] = await fetchBatches()
+
+    dispatch({
+      type: EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES,
+      batches: userBatches,
+    })
+
+    dispatch({
+      type: UserActionTypes.USER_SET_BATCHES,
+      batches: userBatches,
+    })
   }
 
   const fetchAuthIdentity = async () => {
     try {
       const identity = await authClient.identity.fetchCurrentIdentity()
+
+      dispatch({
+        type: UserActionTypes.USER_UPDATE_IDENTITY,
+        address: identity.etherLoginAddress || identity.etherAddress,
+        prevAddresses: identity.etherPreviousAddresses,
+      })
+
       return identity
     } catch {
       return undefined
@@ -84,14 +113,6 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
   const fetchIndexCurrentUser = async () => {
     try {
       const profile = await indexClient.users.fetchCurrentUser()
-
-      dispatch({
-        type: UserActionTypes.USER_UPDATE_IDENTITY,
-        address: profile.address,
-        manifest: profile.identityManifest,
-        prevAddresses: profile.prevAddresses,
-      })
-
       return profile
     } catch {
       return false
@@ -100,18 +121,29 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
 
   const fetchCurrentUserCredit = async () => {
     try {
-      const credit = await gatewayClient.users.fetchCredit()
+      const { balance, isUnlimited } = await gatewayClient.users.fetchCredit()
 
       dispatch({
         type: UserActionTypes.USER_UPDATE_CREDIT,
-        credit,
+        credit: balance,
+        creditUnlimited: isUnlimited,
       })
 
       return true
-    } catch {
+    } catch (error: any) {
+      const status = (error as AxiosError).response?.status
+
+      if (status === 404) {
+        dispatch({
+          type: EnvActionTypes.SET_IS_STANDALONE_GATEWAY,
+          isStandalone: true
+        })
+      }
+
       dispatch({
         type: UserActionTypes.USER_UPDATE_CREDIT,
-        credit: 0,
+        credit: null,
+        creditUnlimited: false,
       })
 
       return false
@@ -123,7 +155,7 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
       const bytePrice = await gatewayClient.settings.fetchCurrentBytePrice()
 
       dispatch({
-        type: EnvActionTypes.ENV_UPDATE_BYTE_PRICE,
+        type: EnvActionTypes.UPDATE_BYTE_PRICE,
         bytePrice,
       })
 
@@ -133,28 +165,53 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
     }
   }
 
-  const fetchProfile = async (user: IndexCurrentUser, identity?: AuthIdentity) => {
+  const fetchProfile = async (address: string, identity?: AuthIdentity) => {
     dispatch({
-      type: UIActionTypes.UI_TOGGLE_LOADING_PROFILE,
+      type: UIActionTypes.TOGGLE_LOADING_PROFILE,
       isLoadingProfile: true,
     })
 
     // update bee client with signer for feed update
     if (identity?.etherManagedPrivateKey) {
       const beeClientSigner = new SwarmBeeClient(beeClient.url, {
-        signer: identity.etherManagedPrivateKey
+        signer: identity.etherManagedPrivateKey,
+        stampsUrl: gatewayStampsUrl
       })
 
       dispatch({
-        type: EnvActionTypes.ENV_UPDATE_BEE_CLIENT,
-        beeClient: beeClientSigner
+        type: EnvActionTypes.UPDATE_BEE_CLIENT,
+        beeClient: beeClientSigner,
+        signerWallet: "etherna"
+      })
+    } else if (window.ethereum && window.ethereum.request) {
+      const beeClientSigner = new SwarmBeeClient(beeClient.url, {
+        signer: {
+          address: addressBytes(address) as EthAddress,
+          sign: async (digest) => {
+            try {
+              return await signMessage(digest.hex().toString(), address)
+            } catch (error: any) {
+              if (error.code === -32602) {
+                return await signMessage(digest.hex().toString(), address)
+              } else {
+                throw error
+              }
+            }
+          }
+        },
+        stampsUrl: gatewayStampsUrl
+      })
+
+      dispatch({
+        type: EnvActionTypes.UPDATE_BEE_CLIENT,
+        beeClient: beeClientSigner,
+        signerWallet: "metamask"
       })
     }
 
     try {
-      const address = user.address
-      const hash = user.identityManifest
-      const profile = await (new SwarmProfile({ beeClient, address, hash })).downloadProfile()
+      const profileReader = new SwarmProfileIO.Reader(address, { beeClient })
+      const profile = await profileReader.download()
 
       if (!profile) throw new Error("Cannot fetch profile")
 
@@ -169,15 +226,77 @@ const useAutoSignin = (opts: AutoSigninOpts = {}) => {
         birthday: profile.birthday,
         existsOnIndex: true,
       })
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
     }
 
     dispatch({
-      type: UIActionTypes.UI_TOGGLE_LOADING_PROFILE,
+      type: UIActionTypes.TOGGLE_LOADING_PROFILE,
       isLoadingProfile: false,
     })
   }
-}
 
-export default useAutoSignin
+  const fetchBatches = async () => {
+    batchesFetchTries++
+
+    let userBatches: GatewayBatch[] = []
+    let batchesPreview: GatewayBatchPreview[] = []
+
+    try {
+      batchesPreview = await gatewayClient.users.fetchBatches()
+
+      if (batchesPreview.length === 0) {
+        // waiting to auto create default batch
+        console.warn("Still no batches. Re-Trying in 10 seconds.")
+        batchesFetchTries < 5 && setTimeout(() => {
+          fetchBatches()
+        }, 10000)
+
+        return []
+      }
+
+      userBatches = await Promise.all(
+        batchesPreview.map(batchPreview => gatewayClient.users.fetchBatch(batchPreview.batchId))
+      )
+    } catch (error) {
+      if (batchesPreview.length > 0 && import.meta.env.PROD) {
+        userBatches = batchesPreview.map(batchPreview => ({
+          id: batchPreview.batchId,
+          depth: 20,
+          bucketDepth: 0,
+          amountPaid: 0,
+          normalisedBalance: 0,
+          batchTTL: 0,
+          usable: false,
+          utilization: 0,
+          blockNumber: 0,
+          exists: false,
+          immutableFlag: false,
+          label: "",
+          ownerAddress: null,
+        }))
+      } else {
+        // Try to fetch from /stamps endpoint
+        const batches = await beeClient.getAllPostageBatch()
+        const usableBatches = batches.filter(batch => batch.usable)
+        userBatches = usableBatches.map(batch => ({
+          id: batch.batchID,
+          depth: batch.depth,
+          bucketDepth: batch.bucketDepth,
+          amountPaid: +batch.amount,
+          normalisedBalance: 0,
+          batchTTL: -1,
+          usable: batch.usable,
+          utilization: batch.utilization,
+          blockNumber: batch.blockNumber,
+          exists: true,
+          immutableFlag: batch.immutableFlag,
+          label: batch.label,
+          ownerAddress: null,
+        }))
+      }
+    }
+
+    return userBatches
+  }
+}

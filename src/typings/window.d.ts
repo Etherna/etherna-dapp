@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import Web3 from "web3"
 import { compose } from "redux"
 
 import { ProfilePrefetch } from "prefetch/prefetchers/profilePrefetcher"
@@ -22,20 +21,8 @@ import { VideoPrefetch } from "prefetch/prefetchers/videoPrefetcher"
 
 declare global {
   interface Window {
-    // web3
-    web3?: Web3
-    ethereum?: {
-      autoRefreshOnNetworkChange: boolean
-      chainId: number
-      enable: () => Promise<string[]>
-      networkVersion: string
-      isMetamask?: boolean
-      isFortmatic?: boolean
-      isPortis?: boolean
-      isWalletConnect?: boolean
-      isSquarelink?: boolean
-      isAuthereum?: boolean
-    }
+    // ethereum
+    ethereum?: ExternalProvider
 
     // prefetch
     prefetchData?: ProfilePrefetch & VideoPrefetch
@@ -48,7 +35,21 @@ declare global {
 
     // atlassian
     ATL_JQ_PAGE_PROPS?: {
+      triggerFunction?: (showCollectorDialog: () => void) => void
       showCollectorDialog?: () => void
     }
+
+    // matomo
+    Matomo?: Matomo
+
+    // polyfills
+    webkitRequestAnimationFrame?: typeof window.requestAnimationFrame
+    mozRequestAnimationFrame?: typeof window.requestAnimationFrame
+    msRequestAnimationFrame?: typeof window.requestAnimationFrame
+  }
+
+  interface Navigator {
+    // polyfills
+    msMaxTouchPoints?: typeof navigator.maxTouchPoints
   }
 }

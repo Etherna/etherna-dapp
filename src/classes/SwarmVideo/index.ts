@@ -14,6 +14,65 @@
  *  limitations under the License.
  */
 
-import SwarmVideo from "./SwarmVideo"
+import SwarmVideoReader from "./SwarmVideoReader"
+import SwarmVideoWriter from "./SwarmVideoWriter"
+import SwarmBeeClient from "@classes/SwarmBeeClient"
+import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@definitions/swarm-video"
+import type { IndexVideo } from "@definitions/api-index"
 
-export default SwarmVideo
+const SwarmVideoIO = {
+  Reader: SwarmVideoReader,
+  Writer: SwarmVideoWriter,
+  isSwarmReference: (reference: string) => /^[A-Fa-f0-9]{64}$/.test(reference),
+  getSourceName: (quality: string | number | null): SwarmVideoQuality => {
+    return quality
+      ? `${parseInt(`${quality}`)}p`
+      : `${NaN}p`
+  },
+  getSourceQuality: (sourceName: string | null | undefined): number => {
+    return parseInt(sourceName ?? "0")
+  },
+}
+
+export const getDefaultVideo = (
+  reference: string,
+  indexData: IndexVideo | null | undefined,
+  bee: SwarmBeeClient
+): Video => ({
+  reference: reference || indexData?.lastValidManifest?.hash || "",
+  indexReference: indexData?.id,
+  title: null,
+  description: null,
+  createdAt: indexData?.creationDateTime ? +new Date(indexData.creationDateTime) : +new Date(),
+  originalQuality: null,
+  ownerAddress: indexData?.ownerAddress ?? null,
+  duration: NaN,
+  isVideoOnIndex: !!indexData,
+  isValidatedOnIndex: !!indexData?.lastValidManifest,
+  thumbnail: null,
+  sources: [{
+    reference,
+    bitrate: NaN,
+    size: NaN,
+    source: bee.getBzzUrl(reference),
+    quality: `${NaN}p`
+  }],
+})
+
+export const getDefaultRawVideo = (reference: string): SwarmVideoRaw => ({
+  title: "",
+  description: "",
+  createdAt: +new Date(),
+  originalQuality: `${NaN}p`,
+  ownerAddress: "",
+  duration: NaN,
+  thumbnail: null,
+  sources: [{
+    reference,
+    bitrate: NaN,
+    size: NaN,
+    quality: `${NaN}p`
+  }],
+})
+
+export default SwarmVideoIO

@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
+    "types": [
+      "node"
+    ],
+    "esModuleInterop": true,
+    "importHelpers": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "outDir": "./build",
+    "rootDir": "./",
+    "baseUrl": ".",
+    "typeRoots": [
+      "typings"
+    ]
+  },
+  "exclude": [
+    "node_modules",
+  ]
+}

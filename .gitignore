@@ -31,6 +31,8 @@ bower_components
 
 # Compiled scripts
 build/
+dist/
+seed/
 
 # Dependency directories
 node_modules/
@@ -67,3 +69,4 @@ deploy.config.js
 
 # Test files
 test*.js
+deploy*

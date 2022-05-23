@@ -1,0 +1,86 @@
+/* 
+ *  Copyright 2021-present Etherna Sagl
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.dragInputPortal {
+  @apply max-w-2xl;
+  @apply px-4 py-8 rounded;
+  @apply bg-gray-900/5 dark:bg-gray-100/5;
+}
+
+.dragInput {
+  @apply block;
+
+  [type="file"] {
+    @apply hidden;
+  }
+}
+
+.dragContent {
+  @apply flex flex-col items-center;
+  @apply space-y-3;
+}
+
+.dragIcon {
+  @apply w-12 h-12;
+  @apply transition-colors duration-200;
+  @apply text-gray-500 dark:text-gray-300;
+
+  .dragOver & {
+    @apply text-blue-400 dark:text-blue-300;
+  }
+}
+
+.dragInfo {
+  @apply font-medium;
+  @apply text-gray-600 dark:text-gray-400;
+}
+
+.dragSize {
+  @apply text-xs font-medium;
+  @apply text-gray-600 dark:text-gray-400;
+  @apply mt-2;
+}
+
+.dragSelect {
+  @apply transition-colors duration-200;
+
+  .dragOver & {
+    @apply opacity-20;
+  }
+}
+
+.fileDragProcessing {
+  @apply pr-3;
+  @apply focus:outline-none;
+}
+
+.fileDragProcessingHeader {
+  @apply flex items-start;
+}
+
+.fileDragProcessingCancel {
+  @apply p-0 ml-auto;
+}
+
+.fileDragProcessingTitle {
+  @apply text-gray-700 dark:text-gray-400;
+  @apply pr-6;
+}
+
+.fileDragProcessingActionList {
+  @apply space-y-5;
+  @apply mt-4;
+}

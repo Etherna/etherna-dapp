@@ -15,13 +15,20 @@
  */
 
 import http from "@utils/request"
-import { IndexVideo } from "./types"
+import type {
+  IndexVideo,
+  IndexVideoComment,
+  IndexVideoManifest,
+  IndexVideoValidation,
+  VoteValue
+} from "@definitions/api-index"
 
 export default class IndexVideosClient {
   url: string
 
   /**
    * Init an index video client
+   * 
    * @param url Api host + api url
    */
   constructor(url: string) {
@@ -30,11 +37,13 @@ export default class IndexVideosClient {
 
   /**
    * Get a list of recent videos uploaded on the platform
+   * 
    * @param page Page offset (default = 0)
-   * @param take Count of videos to get (default = 25)
+   * @param take Number of videos to fetch (default = 25)
+   * @returns The list of videos
    */
-  async fetchVideos(page = 0, take = 25) {
-    const endpoint = `${this.url}/videos`
+  async fetchLatestVideos(page = 0, take = 25) {
+    const endpoint = `${this.url}/videos/latest`
     const resp = await http.get<IndexVideo[]>(endpoint, {
       params: { page, take },
     })
@@ -46,13 +55,62 @@ export default class IndexVideosClient {
     return resp.data
   }
 
+  /**
+   * Get video information by id
+   * 
+   * @param id Video id on Index
+   * @returns The video object
+   */
+  async fetchVideoFromId(id: string) {
+    const endpoint = `${this.url}/videos/${id}`
+    const resp = await http.get<IndexVideo>(endpoint)
+
+    if (typeof resp.data !== "object") {
+      throw new Error("Cannot fetch the video")
+    }
+
+    return resp.data
+  }
+
+  /**
+   * Get video hash validation status
+   * 
+   * @param hash Video hash on Swarm
+   */
+  async fetchHashValidation(hash: string) {
+    const endpoint = `${this.url}/videos/manifest/${hash}/validation`
+    const resp = await http.get<IndexVideoValidation>(endpoint)
+
+    if (typeof resp.data !== "object") {
+      throw new Error("Cannot fetch the hash validation")
+    }
+
+    return resp.data
+  }
+
+  /**
+   * Get video validations list
+   * 
+   * @param id Video id on Index
+   */
+  async fetchValidations(id: string) {
+    const endpoint = `${this.url}/videos/${id}/validations`
+    const resp = await http.get<IndexVideoValidation[]>(endpoint)
+
+    if (Array.isArray(resp.data)) {
+      throw new Error("Cannot fetch the video validations")
+    }
+
+    return resp.data
+  }
 
   /**
    * Get video information
+   * 
    * @param hash Video hash on Swarm
    */
-  async fetchVideo(hash: string) {
-    const endpoint = `${this.url}/videos/${hash}`
+  async fetchVideoFromHash(hash: string) {
+    const endpoint = `${this.url}/videos/manifest/${hash}`
     const resp = await http.get<IndexVideo>(endpoint)
 
     if (typeof resp.data !== "object") {
@@ -64,13 +122,14 @@ export default class IndexVideosClient {
 
   /**
    * Create a new video on the index
+   * 
    * @param hash Hash of the manifest/feed with the video metadata
    * @param encryptionKey Encryption key
-   * @returns Video info
+   * @returns Video id
    */
   async createVideo(hash: string, encryptionKey?: string) {
     const endpoint = `${this.url}/videos`
-    const resp = await http.post<IndexVideo>(endpoint, {
+    const resp = await http.post<string>(endpoint, {
       manifestHash: hash,
       encryptionKey,
       encryptionType: encryptionKey ? "AES256" : "Plain",
@@ -78,7 +137,7 @@ export default class IndexVideosClient {
       withCredentials: true
     })
 
-    if (typeof resp.data !== "object") {
+    if (typeof resp.data !== "string") {
       throw new Error("Cannot create the video")
     }
 
@@ -87,13 +146,14 @@ export default class IndexVideosClient {
 
   /**
    * Update a video information
-   * @param hash Hash of the video on Swarm
+   * 
+   * @param id Id of the video on Index
    * @param newHash New manifest hash with video metadata
-   * @returns Video info
+   * @returns Video id
    */
-  async updateVideo(hash: string, newHash: string) {
-    const endpoint = `${this.url}/videos/${hash}`
-    const resp = await http.put<IndexVideo>(endpoint, null, {
+  async updateVideo(id: string, newHash: string) {
+    const endpoint = `${this.url}/videos/${id}`
+    const resp = await http.put<IndexVideoManifest>(endpoint, null, {
       params: {
         newHash,
       },
@@ -109,15 +169,95 @@ export default class IndexVideosClient {
 
   /**
    * Delete a video from the index
-   * @param hash Hash of the video
+   * 
+   * @param id Id of the video
    * @returns Success state
    */
-  async deleteVideo(hash: string) {
-    const endpoint = `${this.url}/videos/${hash}`
+  async deleteVideo(id: string) {
+    const endpoint = `${this.url}/videos/${id}`
     await http.delete(endpoint, {
       withCredentials: true
     })
 
     return true
+  }
+
+  /**
+   * Fetch the video comments
+   * 
+   * @param id Id of the video
+   * @param page Page offset (default = 0)
+   * @param take Number of comments to fetch (default = 25)
+   * @returns The list of comments
+   */
+  async fetchComments(id: string, page = 0, take = 25) {
+    const endpoint = `${this.url}/videos/${id}/comments`
+    const resp = await http.get<IndexVideoComment[]>(endpoint, {
+      params: { page, take },
+      withCredentials: true
+    })
+
+    if (!Array.isArray(resp.data)) {
+      throw new Error("Cannot fetch comments")
+    }
+
+    return resp.data
+  }
+
+  /**
+   * Post a new comment to a video
+   * 
+   * @param id Id of the video
+   * @param message Message string with markdown
+   * @returns The comment object
+   */
+  async postComment(id: string, message: string) {
+    const endpoint = `${this.url}/videos/${id}/comments`
+    const resp = await http.post<IndexVideoComment>(endpoint, `"${message}"`, {
+      withCredentials: true,
+      headers: {
+        "accept": "text/plain",
+        "content-type": "application/json",
+      }
+    })
+
+    return resp.data
+  }
+
+  /**
+   * Give a up/down vote to the video
+   * 
+   * @param id Id of the video
+   * @param vote Up / Down / Neutral vote
+   */
+  async vote(id: string, vote: VoteValue) {
+    const endpoint = `${this.url}/videos/${id}/votes`
+    const resp = await http.post<IndexVideoComment>(endpoint, null, {
+      params: {
+        value: vote
+      },
+      withCredentials: true
+    })
+
+    return resp.data
+  }
+
+  /**
+   * Report a video
+   * 
+   * @param id Id of the video
+   * @param manifestReference Reference of the manifest to report
+   * @param code Report code
+   */
+  async reportVideo(id: string, manifestReference: string, code: string) {
+    const endpoint = `${this.url}/videos/${id}/manifest/${manifestReference}/reports`
+    const resp = await http.post(endpoint, null, {
+      params: {
+        description: code
+      },
+      withCredentials: true
+    })
+
+    return resp.data
   }
 }

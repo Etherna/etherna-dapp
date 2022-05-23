@@ -16,9 +16,13 @@
 
 import GatewayUsersClient from "./GatewayUsersClient"
 import GatewaySettingsClient from "./GatewaySettingsClient"
-import { GatewayClientOptions } from "./typings"
+import GatewayResourcesClient from "./GatewayResourcesClient"
+import { isSafeURL, safeURL, urlOrigin } from "@utils/urls"
+import { parseLocalStorage } from "@utils/local-storage"
+import type { GatewayClientOptions } from "@definitions/api-gateway"
 
 export default class EthernaGatewayClient {
+  resources: GatewayResourcesClient
   users: GatewayUsersClient
   settings: GatewaySettingsClient
   loginPath: string
@@ -26,6 +30,7 @@ export default class EthernaGatewayClient {
 
   /**
    * Init an gateway client
+   * 
    * @param options Client options
    */
   constructor(options: GatewayClientOptions) {
@@ -33,6 +38,7 @@ export default class EthernaGatewayClient {
     const apiPath = options.apiPath ? options.apiPath.replace(/(^\/?|\/?$)/g, "") : ""
     const url = `${host}/${apiPath}`
 
+    this.resources = new GatewayResourcesClient(url)
     this.users = new GatewayUsersClient(url)
     this.settings = new GatewaySettingsClient(url)
     this.loginPath = `${host}${options.loginPath || "/account/login"}`
@@ -41,27 +47,37 @@ export default class EthernaGatewayClient {
 
   /**
    * Redirect to login page
+   * 
    * @param returnUrl Redirect url after login (default = null)
    */
-  loginRedirect(returnUrl: string|null = null) {
+  loginRedirect(returnUrl: string | null = null) {
     const retUrl = encodeURIComponent(returnUrl || window.location.href)
     window.location.href = this.loginPath + `?ReturnUrl=${retUrl}`
   }
 
   /**
    * Redirect to logout page
+   * 
    * @param returnUrl Redirect url after logout (default = null)
    */
-  logoutRedirect(returnUrl: string|null = null) {
+  logoutRedirect(returnUrl: string | null = null) {
     const retUrl = encodeURIComponent(returnUrl || window.location.href)
     window.location.href = this.logoutPath + `?ReturnUrl=${retUrl}`
   }
 
   static get defaultHost(): string {
-    return window.localStorage.getItem("gatewayHost") || process.env.REACT_APP_GATEWAY_HOST
+    const localUrl = parseLocalStorage<string>("setting:gateway-url")
+    if (isSafeURL(localUrl)) {
+      return urlOrigin(localUrl!)!
+    }
+    return urlOrigin(import.meta.env.VITE_APP_GATEWAY_URL)!
   }
 
   static get defaultApiPath(): string {
-    return window.localStorage.getItem("gatewayApiPath") || process.env.REACT_APP_GATEWAY_API_PATH
+    const localUrl = parseLocalStorage<string>("setting:gateway-url")
+    if (isSafeURL(localUrl)) {
+      return safeURL(localUrl)!.pathname
+    }
+    return safeURL(import.meta.env.VITE_APP_GATEWAY_URL)!.pathname
   }
 }

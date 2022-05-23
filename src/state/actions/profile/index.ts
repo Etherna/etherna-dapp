@@ -14,5 +14,5 @@
  *  limitations under the License.
  */
 
-export { default as fetchProfile } from "./fetchProfile"
-export { default as getCurrentUserProfile } from "./getCurrentUserProfile"
+export { default as fetchProfile } from "./fetch-profile"
+export { default as getCurrentUserProfile } from "./get-current-user-profile"

@@ -16,17 +16,19 @@
  */
 
 import React, { useEffect, useState, useRef } from "react"
-import classnames from "classnames"
+import classNames from "classnames"
 
-import Modal from "../common/Modal"
-import Button from "../common/Button"
-import Kbd from "../common/Kbd"
-import { ReactComponent as WarningIcon } from "@svg/icons/warning-icon.svg"
+import classes from "@styles/components/modals/ShortcutModal.module.scss"
+import { ExclamationIcon } from "@heroicons/react/solid"
+
+import Modal from "@components/common/Modal"
+import Button from "@components/common/Button"
+import Kbd from "@components/common/Kbd"
 import { closeShortcutModal } from "@state/actions/modals"
 import { saveShortcut, shortcutExists } from "@state/actions/enviroment/shortcuts"
 import useSelector from "@state/useSelector"
+import { keyEventToString } from "@utils/keyboard"
 
-const key2string = require("key-event-to-string")()
 
 const ShortcutModal = ({ show = false }) => {
   const { shortcutNamespace, shortcutKey, keymap, lang } = useSelector(state => state.env)
@@ -67,46 +69,50 @@ const ShortcutModal = ({ show = false }) => {
     e.stopPropagation()
     e.preventDefault()
 
-    const shortcut = key2string(e).toLowerCase()
+    const shortcut = keyEventToString(e.nativeEvent)
     setShortcut(shortcut)
-
     setExistingShortcut(!!shortcutExists(shortcut))
   }
 
   return (
-    <Modal show={show} showCloseButton={true} onClose={() => closeShortcutModal()}>
+    <Modal
+      show={show}
+      showCloseButton={true}
+      footerButtons={
+        <>
+          <Button modifier="danger" onClick={deleteShortcut}>
+            Delete
+          </Button>
+          <Button
+            modifier="muted"
+            onClick={overrideShortcut}
+            disabled={!!existingShortcut}
+          >
+            Save
+          </Button>
+        </>
+      }
+      onClose={() => closeShortcutModal()}
+    >
       <div
         ref={editorRef}
-        className={classnames("shortcut-preview-container", {
-          "shortcut-error": existingShortcut,
+        className={classNames(classes.shortcutPreviewContainer, {
+          [classes.shortcutError]: existingShortcut,
         })}
         tabIndex={0}
         onClick={focusEditor}
         onKeyDown={handleKeyDown}
       >
-        {shortcut && <Kbd className="shortcut-preview" shortcut={shortcut} />}
+        {shortcut && <Kbd className={classes.shortcutPreview} shortcut={shortcut} />}
       </div>
       {existingShortcut && (
         <div className="flex items-center my-4">
-          <WarningIcon className="mr-2" width="16" />
+          <ExclamationIcon className="mr-2" width="16" />
           <span>
             Shortcut already set for: <strong>{lang.get(`player.${existingShortcut}`)}</strong>
           </span>
         </div>
       )}
-      <div className="flex space-x-2">
-        <Button aspect="danger" className="flex-1" action={deleteShortcut}>
-          Delete
-        </Button>
-        <Button
-          aspect="secondary"
-          className="flex-1"
-          action={overrideShortcut}
-          disabled={!!existingShortcut}
-        >
-          Save
-        </Button>
-      </div>
     </Modal>
   )
 }

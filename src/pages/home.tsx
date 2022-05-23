@@ -17,21 +17,21 @@
 
 import React from "react"
 
-import LayoutWrapper from "@components/layout/DefaultLayout/LayoutWrapper"
+import Container from "@common/Container"
+import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import SEO from "@components/layout/SEO"
 import ExploreView from "@components/video/ExploreView"
 
 const HomePage = () => (
-  <LayoutWrapper>
+  <AppLayoutWrapper>
     <SEO
       title="Etherna"
-      tagline="A transparent video platform"
-      description="A transparent video platform"
+      description="Etherna is a transparent video platform where you can freely express yourself"
     />
-    <div className="p-4">
+    <Container fluid>
       <ExploreView />
-    </div>
-  </LayoutWrapper>
+    </Container>
+  </AppLayoutWrapper>
 )
 
 export default HomePage

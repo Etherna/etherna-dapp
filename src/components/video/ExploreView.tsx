@@ -15,22 +15,40 @@
  *  
  */
 
-import InfiniteScroller from "react-infinite-scroller"
+import React, { useEffect } from "react"
+import InfiniteScroller from "react-infinite-scroll-component"
 
 import VideoGrid from "@components/video/VideoGrid"
 import useSwarmVideos from "@hooks/useSwarmVideos"
 
 const ExploreView = () => {
-  const { videos, hasMore, loadMore } = useSwarmVideos()
+  const { videos, hasMore, isFetching, loadMore, refresh } = useSwarmVideos()
+
+  useEffect(() => {
+    window.addEventListener("refresh", refreshResults)
+    return () => {
+      window.removeEventListener("refresh", refreshResults)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const refreshResults = () => {
+    refresh()
+  }
 
   return (
     <InfiniteScroller
-      loadMore={loadMore}
+      dataLength={videos?.length ?? 0}
+      next={loadMore}
       hasMore={hasMore}
-      initialLoad={false}
-      threshold={30}
+      scrollThreshold={30}
+      loader={<div />}
+      style={{ overflow: "unset" }}
     >
-      <VideoGrid label="New videos" videos={videos} />
+      <VideoGrid
+        videos={videos}
+        isFetching={isFetching}
+      />
     </InfiniteScroller>
   )
 }

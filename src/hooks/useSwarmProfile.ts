@@ -16,41 +16,24 @@
 
 import { useEffect, useState } from "react"
 
-import SwarmProfile from "@classes/SwarmProfile"
-import { Profile } from "@classes/SwarmProfile/types"
+import SwarmProfileIO, { getDefaultProfile } from "@classes/SwarmProfile"
 import useSelector from "@state/useSelector"
+import type { Profile } from "@definitions/swarm-profile"
+import { wait } from "@utils/promise"
 
 type SwarmProfileOptions = {
   address: string
-  hash?: string
   fetchFromCache?: boolean
   updateCache?: boolean
 }
 
-type UseProfile = {
-  /** Profile object */
-  profile: Profile,
-  /** Download profile info */
-  loadProfile: () => Promise<Profile | undefined>,
-  /** Update profile */
-  updateProfile: (profile: Profile) => Promise<string>
-}
-
-const useSwarmProfile = (opts: SwarmProfileOptions): UseProfile => {
-  const { hash, fetchFromCache, updateCache } = opts
+export default function useSwarmProfile(opts: SwarmProfileOptions) {
+  const { fetchFromCache, updateCache } = opts
 
   const { beeClient, indexClient } = useSelector(state => state.env)
   const [address, setAddress] = useState(opts.address)
-  const [profile, setProfile] = useState(SwarmProfile.defaultProfile(opts.address))
-  const [profileHandler, setProfileHandler] = useState<SwarmProfile>(
-    new SwarmProfile({
-      address,
-      beeClient,
-      hash,
-      fetchFromCache,
-      updateCache,
-    })
-  )
+  const [profile, setProfile] = useState<Profile | null>(null)
+  const [isLoading, setIsloading] = useState(false)
 
   useEffect(() => {
     if (address !== opts.address) {
@@ -58,54 +41,52 @@ const useSwarmProfile = (opts: SwarmProfileOptions): UseProfile => {
     }
   }, [address, opts.address])
 
-  useEffect(() => {
-    if (beeClient && profileHandler.address !== address) {
-      const { hash, fetchFromCache, updateCache } = opts
-
-      setProfileHandler(
-        new SwarmProfile({
-          address,
-          hash,
-          fetchFromCache,
-          updateCache,
-          beeClient
-        })
-      )
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [beeClient, address])
-
-
   // Returns
   const loadProfile = async () => {
-    if (!opts.hash && !profileHandler.loadedFromPrefetch) {
-      // fetch hash if missing
-      const user = await indexClient.users.fetchUser(address)
-      profileHandler.hash = user.identityManifest
+    setIsloading(true)
+
+    const profileReader = new SwarmProfileIO.Reader(address, {
+      beeClient,
+      fetchFromCache,
+      updateCache,
+    })
+
+    let profile = getDefaultProfile(address)
+
+    try {
+      const profileInfo = await profileReader.download()
+      import.meta.env.DEV && await wait(1000)
+
+      if (profileInfo) {
+        profile = profileInfo
+      }
+    } catch (error) {
+      console.error(error)
     }
 
-    const profile = await profileHandler.downloadProfile()
     setProfile(profile)
+    setIsloading(false)
 
     return profile
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }
 
   const updateProfile = async (profile: Profile) => {
-    // save profile data on swarm
-    const newReference = await profileHandler.updateProfile(profile)
+    setIsloading(true)
 
-    // update index
-    await indexClient.users.updateCurrentUser(newReference)
+    const profileWriter = new SwarmProfileIO.Writer(address, { beeClient })
+
+    // save profile data on swarm
+    const newReference = await profileWriter.update(profile)
+
+    setIsloading(false)
 
     return newReference
   }
 
   return {
     profile,
+    isLoading,
     loadProfile,
     updateProfile
   }
 }
-
-export default useSwarmProfile

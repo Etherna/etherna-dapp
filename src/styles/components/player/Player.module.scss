@@ -1,0 +1,84 @@
+/* 
+ *  Copyright 2021-present Etherna Sagl
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.player {
+  @apply relative overflow-hidden z-0;
+  @apply mb-6 lg:mt-6;
+  @apply -mx-4 md:mx-0;
+
+  &.idle {
+    @apply cursor-[none];
+  }
+
+  &.embed {
+    @apply w-screen h-screen;
+    @apply m-0 lg:m-0;
+  }
+}
+
+.playerVideo {
+  @apply max-h-[80vh] w-full;
+  @apply object-cover;
+  @apply bg-gray-200 dark:bg-gray-700;
+
+  .embed & {
+    @apply max-h-screen;
+  }
+}
+
+.playerToolbarWrapper {
+  &.floating {
+    @apply absolute bottom-0 inset-x-0;
+    @apply opacity-0 transition duration-100;
+    @apply z-1;
+
+    .player:not(.playing) &,
+    .player:hover & {
+      @apply opacity-100;
+    }
+    .player.playing.idle & {
+      @apply opacity-0;
+    }
+  }
+}
+
+.playerVideoInfoWrapper {
+  @apply absolute top-3 left-3;
+  @apply z-1;
+
+  .player:not(.playing) &,
+    .player:hover & {
+      @apply opacity-100;
+    }
+    .player.playing.idle & {
+      @apply opacity-0;
+    }
+}
+
+.playerVideoWatchOnWrapper {
+  @apply absolute left-0 bottom-4;
+  @apply -translate-x-full;
+  @apply transition-transform duration-200 ease-out;
+  @apply z-1;
+
+  &.floating {
+    @apply bottom-24;
+  }
+
+  .player:not(.playing) & {
+    @apply translate-x-0;
+  }
+}

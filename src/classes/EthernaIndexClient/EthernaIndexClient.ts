@@ -16,7 +16,9 @@
 
 import IndexVideosClient from "./IndexVideosClient"
 import IndexUsersClient from "./IndexUsersClient"
-import { IndexClientOptions } from "./types"
+import { isSafeURL, safeURL, urlOrigin } from "@utils/urls"
+import { parseLocalStorage } from "@utils/local-storage"
+import type { IndexClientOptions } from "@definitions/api-index"
 
 export default class EthernaIndexClient {
   videos: IndexVideosClient
@@ -43,7 +45,7 @@ export default class EthernaIndexClient {
    * Redirect to login page
    * @param returnUrl Redirect url after login (default = null)
    */
-  loginRedirect(returnUrl: string|null = null) {
+  loginRedirect(returnUrl: string | null = null) {
     const retUrl = encodeURIComponent(returnUrl || window.location.href)
     window.location.href = this.loginPath + `?ReturnUrl=${retUrl}`
   }
@@ -52,16 +54,24 @@ export default class EthernaIndexClient {
    * Redirect to logout page
    * @param returnUrl Redirect url after logout (default = null)
    */
-  logoutRedirect(returnUrl: string|null = null) {
+  logoutRedirect(returnUrl: string | null = null) {
     const retUrl = encodeURIComponent(returnUrl || window.location.href)
     window.location.href = this.logoutPath + `?ReturnUrl=${retUrl}`
   }
 
   static get defaultHost(): string {
-    return window.localStorage.getItem("indexHost") || process.env.REACT_APP_INDEX_HOST
+    const localUrl = parseLocalStorage<string>("setting:index-url")
+    if (isSafeURL(localUrl)) {
+      return urlOrigin(localUrl!)!
+    }
+    return urlOrigin(import.meta.env.VITE_APP_INDEX_URL)!
   }
 
   static get defaultApiPath(): string {
-    return window.localStorage.getItem("indexApiPath") || process.env.REACT_APP_INDEX_API_PATH
+    const localUrl = parseLocalStorage<string>("setting:index-url")
+    if (isSafeURL(localUrl)) {
+      return safeURL(localUrl)!.pathname
+    }
+    return safeURL(import.meta.env.VITE_APP_INDEX_URL)!.pathname
   }
 }

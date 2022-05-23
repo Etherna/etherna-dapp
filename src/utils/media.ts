@@ -16,10 +16,11 @@
 
 /**
  * Get a video duration
+ * 
  * @param videoObj Video file object or encoded buffer
  * @returns Duration in seconds
  */
-export const getVideoDuration = (videoObj: string|File|ArrayBuffer) => {
+export const getVideoDuration = (videoObj: string | File | ArrayBuffer) => {
   return new Promise<number>((resolve, reject) => {
     const video = document.createElement("video")
     video.preload = "metadata"
@@ -29,10 +30,10 @@ export const getVideoDuration = (videoObj: string|File|ArrayBuffer) => {
     video.onloadedmetadata = () => {
       try {
         window.URL.revokeObjectURL(video.src)
-        const duration = video.duration
+        const duration = Math.round(video.duration)
 
         resolve(duration)
-      } catch (error) {
+      } catch (error: any) {
         reject(error)
       }
     }
@@ -42,10 +43,11 @@ export const getVideoDuration = (videoObj: string|File|ArrayBuffer) => {
 
 /**
  * Get a video resolution
+ * 
  * @param videoObj Video file object or encoded buffer
  * @returns Video resolution
  */
-export const getVideoResolution = (videoObj: string|File|ArrayBuffer) => {
+export const getVideoResolution = (videoObj: string | File | ArrayBuffer) => {
   return new Promise<number>((resolve, reject) => {
     const video = document.createElement("video")
     video.preload = "metadata"
@@ -58,7 +60,7 @@ export const getVideoResolution = (videoObj: string|File|ArrayBuffer) => {
         const resolution = video.videoHeight
 
         resolve(resolution)
-      } catch (error) {
+      } catch (error: any) {
         reject(error)
       }
     }
@@ -68,9 +70,10 @@ export const getVideoResolution = (videoObj: string|File|ArrayBuffer) => {
 
 /**
  * Get video source *
+ * 
  * @param videoObj Video source/buffer/file
  */
-const videoSource = (videoObj: string|File|ArrayBuffer) =>
+const videoSource = (videoObj: string | File | ArrayBuffer) =>
   typeof videoObj === "string" ? videoObj
     : videoObj instanceof File
       ? URL.createObjectURL(videoObj)

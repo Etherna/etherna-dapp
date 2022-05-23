@@ -17,9 +17,30 @@
 /**
  * Handle a promise withour throwing error.
  * A null value is returned instead.
+ * 
  * @param promise Promise to handle
  */
 export const nullablePromise = async <T>(promise: Promise<T>) =>
-  new Promise<T|null>(resolve => {
+  new Promise<T | null>(resolve => {
     promise.then(result => resolve(result)).catch(() => resolve(null))
+  })
+
+/**
+ * Get & filter fullfilled promises
+ * 
+ * @param promises Settled promises array
+ * @returns The filtered fullfilled results
+ */
+export const fullfilledPromisesResult = <T>(promises: PromiseSettledResult<T>[]): T[] => {
+  return promises.filter(promise => promise.status === "fulfilled")
+    .map(promise => (promise as PromiseFulfilledResult<T>).value)
+}
+
+export const wait = (delay = 1000) =>
+  new Promise<void>(res => {
+    if (import.meta.env.DEV) {
+      setTimeout(res, delay)
+    } else {
+      res()
+    }
   })

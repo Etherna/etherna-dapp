@@ -15,11 +15,11 @@
  *  
  */
 
-import React, { useState, useRef, useCallback, useEffect } from "react"
-import ReactCrop, { Crop } from "react-image-crop"
+import React, { useState, useRef } from "react"
+import ReactCrop, { centerCrop, Crop, makeAspectCrop } from "react-image-crop"
 
-import Modal from "@components/common/Modal"
-import Button from "@components/common/Button"
+import Modal from "@common/Modal"
+import Button from "@common/Button"
 import useSelector from "@state/useSelector"
 import { useImageCrop } from "@state/hooks/ui"
 
@@ -33,18 +33,30 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ show = false }) => {
   const [crop, setCrop] = useState<Crop>()
   const { finishCropping } = useImageCrop()
 
-  useEffect(() => {
-    setCrop({
-      unit: "px",
-      width: imageType === "avatar" ? 500 : undefined,
-      height: imageType === "avatar" ? undefined : 450,
-      aspect: imageType === "avatar" ? 1 : 1920 / 450,
-    })
-  }, [imageType])
+  const aspectRatio = imageType === "avatar" ? 1 : 1920 / 450
 
-  const onLoad = useCallback((img: HTMLImageElement) => {
-    imgRef.current = img
-  }, [])
+  const imageLoaded = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    imgRef.current = e.currentTarget
+
+    const { width, height } = e.currentTarget
+
+    const crop = centerCrop(
+      makeAspectCrop(
+        {
+          unit: "px",
+          width,
+          height,
+        },
+        aspectRatio,
+        width,
+        height,
+      ),
+      width,
+      height,
+    )
+
+    setCrop(crop)
+  }
 
   const handleCancel = () => {
     finishCropping(undefined)
@@ -67,27 +79,29 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ show = false }) => {
   }
 
   return (
-    <Modal show={show} showCloseButton={false}>
-      <div className="modal-header">
-        <h4 className="modal-title mx-auto">Crop the image</h4>
-      </div>
+    <Modal
+      show={show}
+      showCloseButton={false}
+      showCancelButton={true}
+      title="Crop the image"
+      footerButtons={
+        <Button onClick={handleContinue}>
+          Done
+        </Button>
+      }
+      onClose={handleCancel}
+      large
+    >
       <div className="flex justify-center my-6">
         <ReactCrop
-          src={image!}
-          onImageLoaded={onLoad}
           crop={crop}
-          onChange={crop => setCrop(crop)}
-        />
-      </div>
-      <div className="flex">
-        <div className="ml-auto flex space-x-3">
-          <Button action={handleCancel} aspect="secondary" size="small">
-            Cancel
-          </Button>
-          <Button action={handleContinue} size="small">
-            Done
-          </Button>
-        </div>
+          onChange={setCrop}
+          aspect={aspectRatio}
+        >
+          {image && (
+            <img src={image} onLoad={imageLoaded} />
+          )}
+        </ReactCrop>
       </div>
     </Modal>
   )

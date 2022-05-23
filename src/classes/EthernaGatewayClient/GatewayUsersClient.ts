@@ -15,13 +15,14 @@
  */
 
 import http from "@utils/request"
-import { GatewayCurrentUser } from "./typings"
+import type { GatewayBatch, GatewayBatchPreview, GatewayCredit, GatewayCurrentUser } from "@definitions/api-gateway"
 
 export default class GatewayUsersClient {
   url: string
 
   /**
    * Init an gateway user client
+   * 
    * @param {string} url Api host + api url
    */
   constructor(url: string) {
@@ -48,17 +49,76 @@ export default class GatewayUsersClient {
 
   /**
    * Get current user's credit
+   * 
    * @returns User's credit amount
    */
   async fetchCredit() {
     const endpoint = `${this.url}/users/current/credit`
 
-    const resp = await http.get<number>(endpoint, {
+    const resp = await http.get<GatewayCredit>(endpoint, {
       withCredentials: true
     })
 
-    if (typeof resp.data !== "number") {
+    if (typeof resp.data !== "object") {
       throw new Error("Cannot fetch user's credit")
+    }
+
+    return resp.data
+  }
+
+  /**
+   * Get current user's batches
+   * 
+   * @returns User's list of batches
+   */
+  async fetchBatches() {
+    const endpoint = `${this.url}/users/current/batches`
+
+    const resp = await http.get<GatewayBatchPreview[]>(endpoint, {
+      withCredentials: true
+    })
+
+    if (!Array.isArray(resp.data)) {
+      throw new Error("Cannot fetch user's batches")
+    }
+
+    return resp.data
+  }
+
+  /**
+   * Get current user's batches
+   * 
+   * @param batchId Id of the swarm batch
+   * @returns User's list of batches
+   */
+  async fetchBatch(batchId: string) {
+    const endpoint = `${this.url}/users/current/batches/${batchId}`
+
+    const resp = await http.get<GatewayBatch>(endpoint, {
+      withCredentials: true
+    })
+
+    if (typeof resp.data !== "object") {
+      throw new Error("Cannot fetch user's batch")
+    }
+
+    return resp.data
+  }
+
+  /**
+   * Get current user's offered resources
+   * 
+   * @returns Reference list of offered resources
+   */
+  async fetchOfferedResources() {
+    const endpoint = `${this.url}/users/current/offeredResources`
+
+    const resp = await http.get<string[]>(endpoint, {
+      withCredentials: true
+    })
+
+    if (typeof resp.data !== "object") {
+      throw new Error("Cannot fetch user's offered resources")
     }
 
     return resp.data

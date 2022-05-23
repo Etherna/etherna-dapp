@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-import SwarmVideo from "@classes/SwarmVideo"
-import { Video } from "@classes/SwarmVideo/types"
+import SwarmVideoIO from "@classes/SwarmVideo"
 import { store } from "@state/store"
+import type { Video } from "@definitions/swarm-video"
 
 const match = /\/watch/
 
@@ -25,22 +25,20 @@ const fetch = async () => {
 
   const searchParams = new URLSearchParams(window.location.search)
   if (searchParams && searchParams.has("v")) {
-    const hash = searchParams.get("v")!
+    const reference = searchParams.get("v")!
 
     try {
-      const swarmVideo = new SwarmVideo(hash, {
+      const swarmVideoReader = new SwarmVideoIO.Reader(reference, undefined, {
         beeClient,
-        indexClient
-      })
-      const video = await swarmVideo.downloadVideo({
+        indexClient,
         fetchProfile: true,
-        forced: true
       })
+      const video = await swarmVideoReader.download(true)
 
       // set prefetch data
       window.prefetchData = {}
       window.prefetchData.video = video
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
     }
   }

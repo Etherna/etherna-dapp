@@ -1,0 +1,88 @@
+/* 
+ *  Copyright 2021-present Etherna Sagl
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.alertPopupContainer {
+  @apply invisible fixed inset-0;
+  @apply bg-gray-900/0;
+  @apply flex items-center justify-center;
+  @apply transition duration-300;
+  @apply z-200;
+
+  &.show {
+    @apply visible bg-gray-900/60;
+  }
+}
+
+.alertPopup {
+  @apply flex flex-col flex-shrink flex-grow-0 basis-72 shadow-2xl;
+  @apply max-w-full p-5 -m-2 rounded-lg;
+  @apply bg-gray-100 border border-gray-400;
+  @apply dark:bg-gray-800 dark:border-gray-600;
+  @apply opacity-0 transform scale-90 transition duration-300 delay-75;
+
+  > * {
+    @apply m-2;
+  }
+
+  &.show {
+    @apply opacity-100 scale-100;
+  }
+}
+
+.alertPopupIcon {
+  @apply flex items-center justify-center w-16 h-16 mx-auto;
+  @apply text-gray-500 dark:text-gray-400;
+
+  img {
+    @apply w-full h-full object-contain object-center;
+  }
+  svg {
+    @apply w-full h-full;
+  }
+}
+
+.alertPopupTitle {
+  @apply text-lg font-bold text-center leading-tight;
+  @apply text-gray-900 dark:text-gray-100;
+}
+
+.alertPopupMessage {
+  @apply font-semibold text-center leading-tight;
+  @apply text-gray-700 dark:text-gray-300;
+}
+
+.alertPopupActions {
+  @apply flex flex-col -mx-1;
+}
+
+.alertPopupBtn {
+  @apply flex-1 rounded-md p-1.5 m-1;
+  @apply font-semibold text-sm;
+  @apply bg-gray-500 text-gray-100;
+  @apply active:bg-gray-700 focus:ring-0 focus:outline-none;
+  @apply transition-colors duration-200;
+
+  &:last-child:not(:nth-child(1)):not(:nth-child(2)) {
+    @apply mt-4;
+  }
+
+  &Default {
+    @apply bg-blue-500 active:bg-blue-700;
+  }
+  &Destructive {
+    @apply bg-red-500 active:bg-red-500;
+  }
+}

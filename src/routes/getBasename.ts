@@ -15,7 +15,7 @@
  */
 
 const getBasename = () => {
-  const bzzPattern = /\/bzz:\/([^/]+)/
+  const bzzPattern = /\/bzz\/([^/]+)/
   const basename = bzzPattern.test(window.location.pathname)
     ? window.location.pathname.match(bzzPattern)![0]
     : ""

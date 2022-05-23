@@ -14,55 +14,43 @@
  *  limitations under the License.
  */
 
-/**
- * Home route
- */
-export const getHomeLink = () => {
-  return `/`
+const routes = {
+  /** `/` */
+  home: `/`,
+  /** `/frames` */
+  frames: `/frames`,
+  /** `/frames/{id}` */
+  frame: (id: string) => `/frames/${id}`,
+  /** `/following` */
+  following: `/following`,
+  /** `/saved` */
+  saved: `/saved`,
+  /** `/playlists` */
+  playlists: `/playlists`,
+  /** `/channels/{id}` */
+  channel: (id: string) => `/channel/${id}`,
+  /** `/watch/{hash}` */
+  watch: (hash: string) => `/watch/${hash}`,
+  /** `/embed/{hash}` */
+  embed: (hash: string) => `/embed/${hash}`,
+  /** `/search?q={query}` */
+  search: (query: string) => `/search?q=${encodeURIComponent(query)}`,
+  /** `/shortcuts` */
+  shortcuts: `/shortcuts`,
+  /** `/privacy-policy` */
+  privacyPolicy: `/privacy-policy`,
+  /** `/studio` */
+  studio: `/studio`,
+  /** `/studio/videos` */
+  studioVideos: `/studio/videos`,
+  /** `/studio/videos/{id}` */
+  studioVideoEdit: (id: string) => `/studio/videos/${id}`,
+  /** `/studio/videos/new` */
+  studioVideoNew: `/studio/videos/new`,
+  /** `/studio/channel` */
+  studioChannel: `/studio/channel`,
+  /** `/studio/storage` */
+  studioStorage: `/studio/storage`,
 }
 
-/**
- * Profile routes
- */
-export const getProfilesLink = () => {
-  return `/profiles`
-}
-
-export const getProfileLink = (hash: string) => {
-  return `/profile/${encodeURIComponent(hash)}`
-}
-
-export const getProfileEditingLink = (hash: string) => {
-  return `/profile/${encodeURIComponent(hash)}/edit`
-}
-
-/**
- * Video routes
- */
-export const getVideoLink = (hash: string, sourcePath?: string) => {
-  return `/watch?v=${hash}${encodeURIComponent(sourcePath ? `/${sourcePath}` : ``)}`
-}
-
-export const getVideoSettingsLink = (hash: string) => {
-  return `/videoSettings?v=${encodeURIComponent(hash)}`
-}
-
-/**
- * Static routes
- */
-export const getVideoUploadLink = () => {
-  return `/upload`
-}
-export const getHowItWorksLink = () => {
-  return `/how-it-works`
-}
-export const getShortcutsLink = () => {
-  return `/shortcuts`
-}
-
-/**
- * Fallback routes
- */
-export const getNotFoundLink = () => {
-  return `/notfound`
-}
+export default routes

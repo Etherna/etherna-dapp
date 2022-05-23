@@ -17,11 +17,12 @@
 
 import React from "react"
 
-import Modal from "../common/Modal"
-import Button from "../common/Button"
-import { ReactComponent as SignatureIcon } from "@svg/icons/signature-required-icon.svg"
-import { ReactComponent as ErrorIcon } from "@svg/icons/error-icon.svg"
-import { closeErrorModal } from "@state/actions/modals"
+import { ShieldCheckIcon } from "@heroicons/react/outline"
+import { ExclamationCircleIcon } from "@heroicons/react/solid"
+
+import Modal from "@common/Modal"
+import Button from "@common/Button"
+import { useErrorMessage } from "@state/hooks/ui"
 
 type ErrorModalProps = {
   title?: string
@@ -30,43 +31,38 @@ type ErrorModalProps = {
 }
 
 const ErrorModal = ({ title, error = "", show = false }: ErrorModalProps) => {
+  const { hideError } = useErrorMessage()
+
   const isMetaMaskSignError = error.substring(0, 65) === "Web3 Wallet Signature Error: User denied message signature."
   const isMozillaError = error.substring(0, 26) === "value/</<@moz-extension://"
   const errorString = error.substring(0, 200)
 
   return (
-    <Modal show={show} showCloseButton={false}>
-      <div className="flex justify-center text-orange-500 mb-3">
-        {isMetaMaskSignError || isMozillaError ? (
-          <SignatureIcon />
-        ) : (
-          <ErrorIcon width={40} />
-        )}
-      </div>
-      <div className="modal-header">
-        <h4 className="modal-title mx-auto">
-          {isMetaMaskSignError || isMozillaError ? <span>Sign in</span> : <span>{title}</span>}
-        </h4>
-      </div>
-
-      <div className="text-center my-6">
+    <Modal
+      show={show}
+      showCloseButton={false}
+      showCancelButton={false}
+      status="danger"
+      title={isMetaMaskSignError || isMozillaError ? "Sign in" : title}
+      icon={isMetaMaskSignError || isMozillaError ? <ShieldCheckIcon /> : <ExclamationCircleIcon />}
+      footerButtons={
+        <Button modifier="muted" onClick={hideError}>
+          Close
+        </Button>
+      }
+    >
+      <>
         {isMetaMaskSignError || isMozillaError ? (
           <p>
-            You must provide consent in your Web3 wallet to sign in or create a profile, please try
+            You must provide consent in your Web3 wallet to update profile and create playlists, please try
             again.
           </p>
         ) : (
           <>
-            <p>{errorString}</p>
+            {errorString}
           </>
         )}
-      </div>
-
-      <div className="flex">
-        <Button className="mx-auto" action={closeErrorModal}>
-          Close
-        </Button>
-      </div>
+      </>
     </Modal>
   )
 }

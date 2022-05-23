@@ -16,27 +16,29 @@
  */
 
 import React from "react"
-import { useLocation } from "react-router-dom"
+import { useParams } from "react-router-dom"
 
-import LayoutWrapper from "@components/layout/DefaultLayout/LayoutWrapper"
+import Container from "@common/Container"
+import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
 import SEO from "@components/layout/SEO"
 import VideoView from "@components/video/VideoView"
-import { Video } from "@classes/SwarmVideo/types"
 import useRouteState from "@hooks/useRouteState"
+import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
 
 const WatchPage = () => {
-  const location = useLocation()
-  const query = new URLSearchParams(location.search)
-  const hash = query.get("v")
-  const routeState = useRouteState<Video>()
+  const { hash } = useParams()
+  const routeState = useRouteState<{ video: Video, videoOffers: VideoOffersStatus }>()
 
   if (!hash) return null
 
   return (
-    <LayoutWrapper hideSidebar={true}>
+    <AppLayoutWrapper hideSidebar floatingSidebar>
       <SEO title="Watch" />
-      <VideoView hash={hash} routeState={routeState} />
-    </LayoutWrapper>
+
+      <Container noPaddingY>
+        <VideoView reference={hash} routeState={routeState} />
+      </Container>
+    </AppLayoutWrapper>
   )
 }
 

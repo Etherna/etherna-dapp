@@ -15,7 +15,9 @@
  */
 
 import AuthIdentityClient from "./AuthIdentityClient"
-import { AuthClientOptions } from "./types"
+import { parseLocalStorage } from "@utils/local-storage"
+import { isSafeURL, safeURL, urlOrigin } from "@utils/urls"
+import type { AuthClientOptions } from "@definitions/api-sso"
 
 export default class EthernaAuthClient {
   identity: AuthIdentityClient
@@ -55,10 +57,18 @@ export default class EthernaAuthClient {
   }
 
   static get defaultHost(): string {
-    return window.localStorage.getItem("authHost") ?? process.env.REACT_APP_AUTH_HOST
+    const localUrl = parseLocalStorage<string>("setting:auth-url")
+    if (isSafeURL(localUrl)) {
+      return urlOrigin(localUrl!)!
+    }
+    return urlOrigin(import.meta.env.VITE_APP_AUTH_URL)!
   }
 
   static get defaultApiPath(): string {
-    return window.localStorage.getItem("authApiPath") ?? process.env.REACT_APP_AUTH_API_PATH
+    const localUrl = parseLocalStorage<string>("setting:auth-url")
+    if (isSafeURL(localUrl)) {
+      return safeURL(localUrl)!.pathname
+    }
+    return safeURL(import.meta.env.VITE_APP_AUTH_URL)!.pathname
   }
 }

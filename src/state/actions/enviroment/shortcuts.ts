@@ -15,26 +15,26 @@
  */
 
 import { defaultKeymap, KEYMAP_OVERRIDE_NAME } from "@keyboard"
-import { Keymap, KeymapNamespace } from "@keyboard/typings"
 import { store } from "@state/store"
 import { EnvActionTypes } from "@state/reducers/enviromentReducer"
 import { UIActionTypes } from "@state/reducers/uiReducer"
+import type { Keymap, KeymapNamespace } from "@definitions/keyboard"
 
 export const editShortcut = (namespace: KeymapNamespace, key: string) => {
   store.dispatch({
-    type: EnvActionTypes.ENV_EDIT_SHORTCUT,
+    type: EnvActionTypes.EDIT_SHORTCUT,
     shortcutNamespace: namespace,
     shortcutKey: key,
   })
   store.dispatch({
-    type: UIActionTypes.UI_TOGGLE_EDITING_SHORTCUT,
+    type: UIActionTypes.TOGGLE_EDITING_SHORTCUT,
     isEditingShortcut: true,
   })
 }
 
 export const resetShortcut = (namespace: KeymapNamespace, key: string) => {
   store.dispatch({
-    type: EnvActionTypes.ENV_EDIT_SHORTCUT,
+    type: EnvActionTypes.EDIT_SHORTCUT,
     shortcutNamespace: namespace,
     shortcutKey: key,
   })
@@ -47,7 +47,7 @@ export const hasCustomShortcut = (namespace: string, key: string) => {
   return namespace in keymap && key in keymap[namespace]
 }
 
-export const saveShortcut = (newShortcut: string|null|undefined) => {
+export const saveShortcut = (newShortcut: string | null | undefined) => {
   const { keymap, shortcutNamespace, shortcutKey } = store.getState().env
 
   if (!shortcutNamespace || !shortcutKey) return
@@ -58,7 +58,7 @@ export const saveShortcut = (newShortcut: string|null|undefined) => {
   }
   newKeymap[shortcutNamespace][shortcutKey] = newShortcut || defaultKeymap[shortcutNamespace][shortcutKey]
   store.dispatch({
-    type: EnvActionTypes.ENV_UPDATE_KEYMAP,
+    type: EnvActionTypes.UPDATE_KEYMAP,
     keymap: newKeymap,
   })
 
@@ -74,12 +74,12 @@ export const saveShortcut = (newShortcut: string|null|undefined) => {
 
   // Finish editing
   store.dispatch({
-    type: EnvActionTypes.ENV_EDIT_SHORTCUT,
+    type: EnvActionTypes.EDIT_SHORTCUT,
     shortcutNamespace: undefined,
     shortcutKey: undefined,
   })
   store.dispatch({
-    type: UIActionTypes.UI_TOGGLE_EDITING_SHORTCUT,
+    type: UIActionTypes.TOGGLE_EDITING_SHORTCUT,
     isEditingShortcut: false,
   })
 }

@@ -1,0 +1,57 @@
+/* 
+ *  Copyright 2021-present Etherna Sagl
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.videoDescriptionWrapper {
+  @apply flex flex-col;
+}
+
+.videoDescription {
+  @apply relative mt-4;
+  @apply text-gray-800;
+  @apply dark:text-gray-200;
+
+  .compress & {
+    @apply max-h-[7.5rem] overflow-hidden; // 24px line height x 5
+    transition-property: max-height;
+    @apply duration-500 ease-out;
+
+    &::after {
+      content: "";
+      @apply block absolute bottom-0 h-20 inset-x-0;
+      @apply bg-gradient-to-t;
+      @apply from-gray-50 to-gray-50/0;
+      @apply dark:from-gray-900 dark:to-gray-800/0;
+      @apply transition-opacity duration-200;
+    }
+  }
+  .showMore & {
+    &::after {
+      @apply opacity-0 pointer-events-none;
+    }
+  }
+}
+
+.videoDescriptionEmpty {
+  @apply text-sm text-gray-500;
+}
+
+.videoDescriptionShowMore {
+  .showMore & {
+    svg {
+      @apply rotate-180;
+    }
+  }
+}
