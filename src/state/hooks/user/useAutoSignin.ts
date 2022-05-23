@@ -17,7 +17,8 @@
 import { useEffect } from "react"
 import { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
-import type { EthAddress } from "@ethersphere/bee-js/dist/src/utils/eth"
+import type { EthAddress } from "@ethersphere/bee-js/dist/types/utils/eth"
+
 import type { AxiosError } from "axios"
 
 import SwarmProfileIO from "@classes/SwarmProfile"

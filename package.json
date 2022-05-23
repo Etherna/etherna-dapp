@@ -88,7 +88,7 @@
   },
   "optionalDependencies": {
     "@types/prompt": "1.1.2",
-    "chalk": "5.0.1",
+    "chalk": "4.x",
     "child_process": "1.0.2",
     "concurrently": "7.2.1",
     "dotenv": "16.0.1",
