@@ -17,10 +17,9 @@
 
 import React, { useMemo } from "react"
 import classNames from "classnames"
+import { parse } from "micro-down"
 
 import classes from "@styles/components/common/MarkdownPreview.module.scss"
-
-import microdown from "@utils/microdown"
 
 type MarkdownPreviewProps = {
   value: string
@@ -45,7 +44,7 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({
     const formattedMarkdown = forceNewLine
       ? value.replace(/\n/g, "<br />")
       : value
-    return microdown(formattedMarkdown)
+    return parse(formattedMarkdown)
   }, [value, forceNewLine])
 
   return (

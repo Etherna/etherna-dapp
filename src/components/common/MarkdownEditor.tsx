@@ -17,17 +17,9 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import classNames from "classnames"
-import {
-  Editor,
-  EditorState,
-  RichUtils,
-  DraftHandleValue,
-  DraftEditorCommand,
-  convertFromRaw,
-  convertToRaw
-} from "draft-js"
+import { Editor, EditorState, RichUtils, convertFromRaw, convertToRaw } from "draft-js"
 import { draftToMarkdown, markdownToDraft } from "markdown-draft-js"
-import type { EditorProps } from "draft-js"
+import type { EditorProps, DraftHandleValue, DraftEditorCommand } from "draft-js"
 
 import "@styles/overrides/draft-js.scss"
 import classes from "@styles/components/common/MarkdownEditor.module.scss"
@@ -42,10 +34,13 @@ type MarkdownEditorProps = {
   id?: string
   value: string | null | undefined
   label?: string
+  className?: string
   placeholder?: string
   disabled?: boolean
   charactersLimit?: number
   onChange?(markdown: string): void
+  onFocus?(): void
+  onBlur?(): void
 }
 
 type ToolbarConfig = {
@@ -69,12 +64,15 @@ const toolbarConfig: ToolbarConfig = {
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   id,
+  className,
   value,
   label,
   placeholder,
   charactersLimit,
   disabled,
   onChange,
+  onFocus,
+  onBlur,
 }) => {
   const [markdown, setMarkdown] = useState(value)
   const [hasFocus, setHasFocus] = useState(false)
@@ -141,16 +139,29 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     }
   }
 
+  const handleFocus = () => {
+    setHasFocus(true)
+    onFocus?.()
+  }
+
+  const handleBlur = () => {
+    setHasFocus(false)
+    onBlur?.()
+  }
+
   return (
     <>
       {label && (
         <Label htmlFor={id}>{label}</Label>
       )}
-      <div className={classNames(classes.markdownEditor, {
-        [classes.focused]: hasFocus,
-        [classes.charlimit]: !!charactersLimit
-      })}>
-        <div className={classes.markdownEditorToolbar}>
+      <div
+        className={classNames(classes.markdownEditor, className, {
+          [classes.focused]: hasFocus,
+          [classes.charlimit]: !!charactersLimit
+        })}
+        data-editor
+      >
+        <div className={classes.markdownEditorToolbar} data-editor-toolbar>
           {Object.keys(toolbarConfig).map(key => (
             <div className={classes.markdownEditorBtnGroup} key={key}>
               {toolbarConfig[key].map((btnConfig, i) => (
@@ -172,17 +183,20 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             handleBeforeInput={handleBeforeInput}
             handleKeyCommand={handleKeyCommand}
             onChange={handleChange}
-            onFocus={() => setHasFocus(true)}
-            onBlur={() => setHasFocus(false)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             readOnly={disabled}
             spellCheck
           />
         </div>
 
         {charactersLimit && (
-          <span className={classNames(textfieldClasses.textFieldCharCounter, {
-            [textfieldClasses.limitReached]: textLength === charactersLimit
-          })}>
+          <span
+            className={classNames(textfieldClasses.textFieldCharCounter, {
+              [textfieldClasses.limitReached]: textLength === charactersLimit
+            })}
+            data-editor-limit
+          >
             {textLength}/{charactersLimit}
           </span>
         )}

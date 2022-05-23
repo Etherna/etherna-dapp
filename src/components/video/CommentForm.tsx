@@ -16,16 +16,19 @@
  */
 
 import React, { useRef, useState } from "react"
+import type { EditorState } from "draft-js"
 
 import classes from "@styles/components/video/CommentForm.module.scss"
 import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
 
 import Button from "@common/Button"
 import TextField from "@common/TextField"
+import MarkdownEditor from "@common/MarkdownEditor"
 import Avatar from "@components/user/Avatar"
 import useSelector from "@state/useSelector"
 import { showError } from "@state/actions/modals"
 import type { IndexVideoComment } from "@definitions/api-index"
+import classNames from "classnames"
 
 type CommentFormProps = {
   indexReference: string
@@ -36,7 +39,6 @@ const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPost
   const [text, setText] = useState("")
   const [isFocused, setIsFocused] = useState(false)
   const [isPosting, setIsPosting] = useState(false)
-  const inputRef = useRef<HTMLTextAreaElement | null>(null)
 
   const { isSignedIn, address } = useSelector(state => state.user)
   const { avatar } = useSelector(state => state.profile)
@@ -55,7 +57,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPost
       onCommentPosted?.(comment)
       setText("")
       setIsFocused(false)
-      inputRef.current?.blur()
+      blurEditor()
     } catch (error: any) {
       showError("Cannot post the comment", error.message)
     }
@@ -66,7 +68,11 @@ const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPost
   const onCancel = () => {
     setText("")
     setIsFocused(false)
-    inputRef.current?.blur()
+    blurEditor()
+  }
+
+  const blurEditor = () => {
+    document.body.focus()
   }
 
   return (
@@ -75,15 +81,16 @@ const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPost
         <Avatar image={avatar} address={address} />
       </div>
 
-      <TextField
-        elRef={inputRef}
-        className={classes.commentFormInput}
+      <MarkdownEditor
+        className={classNames(classes.commentFormInput, {
+          [classes.hasFocus]: isFocused,
+        })}
         placeholder="Add a public comment"
         value={text}
-        disabled={isPosting}
+        charactersLimit={1000}
         onChange={setText}
         onFocus={() => setIsFocused(true)}
-        multiline
+        disabled={isPosting}
       />
 
       {isFocused && (

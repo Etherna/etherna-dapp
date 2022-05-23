@@ -70,7 +70,9 @@ const MarkdownEditorButton: React.FC<MarkdownEditorButtonProps> = ({
     (config.type === "block" && blockType === config.style) ||
     (config.type === "inline" && inlineStyle!.has(config.style))
 
-  const toggleStyle = () => {
+  const toggleStyle = (e: React.MouseEvent) => {
+    e.preventDefault()
+
     if (config.type === "inline") {
       onEditorStateChange?.(
         RichUtils.toggleInlineStyle(
@@ -103,7 +105,7 @@ const MarkdownEditorButton: React.FC<MarkdownEditorButtonProps> = ({
   }
 
   return (
-    <button
+    <div
       className={classNames(classes.markdownEditorBtn, {
         [classes.active]: active
       })}
@@ -111,7 +113,7 @@ const MarkdownEditorButton: React.FC<MarkdownEditorButtonProps> = ({
       onMouseDown={toggleStyle}
     >
       {getIcon()}
-    </button>
+    </div>
   )
 }
 

@@ -14,12 +14,10 @@
  *  limitations under the License.
  */
 
-import { createSelectorHook, useSelector as useReduxSelector } from "react-redux"
+import { useSelector as useReduxSelector } from "react-redux"
 import type { EqualityFn } from "react-redux"
 
 import type { AppState } from "@definitions/app-state"
-
-// const useSelector = createSelectorHook() as (<Selected = unknown>(selector: (state: AppState) => Selected))
 
 const useSelector = useReduxSelector as <Selected = unknown>(
   selector: (state: AppState) => Selected,

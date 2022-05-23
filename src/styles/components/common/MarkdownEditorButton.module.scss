@@ -19,6 +19,7 @@
   @apply border border-gray-200 text-gray-700;
   @apply w-8 h-8;
   @apply flex items-center justify-center;
+  @apply cursor-pointer;
   @apply hover:bg-gray-100;
   @apply dark:text-gray-400 dark:border-gray-700 dark:hover:bg-gray-800;
 
