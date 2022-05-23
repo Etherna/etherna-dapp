@@ -21,6 +21,7 @@ import classNames from "classnames"
 
 import classes from "@styles/components/video/VideoCommentsItem.module.scss"
 
+import MarkdownPreview from "@common/MarkdownPreview"
 import VideoCommentPlaceholder from "@components/placeholders/VideoCommentPlaceholder"
 import Avatar from "@components/user/Avatar"
 import useSwarmProfile from "@hooks/useSwarmProfile"
@@ -68,7 +69,7 @@ const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({ comment, videoAut
         <span className={classes.videoCommentTime}>
           {dayjs.duration(dayjs(creationDateTime).diff(dayjs())).humanize(true)}
         </span>
-        <div className={classes.videoCommentText}>{text}</div>
+        <MarkdownPreview className={classes.videoCommentText} value={text} />
       </div>
     </div>
   )

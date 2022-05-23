@@ -23,8 +23,18 @@
 .commentFormInput {
   @apply flex-1;
 
-  textarea {
-    @apply h-12;
+  &:not(.hasFocus) {
+    &[data-editor] {
+      @apply pb-0;
+    }
+    [data-editor-toolbar],
+    [data-editor-limit] {
+      @apply hidden;
+    }
+  }
+
+  :global(.DraftEditor-editorContainer) {
+    @apply min-h-4;
   }
 }
 
