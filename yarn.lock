@@ -2047,24 +2047,24 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@ethersphere/bee-js@3.3.4":
-  version "3.3.4"
-  resolved "https://registry.yarnpkg.com/@ethersphere/bee-js/-/bee-js-3.3.4.tgz#6b658bf019231a3ec75f99b4c6c02717110ca9dd"
-  integrity sha512-uxH0kR31tE8IKVON7jyQHANZ/5edlU8OUCz/qyRft1YeS+L4HzEHAD3bN58iE842nt6Iz/fekrJ7yk1ONIcDBg==
+"@ethersphere/bee-js@3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@ethersphere/bee-js/-/bee-js-3.2.0.tgz#521eac63676d13d21585166754d2b6d20ee9e332"
+  integrity sha512-ZVcbl8dsytx07+SxTmsKSn0X1zojR7vMb0uxQ+fGk05JHFNGBY2Qv/5AP7rI/SqGWDjHWIMB8Ww+ErURdyFXqA==
   dependencies:
-    "@types/readable-stream" "^2.3.13"
-    bufferutil "^4.0.6"
+    "@types/readable-stream" "^2.3.11"
+    bufferutil "^4.0.3"
+    cross-blob "^2.0.1"
     elliptic "^6.5.4"
-    fetch-blob "2.1.2"
     isomorphic-ws "^4.0.1"
     js-sha3 "^0.8.0"
     ky "^0.25.1"
     ky-universal "^0.8.2"
-    semver "^7.3.5"
+    readable-stream "^3.6.0"
     tar-js "^0.3.0"
-    utf-8-validate "^5.0.9"
-    web-streams-polyfill "^4.0.0-beta.1"
-    ws "^8.5.0"
+    utf-8-validate "^5.0.8"
+    web-streams-polyfill "^3.1.0"
+    ws "^7.5.0"
 
 "@hapi/hoek@^9.0.0":
   version "9.2.0"
@@ -2644,7 +2644,7 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/readable-stream@^2.3.13":
+"@types/readable-stream@^2.3.11":
   version "2.3.13"
   resolved "https://registry.yarnpkg.com/@types/readable-stream/-/readable-stream-2.3.13.tgz#46451c1b87cb61010e420ac02a76cfc1b2c2089a"
   integrity sha512-4JSCx8EUzaW9Idevt+9lsRAt1lcSccoQfE+AouM1gk8sFxnnytKNIO3wTl9Dy+4m6jRJ1yXhboLHHT/LXBQiEw==
@@ -3271,6 +3271,11 @@ binary-extensions@^2.0.0:
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.2.0.tgz#75f502eeaf9ffde42fc98829645be4ea76bd9e2d"
   integrity sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==
 
+blob-polyfill@^5.0.20210201:
+  version "5.0.20210201"
+  resolved "https://registry.yarnpkg.com/blob-polyfill/-/blob-polyfill-5.0.20210201.tgz#0024bfa5dcc3440eb5a2f1e5991cb1612a558465"
+  integrity sha512-SrH6IG6aXL9pCgSysBCiDpGcAJ1j6/c1qCwR3sTEQJhb+MTk6FITNA6eW6WNYQDNZVi4Z9GjxH5v2MMTv59CrQ==
+
 bluebird@2.x:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-2.11.0.tgz#534b9033c022c9579c56ba3b3e5a5caafbb650e1"
@@ -3360,7 +3365,7 @@ buffer-from@^1.0.0:
   resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.2.tgz#2b146a6fd72e80b4f55d255f35ed59a3a9a41bd5"
   integrity sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==
 
-bufferutil@^4.0.6:
+bufferutil@^4.0.3:
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/bufferutil/-/bufferutil-4.0.6.tgz#ebd6c67c7922a0e902f053e5d8be5ec850e48433"
   integrity sha512-jduaYOYtnio4aIAyc6UbvPCVcgq7nYpVnucyxr6eCYg/Woad9Hf/oxxBRDnGGjPfjUm6j5O/uBWhIu4iLebFaw==
@@ -3640,6 +3645,14 @@ cosmiconfig@^7.0.0, cosmiconfig@^7.0.1:
     parse-json "^5.0.0"
     path-type "^4.0.0"
     yaml "^1.10.0"
+
+cross-blob@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/cross-blob/-/cross-blob-2.0.1.tgz#7c187282e0855353705ed9ac5af2ee7f27c910c6"
+  integrity sha512-ARuKPPo3I6DSqizal4UCyMCiGPQdMpMJS3Owx6Lleuh26vSt2UnfWRwbMLCYqbJUrcol+KzGVSLR91ezSHP80A==
+  dependencies:
+    blob-polyfill "^5.0.20210201"
+    fetch-blob "^2.1.2"
 
 cross-fetch@^3.0.4:
   version "3.1.4"
@@ -4576,7 +4589,7 @@ fbjs@^2.0.0:
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.18"
 
-fetch-blob@2.1.2, fetch-blob@^2.1.1:
+fetch-blob@^2.1.1, fetch-blob@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/fetch-blob/-/fetch-blob-2.1.2.tgz#a7805db1361bd44c1ef62bb57fb5fe8ea173ef3c"
   integrity sha512-YKqtUDwqLyfyMnmbw8XD6Q8j9i/HggKtPEI+pZ1+8bvheBu78biSmNaXWusx1TauGqtUUGx/cBb1mKdq2rLYow==
@@ -6286,7 +6299,7 @@ readable-stream@1.1.x:
     isarray "0.0.1"
     string_decoder "~0.10.x"
 
-readable-stream@^3.0.2, readable-stream@^3.5.0:
+readable-stream@^3.0.2, readable-stream@^3.5.0, readable-stream@^3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.6.0.tgz#337bbda3adc0706bd3e024426a286d4b4b2c9198"
   integrity sha512-BViHy7LKeTz4oNnkcLJ+lVSL6vpiFeX6/d3oSH8zCW7UxP2onchk+vTGB143xuFjHS3deTgkKoXXymXqymiIdA==
@@ -7277,7 +7290,7 @@ use-sync-external-store@^1.0.0:
   resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.1.0.tgz#3343c3fe7f7e404db70f8c687adf5c1652d34e82"
   integrity sha512-SEnieB2FPKEVne66NpXPd1Np4R1lTNKfjuy3XdIoPQKYBAFdzbzSZlSn1KJZUiihQLQC5Znot4SBz1EOTBwQAQ==
 
-utf-8-validate@^5.0.9:
+utf-8-validate@^5.0.8:
   version "5.0.9"
   resolved "https://registry.yarnpkg.com/utf-8-validate/-/utf-8-validate-5.0.9.tgz#ba16a822fbeedff1a58918f2a6a6b36387493ea3"
   integrity sha512-Yek7dAy0v3Kl0orwMlvi7TPtiCNrdfHNd7Gcc/pLq4BLXqfAmd0J7OWMizUQnTTJsyjKn02mU7anqwfmUP4J8Q==
@@ -7367,10 +7380,10 @@ warning@^4.0.2:
   dependencies:
     loose-envify "^1.0.0"
 
-web-streams-polyfill@^4.0.0-beta.1:
-  version "4.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/web-streams-polyfill/-/web-streams-polyfill-4.0.0-beta.2.tgz#a534d1a8a4bbbb8d2bba07eb27722fde8ee8d077"
-  integrity sha512-UHhhnoe2M40uh2r0KVdJTN7qjFytm6o0Yp3VcjwV3bfo6rz8uqvxNoE5yNmGF0y3eFfXaFeb6M09MDSwwLmq4w==
+web-streams-polyfill@^3.1.0:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/web-streams-polyfill/-/web-streams-polyfill-3.2.1.tgz#71c2718c52b45fd49dbeee88634b3a60ceab42a6"
+  integrity sha512-e0MO3wdXWKrLbL0DgGnUV7WHVuw9OUvL4hjgnPkIeEvESk74gAITi5G606JtZPp39cd8HA9VQzCIvA49LpPN5Q==
 
 webidl-conversions@^4.0.2:
   version "4.0.2"
@@ -7593,10 +7606,10 @@ wrappy@1:
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
   integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
 
-ws@^8.5.0:
-  version "8.6.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.6.0.tgz#e5e9f1d9e7ff88083d0c0dd8281ea662a42c9c23"
-  integrity sha512-AzmM3aH3gk0aX7/rZLYvjdvZooofDu3fFOzGqcSnQ1tOcTWwhM/o+q++E8mAyVVIyUdajrkzWUGftaVSDLn1bw==
+ws@^7.5.0:
+  version "7.5.7"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.7.tgz#9e0ac77ee50af70d58326ecff7e85eb3fa375e67"
+  integrity sha512-KMvVuFzpKBuiIXW3E4u3mySRO2/mCHSyZDJQM5NQ9Q9KHWHWh0NHgfbRMLLrceUK5qAL4ytALJbpRMjixFZh8A==
 
 xregexp@2.0.0:
   version "2.0.0"
