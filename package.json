@@ -7,7 +7,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@datapunt/matomo-tracker-react": "0.5.1",
-    "@ethersphere/bee-js": "3.3.4",
+    "@ethersphere/bee-js": "3.2.0",
     "@headlessui/react": "1.6.2",
     "@heroicons/react": "1.0.6",
     "@popperjs/core": "2.11.5",
