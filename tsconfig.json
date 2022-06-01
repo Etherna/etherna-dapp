@@ -3,12 +3,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": [
-      "vite/client",
-      "vite-plugin-pwa/client",
-      "react/next",
-      "react-dom/next"
-    ],
+    "types": ["vite/client", "react/next", "react-dom/next"],
     "plugins": [
       {
         "name": "typescript-plugin-css-modules"
