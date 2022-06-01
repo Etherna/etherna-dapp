@@ -21,9 +21,11 @@ import react from "@vitejs/plugin-react"
 import svgr from "vite-plugin-svgr"
 import tsconfigPaths from "vite-tsconfig-paths"
 import eslintPlugin from "vite-plugin-eslint"
+import { dynamicBase } from "vite-plugin-dynamic-base"
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  base: mode === "production" ? "/__dynamic_base__/" : "/",
   build: {
     manifest: true,
     outDir: "build",
@@ -57,5 +59,9 @@ export default defineConfig(({ mode }) => ({
     react(),
     svgr(),
     eslintPlugin({ cache: false }),
+    dynamicBase({
+      publicPath: "window.__dynamic_base__",
+      transformIndexHtml: true,
+    }),
   ],
 }))
