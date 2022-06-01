@@ -21,7 +21,6 @@ import ReactDOM from "react-dom/client"
 import Root from "./app/Root"
 import prefetch from "./prefetch"
 import unsupportedRender from "./unsupported-render"
-import registerPWA from "./service-worker"
 import autoSigninSignout from "./utils/autoSigninSignout"
 
 // Automatically redirect to signin/signout page
@@ -41,8 +40,3 @@ unsupportedRender(async () => {
   const root = ReactDOM.createRoot(document.getElementById("root_legacy")!)
   root.render(<RootLegacy />)
 })
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-registerPWA()
