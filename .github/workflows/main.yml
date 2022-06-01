@@ -53,7 +53,7 @@ jobs:
         options: "--delete -X cgi-bin/ -X .well-known/"
 
     - name: Upload to swarm
-      uses: Etherna/swarm-upload-action@bee
+      uses: Etherna/swarm-upload-action@1.0.0
       with:
         gateway: https://gateway.etherna.io
         localRoot: build
