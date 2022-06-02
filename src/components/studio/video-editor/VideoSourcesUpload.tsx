@@ -18,24 +18,24 @@
 import React, { useImperativeHandle, useState, createRef, useEffect } from "react"
 import { Canceler } from "axios"
 
-import classes from "@styles/components/studio/video-editor/VideoSourcesUpload.module.scss"
+import classes from "@/styles/components/studio/video-editor/VideoSourcesUpload.module.scss"
 import { PlusIcon } from "@heroicons/react/solid"
 
-import Button from "@common/Button"
-import VideoSourcePreview from "@components/media/VideoSourcePreview"
-import VideoSourceStats from "@components/media/VideoSourceStats"
-import FileUploadFlow, { FileUploadFlowHandlers } from "@components/media/FileUploadFlow"
-import FileUploadProgress from "@components/media/FileUploadProgress"
-import SwarmVideoIO from "@classes/SwarmVideo"
+import Button from "@/components/common/Button"
+import VideoSourcePreview from "@/components/media/VideoSourcePreview"
+import VideoSourceStats from "@/components/media/VideoSourceStats"
+import FileUploadFlow, { FileUploadFlowHandlers } from "@/components/media/FileUploadFlow"
+import FileUploadProgress from "@/components/media/FileUploadProgress"
+import SwarmVideoIO from "@/classes/SwarmVideo"
 import {
   useVideoEditorBaseActions,
   useVideoEditorQueueActions,
   useVideoEditorState
-} from "@context/video-editor-context/hooks"
-import { useErrorMessage } from "@state/hooks/ui"
-import { getVideoDuration, getVideoResolution } from "@utils/media"
-import { isMimeWebCompatible } from "@utils/mime-types"
-import type { SwarmVideoQuality, VideoSource } from "@definitions/swarm-video"
+} from "@/context/video-editor-context/hooks"
+import { useErrorMessage } from "@/state/hooks/ui"
+import { getVideoDuration, getVideoResolution } from "@/utils/media"
+import { isMimeWebCompatible } from "@/utils/mime-types"
+import type { SwarmVideoQuality, VideoSource } from "@/definitions/swarm-video"
 
 type QueueSource = {
   quality: SwarmVideoQuality | null

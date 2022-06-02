@@ -19,10 +19,10 @@ import React, { Fragment, useRef } from "react"
 import classNames from "classnames"
 import { Dialog, Transition } from "@headlessui/react"
 
-import classes from "@styles/components/common/Modal.module.scss"
+import classes from "@/styles/components/common/Modal.module.scss"
 import { XIcon } from "@heroicons/react/solid"
 
-import Button from "@common/Button"
+import Button from "@/components/common/Button"
 
 type ModalProps = {
   children?: React.ReactNode

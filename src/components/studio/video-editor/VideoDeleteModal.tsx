@@ -17,15 +17,15 @@
 
 import React, { useState } from "react"
 
-import classes from "@styles/components/studio/video-editor/VideoDeleteModal.module.scss"
-import { ReactComponent as ThumbPlaceholder } from "@assets/backgrounds/thumb-placeholder.svg"
+import classes from "@/styles/components/studio/video-editor/VideoDeleteModal.module.scss"
+import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 
-import Modal from "@common/Modal"
-import Button from "@common/Button"
-import Image from "@common/Image"
-import { useErrorMessage } from "@state/hooks/ui"
-import { encodedSvg } from "@utils/svg"
-import type { Video } from "@definitions/swarm-video"
+import Modal from "@/components/common/Modal"
+import Button from "@/components/common/Button"
+import Image from "@/components/common/Image"
+import { useErrorMessage } from "@/state/hooks/ui"
+import { encodedSvg } from "@/utils/svg"
+import type { Video } from "@/definitions/swarm-video"
 
 type VideoDeleteModalProps = {
   show: boolean

@@ -16,12 +16,12 @@
 
 import { useEffect, useState } from "react"
 
-import SwarmVideoIO from "@classes/SwarmVideo"
-import { showError } from "@state/actions/modals"
-import useSelector from "@state/useSelector"
-import type { SwarmPlaylist } from "@definitions/swarm-playlist"
-import type { Video } from "@definitions/swarm-video"
-import type { Profile } from "@definitions/swarm-profile"
+import SwarmVideoIO from "@/classes/SwarmVideo"
+import { showError } from "@/state/actions/modals"
+import useSelector from "@/state/useSelector"
+import type { SwarmPlaylist } from "@/definitions/swarm-playlist"
+import type { Video } from "@/definitions/swarm-video"
+import type { Profile } from "@/definitions/swarm-profile"
 
 type PlaylistVideosOptions = {
   owner?: Profile

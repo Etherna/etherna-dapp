@@ -17,15 +17,15 @@
 
 import React, { useEffect, useState } from "react"
 
-import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
+import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
-import Alert from "@common/Alert"
-import Label from "@common/Label"
-import FormGroup from "@common/FormGroup"
-import FieldDesrcription from "@common/FieldDesrcription"
-import Toggle from "@common/Toggle"
-import useSelector from "@state/useSelector"
-import { urlOrigin } from "@utils/urls"
+import Alert from "@/components/common/Alert"
+import Label from "@/components/common/Label"
+import FormGroup from "@/components/common/FormGroup"
+import FieldDesrcription from "@/components/common/FieldDesrcription"
+import Toggle from "@/components/common/Toggle"
+import useSelector from "@/state/useSelector"
+import { urlOrigin } from "@/utils/urls"
 
 type PinContentFieldProps = {
   pinningEnabled?: boolean

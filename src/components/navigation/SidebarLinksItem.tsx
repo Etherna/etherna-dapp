@@ -21,7 +21,7 @@ import { NavLink } from "react-router-dom"
 import classNames from "classnames"
 import Tippy from "@tippyjs/react"
 
-import classes from "@styles/components/navigation/SidebarLinksListItem.module.scss"
+import classes from "@/styles/components/navigation/SidebarLinksListItem.module.scss"
 
 type SidebarLinksItemProps = {
   children?: React.ReactNode

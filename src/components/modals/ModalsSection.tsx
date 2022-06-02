@@ -20,7 +20,7 @@ import React from "react"
 import ShortcutModal from "./ShortcutModal"
 import ImageCropModal from "./ImageCropModal"
 import ExtensionEditorModal from "./ExtensionEditorModal"
-import useSelector from "@state/useSelector"
+import useSelector from "@/state/useSelector"
 
 const ModalsSection = () => {
   const { isEditingShortcut, isCroppingImage } = useSelector(state => state.ui)

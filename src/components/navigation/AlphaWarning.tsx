@@ -19,11 +19,11 @@ import React, { Fragment, useEffect, useRef, useState } from "react"
 import { Dialog, Transition } from "@headlessui/react"
 import classNames from "classnames"
 
-import classes from "@styles/components/navigation/AlphaWarning.module.scss"
-import { ReactComponent as BugIcon } from "@assets/icons/bug.svg"
-import { ReactComponent as DiscordLogo } from "@assets/brand/logo-discord.svg"
+import classes from "@/styles/components/navigation/AlphaWarning.module.scss"
+import { ReactComponent as BugIcon } from "@/assets/icons/bug.svg"
+import { ReactComponent as DiscordLogo } from "@/assets/brand/logo-discord.svg"
 
-import useLocalStorage from "@hooks/useLocalStorage"
+import useLocalStorage from "@/hooks/useLocalStorage"
 
 const AlphaWarning: React.FC = () => {
   const [hide, setHide] = useLocalStorage("setting:hide-alpha-warning", false)

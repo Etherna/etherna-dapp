@@ -19,7 +19,7 @@ import React, { useReducer } from "react"
 
 import { PlayerContext } from "."
 import playerContextReducer from "./reducer"
-import logger from "@utils/context-logger"
+import logger from "@/utils/context-logger"
 
 type PlayerContextProviderProps = {
   children?: React.ReactNode

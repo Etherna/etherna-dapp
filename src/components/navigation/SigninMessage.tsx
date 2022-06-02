@@ -17,9 +17,9 @@
 
 import React from "react"
 
-import classes from "@styles/components/navigation/SigninMessage.module.scss"
+import classes from "@/styles/components/navigation/SigninMessage.module.scss"
 
-import SigninButton from "@components/user/SigninButton"
+import SigninButton from "@/components/user/SigninButton"
 
 const SigninMessage: React.FC = () => {
   return (

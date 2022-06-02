@@ -20,7 +20,7 @@ import classNames from "classnames"
 import { Popover } from "@headlessui/react"
 import { usePopper } from "react-popper"
 
-import classes from "@styles/components/common/Popup.module.scss"
+import classes from "@/styles/components/common/Popup.module.scss"
 
 type PopupProps = {
   children?: React.ReactNode

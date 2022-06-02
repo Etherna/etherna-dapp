@@ -15,9 +15,9 @@
  */
 
 import AuthIdentityClient from "./AuthIdentityClient"
-import { parseLocalStorage } from "@utils/local-storage"
-import { isSafeURL, safeURL, urlOrigin } from "@utils/urls"
-import type { AuthClientOptions } from "@definitions/api-sso"
+import { parseLocalStorage } from "@/utils/local-storage"
+import { isSafeURL, safeURL, urlOrigin } from "@/utils/urls"
+import type { AuthClientOptions } from "@/definitions/api-sso"
 
 export default class EthernaAuthClient {
   identity: AuthIdentityClient

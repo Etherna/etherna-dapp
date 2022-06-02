@@ -17,9 +17,9 @@
 
 import React from "react"
 
-import classes from "@styles/components/profile/ProfilePreview.module.scss"
+import classes from "@/styles/components/profile/ProfilePreview.module.scss"
 
-import Placeholder from "@common/Placeholder"
+import Placeholder from "@/components/common/Placeholder"
 
 const ProfilePreviewPlaceholder = () => {
   const rows = 5

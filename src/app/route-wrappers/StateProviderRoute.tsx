@@ -18,8 +18,8 @@
 import React from "react"
 import { Outlet } from "react-router-dom"
 
-import ShortcutWrapper from "@keyboard/shortcutWrapper"
-import StateProviderWrapper from "@state/StateProviderWrapper"
+import ShortcutWrapper from "@/keyboard/shortcutWrapper"
+import StateProviderWrapper from "@/state/StateProviderWrapper"
 
 const StateProviderRoute: React.FC = () => {
   return (

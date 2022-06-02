@@ -18,8 +18,8 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/Divider.module.scss"
-import { ReactComponent as DividerPattern } from "@assets/backgrounds/divider.svg"
+import classes from "@/styles/components/common/Divider.module.scss"
+import { ReactComponent as DividerPattern } from "@/assets/backgrounds/divider.svg"
 
 type DividerProps = {
   children?: React.ReactNode

@@ -17,12 +17,12 @@
 
 import React from "react"
 
-import classes from "@styles/components/navigation/SidebarLinks.module.scss"
+import classes from "@/styles/components/navigation/SidebarLinks.module.scss"
 
 import SidebarLinksList from "./SidebarLinksList"
 import SidebarLinksToggle from "./SidebarLinksToggle"
-import SidebarItem from "@components/navigation/SidebarItem"
-import Popup from "@common/Popup"
+import SidebarItem from "@/components/navigation/SidebarItem"
+import Popup from "@/components/common/Popup"
 
 type SidebarLinksProps = {
   children?: React.ReactNode

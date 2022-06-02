@@ -17,15 +17,15 @@
 
 import React, { useEffect, useMemo, useState } from "react"
 
-import { ReactComponent as IndexIcon } from "@assets/icons/navigation/index.svg"
-import { ReactComponent as GatewayIcon } from "@assets/icons/navigation/gateway.svg"
+import { ReactComponent as IndexIcon } from "@/assets/icons/navigation/index.svg"
+import { ReactComponent as GatewayIcon } from "@/assets/icons/navigation/gateway.svg"
 
-import Modal from "@common/Modal"
-import Button from "@common/Button"
-import ExtensionHostPanel from "@components/env/ExtensionHostPanel"
-import useSelector from "@state/useSelector"
-import useExtensionEditor from "@state/hooks/ui/useExtensionEditor"
-import { GatewayExtensionHost, IndexExtensionHost } from "@definitions/extension-host"
+import Modal from "@/components/common/Modal"
+import Button from "@/components/common/Button"
+import ExtensionHostPanel from "@/components/env/ExtensionHostPanel"
+import useSelector from "@/state/useSelector"
+import useExtensionEditor from "@/state/hooks/ui/useExtensionEditor"
+import { GatewayExtensionHost, IndexExtensionHost } from "@/definitions/extension-host"
 
 const ExtensionEditorModal = () => {
   const { extensionName } = useSelector(state => state.ui)

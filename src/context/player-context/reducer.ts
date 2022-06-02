@@ -15,7 +15,7 @@
  */
 
 import { PlayerContextState } from "."
-import { clamp } from "@utils/math"
+import { clamp } from "@/utils/math"
 
 export const PlayerReducerTypes = {
   SET_VIDEO_ELEMENT: "player/set-video-element",

@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import type { ProfileState } from "@definitions/app-state"
-import type { SwarmImage } from "@definitions/swarm-image"
+import type { ProfileState } from "@/definitions/app-state"
+import type { SwarmImage } from "@/definitions/swarm-image"
 
 export const ProfileActionTypes = {
   PROFILE_UPDATE: "PROFILE_UPDATE",

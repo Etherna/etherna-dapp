@@ -17,12 +17,12 @@
 
 import React from "react"
 
-import classes from "@styles/components/player/PlayerVideoInfo.module.scss"
+import classes from "@/styles/components/player/PlayerVideoInfo.module.scss"
 
-import Avatar from "@components/user/Avatar"
-import routes from "@routes"
-import { shortenEthAddr } from "@utils/ethereum"
-import type { Profile } from "@definitions/swarm-profile"
+import Avatar from "@/components/user/Avatar"
+import routes from "@/routes"
+import { shortenEthAddr } from "@/utils/ethereum"
+import type { Profile } from "@/definitions/swarm-profile"
 
 type PlayerVideoInfoProps = {
   hash: string

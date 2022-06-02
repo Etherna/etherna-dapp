@@ -18,11 +18,11 @@
 import React from "react"
 
 import { ShieldCheckIcon } from "@heroicons/react/outline"
-import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
+import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
-import Modal from "@common/Modal"
-import Button from "@common/Button"
-import { closeConnectingWalletModal } from "@state/actions/modals"
+import Modal from "@/components/common/Modal"
+import Button from "@/components/common/Button"
+import { closeConnectingWalletModal } from "@/state/actions/modals"
 
 const ConnectingWalletModal = ({ show = false }) => {
   return (

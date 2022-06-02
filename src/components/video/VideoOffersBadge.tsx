@@ -18,13 +18,13 @@
 import React, { useState } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/video/VideoOffersBadge.module.scss"
-import { ReactComponent as CreditIcon } from "@assets/icons/credit.svg"
+import classes from "@/styles/components/video/VideoOffersBadge.module.scss"
+import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
 
-import VideoOffersModal from "@components/modals/VideoOffersModal"
-import useVideoOffers from "@hooks/useVideoOffers"
-import useSelector from "@state/useSelector"
-import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
+import VideoOffersModal from "@/components/modals/VideoOffersModal"
+import useVideoOffers from "@/hooks/useVideoOffers"
+import useSelector from "@/state/useSelector"
+import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 
 type VideoOffersBadgeProps = {
   video: Video | null | undefined

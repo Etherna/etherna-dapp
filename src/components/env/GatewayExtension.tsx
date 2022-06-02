@@ -17,11 +17,11 @@
 
 import React from "react"
 
-import { ReactComponent as GatewayIcon } from "@assets/icons/navigation/gateway.svg"
+import { ReactComponent as GatewayIcon } from "@/assets/icons/navigation/gateway.svg"
 
-import ExtensionHostStatus from "@components/env/ExtensionHostStatus"
-import useSelector from "@state/useSelector"
-import useExtensionEditor from "@state/hooks/ui/useExtensionEditor"
+import ExtensionHostStatus from "@/components/env/ExtensionHostStatus"
+import useSelector from "@/state/useSelector"
+import useExtensionEditor from "@/state/hooks/ui/useExtensionEditor"
 
 type GatewayExtensionProps = {
   noIcon?: boolean

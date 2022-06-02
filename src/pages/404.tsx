@@ -17,8 +17,8 @@
 
 import React from "react"
 
-import SEO from "@components/layout/SEO"
-import NotFound from "@common/NotFound"
+import SEO from "@/components/layout/SEO"
+import NotFound from "@/components/common/NotFound"
 
 const NotFoundPage = () => {
   return (

@@ -18,11 +18,11 @@
 import React, { useEffect, useState } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/video/VideoDetailsDescription.module.scss"
+import classes from "@/styles/components/video/VideoDetailsDescription.module.scss"
 import { ChevronDownIcon } from "@heroicons/react/solid"
 
-import Button from "@common/Button"
-import MarkdownPreview from "@common/MarkdownPreview"
+import Button from "@/components/common/Button"
+import MarkdownPreview from "@/components/common/MarkdownPreview"
 
 type VideoDetailsDescriptionProps = {
   description?: string | null

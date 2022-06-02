@@ -17,10 +17,10 @@
 
 import React from "react"
 
-import classes from "@styles/components/player/PlayerWatchOn.module.scss"
-import { ReactComponent as Logo } from "@assets/logo.svg"
+import classes from "@/styles/components/player/PlayerWatchOn.module.scss"
+import { ReactComponent as Logo } from "@/assets/logo.svg"
 
-import routes from "@routes"
+import routes from "@/routes"
 
 type PlayerWatchOnProps = {
   hash: string

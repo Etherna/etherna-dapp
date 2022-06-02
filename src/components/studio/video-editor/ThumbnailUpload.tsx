@@ -18,17 +18,17 @@
 import React, { useImperativeHandle, useRef, useState } from "react"
 import { Canceler } from "axios"
 
-import Button from "@common/Button"
-import FileUploadFlow, { FileUploadFlowHandlers } from "@components/media/FileUploadFlow"
-import FileUploadProgress from "@components/media/FileUploadProgress"
-import ImageSourcePreview from "@components/media/ImageSourcePreview"
+import Button from "@/components/common/Button"
+import FileUploadFlow, { FileUploadFlowHandlers } from "@/components/media/FileUploadFlow"
+import FileUploadProgress from "@/components/media/FileUploadProgress"
+import ImageSourcePreview from "@/components/media/ImageSourcePreview"
 import {
   useVideoEditorBaseActions,
   useVideoEditorQueueActions,
   useVideoEditorState
-} from "@context/video-editor-context/hooks"
-import { useErrorMessage } from "@state/hooks/ui"
-import { isMimeWebCompatible } from "@utils/mime-types"
+} from "@/context/video-editor-context/hooks"
+import { useErrorMessage } from "@/state/hooks/ui"
+import { isMimeWebCompatible } from "@/utils/mime-types"
 
 type ThumbnailUploadProps = {
   disabled?: boolean

@@ -18,12 +18,12 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 
-import Container from "@common/Container"
-import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
-import SEO from "@components/layout/SEO"
-import VideoView from "@components/video/VideoView"
-import useRouteState from "@hooks/useRouteState"
-import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
+import Container from "@/components/common/Container"
+import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
+import SEO from "@/components/layout/SEO"
+import VideoView from "@/components/video/VideoView"
+import useRouteState from "@/hooks/useRouteState"
+import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 
 const WatchPage = () => {
   const { hash } = useParams()

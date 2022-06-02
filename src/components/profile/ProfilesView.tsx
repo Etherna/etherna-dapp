@@ -18,12 +18,12 @@
 import React, { useState, useEffect } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
-import classes from "@styles/components/profile/Profiles.module.scss"
+import classes from "@/styles/components/profile/Profiles.module.scss"
 
 import ProfilePreview from "./ProfilePreview"
-import ProfilePreviewPlaceholder from "@components/placeholders/ProfilePreviewPlaceholder"
-import useSelector from "@state/useSelector"
-import type { IndexUser } from "@definitions/api-index"
+import ProfilePreviewPlaceholder from "@/components/placeholders/ProfilePreviewPlaceholder"
+import useSelector from "@/state/useSelector"
+import type { IndexUser } from "@/definitions/api-index"
 
 const FETCH_COUNT = 10
 

@@ -20,7 +20,7 @@ import { useLocation } from "react-router"
 import { NavLink } from "react-router-dom"
 import classNames from "classnames"
 
-import classes from "@styles/components/navigation/TabbarItem.module.scss"
+import classes from "@/styles/components/navigation/TabbarItem.module.scss"
 
 export type TabbarItemProps = {
   children?: React.ReactNode

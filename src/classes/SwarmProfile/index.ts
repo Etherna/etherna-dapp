@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { Profile } from "@definitions/swarm-profile"
+import { Profile } from "@/definitions/swarm-profile"
 import SwarmProfileReader from "./SwarmProfileReader"
 import SwarmProfileWriter from "./SwarmProfileWriter"
 

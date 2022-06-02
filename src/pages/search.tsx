@@ -18,10 +18,10 @@
 import React from "react"
 import { useLocation } from "react-router-dom"
 
-import Container from "@common/Container"
-import ComingSoon from "@common/ComingSoon"
-import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
-import SEO from "@components/layout/SEO"
+import Container from "@/components/common/Container"
+import ComingSoon from "@/components/common/ComingSoon"
+import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
+import SEO from "@/components/layout/SEO"
 
 const SearchPage = () => {
   const location = useLocation()

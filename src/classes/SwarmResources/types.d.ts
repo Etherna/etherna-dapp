@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import type EthernaGatewayClient from "@classes/EthernaGatewayClient"
-import type { VideoOffersStatus } from "@definitions/swarm-video"
+import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
+import type { VideoOffersStatus } from "@/definitions/swarm-video"
 
 export type SwarmResourcesReaderOptions = {
   gatewayClient: EthernaGatewayClient

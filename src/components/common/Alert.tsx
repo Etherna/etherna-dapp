@@ -18,7 +18,7 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/Alert.module.scss"
+import classes from "@/styles/components/common/Alert.module.scss"
 
 type AlertProps = {
   children?: React.ReactNode

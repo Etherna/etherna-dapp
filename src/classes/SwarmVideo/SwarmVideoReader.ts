@@ -15,14 +15,14 @@
  */
 
 import SwarmVideoIO, { getDefaultRawVideo, getDefaultVideo } from "."
-import EthernaIndexClient from "@classes/EthernaIndexClient"
-import SwarmBeeClient from "@classes/SwarmBeeClient"
-import SwarmImageIO from "@classes/SwarmImage"
-import SwarmProfileIO from "@classes/SwarmProfile"
+import EthernaIndexClient from "@/classes/EthernaIndexClient"
+import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import SwarmImageIO from "@/classes/SwarmImage"
+import SwarmProfileIO from "@/classes/SwarmProfile"
 import type { SwarmVideoReaderOptions } from "./types"
-import type { Profile } from "@definitions/swarm-profile"
-import type { IndexVideo, IndexVideoManifest } from "@definitions/api-index"
-import type { SwarmVideoRaw, Video } from "@definitions/swarm-video"
+import type { Profile } from "@/definitions/swarm-profile"
+import type { IndexVideo, IndexVideoManifest } from "@/definitions/api-index"
+import type { SwarmVideoRaw, Video } from "@/definitions/swarm-video"
 
 /**
  * Load/Update video info over swarm

@@ -18,7 +18,7 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/FieldDescription.module.scss"
+import classes from "@/styles/components/common/FieldDescription.module.scss"
 
 type FieldDesrcriptionProps = {
   children?: React.ReactNode

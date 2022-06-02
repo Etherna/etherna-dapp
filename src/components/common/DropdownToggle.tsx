@@ -19,7 +19,7 @@ import React from "react"
 import classNames from "classnames"
 import { Menu } from "@headlessui/react"
 
-import classes from "@styles/components/common/DropdownToggle.module.scss"
+import classes from "@/styles/components/common/DropdownToggle.module.scss"
 
 type DropdownToggleProps = {
   children?: React.ReactNode

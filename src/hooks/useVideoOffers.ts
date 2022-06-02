@@ -16,10 +16,10 @@
 
 import { useEffect, useState } from "react"
 
-import SwarmResourcesIO from "@classes/SwarmResources"
-import useSelector from "@state/useSelector"
-import type SwarmResourcesReader from "@classes/SwarmResources/SwarmResourcesReader"
-import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
+import SwarmResourcesIO from "@/classes/SwarmResources"
+import useSelector from "@/state/useSelector"
+import type SwarmResourcesReader from "@/classes/SwarmResources/SwarmResourcesReader"
+import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 
 type UseVideoOffersOpts = {
   routeState?: VideoOffersStatus

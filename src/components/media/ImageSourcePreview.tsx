@@ -17,12 +17,12 @@
 
 import React, { useMemo } from "react"
 
-import classes from "@styles/components/media/ImageSourcePreview.module.scss"
+import classes from "@/styles/components/media/ImageSourcePreview.module.scss"
 
-import MediaStats from "@components/media/MediaStats"
-import SwarmImageIO from "@classes/SwarmImage"
-import useSelector from "@state/useSelector"
-import type { SwarmImageRaw } from "@definitions/swarm-image"
+import MediaStats from "@/components/media/MediaStats"
+import SwarmImageIO from "@/classes/SwarmImage"
+import useSelector from "@/state/useSelector"
+import type { SwarmImageRaw } from "@/definitions/swarm-image"
 
 type ImageSourcePreviewProps = {
   image?: SwarmImageRaw | null

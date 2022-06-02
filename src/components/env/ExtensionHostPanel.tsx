@@ -18,18 +18,18 @@
 import React, { useMemo, useState } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/env/ExtensionHostPanel.module.scss"
+import classes from "@/styles/components/env/ExtensionHostPanel.module.scss"
 import { CheckIcon, PencilIcon, TrashIcon, PlusIcon } from "@heroicons/react/solid"
 
 import ExtensionHostsList from "./ExtensionHostsList"
-import Button from "@common/Button"
-import Label from "@common/Label"
-import FormGroup from "@common/FormGroup"
-import TextField from "@common/TextField"
-import useLocalStorage from "@hooks/useLocalStorage"
-import { useErrorMessage } from "@state/hooks/ui"
-import { isSafeURL, urlHostname } from "@utils/urls"
-import type { GatewayExtensionHost, IndexExtensionHost } from "@definitions/extension-host"
+import Button from "@/components/common/Button"
+import Label from "@/components/common/Label"
+import FormGroup from "@/components/common/FormGroup"
+import TextField from "@/components/common/TextField"
+import useLocalStorage from "@/hooks/useLocalStorage"
+import { useErrorMessage } from "@/state/hooks/ui"
+import { isSafeURL, urlHostname } from "@/utils/urls"
+import type { GatewayExtensionHost, IndexExtensionHost } from "@/definitions/extension-host"
 
 type ExtensionHostPanelProps<T> = {
   listStorageKey: string

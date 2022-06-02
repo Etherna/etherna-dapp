@@ -18,15 +18,15 @@
 import React, { useState } from "react"
 
 import { FlagIcon, DotsVerticalIcon } from "@heroicons/react/solid"
-import { ReactComponent as ManifestIcon } from "@assets/icons/manifest.svg"
+import { ReactComponent as ManifestIcon } from "@/assets/icons/manifest.svg"
 
 import VideoExtraMenuReport from "./VideoExtraMenuReport"
 import VideoExtraMenuManifest from "./VideoExtraMenuManifest"
-import Dropdown from "@common/Dropdown"
-import DropdownMenu from "@common/DropdownMenu"
-import DropdownItem from "@common/DropdownItem"
-import DropdownToggle from "@common/DropdownToggle"
-import type { Video } from "@definitions/swarm-video"
+import Dropdown from "@/components/common/Dropdown"
+import DropdownMenu from "@/components/common/DropdownMenu"
+import DropdownItem from "@/components/common/DropdownItem"
+import DropdownToggle from "@/components/common/DropdownToggle"
+import type { Video } from "@/definitions/swarm-video"
 
 type VideoExtraMenuProps = {
   video: Video

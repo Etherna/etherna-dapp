@@ -15,10 +15,10 @@
  */
 
 import SwarmUserPlaylistsIO from "."
-import SwarmBeeClient from "@classes/SwarmBeeClient"
-import { urlOrigin } from "@utils/urls"
+import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import { urlOrigin } from "@/utils/urls"
 import type { SwarmUserPlaylistsWriterOptions } from "./types"
-import type { SwarmUserPlaylistsRaw } from "@definitions/swarm-playlist"
+import type { SwarmUserPlaylistsRaw } from "@/definitions/swarm-playlist"
 
 /**
  * Handles upload of images on swarm and created responsive source

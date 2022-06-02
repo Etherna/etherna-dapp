@@ -18,11 +18,11 @@
 import React, { useState, useEffect } from "react"
 import axios from "axios"
 
-import classes from "@styles/components/media/FileUpload.module.scss"
+import classes from "@/styles/components/media/FileUpload.module.scss"
 
-import Alert from "@common/Alert"
-import Button from "@common/Button"
-import type { FilePreviewRenderProps } from "@definitions/file-preview"
+import Alert from "@/components/common/Alert"
+import Button from "@/components/common/Button"
+import type { FilePreviewRenderProps } from "@/definitions/file-preview"
 
 type FileUploadProps = {
   children?: React.ReactChild | ((props: FilePreviewRenderProps) => React.ReactChild)

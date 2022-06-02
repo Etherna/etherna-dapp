@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { store } from "@state/store"
+import { store } from "@/state/store"
 
 /**
  * Redirect to the service login page

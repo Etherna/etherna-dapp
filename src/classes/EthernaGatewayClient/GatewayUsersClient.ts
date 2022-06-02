@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import http from "@utils/request"
-import type { GatewayBatch, GatewayBatchPreview, GatewayCredit, GatewayCurrentUser } from "@definitions/api-gateway"
+import http from "@/utils/request"
+import type { GatewayBatch, GatewayBatchPreview, GatewayCredit, GatewayCurrentUser } from "@/definitions/api-gateway"
 
 export default class GatewayUsersClient {
   url: string

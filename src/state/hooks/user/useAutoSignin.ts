@@ -21,17 +21,17 @@ import type { EthAddress } from "@ethersphere/bee-js/dist/src/utils/eth"
 
 import type { AxiosError } from "axios"
 
-import SwarmProfileIO from "@classes/SwarmProfile"
-import SwarmBeeClient from "@classes/SwarmBeeClient"
-import loginRedirect from "@state/actions/user/login-redirect"
-import { UserActions, UserActionTypes } from "@state/reducers/userReducer"
-import { EnvActions, EnvActionTypes } from "@state/reducers/enviromentReducer"
-import { ProfileActions, ProfileActionTypes } from "@state/reducers/profileReducer"
-import { UIActions, UIActionTypes } from "@state/reducers/uiReducer"
-import useSelector from "@state/useSelector"
-import { addressBytes, signMessage } from "@utils/ethereum"
-import type { AuthIdentity } from "@definitions/api-sso"
-import type { GatewayBatch, GatewayBatchPreview } from "@definitions/api-gateway"
+import SwarmProfileIO from "@/classes/SwarmProfile"
+import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import loginRedirect from "@/state/actions/user/login-redirect"
+import { UserActions, UserActionTypes } from "@/state/reducers/userReducer"
+import { EnvActions, EnvActionTypes } from "@/state/reducers/enviromentReducer"
+import { ProfileActions, ProfileActionTypes } from "@/state/reducers/profileReducer"
+import { UIActions, UIActionTypes } from "@/state/reducers/uiReducer"
+import useSelector from "@/state/useSelector"
+import { addressBytes, signMessage } from "@/utils/ethereum"
+import type { AuthIdentity } from "@/definitions/api-sso"
+import type { GatewayBatch, GatewayBatchPreview } from "@/definitions/api-gateway"
 
 type AutoSigninOpts = {
   forceSignin?: boolean

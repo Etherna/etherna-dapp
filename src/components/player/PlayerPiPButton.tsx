@@ -17,11 +17,11 @@
 
 import React from "react"
 
-import { ReactComponent as PipIcon } from "@assets/icons/player/pip.svg"
+import { ReactComponent as PipIcon } from "@/assets/icons/player/pip.svg"
 
 import PlayerToolbarButton from "./PlayerToolbarButton"
-import { PlayerReducerTypes } from "@context/player-context"
-import { usePlayerState } from "@context/player-context/hooks"
+import { PlayerReducerTypes } from "@/context/player-context"
+import { usePlayerState } from "@/context/player-context/hooks"
 
 const PlayerPiPButton: React.FC = () => {
   const [, dispatch] = usePlayerState()

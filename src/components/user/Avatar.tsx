@@ -18,11 +18,11 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/user/Avatar.module.scss"
+import classes from "@/styles/components/user/Avatar.module.scss"
 
-import Image from "@common/Image"
-import makeBlockies from "@utils/makeBlockies"
-import type { SwarmImage } from "@definitions/swarm-image"
+import Image from "@/components/common/Image"
+import makeBlockies from "@/utils/makeBlockies"
+import type { SwarmImage } from "@/definitions/swarm-image"
 
 type AvatarProps = {
   image?: string | SwarmImage | null

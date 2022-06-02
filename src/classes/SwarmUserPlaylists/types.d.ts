@@ -16,8 +16,8 @@
 
 import type { Canceler } from "axios"
 
-import type SwarmBeeClient from "@classes/SwarmBeeClient"
-import type { SwarmPlaylist } from "@definitions/swarm-playlist"
+import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type { SwarmPlaylist } from "@/definitions/swarm-playlist"
 
 export type SwarmUserPlaylistsReaderOptions = {
   beeClient: SwarmBeeClient

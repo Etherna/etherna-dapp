@@ -17,7 +17,7 @@
 import { useDispatch } from "react-redux"
 import { Dispatch } from "redux"
 
-import { UIActions, UIActionTypes } from "@state/reducers/uiReducer"
+import { UIActions, UIActionTypes } from "@/state/reducers/uiReducer"
 
 let waitingInterval: number | undefined
 let waitingStatus: boolean | undefined

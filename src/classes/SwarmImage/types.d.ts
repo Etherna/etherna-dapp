@@ -16,7 +16,7 @@
 
 import type { Canceler } from "axios"
 
-import type SwarmBeeClient from "@classes/SwarmBeeClient"
+import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 
 export type SwarmImageReaderOptions = {
   beeClient: SwarmBeeClient

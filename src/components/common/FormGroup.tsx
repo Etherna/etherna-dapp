@@ -18,7 +18,7 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/FormFroup.module.scss"
+import classes from "@/styles/components/common/FormFroup.module.scss"
 
 type FormGroupProps = {
   children?: React.ReactNode

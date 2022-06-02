@@ -17,9 +17,9 @@
 
 import React from "react"
 
-import classes from "@styles/components/user/AlphaPassButton.module.scss"
+import classes from "@/styles/components/user/AlphaPassButton.module.scss"
 
-import Button from "@common/Button"
+import Button from "@/components/common/Button"
 
 type AlphaPassButtonProps = {
   children?: React.ReactNode

@@ -19,12 +19,12 @@ import React, { useEffect, useRef, useState } from "react"
 import classNames from "classnames"
 import clamp from "lodash/clamp"
 
-import classes from "@styles/components/env/ExtensionHostsList.module.scss"
+import classes from "@/styles/components/env/ExtensionHostsList.module.scss"
 import { BadgeCheckIcon, ChevronLeftIcon } from "@heroicons/react/solid"
 
-import { urlHostname } from "@utils/urls"
-import { smoothScroll } from "@utils/scroll"
-import type { ExtensionHost } from "@definitions/extension-host"
+import { urlHostname } from "@/utils/urls"
+import { smoothScroll } from "@/utils/scroll"
+import type { ExtensionHost } from "@/definitions/extension-host"
 
 type ExtensionHostsListProps = {
   hosts: ExtensionHost[]

@@ -18,7 +18,7 @@
 import React, { useState } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/Tab.module.scss"
+import classes from "@/styles/components/common/Tab.module.scss"
 
 import TabContent, { TabContentProps } from "./TabContent"
 

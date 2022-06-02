@@ -16,7 +16,7 @@
 
 import useVideoEditorState from "./useVideoEditorState"
 import { VideoEditorActionTypes } from "../reducer"
-import type { SwarmVideoQuality } from "@definitions/swarm-video"
+import type { SwarmVideoQuality } from "@/definitions/swarm-video"
 
 const useVideoEditorBaseActions = () => {
   const [, dispatch] = useVideoEditorState()

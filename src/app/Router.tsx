@@ -25,22 +25,22 @@ import AuthenticateRoute from "./route-wrappers/AuthenticateRoute"
 import SignedInRoute from "./route-wrappers/SignedInRoute"
 import VideoRoute from "./route-wrappers/VideoRoute"
 
-const AsyncHome = lazy(() => import("@pages/home"))
-const AsyncFrames = lazy(() => import("@pages/frames"))
-const AsyncFollowing = lazy(() => import("@pages/following"))
-const AsyncPlaylists = lazy(() => import("@pages/playlists"))
-const AsyncSaved = lazy(() => import("@pages/saved"))
-const AsyncChannel = lazy(() => import("@pages/channel"))
-const AsyncChannelEdit = lazy(() => import("@pages/studio/channel-edit"))
-const AsyncVideosList = lazy(() => import("@pages/studio/videos-list"))
-const AsyncVideoEdit = lazy(() => import("@pages/studio/video-edit"))
-const AsyncStorage = lazy(() => import("@pages/studio/storage"))
-const AsyncProfiles = lazy(() => import("@pages/profiles"))
-const AsyncWatch = lazy(() => import("@pages/watch"))
-const AsyncEmbed = lazy(() => import("@pages/embed"))
-const AsyncSearch = lazy(() => import("@pages/search"))
-const AsyncShortcuts = lazy(() => import("@pages/shortcuts"))
-const AsyncNotFound = lazy(() => import("@pages/404"))
+const AsyncHome = lazy(() => import("@/pages/home"))
+const AsyncFrames = lazy(() => import("@/pages/frames"))
+const AsyncFollowing = lazy(() => import("@/pages/following"))
+const AsyncPlaylists = lazy(() => import("@/pages/playlists"))
+const AsyncSaved = lazy(() => import("@/pages/saved"))
+const AsyncChannel = lazy(() => import("@/pages/channel"))
+const AsyncChannelEdit = lazy(() => import("@/pages/studio/channel-edit"))
+const AsyncVideosList = lazy(() => import("@/pages/studio/videos-list"))
+const AsyncVideoEdit = lazy(() => import("@/pages/studio/video-edit"))
+const AsyncStorage = lazy(() => import("@/pages/studio/storage"))
+const AsyncProfiles = lazy(() => import("@/pages/profiles"))
+const AsyncWatch = lazy(() => import("@/pages/watch"))
+const AsyncEmbed = lazy(() => import("@/pages/embed"))
+const AsyncSearch = lazy(() => import("@/pages/search"))
+const AsyncShortcuts = lazy(() => import("@/pages/shortcuts"))
+const AsyncNotFound = lazy(() => import("@/pages/404"))
 
 const Home = () => (
   <Suspense fallback={null}><AsyncHome /></Suspense>

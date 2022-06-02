@@ -15,9 +15,9 @@
  */
 
 import SwarmResourcesIO from "."
-import EthernaGatewayClient from "@classes/EthernaGatewayClient"
+import EthernaGatewayClient from "@/classes/EthernaGatewayClient"
 import type { SwarmResourcesWriterOptions } from "./types"
-import type { Video } from "@definitions/swarm-video"
+import type { Video } from "@/definitions/swarm-video"
 
 /**
  * Update swarm resources info on gateway

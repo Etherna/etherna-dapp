@@ -16,9 +16,9 @@
 
 import { VideoEditorContextState, VideoEditorQueue } from "."
 import VideoEditorCache from "./VideoEditorCache"
-import { deepCloneArray } from "@utils/array"
-import type { VideoEditorQueueName } from "@definitions/video-editor-context"
-import type { SwarmVideoQuality } from "@definitions/swarm-video"
+import { deepCloneArray } from "@/utils/array"
+import type { VideoEditorQueueName } from "@/definitions/video-editor-context"
+import type { SwarmVideoQuality } from "@/definitions/swarm-video"
 
 // Actions
 export const VideoEditorActionTypes = {

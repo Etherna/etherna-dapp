@@ -16,9 +16,9 @@
 
 import type { Dispatch } from "react"
 
-import { THUMBNAIL_QUEUE_NAME } from "@components/studio/video-editor/ThumbnailUpload"
-import type { AnyVideoEditorAction } from "@context/video-editor-context"
-import type SwarmVideoWriter from "@classes/SwarmVideo/SwarmVideoWriter"
+import { THUMBNAIL_QUEUE_NAME } from "@/components/studio/video-editor/ThumbnailUpload"
+import type { AnyVideoEditorAction } from "@/context/video-editor-context"
+import type SwarmVideoWriter from "@/classes/SwarmVideo/SwarmVideoWriter"
 import type { SwarmVideoQuality } from "./swarm-video"
 
 export type VideoEditorContextStore = [state: VideoEditorContextState, dispatch: Dispatch<AnyVideoEditorAction>]

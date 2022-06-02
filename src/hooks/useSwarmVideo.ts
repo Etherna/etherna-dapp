@@ -16,9 +16,9 @@
 
 import { useEffect, useState } from "react"
 
-import SwarmVideoIO from "@classes/SwarmVideo"
-import useSelector from "@state/useSelector"
-import type { Video } from "@definitions/swarm-video"
+import SwarmVideoIO from "@/classes/SwarmVideo"
+import useSelector from "@/state/useSelector"
+import type { Video } from "@/definitions/swarm-video"
 
 type SwarmVideoOptions = {
   reference: string

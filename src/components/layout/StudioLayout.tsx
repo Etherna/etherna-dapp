@@ -17,14 +17,14 @@
 
 import React from "react"
 
-import classes from "@styles/components/layout/StudioLayout.module.scss"
+import classes from "@/styles/components/layout/StudioLayout.module.scss"
 import { SparklesIcon, LightBulbIcon, FilmIcon, ServerIcon } from "@heroicons/react/solid"
 
 import SEO from "./SEO"
-import Container from "@common/Container"
-import DropdownSidebar from "@components/navigation/DropdownSidebar"
-import SidebarItem from "@components/navigation/SidebarItem"
-import routes from "@routes"
+import Container from "@/components/common/Container"
+import DropdownSidebar from "@/components/navigation/DropdownSidebar"
+import SidebarItem from "@/components/navigation/SidebarItem"
+import routes from "@/routes"
 
 type StudioLayoutProps = {
   children?: React.ReactNode

@@ -19,9 +19,9 @@ import React, { useRef, useState } from "react"
 import { Listbox } from "@headlessui/react"
 import classNames from "classnames"
 
-import classes from "@styles/components/player/PlayerToolbarSelect.module.scss"
+import classes from "@/styles/components/player/PlayerToolbarSelect.module.scss"
 
-import { isTouchDevice } from "@utils/browser"
+import { isTouchDevice } from "@/utils/browser"
 
 type PlayerToolbarSelectProps = {
   children?: React.ReactNode

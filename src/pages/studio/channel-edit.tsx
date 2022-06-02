@@ -17,9 +17,9 @@
 
 import React from "react"
 
-import Container from "@common/Container"
-import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
-import ChannelEditor from "@components/studio/ChannelEdit"
+import Container from "@/components/common/Container"
+import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
+import ChannelEditor from "@/components/studio/ChannelEdit"
 
 const ChannelEditPage = () => {
   return (

@@ -1,5 +1,4 @@
 {
-  "extends": "./tsconfig.paths.json",
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
@@ -24,6 +23,10 @@
     "noImplicitThis": false,
     "noEmit": true,
     "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
     "typeRoots": ["src/typings"]
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx"],

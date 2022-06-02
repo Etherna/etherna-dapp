@@ -18,7 +18,7 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 
-import VideoView from "@components/video/VideoView"
+import VideoView from "@/components/video/VideoView"
 
 const EmbedPage = () => {
   const { hash } = useParams()

@@ -18,12 +18,12 @@
 import React, { useEffect, useState } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/player/PlayerErrorBanner.module.scss"
+import classes from "@/styles/components/player/PlayerErrorBanner.module.scss"
 import { ExclamationCircleIcon } from "@heroicons/react/outline"
 import { LockClosedIcon } from "@heroicons/react/solid"
-import { ReactComponent as CreditErrorIcon } from "@assets/icons/credit-error.svg"
+import { ReactComponent as CreditErrorIcon } from "@/assets/icons/credit-error.svg"
 
-import { usePlayerState } from "@context/player-context/hooks"
+import { usePlayerState } from "@/context/player-context/hooks"
 
 const PlayerErrorBanner: React.FC = () => {
   const [description, setDescription] = useState("")
