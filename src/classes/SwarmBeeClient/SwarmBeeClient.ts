@@ -86,9 +86,9 @@ export default class SwarmBeeClient extends Bee {
    * @returns The resource url
    */
   getBzzUrl(reference: string, path?: string) {
-    const hash = reference.replaceAll(/(^\/|\/$)/ig, "")
-    const safePath = path?.replaceAll(/(^\/|\/$)/ig, "")
-    return `${this.url}/bzz/${hash}/${safePath ?? ""}`
+    const hash = reference.replace(/(^\/|\/$)/ig, "")
+    const safePath = path?.replace(/(^\/|\/$)/ig, "")
+    return `${this.url}/bzz/${hash}/${safePath ?? ""}`.replace(/\/?$/, "/")
   }
 
   /**
