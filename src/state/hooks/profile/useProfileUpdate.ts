@@ -17,10 +17,10 @@
 import { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
 
-import { ProfileActions, ProfileActionTypes } from "@state/reducers/profileReducer"
-import { UserActions, UserActionTypes } from "@state/reducers/userReducer"
-import useSelector from "@state/useSelector"
-import type { Profile } from "@definitions/swarm-profile"
+import { ProfileActions, ProfileActionTypes } from "@/state/reducers/profileReducer"
+import { UserActions, UserActionTypes } from "@/state/reducers/userReducer"
+import useSelector from "@/state/useSelector"
+import type { Profile } from "@/definitions/swarm-profile"
 
 export default function useProfileUpdate(address: string) {
   const dispatch = useDispatch<Dispatch<ProfileActions | UserActions>>()

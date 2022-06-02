@@ -18,16 +18,16 @@
 import React, { useRef, useState } from "react"
 import type { EditorState } from "draft-js"
 
-import classes from "@styles/components/video/CommentForm.module.scss"
-import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
+import classes from "@/styles/components/video/CommentForm.module.scss"
+import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
-import Button from "@common/Button"
-import TextField from "@common/TextField"
-import MarkdownEditor from "@common/MarkdownEditor"
-import Avatar from "@components/user/Avatar"
-import useSelector from "@state/useSelector"
-import { showError } from "@state/actions/modals"
-import type { IndexVideoComment } from "@definitions/api-index"
+import Button from "@/components/common/Button"
+import TextField from "@/components/common/TextField"
+import MarkdownEditor from "@/components/common/MarkdownEditor"
+import Avatar from "@/components/user/Avatar"
+import useSelector from "@/state/useSelector"
+import { showError } from "@/state/actions/modals"
+import type { IndexVideoComment } from "@/definitions/api-index"
 import classNames from "classnames"
 
 type CommentFormProps = {

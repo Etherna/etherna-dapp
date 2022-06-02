@@ -19,7 +19,7 @@ import React, { useMemo } from "react"
 import classNames from "classnames"
 import { parse } from "micro-down"
 
-import classes from "@styles/components/common/MarkdownPreview.module.scss"
+import classes from "@/styles/components/common/MarkdownPreview.module.scss"
 
 type MarkdownPreviewProps = {
   value: string

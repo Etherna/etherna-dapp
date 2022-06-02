@@ -18,10 +18,10 @@
 import React, { useState, useRef } from "react"
 import ReactCrop, { centerCrop, Crop, makeAspectCrop } from "react-image-crop"
 
-import Modal from "@common/Modal"
-import Button from "@common/Button"
-import useSelector from "@state/useSelector"
-import { useImageCrop } from "@state/hooks/ui"
+import Modal from "@/components/common/Modal"
+import Button from "@/components/common/Button"
+import useSelector from "@/state/useSelector"
+import { useImageCrop } from "@/state/hooks/ui"
 
 type ImageCropModalProps = {
   show?: boolean

@@ -17,9 +17,9 @@
 
 import React from "react"
 
-import classes from "@styles/components/media/FileUploadProgress.module.scss"
+import classes from "@/styles/components/media/FileUploadProgress.module.scss"
 
-import ProgressBar from "@common/ProgressBar"
+import ProgressBar from "@/components/common/ProgressBar"
 
 type FileUploadProgressProps = {
   progress: number

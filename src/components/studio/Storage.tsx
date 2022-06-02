@@ -17,12 +17,12 @@
 
 import React from "react"
 
-import classes from "@styles/components/studio/Storage.module.scss"
-import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
+import classes from "@/styles/components/studio/Storage.module.scss"
+import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
 import StorageBatch from "./storage/StorageBatch"
-import useSelector from "@state/useSelector"
-import Alert from "@common/Alert"
+import useSelector from "@/state/useSelector"
+import Alert from "@/components/common/Alert"
 
 const Storage: React.FC = () => {
   const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)

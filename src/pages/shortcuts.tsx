@@ -17,10 +17,10 @@
 
 import React from "react"
 
-import Container from "@common/Container"
-import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
-import SEO from "@components/layout/SEO"
-import ShortcutsEditor from "@components/settings/ShortcutsEditor"
+import Container from "@/components/common/Container"
+import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
+import SEO from "@/components/layout/SEO"
+import ShortcutsEditor from "@/components/settings/ShortcutsEditor"
 
 const Shortcuts = () => (
   <AppLayoutWrapper>

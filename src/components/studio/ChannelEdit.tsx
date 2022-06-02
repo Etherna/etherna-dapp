@@ -21,8 +21,8 @@ import { Navigate } from "react-router-dom"
 import StudioEditView from "./StudioEditView"
 import ChannelEditor from "./channel-editor/ChannelEditor"
 import CantUploadAlert from "./other/CantUploadAlert"
-import useSelector from "@state/useSelector"
-import routes from "@routes"
+import useSelector from "@/state/useSelector"
+import routes from "@/routes"
 
 const ChannelEdit: React.FC = () => {
   const address = useSelector(state => state.user.address)

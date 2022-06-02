@@ -18,8 +18,8 @@
 import React from "react"
 
 import PlayerToolbarSelect from "./PlayerToolbarSelect"
-import { PlayerReducerTypes } from "@context/player-context"
-import { usePlayerState } from "@context/player-context/hooks"
+import { PlayerReducerTypes } from "@/context/player-context"
+import { usePlayerState } from "@/context/player-context/hooks"
 
 const PlayerPlaybackSpeed: React.FC = () => {
   const [state, dispatch] = usePlayerState()

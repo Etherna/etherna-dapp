@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import MarkdownPreview from "@common/MarkdownPreview"
+import MarkdownPreview from "@/components/common/MarkdownPreview"
 
 type ProfileAboutProps = {
   name?: string | null

@@ -18,7 +18,7 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/video/VideoDetailsButton.module.scss"
+import classes from "@/styles/components/video/VideoDetailsButton.module.scss"
 
 type VideoDetailsButtonProps = {
   children?: React.ReactNode

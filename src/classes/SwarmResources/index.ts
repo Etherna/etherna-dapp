@@ -16,7 +16,7 @@
 
 import SwarmResourcesReader from "./SwarmResourcesReader"
 import SwarmResourcesWriter from "./SwarmResourcesWriter"
-import type { Video } from "@definitions/swarm-video"
+import type { Video } from "@/definitions/swarm-video"
 
 const SwarmResourcesIO = {
   Reader: SwarmResourcesReader,

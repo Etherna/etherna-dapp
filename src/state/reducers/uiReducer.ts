@@ -16,7 +16,7 @@
 
 import { Crop } from "react-image-crop"
 
-import type { UIState } from "@definitions/app-state"
+import type { UIState } from "@/definitions/app-state"
 
 export const UIActionTypes = {
   SHOW_ERROR: "UI_SHOW_ERROR",

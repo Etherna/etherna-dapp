@@ -19,7 +19,7 @@ import React, { Fragment, useMemo } from "react"
 import { Listbox, Transition } from "@headlessui/react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/CustomSelect.module.scss"
+import classes from "@/styles/components/common/CustomSelect.module.scss"
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid"
 
 type Option = {

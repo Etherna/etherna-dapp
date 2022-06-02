@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import type { GatewayBatch } from "@definitions/api-gateway"
-import type { UserState } from "@definitions/app-state"
+import type { GatewayBatch } from "@/definitions/api-gateway"
+import type { UserState } from "@/definitions/app-state"
 
 export const UserActionTypes = {
   USER_ENS_UPDATE: "USER_ENS_UPDATE",

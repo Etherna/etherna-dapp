@@ -21,12 +21,12 @@ import { Editor, EditorState, RichUtils, convertFromRaw, convertToRaw } from "dr
 import { draftToMarkdown, markdownToDraft } from "markdown-draft-js"
 import type { EditorProps, DraftHandleValue, DraftEditorCommand } from "draft-js"
 
-import "@styles/overrides/draft-js.scss"
-import classes from "@styles/components/common/MarkdownEditor.module.scss"
-import textfieldClasses from "@styles/components/common/TextField.module.scss"
+import "@/styles/overrides/draft-js.scss"
+import classes from "@/styles/components/common/MarkdownEditor.module.scss"
+import textfieldClasses from "@/styles/components/common/TextField.module.scss"
 
 import MarkdownEditorButton, { MarkdownButtonConfig } from "./MarkdownEditorButton"
-import Label from "@common/Label"
+import Label from "@/components/common/Label"
 
 const EditorFix = Editor as unknown as React.FC<EditorProps>
 

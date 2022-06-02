@@ -18,17 +18,17 @@
 import React, { useState, useEffect, useMemo } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/video/VideoView.module.scss"
+import classes from "@/styles/components/video/VideoView.module.scss"
 
-import NotFound from "@common/NotFound"
-import SEO from "@components/layout/SEO"
-import Player from "@components/player/Player"
-import VideoDetails from "@components/video/VideoDetails"
-import SwarmImageIO from "@classes/SwarmImage"
-import useSwarmVideo from "@hooks/useSwarmVideo"
-import useSelector from "@state/useSelector"
-import { useErrorMessage } from "@state/hooks/ui"
-import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
+import NotFound from "@/components/common/NotFound"
+import SEO from "@/components/layout/SEO"
+import Player from "@/components/player/Player"
+import VideoDetails from "@/components/video/VideoDetails"
+import SwarmImageIO from "@/classes/SwarmImage"
+import useSwarmVideo from "@/hooks/useSwarmVideo"
+import useSelector from "@/state/useSelector"
+import { useErrorMessage } from "@/state/hooks/ui"
+import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 
 type VideoViewProps = {
   reference: string

@@ -17,12 +17,12 @@
 import pick from "lodash/pick"
 
 import { SwarmProfileTopicName } from "."
-import SwarmBeeClient from "@classes/SwarmBeeClient"
-import SwarmImageIO from "@classes/SwarmImage"
-import { checkIsEthAddress } from "@utils/ethereum"
+import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import SwarmImageIO from "@/classes/SwarmImage"
+import { checkIsEthAddress } from "@/utils/ethereum"
 import type { SwarmProfileWriterOptions } from "./types"
-import type { SwarmImage } from "@definitions/swarm-image"
-import type { Profile, ProfileRaw } from "@definitions/swarm-profile"
+import type { SwarmImage } from "@/definitions/swarm-image"
+import type { Profile, ProfileRaw } from "@/definitions/swarm-profile"
 
 const ProfileProperties = ["address", "name", "avatar", "cover", "description", "location", "website", "birthday"]
 

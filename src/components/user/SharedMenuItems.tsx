@@ -17,17 +17,17 @@
 
 import React from "react"
 
-// import { ReactComponent as IndexIcon } from "@assets/icons/navigation/index.svg"
+// import { ReactComponent as IndexIcon } from "@/assets/icons/navigation/index.svg"
 import { MoonIcon } from "@heroicons/react/solid"
-import { ReactComponent as GatewayIcon } from "@assets/icons/navigation/gateway.svg"
-import { ReactComponent as ShortcutsIcon } from "@assets/icons/shortcuts.svg"
+import { ReactComponent as GatewayIcon } from "@/assets/icons/navigation/gateway.svg"
+import { ReactComponent as ShortcutsIcon } from "@/assets/icons/shortcuts.svg"
 
 import DarkModeToggle from "./DarkModeToggle"
-import DropdownItem from "@common/DropdownItem"
-// import IndexExtension from "@components/env/IndexExtension"
-import GatewayExtension from "@components/env/GatewayExtension"
-import { useDarkMode } from "@state/hooks/env"
-import routes from "@routes"
+import DropdownItem from "@/components/common/DropdownItem"
+// import IndexExtension from "@/components/env/IndexExtension"
+import GatewayExtension from "@/components/env/GatewayExtension"
+import { useDarkMode } from "@/state/hooks/env"
+import routes from "@/routes"
 
 type SharedMenuItemsProps = {}
 

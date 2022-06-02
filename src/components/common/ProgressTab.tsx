@@ -18,7 +18,7 @@
 import React, { useState } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/ProgressTab.module.scss"
+import classes from "@/styles/components/common/ProgressTab.module.scss"
 
 import ProgressTabContent, { ProgressTabContentProps } from "./ProgressTabContent"
 import ProgressTabLink, { ProgressTabLinkProps } from "./ProgressTabLink"

@@ -15,11 +15,11 @@
  */
 
 import fs from "fs"
+import { resolve } from "path"
 import stringHash from "string-hash"
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 import svgr from "vite-plugin-svgr"
-import tsconfigPaths from "vite-tsconfig-paths"
 import eslintPlugin from "vite-plugin-eslint"
 import { dynamicBase } from "vite-plugin-dynamic-base"
 
@@ -50,12 +50,12 @@ export default defineConfig(({ mode }) => ({
     global: "window",
   },
   resolve: {
-    alias: {
-      "stream": "stream-browserify",
-    },
+    alias: [
+      { find: "@", replacement: resolve(__dirname, "src") },
+      { find: "stream", replacement: "stream-browserify" },
+    ],
   },
   plugins: [
-    tsconfigPaths({ root: "." }),
     react(),
     svgr(),
     eslintPlugin({ cache: false }),

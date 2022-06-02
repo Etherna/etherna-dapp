@@ -18,7 +18,7 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/TabContent.module.scss"
+import classes from "@/styles/components/common/TabContent.module.scss"
 
 export type TabContentProps = {
   children: React.ReactNode

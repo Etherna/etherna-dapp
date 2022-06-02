@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import classes from "@styles/components/common/Kbd.module.scss"
+import classes from "@/styles/components/common/Kbd.module.scss"
 
 type KbdProps = {
   shortcut: string

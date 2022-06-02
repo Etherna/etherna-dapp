@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import { store } from "@state/store"
-import { UIActionTypes } from "@state/reducers/uiReducer"
+import { store } from "@/state/store"
+import { UIActionTypes } from "@/state/reducers/uiReducer"
 
 export const showError = (title: string, message: string) => {
   store.dispatch({

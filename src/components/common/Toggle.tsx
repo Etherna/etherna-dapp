@@ -19,7 +19,7 @@ import React from "react"
 import { Switch } from "@headlessui/react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/Toggle.module.scss"
+import classes from "@/styles/components/common/Toggle.module.scss"
 
 type ToggleProps = {
   className?: string

@@ -19,7 +19,7 @@ import React, { useState } from "react"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/CopyText.module.scss"
+import classes from "@/styles/components/common/CopyText.module.scss"
 import { CheckIcon, ClipboardIcon } from "@heroicons/react/solid"
 
 type CopyTextProps = {

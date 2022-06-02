@@ -17,10 +17,10 @@
 import { Bee } from "@ethersphere/bee-js"
 import type { BatchId, BeeOptions, PostageBatch, UploadResult } from "@ethersphere/bee-js"
 
-import http, { createRequest } from "@utils/request"
-import { buildAxiosFetch } from "@utils/fetch"
+import http, { createRequest } from "@/utils/request"
+import { buildAxiosFetch } from "@/utils/fetch"
 import type { AxiosUploadOptions, CustomUploadOptions } from "./bee-client.d.ts"
-import type { GatewayBatch } from "@definitions/api-gateway"
+import type { GatewayBatch } from "@/definitions/api-gateway"
 
 export type MultipleFileUpload = { buffer: Uint8Array, type?: string }[]
 

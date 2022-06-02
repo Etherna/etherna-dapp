@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import classes from "@styles/components/player/PlayerToolbarButton.module.scss"
+import classes from "@/styles/components/player/PlayerToolbarButton.module.scss"
 
 type PlayerToolbarButtonProps = {
   children?: React.ReactNode

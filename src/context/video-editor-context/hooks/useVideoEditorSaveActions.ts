@@ -17,12 +17,12 @@
 import { useEffect, useState } from "react"
 
 import useVideoEditorState from "./useVideoEditorState"
-import useUserPlaylists from "@hooks/useUserPlaylists"
-import useSelector from "@state/useSelector"
-import { useErrorMessage } from "@state/hooks/ui"
-import { useWallet } from "@state/hooks/env"
-import { Profile } from "@definitions/swarm-profile"
-import SwarmResourcesIO from "@classes/SwarmResources"
+import useUserPlaylists from "@/hooks/useUserPlaylists"
+import useSelector from "@/state/useSelector"
+import { useErrorMessage } from "@/state/hooks/ui"
+import { useWallet } from "@/state/hooks/env"
+import { Profile } from "@/definitions/swarm-profile"
+import SwarmResourcesIO from "@/classes/SwarmResources"
 
 type SaveOpts = {
   saveManifest: boolean

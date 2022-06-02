@@ -16,10 +16,10 @@
 
 import { useEffect, useState } from "react"
 
-import SwarmProfileIO, { getDefaultProfile } from "@classes/SwarmProfile"
-import useSelector from "@state/useSelector"
-import type { Profile } from "@definitions/swarm-profile"
-import { wait } from "@utils/promise"
+import SwarmProfileIO, { getDefaultProfile } from "@/classes/SwarmProfile"
+import useSelector from "@/state/useSelector"
+import type { Profile } from "@/definitions/swarm-profile"
+import { wait } from "@/utils/promise"
 
 type SwarmProfileOptions = {
   address: string

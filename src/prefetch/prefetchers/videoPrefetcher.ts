@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-import SwarmVideoIO from "@classes/SwarmVideo"
-import { store } from "@state/store"
-import type { Video } from "@definitions/swarm-video"
+import SwarmVideoIO from "@/classes/SwarmVideo"
+import { store } from "@/state/store"
+import type { Video } from "@/definitions/swarm-video"
 
 const match = /\/watch/
 

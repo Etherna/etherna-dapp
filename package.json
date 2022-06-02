@@ -83,8 +83,7 @@
     "vite": "2.9.9",
     "vite-plugin-dynamic-base": "0.4.2",
     "vite-plugin-eslint": "1.6.1",
-    "vite-plugin-svgr": "2.1.0",
-    "vite-tsconfig-paths": "3.4.1"
+    "vite-plugin-svgr": "2.1.0"
   },
   "optionalDependencies": {
     "@types/prompt": "1.1.2",

@@ -18,10 +18,10 @@
 import React, { useEffect, useState } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/user/UserCreditBadge.module.scss"
+import classes from "@/styles/components/user/UserCreditBadge.module.scss"
 
-import { getDecimalParts } from "@utils/math"
-import { isTouchDevice } from "@utils/browser"
+import { getDecimalParts } from "@/utils/math"
+import { isTouchDevice } from "@/utils/browser"
 
 type UserCreditBadgeProps = {
   credit: number

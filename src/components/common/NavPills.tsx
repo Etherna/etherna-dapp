@@ -18,7 +18,7 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/NavPills.module.scss"
+import classes from "@/styles/components/common/NavPills.module.scss"
 
 type NavPillsProps = {
   children?: React.ReactNode

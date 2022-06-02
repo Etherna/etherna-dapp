@@ -19,6 +19,6 @@ import React from "react"
 import Slider from "react-slider"
 import type { ReactSliderProps } from "react-slider"
 
-import "@styles/overrides/react-slider.scss"
+import "@/styles/overrides/react-slider.scss"
 
 export default Slider as unknown as React.FC<ReactSliderProps>

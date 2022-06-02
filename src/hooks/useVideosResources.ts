@@ -18,9 +18,9 @@ import { useEffect, useState } from "react"
 
 import { parseReaderStatus } from "./useVideoOffers"
 import useMounted from "./useMounted"
-import SwarmResourcesIO from "@classes/SwarmResources"
-import useSelector from "@state/useSelector"
-import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
+import SwarmResourcesIO from "@/classes/SwarmResources"
+import useSelector from "@/state/useSelector"
+import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 
 export default function useVideosResources(videos: Video[] | undefined) {
   const { gatewayClient, isStandaloneGateway } = useSelector(state => state.env)

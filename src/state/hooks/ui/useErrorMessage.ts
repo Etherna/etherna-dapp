@@ -17,7 +17,7 @@
 import { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
 
-import { UIActions, UIActionTypes } from "@state/reducers/uiReducer"
+import { UIActions, UIActionTypes } from "@/state/reducers/uiReducer"
 
 export default function useErrorMessage() {
   const dispatch = useDispatch<Dispatch<UIActions>>()

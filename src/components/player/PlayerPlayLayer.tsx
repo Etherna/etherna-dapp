@@ -18,8 +18,8 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/player/PlayerPlayLayer.module.scss"
-import { ReactComponent as PlayIcon } from "@assets/icons/player/play.svg"
+import classes from "@/styles/components/player/PlayerPlayLayer.module.scss"
+import { ReactComponent as PlayIcon } from "@/assets/icons/player/play.svg"
 
 type PlayerPlayLayerProps = {
   thumbnailUrl?: string | null

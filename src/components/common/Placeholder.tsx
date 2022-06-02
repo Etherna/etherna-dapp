@@ -18,7 +18,7 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/Placeholder.module.scss"
+import classes from "@/styles/components/common/Placeholder.module.scss"
 
 type PlaceholderProps = {
   width?: string

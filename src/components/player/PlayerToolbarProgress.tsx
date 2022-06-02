@@ -17,10 +17,10 @@
 
 import React from "react"
 
-import classes from "@styles/components/player/PlayerToolbarProgress.module.scss"
+import classes from "@/styles/components/player/PlayerToolbarProgress.module.scss"
 
-import { PlayerReducerTypes } from "@context/player-context"
-import { usePlayerState } from "@context/player-context/hooks"
+import { PlayerReducerTypes } from "@/context/player-context"
+import { usePlayerState } from "@/context/player-context/hooks"
 
 const PlayerToolbarProgress: React.FC = () => {
   const [state, dispatch] = usePlayerState()

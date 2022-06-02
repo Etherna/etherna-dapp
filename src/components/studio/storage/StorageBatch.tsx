@@ -18,13 +18,13 @@
 import React, { useMemo } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/studio/storage/StorageBatch.module.scss"
+import classes from "@/styles/components/studio/storage/StorageBatch.module.scss"
 
-import ProgressBar from "@common/ProgressBar"
-import { convertBytes } from "@utils/converters"
-import dayjs from "@utils/dayjs"
-import { clamp } from "@utils/math"
-import type { GatewayBatch } from "@definitions/api-gateway"
+import ProgressBar from "@/components/common/ProgressBar"
+import { convertBytes } from "@/utils/converters"
+import dayjs from "@/utils/dayjs"
+import { clamp } from "@/utils/math"
+import type { GatewayBatch } from "@/definitions/api-gateway"
 
 type StorageBatchProps = {
   batch: GatewayBatch

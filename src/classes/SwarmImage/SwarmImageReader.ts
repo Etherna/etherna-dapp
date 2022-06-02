@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-import { blurHashToDataURL } from "@utils/blur-hash"
+import { blurHashToDataURL } from "@/utils/blur-hash"
 import type { SwarmImageReaderOptions } from "./types"
-import type { SwarmImageRaw, SwarmImage } from "@definitions/swarm-image"
+import type { SwarmImageRaw, SwarmImage } from "@/definitions/swarm-image"
 
 /**
  * Load an image data from swarm and parse image object

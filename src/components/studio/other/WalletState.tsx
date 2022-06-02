@@ -17,7 +17,7 @@
 
 import React, { useMemo } from "react"
 
-import Alert from "@common/Alert"
+import Alert from "@/components/common/Alert"
 
 type WalletStateProps = {
   isLocked?: boolean

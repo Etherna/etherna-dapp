@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-import http from "@utils/request"
+import http from "@/utils/request"
 import type {
   IndexVideo,
   IndexVideoComment,
   IndexVideoManifest,
   IndexVideoValidation,
   VoteValue
-} from "@definitions/api-index"
+} from "@/definitions/api-index"
 
 export default class IndexVideosClient {
   url: string

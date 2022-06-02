@@ -18,9 +18,9 @@
 import React from "react"
 import { useLocation } from "react-router-dom"
 
-import classes from "@styles/components/navigation/TopbarLogo.module.scss"
+import classes from "@/styles/components/navigation/TopbarLogo.module.scss"
 
-import TopbarItem from "@components/navigation/TopbarItem"
+import TopbarItem from "@/components/navigation/TopbarItem"
 
 type TopbarLogoProps = {
   logo: React.ReactNode

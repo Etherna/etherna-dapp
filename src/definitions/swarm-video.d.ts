@@ -16,7 +16,7 @@
 
 import type { Canceler } from "axios"
 
-import type { IndexEncryptionType } from "@classes/EthernaIndexClient/types"
+import type { IndexEncryptionType } from "@/classes/EthernaIndexClient/types"
 import type { SwarmImage, SwarmImageRaw } from "./swarm-image"
 import type { Profile } from "./swarm-profile"
 

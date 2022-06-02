@@ -16,7 +16,7 @@
 
 import useVideoEditorState from "./useVideoEditorState"
 import { VideoEditorActionTypes } from "../reducer"
-import type { VideoEditorContextState } from "@definitions/video-editor-context"
+import type { VideoEditorContextState } from "@/definitions/video-editor-context"
 
 export default function useVideoEditorExtrasActions() {
   const [, dispatch] = useVideoEditorState()

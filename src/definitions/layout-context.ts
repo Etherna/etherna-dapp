@@ -16,7 +16,7 @@
 
 import type { Dispatch } from "react"
 
-import type { AnyLayoutAction } from "@context/layout-context"
+import type { AnyLayoutAction } from "@/context/layout-context"
 
 export type LayoutContextStore = [state: LayoutContextState, dispatch: Dispatch<AnyLayoutAction>]
 

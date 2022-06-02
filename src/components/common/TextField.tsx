@@ -18,9 +18,9 @@
 import classNames from "classnames"
 import React, { useMemo } from "react"
 
-import classes from "@styles/components/common/TextField.module.scss"
+import classes from "@/styles/components/common/TextField.module.scss"
 
-import Label from "@common/Label"
+import Label from "@/components/common/Label"
 
 type TextFieldProps = {
   id?: string

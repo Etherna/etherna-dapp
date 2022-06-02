@@ -18,7 +18,7 @@
 import React from "react"
 import omit from "lodash/omit"
 
-import TopbarItem, { TopbarItemProps } from "@components/navigation/TopbarItem"
+import TopbarItem, { TopbarItemProps } from "@/components/navigation/TopbarItem"
 
 const TopbarPopupItemToggle: React.FC<TopbarItemProps> = props => {
   const itemProps = { ...omit(props, "children") }

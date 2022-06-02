@@ -17,10 +17,10 @@
 
 import React from "react"
 
-import CustomSelect from "@common/CustomSelect"
-import Label from "@common/Label"
-import FieldDesrcription from "@common/FieldDesrcription"
-import { useVideoEditorState, useVideoEditorExtrasActions } from "@context/video-editor-context/hooks"
+import CustomSelect from "@/components/common/CustomSelect"
+import Label from "@/components/common/Label"
+import FieldDesrcription from "@/components/common/FieldDesrcription"
+import { useVideoEditorState, useVideoEditorExtrasActions } from "@/context/video-editor-context/hooks"
 
 const SaveToSelector: React.FC = () => {
   const [{ saveTo }] = useVideoEditorState()

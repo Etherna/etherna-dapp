@@ -17,8 +17,8 @@
 import { AES, enc } from "crypto-ts"
 
 import SwarmPlaylistIO from "."
-import SwarmBeeClient from "@classes/SwarmBeeClient"
-import { urlOrigin } from "@utils/urls"
+import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import { urlOrigin } from "@/utils/urls"
 import type { SwarmPlaylistReaderOptions } from "./types"
 import type {
   SwarmPlaylistRaw,
@@ -26,7 +26,7 @@ import type {
   EncryptedSwarmPlaylistData,
   SwarmPlaylistVideoRaw,
   SwarmPlaylistVideo
-} from "@definitions/swarm-playlist"
+} from "@/definitions/swarm-playlist"
 
 /**
  * Load playlist data

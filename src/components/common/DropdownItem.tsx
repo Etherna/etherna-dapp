@@ -20,7 +20,7 @@ import { Menu } from "@headlessui/react"
 import classNames from "classnames"
 import { Link } from "react-router-dom"
 
-import classes from "@styles/components/common/DropdownItem.module.scss"
+import classes from "@/styles/components/common/DropdownItem.module.scss"
 
 type DropdownItemProps = {
   children?: React.ReactNode

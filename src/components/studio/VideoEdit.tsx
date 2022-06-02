@@ -19,18 +19,18 @@ import React, { useEffect, useRef, useState } from "react"
 import { Navigate } from "react-router-dom"
 
 import { TrashIcon } from "@heroicons/react/outline"
-import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
+import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
 import StudioEditView from "./StudioEditView"
 import VideoEditor from "./video-editor/VideoEditor"
 import CantUploadAlert from "./other/CantUploadAlert"
-import Button from "@common/Button"
-import { VideoEditorContextProvider } from "@context/video-editor-context"
-import useSwarmVideo from "@hooks/useSwarmVideo"
-import routes from "@routes"
-import useSelector from "@state/useSelector"
-import { useConfirmation } from "@state/hooks/ui"
-import type { Video } from "@definitions/swarm-video"
+import Button from "@/components/common/Button"
+import { VideoEditorContextProvider } from "@/context/video-editor-context"
+import useSwarmVideo from "@/hooks/useSwarmVideo"
+import routes from "@/routes"
+import useSelector from "@/state/useSelector"
+import { useConfirmation } from "@/state/hooks/ui"
+import type { Video } from "@/definitions/swarm-video"
 
 type VideoEditProps = {
   reference: string | undefined

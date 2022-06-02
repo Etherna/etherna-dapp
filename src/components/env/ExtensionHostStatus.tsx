@@ -18,9 +18,9 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/env/ExtensionHostStatus.module.scss"
+import classes from "@/styles/components/env/ExtensionHostStatus.module.scss"
 
-import { urlHostname } from "@utils/urls"
+import { urlHostname } from "@/utils/urls"
 
 type ExtensionHostStatusProps = {
   title: string

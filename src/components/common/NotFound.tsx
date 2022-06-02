@@ -18,9 +18,9 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
-import classes from "@styles/components/common/NotFound.module.scss"
+import classes from "@/styles/components/common/NotFound.module.scss"
 
-import routes from "@routes"
+import routes from "@/routes"
 
 type NotFoundProps = {
   message?: string

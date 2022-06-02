@@ -15,11 +15,11 @@
  */
 
 import SwarmUserPlaylistsIO from "."
-import SwarmBeeClient from "@classes/SwarmBeeClient"
-import SwarmPlaylistIO from "@classes/SwarmPlaylist"
-import { urlOrigin } from "@utils/urls"
+import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
+import { urlOrigin } from "@/utils/urls"
 import type { SwarmUserPlaylistsDownloadOptions, SwarmUserPlaylistsReaderOptions } from "./types"
-import type { SwarmPlaylist, SwarmUserPlaylistsRaw } from "@definitions/swarm-playlist"
+import type { SwarmPlaylist, SwarmUserPlaylistsRaw } from "@/definitions/swarm-playlist"
 
 /**
  * Load playlist data

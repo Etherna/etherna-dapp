@@ -20,12 +20,12 @@ import { Link } from "react-router-dom"
 
 import { DotsCircleHorizontalIcon } from "@heroicons/react/solid"
 
-import Dropdown from "@common/Dropdown"
-import DropdownToggle from "@common/DropdownToggle"
-import DropdownItem from "@common/DropdownItem"
-import DropdownMenu from "@common/DropdownMenu"
-import routes from "@routes"
-import type { Video } from "@definitions/swarm-video"
+import Dropdown from "@/components/common/Dropdown"
+import DropdownToggle from "@/components/common/DropdownToggle"
+import DropdownItem from "@/components/common/DropdownItem"
+import DropdownMenu from "@/components/common/DropdownMenu"
+import routes from "@/routes"
+import type { Video } from "@/definitions/swarm-video"
 
 type VideoMenuProps = {
   video: Video

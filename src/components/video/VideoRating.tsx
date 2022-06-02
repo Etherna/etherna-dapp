@@ -18,11 +18,11 @@
 import React, { useState, useEffect, useMemo } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/video/VideoRating.module.scss"
-import { ReactComponent as VoteIcon } from "@assets/icons/player/upvote.svg"
+import classes from "@/styles/components/video/VideoRating.module.scss"
+import { ReactComponent as VoteIcon } from "@/assets/icons/player/upvote.svg"
 
-import useSelector from "@state/useSelector"
-import type { VoteValue } from "@definitions/api-index"
+import useSelector from "@/state/useSelector"
+import type { VoteValue } from "@/definitions/api-index"
 
 type VideoRatingProps = {
   videoId: string

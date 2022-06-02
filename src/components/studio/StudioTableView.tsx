@@ -18,9 +18,9 @@
 import React, { useEffect, useState } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/studio/StudioTableView.module.scss"
+import classes from "@/styles/components/studio/StudioTableView.module.scss"
 
-import Pagination from "@common/Pagination"
+import Pagination from "@/components/common/Pagination"
 
 type StudioTableViewProps<T = any> = {
   className?: string

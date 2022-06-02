@@ -17,8 +17,8 @@
 
 import React, { useLayoutEffect, useState } from "react"
 
-import { LayoutReducerTypes } from "@context/layout-context"
-import { useLayoutState } from "@context/layout-context/hooks"
+import { LayoutReducerTypes } from "@/context/layout-context"
+import { useLayoutState } from "@/context/layout-context/hooks"
 
 type AppLayoutWrapperProps = {
   children?: React.ReactNode

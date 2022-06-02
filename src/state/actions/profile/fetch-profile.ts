@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-import { store } from "@state/store"
-import { ProfileActionTypes } from "@state/reducers/profileReducer"
-import { UIActionTypes } from "@state/reducers/uiReducer"
-import SwarmProfileIO from "@classes/SwarmProfile"
+import { store } from "@/state/store"
+import { ProfileActionTypes } from "@/state/reducers/profileReducer"
+import { UIActionTypes } from "@/state/reducers/uiReducer"
+import SwarmProfileIO from "@/classes/SwarmProfile"
 
 /**
  * Fetch profile info

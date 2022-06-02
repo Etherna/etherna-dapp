@@ -18,7 +18,7 @@
 import React from "react"
 import Tippy from "@tippyjs/react"
 
-import classes from "@styles/components/common/SegmentedControl.module.scss"
+import classes from "@/styles/components/common/SegmentedControl.module.scss"
 
 type SegmentedControlProps = {
   entries: Array<{ value: string, label: string, tip?: string }>

@@ -18,10 +18,10 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 
-import Container from "@common/Container"
-import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
-import SEO from "@components/layout/SEO"
-import ProfileView from "@components/profile/ProfileView"
+import Container from "@/components/common/Container"
+import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
+import SEO from "@/components/layout/SEO"
+import ProfileView from "@/components/profile/ProfileView"
 
 const ChannelPage = () => {
   const { id } = useParams<{ id: string }>()

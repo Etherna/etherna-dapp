@@ -17,8 +17,8 @@
 
 import React from "react"
 
-import classes from "@styles/components/common/ComingSoon.module.scss"
-import { ReactComponent as SoonIllustration } from "@assets/backgrounds/soon-illustration.svg"
+import classes from "@/styles/components/common/ComingSoon.module.scss"
+import { ReactComponent as SoonIllustration } from "@/assets/backgrounds/soon-illustration.svg"
 
 type ComingSoonProps = {
   title?: string

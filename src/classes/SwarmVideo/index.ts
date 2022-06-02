@@ -16,9 +16,9 @@
 
 import SwarmVideoReader from "./SwarmVideoReader"
 import SwarmVideoWriter from "./SwarmVideoWriter"
-import SwarmBeeClient from "@classes/SwarmBeeClient"
-import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@definitions/swarm-video"
-import type { IndexVideo } from "@definitions/api-index"
+import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@/definitions/swarm-video"
+import type { IndexVideo } from "@/definitions/api-index"
 
 const SwarmVideoIO = {
   Reader: SwarmVideoReader,

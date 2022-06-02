@@ -18,11 +18,11 @@
 import React, { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 
-import classes from "@styles/components/studio/StudioEditView.module.scss"
+import classes from "@/styles/components/studio/StudioEditView.module.scss"
 import { ArrowNarrowLeftIcon } from "@heroicons/react/solid"
 
-import Button from "@common/Button"
-import useMounted from "@hooks/useMounted"
+import Button from "@/components/common/Button"
+import useMounted from "@/hooks/useMounted"
 
 type StudioEditViewProps = {
   children?: React.ReactNode

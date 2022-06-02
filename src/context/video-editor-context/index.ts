@@ -16,7 +16,7 @@
 
 import { createContext } from "react"
 
-import type { VideoEditorContextStore } from "@definitions/video-editor-context"
+import type { VideoEditorContextStore } from "@/definitions/video-editor-context"
 
 export const VideoEditorContext = createContext<VideoEditorContextStore | undefined>(undefined)
 
@@ -28,4 +28,4 @@ export type {
   VideoEditorContextStore,
   VideoEditorContextState,
   VideoEditorQueue
-} from "@definitions/video-editor-context"
+} from "@/definitions/video-editor-context"

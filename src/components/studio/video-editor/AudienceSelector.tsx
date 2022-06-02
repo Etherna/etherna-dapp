@@ -17,9 +17,9 @@
 
 import React from "react"
 
-import CustomSelect from "@common/CustomSelect"
-import Label from "@common/Label"
-import FieldDesrcription from "@common/FieldDesrcription"
+import CustomSelect from "@/components/common/CustomSelect"
+import Label from "@/components/common/Label"
+import FieldDesrcription from "@/components/common/FieldDesrcription"
 
 const AudienceSelector: React.FC = () => {
   return (

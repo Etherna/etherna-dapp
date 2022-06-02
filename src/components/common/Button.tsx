@@ -19,8 +19,8 @@ import React, { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/Button.module.scss"
-import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
+import classes from "@/styles/components/common/Button.module.scss"
+import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
 type ButtonProps = {
   children?: React.ReactNode

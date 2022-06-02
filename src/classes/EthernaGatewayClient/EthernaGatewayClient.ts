@@ -17,9 +17,9 @@
 import GatewayUsersClient from "./GatewayUsersClient"
 import GatewaySettingsClient from "./GatewaySettingsClient"
 import GatewayResourcesClient from "./GatewayResourcesClient"
-import { isSafeURL, safeURL, urlOrigin } from "@utils/urls"
-import { parseLocalStorage } from "@utils/local-storage"
-import type { GatewayClientOptions } from "@definitions/api-gateway"
+import { isSafeURL, safeURL, urlOrigin } from "@/utils/urls"
+import { parseLocalStorage } from "@/utils/local-storage"
+import type { GatewayClientOptions } from "@/definitions/api-gateway"
 
 export default class EthernaGatewayClient {
   resources: GatewayResourcesClient

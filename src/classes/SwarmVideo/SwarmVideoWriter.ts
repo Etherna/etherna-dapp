@@ -17,14 +17,14 @@
 import Axios from "axios"
 
 import SwarmVideoIO from "."
-import EthernaIndexClient from "@classes/EthernaIndexClient"
-import SwarmBeeClient from "@classes/SwarmBeeClient"
-import SwarmImageIO from "@classes/SwarmImage"
-import { getVideoDuration, getVideoResolution } from "@utils/media"
+import EthernaIndexClient from "@/classes/EthernaIndexClient"
+import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import SwarmImageIO from "@/classes/SwarmImage"
+import { getVideoDuration, getVideoResolution } from "@/utils/media"
 import type { SwarmVideoUploadOptions, SwarmVideoWriterOptions } from "./types"
-import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@definitions/swarm-video"
-import type { SwarmImageRaw } from "@definitions/swarm-image"
-import type { Profile } from "@definitions/swarm-profile"
+import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@/definitions/swarm-video"
+import type { SwarmImageRaw } from "@/definitions/swarm-image"
+import type { Profile } from "@/definitions/swarm-profile"
 
 /**
  * Load/Update video info over swarm

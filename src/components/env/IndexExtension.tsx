@@ -17,11 +17,11 @@
 
 import React from "react"
 
-import { ReactComponent as IndexIcon } from "@assets/icons/navigation/index.svg"
+import { ReactComponent as IndexIcon } from "@/assets/icons/navigation/index.svg"
 
-import ExtensionHostStatus from "@components/env/ExtensionHostStatus"
-import useSelector from "@state/useSelector"
-import useExtensionEditor from "@state/hooks/ui/useExtensionEditor"
+import ExtensionHostStatus from "@/components/env/ExtensionHostStatus"
+import useSelector from "@/state/useSelector"
+import useExtensionEditor from "@/state/hooks/ui/useExtensionEditor"
 
 type IndexExtensionProps = {
   noIcon?: boolean

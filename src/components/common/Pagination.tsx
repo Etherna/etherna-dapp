@@ -19,11 +19,11 @@ import React, { useState } from "react"
 import { Listbox } from "@headlessui/react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/Pagination.module.scss"
+import classes from "@/styles/components/common/Pagination.module.scss"
 import { SelectorIcon, ChevronLeftIcon, ChevronDoubleLeftIcon } from "@heroicons/react/solid"
 
 import Button from "./Button"
-import { clamp } from "@utils/math"
+import { clamp } from "@/utils/math"
 
 type PaginationProps = {
   className?: string
