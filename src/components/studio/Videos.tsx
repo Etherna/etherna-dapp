@@ -211,7 +211,7 @@ const Videos: React.FC = () => {
 
   return (
     <>
-      <Button as="a" href={routes.studioVideoNew} modifier="inverted">
+      <Button as="a" href={routes.studioVideoNew}>
         Create new video
       </Button>
 

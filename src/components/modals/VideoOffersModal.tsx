@@ -91,7 +91,7 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
                 </Button>
               )}
               {offersStatus.userUnOfferedResourses.length > 0 && (
-                <Button modifier="secondary" onClick={offerAllResources} loading={isAddingOffers}>
+                <Button onClick={offerAllResources} loading={isAddingOffers}>
                   {offersStatus.userOfferedResourses.length > 0 ? "Offer missing resources" : "Offer resources"}
                 </Button>
               )}
