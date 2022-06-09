@@ -18,7 +18,7 @@
 
 import { AxiosInstance, AxiosRequestConfig, Method } from "axios"
 
-type AxiosFetch = (input: string | Request, init?: RequestInit) => Promise<Response>
+export type AxiosFetch = (input: string | Request, init?: RequestInit) => Promise<Response>
 
 const isRequestInput = (input: string | Request): input is Request => {
   return typeof input === "object"

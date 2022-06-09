@@ -1,5 +1,6 @@
 const plugin = require("tailwindcss/plugin")
 
+/** @type {import('tailwindcss/types').Config} */
 module.exports = {
   content: [
     "./index.html",

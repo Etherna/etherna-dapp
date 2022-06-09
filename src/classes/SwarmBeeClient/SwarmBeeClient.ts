@@ -19,6 +19,7 @@ import type { BatchId, BeeOptions, PostageBatch, UploadResult } from "@ethersphe
 
 import http, { createRequest } from "@/utils/request"
 import { buildAxiosFetch } from "@/utils/fetch"
+import type { AxiosFetch } from "@/utils/fetch"
 import type { AxiosUploadOptions, CustomUploadOptions } from "./bee-client.d.ts"
 import type { GatewayBatch } from "@/definitions/api-gateway"
 
@@ -48,7 +49,7 @@ export default class SwarmBeeClient extends Bee {
   /**
    * Create custom fetch implementation that accept upload progress and canceler
    */
-  getFetch(options?: AxiosUploadOptions): typeof fetch {
+  getFetch(options?: AxiosUploadOptions): AxiosFetch {
     const request = createRequest()
     request.defaults.onUploadProgress = options?.onUploadProgress
     request.defaults.cancelToken = options?.cancelToken
