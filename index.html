@@ -33,7 +33,7 @@
     /// Define basepath
     var path = window.location.pathname;
     var bzzPattern = /\/bzz\/([^/]+)/;
-    var basename = bzzPattern.test(path) ? path.match(bzzPattern)[0] : null;
+    var basename = bzzPattern.test(path) ? path.match(bzzPattern)[0] : '';
 
     window.__dynamic_base__ = basename;
 
