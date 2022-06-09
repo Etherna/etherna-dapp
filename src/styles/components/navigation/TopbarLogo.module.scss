@@ -15,7 +15,7 @@
  */
 
 .topbarLogo {
-  @apply h-5;
+  @apply h-6;
   @apply text-gray-900 dark:text-gray-100;
   @apply hover:text-gray-900 dark:hover:text-gray-100;
   @apply lg:mr-4;
@@ -23,6 +23,13 @@
   img,
   svg {
     @apply h-full w-auto object-contain object-center;
+  }
+
+  :global(.__symbol) {
+    @apply fill-primary-500 dark:fill-gray-50;
+  }
+  :global(.__text) {
+    @apply fill-[#7797A3] dark:fill-gray-50;
   }
 }
 

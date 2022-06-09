@@ -30,7 +30,7 @@
 
     &:checked {
       + label {
-        @apply text-white bg-indigo-500;
+        @apply text-white bg-primary-500;
       }
     }
   }

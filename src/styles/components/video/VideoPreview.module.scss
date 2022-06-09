@@ -18,9 +18,8 @@
   @apply w-full;
 
   a {
-    @apply text-gray-800;
-    @apply hover:text-gray-900;
-    @apply dark:text-gray-100 dark:hover:text-gray-200;
+    @apply text-gray-800 hover:text-gray-900;
+    @apply dark:text-gray-50 dark:hover:text-gray-100;
   }
 }
 
@@ -52,7 +51,7 @@
   @apply absolute right-2 top-2;
   @apply inline-flex items-center;
   @apply text-sm font-semibold;
-  @apply bg-emerald-500 border border-emerald-800/50 text-white;
+  @apply bg-primary-500 border border-primary-800/50 text-white;
   @apply px-2 py-px rounded;
 
   svg {
