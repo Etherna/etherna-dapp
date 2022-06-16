@@ -27,7 +27,6 @@ import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
 
 import StudioTableView from "./StudioTableView"
 import VideoDeleteModal from "./video-editor/VideoDeleteModal"
-import CantUploadAlert from "./other/CantUploadAlert"
 import Button from "@/components/common/Button"
 import Image from "@/components/common/Image"
 import VideoOffersModal from "@/components/modals/VideoOffersModal"
@@ -214,8 +213,6 @@ const Videos: React.FC = () => {
       <Button as="a" href={routes.studioVideoNew}>
         Create new video
       </Button>
-
-      <CantUploadAlert />
 
       <StudioTableView
         className={classes.videoTable}

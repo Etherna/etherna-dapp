@@ -271,7 +271,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
             reference={thisQueue?.reference}
             dragLabel={"Drag your video here"}
             acceptTypes={["video"]}
-            sizeLimit={100}
+            sizeLimit={500}
             canProcessFile={currentQueue?.name === queueName}
             uploadHandler={buffer => uploadSource(buffer, i)}
             onFileSelected={file => handleFileSelected(file, i)}

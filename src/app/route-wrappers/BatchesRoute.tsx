@@ -15,22 +15,25 @@
  *  
  */
 
-import React, { useEffect } from "react"
-import NProgress from "nprogress"
+import React from "react"
+import { Outlet } from "react-router-dom"
 
-import "@/styles/overrides/page-loader.scss"
+import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
-const PageLoader = () => {
-  useEffect(() => {
-    NProgress.configure({
-      showSpinner: false,
-    })
-    NProgress.start()
+import useBatches from "@/state/hooks/user/useBatches"
 
-    return () => { NProgress.done() }
-  }, [])
+const BatchesRoute: React.FC = () => {
+  const { isFetchingBatches } = useBatches({ autofetch: true })
 
-  return <></>
+  return (
+    isFetchingBatches ? (
+      <div className="w-full flex items-center justify-center p-8">
+        <Spinner width={24} height={24} />
+      </div>
+    ) : (
+      <Outlet />
+    )
+  )
 }
 
-export default PageLoader
+export default BatchesRoute
