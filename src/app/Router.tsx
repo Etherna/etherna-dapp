@@ -25,6 +25,7 @@ import AuthenticateRoute from "./route-wrappers/AuthenticateRoute"
 import SignedInRoute from "./route-wrappers/SignedInRoute"
 import VideoRoute from "./route-wrappers/VideoRoute"
 import BatchesRoute from "./route-wrappers/BatchesRoute"
+import PageLoader from "@/components/common/PageLoader"
 
 const AsyncHome = lazy(() => import("@/pages/home"))
 const AsyncFrames = lazy(() => import("@/pages/frames"))
@@ -44,52 +45,52 @@ const AsyncShortcuts = lazy(() => import("@/pages/shortcuts"))
 const AsyncNotFound = lazy(() => import("@/pages/404"))
 
 const Home = () => (
-  <Suspense fallback={null}><AsyncHome /></Suspense>
+  <Suspense fallback={<PageLoader />}><AsyncHome /></Suspense>
 )
 const Frames = () => (
-  <Suspense fallback={null}><AsyncFrames /></Suspense>
+  <Suspense fallback={<PageLoader />}><AsyncFrames /></Suspense>
 )
 const Following = () => (
-  <Suspense fallback={null}><AsyncFollowing /></Suspense>
+  <Suspense fallback={<PageLoader />}><AsyncFollowing /></Suspense>
 )
 const Playlists = () => (
-  <Suspense fallback={null}><AsyncPlaylists /></Suspense>
+  <Suspense fallback={<PageLoader />}><AsyncPlaylists /></Suspense>
 )
 const Saved = () => (
-  <Suspense fallback={null}><AsyncSaved /></Suspense>
+  <Suspense fallback={<PageLoader />}><AsyncSaved /></Suspense>
 )
 const Channel = () => (
-  <Suspense fallback={null}><AsyncChannel /></Suspense>
+  <Suspense fallback={<PageLoader />}><AsyncChannel /></Suspense>
 )
 const Profiles = () => (
-  <Suspense fallback={null}><AsyncProfiles /></Suspense>
+  <Suspense fallback={<PageLoader />}><AsyncProfiles /></Suspense>
 )
 const Watch = () => (
-  <Suspense fallback={null}><AsyncWatch /></Suspense>
+  <Suspense fallback={<PageLoader />}><AsyncWatch /></Suspense>
 )
 const Embed = () => (
-  <Suspense fallback={null}><AsyncEmbed /></Suspense>
+  <Suspense fallback={<PageLoader />}><AsyncEmbed /></Suspense>
 )
 const ChannelEdit = () => (
-  <Suspense fallback={null}><AsyncChannelEdit /></Suspense>
+  <Suspense fallback={<PageLoader />}><AsyncChannelEdit /></Suspense>
 )
 const VideosList = () => (
-  <Suspense fallback={null}><AsyncVideosList /></Suspense>
+  <Suspense fallback={<PageLoader />}><AsyncVideosList /></Suspense>
 )
 const VideoEdit = () => (
-  <Suspense fallback={null}><AsyncVideoEdit /></Suspense>
+  <Suspense fallback={<PageLoader />}><AsyncVideoEdit /></Suspense>
 )
 const Storage = () => (
-  <Suspense fallback={null}><AsyncStorage /></Suspense>
+  <Suspense fallback={<PageLoader />}><AsyncStorage /></Suspense>
 )
 const Shortcuts = () => (
-  <Suspense fallback={null}><AsyncShortcuts /></Suspense>
+  <Suspense fallback={<PageLoader />}><AsyncShortcuts /></Suspense>
 )
 const Search = () => (
-  <Suspense fallback={null}><AsyncSearch /></Suspense>
+  <Suspense fallback={<PageLoader />}><AsyncSearch /></Suspense>
 )
 const NotFound = () => (
-  <Suspense fallback={null}><AsyncNotFound /></Suspense>
+  <Suspense fallback={<PageLoader />}><AsyncNotFound /></Suspense>
 )
 
 const Router = () => {

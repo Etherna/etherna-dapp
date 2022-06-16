@@ -18,7 +18,7 @@
 import React, { useEffect } from "react"
 import NProgress from "nprogress"
 
-import "@styles/overrides/page-loader.scss"
+import "@/styles/overrides/page-loader.scss"
 
 const PageLoader = () => {
   useEffect(() => {
