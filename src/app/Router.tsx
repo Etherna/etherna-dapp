@@ -24,6 +24,7 @@ import StateProviderRoute from "./route-wrappers/StateProviderRoute"
 import AuthenticateRoute from "./route-wrappers/AuthenticateRoute"
 import SignedInRoute from "./route-wrappers/SignedInRoute"
 import VideoRoute from "./route-wrappers/VideoRoute"
+import BatchesRoute from "./route-wrappers/BatchesRoute"
 
 const AsyncHome = lazy(() => import("@/pages/home"))
 const AsyncFrames = lazy(() => import("@/pages/frames"))
@@ -120,10 +121,12 @@ const Router = () => {
               <Route path="/studio" element={<SignedInRoute />}>
                 <Route path="" element={<StudioLayoutRoute />}>
                   <Route path="" element={<Navigate replace to="/studio/videos" />} />
-                  <Route path="channel" element={<ChannelEdit />} />
                   <Route path="videos" element={<VideosList />} />
-                  <Route path="videos/:id" element={<VideoEdit />} />
                   <Route path="storage" element={<Storage />} />
+                  <Route path="" element={<BatchesRoute />}>
+                    <Route path="channel" element={<ChannelEdit />} />
+                    <Route path="videos/:id" element={<VideoEdit />} />
+                  </Route>
                 </Route>
               </Route>
 
