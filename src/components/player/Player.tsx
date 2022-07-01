@@ -212,6 +212,13 @@ const InnerPlayer: React.FC<PlayerProps> = ({
   }
 
   const onProgress = () => {
+    if (error) {
+      dispatch({
+        type: PlayerReducerTypes.SET_PLAYBACK_ERROR,
+        errorCode: undefined,
+        errorMessage: undefined,
+      })
+    }
     dispatch({
       type: PlayerReducerTypes.REFRESH_BUFFERING,
     })
