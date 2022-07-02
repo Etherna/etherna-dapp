@@ -18,8 +18,8 @@
 import React, { useEffect } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
-import VideoGrid from "@components/video/VideoGrid"
-import useSwarmVideos from "@hooks/useSwarmVideos"
+import VideoGrid from "@/components/video/VideoGrid"
+import useSwarmVideos from "@/hooks/useSwarmVideos"
 
 const ExploreView = () => {
   const { videos, hasMore, isFetching, loadMore, refresh } = useSwarmVideos()

@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import Placeholder from "@common/Placeholder"
+import Placeholder from "@/components/common/Placeholder"
 
 const VideoCommentPlaceholder = () => {
   return (

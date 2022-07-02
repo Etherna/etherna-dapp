@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import classes from "@styles/components/navigation/Tabbar.module.scss"
+import classes from "@/styles/components/navigation/Tabbar.module.scss"
 
 type TabbarProps = {
   children?: React.ReactNode

@@ -17,9 +17,9 @@
 import { useDispatch } from "react-redux"
 import type { Dispatch } from "redux"
 
-import useSelector from "@state/useSelector"
-import { EnvActions, EnvActionTypes } from "@state/reducers/enviromentReducer"
-import { updateDarkMode } from "@utils/dark-mode"
+import useSelector from "@/state/useSelector"
+import { EnvActions, EnvActionTypes } from "@/state/reducers/enviromentReducer"
+import { updateDarkMode } from "@/utils/dark-mode"
 
 export default function useDarkMode() {
   const { darkMode } = useSelector(state => state.env)

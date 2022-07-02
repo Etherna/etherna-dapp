@@ -18,9 +18,8 @@
   @apply w-full;
 
   a {
-    @apply text-gray-800;
-    @apply hover:text-gray-900;
-    @apply dark:text-gray-100 dark:hover:text-gray-200;
+    @apply text-gray-800 hover:text-gray-900;
+    @apply dark:text-gray-50 dark:hover:text-gray-100;
   }
 }
 
@@ -48,16 +47,24 @@
   @apply sm:text-xs sm:py-0.5;
 }
 
-.videoOfferedBadge {
-  @apply absolute right-2 top-2;
-  @apply inline-flex items-center;
-  @apply text-sm font-semibold;
-  @apply bg-emerald-500 border border-emerald-800/50 text-white;
-  @apply px-2 py-px rounded;
+.videoBadges {
+  @apply grid grid-flow-col auto-cols-max gap-3;
+  @apply mt-2 empty:mt-0;
+}
+
+.videoPreviewBadge {
+  @apply inline-flex items-center justify-center;
+  @apply text-xs font-medium;
+  @apply bg-primary-500 border border-primary-800/50 text-white;
+  @apply px-1.5 h-5 rounded;
 
   svg {
     @apply w-[1.2em] h-[1.2em] mr-1;
   }
+}
+
+.videoPreviewBadgeFreeToWatch {
+  @apply bg-primary-500 border border-primary-800/50 text-white;
 }
 
 .videoInfo {

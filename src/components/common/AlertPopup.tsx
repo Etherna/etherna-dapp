@@ -18,7 +18,7 @@
 import React, { useEffect } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/AlertPopup.module.scss"
+import classes from "@/styles/components/common/AlertPopup.module.scss"
 import { CheckCircleIcon, ExclamationIcon } from "@heroicons/react/solid"
 
 type AlertAction = {

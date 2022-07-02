@@ -17,10 +17,11 @@
 import { Bee } from "@ethersphere/bee-js"
 import type { BatchId, BeeOptions, PostageBatch, UploadResult } from "@ethersphere/bee-js"
 
-import http, { createRequest } from "@utils/request"
-import { buildAxiosFetch } from "@utils/fetch"
+import http, { createRequest } from "@/utils/request"
+import { buildAxiosFetch } from "@/utils/fetch"
+import type { AxiosFetch } from "@/utils/fetch"
 import type { AxiosUploadOptions, CustomUploadOptions } from "./bee-client.d.ts"
-import type { GatewayBatch } from "@definitions/api-gateway"
+import type { GatewayBatch } from "@/definitions/api-gateway"
 
 export type MultipleFileUpload = { buffer: Uint8Array, type?: string }[]
 
@@ -48,7 +49,7 @@ export default class SwarmBeeClient extends Bee {
   /**
    * Create custom fetch implementation that accept upload progress and canceler
    */
-  getFetch(options?: AxiosUploadOptions): typeof fetch {
+  getFetch(options?: AxiosUploadOptions): AxiosFetch {
     const request = createRequest()
     request.defaults.onUploadProgress = options?.onUploadProgress
     request.defaults.cancelToken = options?.cancelToken
@@ -86,24 +87,9 @@ export default class SwarmBeeClient extends Bee {
    * @returns The resource url
    */
   getBzzUrl(reference: string, path?: string) {
-    const hash = reference.replaceAll(/(^\/|\/$)/ig, "")
-    const safePath = path?.replaceAll(/(^\/|\/$)/ig, "")
-    return `${this.url}/bzz/${hash}/${safePath ?? ""}`
-  }
-
-  /**
-   * Download a resource from swarm by the bzz path
-   * 
-   * @param reference Bee resource reference
-   * @param path Resource path
-   * @returns The data array
-   */
-  async resolveBzz(reference: string, path?: string) {
-    const url = this.getBzzUrl(reference, path)
-    const response = await http.get<ArrayBuffer>(url, {
-      responseType: "arraybuffer",
-    })
-    return new Uint8Array(response.data)
+    const hash = reference.replace(/(^\/|\/$)/ig, "")
+    const safePath = path?.replace(/(^\/|\/$)/ig, "")
+    return `${this.url}/bzz/${hash}/${safePath ?? ""}`.replace(/\/?$/, "/")
   }
 
   /**

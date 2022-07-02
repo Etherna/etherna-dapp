@@ -18,8 +18,8 @@ import { AES } from "crypto-ts"
 import type { Reference } from "@ethersphere/bee-js"
 
 import SwarmPlaylistIO from "."
-import SwarmBeeClient from "@classes/SwarmBeeClient"
-import { urlOrigin } from "@utils/urls"
+import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import { urlOrigin } from "@/utils/urls"
 import type { SwarmPlaylistWriterOptions } from "./types"
 import type {
   SwarmPlaylistRaw,
@@ -27,7 +27,7 @@ import type {
   EncryptedSwarmPlaylistData,
   SwarmPlaylistVideo,
   SwarmPlaylistVideoRaw
-} from "@definitions/swarm-playlist"
+} from "@/definitions/swarm-playlist"
 
 /**
  * Handles upload of images on swarm and created responsive source

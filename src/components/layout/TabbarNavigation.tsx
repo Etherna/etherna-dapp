@@ -18,15 +18,15 @@
 import React from "react"
 
 import { BookmarkIcon, HomeIcon, UserIcon } from "@heroicons/react/solid"
-import { ReactComponent as FramesIcon } from "@assets/icons/navigation/frames.svg"
-import { ReactComponent as PlaylistIcon } from "@assets/icons/navigation/playlists.svg"
+import { ReactComponent as FramesIcon } from "@/assets/icons/navigation/frames.svg"
+import { ReactComponent as PlaylistIcon } from "@/assets/icons/navigation/playlists.svg"
 
-import Tabbar from "@components/navigation/Tabbar"
-import TabbarItem from "@components/navigation/TabbarItem"
-import TabbarMenuItem from "@components/navigation/TabbarMenuItem"
-// import IndexExtension from "@components/env/IndexExtension"
-import GatewayExtension from "@components/env/GatewayExtension"
-import routes from "@routes"
+import Tabbar from "@/components/navigation/Tabbar"
+import TabbarItem from "@/components/navigation/TabbarItem"
+import TabbarMenuItem from "@/components/navigation/TabbarMenuItem"
+// import IndexExtension from "@/components/env/IndexExtension"
+import GatewayExtension from "@/components/env/GatewayExtension"
+import routes from "@/routes"
 
 const TabbarNavigation: React.FC = () => {
   return (

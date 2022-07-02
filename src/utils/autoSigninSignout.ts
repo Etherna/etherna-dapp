@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import loginRedirect from "@state/actions/user/login-redirect"
-import logoutRedirect from "@state/actions/user/logout-redirect"
+import loginRedirect from "@/state/actions/user/login-redirect"
+import logoutRedirect from "@/state/actions/user/logout-redirect"
 
 export default function autoSigninSignout() {
   const searchParams = new URLSearchParams(window.location.search)

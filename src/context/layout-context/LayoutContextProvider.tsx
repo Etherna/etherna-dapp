@@ -19,7 +19,7 @@ import React, { useReducer } from "react"
 
 import { LayoutContext } from "."
 import layoutReducer from "./reducer"
-import logger from "@utils/context-logger"
+import logger from "@/utils/context-logger"
 
 type LayoutContextProviderProps = {
   children?: React.ReactNode

@@ -16,12 +16,12 @@
 
 import { useEffect, useState } from "react"
 
-import SwarmVideoIO from "@classes/SwarmVideo"
-import { showError } from "@state/actions/modals"
-import useSelector from "@state/useSelector"
-import type { SwarmPlaylist } from "@definitions/swarm-playlist"
-import type { Video } from "@definitions/swarm-video"
-import type { Profile } from "@definitions/swarm-profile"
+import SwarmVideoIO from "@/classes/SwarmVideo"
+import { showError } from "@/state/actions/modals"
+import useSelector from "@/state/useSelector"
+import type { SwarmPlaylist } from "@/definitions/swarm-playlist"
+import type { Video } from "@/definitions/swarm-video"
+import type { Profile } from "@/definitions/swarm-profile"
 
 type PlaylistVideosOptions = {
   owner?: Profile
@@ -50,15 +50,20 @@ export default function usePlaylistVideos(
   }, [playlist])
 
   useEffect(() => {
-    if (opts.waitProfile && !opts.owner) {
-      setIsFetching(true)
-      return
+    if (opts.waitProfile) {
+      if (!opts.owner) {
+        setIsFetching(true)
+        return
+      } else {
+        setIsFetching(false)
+      }
     }
+
     if (playlist && opts.autofetch && hasMore) {
       loadMore()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts.owner, playlist, hasMore])
+  }, [opts, playlist, hasMore])
 
   const fetchVideos = async (from: number, to: number): Promise<Video[]> => {
     if (
@@ -73,6 +78,7 @@ export default function usePlaylistVideos(
     setIsFetching(true)
     try {
       const references = playlist.videos.slice(from, to)
+      console.info("LOAD CHANNEL START")
       const newVideos = await Promise.all(references.map(video => {
         const reader = new SwarmVideoIO.Reader(video.reference, playlist.owner, {
           beeClient,
@@ -82,6 +88,7 @@ export default function usePlaylistVideos(
         })
         return reader.download()
       }))
+      console.info("LOAD CHANNEL END")
 
       setIsFetching(false)
 

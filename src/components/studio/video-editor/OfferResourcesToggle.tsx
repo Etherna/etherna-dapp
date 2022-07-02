@@ -17,10 +17,10 @@
 
 import React from "react"
 
-import Label from "@common/Label"
-import FieldDesrcription from "@common/FieldDesrcription"
-import Toggle from "@common/Toggle"
-import { useVideoEditorExtrasActions, useVideoEditorState } from "@context/video-editor-context/hooks"
+import Label from "@/components/common/Label"
+import FieldDesrcription from "@/components/common/FieldDesrcription"
+import Toggle from "@/components/common/Toggle"
+import { useVideoEditorExtrasActions, useVideoEditorState } from "@/context/video-editor-context/hooks"
 
 const OfferResourcesToggle: React.FC = () => {
   const [{ offerResources }] = useVideoEditorState()

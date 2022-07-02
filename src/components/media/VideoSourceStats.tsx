@@ -17,9 +17,9 @@
 
 import React from "react"
 
-import MediaStats from "@components/media/MediaStats"
-import { convertBirate, convertBytes } from "@utils/converters"
-import type { SwarmVideoSourceRaw } from "@definitions/swarm-video"
+import MediaStats from "@/components/media/MediaStats"
+import { convertBirate, convertBytes } from "@/utils/converters"
+import type { SwarmVideoSourceRaw } from "@/definitions/swarm-video"
 
 type VideoSourceStatsProps = {
   source: SwarmVideoSourceRaw | undefined

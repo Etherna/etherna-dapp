@@ -20,7 +20,7 @@ import { useLocation } from "react-router-dom"
 import classNames from "classnames"
 import { Transition } from "@headlessui/react"
 
-import classes from "@styles/components/navigation/Sidebar.module.scss"
+import classes from "@/styles/components/navigation/Sidebar.module.scss"
 
 type SidebarProps = {
   children?: React.ReactNode

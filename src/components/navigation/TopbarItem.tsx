@@ -19,7 +19,7 @@ import React, { useMemo } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import classNames from "classnames"
 
-import classes from "@styles/components/navigation/TopbarItem.module.scss"
+import classes from "@/styles/components/navigation/TopbarItem.module.scss"
 
 export type TopbarItemProps = {
   children?: React.ReactNode

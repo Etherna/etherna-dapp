@@ -17,9 +17,9 @@
 
 import React from "react"
 
-import AlertPopup from "@components/common/AlertPopup"
-import useSelector from "@state/useSelector"
-import { useErrorMessage, useConfirmation } from "@state/hooks/ui"
+import AlertPopup from "@/components/common/AlertPopup"
+import useSelector from "@/state/useSelector"
+import { useErrorMessage, useConfirmation } from "@/state/hooks/ui"
 
 const Popups: React.FC = () => {
   const {

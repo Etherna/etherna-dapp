@@ -17,14 +17,14 @@
 
 import React, { useState, useImperativeHandle, useEffect } from "react"
 
-import classes from "@styles/components/media/FileUploadFlow.module.scss"
+import classes from "@/styles/components/media/FileUploadFlow.module.scss"
 
 import FileDrag from "./FileDrag"
 import FileUpload from "./FileUpload"
-import Label from "@common/Label"
-import { useErrorMessage } from "@state/hooks/ui"
-import { fileToBuffer } from "@utils/buffer"
-import type { FilePreviewRenderProps } from "@definitions/file-preview"
+import Label from "@/components/common/Label"
+import { useErrorMessage } from "@/state/hooks/ui"
+import { fileToBuffer } from "@/utils/buffer"
+import type { FilePreviewRenderProps } from "@/definitions/file-preview"
 
 type FileUploadFlowProps = {
   children?: React.ReactChild | ((props: FilePreviewRenderProps) => React.ReactChild)

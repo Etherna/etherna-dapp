@@ -17,16 +17,16 @@
 
 import React from "react"
 
-import classes from "@styles/components/layout/AppLayout.module.scss"
+import classes from "@/styles/components/layout/AppLayout.module.scss"
 
-import SidebarNavigation from "@components/layout/SidebarNavigation"
-import TopbarNavigation from "@components/layout/TopbarNavigation"
-import TabbarNavigation from "@components/layout/TabbarNavigation"
-import Popups from "@components/layout/Popups"
-import Modals from "@components/modals/ModalsSection"
-import { LayoutContextProvider } from "@context/layout-context"
-import { useLayoutState } from "@context/layout-context/hooks"
-import usePageTracking from "@hooks/usePageTracking"
+import SidebarNavigation from "@/components/layout/SidebarNavigation"
+import TopbarNavigation from "@/components/layout/TopbarNavigation"
+import TabbarNavigation from "@/components/layout/TabbarNavigation"
+import Popups from "@/components/layout/Popups"
+import Modals from "@/components/modals/ModalsSection"
+import { LayoutContextProvider } from "@/context/layout-context"
+import { useLayoutState } from "@/context/layout-context/hooks"
+import usePageTracking from "@/hooks/usePageTracking"
 
 type AppLayoutProps = {
   children?: React.ReactNode

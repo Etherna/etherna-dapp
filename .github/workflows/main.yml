@@ -10,8 +10,10 @@ on:
 jobs:
   build:
     name: Deploy
+
     environment:
       name: ${{ endsWith(github.ref, '/main') && 'production' || 'development' }}
+
     env:
       VITE_APP_NAME: "Etherna"
       VITE_APP_TAGLINE: "Eyes wide open"
@@ -25,9 +27,13 @@ jobs:
       VITE_APP_MATOMO_URL: "https://analytics.etherna.io"
       VITE_APP_MATOMO_SITE_ID: "2"
       GENERATE_SOURCEMAP: false
+
     runs-on: ubuntu-latest
+
     steps:
+
     - uses: actions/checkout@v2.1.0
+
     - name: Build react app
       uses: actions/setup-node@v2
       with:
@@ -35,6 +41,7 @@ jobs:
         architecture: 'x64'
     - run: yarn install --ignore-optional
     - run: yarn build
+
     - name: Upload to Host
       uses: sebastianpopp/ftp-action@releases/v2
       with:
@@ -44,10 +51,13 @@ jobs:
         localDir: build
         remoteDir: ${{ secrets.FTP_REMOTE_DIR }}
         options: "--delete -X cgi-bin/ -X .well-known/"
-    - name: Upload to Swarm
-      uses: Etherna/swarm-upload-action@0.2
+
+    - name: Upload to swarm
+      uses: Etherna/swarm-upload-action@1.0.0
       with:
+        gateway: https://gateway.etherna.io
         localRoot: build
         defaultPath: index.html
-        feedName: EthernaDapp
+        batchId: ${{ secrets.BATCH_ID }}
+        feedName: EthernaWebApp
         feedUserPrivateKey: ${{ secrets.PRIVATE_KEY }}

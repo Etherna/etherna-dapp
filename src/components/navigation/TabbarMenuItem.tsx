@@ -19,10 +19,10 @@ import React, { useState } from "react"
 import { Transition } from "@headlessui/react"
 import omit from "lodash/omit"
 
-import classes from "@styles/components/navigation/TabbarMenuItem.module.scss"
+import classes from "@/styles/components/navigation/TabbarMenuItem.module.scss"
 import { MenuAlt4Icon } from "@heroicons/react/outline"
 
-import TabbarItem, { TabbarItemProps } from "@components/navigation/TabbarItem"
+import TabbarItem, { TabbarItemProps } from "@/components/navigation/TabbarItem"
 
 type TabbarMenuItemProps = TabbarItemProps & {
 

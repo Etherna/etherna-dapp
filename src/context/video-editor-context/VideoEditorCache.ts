@@ -15,9 +15,9 @@
  */
 
 import { VideoEditorContextState } from "."
-import SwarmVideoIO from "@classes/SwarmVideo"
-import SwarmBeeClient from "@classes/SwarmBeeClient"
-import type { SwarmVideoRaw } from "@definitions/swarm-video"
+import SwarmVideoIO from "@/classes/SwarmVideo"
+import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type { SwarmVideoRaw } from "@/definitions/swarm-video"
 
 const STORAGE_KEY = "videoEditorState"
 

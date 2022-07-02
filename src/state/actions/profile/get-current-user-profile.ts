@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import { store } from "@state/store"
-import type { Profile } from "@definitions/swarm-profile"
+import { store } from "@/state/store"
+import type { Profile } from "@/definitions/swarm-profile"
 
 /**
  * Get current user profile

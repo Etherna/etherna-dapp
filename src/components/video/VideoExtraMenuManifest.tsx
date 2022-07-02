@@ -17,14 +17,14 @@
 
 import React, { useMemo } from "react"
 
-import classes from "@styles/components/video/VideoExtraMenuManifest.module.scss"
+import classes from "@/styles/components/video/VideoExtraMenuManifest.module.scss"
 import { FilmIcon, PhotographIcon } from "@heroicons/react/solid"
-import { ReactComponent as ManifestIcon } from "@assets/icons/manifest.svg"
+import { ReactComponent as ManifestIcon } from "@/assets/icons/manifest.svg"
 
-import Button from "@common/Button"
-import Modal from "@common/Modal"
-import SwarmResourcesIO from "@classes/SwarmResources"
-import type { Video } from "@definitions/swarm-video"
+import Button from "@/components/common/Button"
+import Modal from "@/components/common/Modal"
+import SwarmResourcesIO from "@/classes/SwarmResources"
+import type { Video } from "@/definitions/swarm-video"
 
 type VideoExtraMenuManifestProps = {
   video: Video

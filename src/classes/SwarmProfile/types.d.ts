@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import type { Profile } from "@definitions/swarm-profile"
+import type { Profile } from "@/definitions/swarm-profile"
 
 export type SwarmProfileReaderOptions = {
   beeClient: SwarmBeeClient

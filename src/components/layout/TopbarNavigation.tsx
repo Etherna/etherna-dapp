@@ -19,22 +19,22 @@ import React from "react"
 
 import { PlusIcon } from "@heroicons/react/solid"
 import { UploadIcon, MenuAlt4Icon } from "@heroicons/react/outline"
-import { ReactComponent as Logo } from "@assets/logo.svg"
-import { ReactComponent as LogoCompact } from "@assets/logo-compact.svg"
+import { ReactComponent as Logo } from "@/assets/logo.svg"
+import { ReactComponent as LogoSymbol } from "@/assets/logo-symbol.svg"
 
 import SearchItem from "./SearchItem"
-import Topbar from "@components/navigation/Topbar"
-import TopbarLogo from "@components/navigation/TopbarLogo"
-import TopbarItem from "@components/navigation/TopbarItem"
-import TopbarSpace from "@components/navigation/TopbarSpace"
-import TopbarPopupItem from "@components/navigation/TopbarPopupItem"
-import AlphaWarning from "@components/navigation/AlphaWarning"
-import UserCredit from "@components/user/UserCredit"
-import UserMenu from "@components/user/UserMenu"
-import { LayoutReducerTypes } from "@context/layout-context"
-import { useLayoutState } from "@context/layout-context/hooks"
-import useSelector from "@state/useSelector"
-import routes from "@routes"
+import Topbar from "@/components/navigation/Topbar"
+import TopbarLogo from "@/components/navigation/TopbarLogo"
+import TopbarItem from "@/components/navigation/TopbarItem"
+import TopbarSpace from "@/components/navigation/TopbarSpace"
+import TopbarPopupItem from "@/components/navigation/TopbarPopupItem"
+import AlphaWarning from "@/components/navigation/AlphaWarning"
+import UserCredit from "@/components/user/UserCredit"
+import UserMenu from "@/components/user/UserMenu"
+import { LayoutReducerTypes } from "@/context/layout-context"
+import { useLayoutState } from "@/context/layout-context/hooks"
+import useSelector from "@/state/useSelector"
+import routes from "@/routes"
 
 const TopbarNavigation: React.FC = () => {
   const { isSignedIn } = useSelector(state => state.user)
@@ -62,7 +62,7 @@ const TopbarNavigation: React.FC = () => {
 
       <TopbarLogo
         logo={<Logo />}
-        logoCompact={<LogoCompact />}
+        logoCompact={<LogoSymbol />}
       />
 
       <TopbarPopupItem toggle={<PlusIcon />} hideMobile>

@@ -18,12 +18,12 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/video/VideoGrid.module.scss"
+import classes from "@/styles/components/video/VideoGrid.module.scss"
 
-import VideoPreviewPlaceholder from "@components/placeholders/VideoPreviewPlaceholder"
-import VideoPreview from "@components/video/VideoPreview"
-import useVideosResources from "@hooks/useVideosResources"
-import type { Video } from "@definitions/swarm-video"
+import VideoPreviewPlaceholder from "@/components/placeholders/VideoPreviewPlaceholder"
+import VideoPreview from "@/components/video/VideoPreview"
+import useVideosResources from "@/hooks/useVideosResources"
+import type { Video } from "@/definitions/swarm-video"
 
 type VideoGridProps = {
   label?: string

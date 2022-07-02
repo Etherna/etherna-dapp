@@ -18,7 +18,7 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/video/VideoDetailsTitleBar.module.scss"
+import classes from "@/styles/components/video/VideoDetailsTitleBar.module.scss"
 
 type VideoDetailsTitleBarProps = {
   children?: React.ReactNode

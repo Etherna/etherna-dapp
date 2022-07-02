@@ -19,15 +19,15 @@ import React, { useState } from "react"
 import classNames from "classnames"
 import Tippy from "@tippyjs/react"
 
-import classes from "@styles/components/modals/VideoOffersModal.module.scss"
+import classes from "@/styles/components/modals/VideoOffersModal.module.scss"
 
-import Modal from "@common/Modal"
-import Button from "@common/Button"
-import SegmentedControl from "@common/SegmentedControl"
-import SwarmResourcesIO from "@classes/SwarmResources"
-import useSelector from "@state/useSelector"
-import { showError } from "@state/actions/modals"
-import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
+import Modal from "@/components/common/Modal"
+import Button from "@/components/common/Button"
+import SegmentedControl from "@/components/common/SegmentedControl"
+import SwarmResourcesIO from "@/classes/SwarmResources"
+import useSelector from "@/state/useSelector"
+import { showError } from "@/state/actions/modals"
+import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 
 type VideoOffersModalProps = {
   show: boolean
@@ -91,7 +91,7 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
                 </Button>
               )}
               {offersStatus.userUnOfferedResourses.length > 0 && (
-                <Button modifier="secondary" onClick={offerAllResources} loading={isAddingOffers}>
+                <Button onClick={offerAllResources} loading={isAddingOffers}>
                   {offersStatus.userOfferedResourses.length > 0 ? "Offer missing resources" : "Offer resources"}
                 </Button>
               )}

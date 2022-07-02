@@ -17,11 +17,11 @@
 
 import React from "react"
 
-import classes from "@styles/components/navigation/TopbarPopupItem.module.scss"
+import classes from "@/styles/components/navigation/TopbarPopupItem.module.scss"
 
 import TopbarItem, { TopbarItemProps } from "./TopbarItem"
 import TopbarPopupItemToggle from "./TopbarPopupItemToggle"
-import Popup from "@common/Popup"
+import Popup from "@/components/common/Popup"
 
 type TopbarPopupItemProps = TopbarItemProps & {
   toggle?: React.ReactElement

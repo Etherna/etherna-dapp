@@ -18,16 +18,16 @@
 import React, { useEffect, useState, useRef } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/modals/ShortcutModal.module.scss"
+import classes from "@/styles/components/modals/ShortcutModal.module.scss"
 import { ExclamationIcon } from "@heroicons/react/solid"
 
-import Modal from "@components/common/Modal"
-import Button from "@components/common/Button"
-import Kbd from "@components/common/Kbd"
-import { closeShortcutModal } from "@state/actions/modals"
-import { saveShortcut, shortcutExists } from "@state/actions/enviroment/shortcuts"
-import useSelector from "@state/useSelector"
-import { keyEventToString } from "@utils/keyboard"
+import Modal from "@/components/common/Modal"
+import Button from "@/components/common/Button"
+import Kbd from "@/components/common/Kbd"
+import { closeShortcutModal } from "@/state/actions/modals"
+import { saveShortcut, shortcutExists } from "@/state/actions/enviroment/shortcuts"
+import useSelector from "@/state/useSelector"
+import { keyEventToString } from "@/utils/keyboard"
 
 
 const ShortcutModal = ({ show = false }) => {

@@ -19,13 +19,13 @@ import React, { useMemo, useRef, useState } from "react"
 import ReactDOM from "react-dom"
 import classNames from "classnames"
 
-import classes from "@styles/components/media/FileDrag.module.scss"
-import { ReactComponent as DragIcon } from "@assets/icons/drag.svg"
+import classes from "@/styles/components/media/FileDrag.module.scss"
+import { ReactComponent as DragIcon } from "@/assets/icons/drag.svg"
 
-import Button from "@common/Button"
-import FieldDesrcription from "@common/FieldDesrcription"
-import { useErrorMessage } from "@state/hooks/ui"
-import { isMimeCompatible } from "@utils/mime-types"
+import Button from "@/components/common/Button"
+import FieldDesrcription from "@/components/common/FieldDesrcription"
+import { useErrorMessage } from "@/state/hooks/ui"
+import { isMimeCompatible } from "@/utils/mime-types"
 
 type FileDragProps = {
   id: string

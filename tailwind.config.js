@@ -1,6 +1,6 @@
 const plugin = require("tailwindcss/plugin")
-const colors = require("tailwindcss/colors")
 
+/** @type {import('tailwindcss/types').Config} */
 module.exports = {
   content: [
     "./index.html",
@@ -20,16 +20,16 @@ module.exports = {
       },
       colors: {
         primary: {
-          50: "#E6FAF6",
-          100: "#B3F0E4",
-          200: "#81E7D2",
-          300: "#4FDDBF",
-          400: "#1CD3AD",
-          500: "#03CEA4",
-          600: "#03B994",
-          700: "#029073",
-          800: "#026752",
-          900: "#013E31",
+          50: "#EBFCFF",
+          100: "#DAF6FA",
+          200: "#B1F2FA",
+          300: "#79E1ED",
+          400: "#34C7D9",
+          500: "#00AABE",
+          600: "#0090A1",
+          700: "#006D7A",
+          800: "#004B54",
+          900: "#003238",
         },
         light: "#fefefe",
         dark: "#222222",

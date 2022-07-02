@@ -16,20 +16,20 @@
 
 import { useEffect, useMemo, useState } from "react"
 
-import SwarmUserPlaylistsIO from "@classes/SwarmUserPlaylists"
-import SwarmPlaylistIO from "@classes/SwarmPlaylist"
-import useSelector from "@state/useSelector"
-import { showError } from "@state/actions/modals"
-import { deepCloneObject } from "@utils/object"
-import { deepCloneArray } from "@utils/array"
-import type { SwarmUserPlaylistsDownloadOptions } from "@classes/SwarmUserPlaylists/types"
-import type { Video } from "@definitions/swarm-video"
+import SwarmUserPlaylistsIO from "@/classes/SwarmUserPlaylists"
+import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
+import useSelector from "@/state/useSelector"
+import { showError } from "@/state/actions/modals"
+import { deepCloneObject } from "@/utils/object"
+import { deepCloneArray } from "@/utils/array"
+import type { SwarmUserPlaylistsDownloadOptions } from "@/classes/SwarmUserPlaylists/types"
+import type { Video } from "@/definitions/swarm-video"
 import type {
   SwarmPlaylist,
   SwarmPlaylistType,
   SwarmPlaylistVideo,
   SwarmUserPlaylistsRaw
-} from "@definitions/swarm-playlist"
+} from "@/definitions/swarm-playlist"
 
 export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylistsDownloadOptions) {
   const { beeClient, indexUrl } = useSelector(state => state.env)

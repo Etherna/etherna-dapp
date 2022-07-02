@@ -17,11 +17,11 @@
 
 import React from "react"
 
-import classes from "@styles/components/navigation/SidebarLinksToggle.module.scss"
+import classes from "@/styles/components/navigation/SidebarLinksToggle.module.scss"
 import { ExternalLinkIcon } from "@heroicons/react/solid"
-import { ReactComponent as ArrowIcon } from "@assets/icons/arrow-fill-right.svg"
+import { ReactComponent as ArrowIcon } from "@/assets/icons/arrow-fill-right.svg"
 
-import SidebarItem from "@components/navigation/SidebarItem"
+import SidebarItem from "@/components/navigation/SidebarItem"
 
 const SidebarLinksToggle: React.FC = () => {
   return (

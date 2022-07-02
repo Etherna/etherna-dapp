@@ -18,7 +18,7 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/Container.module.scss"
+import classes from "@/styles/components/common/Container.module.scss"
 
 type ContainerProps = {
   children?: React.ReactNode

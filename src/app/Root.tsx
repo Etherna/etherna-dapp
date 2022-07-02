@@ -19,11 +19,11 @@ import React from "react"
 import { BrowserRouter } from "react-router-dom"
 import { HelmetProvider } from "react-helmet-async"
 
-import "@styles/theme.scss"
+import "@/styles/theme.scss"
 
 import Router from "./Router"
 import AnalyticsProvider from "./AnalyticsProvider"
-import { getBasename } from "@routes"
+import { getBasename } from "@/routes"
 
 const Root: React.FC = () => {
   return (

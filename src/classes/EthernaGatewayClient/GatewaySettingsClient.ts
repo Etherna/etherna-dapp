@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import http from "@utils/request"
+import http from "@/utils/request"
 
 export default class GatewaySettingsClient {
   url: string

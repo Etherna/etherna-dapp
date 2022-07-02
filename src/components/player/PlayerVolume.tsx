@@ -17,15 +17,15 @@
 
 import React, { useState } from "react"
 
-import { ReactComponent as MutedIcon } from "@assets/icons/player/muted.svg"
-import { ReactComponent as VolumeLowIcon } from "@assets/icons/player/volume-low.svg"
-import { ReactComponent as VolumeIcon } from "@assets/icons/player/volume.svg"
+import { ReactComponent as MutedIcon } from "@/assets/icons/player/muted.svg"
+import { ReactComponent as VolumeLowIcon } from "@/assets/icons/player/volume-low.svg"
+import { ReactComponent as VolumeIcon } from "@/assets/icons/player/volume.svg"
 
 import PlayerToolbarButton from "./PlayerToolbarButton"
-import Slider from "@common/Slider"
-import { PlayerReducerTypes } from "@context/player-context"
-import { usePlayerState } from "@context/player-context/hooks"
-import { isTouchDevice } from "@utils/browser"
+import Slider from "@/components/common/Slider"
+import { PlayerReducerTypes } from "@/context/player-context"
+import { usePlayerState } from "@/context/player-context/hooks"
+import { isTouchDevice } from "@/utils/browser"
 
 const PlayerVolume: React.FC = () => {
   const [isTouch] = useState(isTouchDevice())

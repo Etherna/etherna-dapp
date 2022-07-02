@@ -17,7 +17,7 @@
 import { useContext } from "react"
 
 import { VideoEditorContext } from ".."
-import type { VideoEditorContextStore } from "@definitions/video-editor-context"
+import type { VideoEditorContextStore } from "@/definitions/video-editor-context"
 
 const useVideoEditorState = (): VideoEditorContextStore => {
   const context = useContext(VideoEditorContext)

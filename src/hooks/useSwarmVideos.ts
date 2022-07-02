@@ -16,13 +16,13 @@
 
 import { useEffect, useState } from "react"
 
-import SwarmVideoIO from "@classes/SwarmVideo"
-import useSelector from "@state/useSelector"
-import { wait } from "@utils/promise"
-import type { Profile } from "@definitions/swarm-profile"
-import type { Video } from "@definitions/swarm-video"
-import type { IndexVideo } from "@definitions/api-index"
-import { showError } from "@state/actions/modals"
+import SwarmVideoIO from "@/classes/SwarmVideo"
+import useSelector from "@/state/useSelector"
+import { wait } from "@/utils/promise"
+import type { Profile } from "@/definitions/swarm-profile"
+import type { Video } from "@/definitions/swarm-video"
+import type { IndexVideo } from "@/definitions/api-index"
+import { showError } from "@/state/actions/modals"
 
 type SwarmVideosOptions = {
   seedLimit?: number

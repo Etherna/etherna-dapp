@@ -15,24 +15,25 @@
  *  
  */
 
-import React from "react"
+import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
 
-import classes from "@styles/components/video/VideoPreview.module.scss"
-import { ReactComponent as CreditIcon } from "@assets/icons/credit.svg"
-import { ReactComponent as ThumbPlaceholder } from "@assets/backgrounds/thumb-placeholder.svg"
+import classes from "@/styles/components/video/VideoPreview.module.scss"
+import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
+import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 
 import VideoMenu from "./VideoMenu"
-import StateLink from "@common/StateLink"
-import Image from "@common/Image"
-import Time from "@components/media/Time"
-import Avatar from "@components/user/Avatar"
-import routes from "@routes"
-import useSelector from "@state/useSelector"
-import { shortenEthAddr, checkIsEthAddress } from "@utils/ethereum"
-import dayjs from "@utils/dayjs"
-import { encodedSvg } from "@utils/svg"
-import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
+import StateLink from "@/components/common/StateLink"
+import Image from "@/components/common/Image"
+import Time from "@/components/media/Time"
+import Avatar from "@/components/user/Avatar"
+import routes from "@/routes"
+import useSelector from "@/state/useSelector"
+import { shortenEthAddr, checkIsEthAddress } from "@/utils/ethereum"
+import dayjs from "@/utils/dayjs"
+import { encodedSvg } from "@/utils/svg"
+import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
+import classNames from "classnames"
 
 type VideoPreviewProps = {
   video: Video
@@ -57,6 +58,10 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   const videoLink = routes.watch(decentralizedLink ? video.reference : video.indexReference ?? video.reference)
   const videoSearch = new URL(videoLink, document.baseURI).search
   const videoPath = videoLink.replace(videoSearch, "")
+
+  const isVideoOffered = useMemo(() => {
+    return videoOffers?.offersStatus === "full" || videoOffers?.offersStatus === "sources"
+  }, [videoOffers])
 
   const VideoLink: React.FC<{ children: React.ReactNode }> = ({ children }) => (
     <Link
@@ -85,12 +90,6 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
             <div className={classes.videoThumbnailDuration}>
               <Time duration={video.duration} />
             </div>
-          )}
-          {(videoOffers?.offersStatus === "full" || videoOffers?.offersStatus === "sources") && (
-            <span className={classes.videoOfferedBadge}>
-              <CreditIcon aria-hidden />
-              Free to watch
-            </span>
           )}
         </div>
       </VideoLink>
@@ -124,6 +123,14 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
               {dayjs.duration(dayjs(video.creationDateTime).diff(dayjs())).humanize(true)}
             </div>
           )}
+          <ul className={classes.videoBadges}>
+            {isVideoOffered && (
+              <li className={classNames(classes.videoPreviewBadge, classes.videoPreviewBadgeFreeToWatch)}>
+                <CreditIcon aria-hidden />
+                Free to watch
+              </li>
+            )}
+          </ul>
         </div>
         {address === ownerAddress && (
           <VideoMenu video={video} hasOffers={videoOffers ? videoOffers.offersStatus !== "none" : false} />

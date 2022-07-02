@@ -17,11 +17,11 @@
 
 import React from "react"
 
-import { ReactComponent as FullScreenIcon } from "@assets/icons/player/fullscreen.svg"
+import { ReactComponent as FullScreenIcon } from "@/assets/icons/player/fullscreen.svg"
 
 import PlayerToolbarButton from "./PlayerToolbarButton"
-import { PlayerReducerTypes } from "@context/player-context"
-import { usePlayerState } from "@context/player-context/hooks"
+import { PlayerReducerTypes } from "@/context/player-context"
+import { usePlayerState } from "@/context/player-context/hooks"
 
 const PlayerFullScreenButton: React.FC = () => {
   const [, dispatch] = usePlayerState()

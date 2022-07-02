@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import classes from "@styles/components/media/VideoSourcePreview.module.scss"
+import classes from "@/styles/components/media/VideoSourcePreview.module.scss"
 
 type VideoSourcePreviewProps = {
   children?: React.ReactNode

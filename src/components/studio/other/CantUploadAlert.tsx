@@ -17,10 +17,10 @@
 
 import React, { useMemo } from "react"
 
-import Alert from "@common/Alert"
-import Button from "@common/Button"
-import useSelector from "@state/useSelector"
-import routes from "@routes"
+import Alert from "@/components/common/Alert"
+import Button from "@/components/common/Button"
+import useSelector from "@/state/useSelector"
+import routes from "@/routes"
 
 const CantUploadAlert: React.FC = () => {
   const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)

@@ -17,15 +17,15 @@
 
 import React, { useEffect } from "react"
 
-import classes from "@styles/components/profile/ProfileInfo.module.scss"
+import classes from "@/styles/components/profile/ProfileInfo.module.scss"
 
-import Image from "@common/Image"
-import ProfileInfoPlaceholder from "@components/placeholders/ProfileInfoPlaceholder"
-import useSwarmProfile from "@hooks/useSwarmProfile"
-import useErrorMessage from "@state/hooks/ui/useErrorMessage"
-import makeBlockies from "@utils/makeBlockies"
-import { checkIsEthAddress, shortenEthAddr } from "@utils/ethereum"
-import type { Profile } from "@definitions/swarm-profile"
+import Image from "@/components/common/Image"
+import ProfileInfoPlaceholder from "@/components/placeholders/ProfileInfoPlaceholder"
+import useSwarmProfile from "@/hooks/useSwarmProfile"
+import useErrorMessage from "@/state/hooks/ui/useErrorMessage"
+import makeBlockies from "@/utils/makeBlockies"
+import { checkIsEthAddress, shortenEthAddr } from "@/utils/ethereum"
+import type { Profile } from "@/definitions/swarm-profile"
 
 type ProfileInfoProps = {
   children: React.ReactNode

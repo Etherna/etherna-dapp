@@ -19,7 +19,7 @@ import React from "react"
 
 import SidebarPopupItemToggle from "./SidebarPopupItemToggle"
 import { SidebarItemProps } from "./SidebarItem"
-import Popup from "@common/Popup"
+import Popup from "@/components/common/Popup"
 
 type SidebarPopupItemProps = SidebarItemProps & {
   toggle?: React.ReactNode

@@ -17,13 +17,13 @@
 
 import React, { useState } from "react"
 
-import classes from "@styles/components/video/VideoExtraMenuReport.module.scss"
+import classes from "@/styles/components/video/VideoExtraMenuReport.module.scss"
 
-import AlertPopup from "@common/AlertPopup"
-import Button from "@common/Button"
-import Modal from "@common/Modal"
-import useSelector from "@state/useSelector"
-import { useErrorMessage } from "@state/hooks/ui"
+import AlertPopup from "@/components/common/AlertPopup"
+import Button from "@/components/common/Button"
+import Modal from "@/components/common/Modal"
+import useSelector from "@/state/useSelector"
+import { useErrorMessage } from "@/state/hooks/ui"
 
 type VideoExtraMenuReportProps = {
   videoId: string

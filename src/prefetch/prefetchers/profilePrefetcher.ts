@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 
-import SwarmProfileIO from "@classes/SwarmProfile"
-import SwarmVideoIO from "@classes/SwarmVideo"
-import SwarmUserPlaylistsIO from "@classes/SwarmUserPlaylists"
-import { store } from "@state/store"
-import { fullfilledPromisesResult } from "@utils/promise"
-import type { Profile } from "@definitions/swarm-profile"
-import type { Video } from "@definitions/swarm-video"
+import SwarmProfileIO from "@/classes/SwarmProfile"
+import SwarmVideoIO from "@/classes/SwarmVideo"
+import SwarmUserPlaylistsIO from "@/classes/SwarmUserPlaylists"
+import { store } from "@/state/store"
+import { fullfilledPromisesResult } from "@/utils/promise"
+import type { Profile } from "@/definitions/swarm-profile"
+import type { Video } from "@/definitions/swarm-video"
 
 const match = /\/profile\/([^/]+)/
 

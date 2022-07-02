@@ -16,9 +16,9 @@
 
 /// Credit: https://github.com/lifeomic/axios-fetch
 
-import { AxiosInstance, AxiosRequestConfig, Method } from "axios"
+import { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, Method } from "axios"
 
-type AxiosFetch = (input: string | Request, init?: RequestInit) => Promise<Response>
+export type AxiosFetch = (input: string | Request, init?: RequestInit) => Promise<Response>
 
 const isRequestInput = (input: string | Request): input is Request => {
   return typeof input === "object"
@@ -107,14 +107,16 @@ export const buildAxiosFetch = (axios: AxiosInstance): AxiosFetch => {
       responseType: "arraybuffer"
     }
 
-    let result
+    let result: AxiosResponse
     try {
       result = await axios.request(config)
     } catch (err: any) {
-      if (err.response) {
-        result = err.response
+      const error = err as AxiosError
+
+      if (error.response?.data) {
+        result = error.response
       } else {
-        throw err
+        throw error
       }
     }
 

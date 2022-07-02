@@ -14,20 +14,20 @@
  *  limitations under the License.
  */
 
-import { baseKeymap } from "@keyboard"
-import lang from "@lang"
-import EthernaGatewayClient from "@classes/EthernaGatewayClient"
-import EthernaIndexClient from "@classes/EthernaIndexClient"
-import EthernaAuthClient from "@classes/EthernaAuthClient"
-import SwarmBeeClient from "@classes/SwarmBeeClient"
-import autoUpgradeEthernaService from "@utils/autoUpgradeEthernaService"
-import { checkIsMobile } from "@utils/browser"
-import { loadColorScheme } from "@utils/dark-mode"
-import { parseLocalStorage } from "@utils/local-storage"
-import type { EnvState, WalletType } from "@definitions/app-state"
-import type { Keymap, KeymapNamespace } from "@definitions/keyboard"
-import type { GatewayBatch } from "@definitions/api-gateway"
-import type { GatewayExtensionHost } from "@definitions/extension-host"
+import { baseKeymap } from "@/keyboard"
+import lang from "@/lang"
+import EthernaGatewayClient from "@/classes/EthernaGatewayClient"
+import EthernaIndexClient from "@/classes/EthernaIndexClient"
+import EthernaAuthClient from "@/classes/EthernaAuthClient"
+import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import autoUpgradeEthernaService from "@/utils/autoUpgradeEthernaService"
+import { checkIsMobile } from "@/utils/browser"
+import { loadColorScheme } from "@/utils/dark-mode"
+import { parseLocalStorage } from "@/utils/local-storage"
+import type { EnvState, WalletType } from "@/definitions/app-state"
+import type { Keymap, KeymapNamespace } from "@/definitions/keyboard"
+import type { GatewayBatch } from "@/definitions/api-gateway"
+import type { GatewayExtensionHost } from "@/definitions/extension-host"
 
 export const EnvActionTypes = {
   SET_IS_MOBILE: "ENV_SET_IS_MOBILE",

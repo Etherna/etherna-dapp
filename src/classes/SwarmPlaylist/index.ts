@@ -16,7 +16,7 @@
 
 import SwarmPlaylistReader from "./SwarmPlaylistReader"
 import SwarmPlaylistWriter from "./SwarmPlaylistWriter"
-import { urlOrigin } from "@utils/urls"
+import { urlOrigin } from "@/utils/urls"
 
 const SwarmPlaylistIO = {
   Reader: SwarmPlaylistReader,

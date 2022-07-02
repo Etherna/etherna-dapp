@@ -18,27 +18,25 @@ import { useEffect } from "react"
 import { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
 import type { EthAddress } from "@ethersphere/bee-js/dist/src/utils/eth"
+
 import type { AxiosError } from "axios"
 
-import SwarmProfileIO from "@classes/SwarmProfile"
-import SwarmBeeClient from "@classes/SwarmBeeClient"
-import loginRedirect from "@state/actions/user/login-redirect"
-import { UserActions, UserActionTypes } from "@state/reducers/userReducer"
-import { EnvActions, EnvActionTypes } from "@state/reducers/enviromentReducer"
-import { ProfileActions, ProfileActionTypes } from "@state/reducers/profileReducer"
-import { UIActions, UIActionTypes } from "@state/reducers/uiReducer"
-import useSelector from "@state/useSelector"
-import { addressBytes, signMessage } from "@utils/ethereum"
-import type { AuthIdentity } from "@definitions/api-sso"
-import type { GatewayBatch, GatewayBatchPreview } from "@definitions/api-gateway"
+import SwarmProfileIO from "@/classes/SwarmProfile"
+import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import loginRedirect from "@/state/actions/user/login-redirect"
+import { UserActions, UserActionTypes } from "@/state/reducers/userReducer"
+import { EnvActions, EnvActionTypes } from "@/state/reducers/enviromentReducer"
+import { ProfileActions, ProfileActionTypes } from "@/state/reducers/profileReducer"
+import { UIActions, UIActionTypes } from "@/state/reducers/uiReducer"
+import useSelector from "@/state/useSelector"
+import { addressBytes, signMessage } from "@/utils/ethereum"
+import type { AuthIdentity } from "@/definitions/api-sso"
 
 type AutoSigninOpts = {
   forceSignin?: boolean
   service?: "index" | "gateway"
   isStatusPage?: boolean
 }
-
-let batchesFetchTries = 0
 
 export default function useAutoSignin(opts: AutoSigninOpts = {}) {
   const { indexClient, gatewayClient, authClient, beeClient, gatewayStampsUrl } = useSelector(state => state.env)
@@ -80,18 +78,6 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
       const address = identity.etherLoginAddress || identity.etherAddress
       fetchProfile(address, identity)
     }
-
-    let userBatches: GatewayBatch[] = await fetchBatches()
-
-    dispatch({
-      type: EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES,
-      batches: userBatches,
-    })
-
-    dispatch({
-      type: UserActionTypes.USER_SET_BATCHES,
-      batches: userBatches,
-    })
   }
 
   const fetchAuthIdentity = async () => {
@@ -234,69 +220,5 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
       type: UIActionTypes.TOGGLE_LOADING_PROFILE,
       isLoadingProfile: false,
     })
-  }
-
-  const fetchBatches = async () => {
-    batchesFetchTries++
-
-    let userBatches: GatewayBatch[] = []
-    let batchesPreview: GatewayBatchPreview[] = []
-
-    try {
-      batchesPreview = await gatewayClient.users.fetchBatches()
-
-      if (batchesPreview.length === 0) {
-        // waiting to auto create default batch
-        console.warn("Still no batches. Re-Trying in 10 seconds.")
-        batchesFetchTries < 5 && setTimeout(() => {
-          fetchBatches()
-        }, 10000)
-
-        return []
-      }
-
-      userBatches = await Promise.all(
-        batchesPreview.map(batchPreview => gatewayClient.users.fetchBatch(batchPreview.batchId))
-      )
-    } catch (error) {
-      if (batchesPreview.length > 0 && import.meta.env.PROD) {
-        userBatches = batchesPreview.map(batchPreview => ({
-          id: batchPreview.batchId,
-          depth: 20,
-          bucketDepth: 0,
-          amountPaid: 0,
-          normalisedBalance: 0,
-          batchTTL: 0,
-          usable: false,
-          utilization: 0,
-          blockNumber: 0,
-          exists: false,
-          immutableFlag: false,
-          label: "",
-          ownerAddress: null,
-        }))
-      } else {
-        // Try to fetch from /stamps endpoint
-        const batches = await beeClient.getAllPostageBatch()
-        const usableBatches = batches.filter(batch => batch.usable)
-        userBatches = usableBatches.map(batch => ({
-          id: batch.batchID,
-          depth: batch.depth,
-          bucketDepth: batch.bucketDepth,
-          amountPaid: +batch.amount,
-          normalisedBalance: 0,
-          batchTTL: -1,
-          usable: batch.usable,
-          utilization: batch.utilization,
-          blockNumber: batch.blockNumber,
-          exists: true,
-          immutableFlag: batch.immutableFlag,
-          label: batch.label,
-          ownerAddress: null,
-        }))
-      }
-    }
-
-    return userBatches
   }
 }

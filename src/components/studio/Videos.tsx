@@ -19,31 +19,30 @@ import React, { useEffect, useState } from "react"
 import { Link, Navigate } from "react-router-dom"
 import classNames from "classnames"
 
-import classes from "@styles/components/studio/Videos.module.scss"
+import classes from "@/styles/components/studio/Videos.module.scss"
 import { TrashIcon, DocumentDuplicateIcon, PencilIcon } from "@heroicons/react/solid"
-import { ReactComponent as Spinner } from "@assets/animated/spinner.svg"
-import { ReactComponent as ThumbPlaceholder } from "@assets/backgrounds/thumb-placeholder.svg"
-import { ReactComponent as CreditIcon } from "@assets/icons/credit.svg"
+import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
+import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
+import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
 
 import StudioTableView from "./StudioTableView"
 import VideoDeleteModal from "./video-editor/VideoDeleteModal"
-import CantUploadAlert from "./other/CantUploadAlert"
-import Button from "@common/Button"
-import Image from "@common/Image"
-import VideoOffersModal from "@components/modals/VideoOffersModal"
-import SwarmVideoIO from "@classes/SwarmVideo"
-import usePlaylistVideos from "@hooks/usePlaylistVideos"
-import useUserPlaylists from "@hooks/useUserPlaylists"
-import useVideosResources from "@hooks/useVideosResources"
-import routes from "@routes"
-import useSelector from "@state/useSelector"
-import { showError } from "@state/actions/modals"
-import dayjs from "@utils/dayjs"
-import { shortenEthAddr } from "@utils/ethereum"
-import { convertTime } from "@utils/converters"
-import { encodedSvg } from "@utils/svg"
-import type { Profile } from "@definitions/swarm-profile"
-import type { Video, VideoOffersStatus } from "@definitions/swarm-video"
+import Button from "@/components/common/Button"
+import Image from "@/components/common/Image"
+import VideoOffersModal from "@/components/modals/VideoOffersModal"
+import SwarmVideoIO from "@/classes/SwarmVideo"
+import usePlaylistVideos from "@/hooks/usePlaylistVideos"
+import useUserPlaylists from "@/hooks/useUserPlaylists"
+import useVideosResources from "@/hooks/useVideosResources"
+import routes from "@/routes"
+import useSelector from "@/state/useSelector"
+import { showError } from "@/state/actions/modals"
+import dayjs from "@/utils/dayjs"
+import { shortenEthAddr } from "@/utils/ethereum"
+import { convertTime } from "@/utils/converters"
+import { encodedSvg } from "@/utils/svg"
+import type { Profile } from "@/definitions/swarm-profile"
+import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 
 const Videos: React.FC = () => {
   const profileInfo = useSelector(state => state.profile)
@@ -211,11 +210,9 @@ const Videos: React.FC = () => {
 
   return (
     <>
-      <Button as="a" href={routes.studioVideoNew} modifier="inverted">
+      <Button as="a" href={routes.studioVideoNew}>
         Create new video
       </Button>
-
-      <CantUploadAlert />
 
       <StudioTableView
         className={classes.videoTable}

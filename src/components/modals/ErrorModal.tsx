@@ -20,9 +20,9 @@ import React from "react"
 import { ShieldCheckIcon } from "@heroicons/react/outline"
 import { ExclamationCircleIcon } from "@heroicons/react/solid"
 
-import Modal from "@common/Modal"
-import Button from "@common/Button"
-import { useErrorMessage } from "@state/hooks/ui"
+import Modal from "@/components/common/Modal"
+import Button from "@/components/common/Button"
+import { useErrorMessage } from "@/state/hooks/ui"
 
 type ErrorModalProps = {
   title?: string

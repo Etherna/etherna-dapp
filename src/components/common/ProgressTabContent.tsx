@@ -18,7 +18,7 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/ProgressTabContent.module.scss"
+import classes from "@/styles/components/common/ProgressTabContent.module.scss"
 
 export type ProgressTabContentProps = {
   children: React.ReactNode

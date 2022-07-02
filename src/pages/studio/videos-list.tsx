@@ -17,9 +17,9 @@
 
 import React from "react"
 
-import Container from "@common/Container"
-import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
-import Videos from "@components/studio/Videos"
+import Container from "@/components/common/Container"
+import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
+import Videos from "@/components/studio/Videos"
 
 const StudioVideoEdit = () => {
   return (

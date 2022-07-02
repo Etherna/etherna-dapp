@@ -18,12 +18,22 @@
 import React from "react"
 import { Outlet } from "react-router-dom"
 
-import useAppUpdate from "@hooks/useAppUpdate"
+import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
-const PWARoute: React.FC = () => {
-  useAppUpdate()
+import useBatches from "@/state/hooks/user/useBatches"
 
-  return <Outlet />
+const BatchesRoute: React.FC = () => {
+  const { isFetchingBatches } = useBatches({ autofetch: true })
+
+  return (
+    isFetchingBatches ? (
+      <div className="w-full flex items-center justify-center p-8">
+        <Spinner width={24} height={24} />
+      </div>
+    ) : (
+      <Outlet />
+    )
+  )
 }
 
-export default PWARoute
+export default BatchesRoute

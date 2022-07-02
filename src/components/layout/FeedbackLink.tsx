@@ -17,7 +17,7 @@
 
 import React, { useEffect, useState } from "react"
 
-import SidebarLinksItem from "@components/navigation/SidebarLinksItem"
+import SidebarLinksItem from "@/components/navigation/SidebarLinksItem"
 
 const FeedbackLink = () => {
   const [blocked, setBlocked] = useState(false)

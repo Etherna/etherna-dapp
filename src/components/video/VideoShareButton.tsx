@@ -20,11 +20,11 @@ import React, { useState } from "react"
 import { ShareIcon } from "@heroicons/react/solid"
 
 import VideoDetailsButton from "./VideoDetailsButton"
-import CopyText from "@common/CopyText"
-import Modal from "@common/Modal"
-import Button from "@common/Button"
-import SegmentedControl from "@common/SegmentedControl"
-import routes from "@routes"
+import CopyText from "@/components/common/CopyText"
+import Modal from "@/components/common/Modal"
+import Button from "@/components/common/Button"
+import SegmentedControl from "@/components/common/SegmentedControl"
+import routes from "@/routes"
 
 type VideoShareButtonProps = {
   reference: string

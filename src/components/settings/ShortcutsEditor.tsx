@@ -17,16 +17,16 @@
 
 import React from "react"
 
-import classes from "@styles/components/settings/ShortcutsEditor.module.scss"
+import classes from "@/styles/components/settings/ShortcutsEditor.module.scss"
 import { PencilIcon } from "@heroicons/react/solid"
 import { BackspaceIcon } from "@heroicons/react/outline"
 
-import Button from "@common/Button"
-import Kbd from "@common/Kbd"
-import { editShortcut, resetShortcut, hasCustomShortcut } from "@state/actions/enviroment/shortcuts"
-import useSelector from "@state/useSelector"
-import { splitArray } from "@utils/array"
-import type { KeymapNamespace } from "@definitions/keyboard"
+import Button from "@/components/common/Button"
+import Kbd from "@/components/common/Kbd"
+import { editShortcut, resetShortcut, hasCustomShortcut } from "@/state/actions/enviroment/shortcuts"
+import useSelector from "@/state/useSelector"
+import { splitArray } from "@/utils/array"
+import type { KeymapNamespace } from "@/definitions/keyboard"
 
 type ShortcutsEditorProps = {
   namespace: KeymapNamespace

@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import http from "@utils/request"
-import type { AuthIdentity } from "@definitions/api-sso"
+import http from "@/utils/request"
+import type { AuthIdentity } from "@/definitions/api-sso"
 
 export default class AuthIdentityClient {
   url: string

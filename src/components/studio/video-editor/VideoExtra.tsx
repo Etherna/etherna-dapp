@@ -22,7 +22,7 @@ import React from "react"
 // import VisibilitySelector from "./VisibilitySelector"
 import SaveToSelector from "./SaveToSelector"
 import OfferResourcesToggle from "./OfferResourcesToggle"
-import FormGroup from "@common/FormGroup"
+import FormGroup from "@/components/common/FormGroup"
 
 type VideoExtraProps = {
   isSubmitting: boolean

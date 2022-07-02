@@ -15,7 +15,7 @@
  */
 
 import { PlayerKeymap } from "./keymaps/player"
-import type { Keymap, KeymapNamespace } from "@definitions/keyboard"
+import type { Keymap, KeymapNamespace } from "@/definitions/keyboard"
 
 const KEYMAP_OVERRIDE_NAME = "keymapOverride"
 

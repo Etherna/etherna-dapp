@@ -19,16 +19,16 @@ import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 import classNames from "classnames"
 
-import classes from "@styles/components/video/VideoCommentsItem.module.scss"
+import classes from "@/styles/components/video/VideoCommentsItem.module.scss"
 
-import MarkdownPreview from "@common/MarkdownPreview"
-import VideoCommentPlaceholder from "@components/placeholders/VideoCommentPlaceholder"
-import Avatar from "@components/user/Avatar"
-import useSwarmProfile from "@hooks/useSwarmProfile"
-import routes from "@routes"
-import { shortenEthAddr } from "@utils/ethereum"
-import dayjs from "@utils/dayjs"
-import type { IndexVideoComment } from "@definitions/api-index"
+import MarkdownPreview from "@/components/common/MarkdownPreview"
+import VideoCommentPlaceholder from "@/components/placeholders/VideoCommentPlaceholder"
+import Avatar from "@/components/user/Avatar"
+import useSwarmProfile from "@/hooks/useSwarmProfile"
+import routes from "@/routes"
+import { shortenEthAddr } from "@/utils/ethereum"
+import dayjs from "@/utils/dayjs"
+import type { IndexVideoComment } from "@/definitions/api-index"
 
 type VideoCommentsItemProps = {
   comment: IndexVideoComment

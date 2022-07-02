@@ -20,13 +20,13 @@ import { useNavigate } from "react-router-dom"
 import classNames from "classnames"
 import { useMatomo } from "@datapunt/matomo-tracker-react"
 
-import classes from "@styles/components/layout/SearchItem.module.scss"
+import classes from "@/styles/components/layout/SearchItem.module.scss"
 import { XIcon } from "@heroicons/react/solid"
 import { SearchIcon } from "@heroicons/react/outline"
 
-import TopbarItem from "@components/navigation/TopbarItem"
-import TextField from "@common/TextField"
-import routes from "@routes"
+import TopbarItem from "@/components/navigation/TopbarItem"
+import TextField from "@/components/common/TextField"
+import routes from "@/routes"
 
 const SearchItem: React.FC = () => {
   const navigate = useNavigate()

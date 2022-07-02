@@ -18,11 +18,11 @@
 import React, { useMemo } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/player/PlayerBytesCounter.module.scss"
+import classes from "@/styles/components/player/PlayerBytesCounter.module.scss"
 
-import { usePlayerState } from "@context/player-context/hooks"
-import useSelector from "@state/useSelector"
-import { convertTime } from "@utils/converters"
+import { usePlayerState } from "@/context/player-context/hooks"
+import useSelector from "@/state/useSelector"
+import { convertTime } from "@/utils/converters"
 
 const PlayerBytesCounter: React.FC = () => {
   const [state] = usePlayerState()

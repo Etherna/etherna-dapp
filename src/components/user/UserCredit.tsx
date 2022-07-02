@@ -17,13 +17,13 @@
 
 import React, { useMemo } from "react"
 
-import classes from "@styles/components/user/UserCredit.module.scss"
+import classes from "@/styles/components/user/UserCredit.module.scss"
 
 import UserCreditBadge from "./UserCreditBadge"
-import Button from "@common/Button"
-import Popup from "@common/Popup"
-import useSelector from "@state/useSelector"
-import { urlOrigin } from "@utils/urls"
+import Button from "@/components/common/Button"
+import Popup from "@/components/common/Popup"
+import useSelector from "@/state/useSelector"
+import { urlOrigin } from "@/utils/urls"
 
 const UserCredit: React.FC = () => {
   const { creditUrl, bytePrice } = useSelector(state => state.env)

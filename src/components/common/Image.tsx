@@ -18,9 +18,9 @@
 import React, { useEffect, useRef, useState } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/Image.module.scss"
+import classes from "@/styles/components/common/Image.module.scss"
 
-import useSelector from "@state/useSelector"
+import useSelector from "@/state/useSelector"
 
 type ImageProps = {
   src?: string
@@ -93,7 +93,7 @@ const Image: React.FC<ImageProps> = ({
       setSrc(newSrc)
       newSrc !== src && setImgLoaded(false)
     } else {
-      setSrc(staticSrc)
+      setSrc(staticSrc ?? fallbackSrc)
     }
   }
 

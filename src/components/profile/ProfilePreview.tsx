@@ -18,15 +18,15 @@
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 
-import classes from "@styles/components/profile/ProfilePreview.module.scss"
+import classes from "@/styles/components/profile/ProfilePreview.module.scss"
 
-import Avatar from "@components/user/Avatar"
-import VideoGrid from "@components/video/VideoGrid"
-import routes from "@routes"
-import useSwarmProfile from "@hooks/useSwarmProfile"
-import useUserPlaylists from "@hooks/useUserPlaylists"
-import usePlaylistVideos from "@hooks/usePlaylistVideos"
-import { shortenEthAddr } from "@utils/ethereum"
+import Avatar from "@/components/user/Avatar"
+import VideoGrid from "@/components/video/VideoGrid"
+import routes from "@/routes"
+import useSwarmProfile from "@/hooks/useSwarmProfile"
+import useUserPlaylists from "@/hooks/useUserPlaylists"
+import usePlaylistVideos from "@/hooks/usePlaylistVideos"
+import { shortenEthAddr } from "@/utils/ethereum"
 
 type ProfilePreviewProps = {
   profileAddress: string

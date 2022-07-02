@@ -19,7 +19,7 @@ import React, { ElementType, useMemo } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import classNames from "classnames"
 
-import classes from "@styles/components/navigation/SidebarItem.module.scss"
+import classes from "@/styles/components/navigation/SidebarItem.module.scss"
 
 export type SidebarItemProps = {
   children?: React.ReactNode

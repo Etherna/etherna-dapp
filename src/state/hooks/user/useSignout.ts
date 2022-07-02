@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import logoutRedirect from "@state/actions/user/logout-redirect"
-import useSelector from "@state/useSelector"
+import logoutRedirect from "@/state/actions/user/logout-redirect"
+import useSelector from "@/state/useSelector"
 
 export default function useSignout() {
   const { isSignedIn, isSignedInGateway } = useSelector(state => state.user)

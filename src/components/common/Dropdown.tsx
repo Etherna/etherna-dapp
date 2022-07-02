@@ -18,7 +18,7 @@
 import React from "react"
 import { Menu } from "@headlessui/react"
 
-import classes from "@styles/components/common/Dropdown.module.scss"
+import classes from "@/styles/components/common/Dropdown.module.scss"
 
 import DropdownMenu from "./DropdownMenu"
 

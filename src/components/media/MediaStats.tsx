@@ -18,7 +18,7 @@
 import React, { useRef, useState } from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/media/MediaStats.module.scss"
+import classes from "@/styles/components/media/MediaStats.module.scss"
 import { ChevronDownIcon } from "@heroicons/react/solid"
 
 type MediaStatsProps = {

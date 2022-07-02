@@ -18,9 +18,9 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/common/ProgressBar.module.scss"
+import classes from "@/styles/components/common/ProgressBar.module.scss"
 
-import { clamp } from "@utils/math"
+import { clamp } from "@/utils/math"
 
 type ProgressBarProps = {
   progress: number

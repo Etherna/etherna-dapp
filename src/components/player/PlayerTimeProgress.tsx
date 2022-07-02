@@ -17,10 +17,10 @@
 
 import React from "react"
 
-import classes from "@styles/components/player/PlayerTimeProgress.module.scss"
+import classes from "@/styles/components/player/PlayerTimeProgress.module.scss"
 
-import Time from "@components/media/Time"
-import { usePlayerState } from "@context/player-context/hooks"
+import Time from "@/components/media/Time"
+import { usePlayerState } from "@/context/player-context/hooks"
 
 const PlayerTimeProgress: React.FC = () => {
   const [state] = usePlayerState()

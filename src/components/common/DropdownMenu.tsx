@@ -19,7 +19,7 @@ import React, { useEffect, useState } from "react"
 import classNames from "classnames"
 import { Menu } from "@headlessui/react"
 
-import classes from "@styles/components/common/DropdownMenu.module.scss"
+import classes from "@/styles/components/common/DropdownMenu.module.scss"
 
 export type DropdownMenuProps = {
   children?: React.ReactNode

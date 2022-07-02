@@ -18,7 +18,7 @@
 import React, { useRef } from "react"
 
 import VideoSourcesUpload, { VideoSourcesUploadHandlers } from "./VideoSourcesUpload"
-import FormGroup from "@common/FormGroup"
+import FormGroup from "@/components/common/FormGroup"
 
 type VideoSourcesProps = {
   initialDragPortal?: string

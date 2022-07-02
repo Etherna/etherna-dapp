@@ -19,22 +19,23 @@
 
 <head>
   <meta charset="utf-8" />
-  <link rel="shortcut icon" href="/images/icon.png" />
+  <link rel="shortcut icon" href="/images/icon-256.png" />
   <link rel="apple-touch-icon" href="/images/icon-192.png" />
+  <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+  <link rel="alternate icon" href="/images/icon-256.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="A transparent video platform" />
   <meta http-equiv="Cache-control" content="public, max-age=3600, must-revalidate">
   <meta http-equiv="Expires" content="public, max-age=3600, must-revalidate">
   <meta http-equiv="Last-Modified" content="public, max-age=3600, must-revalidate">
-  <link rel="manifest" href="/manifest.webmanifest" />
   <title>Etherna</title>
   <script>
     /// Define basepath
     var path = window.location.pathname;
     var bzzPattern = /\/bzz\/([^/]+)/;
-    window.__basename__ = bzzPattern.test(path) ?
-      path.match(bzzPattern)[0] :
-      null;
+    var basename = bzzPattern.test(path) ? path.match(bzzPattern)[0] : '';
+
+    window.__dynamic_base__ = basename;
 
   </script>
 </head>
@@ -43,100 +44,12 @@
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
   <div id="root_legacy"></div>
-  <div class="fixed top-0 inset-x-0 bg-red-500 z-200 font-semibold p-4" id="unsupported-browser-message"
-    style="display: none;">
+  <div class="fixed top-0 inset-x-0 z-200 font-semibold p-4" id="unsupported-browser-message"
+    style="display:none; background-color:#EF4444; color:white">
     <span>You are using an old unsupported browser. To keep using this app please download the latest version of </span>
     <span>Chrome, Safari, Firefox, Brave or any other modern browser.</span>
   </div>
   <script type="module" src="/src/index.tsx"></script>
-
-  <script>
-    /// check unsupported browser
-    function hasDynamicImport() {
-      try {
-        return new Function("return import('data:text/javascript;base64,Cg==').then(r => true)")();
-      } catch (e) {
-        return Promise.resolve(false);
-      }
-    }
-    hasDynamicImport().then(function (supported) {
-      if (!supported) {
-        var msg = document.getElementById("unsupported-browser-message")
-        if (msg) {
-          msg.style.display = ""
-        }
-      }
-    })
-
-    /// don't run if __basename__ is empty
-    if (window.__basename__) {
-      fixCurrentUrls();
-      observeDOM();
-    }
-
-    /// Fix current scripts and links
-    function fixCurrentUrls() {
-      var currentScripts = document.querySelectorAll('script');
-      var currentLinks = document.querySelectorAll('link');
-      fixUrls(currentScripts);
-      fixUrls(currentLinks);
-    }
-
-    /// Observe for added scripts and links in DOM
-    function observeDOM() {
-      var observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-          fixUrls(mutation.addedNodes);
-        });
-      });
-      observer.observe(document.documentElement, {
-        childList: true,
-        subtree: true,
-        attributes: false
-      });
-    }
-
-    /// Replace script and link tags with corrected one
-    function fixUrls(nodes) {
-      const basename = window.__basename__;
-
-      nodes.forEach(function (node) {
-        if (typeof node !== "object") return;
-
-        var href = node.getAttribute('href');
-        if (href && !href.startsWith(basename)) {
-          var copy = clonedEl(node);
-          if (copy) {
-            copy.setAttribute('href', basename + href);
-            node.parentNode.appendChild(copy);
-            node.remove();
-          }
-        }
-        var src = node.getAttribute('src');
-        if (src && !src.startsWith(basename)) {
-          var copy = clonedEl(node);
-          if (copy) {
-            copy.setAttribute('src', basename + src);
-            node.parentNode.appendChild(copy);
-            node.remove();
-          }
-        }
-      });
-    }
-
-    // Clone element with attributes
-    function clonedEl(originEl) {
-      if (!originEl) return null;
-
-      var cloneEl = document.createElement(originEl.tagName);
-      for (var i = 0; i < originEl.attributes.length; i++) {
-        var attr = originEl.attributes[i];
-        cloneEl.setAttribute(attr.name, attr.value);
-      }
-      return cloneEl;
-    }
-
-  </script>
 </body>
 
 </html>

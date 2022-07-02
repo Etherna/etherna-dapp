@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import classes from "@styles/components/navigation/Topbar.module.scss"
+import classes from "@/styles/components/navigation/Topbar.module.scss"
 
 type TopbarProps = {
   children?: React.ReactNode

@@ -17,9 +17,9 @@
 
 import React from "react"
 
-import Container from "@common/Container"
-import AppLayoutWrapper from "@components/layout/AppLayoutWrapper"
-import Storage from "@components/studio/Storage"
+import Container from "@/components/common/Container"
+import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
+import Storage from "@/components/studio/Storage"
 
 const StoragePage = () => {
   return (

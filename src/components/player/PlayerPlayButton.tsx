@@ -18,12 +18,12 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@styles/components/player/PlayerPlayButton.module.scss"
-import { ReactComponent as PlayIcon } from "@assets/icons/player/play.svg"
-import { ReactComponent as PauseIcon } from "@assets/icons/player/pause.svg"
+import classes from "@/styles/components/player/PlayerPlayButton.module.scss"
+import { ReactComponent as PlayIcon } from "@/assets/icons/player/play.svg"
+import { ReactComponent as PauseIcon } from "@/assets/icons/player/pause.svg"
 
-import { PlayerReducerTypes } from "@context/player-context"
-import { usePlayerState } from "@context/player-context/hooks"
+import { PlayerReducerTypes } from "@/context/player-context"
+import { usePlayerState } from "@/context/player-context/hooks"
 
 const PlayerPlayButton: React.FC = () => {
   const [state, dispatch] = usePlayerState()

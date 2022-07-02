@@ -17,9 +17,9 @@
 
 import React from "react"
 
-import profileClasses from "@styles/components/profile/ProfileInfo.module.scss"
+import profileClasses from "@/styles/components/profile/ProfileInfo.module.scss"
 
-import Placeholder from "@common/Placeholder"
+import Placeholder from "@/components/common/Placeholder"
 
 const ProfileInfoPlaceholder: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { checkIsLegacyBrowser } from "@utils/browser"
+import { checkIsLegacyBrowser } from "@/utils/browser"
 
 export default function unsupportedRender(renderFunc: () => void) {
   if (checkIsLegacyBrowser()) {

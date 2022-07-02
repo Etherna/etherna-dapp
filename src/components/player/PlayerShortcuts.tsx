@@ -18,11 +18,11 @@
 import React from "react"
 import { Shortcuts } from "react-shortcuts"
 
-import classes from "@styles/components/player/PlayerShortcuts.module.scss"
+import classes from "@/styles/components/player/PlayerShortcuts.module.scss"
 
-import { PlayerReducerTypes } from "@context/player-context"
-import { usePlayerState } from "@context/player-context/hooks"
-import { PlayerActions } from "@keyboard"
+import { PlayerReducerTypes } from "@/context/player-context"
+import { usePlayerState } from "@/context/player-context/hooks"
+import { PlayerActions } from "@/keyboard"
 
 type PlayerShortcutsProps = {
   children?: React.ReactNode

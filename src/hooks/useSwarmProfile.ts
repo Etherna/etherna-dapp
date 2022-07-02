@@ -16,10 +16,10 @@
 
 import { useEffect, useState } from "react"
 
-import SwarmProfileIO, { getDefaultProfile } from "@classes/SwarmProfile"
-import useSelector from "@state/useSelector"
-import type { Profile } from "@definitions/swarm-profile"
-import { wait } from "@utils/promise"
+import SwarmProfileIO, { getDefaultProfile } from "@/classes/SwarmProfile"
+import useSelector from "@/state/useSelector"
+import type { Profile } from "@/definitions/swarm-profile"
+import { wait } from "@/utils/promise"
 
 type SwarmProfileOptions = {
   address: string
@@ -30,7 +30,7 @@ type SwarmProfileOptions = {
 export default function useSwarmProfile(opts: SwarmProfileOptions) {
   const { fetchFromCache, updateCache } = opts
 
-  const { beeClient, indexClient } = useSelector(state => state.env)
+  const { beeClient } = useSelector(state => state.env)
   const [address, setAddress] = useState(opts.address)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [isLoading, setIsloading] = useState(false)
@@ -54,7 +54,7 @@ export default function useSwarmProfile(opts: SwarmProfileOptions) {
     let profile = getDefaultProfile(address)
 
     try {
-      const profileInfo = await profileReader.download()
+      const profileInfo = await profileReader.download(true)
       import.meta.env.DEV && await wait(1000)
 
       if (profileInfo) {

@@ -16,7 +16,7 @@
 
 import profilePrefetcher from "./prefetchers/profilePrefetcher"
 import videoPrefetcher from "./prefetchers/videoPrefetcher"
-import { isBotUserAgent } from "@utils/browser"
+import { isBotUserAgent } from "@/utils/browser"
 
 const prefetchers = [
   profilePrefetcher,

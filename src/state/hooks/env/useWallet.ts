@@ -16,8 +16,8 @@
 
 import { useEffect, useState } from "react"
 
-import useSelector from "@state/useSelector"
-import { checkWalletLocked, fetchAccounts } from "@utils/ethereum"
+import useSelector from "@/state/useSelector"
+import { checkWalletLocked, fetchAccounts } from "@/utils/ethereum"
 
 export default function useWallet() {
   const { currentWallet } = useSelector(state => state.env)

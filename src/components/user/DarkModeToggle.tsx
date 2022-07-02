@@ -19,7 +19,7 @@ import React from "react"
 
 import { MoonIcon, SunIcon } from "@heroicons/react/outline"
 
-import Toggle from "@common/Toggle"
+import Toggle from "@/components/common/Toggle"
 
 type DarkModeToggleProps = {
   enabled: boolean

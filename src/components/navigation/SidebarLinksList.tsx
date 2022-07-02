@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import classes from "@styles/components/navigation/SidebarLinksList.module.scss"
+import classes from "@/styles/components/navigation/SidebarLinksList.module.scss"
 
 type SidebarLinksListProps = {
   children?: React.ReactNode
