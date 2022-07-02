@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - develop
   workflow_dispatch:
 
 jobs:
@@ -12,7 +11,7 @@ jobs:
     name: Deploy
 
     environment:
-      name: ${{ endsWith(github.ref, '/main') && 'production' || 'development' }}
+      name: production
 
     env:
       VITE_APP_NAME: "Etherna"
