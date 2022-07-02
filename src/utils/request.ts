@@ -195,17 +195,22 @@ export const createRequest = () => {
           } else {
             return Promise.resolve(response)
           }
-        } else {
-          return Promise.reject("Coudn't find cached request")
         }
+
+        return Promise.reject("Coudn't find cached request")
       } else {
+        // This is an error thrown by the first/main request
+
         // check if the first request throwed
-        let pendingRequest = AxiosPendingCache.findPendingRequest(error.response?.config)
+        let pendingRequest = AxiosPendingCache.findPendingRequest(error.config)
+
         if (pendingRequest) {
           if (pendingRequest.count > 0) {
+            // has pending requests, so add response
             pendingRequest.response = error
           } else {
-            AxiosPendingCache.popPendingRequest(error.response?.config)
+            // single request, remove from cache
+            AxiosPendingCache.popPendingRequest(error.config)
           }
         }
       }

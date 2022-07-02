@@ -93,7 +93,7 @@ const Image: React.FC<ImageProps> = ({
       setSrc(newSrc)
       newSrc !== src && setImgLoaded(false)
     } else {
-      setSrc(staticSrc)
+      setSrc(staticSrc ?? fallbackSrc)
     }
   }
 
