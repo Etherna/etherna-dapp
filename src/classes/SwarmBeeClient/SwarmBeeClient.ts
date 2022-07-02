@@ -93,21 +93,6 @@ export default class SwarmBeeClient extends Bee {
   }
 
   /**
-   * Download a resource from swarm by the bzz path
-   * 
-   * @param reference Bee resource reference
-   * @param path Resource path
-   * @returns The data array
-   */
-  async resolveBzz(reference: string, path?: string) {
-    const url = this.getBzzUrl(reference, path)
-    const response = await http.get<ArrayBuffer>(url, {
-      responseType: "arraybuffer",
-    })
-    return new Uint8Array(response.data)
-  }
-
-  /**
    * Check if pinning is enabled on the current host
    * 
    * @returns True if pinning is enabled
