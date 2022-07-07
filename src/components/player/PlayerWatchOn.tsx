@@ -35,7 +35,7 @@ const PlayerWatchOn: React.FC<PlayerWatchOnProps> = ({ hash }) => {
       rel="noreferrer"
     >
       <span>Watch on</span>
-      <Logo className="dark" />
+      <Logo white />
     </a>
   )
 }
