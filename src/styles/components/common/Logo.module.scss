@@ -1,4 +1,4 @@
-/*
+/* 
  *  Copyright 2021-present Etherna Sagl
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,32 +12,13 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
  */
 
-import React from "react"
-
-import classes from "@/styles/components/player/PlayerWatchOn.module.scss"
-
-import Logo from "@/components/common/Logo"
-import routes from "@/routes"
-
-type PlayerWatchOnProps = {
-  hash: string
+.logo {
+  :global(.__symbol) {
+    @apply fill-primary-500 dark:fill-gray-50;
+  }
+  :global(.__text) {
+    @apply fill-[#7797A3] dark:fill-gray-50;
+  }
 }
-
-const PlayerWatchOn: React.FC<PlayerWatchOnProps> = ({ hash }) => {
-  return (
-    <a
-      className={classes.playerWatchOn}
-      href={import.meta.env.VITE_APP_PUBLIC_URL + routes.watch(hash)}
-      target="_blank"
-      rel="noreferrer"
-    >
-      <span>Watch on</span>
-      <Logo className="dark" />
-    </a>
-  )
-}
-
-export default PlayerWatchOn
