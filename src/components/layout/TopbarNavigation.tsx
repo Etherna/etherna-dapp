@@ -19,10 +19,9 @@ import React from "react"
 
 import { PlusIcon } from "@heroicons/react/solid"
 import { UploadIcon, MenuAlt4Icon } from "@heroicons/react/outline"
-import { ReactComponent as Logo } from "@/assets/logo.svg"
-import { ReactComponent as LogoSymbol } from "@/assets/logo-symbol.svg"
 
 import SearchItem from "./SearchItem"
+import Logo from "@/components/common/Logo"
 import Topbar from "@/components/navigation/Topbar"
 import TopbarLogo from "@/components/navigation/TopbarLogo"
 import TopbarItem from "@/components/navigation/TopbarItem"
@@ -62,7 +61,7 @@ const TopbarNavigation: React.FC = () => {
 
       <TopbarLogo
         logo={<Logo />}
-        logoCompact={<LogoSymbol />}
+        logoCompact={<Logo compact />}
       />
 
       <TopbarPopupItem toggle={<PlusIcon />} hideMobile>

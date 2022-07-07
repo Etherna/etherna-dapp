@@ -24,13 +24,6 @@
   svg {
     @apply h-full w-auto object-contain object-center;
   }
-
-  :global(.__symbol) {
-    @apply fill-primary-500 dark:fill-gray-50;
-  }
-  :global(.__text) {
-    @apply fill-[#7797A3] dark:fill-gray-50;
-  }
 }
 
 .topbarLogoMobile {
