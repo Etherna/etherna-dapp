@@ -24,21 +24,26 @@ import { ReactComponent as EthernaLogo } from "@/assets/logo.svg"
 import { ReactComponent as EthernaSymbol } from "@/assets/logo-symbol.svg"
 
 type LogoProps = React.SVGAttributes<SVGElement> & {
-  compact?: boolean;
-};
+  compact?: boolean
+  white?: boolean
+}
 
 const Logo: React.FC<LogoProps> = (props) => {
   return props.compact ? (
     <EthernaSymbol
       aria-label="Etherna"
-      {...omit(props, "compact")}
-      className={classNames(classes.logo, props.className)}
+      {...omit(props, "compact", "white")}
+      className={classNames(classes.logo, props.className, {
+        [classes.white]: props.white,
+      })}
     />
   ) : (
     <EthernaLogo
       aria-label="Etherna"
-      {...omit(props, "compact")}
-      className={classNames(classes.logo, props.className)}
+      {...omit(props, "compact", "white")}
+      className={classNames(classes.logo, props.className, {
+        [classes.white]: props.white,
+      })}
     />
   )
 }
