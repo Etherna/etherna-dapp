@@ -141,13 +141,6 @@ export const createRequest = () => {
     async config => {
       if (!config) return config
 
-      // Fix bee missing trailing slash
-      if (config.url) {
-        const url = new URL(config.url)
-        const pathname = url.pathname.replace(/\/?$/, "/")
-        config.url = `${url.origin}${pathname}${url.search}`
-      }
-
       // only cache get requests
       if (!["GET", "get"].includes(config.method || "")) return config
 
