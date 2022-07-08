@@ -258,7 +258,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
         }),
       })
     } catch (error: any) {
-      console.log(error)
+      console.warn(error)
 
       if (error.response) {
         renderError(error.response.status, error.response.data.message || error.response.data)

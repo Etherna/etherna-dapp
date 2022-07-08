@@ -78,7 +78,6 @@ export default function usePlaylistVideos(
     setIsFetching(true)
     try {
       const references = playlist.videos.slice(from, to)
-      console.info("LOAD CHANNEL START")
       const newVideos = await Promise.all(references.map(video => {
         const reader = new SwarmVideoIO.Reader(video.reference, playlist.owner, {
           beeClient,
@@ -88,7 +87,6 @@ export default function usePlaylistVideos(
         })
         return reader.download()
       }))
-      console.info("LOAD CHANNEL END")
 
       setIsFetching(false)
 
