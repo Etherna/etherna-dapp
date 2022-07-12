@@ -22,16 +22,18 @@ import VideoGrid from "@/components/video/VideoGrid"
 import type { Video } from "@/definitions/swarm-video"
 
 type ProfileVideosProps = {
-  videos: Video[]
+  videos: Video[] | null | undefined
   isFetching: boolean
   hasMoreVideos: boolean
   onLoadMore(): void
 }
 
 const ProfileVideos: React.FC<ProfileVideosProps> = ({ videos, isFetching, hasMoreVideos, onLoadMore }) => {
+  if (videos == null) return null
+
   return (
     <>
-      {!isFetching && (videos || []).length === 0 && (
+      {!isFetching && videos.length === 0 && (
         <p className="text-gray-500 text-center my-16">This profile has yet to upload a video</p>
       )}
 
