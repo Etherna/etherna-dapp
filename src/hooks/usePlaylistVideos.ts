@@ -113,10 +113,13 @@ export default function usePlaylistVideos(
       return
     }
 
+    if (playlist?.videos == null) return
+
     const limit = opts.limit!
     const from = videos?.length ?? 0
-    const to = from + (limit === -1 ? playlist?.videos?.length ?? 0 : limit)
+    const to = from + (limit === -1 ? playlist.videos.length ?? 0 : limit)
     const newVideos = await fetchVideos(from, to)
+    setHasMore(to < playlist.videos.length)
     setVideos([
       ...(videos ?? []),
       ...newVideos,
