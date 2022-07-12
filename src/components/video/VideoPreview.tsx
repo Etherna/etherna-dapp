@@ -80,7 +80,6 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
       <VideoLink>
         <div className={classes.videoThumbnail}>
           <Image
-            src={encodedSvg(<ThumbPlaceholder />)}
             sources={video.thumbnail?.sources}
             placeholder="blur"
             blurredDataURL={video.thumbnail?.blurredBase64}
