@@ -35,6 +35,8 @@ export default defineConfig(({ mode }) => ({
       key: fs.readFileSync("proxy/sslcert/key.pem"),
       cert: fs.readFileSync("proxy/sslcert/cert.pem"),
     },
+    port: 3000,
+    host: "localhost",
   },
   css: {
     modules: {
@@ -60,7 +62,7 @@ export default defineConfig(({ mode }) => ({
     svgr(),
     eslintPlugin({ cache: false }),
     dynamicBase({
-      publicPath: "window.__dynamic_base__",
+      publicPath: " window.__dynamic_base__",
       transformIndexHtml: true,
     }),
   ],
