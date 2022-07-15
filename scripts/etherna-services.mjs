@@ -21,6 +21,8 @@ import chalk from "chalk"
 import url from "url"
 import { exec } from "child_process"
 import DotEnv from "dotenv"
+import bcrypt from "bcryptjs"
+
 import { createPostageBatch } from "./create-postage-batch.mjs"
 import { loadSeed } from "./swarm-seed.mjs"
 
@@ -124,7 +126,8 @@ const execProject = (projectPath) => {
  * Run the bee instance
  */
 const execBee = () => {
-  const execCms = `bee dev --cors-allowed-origins=*`
+  const adminPassword = bcrypt.hashSync(process.env.BEE_ADMIN_PASSWORD)
+  const execCms = `bee dev --restricted --cors-allowed-origins=* --admin-password='${adminPassword}'`
   return exec(execCms, execCallback)
 }
 

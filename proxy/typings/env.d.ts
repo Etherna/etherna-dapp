@@ -27,7 +27,7 @@ declare global {
       BEE_LOCAL_INSTANCE: string
       BEE_SEED_ENABLED: string
       BEE_ENDPOINT: string
-      BEE_DEBUG_ENDPOINT: string
+      BEE_ADMIN_PASSWORD: string
       SSL_KEY_FILE: string
       SSL_CRT_FILE: string
       NODE_TLS_REJECT_UNAUTHORIZED: string
