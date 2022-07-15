@@ -15,6 +15,7 @@
  */
 
 import { Bee } from "@ethersphere/bee-js"
+import cookie from "cookiejs"
 import type { BatchId, BeeOptions, PostageBatch, UploadResult } from "@ethersphere/bee-js"
 
 import http, { createRequest } from "@/utils/request"
@@ -25,16 +26,18 @@ import type { GatewayBatch } from "@/definitions/api-gateway"
 
 export type MultipleFileUpload = { buffer: Uint8Array, type?: string }[]
 
+const TOKEN_COOKIE_NAME = "bee-token"
+const TOKEN_EXPIRATION_SETTING = "setting:token-expiration"
+
 /**
  * Extend default Bee client with more functionalities
  */
 export default class SwarmBeeClient extends Bee {
 
-  public stampsUrl?: string
   public userBatches: GatewayBatch[]
   public emptyBatchId = "0000000000000000000000000000000000000000000000000000000000000000" as BatchId
 
-  constructor(url: string, options?: BeeOptions & { userBatches?: GatewayBatch[], stampsUrl?: string }) {
+  constructor(url: string, options?: BeeOptions & { userBatches?: GatewayBatch[] }) {
     const request = createRequest()
     request.defaults.withCredentials = true
 
@@ -42,7 +45,6 @@ export default class SwarmBeeClient extends Bee {
       ...options,
       fetch: buildAxiosFetch(request)
     })
-    this.stampsUrl = options?.stampsUrl
     this.userBatches = options?.userBatches ?? []
   }
 
@@ -112,8 +114,61 @@ export default class SwarmBeeClient extends Bee {
     }
   }
 
+  async authenticate(username: string, password: string): Promise<void> {
+    let token = cookie.get(TOKEN_COOKIE_NAME) as string | null
+    const tokenExpiration = localStorage.getItem(TOKEN_EXPIRATION_SETTING)
+    const expirationDate = tokenExpiration ? new Date(tokenExpiration) : new Date()
+
+    if (token && expirationDate <= new Date()) {
+      token = await this.refreshToken(token)
+    }
+
+    const expiry = 3600 * 24 // 1 day
+    const expiration = +new Date() + (expiry * 1000)
+
+    if (!token) {
+      const credentials = Buffer.from(`${username}:${password}`).toString("base64")
+
+      const data = {
+        role: "creator",
+        expiry
+      }
+
+      const resp = await http.post(`${this.url}/auth`, data, {
+        headers: {
+          Authorization: `Basic ${credentials}`,
+          "Content-Type": "application/json",
+        },
+      })
+
+      token = resp.data.key
+    }
+
+    localStorage.setItem(TOKEN_EXPIRATION_SETTING, expiration.toString())
+    cookie.set(TOKEN_COOKIE_NAME, token!, {
+      sameSite: "Strict",
+      expires: expiry,
+      secure: true,
+    })
+  }
+
+  async refreshToken(token: string): Promise<string | null> {
+    try {
+      const resp = await http.post(`${this.url}/refresh`, null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+      return resp.data.key
+    } catch (error) {
+      cookie.remove(TOKEN_COOKIE_NAME)
+      return null
+    }
+  }
+
   async getAllPostageBatch(): Promise<PostageBatch[]> {
-    const stampsUrl = this.stampsUrl || this.url + "/stamps"
+    const stampsUrl = this.url + "/stamps"
 
     try {
       const postageResp = await http.get<{ stamps: PostageBatch[] }>(stampsUrl)

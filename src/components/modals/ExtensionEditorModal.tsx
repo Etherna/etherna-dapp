@@ -25,7 +25,8 @@ import Button from "@/components/common/Button"
 import ExtensionHostPanel from "@/components/env/ExtensionHostPanel"
 import useSelector from "@/state/useSelector"
 import useExtensionEditor from "@/state/hooks/ui/useExtensionEditor"
-import { GatewayExtensionHost, IndexExtensionHost } from "@/definitions/extension-host"
+import type { GatewayExtensionHost, IndexExtensionHost } from "@/definitions/extension-host"
+import type { ExtensionParamConfig } from "@/components/env/ExtensionHostPanel"
 
 const ExtensionEditorModal = () => {
   const { extensionName } = useSelector(state => state.ui)
@@ -66,7 +67,7 @@ const ExtensionEditorModal = () => {
   }, [editingExtension, defaultUrl])
 
   const hostParams = useMemo(() => {
-    const defaultParams = [
+    const defaultParams: ExtensionParamConfig[] = [
       { key: "name", label: "Name", mandatory: true },
       { key: "url", label: "Url", mandatory: true },
     ]
@@ -74,7 +75,25 @@ const ExtensionEditorModal = () => {
       case "index":
         return defaultParams
       case "gateway":
-        return [...defaultParams, { key: "stampsUrl", label: "Stamps url", mandatory: false }]
+        return [
+          ...defaultParams, {
+            key: "type",
+            label: "Gateway Type",
+            mandatory: true,
+            type: "radio",
+            options: [{
+              value: "etherna-gateway",
+              label: "Etherna Gateway",
+              description:
+                "Select this if the gateway is an official gateway by Etherna or " +
+                "it's a custom host compliant with the Etherna gateway APIs",
+            }, {
+              value: "bee",
+              label: "Bee Instance",
+              description:
+                "Select this if the gateway is the default swarm bee instance",
+            }]
+          } as ExtensionParamConfig]
       default: return defaultParams
     }
   }, [editingExtension])

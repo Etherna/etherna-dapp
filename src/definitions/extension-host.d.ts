@@ -23,5 +23,7 @@ export interface IndexExtensionHost extends ExtensionHost {
 }
 
 export interface GatewayExtensionHost extends ExtensionHost {
-  stampsUrl?: string
+  type: GatewayType
 }
+
+export type GatewayType = "etherna-gateway" | "bee"

@@ -30,11 +30,12 @@ import useLocalStorage from "@/hooks/useLocalStorage"
 import { useErrorMessage } from "@/state/hooks/ui"
 import { isSafeURL, urlHostname } from "@/utils/urls"
 import type { GatewayExtensionHost, IndexExtensionHost } from "@/definitions/extension-host"
+import ExtensionHostPanelParam from "./ExtensionHostPanelParam"
 
 type ExtensionHostPanelProps<T> = {
   listStorageKey: string
   currentStorageKey: string
-  hostParams: Array<{ key: string, label: string, mandatory: boolean }>
+  hostParams: ExtensionParamConfig[]
   initialValue?: T
   defaultUrl?: string
   description?: string
@@ -42,6 +43,14 @@ type ExtensionHostPanelProps<T> = {
   signInUrl?: string | null
   onChange?(extension: T): void
   onToggleEditing?(editing: boolean): void
+}
+
+export type ExtensionParamConfig = {
+  key: string
+  label: string
+  mandatory: boolean
+  type?: "text" | "radio"
+  options?: { value: string, label: string, description?: string }[]
 }
 
 const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost,>({
@@ -247,17 +256,13 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost,
               {(!!paramsValues[param.key] || isEditing) && (
                 <Label htmlFor={param.key}>{param.label}</Label>
               )}
-              {isEditing ? (
-                <TextField
-                  id={param.key}
-                  type="text"
-                  value={paramsValues[param.key]}
-                  onChange={val => updateParamsValuesForKey(param.key, val)}
-                  autoFocus
-                />
-              ) : paramsValues[param.key] ? (
-                <div className={classes.extensionHostPanelValue}>{paramsValues[param.key]}</div>
-              ) : null}
+              <ExtensionHostPanelParam
+                value={paramsValues[param.key]}
+                paramConfig={param}
+                isEditing={isEditing}
+                valueClassName={classes.extensionHostPanelValue}
+                onChange={val => updateParamsValuesForKey(param.key, val)}
+              />
             </FormGroup>
           ))}
         </form>
