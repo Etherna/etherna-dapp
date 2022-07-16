@@ -17,20 +17,18 @@
 
 import React from "react"
 import { useLocation } from "react-router-dom"
-import classNames from "classnames"
 
-import classes from "@/styles/components/navigation/TopbarLogo.module.scss"
+import classes from "@/styles/components/navigation/SidebarLogo.module.scss"
 
-import TopbarItem from "@/components/navigation/TopbarItem"
+import SidebarItem from "@/components/navigation/SidebarItem"
 
-type TopbarLogoProps = {
+type SidebarLogoProps = {
   className?: string
   logo: React.ReactNode
   logoCompact?: React.ReactNode
-  floating?: boolean
 }
 
-const TopbarLogo: React.FC<TopbarLogoProps> = ({ className, logo, logoCompact, floating }) => {
+const SidebarLogo: React.FC<SidebarLogoProps> = ({ className, logo, logoCompact }) => {
   const { pathname } = useLocation()
 
   const dispatchRefresh = () => {
@@ -39,20 +37,15 @@ const TopbarLogo: React.FC<TopbarLogoProps> = ({ className, logo, logoCompact, f
   }
 
   return (
-    <TopbarItem className={className} to="/" ignoreHoverState>
-      <figure
-        className={classNames(classes.topbarLogo, {
-          [classes.floating]: floating,
-        })}
-        onClick={dispatchRefresh}
-      >
+    <SidebarItem className={className} to="/" isStatic>
+      <figure className={classes.sidebarLogo} onClick={dispatchRefresh}>
         {logoCompact && (
-          <div className={classes.topbarLogoMobile}>{logoCompact}</div>
+          <div className={classes.sidebarLogoMobile}>{logoCompact}</div>
         )}
-        <div className={classes.topbarLogoDefault}>{logo}</div>
+        <div className={classes.sidebarLogoDefault}>{logo}</div>
       </figure>
-    </TopbarItem>
+    </SidebarItem>
   )
 }
 
-export default TopbarLogo
+export default SidebarLogo

@@ -22,8 +22,10 @@ import { ReactComponent as FramesIcon } from "@/assets/icons/navigation/frames.s
 import { ReactComponent as PlaylistIcon } from "@/assets/icons/navigation/playlists.svg"
 
 import FeedbackLink from "./FeedbackLink"
+import Logo from "@/components/common/Logo"
 import Sidebar from "@/components/navigation/Sidebar"
 import SidebarItem from "@/components/navigation/SidebarItem"
+import SidebarLogo from "@/components/navigation/SidebarLogo"
 import SidebarLinksItem from "@/components/navigation/SidebarLinksItem"
 import SidebarLinks from "@/components/navigation/SidebarLinks"
 import SidebarSpace from "@/components/navigation/SidebarSpace"
@@ -47,6 +49,13 @@ const SidebarNavigation: React.FC = () => {
 
   return (
     <Sidebar floating={floatingSidebar} show={!hideSidebar} onClose={hodeSidebar}>
+      <SidebarLogo
+        logo={<Logo />}
+        logoCompact={<Logo compact />}
+      />
+
+      <SidebarSpace customHeight="1rem" />
+
       {/* <SidebarItem isStatic compact>
         <IndexExtension compactMobile />
       </SidebarItem> */}
