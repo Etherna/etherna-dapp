@@ -22,4 +22,14 @@
   &.disabled {
     @apply opacity-50 pointer-events-none cursor-default;
   }
+
+  label {
+    @apply text-sm font-semibold text-gray-700 dark:text-gray-400;
+    @apply mb-2;
+  }
+}
+
+.formGroupError {
+  @apply mt-1;
+  @apply text-xs font-medium text-red-500;
 }

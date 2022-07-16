@@ -45,12 +45,14 @@ const TabbarMenuItem: React.FC<TabbarMenuItemProps> = (props) => {
 
       <Transition
         show={showMenu}
-        enter="fixed inset-x-0 transition duration-100 ease-in"
-        enterFrom="fixed inset-x-0 transform translate-y-8 opacity-0"
-        enterTo="fixed inset-x-0 transform translate-y-0 opacity-100"
-        leave="fixed inset-x-0 transition duration-75 ease-in"
-        leaveFrom="fixed inset-x-0 transform translate-y-0 opacity-100"
-        leaveTo="fixed inset-x-0 transform translate-y-8 opacity-0"
+        className="fixed inset-x-0 bottom-0"
+        enter="transition duration-100 ease-in"
+        enterFrom="translate-y-8 opacity-0"
+        enterTo="translate-y-0 opacity-100"
+        leave="transition duration-75 ease-in"
+        leaveFrom="translate-y-0 opacity-100"
+        leaveTo="translate-y-8 opacity-0"
+        static
       >
         <div className={classes.tabbarMenuItemMenu}>
           {props.children}

@@ -1,4 +1,4 @@
-/*
+/* 
  *  Copyright 2021-present Etherna Sagl
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,32 +12,37 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
  */
 
-import React from "react"
-
-import classes from "@/styles/components/user/AlphaPassButton.module.scss"
-
-import Button from "@/components/common/Button"
-import routes from "@/routes"
-
-type AlphaPassButtonProps = {
-  children?: React.ReactNode
+.alphaPassForm {
+  @apply max-w-screen-sm;
 }
 
-const AlphaPassButton: React.FC<AlphaPassButtonProps> = ({ children }) => {
-  return (
-    <Button
-      className={classes.alphaPassButton}
-      href={routes.alphaPasss}
-      as="a"
-      type="button"
-      modifier="transparent"
-    >
-      {children}
-    </Button>
-  )
+.alphaPassChoices {
+  @apply flex flex-col items-start;
+  @apply mt-2;
+
+  label {
+    @apply flex items-center;
+    @apply cursor-pointer;
+    @apply text-base;
+    @apply mb-2;
+  }
+
+  label > span {
+    @apply ml-2;
+    @apply text-base;
+  }
 }
 
-export default AlphaPassButton
+.alphaPassThankyou {
+  @apply max-w-screen-md text-lg;
+}
+
+.alphaPassThankyouTitle {
+  @apply text-xl font-semibold;
+}
+
+.alphaPassThankyouList {
+  @apply mt-6;
+}

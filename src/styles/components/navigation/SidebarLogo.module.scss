@@ -1,4 +1,4 @@
-/*
+/* 
  *  Copyright 2021-present Etherna Sagl
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,32 +12,24 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
  */
 
-import React from "react"
+.sidebarLogo {
+  @apply h-7;
+  @apply text-gray-900 dark:text-gray-100;
+  @apply hover:text-gray-900 dark:hover:text-gray-100;
+  @apply lg:mr-4;
 
-import classes from "@/styles/components/user/AlphaPassButton.module.scss"
-
-import Button from "@/components/common/Button"
-import routes from "@/routes"
-
-type AlphaPassButtonProps = {
-  children?: React.ReactNode
+  img,
+  svg {
+    @apply h-full w-auto object-contain object-center;
+  }
 }
 
-const AlphaPassButton: React.FC<AlphaPassButtonProps> = ({ children }) => {
-  return (
-    <Button
-      className={classes.alphaPassButton}
-      href={routes.alphaPasss}
-      as="a"
-      type="button"
-      modifier="transparent"
-    >
-      {children}
-    </Button>
-  )
+.sidebarLogoMobile {
+  @apply h-full lg:hidden;
 }
 
-export default AlphaPassButton
+.sidebarLogoDefault {
+  @apply hidden h-full lg:block;
+}

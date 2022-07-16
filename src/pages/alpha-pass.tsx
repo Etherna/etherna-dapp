@@ -16,38 +16,25 @@
  */
 
 import React from "react"
-import classNames from "classnames"
 
-import classes from "@/styles/components/common/FormGroup.module.scss"
+import Container from "@/components/common/Container"
+import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
+import SEO from "@/components/layout/SEO"
+import AlphaPassForm from "@/components/user/AlphaPassForm"
 
-type FormGroupProps = {
-  children?: React.ReactNode
-  className?: string
-  label?: string
-  labelFor?: string
-  error?: string
-}
-
-const FormGroup: React.FC<FormGroupProps> = ({
-  children,
-  className,
-  label,
-  labelFor,
-  error,
-}) => {
+const AlphaPassPage = () => {
   return (
-    <div className={classNames(classes.formGroup, className)}>
-      {label && (
-        <label htmlFor={labelFor}>
-          {label}
-        </label>
-      )}
-      {children}
-      {error && (
-        <small className={classes.formGroupError}>{error}</small>
-      )}
-    </div>
+    <AppLayoutWrapper>
+      <SEO title="Request Alpha Pass" />
+
+      <Container fluid>
+        <div className="max-w-xl mx-auto">
+          <h1>Request Alpha Pass</h1>
+          <AlphaPassForm />
+        </div>
+      </Container>
+    </AppLayoutWrapper>
   )
 }
 
-export default FormGroup
+export default AlphaPassPage
