@@ -90,6 +90,16 @@ const SidebarNavigation: React.FC = () => {
       <SidebarSpace flexible />
 
       <SidebarLinks>
+        <SidebarLinksItem
+          title="About Etherna"
+          to="https://info.etherna.io/"
+          target="_blank"
+        />
+        <SidebarLinksItem
+          title="Blog"
+          to="https://info.etherna.io/blog/"
+          target="_blank"
+        />
         <FeedbackLink />
         <SidebarLinksItem
           title="Index Api"
