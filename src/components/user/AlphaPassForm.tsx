@@ -49,7 +49,7 @@ const AlphaPassForm: React.FC = () => {
   const [social1, setSocial1] = useState("")
   const [social2, setSocial2] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [success, setSuccess] = useState(true)
+  const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string>()
   const [errorFields, setErrorFields] = useState<Record<string, string>>()
 
@@ -119,7 +119,7 @@ const AlphaPassForm: React.FC = () => {
       <ul className={classes.alphaPassThankyouList}>
         <li>Check the SPAM folder</li>
         <li>
-          Make sure you provided the correct email (<strong>{email}</strong>).
+          Make sure you provided the correct email ({email}).
           If this is not the case repeat the registration process in homepage.
         </li>
         <li>
