@@ -1,0 +1,32 @@
+.alphaPassForm {
+  @apply max-w-screen-sm;
+}
+
+.alphaPassChoices {
+  @apply flex flex-col items-start;
+  @apply mt-2;
+
+  label {
+    @apply flex items-center;
+    @apply cursor-pointer;
+    @apply text-base;
+    @apply mb-2;
+  }
+
+  label > span {
+    @apply ml-2;
+    @apply text-base;
+  }
+}
+
+.alphaPassThankyou {
+  @apply max-w-screen-md text-lg;
+}
+
+.alphaPassThankyouTitle {
+  @apply text-xl font-semibold;
+}
+
+.alphaPassThankyouList {
+  @apply mt-6;
+}

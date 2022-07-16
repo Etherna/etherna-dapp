@@ -14,8 +14,15 @@
  *  limitations under the License.
  */
 
-.topbarLogo {
+.topbarLogoWrapper {
   @apply md:hidden;
+
+  &.floating {
+    @apply md:block;
+  }
+}
+
+.topbarLogo {
   @apply h-7;
   @apply text-gray-900 dark:text-gray-100;
   @apply hover:text-gray-900 dark:hover:text-gray-100;
@@ -24,10 +31,6 @@
   img,
   svg {
     @apply h-full w-auto object-contain object-center;
-  }
-
-  &.floating {
-    @apply md:block;
   }
 }
 

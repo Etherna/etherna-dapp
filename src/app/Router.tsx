@@ -28,6 +28,7 @@ import BatchesRoute from "./route-wrappers/BatchesRoute"
 import PageLoader from "@/components/common/PageLoader"
 
 const AsyncHome = lazy(() => import("@/pages/home"))
+const AsyncAlphaPass = lazy(() => import("@/pages/alpha-pass"))
 const AsyncFrames = lazy(() => import("@/pages/frames"))
 const AsyncFollowing = lazy(() => import("@/pages/following"))
 const AsyncPlaylists = lazy(() => import("@/pages/playlists"))
@@ -49,6 +50,9 @@ const Home = () => (
 )
 const Frames = () => (
   <Suspense fallback={<PageLoader />}><AsyncFrames /></Suspense>
+)
+const AlphaPass = () => (
+  <Suspense fallback={<PageLoader />}><AsyncAlphaPass /></Suspense>
 )
 const Following = () => (
   <Suspense fallback={<PageLoader />}><AsyncFollowing /></Suspense>
@@ -106,6 +110,7 @@ const Router = () => {
             <Route path="/" element={<AppLayoutRoute />}>
 
               <Route path="/" element={<Home />} />
+              <Route path="/request-alpha-pass" element={<AlphaPass />} />
               <Route path="/frames" element={<Frames />} />
               <Route path="/following" element={<Following />} />
               <Route path="/playlists" element={<Playlists />} />

@@ -26,11 +26,13 @@ type TextFieldProps = {
   id?: string
   className?: string
   value: string
-  type?: "text" | "password" | "email" | "url" | "date" | "time" | "tel"
+  type?: "text" | "password" | "email" | "url" | "date" | "time" | "tel" | "radio"
   autoComplete?: "on" | "off" | "name" | "given-name" | "family-name" |
   "email" | "tel" | "url" | "current-password" | "new-password" | "one-time-code"
   placeholder?: string
+  error?: string
   label?: string
+  checked?: boolean
   disabled?: boolean
   multiline?: boolean
   autoFocus?: boolean
@@ -47,9 +49,11 @@ const TextField: React.FC<TextFieldProps> = ({
   id,
   className,
   value,
+  checked,
   type = "text",
   autoComplete,
   placeholder,
+  error,
   label,
   charactersLimit,
   multiline,
@@ -98,6 +102,7 @@ const TextField: React.FC<TextFieldProps> = ({
           type={type}
           autoComplete={autoComplete}
           placeholder={placeholder}
+          checked={checked}
           disabled={disabled}
           value={value}
           onChange={handleChange}
@@ -112,6 +117,9 @@ const TextField: React.FC<TextFieldProps> = ({
           })}>
             {value.length}/{charactersLimit}
           </span>
+        )}
+        {error && (
+          <small className={classes.textFieldError}>{error}</small>
         )}
       </div>
     </>

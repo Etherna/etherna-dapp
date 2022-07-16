@@ -39,11 +39,15 @@ const TopbarLogo: React.FC<TopbarLogoProps> = ({ className, logo, logoCompact, f
   }
 
   return (
-    <TopbarItem className={className} to="/" ignoreHoverState>
+    <TopbarItem
+      className={classNames(classes.topbarLogoWrapper, className, {
+        [classes.floating]: floating,
+      })}
+      to="/"
+      ignoreHoverState
+    >
       <figure
-        className={classNames(classes.topbarLogo, {
-          [classes.floating]: floating,
-        })}
+        className={classNames(classes.topbarLogo)}
         onClick={dispatchRefresh}
       >
         {logoCompact && (

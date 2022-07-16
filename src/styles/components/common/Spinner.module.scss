@@ -1,0 +1,41 @@
+@use "sass:math";
+
+$tick-width: 8%;
+$ticks-count: 12;
+
+.spinner {
+  @apply w-[1em] h-[1em] relative;
+}
+
+.spinnerTick {
+  --tw-translate-x: #{math.div($tick-width, 2)};
+  width: $tick-width;
+  right: 50%;
+  animation: tickFade #{$ticks-count * 0.1}s infinite;
+  @apply absolute h-[0.5em] transform origin-bottom scale-95;
+
+  &::after {
+    content: "";
+    height: 50%;
+    @apply absolute inset-x-0 top-0;
+    @apply bg-current;
+    @apply rounded-full;
+  }
+
+  @for $i from 0 through ($ticks-count - 1) {
+    &:nth-child(#{$i + 1}) {
+      transform: rotate(#{$i * 30}deg);
+      animation-delay: -#{($ticks-count - $i) * 0.1}s;
+      opacity: #{0.1 + (math.div(0.9, $ticks-count - 1) * $i)};
+    }
+  }
+
+  @keyframes tickFade {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.1;
+    }
+  }
+}

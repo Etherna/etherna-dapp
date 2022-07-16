@@ -20,6 +20,7 @@ import React from "react"
 import classes from "@/styles/components/user/AlphaPassButton.module.scss"
 
 import Button from "@/components/common/Button"
+import routes from "@/routes"
 
 type AlphaPassButtonProps = {
   children?: React.ReactNode
@@ -29,12 +30,10 @@ const AlphaPassButton: React.FC<AlphaPassButtonProps> = ({ children }) => {
   return (
     <Button
       className={classes.alphaPassButton}
-      href="https://etherna.io/alpha-pass"
+      href={routes.alphaPasss}
       as="a"
       type="button"
       modifier="transparent"
-      target="_blank"
-      rel="noreferrer"
     >
       {children}
     </Button>
