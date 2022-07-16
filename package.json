@@ -16,6 +16,7 @@
     "axios": "0.27.2",
     "blurhash": "1.1.5",
     "classnames": "2.3.1",
+    "cookiejs": "2.1.1",
     "crypto-ts": "1.0.2",
     "dayjs": "1.11.3",
     "draft-js": "0.11.7",
@@ -93,7 +94,7 @@
     "wait-on": "6.0.1"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "start": "node scripts/etherna-services.mjs",
     "start:proxy": "node scripts/etherna-services.mjs --proxy",
     "start:bee": "node scripts/etherna-services.mjs --bee",

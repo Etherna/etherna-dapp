@@ -78,6 +78,8 @@ export type UIState = {
   confirmButtonTitle?: string
   confirmButtonType?: "default" | "destructive"
 
+  showBeeAuthentication?: boolean
+
   isConnectingWallet?: boolean
   isLoadingProfile?: boolean
   showNetwokChangeModal?: boolean

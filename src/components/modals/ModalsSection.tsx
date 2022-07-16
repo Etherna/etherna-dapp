@@ -20,16 +20,19 @@ import React from "react"
 import ShortcutModal from "./ShortcutModal"
 import ImageCropModal from "./ImageCropModal"
 import ExtensionEditorModal from "./ExtensionEditorModal"
+import BeeAuthModal from "./BeeAuthModal"
 import useSelector from "@/state/useSelector"
 
 const ModalsSection = () => {
-  const { isEditingShortcut, isCroppingImage } = useSelector(state => state.ui)
+  const { isEditingShortcut, isCroppingImage, showBeeAuthentication } = useSelector(state => state.ui)
 
   return (
     <section id="modals">
       <ShortcutModal show={isEditingShortcut} />
 
       <ImageCropModal show={isCroppingImage} />
+
+      <BeeAuthModal show={showBeeAuthentication} />
 
       <ExtensionEditorModal />
     </section>

@@ -25,6 +25,7 @@ export const UIActionTypes = {
   SHOW_EXTENSION_HOSTS_EDITOR: "UI_SHOW_EXTENSION_HOSTS_EDITOR",
   HIDE_EXTENSION_HOSTS_EDITOR: "UI_HIDE_EXTENSION_HOSTS_EDITOR",
   TOGGLE_CONNECTING_WALLET: "UI_TOGGLE_CONNECTING_WALLET",
+  TOGGLE_BEE_AUTH: "UI_TOGGLE_BEE_AUTH",
   TOGGLE_LOADING_PROFILE: "UI_TOGGLE_LOADING_PROFILE",
   TOGGLE_NETWORK_CHANGE: "UI_TOGGLE_NETWORK_CHANGE",
   TOGGLE_EDITING_SHORTCUT: "UI_TOGGLE_EDITING_SHORTCUT",
@@ -62,6 +63,10 @@ type ToggleConnectingWalletAction = {
   type: typeof UIActionTypes.TOGGLE_CONNECTING_WALLET
   isConnectingWallet: boolean
 }
+type ToggleShowBeeAuthAction = {
+  type: typeof UIActionTypes.TOGGLE_BEE_AUTH
+  showBeeAuthentication: boolean
+}
 type ToggleLoadingProfileAction = {
   type: typeof UIActionTypes.TOGGLE_LOADING_PROFILE
   isLoadingProfile: boolean
@@ -95,6 +100,7 @@ export type UIActions = (
   ShowExtensionHostsEditorAction |
   HideExtensionHostsEditorAction |
   ToggleConnectingWalletAction |
+  ToggleShowBeeAuthAction |
   ToggleLoadingProfileAction |
   ToggleNetworkChangeAction |
   ToggleEditingShortcutAction |
@@ -150,6 +156,12 @@ const uiReducer = (state: UIState = {}, action: UIActions): UIState => {
       return {
         ...state,
         isConnectingWallet: action.isConnectingWallet,
+      }
+
+    case UIActionTypes.TOGGLE_BEE_AUTH:
+      return {
+        ...state,
+        showBeeAuthentication: action.showBeeAuthentication,
       }
 
     case UIActionTypes.TOGGLE_LOADING_PROFILE:

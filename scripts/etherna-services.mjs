@@ -25,6 +25,7 @@ import bcrypt from "bcryptjs"
 
 import { createPostageBatch } from "./create-postage-batch.mjs"
 import { loadSeed } from "./swarm-seed.mjs"
+import proxyBeeOverHttps from "./bee-https-proxy.mjs"
 
 DotEnv.config({
   path: fs.existsSync(path.resolve(`.env.development`))
@@ -128,7 +129,11 @@ const execProject = (projectPath) => {
 const execBee = () => {
   const adminPassword = bcrypt.hashSync(process.env.BEE_ADMIN_PASSWORD)
   const execCms = `bee dev --restricted --cors-allowed-origins=* --admin-password='${adminPassword}'`
-  return exec(execCms, execCallback)
+  const childProcess = exec(execCms, execCallback)
+  if (Boolean(process.env.BEE_HTTPS)) {
+    proxyBeeOverHttps()
+  }
+  return childProcess
 }
 
 /**

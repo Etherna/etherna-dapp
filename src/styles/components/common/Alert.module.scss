@@ -43,7 +43,7 @@
 .alertBody {
   .alertSuccess & {
     button,
-    [role=button] {
+    [role="button"] {
       @apply bg-green-600 text-white;
       @apply dark:bg-green-600 dark:text-white;
     }
@@ -55,7 +55,7 @@
   }
   .alertDanger & {
     button,
-    [role=button] {
+    [role="button"] {
       @apply bg-red-600 text-white;
       @apply dark:bg-red-600 dark:text-white;
     }
@@ -67,7 +67,7 @@
   }
   .alertWarning & {
     button,
-    [role=button] {
+    [role="button"] {
       @apply bg-orange-600 text-white;
       @apply dark:bg-orange-600 dark:text-white;
     }
@@ -79,7 +79,7 @@
   }
   .alertInfo & {
     button,
-    [role=button] {
+    [role="button"] {
       @apply bg-blue-600 text-white;
       @apply dark:bg-blue-600 dark:text-white;
     }
@@ -93,8 +93,8 @@
 
 .close {
   @apply flex-shrink-0;
-  @apply rounded-full p-2 text-2xl;
-  
+  @apply rounded-full text-2xl;
+
   body &:not([hidden]) {
     @apply bg-transparent dark:bg-transparent;
     @apply leading-none;

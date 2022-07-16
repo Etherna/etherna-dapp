@@ -40,6 +40,7 @@ import routes from "@/routes"
 import useSelector from "@/state/useSelector"
 import { useWallet } from "@/state/hooks/env"
 import { useConfirmation } from "@/state/hooks/ui"
+import useBatchId from "@/state/hooks/user/useBatchId"
 
 const PORTAL_ID = "video-drag-portal"
 

@@ -48,6 +48,19 @@ export default class SwarmBeeClient extends Bee {
     this.userBatches = options?.userBatches ?? []
   }
 
+  public get isAuthenticated(): boolean {
+    const token = this.authToken
+    const tokenExpiration = localStorage.getItem(TOKEN_EXPIRATION_SETTING)
+    const expirationDate = tokenExpiration ? new Date(tokenExpiration) : new Date()
+
+    return !!token && expirationDate <= new Date()
+  }
+
+  public get authToken(): string | null {
+    const token = cookie.get(TOKEN_COOKIE_NAME) as string | null
+    return token
+  }
+
   /**
    * Create custom fetch implementation that accept upload progress and canceler
    */
@@ -115,7 +128,7 @@ export default class SwarmBeeClient extends Bee {
   }
 
   async authenticate(username: string, password: string): Promise<void> {
-    let token = cookie.get(TOKEN_COOKIE_NAME) as string | null
+    let token = this.authToken
     const tokenExpiration = localStorage.getItem(TOKEN_EXPIRATION_SETTING)
     const expirationDate = tokenExpiration ? new Date(tokenExpiration) : new Date()
 
@@ -127,7 +140,7 @@ export default class SwarmBeeClient extends Bee {
     const expiration = +new Date() + (expiry * 1000)
 
     if (!token) {
-      const credentials = Buffer.from(`${username}:${password}`).toString("base64")
+      const credentials = btoa(`${username}:${password}`)
 
       const data = {
         role: "creator",
@@ -165,6 +178,18 @@ export default class SwarmBeeClient extends Bee {
       cookie.remove(TOKEN_COOKIE_NAME)
       return null
     }
+  }
+
+  async getBatch(batchId: string): Promise<PostageBatch> {
+    const token = cookie.get(TOKEN_COOKIE_NAME)
+
+    const resp = await http.post(`${this.url}/stamps/${batchId}`, null, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    return resp.data
   }
 
   async getAllPostageBatch(): Promise<PostageBatch[]> {

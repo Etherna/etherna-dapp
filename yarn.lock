@@ -3004,6 +3004,11 @@ convert-source-map@^1.7.0:
   dependencies:
     safe-buffer "~5.1.1"
 
+cookiejs@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/cookiejs/-/cookiejs-2.1.1.tgz#ed00922fc6e5e30421e2f07c52b87f262a998124"
+  integrity sha512-Y5JFyu5hVYIePojbDgssTZKBapTOlsm/FlJOcroD9yV9gByjZA70U52yZVdlSSy64UEUqvzsEHNnOIVuzxDZsw==
+
 copy-anything@^2.0.1:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/copy-anything/-/copy-anything-2.0.3.tgz#842407ba02466b0df844819bbe3baebbe5d45d87"
