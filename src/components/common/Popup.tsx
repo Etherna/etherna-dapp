@@ -21,6 +21,7 @@ import { Popover } from "@headlessui/react"
 import { usePopper } from "react-popper"
 
 import classes from "@/styles/components/common/Popup.module.scss"
+import useSidebar from "@/hooks/useSidebar"
 
 type PopupProps = {
   children?: React.ReactNode
@@ -30,7 +31,7 @@ type PopupProps = {
   arrowClassName?: string
   contentClassName?: string
   toggleClassName?: string
-  margin?: number
+  adjustSidebar?: boolean
   disabled?: boolean
 }
 
@@ -42,8 +43,10 @@ const Popup: React.FC<PopupProps> = ({
   arrowClassName,
   contentClassName,
   toggleClassName,
+  adjustSidebar,
   disabled,
 }) => {
+  const { sidebarWidth } = useSidebar()
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>()
   const [popperElement, setPopperElement] = useState<HTMLElement | null>()
   const [arrowElement, setArrowElement] = useState<HTMLElement | null>()
@@ -51,7 +54,7 @@ const Popup: React.FC<PopupProps> = ({
     placement,
     modifiers: [
       { name: "arrow", options: { element: arrowElement } },
-      { name: "preventOverflow", options: { altAxis: true, padding: 4 } },
+      { name: "preventOverflow", options: { altAxis: true, padding: 4 + (adjustSidebar ? sidebarWidth ?? 0 : 0) } },
     ],
   })
 
