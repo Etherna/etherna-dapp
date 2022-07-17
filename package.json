@@ -61,7 +61,7 @@
     "@vitejs/plugin-react": "2.0.0",
     "autoprefixer": "10.4.7",
     "babel-eslint": "10.1.0",
-    "eslint": "8.19.0",
+    "eslint": "8.20.0",
     "eslint-config-react-app": "7.0.1",
     "eslint-plugin-flowtype": "8.0.3",
     "eslint-plugin-import": "2.26.0",
@@ -92,7 +92,7 @@
     "wait-on": "6.0.1"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "start": "node scripts/etherna-services.mjs",
     "start:proxy": "node scripts/etherna-services.mjs --proxy",
     "start:bee": "node scripts/etherna-services.mjs --bee",

@@ -17,7 +17,6 @@
 .sidebar {
   @apply hidden px-2.5 py-3;
   @apply bg-gray-100 dark:bg-gray-800;
-  @apply z-20;
 
   @apply md:flex md:w-20;
   @apply md:fixed md:left-0 md:inset-y-0;
@@ -26,6 +25,7 @@
 
   &.floating {
     @apply transform -translate-x-full;
+    @apply z-20;
   }
 
   &.animateSlide {
