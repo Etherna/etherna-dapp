@@ -18,36 +18,34 @@
 import React from "react"
 import classNames from "classnames"
 
-import classes from "@/styles/components/common/FormGroup.module.scss"
+import classes from "@/styles/components/common/Spinner.module.scss"
 
-type FormGroupProps = {
-  children?: React.ReactNode
+export type SpinnerProps = {
   className?: string
-  label?: string
-  labelFor?: string
-  error?: string
+  size?: number | string
 }
 
-const FormGroup: React.FC<FormGroupProps> = ({
-  children,
-  className,
-  label,
-  labelFor,
-  error,
-}) => {
+const ticksCount = 12
+
+const Spinner: React.FC<SpinnerProps> = ({ size, className }) => {
+  const ticks = new Array(ticksCount).fill(0)
   return (
-    <div className={classNames(classes.formGroup, className)}>
-      {label && (
-        <label htmlFor={labelFor}>
-          {label}
-        </label>
-      )}
-      {children}
-      {error && (
-        <small className={classes.formGroupError}>{error}</small>
-      )}
+    <div
+      className={classNames(classes.spinner, className)}
+      style={{
+        fontSize: typeof size === "number" ? `${size}px` : size
+      }}
+    >
+      {ticks.map((_, i) => {
+        return (
+          <div
+            className={classes.spinnerTick}
+            key={i}
+          />
+        )
+      })}
     </div>
   )
 }
 
-export default FormGroup
+export default Spinner

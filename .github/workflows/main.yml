@@ -17,6 +17,7 @@ jobs:
       VITE_APP_NAME: "Etherna"
       VITE_APP_TAGLINE: "Eyes wide open"
       VITE_APP_PUBLIC_URL: ${{ secrets.PUBLIC_URL }}
+      VITE_APP_CMS_URL: ${{ secrets.CMS_URL }}
       VITE_APP_VERIFIED_ORIGINS: "etherna.io"
       VITE_APP_FEEDBACK_URL: "https://etherna.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/-m454we/b/23/a44af77267a987a660377e5c46e0fb64/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=1c189ede"
       VITE_APP_INDEX_URL: "https://index.etherna.io/api/v0.3"

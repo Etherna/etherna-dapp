@@ -14,12 +14,30 @@
  *  limitations under the License.
  */
 
-.formGroup {
-  & + .formGroup {
-    @apply mt-6;
-  }
+import { useEffect, useState } from "react"
 
-  &.disabled {
-    @apply opacity-50 pointer-events-none cursor-default;
+export default function useSidebar() {
+  const [sidebarWidth, setSidebarWidth] = useState<number>()
+
+  useEffect(() => {
+    function resize() {
+      setSidebarWidth(sidebar.clientWidth)
+    }
+
+    const sidebar = document.querySelector("[data-sidebar]")!
+    if (sidebar) {
+      setSidebarWidth(sidebar.clientWidth)
+    }
+
+    const resizeObserver = new ResizeObserver(resize)
+    resizeObserver.observe(sidebar)
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [])
+
+  return {
+    sidebarWidth,
   }
 }

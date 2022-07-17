@@ -31,6 +31,12 @@
     @apply text-gray-500 cursor-not-allowed;
   }
 
+  &[type="radio"] {
+    @apply rounded-full;
+    @apply hover:bg-gray-900/5 hover:border-gray-700;
+    @apply dark:hover:bg-gray-100/5 dark:hover:border-gray-800;
+  }
+
   &.charlimit {
     @apply pb-8;
   }
@@ -50,4 +56,9 @@
   &.limitReached {
     @apply text-red-400;
   }
+}
+
+.textFieldError {
+  @apply mt-1;
+  @apply text-xs font-medium text-red-500;
 }

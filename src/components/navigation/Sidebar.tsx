@@ -68,6 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children, floating, show, onClose }) 
           [classes.animateSlide]: animateSlide
         })}
         ref={sidebarRef}
+        data-sidebar
       >
         <div className={classes.sidebarContainer}>
           {children}

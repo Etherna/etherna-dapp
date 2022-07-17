@@ -35,6 +35,8 @@ const routes = {
   embed: (hash: string) => `/embed/${hash}`,
   /** `/search?q={query}` */
   search: (query: string) => `/search?q=${encodeURIComponent(query)}`,
+  /** `/request-alpha-pass` */
+  alphaPasss: `/request-alpha-pass`,
   /** `/shortcuts` */
   shortcuts: `/shortcuts`,
   /** `/privacy-policy` */
