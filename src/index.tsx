@@ -21,7 +21,11 @@ import ReactDOM from "react-dom/client"
 import Root from "./app/Root"
 import prefetch from "./prefetch"
 import unsupportedRender from "./unsupported-render"
+import autoRedirect from "./utils/auto-redirect"
 import autoSigninSignout from "./utils/autoSigninSignout"
+
+// Automatically redirect from www to non-www
+autoRedirect()
 
 // Automatically redirect to signin/signout page
 autoSigninSignout()
