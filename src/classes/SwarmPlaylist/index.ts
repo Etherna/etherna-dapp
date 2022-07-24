@@ -16,12 +16,11 @@
 
 import SwarmPlaylistReader from "./SwarmPlaylistReader"
 import SwarmPlaylistWriter from "./SwarmPlaylistWriter"
-import { urlOrigin } from "@/utils/urls"
 
 const SwarmPlaylistIO = {
   Reader: SwarmPlaylistReader,
   Writer: SwarmPlaylistWriter,
-  getFeedTopicName: (id: string, index: string) => `EthernaPlaylist:${urlOrigin(index)}:${id}`
+  getFeedTopicName: (id: string) => `EthernaPlaylist:${id}`
 }
 
 export default SwarmPlaylistIO

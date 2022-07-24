@@ -16,14 +16,13 @@
 
 import SwarmUserPlaylistsReader from "./SwarmUserPlaylistsReader"
 import SwarmUserPlaylistsWriter from "./SwarmUserPlaylistsWriter"
-import { urlOrigin } from "@/utils/urls"
 import uuidv4 from "@/utils/uuid"
 import type { SwarmPlaylist } from "@/definitions/swarm-playlist"
 
 const SwarmUserPlaylistsIO = {
   Reader: SwarmUserPlaylistsReader,
   Writer: SwarmUserPlaylistsWriter,
-  getFeedTopicName: (index: string) => `EthernaUserPlaylists:${urlOrigin(index)}`,
+  getFeedTopicName: () => `EthernaUserPlaylists`,
   getDefaultChannelPlaylist: (owner: string): SwarmPlaylist => ({
     id: "__channel",
     reference: null,

@@ -21,7 +21,6 @@ import type { SwarmPlaylist } from "@/definitions/swarm-playlist"
 
 export type SwarmUserPlaylistsReaderOptions = {
   beeClient: SwarmBeeClient
-  indexUrl: string
 }
 
 export type SwarmUserPlaylistsDownloadOptions = {
@@ -35,5 +34,4 @@ export type SwarmUserPlaylistsDownloadOptions = {
 
 export type SwarmUserPlaylistsWriterOptions = {
   beeClient: SwarmBeeClient
-  indexUrl: string
 }
