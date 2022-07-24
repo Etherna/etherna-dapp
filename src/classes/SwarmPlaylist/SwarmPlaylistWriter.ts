@@ -19,7 +19,6 @@ import type { Reference } from "@ethersphere/bee-js"
 
 import SwarmPlaylistIO from "."
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
-import { urlOrigin } from "@/utils/urls"
 import type { SwarmPlaylistWriterOptions } from "./types"
 import type {
   SwarmPlaylistRaw,
@@ -38,13 +37,11 @@ export default class SwarmImageWriter {
 
   private isFeedManifest: boolean
   private beeClient: SwarmBeeClient
-  private currentIndex: string
 
   constructor(playlist: SwarmPlaylist, opts: SwarmPlaylistWriterOptions) {
     this.playlist = playlist
     this.playlistRaw = this.parsePlaylistToRaw(playlist, playlist.encryptedReference)
     this.beeClient = opts.beeClient
-    this.currentIndex = urlOrigin(opts.indexUrl)!
     this.isFeedManifest = opts.initialType === "public" && !!playlist.reference
   }
 
@@ -77,7 +74,7 @@ export default class SwarmImageWriter {
 
     if (this.playlist.type === "public") {
       // create public feed for playlist subscription
-      const topicName = SwarmPlaylistIO.getFeedTopicName(this.playlist.id, this.currentIndex)
+      const topicName = SwarmPlaylistIO.getFeedTopicName(this.playlist.id)
       const topic = this.beeClient.makeFeedTopic(topicName)
       const writer = this.beeClient.makeFeedWriter("sequence", topic)
       await writer.upload(batchId, reference)

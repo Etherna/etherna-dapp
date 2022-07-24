@@ -27,12 +27,10 @@ export default class SwarmUserPlaylistsWriter {
   playlistsRaw: SwarmUserPlaylistsRaw
 
   private beeClient: SwarmBeeClient
-  private currentIndex: string
 
   constructor(playlistsRaw: SwarmUserPlaylistsRaw, opts: SwarmUserPlaylistsWriterOptions) {
     this.playlistsRaw = playlistsRaw
     this.beeClient = opts.beeClient
-    this.currentIndex = urlOrigin(opts.indexUrl)!
   }
 
   /**
@@ -43,7 +41,7 @@ export default class SwarmUserPlaylistsWriter {
 
     const { reference } = await this.beeClient.uploadFile(batchId, JSON.stringify(this.playlistsRaw))
 
-    const topic = this.beeClient.makeFeedTopic(SwarmUserPlaylistsIO.getFeedTopicName(this.currentIndex))
+    const topic = this.beeClient.makeFeedTopic(SwarmUserPlaylistsIO.getFeedTopicName())
     const writer = this.beeClient.makeFeedWriter("sequence", topic)
     await writer.upload(batchId, reference)
   }
