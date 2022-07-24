@@ -38,7 +38,6 @@ export default class SwarmPlaylistReader {
   private id?: string
   private owner?: string
   private beeClient: SwarmBeeClient
-  private currentIndex: string
 
   constructor(
     reference: string | undefined,
@@ -48,7 +47,6 @@ export default class SwarmPlaylistReader {
     this.playlist = playlist
     this.reference = reference
     this.beeClient = opts.beeClient
-    this.currentIndex = urlOrigin(opts.indexUrl)!
     this.id = opts.id
     this.owner = opts.owner
   }
@@ -64,7 +62,7 @@ export default class SwarmPlaylistReader {
     }
 
     if (!this.reference) {
-      const topic = SwarmPlaylistIO.getFeedTopicName(this.id!, this.currentIndex)
+      const topic = SwarmPlaylistIO.getFeedTopicName(this.id!)
       const reader = this.beeClient.makeFeedReader("sequence", topic, this.owner!)
       this.reference = (await reader.download()).reference
     }

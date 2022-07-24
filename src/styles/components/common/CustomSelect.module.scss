@@ -82,7 +82,7 @@
 
 .customSelectOptionTitle {
   @apply flex justify-between;
-  @apply text-md font-semibold;
+  @apply text-base font-semibold;
 
   .selected & {
     @apply font-semibold;

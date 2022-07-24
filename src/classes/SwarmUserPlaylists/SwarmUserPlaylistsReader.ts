@@ -17,7 +17,6 @@
 import SwarmUserPlaylistsIO from "."
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
-import { urlOrigin } from "@/utils/urls"
 import type { SwarmUserPlaylistsDownloadOptions, SwarmUserPlaylistsReaderOptions } from "./types"
 import type { SwarmPlaylist, SwarmUserPlaylistsRaw } from "@/definitions/swarm-playlist"
 
@@ -32,12 +31,10 @@ export default class SwarmUserPlaylistsReader {
 
   private owner: string
   private beeClient: SwarmBeeClient
-  private currentIndex: string
 
   constructor(owner: string, opts: SwarmUserPlaylistsReaderOptions) {
     this.owner = owner
     this.beeClient = opts.beeClient
-    this.currentIndex = urlOrigin(opts.indexUrl)!
   }
 
   /**
@@ -81,7 +78,6 @@ export default class SwarmUserPlaylistsReader {
     try {
       const reader = new SwarmPlaylistIO.Reader(reference, undefined, {
         beeClient: this.beeClient,
-        indexUrl: this.currentIndex,
         owner: this.owner,
       })
       return await reader.download()
@@ -92,7 +88,7 @@ export default class SwarmUserPlaylistsReader {
 
   private async fetchFeedOrDefault(): Promise<SwarmUserPlaylistsRaw | undefined> {
     try {
-      const topic = this.beeClient.makeFeedTopic(SwarmUserPlaylistsIO.getFeedTopicName(this.currentIndex))
+      const topic = this.beeClient.makeFeedTopic(SwarmUserPlaylistsIO.getFeedTopicName())
       const reader = this.beeClient.makeFeedReader("sequence", topic, this.owner)
       const { reference } = await reader.download()
       const data = await this.beeClient.downloadFile(reference)

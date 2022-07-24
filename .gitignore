@@ -68,5 +68,5 @@ deploy.config.js
 !.env.example
 
 # Test files
-test*.js
+test*.*
 deploy*

@@ -21,13 +21,11 @@ import type { SwarmPlaylist, SwarmPlaylistType } from "@/definitions/swarm-playl
 
 export type SwarmPlaylistReaderOptions = {
   beeClient: SwarmBeeClient
-  indexUrl: string
   owner?: string
   id?: string
 }
 
 export type SwarmPlaylistWriterOptions = {
   beeClient: SwarmBeeClient
-  indexUrl: string
   initialType?: SwarmPlaylistType
 }

@@ -14,13 +14,10 @@
  *  limitations under the License.
  */
 
-import SwarmPlaylistReader from "./SwarmPlaylistReader"
-import SwarmPlaylistWriter from "./SwarmPlaylistWriter"
-
-const SwarmPlaylistIO = {
-  Reader: SwarmPlaylistReader,
-  Writer: SwarmPlaylistWriter,
-  getFeedTopicName: (id: string) => `EthernaPlaylist:${id}`
+export default function autoRedirect() {
+  if (window.location.host.startsWith("www")) {
+    const location = new URL(window.location.href)
+    location.host = location.host.replace("www.", "")
+    window.location.href = location.href
+  }
 }
-
-export default SwarmPlaylistIO

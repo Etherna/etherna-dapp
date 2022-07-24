@@ -68,7 +68,7 @@ module.exports = {
       },
       fontSize: {
         "2xs": ["0.65rem", { lineHeight: "1rem" }],
-        md: ["1.15rem", { lineHeight: "1.5rem" }],
+        md: ["1.125rem", { lineHeight: "1.5rem" }],
       },
       maxWidth: {
         xxs: "14rem",
