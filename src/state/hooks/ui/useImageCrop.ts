@@ -22,6 +22,8 @@ import { UIActionTypes, UIActions } from "@/state/reducers/uiReducer"
 import { fileToDataURL } from "@/utils/buffer"
 import type { AppState } from "@/definitions/app-state"
 
+let resolveCropData: ((crop: Partial<Crop> | undefined) => void) | undefined
+
 export default function useImageCrop() {
   const getState = useStore<AppState>().getState
   const dispatch = useDispatch<Dispatch<UIActions>>()
@@ -39,11 +41,8 @@ export default function useImageCrop() {
       isCroppingImage: true,
     })
 
-    const image = await getCroppedImage(img, getState)
+    const image = await getCroppedImage(img)
 
-    dispatch({
-      type: UIActionTypes.UPDATE_IMAGE_CROP,
-    })
     dispatch({
       type: UIActionTypes.TOGGLE_IMAGE_CROPPER,
       isCroppingImage: false,
@@ -58,16 +57,15 @@ export default function useImageCrop() {
   }
 
   const finishCropping = (cropData: Partial<Crop> | undefined) => {
-    dispatch({
-      type: UIActionTypes.UPDATE_IMAGE_CROP,
-      imageCrop: cropData,
-    })
-
     if (!cropData) {
       dispatch({
         type: UIActionTypes.TOGGLE_IMAGE_CROPPER,
         isCroppingImage: false,
       })
+    }
+
+    if (cropData) {
+      resolveCropData?.(cropData)
     }
   }
 
@@ -77,9 +75,8 @@ export default function useImageCrop() {
   }
 }
 
-
-const getCroppedImage = async (src: string, getState: () => AppState) => {
-  const cropData = await waitCropData(getState)
+const getCroppedImage = async (src: string) => {
+  const cropData = await waitCropData()
   if (cropData) {
     const image = await applyImageCropping(src, cropData)
     return image
@@ -87,15 +84,9 @@ const getCroppedImage = async (src: string, getState: () => AppState) => {
   return null
 }
 
-const waitCropData = (getState: () => AppState) =>
-  new Promise<Partial<Crop>>(resolve => {
-    const id = setInterval(() => {
-      const { imageCrop } = getState().ui
-      if (imageCrop !== undefined) {
-        clearInterval(id)
-        resolve(imageCrop)
-      }
-    }, 1000)
+const waitCropData = () =>
+  new Promise<Partial<Crop> | undefined>(resolve => {
+    resolveCropData = resolve
   })
 
 const applyImageCropping = (src: string, cropData: Partial<Crop>) =>

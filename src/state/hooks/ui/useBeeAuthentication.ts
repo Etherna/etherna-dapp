@@ -19,15 +19,12 @@ import { Dispatch } from "redux"
 
 import { UIActions, UIActionTypes } from "@/state/reducers/uiReducer"
 
-let waitingInterval: number | undefined
-let waitingStatus: boolean | undefined
+let resolveAuthentication: ((success: boolean) => void) | undefined
 
 export default function useBeeAuthentication() {
   const dispatch = useDispatch<Dispatch<UIActions>>()
 
   function showAuth() {
-    waitingStatus = undefined
-
     dispatch({
       type: UIActionTypes.TOGGLE_BEE_AUTH,
       showBeeAuthentication: true,
@@ -40,7 +37,7 @@ export default function useBeeAuthentication() {
       showBeeAuthentication: false,
     })
 
-    waitingStatus = success
+    resolveAuthentication?.(success)
   }
 
   async function waitAuth() {
@@ -49,26 +46,8 @@ export default function useBeeAuthentication() {
       showBeeAuthentication: true,
     })
 
-    clearInterval(waitingInterval)
-
     return new Promise<boolean>((resolve) => {
-      waitingInterval = window.setInterval(() => {
-        const confirmationSuccess = waitingStatus
-
-        if (confirmationSuccess !== undefined) {
-          dispatch({
-            type: UIActionTypes.TOGGLE_BEE_AUTH,
-            showBeeAuthentication: false,
-          })
-
-          clearInterval(waitingInterval)
-
-          waitingStatus = undefined
-          waitingInterval = undefined
-
-          resolve(confirmationSuccess)
-        }
-      }, 500)
+      resolveAuthentication = resolve
     })
   }
 
