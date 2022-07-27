@@ -106,8 +106,8 @@ const Router = () => {
       <Routes location={backgroundLocation || location}>
 
         <Route path="" element={<StateProviderRoute />}>
-          <Route path="/" element={<AuthenticateRoute />}>
-            <Route path="/" element={<AppLayoutRoute />}>
+          <Route path="" element={<AuthenticateRoute />}>
+            <Route path="" element={<AppLayoutRoute />}>
 
               <Route path="/" element={<Home />} />
               <Route path="/request-alpha-pass" element={<AlphaPass />} />

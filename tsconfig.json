@@ -29,7 +29,7 @@
     },
     "typeRoots": ["src/typings"]
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx"],
+  "include": ["*.ts", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx"],
   "exclude": ["build", "node_modules", "public"],
   "references": [
     {
