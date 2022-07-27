@@ -15,7 +15,7 @@
  */
 
 import GatewayUsersClient from "./GatewayUsersClient"
-import GatewaySettingsClient from "./GatewaySettingsClient"
+import GatewaySystemClient from "./GatewaySystemClient"
 import GatewayResourcesClient from "./GatewayResourcesClient"
 import { isSafeURL, safeURL, urlOrigin } from "@/utils/urls"
 import { parseLocalStorage } from "@/utils/local-storage"
@@ -24,7 +24,7 @@ import type { GatewayClientOptions } from "@/definitions/api-gateway"
 export default class EthernaGatewayClient {
   resources: GatewayResourcesClient
   users: GatewayUsersClient
-  settings: GatewaySettingsClient
+  system: GatewaySystemClient
   loginPath: string
   logoutPath: string
 
@@ -40,7 +40,7 @@ export default class EthernaGatewayClient {
 
     this.resources = new GatewayResourcesClient(url)
     this.users = new GatewayUsersClient(url)
-    this.settings = new GatewaySettingsClient(url)
+    this.system = new GatewaySystemClient(url)
     this.loginPath = `${host}${options.loginPath || "/account/login"}`
     this.logoutPath = `${host}${options.logoutPath || "/account/logout"}`
   }

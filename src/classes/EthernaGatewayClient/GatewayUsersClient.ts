@@ -86,6 +86,56 @@ export default class GatewayUsersClient {
   }
 
   /**
+   * Create a new batch
+   * 
+   * @param depth Depth of the batch (size)
+   * @param amount Amount of the batch (TTL)
+   * @returns The newly created batch
+   */
+  async createBatch(depth: number, amount: number): Promise<GatewayBatch> {
+    const endpoint = `${this.url}/users/current/batches`
+
+    const previusBatches = (await this.fetchBatches()).map(batch => batch.batchId)
+
+    const resp = await http.post<string>(endpoint, null, {
+      params: {
+        depth,
+        amount,
+      },
+      withCredentials: true
+    })
+
+    const referenceId = resp.data
+
+    if (typeof referenceId !== "string") {
+      throw new Error("Coudn't create a new batch")
+    }
+
+    let resolver: (batch: GatewayBatch) => void
+    let timeout: number
+
+    const fetchBatch = async () => {
+      clearTimeout(timeout)
+
+      timeout = window.setTimeout(async () => {
+        try {
+          const newBatchId = await this.fetchPostageBatchRef(referenceId)
+          if (newBatchId) {
+            return resolver(await this.fetchBatch(newBatchId))
+          }
+        } catch { }
+
+        fetchBatch()
+      }, 2000)
+    }
+
+    return new Promise<GatewayBatch>(resolve => {
+      resolver = resolve
+      fetchBatch()
+    })
+  }
+
+  /**
    * Get current user's batches
    * 
    * @param batchId Id of the swarm batch
@@ -122,5 +172,30 @@ export default class GatewayUsersClient {
     }
 
     return resp.data
+  }
+
+
+  // SYSTEM
+
+  /**
+   * Fetch creation batch id
+   * 
+   * @param referenceId Reference id of the batch
+   * @returns The created batch id if completed
+   */
+  async fetchPostageBatchRef(referenceId: string) {
+    const endpoint = `${this.url}/system/postagebatchref/${referenceId}`
+
+    const resp = await http.get<string>(endpoint, {
+      withCredentials: true
+    })
+
+    const batchId = resp.data
+
+    if (!batchId || typeof resp.data !== "string") {
+      throw new Error("Batch still processing")
+    }
+
+    return batchId
   }
 }

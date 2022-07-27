@@ -15,8 +15,9 @@
  */
 
 import http from "@/utils/request"
+import type { GatewayChainState } from "@/definitions/api-gateway"
 
-export default class GatewaySettingsClient {
+export default class GatewaySystemClient {
   url: string
 
   /**
@@ -42,6 +43,25 @@ export default class GatewaySettingsClient {
 
     if (typeof resp.data !== "number") {
       throw new Error("Cannot fetch byte price")
+    }
+
+    return resp.data
+  }
+
+  /**
+   * Get the current chain state
+   * 
+   * @returns chain state object
+   */
+  async fetchChainstate() {
+    const endpoint = `${this.url}/system/chainstate`
+
+    const resp = await http.get<GatewayChainState>(endpoint, {
+      withCredentials: true
+    })
+
+    if (typeof resp.data !== "object") {
+      throw new Error("Cannot fetch chainstate")
     }
 
     return resp.data

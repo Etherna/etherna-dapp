@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import type { PostageBatch, BatchId } from "@ethersphere/bee-js"
+
 export type GatewayClientOptions = {
   host: string
   apiPath?: string
@@ -37,18 +39,17 @@ export type GatewayBatchPreview = {
   ownerNodeId: string
 }
 
-export type GatewayBatch = {
-  id: string
+export type GatewayBatch = Omit<PostageBatch, "batchID"> & {
+  id: BatchId
   amountPaid: number
-  batchTTL: number
-  blockNumber: number
-  bucketDepth: number
-  depth: number
-  exists: boolean
-  immutableFlag: boolean
-  label: string
   normalisedBalance: number
   ownerAddress: string | null
-  usable: boolean
-  utilization: number
+}
+
+export type GatewayChainState = {
+  block: number
+  currentPrice: number
+  sourceNodeId: string
+  timeStamp: string
+  totalAmount: number
 }
