@@ -79,8 +79,9 @@ export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) 
           batch = await gatewayClient.users.fetchBatch(batches[batches.length - 1].batchId)
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
+      setError(error.response?.data || error.message || error.toString())
     }
 
     if (batch) {
@@ -108,7 +109,7 @@ export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) 
     let postageBatch: PostageBatch | undefined = undefined
     try {
       postageBatch = await beeClient.getBatch(defaultBatchId!)
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
 
       await waitAuth()
@@ -125,12 +126,12 @@ export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) 
         // create a new batch
         setIsCreatingBatch(true)
 
-        const batchManager = new SwarmBatchesManager({ beeClient, gatewayClient, address: address! })
+        const batchManager = new SwarmBatchesManager({ beeClient, gatewayClient, address: address!, gatewayType })
         const { amount, depth } = await batchManager.calcDepthAmount(
           2 ** 20 * 100, // 100MB
           dayjs.duration(10, "years").asSeconds()
         )
-        postageBatch = await beeClient.createBatch(amount, depth)
+        postageBatch = await beeClient.createBatch(depth, amount)
 
         setIsCreatingBatch(false)
       }

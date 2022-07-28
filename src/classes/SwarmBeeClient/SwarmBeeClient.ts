@@ -226,7 +226,7 @@ export default class SwarmBeeClient extends Bee {
     return resp.data.currentPrice
   }
 
-  async createBatch(amount = 10000000, depth = 20): Promise<PostageBatch> {
+  async createBatch(depth = 20, amount = 10000000): Promise<PostageBatch> {
     const token = this.authToken
 
     const resp = await http.post<{ batchID: string }>(`${this.url}/stamps/${amount}/${depth}`, null, {

@@ -15,7 +15,7 @@
  *  
  */
 
-import React, { useEffect, useImperativeHandle, useState } from "react"
+import React, { useEffect, useImperativeHandle, useMemo, useState } from "react"
 import { Navigate } from "react-router"
 
 import { EyeIcon, FilmIcon } from "@heroicons/react/solid"
@@ -40,7 +40,7 @@ import routes from "@/routes"
 import useSelector from "@/state/useSelector"
 import { useWallet } from "@/state/hooks/env"
 import { useConfirmation } from "@/state/hooks/ui"
-import useBatchId from "@/state/hooks/user/useBatchId"
+import BatchLoading from "@/components/common/BatchLoading"
 
 const PORTAL_ID = "video-drag-portal"
 
@@ -58,6 +58,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const { address } = useSelector(state => state.user)
   const [{ reference, queue, videoWriter, hasChanges, saveTo, offerResources }] = useVideoEditorState()
   const [privateLink, setPrivateLink] = useState<string>()
+  const [batchStatus, setBatchStatus] = useState<"creating" | "fetching" | undefined>()
 
   const {
     reference: newReference,
@@ -75,7 +76,6 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const { isLocked, selectedAddress } = useWallet()
   const { resetState } = useVideoEditorBaseActions()
   const { waitConfirmation } = useConfirmation()
-
   const hasQueuedProcesses = queue.filter(q => !q.reference).length > 0
   const hasOriginalVideo = videoWriter.originalQuality && videoWriter.sources.length > 0
   const canPublishVideo = !!videoWriter.videoRaw.title && hasOriginalVideo
@@ -100,6 +100,15 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     if (newReference) resetAll()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newReference])
+
+  useEffect(() => {
+    setBatchStatus(undefined)
+    videoWriter.loadBatches()
+    videoWriter.onBatchCreating = () => setBatchStatus("creating")
+    videoWriter.onBatchCreated = () => setBatchStatus(undefined)
+    videoWriter.onBatchesLoading = () => setBatchStatus("fetching")
+    videoWriter.onBatchesLoaded = () => setBatchStatus(undefined)
+  }, [videoWriter])
 
   const resetAll = () => {
     resetState()
@@ -130,6 +139,21 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
           selectedAddress={selectedAddress}
           profileAddress={address!}
         />
+
+        {batchStatus && (
+          <BatchLoading
+            type={batchStatus}
+            title={
+              batchStatus === "creating"
+                ? "Creating a postage batch for your video"
+                : "Loading your video postage batches"
+            }
+            message={
+              `Please wait while we ${batchStatus === "creating" ? "create" : "load"} your postage batches.` + `\n` +
+              `Postage bastches are used to distribute your video to the network.`
+            }
+          />
+        )}
 
         {addedToChannel === false && (
           <Alert title="Video not added to channel" type="warning">

@@ -27,10 +27,12 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
         [classes.error]: !!error,
       })}
     >
-      <ProgressBar className={classes.batchLoadingProgress} indeterminate />
+      {!error && (
+        <ProgressBar className={classes.batchLoadingProgress} indeterminate />
+      )}
       <div className={classes.batchLoadingHeading}>
         {error ? (
-          <ExclamationCircleIcon aria-hidden />
+          <ExclamationCircleIcon className={classes.batchLoadingIcon} aria-hidden />
         ) : type === "creating" ? (
           <SparklesIcon className={classes.batchLoadingIcon} aria-hidden />
         ) : (
@@ -44,7 +46,9 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
         </h4>
       </div>
 
-      <p className={classes.batchLoadingMessage}>{error || message}</p>
+      <p className={classes.batchLoadingMessage}>
+        {typeof error === "object" ? JSON.stringify(error) : error || message}
+      </p>
     </div>
   )
 }

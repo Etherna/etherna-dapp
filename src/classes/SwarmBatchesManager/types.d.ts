@@ -16,9 +16,13 @@
 
 import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
+import type { GatewayType } from "@/definitions/extension-host"
+
+export type AnyBatch = PostageBatch | GatewayBatch
 
 export type SwarmBatchesManagerOptions = {
   address: string
+  gatewayType: GatewayType
   beeClient: SwarmBeeClient
   gatewayClient: EthernaGatewayClient
 }

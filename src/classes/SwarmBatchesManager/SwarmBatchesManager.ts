@@ -14,18 +14,16 @@
  *  limitations under the License.
  */
 
-import type { PostageBatch } from "@ethersphere/bee-js"
+import type { BatchId, PostageBatch } from "@ethersphere/bee-js"
 
-import type { SwarmBatchesManagerOptions } from "./types"
+import { getBatchSpace } from "@/utils/batches"
+import type { AnyBatch, SwarmBatchesManagerOptions } from "./types"
 import type SwarmBeeClient from "../SwarmBeeClient"
 import type EthernaGatewayClient from "../EthernaGatewayClient"
-import type { GatewayBatch } from "@/definitions/api-gateway"
-import { getBatchSpace } from "@/utils/batches"
+import type { GatewayType } from "@/definitions/extension-host"
 
 const DEFAULT_TTL = 60 * 60 * 24 * 365 * 2 // 2 years
 const DEFAULT_SIZE = 2 ** 16 // 65kb - basic manifest
-
-type AnyBatch = PostageBatch | GatewayBatch
 
 export default class SwarmBatchesManager {
   batches: AnyBatch[] = []
@@ -37,30 +35,34 @@ export default class SwarmBatchesManager {
 
   protected beeClient: SwarmBeeClient
   protected gatewayClient: EthernaGatewayClient
+  protected gatewayType: GatewayType
   protected address: string
 
   constructor(opts: SwarmBatchesManagerOptions) {
     this.address = opts.address
+    this.gatewayType = opts.gatewayType
     this.beeClient = opts.beeClient
     this.gatewayClient = opts.gatewayClient
   }
 
-  async loadBatches(batchIds: string[]) {
+  async loadBatches(batchIds?: string[]): Promise<AnyBatch[]> {
+    if (!batchIds || batchIds.length === 0) return []
+
     this.onBatchesLoading?.()
 
     const batches = await Promise.allSettled(
       batchIds.map(batchId => {
-        if (this.gatewayClient) {
+        if (this.gatewayType === "etherna-gateway") {
           return this.gatewayClient.users.fetchBatch(batchId)
         } else {
-          return this.beeClient!.getBatch(batchId)
+          return this.beeClient.getBatch(batchId)
         }
       })
     )
 
     this.batches = batches
       // @ts-ignore
-      .filter<PromiseFulfilledResult<PostageBatch | GatewayBatch>>(batch => batch.status === "fulfilled")
+      .filter<PromiseFulfilledResult<AnyBatch>>(batch => batch.status === "fulfilled")
       .map(batch => batch.value)
       .filter(batch => batch.usable)
       .filter(batch => "ownerAddress" in batch ? batch.ownerAddress === this.address : true)
@@ -70,7 +72,7 @@ export default class SwarmBatchesManager {
     return this.batches
   }
 
-  getBatchForSize(size: number): PostageBatch | GatewayBatch | undefined {
+  getBatchForSize(size: number): AnyBatch | undefined {
     for (const batch of this.batches) {
       const { available } = getBatchSpace(batch)
       if (available >= size) {
@@ -80,28 +82,60 @@ export default class SwarmBatchesManager {
     return undefined
   }
 
-  async createBatchForSize(size: number, ttl = DEFAULT_TTL): Promise<PostageBatch | GatewayBatch> {
+  async getOrCreateBatchForSize(size: number, ttl = DEFAULT_TTL): Promise<AnyBatch> {
+    let batch = this.getBatchForSize(size)
+    if (!batch) {
+      batch = await this.createBatchForSize(size, ttl)
+    }
+    return batch
+  }
+
+  async createBatchForSize(size: number, ttl = DEFAULT_TTL): Promise<AnyBatch> {
     const { depth, amount } = await this.calcDepthAmount(size, ttl)
 
     this.onBatchCreating?.()
 
     let batch: AnyBatch
 
-    if (this.gatewayClient) {
+    if (this.gatewayType === "etherna-gateway") {
       batch = await this.gatewayClient.users.createBatch(depth, amount)
     } else {
-      batch = await this.beeClient!.createBatch(size)
+      batch = await this.beeClient.createBatch(depth, amount)
     }
+
+    if (!batch) throw new Error("Could not create postage batch")
+
+    this.batches.push(batch)
 
     this.onBatchCreated?.(batch)
 
     return batch
   }
 
+  /**
+   * Refresh a batch after utilization
+   * @param batch The batch used
+   */
+  async refreshBatch(batch: AnyBatch) {
+    const batchId = this.getBatchId(batch)
+    const index = this.batches.findIndex(batch => this.getBatchId(batch) === batchId)
+
+    if (index === -1) return
+
+    let updatedBatch: AnyBatch
+    if (this.gatewayType === "etherna-gateway") {
+      updatedBatch = this.gatewayClient.users.fetchBatch(batchId)
+    } else {
+      updatedBatch = this.beeClient.getBatch(batchId)
+    }
+
+    this.batches[index] = updatedBatch
+  }
+
   async calcDepthAmount(size = DEFAULT_SIZE, ttl = DEFAULT_TTL) {
     const price = await this.fetchPrice()
     const blockTime = 5
-    const amount = ttl * price / blockTime
+    const amount = Math.ceil(ttl * price / blockTime)
     let depth = 10
 
     while (size > (2 ** depth * 4096)) {
@@ -129,18 +163,42 @@ export default class SwarmBatchesManager {
     const extraSpaceNeeded = downscaledQualities.reduce((prev, lowerQuality) => {
       return prev + (videoSizeInBytes * (lowerQuality / quality))
     }, 0)
-    return extraSpaceNeeded + videoSizeInBytes
+
+    // thumbnails, manifest, captions...
+    const marginBytes = 2 ** 20 * 100 // 100mb
+
+    return extraSpaceNeeded + videoSizeInBytes + marginBytes
   }
 
   async fetchPrice() {
     try {
-      if (this.gatewayClient) {
+      if (this.gatewayType === "etherna-gateway") {
         return (await this.gatewayClient.system.fetchChainstate()).currentPrice
       } else {
-        return await this.beeClient!.getCurrentPrice()
+        return await this.beeClient.getCurrentPrice()
       }
     } catch (error) {
       return 4 // hardcoded price
     }
+  }
+
+  parseBatch(batch: AnyBatch): PostageBatch {
+    return {
+      batchID: "id" in batch ? batch.id : batch.batchID,
+      utilization: batch.utilization,
+      usable: batch.usable,
+      label: batch.label,
+      depth: batch.depth,
+      amount: batch.amount,
+      bucketDepth: batch.bucketDepth,
+      blockNumber: batch.blockNumber,
+      immutableFlag: batch.immutableFlag,
+      batchTTL: batch.batchTTL,
+      exists: batch.exists,
+    }
+  }
+
+  getBatchId(batch: AnyBatch): BatchId {
+    return "id" in batch ? batch.id : batch.batchID
   }
 }

@@ -34,6 +34,7 @@ export default class SwarmImageWriter {
   private isResponsive: boolean
   private responsiveSizes: number[]
   private file: File
+  private preGenerateImages?: Awaited<ReturnType<typeof this.generateImages>>
 
   static defaultResponsiveSizes = [480, 768, 1024, 1536]
 
@@ -54,13 +55,25 @@ export default class SwarmImageWriter {
   }
 
   /**
+   * Pregenerate images and return the total size of the images,
+   * used to calculate the best postage batch
+   */
+  async pregenerateImages(): Promise<number> {
+    this.preGenerateImages = await this.generateImages()
+    return Object.values(this.preGenerateImages.responsiveSourcesData).reduce(
+      (acc, cur) => acc + cur.length,
+      0,
+    )
+  }
+
+  /**
    * Upload the image(s) data on swarm
    * 
    * @param options Upload options
    * @returns The raw image object
    */
   async upload(options?: SwarmImageUploadOptions): Promise<SwarmImageRaw> {
-    const { blurhash, imageAspectRatio, responsiveSourcesData } = await this.generateImages()
+    const { blurhash, imageAspectRatio, responsiveSourcesData } = this.preGenerateImages ?? await this.generateImages()
 
     const imageRaw: SwarmImageRaw = {
       blurhash,
@@ -68,7 +81,7 @@ export default class SwarmImageWriter {
       sources: {}
     }
 
-    const batchId = await this.beeClient.getBatchId()
+    const batchId = options?.batchId ?? await this.beeClient.getBatchId()
     const fetch = this.beeClient.getFetch({
       onUploadProgress: e => {
         if (options?.onUploadProgress) {

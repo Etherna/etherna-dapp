@@ -42,10 +42,10 @@ const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
   hasOffers = false,
 }) => {
   const { address } = useSelector(state => state.user)
-  const { beeClient, gatewayClient } = useSelector(state => state.env)
+  const { beeClient, gatewayClient, gatewayType } = useSelector(state => state.env)
 
   let initialState = VideoEditorCache.hasCache
-    ? VideoEditorCache.loadState(beeClient, gatewayClient)
+    ? VideoEditorCache.loadState(beeClient, gatewayClient, gatewayType)
     : null
 
   if (initialState && initialState.reference !== reference) {
@@ -56,6 +56,7 @@ const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
     const videoWriter = new SwarmVideoIO.Writer(videoData, address!, {
       beeClient,
       gatewayClient,
+      gatewayType,
     })
 
     initialState = {

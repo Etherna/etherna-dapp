@@ -47,7 +47,7 @@ import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 const Videos: React.FC = () => {
   const profileInfo = useSelector(state => state.profile)
   const address = useSelector(state => state.user.address)
-  const { beeClient, indexClient, gatewayClient, isStandaloneGateway } = useSelector(state => state.env)
+  const { beeClient, indexClient, gatewayClient, gatewayType } = useSelector(state => state.env)
 
   const [profile, setProfile] = useState<Profile>()
   const [page, setPage] = useState(1)
@@ -114,6 +114,7 @@ const Videos: React.FC = () => {
       const videoWriter = new SwarmVideoIO.Writer(video, video.ownerAddress || address!, {
         beeClient,
         gatewayClient,
+        gatewayType,
       })
       try {
         await Promise.allSettled([
@@ -147,6 +148,7 @@ const Videos: React.FC = () => {
       const writer = new SwarmVideoIO.Writer(newvideo, address!, {
         beeClient,
         gatewayClient,
+        gatewayType,
       })
       await writer.update(profile)
       newVideos.push(writer.video!)
@@ -174,7 +176,7 @@ const Videos: React.FC = () => {
   }
 
   const renderOffersStatus = (video: Video) => {
-    if (isStandaloneGateway) {
+    if (gatewayType === "bee") {
       return null
     }
 
@@ -254,7 +256,7 @@ const Videos: React.FC = () => {
           title: "Status",
           hideOnMobile: true,
           render: item => renderVideoStatus(item)
-        }, isStandaloneGateway ? null : {
+        }, gatewayType === "bee" ? null : {
           title: "Offered",
           hideOnMobile: true,
           render: item => renderOffersStatus(item)
