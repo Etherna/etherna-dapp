@@ -21,6 +21,7 @@ import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 import svgr from "vite-plugin-svgr"
 import eslintPlugin from "vite-plugin-eslint"
+import checker from "vite-plugin-checker"
 import { dynamicBase } from "vite-plugin-dynamic-base"
 
 // https://vitejs.dev/config/
@@ -61,6 +62,9 @@ export default defineConfig(({ mode }) => ({
     react(),
     svgr(),
     eslintPlugin({ cache: false }),
+    checker({
+      typescript: true,
+    }),
     dynamicBase({
       publicPath: " window.__dynamic_base__",
       transformIndexHtml: true,
