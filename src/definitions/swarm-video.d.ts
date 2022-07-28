@@ -37,8 +37,10 @@ export type SwarmVideoRaw = {
   thumbnail: SwarmImageRaw | null
   /**  List of available qualities of the video */
   sources: SwarmVideoSourceRaw[]
-  /** video batch id */
-  batchId?: string
+  /** batch ids used */
+  batchIds?: {
+    [reference: "_" | string]: string
+  }
 }
 
 export type SwarmVideoQuality = `${number}p`
@@ -73,8 +75,10 @@ export type SwarmVideo = {
   thumbnail: SwarmImage | null
   /**  All qualities of video */
   sources: VideoSource[]
-  /** video batch id */
-  batchId?: string
+  /** batch ids used */
+  batchIds?: {
+    [reference: "_" | string]: string
+  }
 }
 
 export type VideoSource = SwarmVideoSourceRaw & {

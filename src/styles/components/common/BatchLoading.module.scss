@@ -1,0 +1,36 @@
+.batchLoading {
+  @apply w-full max-w-sm self-start;
+  @apply bg-gray-100 dark:bg-gray-800;
+  @apply rounded;
+  @apply p-4;
+}
+
+.batchLoadingProgress {
+  @apply mt-0;
+}
+
+.batchLoadingHeading {
+  @apply flex items-center mt-3;
+}
+
+.batchLoadingIcon {
+  @apply w-5 h-5 mr-2;
+
+  .creating & {
+    @apply animate-pulse;
+  }
+  .error & {
+    @apply text-red-500;
+  }
+}
+
+.batchLoadingTitle {
+  @apply font-semibold;
+  @apply mb-0;
+}
+
+.batchLoadingMessage {
+  @apply text-sm;
+  @apply opacity-50;
+  @apply mt-2;
+}

@@ -59,7 +59,6 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
     try {
       const reader = new SwarmUserPlaylistsIO.Reader(owner, {
         beeClient,
-        indexUrl,
       })
       await reader.download(opts)
 
@@ -161,7 +160,6 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
   const updatePlaylist = async (playlist: SwarmPlaylist, initialType: SwarmPlaylistType) => {
     const playlistWriter = new SwarmPlaylistIO.Writer(playlist, {
       beeClient,
-      indexUrl,
       initialType,
     })
     return await playlistWriter.upload()
@@ -170,7 +168,6 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
   const updateUserPlaylists = async (rawPlaylists: SwarmUserPlaylistsRaw) => {
     const userPlaylistsWriter = new SwarmUserPlaylistsIO.Writer(rawPlaylists, {
       beeClient,
-      indexUrl,
     })
     await userPlaylistsWriter.upload()
   }

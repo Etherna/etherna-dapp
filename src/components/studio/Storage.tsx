@@ -21,16 +21,16 @@ import classes from "@/styles/components/studio/Storage.module.scss"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
 import StorageBatch from "./storage/StorageBatch"
-import useSelector from "@/state/useSelector"
 import Alert from "@/components/common/Alert"
+import useSelector from "@/state/useSelector"
 
 const Storage: React.FC = () => {
   const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
-  const batches = useSelector(state => state.user.batches)
+  const defaultBatch = useSelector(state => state.user.defaultBatch)
 
   return (
     <div className={classes.storage}>
-      {(isStandaloneGateway && batches?.length === 0) && (
+      {(!defaultBatch) && (
         <Alert title="No storage found" type="danger">
           <p>
             {`You don't have any storage on this gateway, or
@@ -41,21 +41,19 @@ const Storage: React.FC = () => {
           </p>
         </Alert>
       )}
-      {batches == null && (
+      {!defaultBatch && isStandaloneGateway && (
         <p className={classes.storageLoading}>
           <Spinner aria-hidden /> We are loading your storage information
         </p>
       )}
-      {(batches && !batches.length && !isStandaloneGateway) && (
+      {(!defaultBatch && !isStandaloneGateway) && (
         <p className={classes.storageLoading}>
           <Spinner aria-hidden /> We are creating your first storage on Etherna. Refresh this page in a few seconds.
         </p>
       )}
-      {batches && (
+      {defaultBatch && (
         <ul className={classes.storageList}>
-          {batches.map((batch, i) => (
-            <StorageBatch batch={batch} num={i + 1} key={batch.id} />
-          ))}
+          <StorageBatch batch={defaultBatch} num={1} key={defaultBatch.id} />
         </ul>
       )}
     </div>

@@ -14,22 +14,6 @@
  *  limitations under the License.
  */
 
-.radioGroup {
-  @apply flex flex-col space-y-3;
-}
+import SwarmBatchesManager from "./SwarmBatchesManager"
 
-.radio {
-  @apply flex items-start justify-between;
-
-  &.active {
-    @apply ring-2 ring-primary-200;
-  }
-}
-
-.radioContent {
-  @apply flex flex-col;
-}
-
-.radioCheck {
-  @apply text-3xl text-primary-500;
-}
+export default SwarmBatchesManager

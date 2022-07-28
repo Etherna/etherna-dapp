@@ -86,7 +86,6 @@ export type UIState = {
   isEditingShortcut?: boolean
   isCroppingImage?: boolean
 
-  imageCrop?: Partial<Crop>
   imageType?: "avatar" | "cover"
   image?: string
 
@@ -102,7 +101,8 @@ export type UserState = {
   creditUnlimited?: boolean
   isSignedIn?: boolean
   isSignedInGateway?: boolean
-  batches?: GatewayBatch[]
+  defaultBatchId?: string
+  defaultBatch?: GatewayBatch
 }
 
 export type WalletType = "etherna" | "metamask"

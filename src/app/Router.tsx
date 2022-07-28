@@ -128,10 +128,10 @@ const Router = () => {
                 <Route path="" element={<StudioLayoutRoute />}>
                   <Route path="" element={<Navigate replace to="/studio/videos" />} />
                   <Route path="videos" element={<VideosList />} />
-                  <Route path="storage" element={<Storage />} />
                   <Route path="" element={<BatchesRoute />}>
                     <Route path="channel" element={<ChannelEdit />} />
                     <Route path="videos/:id" element={<VideoEdit />} />
+                    <Route path="storage" element={<Storage />} />
                   </Route>
                 </Route>
               </Route>

@@ -24,26 +24,16 @@ import routes from "@/routes"
 
 const CantUploadAlert: React.FC = () => {
   const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
-  const batches = useSelector(state => state.user.batches)
+  const defaultBatch = useSelector(state => state.user.defaultBatch)
   const isLoadingProfile = useSelector(state => state.ui.isLoadingProfile)
 
-  const [loading, noBatches, noUsableBatches] = useMemo(() => {
-    const loading = batches == null
-    const noBatches = batches && batches.length === 0
-    const noUsableBatches = batches && batches.every(batch => !batch.usable)
-    return [loading, noBatches, noUsableBatches]
-  }, [batches])
-
   const title = useMemo(() => {
-    if (loading) return "You storage is loading"
-    if (noBatches && isStandaloneGateway) return "No storage found"
-    if (noBatches) return "We are creating you first storage"
-    if (noUsableBatches) return "Your storage is not usable"
+    if (isStandaloneGateway) return "No postage batch found. You need to create one."
     return "No storage found"
-  }, [loading, noBatches, isStandaloneGateway, noUsableBatches])
+  }, [isStandaloneGateway])
 
   if (isLoadingProfile) return null
-  if (!loading && !noBatches && !noUsableBatches) return null
+  if (defaultBatch) return null
 
   return (
     <Alert className="my-6" type="warning" title={title}>

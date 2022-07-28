@@ -18,10 +18,12 @@ import { useDispatch } from "react-redux"
 import { Dispatch } from "redux"
 
 import { UIActions, UIActionTypes } from "@/state/reducers/uiReducer"
+import useSelector from "@/state/useSelector"
 
 let resolveAuthentication: ((success: boolean) => void) | undefined
 
 export default function useBeeAuthentication() {
+  const beeClient = useSelector(state => state.env.beeClient)
   const dispatch = useDispatch<Dispatch<UIActions>>()
 
   function showAuth() {
@@ -41,6 +43,13 @@ export default function useBeeAuthentication() {
   }
 
   async function waitAuth() {
+    if (beeClient.isAuthenticated) return true
+    if (beeClient.authToken) {
+      if (await beeClient.refreshToken(beeClient.authToken)) {
+        return true
+      }
+    }
+
     dispatch({
       type: UIActionTypes.TOGGLE_BEE_AUTH,
       showBeeAuthentication: true,

@@ -1,0 +1,52 @@
+import React from "react"
+import classNames from "classnames"
+
+import classes from "@/styles/components/common/BatchLoading.module.scss"
+import { SparklesIcon, ExclamationCircleIcon } from "@heroicons/react/solid"
+
+import ProgressBar from "./ProgressBar"
+
+type BatchLoadingProps = {
+  className?: string
+  type: "fetching" | "creating"
+  title?: string
+  message?: string
+  error?: string
+}
+
+const BatchLoading: React.FC<BatchLoadingProps> = ({
+  className,
+  type,
+  message = "This process might take several seconds",
+  error,
+}) => {
+  return (
+    <div
+      className={classNames(classes.batchLoading, className, {
+        [classes.creating]: type === "creating",
+        [classes.error]: !!error,
+      })}
+    >
+      <ProgressBar className={classes.batchLoadingProgress} indeterminate />
+      <div className={classes.batchLoadingHeading}>
+        {error ? (
+          <ExclamationCircleIcon aria-hidden />
+        ) : type === "creating" ? (
+          <SparklesIcon className={classes.batchLoadingIcon} aria-hidden />
+        ) : (
+          null
+        )}
+
+        <h4 className={classes.batchLoadingTitle}>
+          {error
+            ? `Couldn't ${type === "fetching" ? "fetch" : "create"} the postage batch`
+            : type === "fetching" ? "Loading postage batch" : "Creating postage batch"}
+        </h4>
+      </div>
+
+      <p className={classes.batchLoadingMessage}>{error || message}</p>
+    </div>
+  )
+}
+
+export default BatchLoading

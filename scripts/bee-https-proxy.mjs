@@ -32,9 +32,16 @@ export default function proxyBeeOverHttps() {
 
     const httpsServer = https.createServer({ key: privateKey, cert: certificate }, async (req, res) => {
       if (!req.url) {
-        const respHeaders = fixResponseHeaders(req, null)
+        const respHeaders = fixResponseHeaders(req)
         res.writeHead(500, "Server error", respHeaders)
         res.end("Server error")
+        return
+      }
+      if (req.method === "OPTIONS") {
+        // send successfull preflight response
+        const respHeaders = fixResponseHeaders(req)
+        res.writeHead(200, "OK", respHeaders)
+        res.end()
         return
       }
 
@@ -51,15 +58,7 @@ export default function proxyBeeOverHttps() {
       })
       const data = await resp.arrayBuffer()
 
-      const origin = (req.headers.referer || process.env.VITE_APP_PUBLIC_URL).replace(/\/$/, "")
-      const respHeaders = {
-        ...resp.headers.raw(),
-        "access-control-allow-origin": [origin],
-        "access-control-allow-headers": [req.headers["access-control-request-headers"] || "*"],
-        "access-control-allow-methods": [req.headers["access-control-request-method"] || "*"],
-      }
-      delete respHeaders["content-encoding"]
-      delete respHeaders["content-length"]
+      const respHeaders = fixResponseHeaders(req, resp)
 
       res.writeHead(resp.status, resp.statusText, respHeaders)
       res.end(new Uint8Array(data))
@@ -71,4 +70,18 @@ export default function proxyBeeOverHttps() {
   } else {
     throw new Error("Cannot find ssl certificates. To create new certificates check /proxy/sslcert/README.md")
   }
+}
+
+function fixResponseHeaders(req, res) {
+  const origin = (req.headers.referer || process.env.VITE_APP_PUBLIC_URL).replace(/\/$/, "")
+  const respHeaders = {
+    ...(res ? res.headers.raw() : {}),
+    "access-control-allow-origin": [origin],
+    "access-control-allow-credentials": "true",
+    "access-control-allow-headers": [req.headers["access-control-request-headers"] || "*"],
+    "access-control-allow-methods": [req.headers["access-control-request-method"] || "*"],
+  }
+  delete respHeaders["content-encoding"]
+  delete respHeaders["content-length"]
+  return respHeaders
 }

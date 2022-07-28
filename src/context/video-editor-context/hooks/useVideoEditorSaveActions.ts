@@ -35,7 +35,7 @@ export default function useVideoEditorSaveActions() {
   const [state] = useVideoEditorState()
   const { videoWriter, saveTo, reference: initialReference } = state
   const { indexClient, gatewayClient } = useSelector(state => state.env)
-  const { address, batches } = useSelector(state => state.user)
+  const { address, defaultBatch } = useSelector(state => state.user)
   const profile = useSelector(state => state.profile)
   const { isLocked } = useWallet()
 
@@ -127,7 +127,7 @@ export default function useVideoEditorSaveActions() {
   }
 
   const checkAccountability = () => {
-    if (!batches || batches.length === 0) {
+    if (!defaultBatch) {
       showError("Cannot upload", "You don't have any storage yet.")
       return false
     }

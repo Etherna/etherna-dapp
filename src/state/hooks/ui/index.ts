@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+export { default as useBeeAuthentication } from "./useBeeAuthentication"
 export { default as useErrorMessage } from "./useErrorMessage"
 export { default as useConfirmation } from "./useConfirmation"
 export { default as useImageCrop } from "./useImageCrop"

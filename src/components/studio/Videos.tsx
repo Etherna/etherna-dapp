@@ -47,7 +47,7 @@ import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 const Videos: React.FC = () => {
   const profileInfo = useSelector(state => state.profile)
   const address = useSelector(state => state.user.address)
-  const { beeClient, indexClient, isStandaloneGateway } = useSelector(state => state.env)
+  const { beeClient, indexClient, gatewayClient, isStandaloneGateway } = useSelector(state => state.env)
 
   const [profile, setProfile] = useState<Profile>()
   const [page, setPage] = useState(1)
@@ -113,6 +113,7 @@ const Videos: React.FC = () => {
     for (const video of selectedVideos) {
       const videoWriter = new SwarmVideoIO.Writer(video, video.ownerAddress || address!, {
         beeClient,
+        gatewayClient,
       })
       try {
         await Promise.allSettled([
@@ -145,6 +146,7 @@ const Videos: React.FC = () => {
 
       const writer = new SwarmVideoIO.Writer(newvideo, address!, {
         beeClient,
+        gatewayClient,
       })
       await writer.update(profile)
       newVideos.push(writer.video!)

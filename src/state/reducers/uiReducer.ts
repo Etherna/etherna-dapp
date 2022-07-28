@@ -88,10 +88,6 @@ type SetCropImageAction = {
   imageType: "avatar" | "cover"
   image: string
 }
-type UpdateImageCropAction = {
-  type: typeof UIActionTypes.UPDATE_IMAGE_CROP
-  imageCrop?: Partial<Crop>
-}
 
 export type UIActions = (
   ShowErrorAction |
@@ -105,8 +101,7 @@ export type UIActions = (
   ToggleNetworkChangeAction |
   ToggleEditingShortcutAction |
   ToggleImageCropperAction |
-  SetCropImageAction |
-  UpdateImageCropAction
+  SetCropImageAction
 )
 
 
@@ -186,12 +181,6 @@ const uiReducer = (state: UIState = {}, action: UIActions): UIState => {
       return {
         ...state,
         isCroppingImage: action.isCroppingImage,
-      }
-
-    case UIActionTypes.UPDATE_IMAGE_CROP:
-      return {
-        ...state,
-        imageCrop: action.imageCrop,
       }
 
     case UIActionTypes.SET_CROP_IMAGE:

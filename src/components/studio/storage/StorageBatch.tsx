@@ -24,6 +24,7 @@ import ProgressBar from "@/components/common/ProgressBar"
 import { convertBytes } from "@/utils/converters"
 import dayjs from "@/utils/dayjs"
 import { clamp } from "@/utils/math"
+import { getBatchSpace } from "@/utils/batches"
 import type { GatewayBatch } from "@/definitions/api-gateway"
 
 type StorageBatchProps = {
@@ -33,13 +34,13 @@ type StorageBatchProps = {
 
 const StorageBatch: React.FC<StorageBatchProps> = ({ batch, num }) => {
   const [totalSpace, usedSpace, availableSpace, usagePercent] = useMemo(() => {
-    const { utilization, depth, bucketDepth } = batch
-    const usage = utilization / 2 ** (depth - bucketDepth)
-    const total = 2 ** depth * 4096
-    const used = total * usage
-    const available = total - used
-    const usagePercent = clamp(usage * 100, 0.5, 100)
+    const { available, total, used } = getBatchSpace(batch)
+    const usagePercent = clamp(used / total * 100, 0.5, 100)
     return [total, used, available, usagePercent]
+  }, [batch])
+
+  const expiration = useMemo(() => {
+    return dayjs.duration({ seconds: batch.batchTTL }).humanize()
   }, [batch])
 
   return (
@@ -56,7 +57,7 @@ const StorageBatch: React.FC<StorageBatchProps> = ({ batch, num }) => {
       <span>
         Expiring
         <span className={classes.storageBatchExpiring}>
-          {batch.batchTTL === -1 ? "never" : `${dayjs.duration({ seconds: batch.batchTTL }).humanize(true)}`}
+          {batch.batchTTL === -1 || expiration.startsWith("NaN") ? "never" : `${expiration}`}
         </span>
         <small className="block">The ability to expand and renew the storage will be added soon.</small>
       </span>

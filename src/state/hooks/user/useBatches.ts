@@ -16,14 +16,17 @@
 
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
+import type { PostageBatch } from "@ethersphere/bee-js"
 import type { Dispatch } from "redux"
 
+import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
 import useSelector from "@/state/useSelector"
 import { EnvActions, EnvActionTypes } from "@/state/reducers/enviromentReducer"
 import { UserActions, UserActionTypes } from "@/state/reducers/userReducer"
-import type { GatewayBatch, GatewayBatchPreview } from "@/definitions/api-gateway"
-
-let batchesFetchTries = 0
+import { useBeeAuthentication } from "@/state/hooks/ui"
+import dayjs from "@/utils/dayjs"
+import { getBatchSpace } from "@/utils/batches"
+import type { GatewayBatch } from "@/definitions/api-gateway"
 
 type UseBatchesOpts = {
   autofetch?: boolean
@@ -31,96 +34,149 @@ type UseBatchesOpts = {
 
 export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) {
   const [isFetchingBatches, setIsFetchingBatches] = useState(false)
-  const { gatewayClient, beeClient } = useSelector(state => state.env)
-  const { batches } = useSelector(state => state.user)
+  const [isCreatingBatch, setIsCreatingBatch] = useState(false)
+  const [error, setError] = useState<string | undefined>()
+  const { gatewayClient, gatewayType, beeClient } = useSelector(state => state.env)
+  const { defaultBatchId, defaultBatch, address } = useSelector(state => state.user)
+  const { isLoadingProfile } = useSelector(state => state.ui)
   const dispatch = useDispatch<Dispatch<UserActions | EnvActions>>()
+  const { waitAuth } = useBeeAuthentication()
 
   useEffect(() => {
     if (!opts.autofetch) return
-    if (!batches || !batches.length) {
-      fetchBatches()
-    }
+    if (isLoadingProfile) return
+
+    fetchBatches()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts.autofetch])
+  }, [opts.autofetch, isLoadingProfile])
 
   const fetchBatches = async () => {
-    batchesFetchTries++
+    if (gatewayType === "etherna-gateway") {
+      fetchGatewayBatch()
+    } else {
+      fetchBeeBatch()
+    }
+  }
 
-    let userBatches: GatewayBatch[] = []
-    let batchesPreview: GatewayBatchPreview[] = []
+  async function fetchGatewayBatch() {
+    setIsFetchingBatches(true)
 
+    let batch: GatewayBatch | undefined = undefined
     try {
-      setIsFetchingBatches(true)
-
-      batchesPreview = await gatewayClient.users.fetchBatches()
-
-      if (batchesPreview.length === 0) {
-        // waiting to auto create default batch
-        console.warn("Still no batches. Re-Trying in 10 seconds.")
-        batchesFetchTries < 5 && setTimeout(() => {
-          fetchBatches()
-        }, 10000)
-        return
-      }
-
-      userBatches = await Promise.all(
-        batchesPreview.map(batchPreview => gatewayClient.users.fetchBatch(batchPreview.batchId))
-      )
-    } catch (error) {
-      if (batchesPreview.length > 0 && import.meta.env.PROD) {
-        userBatches = batchesPreview.map(batchPreview => ({
-          id: batchPreview.batchId,
-          depth: 20,
-          bucketDepth: 0,
-          amountPaid: 0,
-          normalisedBalance: 0,
-          batchTTL: 0,
-          usable: false,
-          utilization: 0,
-          blockNumber: 0,
-          exists: false,
-          immutableFlag: false,
-          label: "",
-          ownerAddress: null,
-        }))
+      if (defaultBatchId) {
+        batch = await gatewayClient.users.fetchBatch(defaultBatchId)
       } else {
-        // Try to fetch from /stamps endpoint
-        const batches = await beeClient.getAllPostageBatch()
-        const usableBatches = batches.filter(batch => batch.usable)
-        userBatches = usableBatches.map(batch => ({
-          id: batch.batchID,
-          depth: batch.depth,
-          bucketDepth: batch.bucketDepth,
-          amountPaid: +batch.amount,
-          normalisedBalance: 0,
-          batchTTL: -1,
-          usable: batch.usable,
-          utilization: batch.utilization,
-          blockNumber: batch.blockNumber,
-          exists: true,
-          immutableFlag: batch.immutableFlag,
-          label: batch.label,
-          ownerAddress: null,
-        }))
+        const batches = await gatewayClient.users.fetchBatches()
+
+        if (batches.length === 0) {
+          setIsCreatingBatch(true)
+          console.warn("Creating default batch....")
+          setTimeout(() => {
+            return fetchGatewayBatch()
+          }, 2500)
+        } else {
+          setIsCreatingBatch(false)
+          batch = await gatewayClient.users.fetchBatch(batches[batches.length - 1].batchId)
+        }
       }
+    } catch (error) {
+      console.error(error)
     }
 
-    dispatch({
-      type: EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES,
-      batches: userBatches,
-    })
+    if (batch) {
+      dispatch({
+        type: EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES,
+        batches: [batch],
+      })
 
-    dispatch({
-      type: UserActionTypes.USER_SET_BATCHES,
-      batches: userBatches,
-    })
+      dispatch({
+        type: UserActionTypes.USER_SET_DEFAULT_BATCH_ID,
+        batchId: batch.id,
+      })
+      dispatch({
+        type: UserActionTypes.USER_SET_DEFAULT_BATCH,
+        batch,
+      })
+    }
 
     setIsFetchingBatches(false)
   }
 
+  async function fetchBeeBatch() {
+    setIsFetchingBatches(true)
+
+    let postageBatch: PostageBatch | undefined = undefined
+    try {
+      postageBatch = await beeClient.getBatch(defaultBatchId!)
+    } catch (error) {
+      console.error(error)
+
+      await waitAuth()
+
+      // get best batch
+      const batches = await beeClient.getAllPostageBatches()
+      const bestBatch = batches
+        .filter(batch => batch.usable)
+        .sort((a, b) => getBatchSpace(b).available - getBatchSpace(a).available)[0]
+
+      if (bestBatch) {
+        postageBatch = bestBatch
+      } else {
+        // create a new batch
+        setIsCreatingBatch(true)
+
+        const batchManager = new SwarmBatchesManager({ beeClient, gatewayClient, address: address! })
+        const { amount, depth } = await batchManager.calcDepthAmount(
+          2 ** 20 * 100, // 100MB
+          dayjs.duration(10, "years").asSeconds()
+        )
+        postageBatch = await beeClient.createBatch(amount, depth)
+
+        setIsCreatingBatch(false)
+      }
+    }
+
+    if (postageBatch) {
+      const batch: GatewayBatch = {
+        id: postageBatch.batchID,
+        amountPaid: 0,
+        normalisedBalance: 0,
+        ownerAddress: address ?? null,
+        amount: postageBatch.amount,
+        batchTTL: postageBatch.batchTTL,
+        blockNumber: postageBatch.blockNumber,
+        bucketDepth: postageBatch.bucketDepth,
+        depth: postageBatch.depth,
+        exists: postageBatch.exists,
+        immutableFlag: postageBatch.immutableFlag,
+        label: postageBatch.label,
+        usable: postageBatch.usable,
+        utilization: postageBatch.utilization,
+      }
+
+      dispatch({
+        type: EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES,
+        batches: [batch],
+      })
+
+      dispatch({
+        type: UserActionTypes.USER_SET_DEFAULT_BATCH_ID,
+        batchId: batch.id,
+      })
+      dispatch({
+        type: UserActionTypes.USER_SET_DEFAULT_BATCH,
+        batch,
+      })
+
+      setIsFetchingBatches(false)
+    }
+  }
+
   return {
+    isCreatingBatch,
     isFetchingBatches,
-    batches,
+    error,
+    defaultBatch,
     fetchBatches,
   }
 }

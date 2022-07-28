@@ -41,6 +41,7 @@ type TextFieldProps = {
   elRef?: React.MutableRefObject<any>
   onChange?(value: string): void
   onKeyDown?(e: React.KeyboardEvent<HTMLInputElement>): void
+  onEnter?(): void
   onBlur?(): void
   onFocus?(): void
 }
@@ -63,6 +64,7 @@ const TextField: React.FC<TextFieldProps> = ({
   elRef,
   onChange,
   onKeyDown,
+  onEnter,
   onBlur,
   onFocus,
 }) => {
@@ -72,6 +74,13 @@ const TextField: React.FC<TextFieldProps> = ({
       value = value.substr(0, charactersLimit)
     }
     onChange?.(value)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      onEnter?.()
+    }
+    onKeyDown?.(e)
   }
 
   const Field: React.FC<React.AllHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>> = useMemo(
@@ -106,7 +115,7 @@ const TextField: React.FC<TextFieldProps> = ({
           disabled={disabled}
           value={value}
           onChange={handleChange}
-          onKeyDown={onKeyDown}
+          onKeyDown={handleKeyDown}
           onFocus={onFocus}
           onBlur={onBlur}
           autoFocus={autoFocus}

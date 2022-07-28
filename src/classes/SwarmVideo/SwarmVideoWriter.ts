@@ -17,9 +17,8 @@
 import Axios from "axios"
 
 import SwarmVideoIO from "."
-import EthernaIndexClient from "@/classes/EthernaIndexClient"
-import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import SwarmImageIO from "@/classes/SwarmImage"
+import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
 import { getVideoDuration, getVideoResolution } from "@/utils/media"
 import type { SwarmVideoUploadOptions, SwarmVideoWriterOptions } from "./types"
 import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@/definitions/swarm-video"
@@ -29,19 +28,23 @@ import type { Profile } from "@/definitions/swarm-profile"
 /**
  * Load/Update video info over swarm
  */
-export default class SwarmVideoWriter {
+export default class SwarmVideoWriter extends SwarmBatchesManager {
   ownerAddress: string
   reference?: string
   indexReference?: string
   video?: Video
 
   private _videoRaw: SwarmVideoRaw
-  private beeClient: SwarmBeeClient
 
   static thumbnailResponsiveSizes = [480, 960, 1440, 2400]
 
   constructor(video: Video | undefined, ownerAddress: string, opts: SwarmVideoWriterOptions) {
-    this.beeClient = opts.beeClient
+    super({
+      address: ownerAddress,
+      beeClient: opts.beeClient,
+      gatewayClient: opts.gatewayClient,
+    })
+
     this.ownerAddress = ownerAddress
     this.reference = video?.reference
     this.indexReference = video?.indexReference
@@ -241,7 +244,8 @@ export default class SwarmVideoWriter {
 
   resetCopy() {
     return new SwarmVideoWriter(undefined, this.ownerAddress, {
-      beeClient: this.beeClient
+      beeClient: this.beeClient,
+      gatewayClient: this.gatewayClient,
     })
   }
 

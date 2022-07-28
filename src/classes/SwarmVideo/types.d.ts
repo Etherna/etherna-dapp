@@ -18,6 +18,7 @@ import type { Canceler } from "axios"
 
 import type EthernaIndexClient from "@/classes/EthernaIndexClient"
 import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
 import type { IndexVideo } from "@/definitions/api-index"
 import type { Profile } from "@/definitions/swarm-profile"
 import type { SwarmVideoRaw, Video } from "@/definitions/swarm-video"
@@ -35,6 +36,7 @@ export type SwarmVideoReaderOptions = {
 
 export type SwarmVideoWriterOptions = {
   beeClient: SwarmBeeClient
+  gatewayClient: EthernaGatewayClient
 }
 
 export type SwarmVideoUploadOptions = {

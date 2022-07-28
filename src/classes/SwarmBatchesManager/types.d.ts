@@ -14,22 +14,11 @@
  *  limitations under the License.
  */
 
-.radioGroup {
-  @apply flex flex-col space-y-3;
-}
+import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
 
-.radio {
-  @apply flex items-start justify-between;
-
-  &.active {
-    @apply ring-2 ring-primary-200;
-  }
-}
-
-.radioContent {
-  @apply flex flex-col;
-}
-
-.radioCheck {
-  @apply text-3xl text-primary-500;
+export type SwarmBatchesManagerOptions = {
+  address: string
+  beeClient: SwarmBeeClient
+  gatewayClient: EthernaGatewayClient
 }

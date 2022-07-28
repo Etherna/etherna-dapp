@@ -77,10 +77,10 @@ const BeeAuthModal: React.FC<BeeAuthModalProps> = ({ show = false }) => {
       }
     >
       <FormGroup>
-        <TextField value={username} type="text" onChange={setUsername} />
+        <TextField value={username} type="text" onChange={setUsername} onEnter={handleAuth} />
       </FormGroup>
       <FormGroup>
-        <TextField value={password} type="password" onChange={setPassword} />
+        <TextField value={password} type="password" onChange={setPassword} onEnter={handleAuth} />
       </FormGroup>
       {error && (
         <FormGroup>
