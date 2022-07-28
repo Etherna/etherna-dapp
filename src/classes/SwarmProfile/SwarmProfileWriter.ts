@@ -69,9 +69,6 @@ export default class SwarmProfileWriter {
     // Get validated profiles
     const baseProfile = pick(this.validatedProfile(profile), ProfileProperties)
 
-    console.log("PROFILE", baseProfile)
-
-
     // Upload json
     const serializedJson = new TextEncoder().encode(JSON.stringify(baseProfile))
     const batchId = await this.beeClient.getBatchId()
