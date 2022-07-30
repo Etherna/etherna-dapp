@@ -23,6 +23,8 @@ export type SwarmImageRaw = {
   sources: {
     [size: `${number}w`]: string
   }
+  /** Schema version */
+  v?: number
 }
 
 export type SwarmImage = SwarmImageRaw & {

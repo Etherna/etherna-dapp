@@ -34,7 +34,6 @@ const fetch = async () => {
     // Fetch user's playlists & profile
     const playlistsReader = new SwarmUserPlaylistsIO.Reader(address, {
       beeClient,
-      indexUrl,
     })
     const swarmProfileReader = new SwarmProfileIO.Reader(address, { beeClient })
 

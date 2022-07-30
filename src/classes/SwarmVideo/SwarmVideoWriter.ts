@@ -17,7 +17,6 @@
 import Axios from "axios"
 
 import SwarmVideoIO from "."
-import EthernaIndexClient from "@/classes/EthernaIndexClient"
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import SwarmImageIO from "@/classes/SwarmImage"
 import { getVideoDuration, getVideoResolution } from "@/utils/media"
@@ -122,6 +121,8 @@ export default class SwarmVideoWriter {
     if (!this.reference) {
       this.videoRaw.createdAt = +new Date()
     }
+    this.videoRaw.v = SwarmVideoIO.lastVersion
+
     const rawVideo = this.videoRaw
     const batchId = await this.beeClient.getBatchId()
     const videoReference = (await this.beeClient.uploadFile(batchId, JSON.stringify(rawVideo))).reference
@@ -265,6 +266,7 @@ export default class SwarmVideoWriter {
         size: source.size,
         bitrate: source.bitrate,
       })),
+      v: SwarmVideoIO.lastVersion,
     }
   }
 

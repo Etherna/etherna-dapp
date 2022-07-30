@@ -16,7 +16,7 @@
 
 import pick from "lodash/pick"
 
-import { getDefaultProfile, SwarmProfileTopicName } from "."
+import SwarmProfileIO from "."
 import SwarmImageIO from "@/classes/SwarmImage"
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type { SwarmProfileReaderOptions } from "./types"
@@ -77,11 +77,11 @@ export default class SwarmProfileReader {
     if (this.loadedFromPrefetch && !forced) return this.profile
     if (!this.address || this.address === "0x0") return undefined
 
-    let profile = getDefaultProfile(this.address) as ProfileRaw
+    let profile = SwarmProfileIO.getDefaultProfile(this.address) as ProfileRaw
 
     // Fetch profile from feed
     try {
-      const topic = this.beeClient.makeFeedTopic(SwarmProfileTopicName)
+      const topic = this.beeClient.makeFeedTopic(SwarmProfileIO.getFeedTopicName())
       const reader = this.beeClient.makeFeedReader("sequence", topic, this.address)
       const feed = await reader.download()
       const profileResp = await this.beeClient.downloadFile(feed.reference)
@@ -98,6 +98,7 @@ export default class SwarmProfileReader {
     ) as Profile
 
     this.profile = parsedProfile
+    this.profile.v = SwarmProfileIO.lastVersion
 
     if (this.updateCache) {
       this.updateProfileCache(parsedProfile)

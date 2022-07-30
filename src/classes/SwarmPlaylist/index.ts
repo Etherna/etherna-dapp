@@ -20,6 +20,7 @@ import SwarmPlaylistWriter from "./SwarmPlaylistWriter"
 const SwarmPlaylistIO = {
   Reader: SwarmPlaylistReader,
   Writer: SwarmPlaylistWriter,
+  lastVersion: 1,
   getFeedTopicName: (id: string) => `EthernaPlaylist:${id}`
 }
 

@@ -21,16 +21,18 @@ import SwarmProfileWriter from "./SwarmProfileWriter"
 const SwarmProfileIO = {
   Reader: SwarmProfileReader,
   Writer: SwarmProfileWriter,
+  lastVersion: 1,
+  getFeedTopicName: () => `EthernaUserProfile`,
+  getDefaultProfile(address: string): Profile {
+    return {
+      address,
+      name: "",
+      description: "",
+      avatar: null,
+      cover: null,
+      v: SwarmProfileIO.lastVersion,
+    }
+  }
 }
-
-export const SwarmProfileTopicName = "EthernaUserProfile"
-
-export const getDefaultProfile = (address: string): Profile => ({
-  address,
-  name: "",
-  description: "",
-  avatar: null,
-  cover: null,
-})
 
 export default SwarmProfileIO
