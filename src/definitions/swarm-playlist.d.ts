@@ -21,6 +21,8 @@ export type SwarmUserPlaylistsRaw = {
   saved?: string
   /** Reference list of custom playlists */
   custom?: string[]
+  /** Schema version */
+  v?: number
 }
 
 export type SwarmPlaylistRaw = {
@@ -34,6 +36,8 @@ export type SwarmPlaylistRaw = {
   createdAt: number
   /** Playlist update timestamp */
   updatedAt: number
+  /** Schema version */
+  v?: number
 } & ({
   /** Playlist visibility: public (show in channel), unlisted (not in channel), private (encrypted) */
   type: "private"

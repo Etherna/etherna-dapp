@@ -65,7 +65,8 @@ export default class SwarmImageWriter {
     const imageRaw: SwarmImageRaw = {
       blurhash,
       aspectRatio: imageAspectRatio,
-      sources: {}
+      sources: {},
+      v: 1,
     }
 
     const batchId = await this.beeClient.getBatchId()

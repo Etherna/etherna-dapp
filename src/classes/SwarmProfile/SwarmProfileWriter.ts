@@ -119,6 +119,7 @@ export default class SwarmProfileWriter {
     }
     validatedProfile.avatar = this.parseImage(profile.avatar)
     validatedProfile.cover = this.parseImage(profile.cover)
+    validatedProfile.v = 1
 
     return validatedProfile
   }

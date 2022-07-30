@@ -97,6 +97,7 @@ export default class SwarmImageWriter {
       updatedAt: playlist.updatedAt,
       owner: playlist.owner,
       encryptedReference: encryptedReference!,
+      v: 1,
     } : {
       type: playlist.type,
       id: playlist.id,

@@ -33,6 +33,8 @@ export type ProfileRaw = {
   website?: string
   /** User's birthday */
   birthday?: string
+  /** Schema version */
+  v?: number
 }
 
 export type Profile = {
