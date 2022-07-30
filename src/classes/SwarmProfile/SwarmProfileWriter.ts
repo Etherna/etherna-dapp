@@ -16,7 +16,7 @@
 
 import pick from "lodash/pick"
 
-import { SwarmProfileTopicName } from "."
+import SwarmProfileIO from "."
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import SwarmImageIO from "@/classes/SwarmImage"
 import { checkIsEthAddress } from "@/utils/ethereum"
@@ -75,7 +75,7 @@ export default class SwarmProfileWriter {
     const reference = (await this.beeClient.uploadFile(batchId, serializedJson, undefined, { fetch })).reference
 
     // update feed
-    const topic = this.beeClient.makeFeedTopic(SwarmProfileTopicName)
+    const topic = this.beeClient.makeFeedTopic(SwarmProfileIO.getFeedTopicName())
     const writer = this.beeClient.makeFeedWriter("sequence", topic)
     await writer.upload(batchId, reference)
 
@@ -130,6 +130,7 @@ export default class SwarmProfileWriter {
     validatedProfile.avatar = this.parseImage(profile.avatar)
     validatedProfile.cover = this.parseImage(profile.cover)
     validatedProfile.batchId = this.beeClient.userBatches[0].id ?? profile.batchId
+    validatedProfile.v = SwarmProfileIO.lastVersion
 
     return validatedProfile
   }

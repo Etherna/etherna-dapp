@@ -39,6 +39,8 @@ export default class SwarmUserPlaylistsWriter {
   async upload() {
     const batchId = await this.beeClient.getBatchId()
 
+    this.playlistsRaw.v = SwarmUserPlaylistsIO.lastVersion
+
     const { reference } = await this.beeClient.uploadFile(batchId, JSON.stringify(this.playlistsRaw))
 
     const topic = this.beeClient.makeFeedTopic(SwarmUserPlaylistsIO.getFeedTopicName())

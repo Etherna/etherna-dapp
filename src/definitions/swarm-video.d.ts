@@ -41,6 +41,8 @@ export type SwarmVideoRaw = {
   batchIds?: {
     [reference: "_" | string]: string
   }
+  /** Schema version */
+  v?: number
 }
 
 export type SwarmVideoQuality = `${number}p`
@@ -79,6 +81,8 @@ export type SwarmVideo = {
   batchIds?: {
     [reference: "_" | string]: string
   }
+  /** Schema version */
+  v?: number
 }
 
 export type VideoSource = SwarmVideoSourceRaw & {

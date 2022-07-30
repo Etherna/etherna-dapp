@@ -20,6 +20,7 @@ import SwarmImageWriter from "./SwarmImageWriter"
 const SwarmImageIO = {
   Reader: SwarmImageReader,
   Writer: SwarmImageWriter,
+  lastVersion: 1,
 }
 
 export default SwarmImageIO

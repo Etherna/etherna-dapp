@@ -15,7 +15,7 @@
  */
 
 import Axios from "axios"
-import type { BatchId, PostageBatch } from "@ethersphere/bee-js"
+import type { BatchId } from "@ethersphere/bee-js"
 
 import SwarmVideoIO from "."
 import SwarmImageIO from "@/classes/SwarmImage"
@@ -25,8 +25,7 @@ import type { SwarmVideoUploadOptions, SwarmVideoWriterOptions } from "./types"
 import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@/definitions/swarm-video"
 import type { SwarmImageRaw } from "@/definitions/swarm-image"
 import type { Profile } from "@/definitions/swarm-profile"
-import { GatewayBatch } from "@/definitions/api-gateway"
-import { AnyBatch } from "../SwarmBatchesManager/types"
+import type { AnyBatch } from "../SwarmBatchesManager/types"
 
 /**
  * Load/Update video info over swarm
@@ -138,6 +137,7 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
       this.videoRaw.createdAt = +new Date()
     }
     this.videoRaw.batchIds!["_"] = this.beeClient.emptyBatchId // just for size calculation
+    this.videoRaw.v = SwarmVideoIO.lastVersion
 
     const rawVideo = this.videoRaw
     const manifestSize = new TextEncoder().encode(JSON.stringify(rawVideo)).length
@@ -327,6 +327,7 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
         size: source.size,
         bitrate: source.bitrate,
       })),
+      v: SwarmVideoIO.lastVersion,
     }
   }
 

@@ -22,6 +22,7 @@ import type { SwarmPlaylist } from "@/definitions/swarm-playlist"
 const SwarmUserPlaylistsIO = {
   Reader: SwarmUserPlaylistsReader,
   Writer: SwarmUserPlaylistsWriter,
+  lastVersion: 1,
   getFeedTopicName: () => `EthernaUserPlaylists`,
   getDefaultChannelPlaylist: (owner: string): SwarmPlaylist => ({
     id: "__channel",

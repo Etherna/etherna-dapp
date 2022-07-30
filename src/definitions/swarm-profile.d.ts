@@ -35,6 +35,8 @@ export type ProfileRaw = {
   birthday?: string
   /** default batch id used */
   batchId?: string
+  /** Schema version */
+  v?: number
 }
 
 export type Profile = {
@@ -56,4 +58,6 @@ export type Profile = {
   birthday?: string
   /** default batch id used */
   batchId?: string
+  /** Schema version */
+  v?: number
 }

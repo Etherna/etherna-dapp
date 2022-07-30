@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import SwarmVideoIO, { getDefaultRawVideo, getDefaultVideo } from "."
+import SwarmVideoIO from "."
 import EthernaIndexClient from "@/classes/EthernaIndexClient"
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import SwarmImageIO from "@/classes/SwarmImage"
@@ -135,7 +135,7 @@ export default class SwarmVideoReader {
     owner?: Profile | null,
   ): Video {
     if (!videoData && !indexVideoData) {
-      return getDefaultVideo(this.reference, indexVideoData, this.beeClient)
+      return SwarmVideoIO.getDefaultVideo(this.reference, indexVideoData, this.beeClient)
     }
 
     const sources = (indexVideoData?.lastValidManifest?.sources ?? []).length > 0
@@ -170,12 +170,13 @@ export default class SwarmVideoReader {
       encryptionType: indexVideoData?.encryptionType,
       totDownvotes: indexVideoData?.totDownvotes,
       totUpvotes: indexVideoData?.totUpvotes,
+      v: SwarmVideoIO.lastVersion,
     }
   }
 
   parseVideo(video: Video | SwarmVideoRaw | null | undefined): SwarmVideoRaw {
     if (!video) {
-      return getDefaultRawVideo(this.reference)
+      return SwarmVideoIO.getDefaultRawVideo(this.reference)
     }
 
     return {
@@ -194,6 +195,7 @@ export default class SwarmVideoReader {
         bitrate: source.bitrate,
         quality: source.quality,
       })),
+      v: SwarmVideoIO.lastVersion,
     }
   }
 

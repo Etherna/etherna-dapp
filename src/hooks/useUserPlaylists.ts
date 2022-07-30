@@ -62,7 +62,7 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
       })
       await reader.download(opts)
 
-      setRawPlaylists(reader.rawPlaylists)
+      setRawPlaylists(reader.rawPlaylists ?? undefined)
       setChannelPlaylist(reader.channelPlaylist)
       setSavedPlaylist(reader.savedPlaylist)
       setCustomPlaylists(reader.customPlaylists)
