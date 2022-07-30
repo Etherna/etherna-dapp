@@ -18,7 +18,6 @@ import { AES, enc } from "crypto-ts"
 
 import SwarmPlaylistIO from "."
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
-import { urlOrigin } from "@/utils/urls"
 import type { SwarmPlaylistReaderOptions } from "./types"
 import type {
   SwarmPlaylistRaw,
@@ -82,6 +81,7 @@ export default class SwarmPlaylistReader {
       encryptedData: undefined,
       videos: rawPlaylist.type !== "private" ? this.parseVideos(rawPlaylist.videos) : undefined,
       description: rawPlaylist.type !== "private" ? rawPlaylist.description || "" : undefined,
+      v: SwarmPlaylistIO.lastVersion,
     }
 
     if (rawPlaylist.type === "private" && !rawPlaylist.encryptedReference) {

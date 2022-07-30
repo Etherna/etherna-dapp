@@ -39,7 +39,7 @@ export default class SwarmUserPlaylistsWriter {
   async upload() {
     const batchId = await this.beeClient.getBatchId()
 
-    this.playlistsRaw.v = 1
+    this.playlistsRaw.v = SwarmUserPlaylistsIO.lastVersion
 
     const { reference } = await this.beeClient.uploadFile(batchId, JSON.stringify(this.playlistsRaw))
 

@@ -83,6 +83,8 @@ export type SwarmPlaylist = {
   createdAt: number
   /** Playlist update timestamp */
   updatedAt: number
+  /** Schema version */
+  v?: number
 
   /** Playlist visibility: public (show in channel), unlisted (not in channel), private (encrypted) */
   type: SwarmPlaylistType

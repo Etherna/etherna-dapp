@@ -73,6 +73,8 @@ export type SwarmVideo = {
   thumbnail: SwarmImage | null
   /**  All qualities of video */
   sources: VideoSource[]
+  /** Schema version */
+  v?: number
 }
 
 export type VideoSource = SwarmVideoSourceRaw & {

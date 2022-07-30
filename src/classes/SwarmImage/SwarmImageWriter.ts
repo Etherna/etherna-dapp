@@ -18,6 +18,7 @@ import Axios from "axios"
 import imageResize from "image-resizer-js"
 import type { UploadResult } from "@ethersphere/bee-js"
 
+import SwarmImageIO from "."
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import { bufferToDataURL, fileToBuffer } from "@/utils/buffer"
 import { imageToBlurHash } from "@/utils/blur-hash"
@@ -66,7 +67,7 @@ export default class SwarmImageWriter {
       blurhash,
       aspectRatio: imageAspectRatio,
       sources: {},
-      v: 1,
+      v: SwarmImageIO.lastVersion,
     }
 
     const batchId = await this.beeClient.getBatchId()

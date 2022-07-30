@@ -54,4 +54,6 @@ export type Profile = {
   website?: string
   /** User's birthday */
   birthday?: string
+  /** Schema version */
+  v?: number
 }

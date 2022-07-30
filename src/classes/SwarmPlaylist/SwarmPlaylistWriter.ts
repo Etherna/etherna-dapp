@@ -97,7 +97,7 @@ export default class SwarmImageWriter {
       updatedAt: playlist.updatedAt,
       owner: playlist.owner,
       encryptedReference: encryptedReference!,
-      v: 1,
+      v: SwarmPlaylistIO.lastVersion,
     } : {
       type: playlist.type,
       id: playlist.id,
@@ -107,6 +107,7 @@ export default class SwarmImageWriter {
       owner: playlist.owner,
       videos: this.parseVideos(playlist.videos ?? []),
       description: playlist.description ?? null,
+      v: SwarmPlaylistIO.lastVersion,
     }
   }
 

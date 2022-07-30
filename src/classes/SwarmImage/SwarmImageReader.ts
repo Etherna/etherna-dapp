@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+import SwarmImageIO from "."
 import { blurHashToDataURL } from "@/utils/blur-hash"
 import type { SwarmImageReaderOptions } from "./types"
 import type { SwarmImageRaw, SwarmImage } from "@/definitions/swarm-image"
@@ -39,6 +40,7 @@ export default class SwarmImageReader {
         aspectRatio: image.aspectRatio,
         blurhash: image.blurhash,
         sources: image.sources,
+        v: SwarmImageIO.lastVersion
       }
     } else {
       this.imageRaw = image
@@ -52,6 +54,7 @@ export default class SwarmImageReader {
               `${srcset ? srcset + "," : ""} ${source.size} ${opts.beeClient.getBzzUrl(source.reference)}`, ""
           )
           : undefined,
+        v: SwarmImageIO.lastVersion
       }
     }
   }

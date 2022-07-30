@@ -24,7 +24,7 @@ import type { SwarmPlaylist, SwarmUserPlaylistsRaw } from "@/definitions/swarm-p
  * Load playlist data
  */
 export default class SwarmUserPlaylistsReader {
-  rawPlaylists?: SwarmUserPlaylistsRaw
+  rawPlaylists?: SwarmUserPlaylistsRaw | null
   channelPlaylist?: SwarmPlaylist
   savedPlaylist?: SwarmPlaylist
   customPlaylists?: SwarmPlaylist[]
@@ -86,15 +86,17 @@ export default class SwarmUserPlaylistsReader {
     }
   }
 
-  private async fetchFeedOrDefault(): Promise<SwarmUserPlaylistsRaw | undefined> {
+  private async fetchFeedOrDefault(): Promise<SwarmUserPlaylistsRaw | null> {
     try {
       const topic = this.beeClient.makeFeedTopic(SwarmUserPlaylistsIO.getFeedTopicName())
       const reader = this.beeClient.makeFeedReader("sequence", topic, this.owner)
       const { reference } = await reader.download()
       const data = await this.beeClient.downloadFile(reference)
-      return data.data.json() as SwarmUserPlaylistsRaw
+      const usersPlaylists = data.data.json() as SwarmUserPlaylistsRaw
+      usersPlaylists.v = SwarmUserPlaylistsIO.lastVersion
+      return usersPlaylists
     } catch (error) {
-      return undefined
+      return null
     }
   }
 }

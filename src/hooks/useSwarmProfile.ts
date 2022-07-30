@@ -16,10 +16,10 @@
 
 import { useEffect, useState } from "react"
 
-import SwarmProfileIO, { getDefaultProfile } from "@/classes/SwarmProfile"
+import SwarmProfileIO from "@/classes/SwarmProfile"
 import useSelector from "@/state/useSelector"
-import type { Profile } from "@/definitions/swarm-profile"
 import { wait } from "@/utils/promise"
+import type { Profile } from "@/definitions/swarm-profile"
 
 type SwarmProfileOptions = {
   address: string
@@ -51,7 +51,7 @@ export default function useSwarmProfile(opts: SwarmProfileOptions) {
       updateCache,
     })
 
-    let profile = getDefaultProfile(address)
+    let profile = SwarmProfileIO.getDefaultProfile(address)
 
     try {
       const profileInfo = await profileReader.download(true)
