@@ -70,3 +70,6 @@ deploy.config.js
 # Test files
 test*.*
 deploy*
+
+# Visual Studio
+.vs/
