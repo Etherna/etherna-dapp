@@ -15,6 +15,7 @@
  */
 
 import type { SwarmImage, SwarmImageRaw } from "./swarm-image"
+import type { SchemaVersion } from "./schema"
 
 export type ProfileRaw = {
   /**  Profile address */
@@ -34,7 +35,7 @@ export type ProfileRaw = {
   /** User's birthday */
   birthday?: string
   /** Schema version */
-  v?: number
+  v?: SchemaVersion
 }
 
 export type Profile = {
@@ -55,5 +56,5 @@ export type Profile = {
   /** User's birthday */
   birthday?: string
   /** Schema version */
-  v?: number
+  v?: SchemaVersion
 }

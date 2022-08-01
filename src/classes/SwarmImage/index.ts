@@ -16,11 +16,14 @@
 
 import SwarmImageReader from "./SwarmImageReader"
 import SwarmImageWriter from "./SwarmImageWriter"
+import type { SchemaVersion } from "@/definitions/schema"
+
+const lastVersion: SchemaVersion = "1.0"
 
 const SwarmImageIO = {
   Reader: SwarmImageReader,
   Writer: SwarmImageWriter,
-  lastVersion: 1,
+  lastVersion,
 }
 
 export default SwarmImageIO

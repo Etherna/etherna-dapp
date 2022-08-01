@@ -17,11 +17,14 @@
 import { Profile } from "@/definitions/swarm-profile"
 import SwarmProfileReader from "./SwarmProfileReader"
 import SwarmProfileWriter from "./SwarmProfileWriter"
+import type { SchemaVersion } from "@/definitions/schema"
+
+const lastVersion: SchemaVersion = "1.0"
 
 const SwarmProfileIO = {
   Reader: SwarmProfileReader,
   Writer: SwarmProfileWriter,
-  lastVersion: 1,
+  lastVersion,
   getFeedTopicName: () => `EthernaUserProfile`,
   getDefaultProfile(address: string): Profile {
     return {
