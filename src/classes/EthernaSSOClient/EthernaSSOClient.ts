@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 
-import AuthIdentityClient from "./AuthIdentityClient"
+import EthernaSSOIdentityClient from "./EthernaSSOIdentityClient"
 import { parseLocalStorage } from "@/utils/local-storage"
 import { isSafeURL, safeURL, urlOrigin } from "@/utils/urls"
 import type { AuthClientOptions } from "@/definitions/api-sso"
 
-export default class EthernaAuthClient {
-  identity: AuthIdentityClient
+export default class EthernaSSOClient {
+  identity: EthernaSSOIdentityClient
   loginPath: string
   logoutPath: string
 
@@ -30,10 +30,10 @@ export default class EthernaAuthClient {
    */
   constructor(options: AuthClientOptions) {
     const host = options.host.replace(/\/?$/, "")
-    const apiPath = options.apiPath ? options.apiPath.replace(/(^\/?|\/?$)/g, "") : ""
-    const url = `${host}/${apiPath}`
+    const apiPath = `/api/v${import.meta.env.VITE_APP_API_VERSION}`
+    const url = `${host}${apiPath}`
 
-    this.identity = new AuthIdentityClient(url)
+    this.identity = new EthernaSSOIdentityClient(url)
     this.loginPath = `${host}${options.loginPath || "/account/login"}`
     this.logoutPath = `${host}${options.logoutPath || "/account/logout"}`
   }
@@ -61,7 +61,7 @@ export default class EthernaAuthClient {
     if (isSafeURL(localUrl)) {
       return urlOrigin(localUrl!)!
     }
-    return urlOrigin(import.meta.env.VITE_APP_AUTH_URL)!
+    return urlOrigin(import.meta.env.VITE_APP_SSO_URL)!
   }
 
   static get defaultApiPath(): string {
@@ -69,6 +69,6 @@ export default class EthernaAuthClient {
     if (isSafeURL(localUrl)) {
       return safeURL(localUrl)!.pathname
     }
-    return safeURL(import.meta.env.VITE_APP_AUTH_URL)!.pathname
+    return safeURL(import.meta.env.VITE_APP_SSO_URL)!.pathname
   }
 }

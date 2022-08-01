@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+import { IndexExtensionHost } from "@/definitions/extension-host"
 import { parseLocalStorage } from "./local-storage"
 import { urlOrigin } from "./urls"
 
@@ -22,13 +23,27 @@ import { urlOrigin } from "./urls"
  * upgraded etherna service url.
  * 
  * @param localSettingKey Local storage key of the current service url
- * @param upgradedUrl New url of the service
+ * @param newUrl New url of the service
  */
-export default function autoUpgradeEthernaService(localSettingKey: string, upgradedUrl: string) {
-  const localUrl = parseLocalStorage<string>(localSettingKey)
+export default function autoUpgradeEthernaService(localSettingKey: string, newUrl: string) {
+  const localUrls = parseLocalStorage<string | (IndexExtensionHost)[]>(localSettingKey)
 
-  if (!localUrl) return
-  if (urlOrigin(localUrl) !== urlOrigin(upgradedUrl)) return
+  if (!localUrls) return
 
-  localStorage.setItem(localSettingKey, JSON.stringify(upgradedUrl))
+  if (typeof localUrls === "string") {
+    const url = upgradeUrl(localUrls, newUrl)
+    localStorage.setItem(localSettingKey, JSON.stringify(url))
+  } else {
+    const urls = localUrls.map(extension => ({
+      ...extension,
+      url: upgradeUrl(extension.url, newUrl)
+    }))
+    localStorage.setItem(localSettingKey, JSON.stringify(urls))
+  }
+}
+
+function upgradeUrl(url: string, upgradeUrl: string) {
+  if (urlOrigin(url) !== urlOrigin(upgradeUrl)) return url
+
+  return upgradeUrl
 }

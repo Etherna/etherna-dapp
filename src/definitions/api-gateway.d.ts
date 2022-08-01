@@ -18,7 +18,6 @@ import type { PostageBatch, BatchId } from "@ethersphere/bee-js"
 
 export type GatewayClientOptions = {
   host: string
-  apiPath?: string
   loginPath?: string
   logoutPath?: string
 }

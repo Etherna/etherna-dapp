@@ -17,7 +17,7 @@
 import http from "@/utils/request"
 import type { AuthIdentity } from "@/definitions/api-sso"
 
-export default class AuthIdentityClient {
+export default class EthernaSSOIdentityClient {
   url: string
 
   /**

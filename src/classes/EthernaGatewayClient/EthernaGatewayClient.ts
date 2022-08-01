@@ -35,8 +35,8 @@ export default class EthernaGatewayClient {
    */
   constructor(options: GatewayClientOptions) {
     const host = options.host.replace(/\/?$/, "")
-    const apiPath = options.apiPath ? options.apiPath.replace(/(^\/?|\/?$)/g, "") : ""
-    const url = `${host}/${apiPath}`
+    const apiPath = `/api/v${import.meta.env.VITE_APP_API_VERSION}`
+    const url = `${host}${apiPath}`
 
     this.resources = new GatewayResourcesClient(url)
     this.users = new GatewayUsersClient(url)
