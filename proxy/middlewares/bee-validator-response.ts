@@ -150,7 +150,7 @@ async function limitGatewayResponse(
  * @returns Validator response
  */
 async function notifyEndOfLimitedRequest(validatorHost: string, requestId: string, bodySize: number, secret: string) {
-  const closeEndpoint = validatorHost + "/api/v0.3/interceptor/request/close"
+  const closeEndpoint = validatorHost + `/api/v${process.env.VITE_APP_API_VERSION}/interceptor/request/close`
 
   return await fetch(closeEndpoint, {
     method: "PUT",

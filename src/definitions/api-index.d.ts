@@ -18,7 +18,6 @@ import { SwarmVideoRaw } from "./swarm-video"
 
 export type IndexClientOptions = {
   host: string
-  apiPath?: string
   loginPath?: string
   logoutPath?: string
 }
