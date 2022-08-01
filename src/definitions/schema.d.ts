@@ -14,17 +14,4 @@
  *  limitations under the License.
  */
 
-import SwarmPlaylistReader from "./SwarmPlaylistReader"
-import SwarmPlaylistWriter from "./SwarmPlaylistWriter"
-import type { SchemaVersion } from "@/definitions/schema"
-
-const lastVersion: SchemaVersion = "1.0"
-
-const SwarmPlaylistIO = {
-  Reader: SwarmPlaylistReader,
-  Writer: SwarmPlaylistWriter,
-  lastVersion,
-  getFeedTopicName: (id: string) => `EthernaPlaylist:${id}`
-}
-
-export default SwarmPlaylistIO
+export type SchemaVersion = `${number}.${number}`

@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import type { SchemaVersion } from "./schema"
+
 export type SwarmUserPlaylistsRaw = {
   /** Reference to the channel playlist */
   channel?: string
@@ -22,7 +24,7 @@ export type SwarmUserPlaylistsRaw = {
   /** Reference list of custom playlists */
   custom?: string[]
   /** Schema version */
-  v?: number
+  v?: SchemaVersion
 }
 
 export type SwarmPlaylistRaw = {
@@ -37,7 +39,7 @@ export type SwarmPlaylistRaw = {
   /** Playlist update timestamp */
   updatedAt: number
   /** Schema version */
-  v?: number
+  v?: SchemaVersion
 } & ({
   /** Playlist visibility: public (show in channel), unlisted (not in channel), private (encrypted) */
   type: "private"
@@ -84,7 +86,7 @@ export type SwarmPlaylist = {
   /** Playlist update timestamp */
   updatedAt: number
   /** Schema version */
-  v?: number
+  v?: SchemaVersion
 
   /** Playlist visibility: public (show in channel), unlisted (not in channel), private (encrypted) */
   type: SwarmPlaylistType

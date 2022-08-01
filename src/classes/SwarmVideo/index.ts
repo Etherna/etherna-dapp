@@ -19,11 +19,14 @@ import SwarmVideoWriter from "./SwarmVideoWriter"
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@/definitions/swarm-video"
 import type { IndexVideo } from "@/definitions/api-index"
+import type { SchemaVersion } from "@/definitions/schema"
+
+const lastVersion: SchemaVersion = "1.0"
 
 const SwarmVideoIO = {
   Reader: SwarmVideoReader,
   Writer: SwarmVideoWriter,
-  lastVersion: 1,
+  lastVersion,
   isSwarmReference: (reference: string) => /^[A-Fa-f0-9]{64}$/.test(reference),
   getSourceName: (quality: string | number | null): SwarmVideoQuality => {
     return quality

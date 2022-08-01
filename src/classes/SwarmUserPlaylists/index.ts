@@ -18,11 +18,14 @@ import SwarmUserPlaylistsReader from "./SwarmUserPlaylistsReader"
 import SwarmUserPlaylistsWriter from "./SwarmUserPlaylistsWriter"
 import uuidv4 from "@/utils/uuid"
 import type { SwarmPlaylist } from "@/definitions/swarm-playlist"
+import type { SchemaVersion } from "@/definitions/schema"
+
+const lastVersion: SchemaVersion = "1.0"
 
 const SwarmUserPlaylistsIO = {
   Reader: SwarmUserPlaylistsReader,
   Writer: SwarmUserPlaylistsWriter,
-  lastVersion: 1,
+  lastVersion,
   getFeedTopicName: () => `EthernaUserPlaylists`,
   getDefaultChannelPlaylist: (owner: string): SwarmPlaylist => ({
     id: "__channel",

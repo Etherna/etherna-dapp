@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import type { SchemaVersion } from "./schema"
+
 export type SwarmImageRaw = {
   /** Image aspect ratio (width / height) */
   aspectRatio: number
@@ -24,7 +26,7 @@ export type SwarmImageRaw = {
     [size: `${number}w`]: string
   }
   /** Schema version */
-  v?: number
+  v?: SchemaVersion
 }
 
 export type SwarmImage = SwarmImageRaw & {
