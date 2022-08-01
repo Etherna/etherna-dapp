@@ -14,4 +14,6 @@
  *  limitations under the License.
  */
 
-export { default } from "./EthernaAuthClient"
+import EthernaSSOClient from "./EthernaSSOClient"
+
+export default EthernaSSOClient

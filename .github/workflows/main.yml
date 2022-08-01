@@ -20,11 +20,12 @@ jobs:
       VITE_APP_CMS_URL: ${{ secrets.CMS_URL }}
       VITE_APP_VERIFIED_ORIGINS: "etherna.io"
       VITE_APP_FEEDBACK_URL: "https://etherna.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/-m454we/b/23/a44af77267a987a660377e5c46e0fb64/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=1c189ede"
-      VITE_APP_INDEX_URL: "https://index.etherna.io/api/v0.3"
-      VITE_APP_GATEWAY_URL: "https://gateway.etherna.io/api/v0.3"
-      VITE_APP_AUTH_URL: "https://sso.etherna.io/api/v0.3"
+      VITE_APP_INDEX_URL: "https://index.etherna.io"
+      VITE_APP_GATEWAY_URL: "https://gateway.etherna.io"
+      VITE_APP_SSO_URL: "https://sso.etherna.io"
       VITE_APP_CREDIT_URL: "https://credit.etherna.io"
       VITE_APP_MATOMO_URL: "https://analytics.etherna.io"
+      VITE_APP_API_VERSION: "0.3"
       VITE_APP_MATOMO_SITE_ID: "2"
       GENERATE_SOURCEMAP: false
 
@@ -32,12 +33,12 @@ jobs:
 
     steps:
 
-    - uses: actions/checkout@v2.1.0
+    - uses: actions/checkout@v3
 
     - name: Build react app
       uses: actions/setup-node@v2
       with:
-        node-version: '14'
+        node-version: '16'
         architecture: 'x64'
     - run: yarn install --ignore-optional
     - run: yarn build
