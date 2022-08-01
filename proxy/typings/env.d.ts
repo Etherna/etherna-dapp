@@ -19,6 +19,7 @@ export { }
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
+      VITE_APP_API_VERSION: string
       ETHERNA_SSO_PROJECT_PATH: string
       ETHERNA_INDEX_PROJECT_PATH: string
       ETHERNA_CREDIT_PROJECT_PATH: string

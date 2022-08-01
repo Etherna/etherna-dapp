@@ -16,7 +16,6 @@
 
 export type GatewayClientOptions = {
   host: string
-  apiPath?: string
   loginPath?: string
   logoutPath?: string
 }

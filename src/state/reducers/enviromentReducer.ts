@@ -18,7 +18,7 @@ import { baseKeymap } from "@/keyboard"
 import lang from "@/lang"
 import EthernaGatewayClient from "@/classes/EthernaGatewayClient"
 import EthernaIndexClient from "@/classes/EthernaIndexClient"
-import EthernaAuthClient from "@/classes/EthernaAuthClient"
+import EthernaSSOClient from "@/classes/EthernaSSOClient"
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import autoUpgradeEthernaService from "@/utils/autoUpgradeEthernaService"
 import { checkIsMobile } from "@/utils/browser"
@@ -103,8 +103,8 @@ export type EnvActions = (
 
 // Upagrade deprecated services urls
 autoUpgradeEthernaService("setting:index-url", import.meta.env.VITE_APP_INDEX_URL)
+autoUpgradeEthernaService("setting:gateway-hosts", import.meta.env.VITE_APP_GATEWAY_URL)
 autoUpgradeEthernaService("setting:gateway-url", import.meta.env.VITE_APP_GATEWAY_URL)
-autoUpgradeEthernaService("setting:credit-url", import.meta.env.VITE_APP_CREDIT_URL)
 
 // Init reducer
 const indexUrl = parseLocalStorage<string>("setting:index-url") || import.meta.env.VITE_APP_INDEX_URL
@@ -112,18 +112,15 @@ const gatewayUrl = parseLocalStorage<string>("setting:gateway-url") || import.me
 const gatewayStampsUrl = parseLocalStorage<GatewayExtensionHost[]>("setting:gateway-hosts")
   ?.find(host => host.url === gatewayUrl)
   ?.stampsUrl
-const creditUrl = parseLocalStorage<string>("setting:credit-url") || import.meta.env.VITE_APP_CREDIT_URL
+const creditUrl = import.meta.env.VITE_APP_CREDIT_URL
 const indexClient = new EthernaIndexClient({
   host: EthernaIndexClient.defaultHost,
-  apiPath: EthernaIndexClient.defaultApiPath
 })
 const gatewayClient = new EthernaGatewayClient({
   host: EthernaGatewayClient.defaultHost,
-  apiPath: EthernaGatewayClient.defaultApiPath
 })
-const authClient = new EthernaAuthClient({
-  host: EthernaAuthClient.defaultHost,
-  apiPath: EthernaAuthClient.defaultApiPath
+const authClient = new EthernaSSOClient({
+  host: EthernaSSOClient.defaultHost,
 })
 const beeClient = new SwarmBeeClient(EthernaGatewayClient.defaultHost, {
   stampsUrl: gatewayStampsUrl

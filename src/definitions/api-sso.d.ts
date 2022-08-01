@@ -16,7 +16,6 @@
 
 export type AuthClientOptions = {
   host: string
-  apiPath?: string
   loginPath?: string
   logoutPath?: string
 }
