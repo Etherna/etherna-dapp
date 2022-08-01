@@ -19,6 +19,7 @@ import type { Canceler } from "axios"
 import type { IndexEncryptionType } from "@/classes/EthernaIndexClient/types"
 import type { SwarmImage, SwarmImageRaw } from "./swarm-image"
 import type { Profile } from "./swarm-profile"
+import type { SchemaVersion } from "./schema"
 
 export type SwarmVideoRaw = {
   /**  Title of the video */
@@ -42,7 +43,7 @@ export type SwarmVideoRaw = {
     [reference: "_" | string]: string
   }
   /** Schema version */
-  v?: number
+  v?: SchemaVersion
 }
 
 export type SwarmVideoQuality = `${number}p`
@@ -82,7 +83,7 @@ export type SwarmVideo = {
     [reference: "_" | string]: string
   }
   /** Schema version */
-  v?: number
+  v?: SchemaVersion
 }
 
 export type VideoSource = SwarmVideoSourceRaw & {

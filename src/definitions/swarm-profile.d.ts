@@ -15,6 +15,7 @@
  */
 
 import type { SwarmImage, SwarmImageRaw } from "./swarm-image"
+import type { SchemaVersion } from "./schema"
 
 export type ProfileRaw = {
   /**  Profile address */
@@ -36,7 +37,7 @@ export type ProfileRaw = {
   /** default batch id used */
   batchId?: string
   /** Schema version */
-  v?: number
+  v?: SchemaVersion
 }
 
 export type Profile = {
@@ -59,5 +60,5 @@ export type Profile = {
   /** default batch id used */
   batchId?: string
   /** Schema version */
-  v?: number
+  v?: SchemaVersion
 }
