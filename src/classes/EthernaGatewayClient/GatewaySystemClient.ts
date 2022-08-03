@@ -66,4 +66,22 @@ export default class GatewaySystemClient {
 
     return resp.data
   }
+
+  /**
+   * Fetch creation batch id
+   * 
+   * @param referenceId Reference id of the batch
+   * @returns The created batch id if completed
+   */
+  async fetchPostageBatchRef(referenceId: string) {
+    const endpoint = `${this.url}/system/postagebatchref/${referenceId}`
+
+    const resp = await http.get<string>(endpoint, {
+      withCredentials: true
+    })
+
+    const batchId = resp.data
+
+    return batchId
+  }
 }

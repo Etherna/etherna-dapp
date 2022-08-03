@@ -8,7 +8,7 @@ import ProgressBar from "./ProgressBar"
 
 type BatchLoadingProps = {
   className?: string
-  type: "fetching" | "creating"
+  type: "fetching" | "creating" | "updating"
   title?: string
   message?: string
   error?: string
@@ -41,8 +41,10 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
 
         <h4 className={classes.batchLoadingTitle}>
           {error
-            ? `Couldn't ${type === "fetching" ? "fetch" : "create"} the postage batch`
-            : type === "fetching" ? "Loading postage batch" : "Creating postage batch"}
+            ? `Couldn't ${type === "fetching" ? "fetch" : type === "updating" ? "update" : "create"} the postage batch`
+            : type === "fetching" ? "Loading postage batch"
+              : type === "updating" ? "Updating postage batch"
+                : "Creating postage batch"}
         </h4>
       </div>
 

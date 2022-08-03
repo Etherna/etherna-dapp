@@ -25,6 +25,7 @@ import VideoDetails from "./VideoDetails"
 import VideoSources from "./VideoSources"
 import VideoExtra from "./VideoExtra"
 import Alert from "@/components/common/Alert"
+import BatchLoading from "@/components/common/BatchLoading"
 import Button from "@/components/common/Button"
 import ProgressTab from "@/components/common/ProgressTab"
 import ProgressTabContent from "@/components/common/ProgressTabContent"
@@ -39,8 +40,8 @@ import {
 import routes from "@/routes"
 import useSelector from "@/state/useSelector"
 import { useWallet } from "@/state/hooks/env"
-import { useConfirmation } from "@/state/hooks/ui"
-import BatchLoading from "@/components/common/BatchLoading"
+import { useConfirmation, useErrorMessage } from "@/state/hooks/ui"
+import type { BatchId } from "@ethersphere/bee-js"
 
 const PORTAL_ID = "video-drag-portal"
 
@@ -55,10 +56,10 @@ export type VideoEditorHandle = {
 }
 
 const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
-  const { address } = useSelector(state => state.user)
+  const { address, defaultBatchId } = useSelector(state => state.user)
   const [{ reference, queue, videoWriter, hasChanges, saveTo, offerResources }] = useVideoEditorState()
   const [privateLink, setPrivateLink] = useState<string>()
-  const [batchStatus, setBatchStatus] = useState<"creating" | "fetching" | undefined>()
+  const [batchStatus, setBatchStatus] = useState<"creating" | "fetching" | "updating" | undefined>()
 
   const {
     reference: newReference,
@@ -76,6 +77,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const { isLocked, selectedAddress } = useWallet()
   const { resetState } = useVideoEditorBaseActions()
   const { waitConfirmation } = useConfirmation()
+  const { showError } = useErrorMessage()
   const hasQueuedProcesses = queue.filter(q => !q.reference).length > 0
   const hasOriginalVideo = videoWriter.originalQuality && videoWriter.sources.length > 0
   const canPublishVideo = !!videoWriter.videoRaw.title && hasOriginalVideo
@@ -103,11 +105,23 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
 
   useEffect(() => {
     setBatchStatus(undefined)
-    videoWriter.loadBatches()
+
+    if (reference && !videoWriter.videoRaw.batchId) {
+      if (!defaultBatchId) {
+        return showError("Cannot find postage batch for this video", "You might have to re-upload the video sources")
+      }
+      // assume we are editing an old video
+      videoWriter.videoRaw.batchId = defaultBatchId as BatchId
+    }
+
     videoWriter.onBatchCreating = () => setBatchStatus("creating")
     videoWriter.onBatchCreated = () => setBatchStatus(undefined)
     videoWriter.onBatchesLoading = () => setBatchStatus("fetching")
     videoWriter.onBatchesLoaded = () => setBatchStatus(undefined)
+    videoWriter.onBatchUpdating = () => setBatchStatus("updating")
+    videoWriter.onBatchUpdated = () => setBatchStatus(undefined)
+    videoWriter.loadBatches()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoWriter])
 
   const resetAll = () => {

@@ -92,7 +92,9 @@ export default function usePlaylistVideos(
 
       return newVideos
     } catch (error) {
-      showError("Fetching error", "Coudn't fetch playlist video")
+      console.error(error)
+
+      showError("Fetching error", "Coudn't fetch playlist videos")
       setIsFetching(false)
       return []
     }
@@ -108,6 +110,7 @@ export default function usePlaylistVideos(
   }
 
   const loadMore = async () => {
+    if (isFetching) return
     if (!hasMore) {
       setIsFetching(false)
       return

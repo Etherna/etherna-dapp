@@ -89,6 +89,9 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
     await clearCallback.current?.()
   }
 
+  console.log("data", video, routeState)
+
+
   return (
     <>
       <CantUploadAlert />

@@ -95,8 +95,6 @@ export default class GatewayUsersClient {
   async createBatch(depth: number, amount: number): Promise<GatewayBatch> {
     const endpoint = `${this.url}/users/current/batches`
 
-    const previusBatches = (await this.fetchBatches()).map(batch => batch.batchId)
-
     const resp = await http.post<string>(endpoint, null, {
       params: {
         depth,
@@ -153,6 +151,22 @@ export default class GatewayUsersClient {
     }
 
     return resp.data
+  }
+
+  /**
+   * Dilute batch (increase size)
+   * 
+   * @param batchId Id of the swarm batch
+   * @param depth New batch depth
+   */
+  async diluteBatch(batchId: string, depth: number) {
+    const endpoint = `${this.url}/users/current/batches/${batchId}/dilute/${depth}`
+
+    await http.get(endpoint, {
+      withCredentials: true
+    })
+
+    return true
   }
 
   /**

@@ -226,40 +226,55 @@ export default class SwarmBeeClient extends Bee {
     return resp.data.currentPrice
   }
 
-  async createBatch(depth = 20, amount = 10000000): Promise<PostageBatch> {
+  async createBatch(depth = 20, amount = 10000000): Promise<BatchId> {
     const token = this.authToken
 
-    const resp = await http.post<{ batchID: string }>(`${this.url}/stamps/${amount}/${depth}`, null, {
+    const resp = await http.post<{ batchID: BatchId }>(`${this.url}/stamps/${amount}/${depth}`, null, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
     const batchId = resp.data.batchID
 
-    let resolver: (batch: PostageBatch) => void
-    let timeout: number
+    return batchId
+  }
 
-    const fetchBatch = async () => {
-      clearTimeout(timeout)
+  /**
+   * Topup batch (increase TTL)
+   * 
+   * @param batchId Id of the swarm batch
+   * @param byAmount Amount to add to the batch
+   */
+  async topupBatch(batchId: string, byAmount: number): Promise<boolean> {
+    const token = this.authToken
+    const stampsUrl = `${this.url}/stamps/topup/${batchId}/${byAmount}`
 
-      timeout = window.setTimeout(async () => {
-        try {
-          const batch = await this.getBatch(batchId)
-          if (batch && batch.usable) {
-            resolver(batch)
-          } else {
-            fetchBatch()
-          }
-        } catch (error) {
-          fetchBatch()
-        }
-      }, 2000)
-    }
-
-    return new Promise<PostageBatch>(resolve => {
-      resolver = resolve
-      fetchBatch()
+    await http.patch<{ batchID: BatchId }>(stampsUrl, null, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
+
+    return true
+  }
+
+  /**
+   * Dillute batch (increase size)
+   * 
+   * @param batchId Id of the swarm batch
+   * @param depth New depth of the batch
+   */
+  async diluteBatch(batchId: string, depth: number): Promise<boolean> {
+    const token = this.authToken
+    const stampsUrl = `${this.url}/stamps/dilute/${batchId}/${depth}`
+
+    await http.patch<{ batchID: BatchId }>(stampsUrl, null, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return true
   }
 
   async getAllPostageBatches(): Promise<PostageBatch[]> {

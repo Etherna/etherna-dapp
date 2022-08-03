@@ -26,6 +26,8 @@ declare global {
       ETHERNA_GATEWAY_PROJECT_PATH: string
       ETHERNA_BEEHIVE_PROJECT_PATH: string
       BEE_LOCAL_INSTANCE: string
+      BEE_MODE: "dev" | "testnet"
+      BEE_SWAP_ENDPOINT: string
       BEE_SEED_ENABLED: string
       BEE_ENDPOINT: string
       BEE_ADMIN_PASSWORD: string

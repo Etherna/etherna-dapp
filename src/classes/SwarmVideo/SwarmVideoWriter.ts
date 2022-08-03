@@ -15,17 +15,16 @@
  */
 
 import Axios from "axios"
-import type { BatchId } from "@ethersphere/bee-js"
 
 import SwarmVideoIO from "."
 import SwarmImageIO from "@/classes/SwarmImage"
 import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
 import { getVideoDuration, getVideoResolution } from "@/utils/media"
 import type { SwarmVideoUploadOptions, SwarmVideoWriterOptions } from "./types"
+import type { AnyBatch } from "../SwarmBatchesManager/types"
 import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@/definitions/swarm-video"
 import type { SwarmImageRaw } from "@/definitions/swarm-image"
 import type { Profile } from "@/definitions/swarm-profile"
-import type { AnyBatch } from "../SwarmBatchesManager/types"
 
 /**
  * Load/Update video info over swarm
@@ -60,7 +59,8 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
       originalQuality: `${NaN}p`,
       ownerAddress,
       thumbnail: null,
-      sources: []
+      sources: [],
+      batchId: undefined,
     }
   }
 
@@ -115,10 +115,7 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
   // Public methods
 
   async loadBatches(): Promise<AnyBatch[]> {
-    if (!this.reference) return []
-
-    const batchIds = Object.values(this.videoRaw.batchIds ?? {})
-
+    const batchIds = this.videoRaw.batchId ? [this.videoRaw.batchId] : []
     return super.loadBatches(batchIds)
   }
 
@@ -131,25 +128,23 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
   async update(ownerProfile?: Profile): Promise<string> {
     if (!this._videoRaw.sources.length) throw new Error("Please add at least 1 video source")
     if (!this.beeClient.signer) throw new Error("Enable your wallet to update your profile")
+    if (!this.batches.length) throw new Error("Wait for the postage batch to be created")
+
+    const batchId = this.getBatchId(this.batches[0])
 
     // update meta
     if (!this.reference) {
       this.videoRaw.createdAt = +new Date()
     }
-    this.videoRaw.batchIds!["_"] = this.beeClient.emptyBatchId // just for size calculation
+    this.videoRaw.batchId = batchId
     this.videoRaw.v = SwarmVideoIO.lastVersion
 
     const rawVideo = this.videoRaw
-    const manifestSize = new TextEncoder().encode(JSON.stringify(rawVideo)).length
+    const manifestData = JSON.stringify(rawVideo)
 
     console.log(rawVideo)
 
-    const batch = await this.getOrCreateBatchForSize(manifestSize)
-
-    this.videoRaw.batchIds!["_"] = this.getBatchId(batch)
-    const manifestData = JSON.stringify(rawVideo)
-
-    const videoReference = (await this.beeClient.uploadFile(this.getBatchId(batch), manifestData)).reference
+    const videoReference = (await this.beeClient.uploadFile(batchId, manifestData)).reference
 
     // update local instances
     this.reference = videoReference
@@ -178,6 +173,12 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
   }
 
   async addVideoSource(video: ArrayBuffer, contentType: string, opts?: SwarmVideoUploadOptions) {
+    let batch = this.batches[0]
+
+    if (batch && !batch.usable) {
+      throw new Error("Wait for the postage batch to be created")
+    }
+
     const quality = SwarmVideoIO.getSourceName(await getVideoResolution(video))
 
     if (this._videoRaw.sources.find(source => source.quality === quality)) {
@@ -188,10 +189,20 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
     const size = video.byteLength
     const bitrate = Math.round((size * 8) / duration)
 
-    const fullSize = !this.reference && this.videoRaw.sources.length === 0
-      ? this.calcBatchSizeForVideo(size, parseInt(quality)) // calculate batch size for first video source
-      : size
-    const batch = await this.getOrCreateBatchForSize(fullSize)
+    if (!batch) {
+      // create video batch
+      const fullSize = this.calcBatchSizeForVideo(size, parseInt(quality))
+      // get batch id and set it to raw manifest
+      batch = await this.createBatchForSize(fullSize)
+      this.videoRaw.batchId = this.getBatchId(batch)
+      // wait for the batch to be usable
+      await this.waitBatchPropagation(batch)
+    } else if (!this.canUploadTo(batch, size)) {
+      // increase batch size
+      await this.increaseBatchSize(batch, size)
+      await this.waitBatchPropagation(batch)
+    }
+
     const fetch = this.beeClient.getFetch({
       onUploadProgress: e => {
         if (opts?.onUploadProgress) {
@@ -215,6 +226,8 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
         fetch,
       }
     )).reference
+
+    // update available space
     await this.refreshBatch(batch)
 
     this._videoRaw.sources.push({
@@ -229,7 +242,6 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
     }
 
     this.sortSources()
-    this.addReferenceBatch(reference, this.getBatchId(batch))
 
     return reference
   }
@@ -240,38 +252,40 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
       throw new Error("There is no video source with this quality")
     }
 
-    this.removeReferenceBatch(this._videoRaw.sources[sourceIndex].reference)
     this._videoRaw.sources.splice(sourceIndex, 1)
   }
 
   async addThumbnail(buffer: ArrayBuffer, contentType: string, opts?: SwarmVideoUploadOptions) {
+    if (!this.batches.length) throw new Error("Wait for the postage batch to be created")
+
     const imageWriter = new SwarmImageIO.Writer(new Blob([buffer], { type: contentType }) as File, {
       beeClient: this.beeClient,
       isResponsive: true,
       responsiveSizes: SwarmVideoWriter.thumbnailResponsiveSizes,
     })
     const size = await imageWriter.pregenerateImages()
-    const batch = await this.getOrCreateBatchForSize(size)
+
+    const batch = this.batches[0]
+
+    if (!this.canUploadTo(batch, size)) {
+      // increase batch size
+      await this.increaseBatchSize(batch, size)
+    }
 
     this._videoRaw.thumbnail = await imageWriter.upload({
       batchId: this.getBatchId(batch),
       onCancelToken: opts?.onCancelToken,
       onUploadProgress: opts?.onUploadProgress,
     })
-    await this.refreshBatch(batch)
 
-    for (const reference of Object.values(this._videoRaw.thumbnail.sources)) {
-      this.addReferenceBatch(reference, this.getBatchId(batch))
-    }
+    // update available space
+    await this.refreshBatch(batch)
 
     return SwarmImageIO.Reader.getOriginalSourceReference(this._videoRaw.thumbnail)!
   }
 
   removeThumbnail() {
     if (!this._videoRaw.thumbnail) return
-    for (const reference of Object.values(this._videoRaw.thumbnail.sources)) {
-      this.removeReferenceBatch(reference)
-    }
     this._videoRaw.thumbnail = null
   }
 
@@ -293,25 +307,26 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
 
   // Private methods
 
-  private addReferenceBatch(reference: string | "_", batchId: BatchId) {
-    this._videoRaw.batchIds = this.videoRaw.batchIds ?? {}
-    this._videoRaw.batchIds[reference] = batchId
-    if (this.video) {
-      this.video.batchIds = this._videoRaw.batchIds
-    }
-  }
+  // private addReferenceBatch(reference: string | "_", batchId: BatchId) {
+  //   this._videoRaw.batchIds = this.videoRaw.batchIds ?? {}
+  //   this._videoRaw.batchIds[reference] = batchId
+  //   if (this.video) {
+  //     this.video.batchIds = this._videoRaw.batchIds
+  //   }
+  // }
 
-  private removeReferenceBatch(reference: string | "_") {
-    this._videoRaw.batchIds = this.videoRaw.batchIds ?? {}
-    delete this._videoRaw.batchIds[reference]
-    if (this.video) {
-      this.video.batchIds = this._videoRaw.batchIds
-    }
-  }
+  // private removeReferenceBatch(reference: string | "_") {
+  //   this._videoRaw.batchIds = this.videoRaw.batchIds ?? {}
+  //   delete this._videoRaw.batchIds[reference]
+  //   if (this.video) {
+  //     this.video.batchIds = this._videoRaw.batchIds
+  //   }
+  // }
 
   private parseVideo(video: Video | undefined): SwarmVideoRaw | null {
     if (!video) return null
     return {
+      v: SwarmVideoIO.lastVersion,
       title: video.title ?? "",
       description: video.description ?? "",
       duration: video.duration,
@@ -327,7 +342,7 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
         size: source.size,
         bitrate: source.bitrate,
       })),
-      v: SwarmVideoIO.lastVersion,
+      batchId: video.batchId,
     }
   }
 

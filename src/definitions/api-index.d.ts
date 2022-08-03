@@ -14,7 +14,8 @@
  *  limitations under the License.
  */
 
-import { SwarmVideoRaw } from "./swarm-video"
+import type { BatchId } from "@ethersphere/bee-js"
+import type { SwarmVideoRaw } from "./swarm-video"
 
 export type IndexClientOptions = {
   host: string
@@ -48,6 +49,7 @@ export type IndexVideo = {
   lastValidManifest: IndexVideoManifest | null
   totDownvotes: number
   totUpvotes: number
+  batchId?: BatchId
 }
 
 export type IndexVideoManifest = Omit<SwarmVideoRaw, "createdAt" | "ownerAddress"> & { hash: string }

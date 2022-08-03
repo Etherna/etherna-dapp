@@ -128,7 +128,21 @@ const execProject = (projectPath) => {
  */
 const execBee = () => {
   const adminPassword = bcrypt.hashSync(process.env.BEE_ADMIN_PASSWORD)
-  const execCms = `bee dev --restricted --cors-allowed-origins=* --admin-password='${adminPassword}'`
+  const testnetParams = [
+    `--mainnet=false`,
+    `--password='${process.env.BEE_PASSWORD}'`,
+    `--full-node=true`,
+    `--swap-endpoint='${process.env.BEE_SWAP_ENDPOINT}'`,
+    `--debug-api-enable=true`,
+  ]
+  const params = [
+    process.env.BEE_MODE === "dev" ? "dev" : "start",
+    `--cors-allowed-origins=*`,
+    `--admin-password='${adminPassword}'`,
+    `--restricted`,
+    ...(process.env.BEE_MODE === "testnet" ? testnetParams : []),
+  ]
+  const execCms = `bee ${params.join(" ")}`
   const childProcess = exec(execCms, execCallback)
   if (Boolean(process.env.BEE_HTTPS)) {
     proxyBeeOverHttps()
@@ -207,15 +221,18 @@ const run = async () => {
   const shouldRunEthernaIndex = runAllServices || args.includes("--index")
   const shouldRunEthernaCredit = runAllServices || args.includes("--credit")
   const shouldRunEthernaGateway = runAllServices || args.includes("--gateway")
-  const shouldRunEthernaBeehive = false//runAllServices || args.includes("--beehive")
+  const shouldRunEthernaBeehive = runAllServices || args.includes("--beehive")
   const shouldRunProxy = runAllServices || args.includes("--proxy")
 
   if (shouldRunBeeNode) {
     const beeProcess = execBee()
     processes.push(beeProcess)
     await waitService(process.env.BEE_ENDPOINT, "Bee Node")
-    const batchId = await createPostageBatch()
-    await loadSeed(batchId)
+
+    if (process.env.BEE_MODE === "dev") {
+      const batchId = await createPostageBatch()
+      await loadSeed(batchId)
+    }
   }
 
   if (shouldRunEthernaSSO) {

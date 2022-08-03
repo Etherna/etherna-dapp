@@ -87,13 +87,9 @@ export default class SwarmVideoReader {
   async download(forced = false) {
     if (this.loadedFromPrefetch && !forced) return this.video
 
-    const indexVideo = await this.fetchIndexVideo()
-
-    const [rawVideo, ownerProfile] = await Promise.all([
-      !indexVideo?.lastValidManifest ||
-        (indexVideo?.lastValidManifest && this.isValidatingManifest(indexVideo.lastValidManifest))
-        ? this.fetchRawVideo()
-        : Promise.resolve(null),
+    const [indexVideo, rawVideo, ownerProfile] = await Promise.all([
+      this.fetchIndexVideo(),
+      this.fetchRawVideo(),
       this.ownerAddress
         ? this.fetchOwnerProfile(this.ownerAddress)
         : Promise.resolve(null)
@@ -170,6 +166,7 @@ export default class SwarmVideoReader {
       encryptionType: indexVideoData?.encryptionType,
       totDownvotes: indexVideoData?.totDownvotes,
       totUpvotes: indexVideoData?.totUpvotes,
+      batchId: indexVideoData?.batchId ?? videoData?.batchId,
       v: SwarmVideoIO.lastVersion,
     }
   }
@@ -195,6 +192,7 @@ export default class SwarmVideoReader {
         bitrate: source.bitrate,
         quality: source.quality,
       })),
+      batchId: video.batchId,
       v: SwarmVideoIO.lastVersion,
     }
   }

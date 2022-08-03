@@ -14,17 +14,34 @@
  *  limitations under the License.
  */
 
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
-import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
-import type { GatewayType } from "@/definitions/extension-host"
-import type { PostageBatch } from "@ethersphere/bee-js"
-import type { GatewayBatch } from "@/definitions/api-gateway"
+import http from "@/utils/request"
 
-export type AnyBatch = PostageBatch | GatewayBatch
+export default class GatewayPostageClient {
+  url: string
 
-export type SwarmBatchesManagerOptions = {
-  address: string
-  gatewayType: GatewayType
-  beeClient: SwarmBeeClient
-  gatewayClient: EthernaGatewayClient
+  /**
+   * Init an gateway user client
+   * 
+   * @param {string} url Api host + api url
+   */
+  constructor(url: string) {
+    this.url = url
+  }
+
+  /**
+   * Topup batch (increase TTL)
+   * 
+   * @param batchId Id of the swarm batch
+   * @param byAmount Amount to add to the batch
+   */
+  async topupBatch(batchId: string, byAmount: number) {
+    const endpoint = `${this.url}/postage/batches/${batchId}/topup/${byAmount}`
+
+    await http.get(endpoint, {
+      withCredentials: true
+    })
+
+    return true
+  }
+
 }

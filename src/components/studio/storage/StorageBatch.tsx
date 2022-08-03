@@ -40,7 +40,10 @@ const StorageBatch: React.FC<StorageBatchProps> = ({ batch, num }) => {
   }, [batch])
 
   const expiration = useMemo(() => {
-    return dayjs.duration({ seconds: batch.batchTTL }).humanize()
+    if (batch.batchTTL === -1 && batch.usable) return "never"
+    if (batch.batchTTL === -1 && !batch.usable) return "expired"
+    const expirationDate = dayjs.duration({ seconds: batch.batchTTL }).humanize()
+    return expirationDate.startsWith("NaN") ? "never" : expirationDate
   }, [batch])
 
   return (
@@ -57,7 +60,7 @@ const StorageBatch: React.FC<StorageBatchProps> = ({ batch, num }) => {
       <span>
         Expiring
         <span className={classes.storageBatchExpiring}>
-          {batch.batchTTL === -1 || expiration.startsWith("NaN") ? "never" : `${expiration}`}
+          {expiration}
         </span>
         <small className="block">The ability to expand and renew the storage will be added soon.</small>
       </span>

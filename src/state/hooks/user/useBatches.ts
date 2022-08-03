@@ -131,7 +131,8 @@ export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) 
           2 ** 20 * 100, // 100MB
           dayjs.duration(10, "years").asSeconds()
         )
-        postageBatch = await beeClient.createBatch(depth, amount)
+        const batchId = await beeClient.createBatch(depth, amount)
+        postageBatch = await beeClient.getBatch(batchId)
 
         setIsCreatingBatch(false)
       }
