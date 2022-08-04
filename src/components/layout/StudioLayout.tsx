@@ -18,7 +18,7 @@
 import React from "react"
 
 import classes from "@/styles/components/layout/StudioLayout.module.scss"
-import { SparklesIcon, UserCircleIcon, FilmIcon, ShoppingBagIcon } from "@heroicons/react/solid"
+import { SparklesIcon, UserCircleIcon, FilmIcon, CashIcon } from "@heroicons/react/solid"
 
 import SEO from "./SEO"
 import Container from "@/components/common/Container"
@@ -56,7 +56,7 @@ const StudioLayout: React.FC<StudioLayoutProps> = ({ children }) => {
           <SidebarItem
             to={routes.studioStorage}
             title="Postages"
-            iconSvg={<ShoppingBagIcon />}
+            iconSvg={<CashIcon />}
             isActive={pathname => /\/studio\/storage/.test(pathname)}
             isResponsive={false}
           />

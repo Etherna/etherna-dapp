@@ -25,6 +25,7 @@ const STORAGE_KEY = "videoEditorState"
 
 type CacheState = Omit<VideoEditorContextState, "videoWriter"> & {
   videoRaw: SwarmVideoRaw
+  indexReference: string | undefined
 }
 
 export default class VideoEditorCache {
@@ -61,6 +62,7 @@ export default class VideoEditorCache {
       reference,
       queue,
       videoRaw,
+      indexReference,
       pinContent,
       ownerAddress,
       hasChanges,
@@ -74,6 +76,7 @@ export default class VideoEditorCache {
     })
     videoWriter.reference = reference
     videoWriter.videoRaw = videoRaw
+    videoWriter.indexReference = indexReference
 
     // only keep successful uploads
     const filteredQueue = queue.filter(queue => !!queue.reference)
@@ -114,6 +117,7 @@ export default class VideoEditorCache {
       saveTo,
       offerResources,
       hasChanges,
+      indexReference: videoWriter.indexReference,
     }
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(cacheState))
   }

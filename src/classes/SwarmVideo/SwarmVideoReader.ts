@@ -98,6 +98,7 @@ export default class SwarmVideoReader {
     // update local video instances
     this.video = this.doubleParseVideo(rawVideo, indexVideo, ownerProfile)
     this.videoRaw = this.parseVideo(this.video)
+    this.indexReference = this.indexReference ?? indexVideo?.id
 
     let owner = ownerProfile
     if (!owner && this.videoRaw.ownerAddress) {

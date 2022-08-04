@@ -89,7 +89,9 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   useImperativeHandle(ref, () => ({
     isEmpty: queue.length === 0,
     canSubmitVideo: canPublishVideo && !hasQueuedProcesses,
-    submitVideo: () => saveVideo(offerResources),
+    submitVideo: async () => {
+      await saveVideo(offerResources)
+    },
     saveVideoToChannel,
     saveVideoToIndex,
     resetState: resetAll,
@@ -107,10 +109,10 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     setBatchStatus(undefined)
 
     if (reference && !videoWriter.videoRaw.batchId) {
+      // assume we are editing an old video
       if (!defaultBatchId) {
         return showError("Cannot find postage batch for this video", "You might have to re-upload the video sources")
       }
-      // assume we are editing an old video
       videoWriter.videoRaw.batchId = defaultBatchId as BatchId
     }
 

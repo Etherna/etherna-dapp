@@ -53,11 +53,6 @@ export default class SwarmBeeClient extends Bee {
     const tokenExpiration = localStorage.getItem(TOKEN_EXPIRATION_SETTING)
     const expirationDate = tokenExpiration ? new Date(+tokenExpiration) : new Date()
 
-    console.log("AUTH", token, tokenExpiration, expirationDate)
-    console.log(!!token && expirationDate > new Date())
-
-
-
     return !!token && expirationDate > new Date()
   }
 
@@ -178,8 +173,7 @@ export default class SwarmBeeClient extends Bee {
 
       return newToken
     } catch (error: any) {
-      console.log("ERROR", error.response)
-
+      console.error(error.response)
       // cookie.remove(TOKEN_COOKIE_NAME)
       return null
     }

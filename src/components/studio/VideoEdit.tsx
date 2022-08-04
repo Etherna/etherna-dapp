@@ -89,13 +89,8 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
     await clearCallback.current?.()
   }
 
-  console.log("data", video, routeState)
-
-
   return (
     <>
-      <CantUploadAlert />
-
       <StudioEditView
         title={reference ? "Edit video" : "Publish new video"}
         saveLabel={reference ? "Update" : "Publish"}

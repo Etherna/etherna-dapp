@@ -142,8 +142,6 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
     const rawVideo = this.videoRaw
     const manifestData = JSON.stringify(rawVideo)
 
-    console.log(rawVideo)
-
     const videoReference = (await this.beeClient.uploadFile(batchId, manifestData)).reference
 
     // update local instances

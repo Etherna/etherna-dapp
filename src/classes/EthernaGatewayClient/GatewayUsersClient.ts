@@ -105,8 +105,6 @@ export default class GatewayUsersClient {
 
     const referenceId = resp.data
 
-    console.log("REF ID", referenceId)
-
     if (typeof referenceId !== "string") {
       throw new Error("Coudn't create a new batch")
     }
@@ -122,13 +120,12 @@ export default class GatewayUsersClient {
           const newBatchId = await this.fetchPostageBatchRef(referenceId)
           if (newBatchId) {
             const batch = await this.fetchBatch(newBatchId)
-            console.log("BATCH", batch)
             return resolver(batch)
           }
         } catch { }
 
         fetchBatch()
-      }, 2000)
+      }, 5000)
     }
 
     return await new Promise<GatewayBatch>(resolve => {

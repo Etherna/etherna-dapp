@@ -129,8 +129,8 @@ const Router = () => {
                 <Route path="" element={<StudioLayoutRoute />}>
                   <Route path="" element={<Navigate replace to="/studio/videos" />} />
                   <Route path="videos" element={<VideosList />} />
-                  <Route path="videos/:id" element={<VideoEdit />} />
                   <Route path="" element={<DefaultBatchRoute />}>
+                    <Route path="videos/:id" element={<VideoEdit />} />
                     <Route path="channel" element={<ChannelEdit />} />
                   </Route>
                   <Route path="" element={<BatchesRoute />}>

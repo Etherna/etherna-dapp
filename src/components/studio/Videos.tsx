@@ -231,7 +231,6 @@ const Videos: React.FC = () => {
             <div className={classes.videoTitle}>
               <div className={classes.videoTitleThumb}>
                 <Image
-                  src={encodedSvg(<ThumbPlaceholder />)}
                   sources={item.thumbnail?.sources}
                   placeholder="blur"
                   blurredDataURL={item.thumbnail?.blurredBase64}

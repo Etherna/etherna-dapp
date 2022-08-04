@@ -70,7 +70,8 @@ export default class SwarmBatchesManager {
       // @ts-ignore
       .filter<PromiseFulfilledResult<AnyBatch>>(batch => batch.status === "fulfilled")
       .map(batch => batch.value)
-      .filter(batch => "ownerAddress" in batch ? batch.ownerAddress === this.address : true)
+    // FIXME: https://etherna.atlassian.net/browse/ESG-138
+    // .filter(batch => "ownerAddress" in batch ? batch.ownerAddress === this.address : true)
 
     this.onBatchesLoaded?.(this.batches)
 
