@@ -19,6 +19,12 @@
   @apply max-w-screen-lg;
 }
 
+.storageMessage {
+  @apply text-sm font-medium;
+  @apply text-gray-500 dark:text-gray-400;
+  @apply mb-4;
+}
+
 .storageList {
   @apply grid gap-5 grid-flow-row-dense;
   @apply grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2;

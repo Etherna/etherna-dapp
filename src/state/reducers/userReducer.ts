@@ -25,6 +25,7 @@ export const UserActionTypes = {
   USER_UPDATE_SIGNEDIN: "USER_UPDATE_SIGNEDIN",
   USER_SET_DEFAULT_BATCH_ID: "USER_SET_DEFAULT_BATCH_ID",
   USER_SET_DEFAULT_BATCH: "USER_SET_DEFAULT_BATCH",
+  USER_SET_BATCHES: "USER_SET_BATCHES",
 } as const
 
 // Export dispatch actions
@@ -58,6 +59,10 @@ type SetDefaultBatcheAction = {
   type: typeof UserActionTypes.USER_SET_DEFAULT_BATCH
   batch: GatewayBatch | undefined
 }
+type SetBatchesAction = {
+  type: typeof UserActionTypes.USER_SET_BATCHES
+  batches: GatewayBatch[]
+}
 
 export type UserActions = (
   UpdateEnsAction |
@@ -66,7 +71,8 @@ export type UserActions = (
   UpdateCreditAction |
   UpdateSignedInAction |
   SetDefaultBatchIdAction |
-  SetDefaultBatcheAction
+  SetDefaultBatcheAction |
+  SetBatchesAction
 )
 
 
@@ -115,6 +121,12 @@ const userReducer = (state: UserState = {}, action: UserActions): UserState => {
       return {
         ...state,
         defaultBatch: action.batch,
+      }
+
+    case UserActionTypes.USER_SET_BATCHES:
+      return {
+        ...state,
+        batches: action.batches,
       }
 
     default:

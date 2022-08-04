@@ -103,6 +103,7 @@ export type UserState = {
   isSignedInGateway?: boolean
   defaultBatchId?: string
   defaultBatch?: GatewayBatch
+  batches?: GatewayBatch[]
 }
 
 export type WalletType = "etherna" | "metamask"

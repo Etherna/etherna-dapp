@@ -45,6 +45,10 @@ $btn-modifiers: (
   &:disabled {
     @apply opacity-50 pointer-events-none cursor-default;
   }
+
+  &:is(a) {
+    text-decoration: none !important;
+  }
 }
 
 .btnDefault {

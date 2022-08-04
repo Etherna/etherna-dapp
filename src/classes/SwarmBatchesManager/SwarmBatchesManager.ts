@@ -297,7 +297,7 @@ export default class SwarmBatchesManager {
 
   canUploadTo(batch: AnyBatch, size: number): boolean {
     const { available } = getBatchSpace(batch)
-    return false//available >= size
+    return available >= size
   }
 
   /**

@@ -53,3 +53,28 @@ export const getBatchExpiration = (batch: PostageBatch | GatewayBatch): Dayjs =>
   }
   return dayjs().add(batch.batchTTL, "seconds")
 }
+
+/**
+ * Prase a default postage batch to a gateway batch
+ * 
+ * @param batch Postage batch
+ * @returns Gateway batch
+ */
+export const parsePostageBatch = (batch: PostageBatch, owner: string | null | undefined): GatewayBatch => {
+  return {
+    id: batch.batchID,
+    amountPaid: 0,
+    normalisedBalance: 0,
+    ownerAddress: owner ?? null,
+    amount: batch.amount,
+    batchTTL: batch.batchTTL,
+    blockNumber: batch.blockNumber,
+    bucketDepth: batch.bucketDepth,
+    depth: batch.depth,
+    exists: batch.exists,
+    immutableFlag: batch.immutableFlag,
+    label: batch.label,
+    usable: batch.usable,
+    utilization: batch.utilization,
+  }
+}

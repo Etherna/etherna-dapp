@@ -14,18 +14,14 @@
  *  limitations under the License.
  */
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
-import type { PostageBatch } from "@ethersphere/bee-js"
 import type { Dispatch } from "redux"
 
-import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
 import useSelector from "@/state/useSelector"
-import { EnvActions, EnvActionTypes } from "@/state/reducers/enviromentReducer"
 import { UserActions, UserActionTypes } from "@/state/reducers/userReducer"
 import { useBeeAuthentication } from "@/state/hooks/ui"
-import dayjs from "@/utils/dayjs"
-import { getBatchSpace } from "@/utils/batches"
+import { parsePostageBatch } from "@/utils/batches"
 import type { GatewayBatch } from "@/definitions/api-gateway"
 
 type UseBatchesOpts = {
@@ -34,151 +30,60 @@ type UseBatchesOpts = {
 
 export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) {
   const [isFetchingBatches, setIsFetchingBatches] = useState(false)
-  const [isCreatingBatch, setIsCreatingBatch] = useState(false)
   const [error, setError] = useState<string | undefined>()
   const { gatewayClient, gatewayType, beeClient } = useSelector(state => state.env)
-  const { defaultBatchId, defaultBatch, address } = useSelector(state => state.user)
+  const { address } = useSelector(state => state.user)
   const { isLoadingProfile } = useSelector(state => state.ui)
-  const dispatch = useDispatch<Dispatch<UserActions | EnvActions>>()
+  const dispatch = useDispatch<Dispatch<UserActions>>()
   const { waitAuth } = useBeeAuthentication()
+  const timeout = useRef<number>()
+
+  useEffect(() => {
+    return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      clearTimeout(timeout.current)
+    }
+  }, [])
 
   useEffect(() => {
     if (!opts.autofetch) return
     if (isLoadingProfile) return
 
-    fetchBatches()
+    fetchAllBatches()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [opts.autofetch, isLoadingProfile])
 
-  const fetchBatches = async () => {
-    if (gatewayType === "etherna-gateway") {
-      fetchGatewayBatch()
-    } else {
-      fetchBeeBatch()
-    }
-  }
-
-  async function fetchGatewayBatch() {
+  const fetchAllBatches = async () => {
     setIsFetchingBatches(true)
 
-    let batch: GatewayBatch | undefined = undefined
+    let batches: GatewayBatch[] = []
+
     try {
-      if (defaultBatchId) {
-        batch = await gatewayClient.users.fetchBatch(defaultBatchId)
+      if (gatewayType === "etherna-gateway") {
+        const batchesPreview = await gatewayClient.users.fetchBatches()
+        batches = await Promise.all(batchesPreview.map(
+          async batchPreview => gatewayClient.users.fetchBatch(batchPreview.batchId)
+        ))
       } else {
-        const batches = await gatewayClient.users.fetchBatches()
+        await waitAuth()
 
-        if (batches.length === 0) {
-          setIsCreatingBatch(true)
-          console.warn("Creating default batch....")
-          setTimeout(() => {
-            return fetchGatewayBatch()
-          }, 2500)
-        } else {
-          setIsCreatingBatch(false)
-          batch = await gatewayClient.users.fetchBatch(batches[batches.length - 1].batchId)
-        }
+        batches = (await beeClient.getAllPostageBatches()).map(batch => parsePostageBatch(batch, address))
       }
+
+      dispatch({
+        type: UserActionTypes.USER_SET_BATCHES,
+        batches,
+      })
     } catch (error: any) {
-      console.error(error)
-      setError(error.response?.data || error.message || error.toString())
-    }
-
-    if (batch) {
-      dispatch({
-        type: EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES,
-        batches: [batch],
-      })
-
-      dispatch({
-        type: UserActionTypes.USER_SET_DEFAULT_BATCH_ID,
-        batchId: batch.id,
-      })
-      dispatch({
-        type: UserActionTypes.USER_SET_DEFAULT_BATCH,
-        batch,
-      })
+      setError(error.message)
     }
 
     setIsFetchingBatches(false)
   }
 
-  async function fetchBeeBatch() {
-    setIsFetchingBatches(true)
-
-    let postageBatch: PostageBatch | undefined = undefined
-    try {
-      postageBatch = await beeClient.getBatch(defaultBatchId!)
-    } catch (error: any) {
-      console.error(error)
-
-      await waitAuth()
-
-      // get best batch
-      const batches = await beeClient.getAllPostageBatches()
-      const bestBatch = batches
-        .filter(batch => batch.usable)
-        .sort((a, b) => getBatchSpace(b).available - getBatchSpace(a).available)[0]
-
-      if (bestBatch) {
-        postageBatch = bestBatch
-      } else {
-        // create a new batch
-        setIsCreatingBatch(true)
-
-        const batchManager = new SwarmBatchesManager({ beeClient, gatewayClient, address: address!, gatewayType })
-        const { amount, depth } = await batchManager.calcDepthAmount(
-          2 ** 20 * 100, // 100MB
-          dayjs.duration(10, "years").asSeconds()
-        )
-        const batchId = await beeClient.createBatch(depth, amount)
-        postageBatch = await beeClient.getBatch(batchId)
-
-        setIsCreatingBatch(false)
-      }
-    }
-
-    if (postageBatch) {
-      const batch: GatewayBatch = {
-        id: postageBatch.batchID,
-        amountPaid: 0,
-        normalisedBalance: 0,
-        ownerAddress: address ?? null,
-        amount: postageBatch.amount,
-        batchTTL: postageBatch.batchTTL,
-        blockNumber: postageBatch.blockNumber,
-        bucketDepth: postageBatch.bucketDepth,
-        depth: postageBatch.depth,
-        exists: postageBatch.exists,
-        immutableFlag: postageBatch.immutableFlag,
-        label: postageBatch.label,
-        usable: postageBatch.usable,
-        utilization: postageBatch.utilization,
-      }
-
-      dispatch({
-        type: EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES,
-        batches: [batch],
-      })
-
-      dispatch({
-        type: UserActionTypes.USER_SET_DEFAULT_BATCH_ID,
-        batchId: batch.id,
-      })
-      dispatch({
-        type: UserActionTypes.USER_SET_DEFAULT_BATCH,
-        batch,
-      })
-
-      setIsFetchingBatches(false)
-    }
-  }
-
   return {
-    isCreatingBatch,
     isFetchingBatches,
     error,
-    defaultBatch,
-    fetchBatches,
+    fetchAllBatches,
   }
 }

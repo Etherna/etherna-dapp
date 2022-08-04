@@ -24,6 +24,7 @@ import StateProviderRoute from "./route-wrappers/StateProviderRoute"
 import AuthenticateRoute from "./route-wrappers/AuthenticateRoute"
 import SignedInRoute from "./route-wrappers/SignedInRoute"
 import VideoRoute from "./route-wrappers/VideoRoute"
+import DefaultBatchRoute from "./route-wrappers/DefaultBatchRoute"
 import BatchesRoute from "./route-wrappers/BatchesRoute"
 import PageLoader from "@/components/common/PageLoader"
 
@@ -128,9 +129,11 @@ const Router = () => {
                 <Route path="" element={<StudioLayoutRoute />}>
                   <Route path="" element={<Navigate replace to="/studio/videos" />} />
                   <Route path="videos" element={<VideosList />} />
-                  <Route path="" element={<BatchesRoute />}>
+                  <Route path="videos/:id" element={<VideoEdit />} />
+                  <Route path="" element={<DefaultBatchRoute />}>
                     <Route path="channel" element={<ChannelEdit />} />
-                    <Route path="videos/:id" element={<VideoEdit />} />
+                  </Route>
+                  <Route path="" element={<BatchesRoute />}>
                     <Route path="storage" element={<Storage />} />
                   </Route>
                 </Route>

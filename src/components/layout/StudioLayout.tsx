@@ -18,7 +18,7 @@
 import React from "react"
 
 import classes from "@/styles/components/layout/StudioLayout.module.scss"
-import { SparklesIcon, LightBulbIcon, FilmIcon, ServerIcon } from "@heroicons/react/solid"
+import { SparklesIcon, UserCircleIcon, FilmIcon, ShoppingBagIcon } from "@heroicons/react/solid"
 
 import SEO from "./SEO"
 import Container from "@/components/common/Container"
@@ -49,14 +49,14 @@ const StudioLayout: React.FC<StudioLayoutProps> = ({ children }) => {
           <SidebarItem
             to={routes.studioChannel}
             title="Customize"
-            iconSvg={<LightBulbIcon />}
+            iconSvg={<UserCircleIcon />}
             isActive={pathname => /\/studio\/channel/.test(pathname)}
             isResponsive={false}
           />
           <SidebarItem
             to={routes.studioStorage}
-            title="Storage"
-            iconSvg={<ServerIcon />}
+            title="Postages"
+            iconSvg={<ShoppingBagIcon />}
             isActive={pathname => /\/studio\/storage/.test(pathname)}
             isResponsive={false}
           />

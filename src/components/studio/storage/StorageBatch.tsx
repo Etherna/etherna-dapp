@@ -30,9 +30,10 @@ import type { GatewayBatch } from "@/definitions/api-gateway"
 type StorageBatchProps = {
   batch: GatewayBatch
   num: number
+  isMain?: boolean
 }
 
-const StorageBatch: React.FC<StorageBatchProps> = ({ batch, num }) => {
+const StorageBatch: React.FC<StorageBatchProps> = ({ batch, num, isMain }) => {
   const [totalSpace, usedSpace, availableSpace, usagePercent] = useMemo(() => {
     const { available, total, used } = getBatchSpace(batch)
     const usagePercent = clamp(used / total * 100, 0.5, 100)
@@ -50,12 +51,16 @@ const StorageBatch: React.FC<StorageBatchProps> = ({ batch, num }) => {
     <li className={classes.storageBatch}>
       <header className={classes.storageBatchHeader}>
         <h3 className={classes.storageBatchTitle}>
-          {batch.label || `Storage ${num}`}
+          {isMain ? "Default postage batch" : batch.label || `Postage batch ${num}`}
         </h3>
         <span className={classes.storageBatchSize}>
           {convertBytes(totalSpace).readable}
         </span>
       </header>
+
+      {isMain && (
+        <small className="block mb-3">The default postage batch is used for channel information.</small>
+      )}
 
       <span>
         Expiring

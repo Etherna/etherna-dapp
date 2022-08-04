@@ -29,7 +29,7 @@ const CantUploadAlert: React.FC = () => {
 
   const title = useMemo(() => {
     if (isStandaloneGateway) return "No postage batch found. You need to create one."
-    return "No storage found"
+    return "No postage batch found"
   }, [isStandaloneGateway])
 
   if (isLoadingProfile) return null
@@ -38,11 +38,11 @@ const CantUploadAlert: React.FC = () => {
   return (
     <Alert className="my-6" type="warning" title={title}>
       You might not be able to upload yet. <br />
-      Come back when your storage is ready.
+      Come back when your postage batch is ready.
 
       <span className="block mt-3">
         <Button as="a" href={routes.studioStorage}>
-          Check your storage
+          Check your postages
         </Button>
       </span>
     </Alert>

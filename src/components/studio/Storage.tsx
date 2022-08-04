@@ -25,35 +25,38 @@ import Alert from "@/components/common/Alert"
 import useSelector from "@/state/useSelector"
 
 const Storage: React.FC = () => {
-  const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
-  const defaultBatch = useSelector(state => state.user.defaultBatch)
+  const gatewayType = useSelector(state => state.env.gatewayType)
+  const { batches, defaultBatchId } = useSelector(state => state.user)
 
   return (
     <div className={classes.storage}>
-      {(!defaultBatch) && (
-        <Alert title="No storage found" type="danger">
+      <p className={classes.storageMessage}>
+        Postages are required to upload data on the network. <br />
+        They might expire in the future or run out of space,
+        so keep an eye on them!
+      </p>
+
+      {(!batches || !batches.length) && (
+        <Alert title="No batches found" type="danger">
           <p>
-            {`You don't have any storage on this gateway, or
+            {`You don't have any postage batch on this gateway, or
             the current gateway doesn't provide any.`}
           </p>
           <p>
-            {`Without storage you won't be able to upload any data.`}
+            {`Without a postage batch you won't be able to upload any data.`}
           </p>
         </Alert>
       )}
-      {!defaultBatch && isStandaloneGateway && (
-        <p className={classes.storageLoading}>
-          <Spinner aria-hidden /> We are loading your storage information
-        </p>
-      )}
-      {(!defaultBatch && !isStandaloneGateway) && (
+      {(!batches?.length && gatewayType === "etherna-gateway") && (
         <p className={classes.storageLoading}>
           <Spinner aria-hidden /> We are creating your first storage on Etherna. Refresh this page in a few seconds.
         </p>
       )}
-      {defaultBatch && (
+      {(batches && batches.length > 0) && (
         <ul className={classes.storageList}>
-          <StorageBatch batch={defaultBatch} num={1} key={defaultBatch.id} />
+          {batches.map(batch => (
+            <StorageBatch batch={batch} num={1} isMain={batch.id === defaultBatchId} key={batch.id} />
+          ))}
         </ul>
       )}
     </div>
