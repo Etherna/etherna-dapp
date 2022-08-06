@@ -93,6 +93,8 @@ export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) 
       if (gatewayType === "etherna-gateway") {
         return await gatewayClient.users.fetchBatch(defaultBatchId)
       } else {
+        await waitAuth()
+
         const batch = await beeClient.getBatch(defaultBatchId)
         return parsePostageBatch(batch, address)
       }
@@ -115,6 +117,8 @@ export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) 
 
         return null
       } else {
+        await waitAuth()
+
         const batches = await beeClient.getAllPostageBatches()
         const bestBatch = batches
           .filter(batch => batch.usable)
@@ -150,6 +154,8 @@ export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) 
         const batch = await gatewayClient.users.createBatch(depth, amount)
         return batch
       } else {
+        await waitAuth()
+
         const batchId = await beeClient.createBatch(depth, amount)
         let batch = await beeClient.getBatch(batchId)
         batch = await batchesManager.waitBatchPropagation(batch) as PostageBatch

@@ -44,6 +44,7 @@
   @apply p-4;
   @apply bg-orange-500;
   @apply shadow-lg shadow-orange-500/20;
+  transition-property: width, height, opacity;
 }
 
 .alphaDialogBody {
