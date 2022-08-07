@@ -52,7 +52,7 @@ $btn-modifiers: (
 }
 
 .btnDefault {
-  @apply py-2 px-5 rounded;
+  @apply py-2 px-5 rounded-md;
   @apply text-sm;
 }
 

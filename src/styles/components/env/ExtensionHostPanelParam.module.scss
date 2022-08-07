@@ -15,14 +15,22 @@
  */
 
 .radioGroup {
-  @apply flex flex-col space-y-3;
+  @apply flex flex-col space-y-1.5;
 }
 
 .radio {
   @apply flex items-start justify-between;
+  @apply border border-gray-400 dark:border-gray-400;
+  @apply px-2.5 py-2 rounded-md;
+  @apply cursor-pointer;
 
   &.active {
-    @apply ring-2 ring-primary-200;
+    @apply border-gray-900 dark:border-gray-100;
+  }
+
+  &.checked {
+    @apply ring-2 ring-primary-500;
+    @apply border-primary-500 hover:border-primary-500;
   }
 }
 
@@ -30,6 +38,21 @@
   @apply flex flex-col;
 }
 
+.radioLabel {
+  @apply text-sm;
+  @apply text-gray-700 dark:text-gray-200 font-semibold;
+  @apply mb-0;
+  @apply cursor-pointer;
+}
+
+.radioDescription {
+  @apply text-xs leading-tight;
+  @apply text-gray-600 dark:text-gray-400;
+  @apply whitespace-pre-line;
+}
+
 .radioCheck {
+  @apply shrink-0;
   @apply text-3xl text-primary-500;
+  @apply w-5 h-5;
 }

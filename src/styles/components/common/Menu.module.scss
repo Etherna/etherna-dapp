@@ -1,0 +1,132 @@
+.menu {
+  @apply inline-flex relative;
+}
+
+.menuItemsWrapper {
+  outline: none;
+}
+
+.menuItems {
+  @apply p-2 rounded-md min-w-[8rem];
+  @apply bg-gray-50 dark:bg-gray-900;
+  @apply border border-gray-100 dark:border-gray-700;
+  @apply shadow-lg z-10;
+  outline: none;
+  @apply pointer-events-none opacity-0 scale-95;
+  @apply transition duration-75 ease-in-out;
+
+  &.open {
+    @apply opacity-100 scale-100 pointer-events-auto;
+  }
+}
+
+.menuItemsContent {
+  @apply w-full h-full overflow-y-auto;
+}
+
+.menuItemsArrow {
+  @apply block w-3 h-3;
+
+  &::before {
+    content: "";
+    @apply absolute block w-0 h-0;
+    @apply -left-0.5 bottom-0;
+    @apply border-[8px] border-transparent;
+    @apply border-t-transparent border-b-gray-100 dark:border-b-gray-700;
+  }
+  &::after {
+    content: "";
+    @apply absolute block w-0 h-0;
+    @apply border-[6px] border-transparent;
+    @apply border-b-gray-50 dark:border-b-gray-900;
+  }
+
+  [data-popper-placement^="top"] & {
+    @apply -bottom-3;
+  }
+
+  [data-popper-placement^="bottom"] & {
+    @apply -top-3;
+  }
+
+  [data-popper-placement^="left"] & {
+    @apply -right-3;
+  }
+
+  [data-popper-placement^="right"] & {
+    @apply -left-3;
+  }
+}
+
+.menuItem {
+  @apply flex items-center;
+  @apply text-sm text-center;
+  @apply px-2.5 py-2 rounded;
+  @apply cursor-pointer;
+  @apply text-gray-500 dark:text-gray-300;
+  @apply sm:text-left;
+
+  &.active:not(.disabled) {
+    @apply text-gray-900 dark:text-gray-50;
+    @apply bg-gray-100 dark:bg-gray-700;
+  }
+
+  &.disabled {
+    @apply text-gray-300 dark:text-gray-600;
+    @apply cursor-default;
+  }
+
+  &Prefix,
+  &Suffix {
+    svg {
+      @apply w-[1.1em] h-[1.1em];
+    }
+  }
+  &Prefix {
+    @apply mr-2;
+  }
+  &Suffix {
+    @apply ml-auto;
+  }
+}
+
+.menuItemSeparator {
+  @apply block;
+  @apply bg-gray-400 dark:bg-gray-600;
+  @apply my-2 -mx-2;
+}
+
+.menuItemSecondary {
+  @apply text-gray-400 dark:text-gray-600;
+  &.active:not(.disabled) {
+    @apply text-gray-600 dark:text-gray-200;
+  }
+}
+
+.menuItemSuccess {
+  @apply text-blue-500 dark:text-blue-500;
+  &.active:not(.disabled) {
+    @apply text-blue-500 dark:text-blue-500;
+  }
+}
+
+.menuItemWarning {
+  @apply text-yellow-500 dark:text-yellow-500;
+  &.active:not(.disabled) {
+    @apply text-yellow-600 dark:text-yellow-500;
+  }
+}
+
+.menuItemError {
+  @apply text-red-500 dark:text-red-500;
+  &.active:not(.disabled) {
+    @apply text-red-500 dark:text-red-500;
+  }
+}
+
+.menuItemAlert {
+  @apply text-pink-500 dark:text-pink-500;
+  &.active:not(.disabled) {
+    @apply text-pink-500 dark:text-pink-500;
+  }
+}

@@ -28,7 +28,7 @@ import useExtensionEditor from "@/state/hooks/ui/useExtensionEditor"
 import type { GatewayExtensionHost, IndexExtensionHost } from "@/definitions/extension-host"
 import type { ExtensionParamConfig } from "@/components/env/ExtensionHostPanel"
 
-const ExtensionEditorModal = () => {
+const ExtensionEditorModal = <T extends IndexExtensionHost | GatewayExtensionHost,>() => {
   const { extensionName } = useSelector(state => state.ui)
   const { isSignedIn, isSignedInGateway } = useSelector(state => state.user)
   const { isStandaloneGateway, indexClient, gatewayClient } = useSelector(state => state.env)
@@ -39,7 +39,6 @@ const ExtensionEditorModal = () => {
   const { hideEditor } = useExtensionEditor()
   const [openModal, setOpenModal] = useState(false)
   const [editingExtension, setEditingExtension] = useState<string>()
-  const [isEditing, setIsEditing] = useState(false)
 
   const defaultUrl = useMemo(() => {
     switch (editingExtension) {
@@ -51,22 +50,25 @@ const ExtensionEditorModal = () => {
 
   const [signedIn, signInUrl] = useMemo(() => {
     switch (editingExtension) {
-      case "index": return [isSignedIn || false, indexClient.loginPath]
-      case "gateway": return [isSignedInGateway || false, isStandaloneGateway ? null : gatewayClient.loginPath]
-      default: return [false, null]
+      case "index":
+        return [isSignedIn || false, indexClient.loginPath]
+      case "gateway":
+        return [isSignedInGateway || false, isStandaloneGateway ? null : gatewayClient.loginPath]
+      default:
+        return [false, null]
     }
   }, [editingExtension, gatewayClient, indexClient, isSignedIn, isSignedInGateway, isStandaloneGateway])
 
-  const initialValue = useMemo(() => {
+  const initialValue: T | undefined = useMemo(() => {
     switch (editingExtension) {
       case "index":
-        return { name: `Etherna ${editingExtension}`, url: defaultUrl } as IndexExtensionHost
+        return { name: `Etherna ${editingExtension}`, url: defaultUrl } as unknown as T
       case "gateway":
-        return { name: `Etherna ${editingExtension}`, url: defaultUrl } as GatewayExtensionHost
+        return { name: `Etherna ${editingExtension}`, url: defaultUrl } as unknown as T
     }
   }, [editingExtension, defaultUrl])
 
-  const hostParams = useMemo(() => {
+  const hostParams: ExtensionParamConfig[] = useMemo(() => {
     const defaultParams: ExtensionParamConfig[] = [
       { key: "name", label: "Name", mandatory: true },
       { key: "url", label: "Url", mandatory: true },
@@ -80,7 +82,7 @@ const ExtensionEditorModal = () => {
             key: "type",
             label: "Gateway Type",
             mandatory: true,
-            type: "radio",
+            type: "gatetype",
             options: [{
               value: "etherna-gateway",
               label: "Etherna Gateway",
@@ -93,7 +95,7 @@ const ExtensionEditorModal = () => {
               description:
                 "Select this if the gateway is the default swarm bee instance",
             }]
-          } as ExtensionParamConfig]
+          }]
       default: return defaultParams
     }
   }, [editingExtension])
@@ -142,16 +144,17 @@ const ExtensionEditorModal = () => {
       }
       footerButtons={
         <>
-          <Button onClick={applyChanges} disabled={isEditing}>
+          <Button onClick={applyChanges} disabled={false}>
             Switch {editingExtension}
           </Button>
-          <Button modifier="muted" onClick={closeModal} disabled={isEditing}>
+          <Button modifier="muted" onClick={closeModal} disabled={false}>
             Done
           </Button>
         </>
       }
+      large
     >
-      <ExtensionHostPanel
+      <ExtensionHostPanel<T>
         listStorageKey={STORAGE_LIST_KEY}
         currentStorageKey={STORAGE_SELECTED_KEY}
         hostParams={hostParams}
@@ -160,7 +163,6 @@ const ExtensionEditorModal = () => {
         description={description}
         isSignedIn={signedIn}
         signInUrl={signInUrl}
-        onToggleEditing={setIsEditing}
       />
     </Modal>
   )

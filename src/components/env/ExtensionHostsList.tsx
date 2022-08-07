@@ -15,120 +15,94 @@
  *  
  */
 
-import React, { useEffect, useRef, useState } from "react"
+import React, { useCallback } from "react"
 import classNames from "classnames"
-import clamp from "lodash/clamp"
 
 import classes from "@/styles/components/env/ExtensionHostsList.module.scss"
-import { BadgeCheckIcon, ChevronLeftIcon } from "@heroicons/react/solid"
+import { BadgeCheckIcon, DotsCircleHorizontalIcon, PencilIcon, TrashIcon } from "@heroicons/react/solid"
 
+import Menu from "@/components/common/Menu"
+import Tooltip from "@/components/common/Tooltip"
 import { urlHostname } from "@/utils/urls"
-import { smoothScroll } from "@/utils/scroll"
-import type { ExtensionHost } from "@/definitions/extension-host"
+import type { ExtensionHost, GatewayExtensionHost, GatewayType, IndexExtensionHost } from "@/definitions/extension-host"
+
+const GatewayTypeLabel: Record<GatewayType, string> = {
+  "etherna-gateway": "etherna",
+  bee: "bee",
+}
 
 type ExtensionHostsListProps = {
-  hosts: ExtensionHost[]
-  selectedHost: ExtensionHost | undefined
+  hosts: (IndexExtensionHost | GatewayExtensionHost)[]
+  selectedHost: (IndexExtensionHost | GatewayExtensionHost) | undefined
   editing?: boolean
-  isVerifiedOrigin(url: string | null): boolean
-  onHostSelected?(host: ExtensionHost): void
+  onSelect?(host: ExtensionHost): void
+  onDelete?(host: ExtensionHost): void
+  onEdit?(host: ExtensionHost): void
 }
 
 const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
   hosts,
   selectedHost,
   editing,
-  isVerifiedOrigin,
-  onHostSelected
+  onSelect,
+  onDelete,
+  onEdit,
 }) => {
-  const [canScrollPrev, setCanScrollPrev] = useState(false)
-  const [canScrollNext, setCanScrollNext] = useState(false)
-  const scrollListRef = useRef<HTMLElement>()
-
-  useEffect(() => {
-    const scrollList = scrollListRef.current
-    if (scrollList) {
-      smoothScroll(scrollList, {
-        duration: 200,
-        left: scrollList.scrollWidth - scrollList.clientWidth - scrollList.scrollLeft
-      })
-    }
-  }, [hosts])
-
-  const initScrollList = (el: HTMLElement | null) => {
-    if (!el) return
-
-    scrollListRef.current = el
-
-    setTimeout(() => {
-      updateNavButtonsVisibility(el)
-    }, 100)
-  }
-
-  const onScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
-    const target = e.currentTarget
-    updateNavButtonsVisibility(target)
-  }
-
-  const updateNavButtonsVisibility = (target: HTMLElement) => {
-    if (!target) return
-
-    setCanScrollPrev(target.scrollLeft > 0)
-    setCanScrollNext(target.scrollLeft + target.clientWidth < target.scrollWidth)
-  }
-
-  const scrollList = (direction: "prev" | "next") => {
-    if (!scrollListRef.current) return
-
-    const correction = direction === "prev" ? -1 : 1
-
-    const children = Array.from(scrollListRef.current.children) as HTMLElement[]
-    const currentIndex = children.findIndex(child => child.offsetLeft >= scrollListRef.current!.scrollLeft)
-    const nextIndex = clamp(currentIndex + correction, 0, children.length - 1)
-    const nextScrollLeft = children[nextIndex].offsetLeft - scrollListRef.current.scrollLeft
-
-    smoothScroll(scrollListRef.current, {
-      duration: 200,
-      left: nextScrollLeft
-    })
-  }
+  const isVerifiedOrigin = useCallback((url: string | null) => {
+    const verifiedOrigins = import.meta.env.VITE_APP_VERIFIED_ORIGINS.split(";")
+    const hostname = urlHostname(url ?? "")
+    return verifiedOrigins.some(origin => origin === hostname || hostname?.endsWith("." + origin))
+  }, [])
 
   return (
     <div className={classes.extensionHostsList}>
-      {(canScrollPrev && !editing) && (
-        <button className={classNames(classes.extensionHostsListNav, classes.prev)} onClick={() => scrollList("prev")}>
-          <ChevronLeftIcon />
-        </button>
-      )}
-
-      <div className={classes.extensionHostsListScrollable} onScroll={onScroll} ref={initScrollList}>
+      <div className={classes.extensionHostsListGrid}>
         {hosts?.map((host, i) => (
           <button
             className={classNames(classes.extensionHostsListButton, {
               [classes.active]: host.url === selectedHost?.url,
               [classes.disabled]: editing && host.url !== selectedHost?.url,
             })}
-            onClick={() => onHostSelected?.(host)}
+            onClick={() => onSelect?.(host)}
             key={i}
           >
-            <span className={classes.name}>
-              {host.name}
-              {isVerifiedOrigin(host.url) && (
-                <span className={classes.verified}>
-                  <BadgeCheckIcon />
-                </span>
+            <div className={classes.extensionHostsListButtonTop}>
+              <span className={classes.name}>
+                {host.name}
+                {isVerifiedOrigin(host.url) && (
+                  <Tooltip text="Verified origin">
+                    <span className={classes.verified}>
+                      <BadgeCheckIcon />
+                    </span>
+                  </Tooltip>
+                )}
+              </span>
+
+              <Menu>
+                <Menu.Button
+                  as="div"
+                  className={classes.extensionHostsListMenuButton}
+                  aspect="link"
+                  modifier="inverted"
+                  small
+                >
+                  <DotsCircleHorizontalIcon />
+                </Menu.Button>
+                <Menu.Items>
+                  <Menu.Item prefix={<PencilIcon />} onClick={() => onEdit?.(host)}>Edit</Menu.Item>
+                  <Menu.Item prefix={<TrashIcon />} color="error" onClick={() => onDelete?.(host)}>Delete</Menu.Item>
+                </Menu.Items>
+              </Menu>
+            </div>
+            <span className={classes.host}>
+              {urlHostname(host.url)}
+              {"type" in host && (
+                <span> - {GatewayTypeLabel[host.type]}</span>
               )}
             </span>
-            <span className={classes.host}>{urlHostname(host.url)}</span>
           </button>
         ))}
       </div>
-
-      {(canScrollNext && !editing) && (
-        <button className={classNames(classes.extensionHostsListNav, classes.next)} onClick={() => scrollList("next")}>
-          <ChevronLeftIcon />
-        </button>
-      )}
     </div>
   )
 }

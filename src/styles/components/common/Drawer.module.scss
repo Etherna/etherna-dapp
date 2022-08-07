@@ -1,0 +1,14 @@
+.drawer {
+  @apply fixed inset-0 z-10;
+}
+
+.drawerDialog {
+  @apply absolute inset-x-0 bottom-0;
+  @apply p-6 rounded-t-xl;
+  @apply bg-white dark:bg-black;
+}
+
+.drawerOverlay {
+  @apply fixed inset-0 z-0;
+  @apply bg-black/60;
+}

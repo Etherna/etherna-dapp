@@ -15,24 +15,21 @@
  *  
  */
 
-import React, { useMemo, useState } from "react"
-import classNames from "classnames"
+import React, { useCallback, useMemo, useState } from "react"
 
 import classes from "@/styles/components/env/ExtensionHostPanel.module.scss"
-import { CheckIcon, PencilIcon, TrashIcon, PlusIcon } from "@heroicons/react/solid"
+import { TrashIcon, PlusIcon } from "@heroicons/react/solid"
 
 import ExtensionHostsList from "./ExtensionHostsList"
+import ExtensionHostForm from "./ExtensionHostForm"
+import Modal from "@/components/common/Modal"
 import Button from "@/components/common/Button"
-import Label from "@/components/common/Label"
-import FormGroup from "@/components/common/FormGroup"
-import TextField from "@/components/common/TextField"
 import useLocalStorage from "@/hooks/useLocalStorage"
-import { useErrorMessage } from "@/state/hooks/ui"
-import { isSafeURL, urlHostname } from "@/utils/urls"
+import { useConfirmation, useErrorMessage } from "@/state/hooks/ui"
+import { isSafeURL } from "@/utils/urls"
 import type { GatewayExtensionHost, IndexExtensionHost } from "@/definitions/extension-host"
-import ExtensionHostPanelParam from "./ExtensionHostPanelParam"
 
-type ExtensionHostPanelProps<T> = {
+type ExtensionHostPanelProps<T extends IndexExtensionHost | GatewayExtensionHost> = {
   listStorageKey: string
   currentStorageKey: string
   hostParams: ExtensionParamConfig[]
@@ -42,14 +39,13 @@ type ExtensionHostPanelProps<T> = {
   isSignedIn: boolean
   signInUrl?: string | null
   onChange?(extension: T): void
-  onToggleEditing?(editing: boolean): void
 }
 
 export type ExtensionParamConfig = {
-  key: string
+  key: keyof (IndexExtensionHost & GatewayExtensionHost)
   label: string
   mandatory: boolean
-  type?: "text" | "radio"
+  type?: "text" | "gatetype"
   options?: { value: string, label: string, description?: string }[]
 }
 
@@ -63,67 +59,46 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost,
   isSignedIn,
   signInUrl,
   onChange,
-  onToggleEditing
 }: ExtensionHostPanelProps<T>) => {
-  const verifiedOrigins = import.meta.env.VITE_APP_VERIFIED_ORIGINS.split(";")
   const defaultValue = initialValue ? [initialValue] : []
   const [storageHosts, setStorageHosts] = useLocalStorage(listStorageKey, defaultValue)
   const [storageSelectedUrl, setStorageSelectedUrl] = useLocalStorage(currentStorageKey, defaultUrl)
   const [hosts, setHosts] = useState(storageHosts)
   const [selectedUrl, setSelectedUrl] = useState(storageSelectedUrl)
+  const [showEditorModal, setShowEditorModal] = useState(false)
+  const [editorTempExtension, setEditorTempExtension] = useState<T | undefined>()
+
   const { showError } = useErrorMessage()
+  const { waitConfirmation } = useConfirmation()
 
   const selectedHost = useMemo(() => {
     return hosts?.find(host => host.url === selectedUrl)
   }, [hosts, selectedUrl])
 
-  const reduceHostValues = (host: T | undefined) => {
-    return hostParams.reduce(
-      (values, param) => ({
-        ...values,
-        [param.key]: (host?.[param.key as keyof T] ?? "") as string
-      }),
-      {} as Record<string, string>
-    )
-  }
+  const cantSaveHost = useMemo(() => {
+    if (!editorTempExtension) return true
 
-  const [isEditing, setIsEditing] = useState(false)
-  const [paramsValues, setParamsValues] = useState(reduceHostValues(selectedHost))
+    for (const param of hostParams) {
+      if (param.mandatory && !editorTempExtension[param.key as keyof T]) {
+        return true
+      }
+    }
 
-  const isVerifiedOrigin = (url: string | null) => {
-    const hostname = urlHostname(url ?? "")
-    return verifiedOrigins.some(origin => origin === hostname || hostname?.endsWith("." + origin))
-  }
+    return false
+  }, [editorTempExtension, hostParams])
 
-  const toggleEditSelectedHost = () => {
-    onToggleEditing?.(!isEditing)
-    setIsEditing(editing => !editing)
-  }
+  const hideEditor = useCallback(() => {
+    setShowEditorModal(false)
+    setEditorTempExtension(undefined)
+  }, [])
 
-  const selectHost = (newHost: T) => {
-    const selectedHostIndex = hosts!.findIndex(host => host.url === newHost.url)
-    setSelectedUrl(hosts![selectedHostIndex].url)
-    setStorageSelectedUrl(hosts![selectedHostIndex].url)
-    updateParamsValuesForHost(newHost)
-    onChange?.(newHost)
-  }
-
-  const addNewHost = () => {
-    const newHost = { name: "New host", url: "https://" } as T
-
-    setHosts([...hosts!, newHost])
-    setSelectedUrl(newHost.url)
-    updateParamsValuesForHost(newHost)
-    toggleEditSelectedHost()
-  }
-
-  const deleteSelectedHost = () => {
+  const deleteHost = useCallback((host: T) => {
     if (hosts!.length === 1) {
       return showError("Cannot remove this extension", "You need at least 1 extension host")
     }
 
     const newHosts = [...hosts!]
-    const selectedHostIndex = newHosts.findIndex(host => host.url === selectedUrl)
+    const selectedHostIndex = newHosts.findIndex(h => h.url === host.url)
     newHosts.splice(selectedHostIndex, 1)
 
     const nextIndex = selectedHostIndex < newHosts.length ? selectedHostIndex : 0
@@ -132,142 +107,128 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost,
     setStorageHosts(newHosts)
     setSelectedUrl(newHosts[nextIndex].url)
     setStorageSelectedUrl(newHosts[nextIndex].url)
-    updateParamsValuesForHost(newHosts[nextIndex])
-    onChange?.(selectedHost!)
-    isEditing && toggleEditSelectedHost()
-  }
+    hideEditor()
+    onChange?.(host)
+  }, [
+    hosts,
+    onChange, setStorageHosts, setStorageSelectedUrl, showError, hideEditor
+  ])
 
-  const updateParamsValuesForHost = (host: T) => {
-    const values = reduceHostValues(host)
-    setParamsValues(values)
-  }
-
-  const updateParamsValuesForKey = (key: string, value: string) => {
-    const values = { ...paramsValues }
-    values[key] = value
-    setParamsValues(values)
-  }
-
-  const saveSelectedHost = () => {
-    if (!paramsValues.name) {
-      return showError("Host name error", "Please type a host name")
+  const askToDeleteHost = useCallback(async (host: T) => {
+    if (await waitConfirmation(
+      "Are you sure you want to delete this host?",
+      "This action cannot be undone",
+      "Delete",
+      "destructive"
+    )) {
+      deleteHost(host)
     }
-    if (!isSafeURL(paramsValues.url)) {
+  }, [deleteHost, waitConfirmation])
+
+  const editHost = useCallback((host: T) => {
+    setSelectedUrl(host.url)
+    setEditorTempExtension(host)
+    setShowEditorModal(true)
+  }, [])
+
+  const selectHost = useCallback((newHost: T) => {
+    if (newHost.url === selectedUrl) {
+      editHost(newHost)
+      return
+    }
+
+    const selectedHostIndex = hosts!.findIndex(host => host.url === newHost.url)
+    setSelectedUrl(hosts![selectedHostIndex].url)
+    setStorageSelectedUrl(hosts![selectedHostIndex].url)
+    onChange?.(newHost)
+  }, [selectedUrl, hosts, setStorageSelectedUrl, onChange, editHost])
+
+  const addHost = useCallback(() => {
+    setSelectedUrl(null)
+    setShowEditorModal(true)
+  }, [])
+
+  const cancelEditingHost = useCallback(() => {
+    setEditorTempExtension(undefined)
+    hideEditor()
+  }, [hideEditor])
+
+  const createOrUpdateEditingHost = useCallback(() => {
+    if (!isSafeURL(editorTempExtension!.url)) {
       return showError("URL Error", "Please insert a valid URL")
     }
-    if (!paramsValues.url.startsWith("https")) {
+    if (!editorTempExtension!.url.startsWith("https")) {
       return showError("URL Error", "The URL must be over https")
     }
 
-    for (const param of hostParams) {
-      if (param.mandatory && !paramsValues[param.key]) {
-        return showError(`Field ${param.label} is mandatory`, `Please enter a value`)
+    const newHosts = [...hosts!]
+    const selectedHostIndex = newHosts.findIndex(host => host.url === editorTempExtension!.url)
+
+    if (selectedHostIndex === -1) {
+      newHosts.push(editorTempExtension!)
+    } else {
+      for (const param of hostParams) {
+        newHosts[selectedHostIndex][param.key as keyof T] = editorTempExtension![param.key as keyof T] as any
       }
     }
 
-    const newHosts = [...hosts!]
-    const selectedHostIndex = newHosts.findIndex(host => host.url === selectedUrl)
-
-    for (const param of hostParams) {
-      newHosts[selectedHostIndex][param.key as keyof T] = paramsValues[param.key] as any
-    }
-
-    toggleEditSelectedHost()
     setHosts(newHosts)
     setStorageHosts(newHosts)
-    setSelectedUrl(paramsValues.url)
-    setStorageSelectedUrl(paramsValues.url)
-    setIsEditing(false)
+    setSelectedUrl(editorTempExtension!.url)
+    setStorageSelectedUrl(editorTempExtension!.url)
+    hideEditor()
     onChange?.(selectedHost!)
-  }
-
-  const signin = () => {
-    const retUrl = encodeURIComponent(window.location.href)
-    window.location.href = signInUrl! + `?ReturnUrl=${retUrl}`
-  }
+  }, [
+    editorTempExtension, hosts, selectedHost, hostParams,
+    onChange, setStorageHosts, setStorageSelectedUrl, showError, hideEditor
+  ])
 
   return (
-    <div className={classes.extensionHostPanel}>
-      <div className={classNames(classes.extensionHostPanelAuth, {
-        [classes.auth]: isSignedIn
-      })}>
-        {isSignedIn ? "Authenticated" : "Not authenticated"}
-      </div>
+    <>
+      <div className={classes.extensionHostPanel}>
+        <p className={classes.extensionHostPanelDescription}>{description}</p>
 
-      {!isSignedIn && signInUrl && selectedUrl === initialValue?.url && (
-        <Button className="ml-3" modifier="primary" small onClick={signin}>
-          Sign in
+        <Button className="mt-4" onClick={addHost} modifier="inverted" small>
+          <PlusIcon />
+          Add new
         </Button>
-      )}
 
-      <p className={classes.extensionHostPanelDescription}>{description}</p>
-
-      <div className={classes.extensionHostPanelListContainer}>
-        <ExtensionHostsList
-          hosts={hosts ?? []}
-          selectedHost={selectedHost}
-          editing={isEditing}
-          isVerifiedOrigin={isVerifiedOrigin}
-          onHostSelected={selectHost}
-        />
-      </div>
-
-      <div className={classes.extensionHostPanelUpdate}>
-        <div className={classes.extensionHostPanelActions}>
-          {isEditing ? (
-            <div className="space-x-3">
-              <Button className={classes.btn} modifier="secondary" onClick={saveSelectedHost} small>
-                <CheckIcon />
-                <span>Save</span>
-              </Button>
-              <Button className={classes.btnText} modifier="transparent" onClick={deleteSelectedHost} small>
-                <TrashIcon />
-                <span>Remove</span>
-              </Button>
-            </div>
-          ) : (
-            <>
-              {selectedUrl !== defaultUrl && (
-                <div className="space-x-3">
-                  <Button className={classes.btnText} modifier="transparent" onClick={toggleEditSelectedHost} small>
-                    <PencilIcon />
-                    <span>Edit</span>
-                  </Button>
-                  <Button className={classes.btnText} modifier="transparent" onClick={deleteSelectedHost} small>
-                    <TrashIcon />
-                    <span>Remove</span>
-                  </Button>
-                </div>
-              )}
-
-              <div className={classes.extensionHostPanelActionsRight}>
-                <Button className={classes.btn} modifier="inverted" aspect="outline" onClick={addNewHost} small>
-                  <PlusIcon />
-                  <span>Add</span>
-                </Button>
-              </div>
-            </>
-          )}
+        <div className={classes.extensionHostPanelListContainer}>
+          <ExtensionHostsList
+            hosts={hosts ?? []}
+            selectedHost={selectedHost}
+            onSelect={selectHost}
+            onEdit={editHost}
+            onDelete={askToDeleteHost}
+          />
         </div>
-
-        <form className={classes.extensionHostPanelFields}>
-          {hostParams.map(param => (
-            <FormGroup key={param.key}>
-              {(!!paramsValues[param.key] || isEditing) && (
-                <Label htmlFor={param.key}>{param.label}</Label>
-              )}
-              <ExtensionHostPanelParam
-                value={paramsValues[param.key]}
-                paramConfig={param}
-                isEditing={isEditing}
-                valueClassName={classes.extensionHostPanelValue}
-                onChange={val => updateParamsValuesForKey(param.key, val)}
-              />
-            </FormGroup>
-          ))}
-        </form>
       </div>
-    </div>
+
+      <Modal
+        show={showEditorModal}
+        title={selectedHost ? "Edit host" : "Add new host"}
+        footerButtons={
+          <>
+            <Button onClick={createOrUpdateEditingHost} disabled={cantSaveHost}>
+              Save
+            </Button>
+            {selectedHost && (
+              <Button className="mr-auto" aspect="link" modifier="danger" onClick={() => askToDeleteHost(selectedHost)}>
+                <TrashIcon /> Delete
+              </Button>
+            )}
+          </>
+        }
+        showCloseButton
+        onClose={cancelEditingHost}
+      >
+        <ExtensionHostForm<T>
+          value={editorTempExtension}
+          params={hostParams}
+          onChange={setEditorTempExtension}
+        />
+      </Modal>
+    </>
   )
 }
 

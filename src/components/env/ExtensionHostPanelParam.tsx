@@ -28,65 +28,53 @@ import classNames from "classnames"
 type ExtensionHostPanelParamProps = {
   value: string
   paramConfig: ExtensionParamConfig
-  isEditing: boolean
   valueClassName?: string
   onChange(val: string): void
 }
 
 const ExtensionHostPanelParam: React.FC<ExtensionHostPanelParamProps> = ({
   value,
-  valueClassName,
   paramConfig,
-  isEditing,
   onChange,
 }) => {
-  if (isEditing) {
-    switch (paramConfig.type ?? "text") {
-      case "text":
-        return (
-          <TextField
-            id={paramConfig.key}
-            type="text"
-            value={value}
-            onChange={onChange}
-            autoFocus
-          />
-        )
-      case "radio":
-        return (
-          <RadioGroup className={classes.radioGroup} value={value} onChange={onChange}>
-            {paramConfig.options?.map(config => (
-              <RadioGroup.Option value={config.value} key={config.value}>
-                {({ active, checked }) => (
-                  <div
-                    className={classNames(classes.radio, {
-                      [classes.active]: active,
-                    })}
-                  >
-                    <div className={classes.radioContent}>
-                      <RadioGroup.Label>{config.label}</RadioGroup.Label>
-                      <RadioGroup.Description>{config.description}</RadioGroup.Description>
-                    </div>
-                    {checked && (
-                      <CheckCircleIcon className={classes.radioCheck} />
-                    )}
-                  </div>
-                )}
-              </RadioGroup.Option>
-            ))}
-          </RadioGroup>
-        )
-    }
-  }
 
   switch (paramConfig.type ?? "text") {
     case "text":
       return (
-        <div className={valueClassName}>{value}</div>
+        <TextField
+          id={paramConfig.key}
+          type="text"
+          value={value}
+          onChange={onChange}
+          autoFocus
+        />
       )
-    case "radio":
+    case "gatetype":
       return (
-        <div className={valueClassName}>{paramConfig.options?.find(opt => opt.value === value)?.label}</div>
+        <RadioGroup className={classes.radioGroup} value={value} onChange={onChange}>
+          {paramConfig.options?.map(config => (
+            <RadioGroup.Option value={config.value} key={config.value}>
+              {({ active, checked }) => (
+                <div
+                  className={classNames(classes.radio, {
+                    [classes.active]: active,
+                    [classes.checked]: checked,
+                  })}
+                >
+                  <div className={classes.radioContent}>
+                    <RadioGroup.Label className={classes.radioLabel}>{config.label}</RadioGroup.Label>
+                    <RadioGroup.Description className={classes.radioDescription}>
+                      {config.description}
+                    </RadioGroup.Description>
+                  </div>
+                  {checked && (
+                    <CheckCircleIcon className={classes.radioCheck} />
+                  )}
+                </div>
+              )}
+            </RadioGroup.Option>
+          ))}
+        </RadioGroup>
       )
   }
 }

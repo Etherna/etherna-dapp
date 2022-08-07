@@ -1,0 +1,8 @@
+.hostFormAlert {
+  @apply mt-3 px-2 py-1.5;
+  @apply text-xs font-medium;
+
+  svg {
+    @apply h-[1.1em] mr-1 inline-block;
+  }
+}

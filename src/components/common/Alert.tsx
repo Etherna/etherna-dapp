@@ -44,17 +44,19 @@ const Alert: React.FC<AlertProps> = ({
         [classes.alertInfo]: type === "info",
       })}
     >
-      <div className={classes.alertHeader}>
-        {title && <div className={classes.alertTitle}>{title}</div>}
+      {(title || onClose) && (
+        <div className={classes.alertHeader}>
+          {title && <div className={classes.alertTitle}>{title}</div>}
 
-        {onClose && (
-          <button className={classes.close} onClick={onClose}>
-            <span className="m-auto" aria-hidden="true">
-              &times;
-            </span>
-          </button>
-        )}
-      </div>
+          {onClose && (
+            <button className={classes.close} onClick={onClose}>
+              <span className="m-auto" aria-hidden="true">
+                &times;
+              </span>
+            </button>
+          )}
+        </div>
+      )}
       <div className={classes.alertBody}>{children}</div>
     </div>
   )
