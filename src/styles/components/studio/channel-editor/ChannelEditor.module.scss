@@ -24,13 +24,14 @@
   @apply w-full min-h-44;
   @apply bg-gray-200/90 dark:bg-gray-800/50;
 
-  &, img {
+  &,
+  img {
     @apply rounded-md overflow-hidden;
   }
 }
 
 .coverImage {
-  @apply w-full h-auto;
+  @apply w-full h-full object-cover;
 }
 
 .coverInput {
