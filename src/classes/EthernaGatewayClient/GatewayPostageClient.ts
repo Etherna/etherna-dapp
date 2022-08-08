@@ -34,7 +34,7 @@ export default class GatewayPostageClient {
    * @param batchId Id of the swarm batch
    * @param byAmount Amount to add to the batch
    */
-  async topupBatch(batchId: string, byAmount: number) {
+  async topupBatch(batchId: string, byAmount: number | string) {
     const endpoint = `${this.url}/postage/batches/${batchId}/topup/${byAmount}`
 
     await http.get(endpoint, {

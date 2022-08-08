@@ -92,7 +92,7 @@ export default class GatewayUsersClient {
    * @param amount Amount of the batch (TTL)
    * @returns The newly created batch
    */
-  async createBatch(depth: number, amount: number): Promise<GatewayBatch> {
+  async createBatch(depth: number, amount: bigint | string): Promise<GatewayBatch> {
     const endpoint = `${this.url}/users/current/batches`
 
     const resp = await http.post<string>(endpoint, null, {

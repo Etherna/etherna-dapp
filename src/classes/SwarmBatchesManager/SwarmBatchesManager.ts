@@ -16,7 +16,7 @@
 
 import type { BatchId, PostageBatch } from "@ethersphere/bee-js"
 
-import { getBatchSpace } from "@/utils/batches"
+import { calcDilutedTTL, getBatchCapacity, getBatchSpace, ttlToAmount } from "@/utils/batches"
 import type { AnyBatch, SwarmBatchesManagerOptions } from "./types"
 import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
@@ -24,6 +24,8 @@ import type { GatewayType } from "@/definitions/extension-host"
 
 const DEFAULT_TTL = 60 * 60 * 24 * 365 * 2 // 2 years
 const DEFAULT_SIZE = 2 ** 16 // 65kb - basic manifest
+
+let lastPriceFetched: { url: string, price: number } | undefined
 
 export default class SwarmBatchesManager {
   batches: AnyBatch[] = []
@@ -40,8 +42,8 @@ export default class SwarmBatchesManager {
   protected gatewayType: GatewayType
   protected address: string
 
-  private cachedPrice?: number
-  private defaultBlockTime = import.meta.env.DEV ? 15 : 5.2 // goerli testnet vs gnosis
+  public defaultBlockTime = import.meta.env.DEV ? 15 : 5.2 // goerli testnet vs gnosis
+
   private updateQueueCount = 0
 
   constructor(opts: SwarmBatchesManagerOptions) {
@@ -49,6 +51,14 @@ export default class SwarmBatchesManager {
     this.gatewayType = opts.gatewayType
     this.beeClient = opts.beeClient
     this.gatewayClient = opts.gatewayClient
+  }
+
+  public get cachedPrice() {
+    return lastPriceFetched
+  }
+
+  private set cachedPrice(val: { url: string, price: number } | undefined) {
+    lastPriceFetched = val
   }
 
   /**
@@ -108,7 +118,7 @@ export default class SwarmBatchesManager {
    * @param batchId Batch to topup
    * @param byAmount Amount to topup
    */
-  async topupBatch(batchId: BatchId, byAmount: number): Promise<void> {
+  async topupBatch(batchId: BatchId, byAmount: number | string): Promise<void> {
     let batch = this.findBatchById(batchId)
     if (batch) {
       this.updateQueueCount++
@@ -223,7 +233,7 @@ export default class SwarmBatchesManager {
     const newSize = getBatchSpace(batch).total + addSize
 
     let depth = batch.depth + 1
-    while (newSize > (2 ** depth * 4096)) {
+    while (newSize > getBatchCapacity(batch)) {
       depth += 1
     }
 
@@ -231,12 +241,12 @@ export default class SwarmBatchesManager {
 
     await this.waitBatchPropagation(batch)
 
-    const newTTL = Math.ceil(batch.batchTTL / (2 ** (depth - batch.depth)))
+    const newTTL = calcDilutedTTL(batch.batchTTL, batch.depth, depth)
 
     // topup batch
     const price = await this.fetchPrice()
     const ttl = Math.abs(batch.batchTTL - newTTL)
-    const byAmount = Math.ceil(ttl * price / this.defaultBlockTime)
+    const byAmount = ttlToAmount(ttl, price, this.defaultBlockTime).toString()
     await this.topupBatch(batchId, byAmount)
 
     return true
@@ -251,7 +261,7 @@ export default class SwarmBatchesManager {
   async increaseBatchTTL(batch: AnyBatch, addTTL: number) {
     const price = await this.fetchPrice()
     const ttl = batch.batchTTL + addTTL
-    const byAmount = Math.ceil(ttl * price / 15)
+    const byAmount = ttlToAmount(ttl, price, this.defaultBlockTime).toString()
 
     await this.topupBatch(this.getBatchId(batch), byAmount)
 
@@ -324,10 +334,10 @@ export default class SwarmBatchesManager {
 
   async calcDepthAmount(size = DEFAULT_SIZE, ttl = DEFAULT_TTL) {
     const price = await this.fetchPrice()
-    const amount = Math.ceil(ttl * price / this.defaultBlockTime)
+    const amount = ttlToAmount(ttl, price, this.defaultBlockTime).toString()
     let depth = 17 // min depth
 
-    while (size > (2 ** depth * 4096)) {
+    while (size > getBatchCapacity(depth)) {
       depth += 1
     }
 
@@ -360,19 +370,29 @@ export default class SwarmBatchesManager {
   }
 
   async fetchPrice(): Promise<number> {
-    if (this.cachedPrice) return this.cachedPrice
+    const url = this.gatewayType === "etherna-gateway" ? this.gatewayClient.url : this.beeClient.url
+    if (this.cachedPrice && this.cachedPrice.url === url) return this.cachedPrice.price
 
     try {
       if (this.gatewayType === "etherna-gateway") {
-        this.cachedPrice = (await this.gatewayClient.system.fetchChainstate()).currentPrice
+        this.cachedPrice = {
+          url,
+          price: (await this.gatewayClient.system.fetchChainstate()).currentPrice,
+        }
       } else {
-        this.cachedPrice = await this.beeClient.getCurrentPrice()
+        this.cachedPrice = {
+          url,
+          price: await this.beeClient.getCurrentPrice(),
+        }
       }
     } catch (error) {
-      this.cachedPrice = 4 // hardcoded price
+      this.cachedPrice = {
+        url,
+        price: 4, // hardcoded price
+      }
     }
 
-    return this.cachedPrice
+    return this.cachedPrice.price
   }
 
   parseBatch(batch: AnyBatch): PostageBatch {

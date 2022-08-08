@@ -42,6 +42,17 @@ export const getBatchSpace = (batch: PostageBatch | GatewayBatch) => {
 }
 
 /**
+ * Get batch capacity
+ * 
+ * @param batchOrDepth Batch data or depth
+ * @returns Batch total capcity in bytes
+ */
+export const getBatchCapacity = (batchOrDepth: PostageBatch | GatewayBatch | number) => {
+  const depth = typeof batchOrDepth === "number" ? batchOrDepth : batchOrDepth.depth
+  return 2 ** depth * 4096
+}
+
+/**
  * Get the batch expiration day
  * 
  * @param batch Batch data
@@ -77,4 +88,40 @@ export const parsePostageBatch = (batch: PostageBatch, owner: string | null | un
     usable: batch.usable,
     utilization: batch.utilization,
   }
+}
+
+/**
+ * Convert TTL to batch amount
+ * 
+ * @param ttl TTL in seconds
+ * @param price Token price
+ * @param blockTime Chain blocktime
+ * @returns Batch amount
+ */
+export const ttlToAmount = (ttl: number, price: number, blockTime: number): bigint => {
+  return BigInt(ttl) * BigInt(price) / BigInt(blockTime)
+}
+
+/**
+ * Calc batch price from depth & amount
+ * 
+ * @param depth Batch depth
+ * @param amount Batch amount
+ * @returns Price in BZZ
+ */
+export const getPrice = (depth: number, amount: bigint | string): string => {
+  const hasInvalidInput = BigInt(amount) <= BigInt(0) || isNaN(depth) || depth < 17 || depth > 255
+
+  if (hasInvalidInput) {
+    return "-"
+  }
+
+  const price = BigInt(amount) * BigInt(2 ** depth)
+  const readablePrice = price / BigInt(10 ** 16) // 16 is token decimal places
+
+  return `${readablePrice} xBZZ`
+}
+
+export const calcDilutedTTL = (currentTTL: number, currentDepth: number, newDepth: number): number => {
+  return Math.ceil(currentTTL / (2 ** (newDepth - currentDepth)))
 }

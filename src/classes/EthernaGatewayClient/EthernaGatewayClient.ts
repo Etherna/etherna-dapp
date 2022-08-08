@@ -23,6 +23,7 @@ import { parseLocalStorage } from "@/utils/local-storage"
 import type { GatewayClientOptions } from "@/definitions/api-gateway"
 
 export default class EthernaGatewayClient {
+  url: string
   resources: GatewayResourcesClient
   users: GatewayUsersClient
   system: GatewaySystemClient
@@ -36,16 +37,17 @@ export default class EthernaGatewayClient {
    * @param options Client options
    */
   constructor(options: GatewayClientOptions) {
-    const host = options.host.replace(/\/?$/, "")
+    this.url = options.host.replace(/\/?$/, "")
+
     const apiPath = `/api/v${import.meta.env.VITE_APP_API_VERSION}`
-    const url = `${host}${apiPath}`
+    const url = `${this.url}${apiPath}`
 
     this.resources = new GatewayResourcesClient(url)
     this.users = new GatewayUsersClient(url)
     this.system = new GatewaySystemClient(url)
     this.postage = new GatewayPostageClient(url)
-    this.loginPath = `${host}${options.loginPath || "/account/login"}`
-    this.logoutPath = `${host}${options.logoutPath || "/account/logout"}`
+    this.loginPath = `${this.url}${options.loginPath || "/account/login"}`
+    this.logoutPath = `${this.url}${options.logoutPath || "/account/logout"}`
   }
 
   /**

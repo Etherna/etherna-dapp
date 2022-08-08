@@ -220,7 +220,7 @@ export default class SwarmBeeClient extends Bee {
     return resp.data.currentPrice
   }
 
-  async createBatch(depth = 20, amount = 10000000): Promise<BatchId> {
+  async createBatch(depth = 20, amount: bigint | string = "10000000"): Promise<BatchId> {
     const token = this.authToken
 
     const resp = await http.post<{ batchID: BatchId }>(`${this.url}/stamps/${amount}/${depth}`, null, {
@@ -239,7 +239,7 @@ export default class SwarmBeeClient extends Bee {
    * @param batchId Id of the swarm batch
    * @param byAmount Amount to add to the batch
    */
-  async topupBatch(batchId: string, byAmount: number): Promise<boolean> {
+  async topupBatch(batchId: string, byAmount: number | string): Promise<boolean> {
     const token = this.authToken
     const stampsUrl = `${this.url}/stamps/topup/${batchId}/${byAmount}`
 
