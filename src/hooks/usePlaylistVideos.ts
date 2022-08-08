@@ -24,7 +24,7 @@ import type { Video } from "@/definitions/swarm-video"
 import type { Profile } from "@/definitions/swarm-profile"
 
 type PlaylistVideosOptions = {
-  owner?: Profile
+  owner?: Profile | null
   waitProfile?: boolean
   limit?: number
   autofetch?: boolean
@@ -83,7 +83,7 @@ export default function usePlaylistVideos(
           beeClient,
           indexClient,
           fetchProfile: !opts.owner,
-          profileData: opts.owner,
+          profileData: opts.owner ?? undefined,
         })
         return reader.download()
       }))

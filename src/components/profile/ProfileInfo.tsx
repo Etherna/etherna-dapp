@@ -32,7 +32,7 @@ type ProfileInfoProps = {
   profileAddress: string
   nav?: React.ReactNode
   actions?: React.ReactNode
-  onFetchedProfile: (profile: Profile) => void
+  onFetchedProfile: (profile: Profile | null) => void
 }
 
 const ProfileInfo: React.FC<ProfileInfoProps> = ({
@@ -52,9 +52,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   }, [profileAddress])
 
   useEffect(() => {
-    if (profile) {
-      onFetchedProfile(profile)
-    }
+    onFetchedProfile(profile)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile])
 

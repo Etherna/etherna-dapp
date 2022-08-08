@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 import SwarmProfileIO from "@/classes/SwarmProfile"
 import useSelector from "@/state/useSelector"
@@ -31,27 +31,20 @@ export default function useSwarmProfile(opts: SwarmProfileOptions) {
   const { fetchFromCache, updateCache } = opts
 
   const { beeClient } = useSelector(state => state.env)
-  const [address, setAddress] = useState(opts.address)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [isLoading, setIsloading] = useState(false)
-
-  useEffect(() => {
-    if (address !== opts.address) {
-      setAddress(opts.address)
-    }
-  }, [address, opts.address])
 
   // Returns
   const loadProfile = async () => {
     setIsloading(true)
 
-    const profileReader = new SwarmProfileIO.Reader(address, {
+    const profileReader = new SwarmProfileIO.Reader(opts.address, {
       beeClient,
       fetchFromCache,
       updateCache,
     })
 
-    let profile = SwarmProfileIO.getDefaultProfile(address)
+    let profile = SwarmProfileIO.getDefaultProfile(opts.address)
 
     try {
       const profileInfo = await profileReader.download(true)
@@ -73,7 +66,7 @@ export default function useSwarmProfile(opts: SwarmProfileOptions) {
   const updateProfile = async (profile: Profile) => {
     setIsloading(true)
 
-    const profileWriter = new SwarmProfileIO.Writer(address, { beeClient })
+    const profileWriter = new SwarmProfileIO.Writer(opts.address, { beeClient })
 
     // save profile data on swarm
     const newReference = await profileWriter.update(profile)

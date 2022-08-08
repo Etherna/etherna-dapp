@@ -75,7 +75,7 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
     })
 
     if (currentUser && identity) {
-      const address = identity.etherLoginAddress || identity.etherAddress
+      const address = identity.etherAddress
       fetchProfile(address, identity)
     }
   }
@@ -86,7 +86,7 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
 
       dispatch({
         type: UserActionTypes.USER_UPDATE_IDENTITY,
-        address: identity.etherLoginAddress || identity.etherAddress,
+        address: identity.etherAddress,
         prevAddresses: identity.etherPreviousAddresses,
       })
 

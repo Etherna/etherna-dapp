@@ -35,7 +35,7 @@ type ProfileViewProps = {
 }
 
 const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
-  const [profile, setProfile] = useState<Profile>()
+  const [profile, setProfile] = useState<Profile | null>(null)
   const [activeTab, setActiveTab] = useState("videos")
   const { address } = useSelector(state => state.user)
   const { isMobile } = useSelector(state => state.env)
@@ -50,9 +50,9 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
   useEffect(() => {
     loadPlaylists()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [profileAddress])
 
-  const handleFetchedProfile = (profile: Profile) => {
+  const handleFetchedProfile = (profile: Profile | null) => {
     setProfile(profile)
   }
 

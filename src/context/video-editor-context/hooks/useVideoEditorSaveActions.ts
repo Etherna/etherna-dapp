@@ -17,6 +17,7 @@
 import { useEffect, useState } from "react"
 
 import useVideoEditorState from "./useVideoEditorState"
+import VideoEditorCache from "../VideoEditorCache"
 import useUserPlaylists from "@/hooks/useUserPlaylists"
 import useSelector from "@/state/useSelector"
 import { useErrorMessage } from "@/state/hooks/ui"
@@ -114,6 +115,9 @@ export default function useVideoEditorSaveActions() {
       const offered = await offerVideoResources()
       setResourcesOffered(offered)
     }
+
+    // Clear cache
+    VideoEditorCache.deleteCache()
 
     setReference(newReference)
     setIsSaving(false)
