@@ -31,6 +31,8 @@ export default class EthernaGatewayClient {
   loginPath: string
   logoutPath: string
 
+  static maxBatchDepth = 20
+
   /**
    * Init an gateway client
    * 

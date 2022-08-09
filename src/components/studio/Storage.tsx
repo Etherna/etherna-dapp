@@ -20,13 +20,15 @@ import React from "react"
 import classes from "@/styles/components/studio/Storage.module.scss"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
-import StorageBatch from "./storage/StorageBatch"
+import StorageBatchList from "./storage/StorageBatchList"
 import Alert from "@/components/common/Alert"
 import useSelector from "@/state/useSelector"
+import useBatches from "@/state/hooks/user/useBatches"
 
 const Storage: React.FC = () => {
   const gatewayType = useSelector(state => state.env.gatewayType)
-  const { batches, defaultBatchId } = useSelector(state => state.user)
+  const { batches } = useSelector(state => state.user)
+  const { updateBatch } = useBatches()
 
   return (
     <div className={classes.storage}>
@@ -53,11 +55,7 @@ const Storage: React.FC = () => {
         </p>
       )}
       {(batches && batches.length > 0) && (
-        <ul className={classes.storageList}>
-          {batches.map(batch => (
-            <StorageBatch batch={batch} num={1} isMain={batch.id === defaultBatchId} key={batch.id} />
-          ))}
-        </ul>
+        <StorageBatchList batches={batches} onBatchUpdate={updateBatch} />
       )}
     </div>
   )

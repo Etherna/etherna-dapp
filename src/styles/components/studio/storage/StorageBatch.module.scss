@@ -57,6 +57,10 @@
   @apply ml-3;
   @apply text-gray-600 dark:text-gray-300;
   @apply font-medium;
+
+  &.expired {
+    @apply text-red-600 dark:text-red-400;
+  }
 }
 
 .storageBatchProgress {

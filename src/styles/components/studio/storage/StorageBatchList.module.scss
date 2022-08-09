@@ -1,0 +1,9 @@
+.storageList {
+  @apply grid gap-5 grid-flow-row-dense;
+  @apply grid-cols-1 md:grid-cols-2 lg:grid-cols-1;
+  @apply mt-5;
+
+  @screen xl {
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  }
+}

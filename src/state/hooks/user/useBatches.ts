@@ -31,9 +31,14 @@ type UseBatchesOpts = {
 export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) {
   const [isFetchingBatches, setIsFetchingBatches] = useState(false)
   const [error, setError] = useState<string | undefined>()
-  const { gatewayClient, gatewayType, beeClient } = useSelector(state => state.env)
-  const { address } = useSelector(state => state.user)
-  const { isLoadingProfile } = useSelector(state => state.ui)
+
+  const gatewayClient = useSelector(state => state.env.gatewayClient)
+  const gatewayType = useSelector(state => state.env.gatewayType)
+  const beeClient = useSelector(state => state.env.beeClient)
+  const address = useSelector(state => state.user.address)
+  const batches = useSelector(state => state.user.batches)
+  const isLoadingProfile = useSelector(state => state.ui.isLoadingProfile)
+
   const dispatch = useDispatch<Dispatch<UserActions>>()
   const { waitAuth } = useBeeAuthentication()
   const timeout = useRef<number>()
@@ -81,9 +86,23 @@ export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) 
     setIsFetchingBatches(false)
   }
 
+  const updateBatch = (batch: GatewayBatch) => {
+    const updatedBatches = [...(batches ?? [])]
+    const index = updatedBatches.findIndex(b => b.id === batch.id)
+    if (index >= 0) {
+      updatedBatches[index] = batch
+    }
+
+    dispatch({
+      type: UserActionTypes.USER_SET_BATCHES,
+      batches: updatedBatches,
+    })
+  }
+
   return {
     isFetchingBatches,
     error,
     fetchAllBatches,
+    updateBatch,
   }
 }

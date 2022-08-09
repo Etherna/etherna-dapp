@@ -32,8 +32,8 @@ type UseBatchesOpts = {
   autofetch?: boolean
 }
 
-export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) {
-  const [isFetchingBatches, setIsFetchingBatches] = useState(false)
+export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: false }) {
+  const [isFetchingBatch, setIsFetchingBatch] = useState(false)
   const [isCreatingBatch, setIsCreatingBatch] = useState(false)
   const [error, setError] = useState<string | undefined>()
   const { gatewayClient, gatewayType, beeClient } = useSelector(state => state.env)
@@ -59,6 +59,8 @@ export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) 
   }, [opts.autofetch, isLoadingProfile])
 
   const fetchBatch = async () => {
+    setIsFetchingBatch(true)
+
     let batch = await fetchDefaultBatch()
 
     if (!batch) {
@@ -68,6 +70,8 @@ export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) 
     if (!batch) {
       batch = await createDefaultBatch()
     }
+
+    setIsFetchingBatch(false)
 
     if (batch) {
       dispatch({
@@ -172,7 +176,7 @@ export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) 
 
   return {
     isCreatingBatch,
-    isFetchingBatches,
+    isFetchingBatch,
     error,
     defaultBatch,
     fetchDefaultBatch,

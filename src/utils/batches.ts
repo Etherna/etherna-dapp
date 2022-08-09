@@ -109,19 +109,29 @@ export const ttlToAmount = (ttl: number, price: number, blockTime: number): bigi
  * @param amount Batch amount
  * @returns Price in BZZ
  */
-export const getPrice = (depth: number, amount: bigint | string): string => {
+export const calcBatchPrice = (depth: number, amount: bigint | string): string => {
   const hasInvalidInput = BigInt(amount) <= BigInt(0) || isNaN(depth) || depth < 17 || depth > 255
 
   if (hasInvalidInput) {
     return "-"
   }
 
+  const tokenDecimals = 16
   const price = BigInt(amount) * BigInt(2 ** depth)
-  const readablePrice = price / BigInt(10 ** 16) // 16 is token decimal places
+  // @ts-ignore
+  const readablePrice = price.toString() / (10 ** tokenDecimals)
 
   return `${readablePrice} xBZZ`
 }
 
+/**
+ * Calculate the batch TTL after a dilute
+ * 
+ * @param currentTTL Current batch TTL
+ * @param currentDepth Current batch depth
+ * @param newDepth New batch depth
+ * @returns The projected batch TTL
+ */
 export const calcDilutedTTL = (currentTTL: number, currentDepth: number, newDepth: number): number => {
   return Math.ceil(currentTTL / (2 ** (newDepth - currentDepth)))
 }
