@@ -15,7 +15,7 @@
  */
 
 .sidebarLogo {
-  @apply h-7;
+  @apply h-[27px];
   @apply text-gray-900 dark:text-gray-100;
   @apply hover:text-gray-900 dark:hover:text-gray-100;
   @apply lg:mr-4;
@@ -28,8 +28,16 @@
 
 .sidebarLogoMobile {
   @apply h-full lg:hidden;
+
+  [data-sidebar-floating="true"] & {
+    @apply hidden;
+  }
 }
 
 .sidebarLogoDefault {
   @apply hidden h-full lg:block;
+
+  [data-sidebar-floating="true"] & {
+    @apply block;
+  }
 }

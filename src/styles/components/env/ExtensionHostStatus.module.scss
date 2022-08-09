@@ -35,6 +35,10 @@
   .extensionHostStatus.compactMobile & {
     @apply hidden lg:flex;
   }
+
+  [data-sidebar-floating="true"] .extensionHostStatus.compactMobile & {
+    @apply flex;
+  }
 }
 
 .extensionHostStatusTitle {
