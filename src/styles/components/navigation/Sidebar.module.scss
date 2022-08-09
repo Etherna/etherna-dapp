@@ -24,6 +24,9 @@
   @apply xl:w-64;
 
   &.floating {
+    @apply flex;
+    @apply w-52 md:w-52;
+    @apply fixed left-0 inset-y-0;
     @apply transform -translate-x-full;
     @apply z-20;
   }
@@ -43,7 +46,7 @@
 
 .sidebarBackdrop {
   @apply fixed inset-0;
-  @apply bg-gray-900 bg-opacity-30;
+  @apply bg-gray-900/50;
   @apply z-20;
 }
 

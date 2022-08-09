@@ -50,8 +50,9 @@ const Sidebar: React.FC<SidebarProps> = ({ children, floating, show, onClose }) 
     <>
       {floating && (
         <Transition
-          show={show}
-          enter="transition-opacity duration-75"
+          as={React.Fragment}
+          show={showSidebar}
+          enter="transition-opacity duration-200"
           enterFrom="opacity-0"
           enterTo="opacity-100"
           leave="transition-opacity duration-150"
@@ -69,6 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ children, floating, show, onClose }) 
         })}
         ref={sidebarRef}
         data-sidebar
+        data-sidebar-floating={floating}
       >
         <div className={classes.sidebarContainer}>
           {children}
