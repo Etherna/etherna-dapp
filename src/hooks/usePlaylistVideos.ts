@@ -34,12 +34,14 @@ export default function usePlaylistVideos(
   playlist: SwarmPlaylist | undefined,
   opts: PlaylistVideosOptions = { limit: -1, autofetch: true }
 ) {
-  const { beeClient, indexClient } = useSelector(state => state.env)
+  const beeClient = useSelector(state => state.env.beeClient)
+  const indexClient = useSelector(state => state.env.indexClient)
   const [videos, setVideos] = useState<Video[]>()
   const [isFetching, setIsFetching] = useState(false)
   const [hasMore, setHasMore] = useState(false)
   const [total, setTotal] = useState(0)
   const [isEncrypted, setIsEncrypted] = useState(playlist?.type === "private" && !playlist.videos)
+
 
   useEffect(() => {
     if (playlist) {

@@ -32,7 +32,7 @@ import type {
 } from "@/definitions/swarm-playlist"
 
 export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylistsDownloadOptions) {
-  const { beeClient, indexUrl } = useSelector(state => state.env)
+  const beeClient = useSelector(state => state.env.beeClient)
   const [isFetchingPlaylists, setIsFetchingPlaylists] = useState(false)
   const [rawPlaylists, setRawPlaylists] = useState<SwarmUserPlaylistsRaw>()
   const [channelPlaylist, setChannelPlaylist] = useState<SwarmPlaylist>()
@@ -48,6 +48,8 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
   }, [channelPlaylist, savedPlaylist, customPlaylists])
 
   useEffect(() => {
+    console.log("useUserPlaylists:owner", owner)
+
     setRawPlaylists(undefined)
     setChannelPlaylist(undefined)
     setSavedPlaylist(undefined)
@@ -107,17 +109,25 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
     const newPlaylist = deepCloneObject(initialPlaylist)
     const index = newPlaylist.videos?.findIndex(video => video.reference === previousReference)
 
-    if (index != null && index >= 0) {
-      newPlaylist.videos!.splice(index, 1, {
-        reference: newVideo.reference,
-        title: newVideo.title || "",
-        addedAt: newPlaylist.videos![index].addedAt,
-        publishedAt: newPlaylist.videos![index].publishedAt,
-      })
+    console.log("playlist videos", newPlaylist.videos)
+    console.log("old ref", previousReference)
+    console.log("index", index)
+
+    if (index == null || index === -1) {
+      throw new Error(`Coudn't find video with reference ${previousReference} in your channel videos`)
     }
+
+    newPlaylist.videos!.splice(index, 1, {
+      reference: newVideo.reference,
+      title: newVideo.title || "",
+      addedAt: newPlaylist.videos![index].addedAt,
+      publishedAt: newPlaylist.videos![index].publishedAt,
+    })
+
     newPlaylist.videos = [
       ...(newPlaylist.videos ?? []),
     ].filter((vid, i, self) => self.findIndex(vid2 => vid2.reference === vid.reference) === i)
+
     await updatePlaylistAndUser(initialPlaylist, newPlaylist)
   }
 
