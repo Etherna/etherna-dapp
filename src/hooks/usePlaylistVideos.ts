@@ -76,6 +76,7 @@ export default function usePlaylistVideos(
 
     setTotal(playlist.videos.length)
     setIsFetching(true)
+
     try {
       const references = playlist.videos.slice(from, to)
       const newVideos = await Promise.all(references.map(video => {

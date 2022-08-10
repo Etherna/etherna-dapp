@@ -111,6 +111,11 @@ const SidebarNavigation: React.FC = () => {
         />
         <FeedbackLink />
         <SidebarLinksItem
+          title="GitHub"
+          to="https://github.com/etherna/etherna-dapp"
+          target="_blank"
+        />
+        <SidebarLinksItem
           title="Index Api"
           to={urlPath(import.meta.env.VITE_APP_INDEX_URL, "/swagger")}
           target="_blank"

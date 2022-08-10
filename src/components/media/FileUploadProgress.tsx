@@ -33,13 +33,15 @@ const FileUploadProgress: React.FC<FileUploadProgressProps> = ({
   return (
     <div className={classes.fileUploadProgress}>
       <div className={classes.progress}>
-        <ProgressBar progress={progress} />
+        <ProgressBar progress={progress} indeterminate={progress === 100} />
       </div>
+      {progress < 100 && (
+        <span className={classes.fileUploadProgressValue}>
+          {progress}%
+        </span>
+      )}
       <span className={classes.fileUploadProgressValue}>
-        {progress}%
-      </span>
-      <span className={classes.fileUploadProgressValue}>
-        {progress < 100 ? <p>Uploading...</p> : <p>Processing...</p>}
+        {progress < 100 ? <p>Uploading...</p> : <p>Processing data (it might take several seconds)</p>}
       </span>
     </div>
   )

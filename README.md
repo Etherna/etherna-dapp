@@ -1,5 +1,11 @@
 # Etherna
 
+## Issues
+
+If you want to submit a bug or feature request go to our [Jira issues](https://etherna.atlassian.net/jira/software/c/projects/EDD/issues).
+
+## What's Etherna?
+
 We want to solve two big issue. One related to most part of youtube creators that in last period had been demonetized and obscured. The other one, is the preservation of user's personal data.
 
 We are developing a new video platform, a platform free from the slavery of advertising and all its restrictions. A more transparent platform for its users. A platform in which every artist, every independent journalist and why not, companies can feel valued their creation.

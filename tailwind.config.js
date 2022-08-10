@@ -88,6 +88,24 @@ module.exports = {
       minHeight: ({ theme }) => ({
         ...theme("spacing")
       }),
+      animation: {
+        "spinSlow": "spinSlow 2s linear infinite",
+        "slide": "slide 2s cubic-bezier(0.2, 0.7, 0.7, 0.4) infinite",
+      },
+      keyframes: {
+        spinSlow: {
+          "from": { transform: "rotate(360deg)" },
+          "to": { transform: "rotate(0deg)" },
+        },
+        slide: {
+          "0%": {
+            left: "-100%",
+          },
+          "100%": {
+            left: "100%",
+          },
+        },
+      },
       zIndex: {
         "-1": "-1",
         1: "1",

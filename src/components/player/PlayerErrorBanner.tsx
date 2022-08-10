@@ -34,7 +34,9 @@ const PlayerErrorBanner: React.FC = () => {
     if (error) {
       switch (error.code) {
         case 401:
-          setDescription("You are not authenticated. Please Sign in.")
+          setDescription(
+            "This is a pay to watch video. To watch this content you need to signin and have some credit available."
+          )
           break
         case 402:
           setDescription("You don't have enough credit. Please add some more to enjoin this content.")
