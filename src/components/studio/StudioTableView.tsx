@@ -21,6 +21,7 @@ import classNames from "classnames"
 import classes from "@/styles/components/studio/StudioTableView.module.scss"
 
 import Pagination from "@/components/common/Pagination"
+import TableVideoPlaceholder from "@/components/placeholders/TableVideoPlaceholder"
 
 type StudioTableViewProps<T = any> = {
   className?: string
@@ -61,7 +62,10 @@ const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
   const [selectedItems, setSelectedItems] = useState<T[]>([])
 
   useEffect(() => {
-    setSelectedItems([])
+    if (selectedItems.length > 0) {
+      setSelectedItems([])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items])
 
   useEffect(() => {
@@ -161,6 +165,10 @@ const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
                 })}
               </tr>
             ))}
+
+            {(isLoading && !items?.length) && (
+              <TableVideoPlaceholder />
+            )}
           </tbody>
         </table>
       </div>
