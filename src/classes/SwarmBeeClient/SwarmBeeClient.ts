@@ -136,14 +136,17 @@ export default class SwarmBeeClient extends Bee {
   }
 
   async getBatchId(): Promise<string> {
+    const usableBatch = (batch: GatewayBatch | PostageBatch) =>
+      batch.usable && (batch.utilization / 2 ** (batch.depth - batch.bucketDepth)) < 1
+
     if (this.userBatches) {
-      const batch = this.userBatches.filter(batch => batch.usable)[0]
+      const batch = this.userBatches.filter(usableBatch)[0]
       if (batch) {
         return batch.id
       }
     }
     const batches = await this.getAllPostageBatch()
-    const usableBatches = batches.filter(batch => batch.usable)
+    const usableBatches = batches.filter(usableBatch)
     return usableBatches[0]?.batchID || this.emptyBatchId
   }
 
