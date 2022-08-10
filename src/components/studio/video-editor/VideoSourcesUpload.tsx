@@ -302,7 +302,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
                 }
               >
                 {isUploading && (
-                  <FileUploadProgress progress={currentQueue?.completion ?? 10} />
+                  <FileUploadProgress progress={currentQueue?.completion ?? 0} />
                 )}
 
                 {!isUploading && !finished && (

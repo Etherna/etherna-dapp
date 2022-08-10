@@ -23,14 +23,24 @@ import classes from "@/styles/components/common/ProgressBar.module.scss"
 import { clamp } from "@/utils/math"
 
 type ProgressBarProps = {
-  progress: number
   className?: string
+  progress?: number
+  indeterminate?: boolean
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({ progress, className }) => {
+const ProgressBar: React.FC<ProgressBarProps> = ({ className, progress = 0, indeterminate }) => {
   return (
-    <div className={classNames(classes.progress, className)}>
-      <div className={classes.progressBar} style={{ width: `${clamp(progress, 0, 100)}%` }}></div>
+    <div
+      className={classNames(classes.progress, className, {
+        [classes.indeterminate]: indeterminate,
+      })}
+    >
+      <div
+        className={classes.progressBar}
+        style={{
+          width: !indeterminate ? `${clamp(progress, 0, 100)}%` : undefined
+        }}
+      />
     </div>
   )
 }

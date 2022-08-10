@@ -15,10 +15,22 @@
  */
 
 .progress {
+  @apply relative overflow-hidden;
   @apply block w-full h-1 rounded-full bg-gray-300;
   @apply dark:bg-gray-700;
 }
 
 .progressBar {
   @apply rounded-full h-full bg-primary-500;
+
+  .indeterminate & {
+    @apply absolute inset-0 w-full;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      theme("colors.primary.500") 50%,
+      transparent 100%
+    );
+    @apply animate-slide;
+  }
 }

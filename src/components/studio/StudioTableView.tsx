@@ -21,6 +21,7 @@ import classNames from "classnames"
 import classes from "@/styles/components/studio/StudioTableView.module.scss"
 
 import Pagination from "@/components/common/Pagination"
+import TableVideoPlaceholder from "@/components/placeholders/TableVideoPlaceholder"
 
 type StudioTableViewProps<T = any> = {
   className?: string
@@ -162,6 +163,10 @@ const StudioTableView = <T, A>({
                 })}
               </tr>
             ))}
+
+            {(isLoading && !items?.length) && (
+              <TableVideoPlaceholder />
+            )}
           </tbody>
         </table>
       </div>
