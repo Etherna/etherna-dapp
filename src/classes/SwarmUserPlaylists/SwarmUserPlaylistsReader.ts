@@ -51,15 +51,21 @@ export default class SwarmUserPlaylistsReader {
   }
 
   private async resolveChannel() {
-    this.channelPlaylist = await this.resolvePlaylistOrDefault(
-      this.rawPlaylists?.channel,
+    // this.channelPlaylist = await this.resolvePlaylistOrDefault(
+    //   this.rawPlaylists?.channel,
+    //   SwarmUserPlaylistsIO.getDefaultChannelPlaylist(this.owner)
+    // )
+    this.channelPlaylist = await this.depracated_resolvePlaylistFromId(
       SwarmUserPlaylistsIO.getDefaultChannelPlaylist(this.owner)
     )
   }
 
   private async resolveSaved() {
-    this.savedPlaylist = await this.resolvePlaylistOrDefault(
-      this.rawPlaylists?.saved,
+    // this.savedPlaylist = await this.resolvePlaylistOrDefault(
+    //   this.rawPlaylists?.saved,
+    //   SwarmUserPlaylistsIO.getDefaultSavedPlaylist(this.owner)
+    // )
+    this.savedPlaylist = await this.depracated_resolvePlaylistFromId(
       SwarmUserPlaylistsIO.getDefaultSavedPlaylist(this.owner)
     )
   }
@@ -71,6 +77,22 @@ export default class SwarmUserPlaylistsReader {
         SwarmUserPlaylistsIO.getDefaultCustomPlaylist(this.owner)
       ))
     )
+  }
+
+  private async depracated_resolvePlaylistFromId(fallback: SwarmPlaylist) {
+    // feeds root manifest seems not to be in sync with feed reference in production
+    // loading playlist directly from id until this is fixed
+    const id = fallback.id
+    try {
+      const reader = new SwarmPlaylistIO.Reader(undefined, undefined, {
+        id,
+        beeClient: this.beeClient,
+        owner: this.owner,
+      })
+      return await reader.download()
+    } catch (error) {
+      return fallback
+    }
   }
 
   private async resolvePlaylistOrDefault(reference: string | undefined, fallback: SwarmPlaylist) {

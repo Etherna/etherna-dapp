@@ -15,7 +15,7 @@
  *  
  */
 
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Link, Navigate } from "react-router-dom"
 import classNames from "classnames"
 
@@ -47,7 +47,9 @@ import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 const Videos: React.FC = () => {
   const profileInfo = useSelector(state => state.profile)
   const address = useSelector(state => state.user.address)
-  const { beeClient, indexClient, isStandaloneGateway } = useSelector(state => state.env)
+  const beeClient = useSelector(state => state.env.beeClient)
+  const indexClient = useSelector(state => state.env.indexClient)
+  const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
 
   const [profile, setProfile] = useState<Profile>()
   const [page, setPage] = useState(1)
@@ -101,7 +103,7 @@ const Videos: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videosOffersStatus])
 
-  const deleteSelectedVideos = async () => {
+  const deleteSelectedVideos = useCallback(async () => {
     if (!channelPlaylist) {
       return showError(
         "Channel error",
@@ -129,9 +131,9 @@ const Videos: React.FC = () => {
     await removeVideosFromPlaylist(channelPlaylist.id, removedReferences)
 
     setShowDeleteModal(false)
-  }
+  }, [address, beeClient, channelPlaylist, indexClient.videos, selectedVideos, removeVideosFromPlaylist])
 
-  const duplicateVideo = async (video: Video) => {
+  const duplicateVideo = useCallback(async (video: Video) => {
     const count = prompt("Count", "1")
     if (!count) return
 
@@ -153,9 +155,9 @@ const Videos: React.FC = () => {
     await addVideosToPlaylist(channelPlaylist!.id, newVideos)
 
     alert("Copy completed!")
-  }
+  }, [address, beeClient, channelPlaylist, profile, addVideosToPlaylist])
 
-  const renderVideoStatus = (video: Video) => {
+  const renderVideoStatus = useCallback((video: Video) => {
     const status = video.isVideoOnIndex
       ? video.isValidatedOnIndex
         ? "public"
@@ -169,9 +171,9 @@ const Videos: React.FC = () => {
         {status.replace(/^[a-z]{1}/, letter => letter.toUpperCase())}
       </span>
     )
-  }
+  }, [])
 
-  const renderOffersStatus = (video: Video) => {
+  const renderOffersStatus = useCallback((video: Video) => {
     if (isStandaloneGateway) {
       return null
     }
@@ -202,7 +204,7 @@ const Videos: React.FC = () => {
         {status === "partial" && "Partially offered"}
       </button>
     )
-  }
+  }, [isStandaloneGateway, videosOffersStatus])
 
   if (!address) {
     return <Navigate to={routes.home} />
