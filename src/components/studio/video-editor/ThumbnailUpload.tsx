@@ -87,6 +87,9 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
   }
 
   const uploadThumbnail = async (buffer: ArrayBuffer) => {
+    // show loading start while processing responsive images
+    updateQueueCompletion(THUMBNAIL_QUEUE_NAME, 1)
+
     const reference = await videoWriter.addThumbnail(buffer, contentType, {
       onCancelToken: c => { canceler.current = c },
       onUploadProgress: p => { updateQueueCompletion(THUMBNAIL_QUEUE_NAME, p) },
@@ -132,12 +135,20 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
         disabled={disabled}
       >
         {({ isUploading }) => (
-          (isUploading) ? (
+          (isUploading || !videoWriter.thumbnail) ? (
             <FileUploadProgress progress={uploadProgress ?? 0} />
           ) : (
             <>
               <ImageSourcePreview image={videoWriter.thumbnail} />
-              <Button className="mt-4" aspect="link" modifier="inverted" onClick={handleReset}>Change thumbnail</Button>
+              <Button
+                className="mt-4 text-sm"
+                aspect="link"
+                modifier="inverted"
+                onClick={handleReset}
+                small
+              >
+                Change thumbnail
+              </Button>
             </>
           )
         )}

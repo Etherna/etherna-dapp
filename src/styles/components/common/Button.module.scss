@@ -204,5 +204,9 @@ $btn-modifiers: (
     &.btnMuted {
       @apply text-gray-500 dark:text-gray-400;
     }
+
+    &.btnSmall {
+      @apply text-[0.875em] p-0;
+    }
   }
 }
