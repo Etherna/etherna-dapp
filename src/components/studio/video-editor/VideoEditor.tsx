@@ -165,7 +165,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
                 : "Loading your video postage batches"
             }
             message={
-              `Please wait while we ${batchStatus === "creating" ? "create" : "load"} your postage batches.` + `\n` +
+              `Please wait while we ${batchStatus === "creating" ? "create" : "load"} your postage batch.` + `\n` +
               `Postage bastches are used to distribute your video to the network.`
             }
           />

@@ -56,6 +56,8 @@ export default defineConfig(({ mode }) => ({
     alias: [
       { find: "@", replacement: resolve(__dirname, "src") },
       { find: "stream", replacement: "stream-browserify" },
+      { find: "buffer", replacement: "buffer-browserify" },
+      { find: "util", replacement: "util-browser" },
     ],
   },
   plugins: [
