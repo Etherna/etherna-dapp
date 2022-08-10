@@ -28,8 +28,16 @@
 
 .sidebarLogoMobile {
   @apply h-full lg:hidden;
+
+  [data-sidebar-floating="true"] & {
+    @apply hidden;
+  }
 }
 
 .sidebarLogoDefault {
   @apply hidden h-full lg:block;
+
+  [data-sidebar-floating="true"] & {
+    @apply block;
+  }
 }

@@ -53,6 +53,17 @@ export const getBatchCapacity = (batchOrDepth: PostageBatch | GatewayBatch | num
 }
 
 /**
+ * Get batch utilization in percentage (0-1)
+ * 
+ * @param batch Batch data 
+ * @returns Batch percent usage
+ */
+export const getBatchPercentUtilization = (batch: PostageBatch | GatewayBatch) => {
+  const { utilization, depth, bucketDepth } = batch
+  return utilization / 2 ** (depth - bucketDepth)
+}
+
+/**
  * Get the batch expiration day
  * 
  * @param batch Batch data

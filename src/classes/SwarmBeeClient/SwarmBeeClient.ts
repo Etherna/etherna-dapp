@@ -19,6 +19,7 @@ import cookie from "cookiejs"
 import type { BatchId, BeeOptions, PostageBatch, UploadResult } from "@ethersphere/bee-js"
 
 import http, { createRequest } from "@/utils/request"
+import { getBatchPercentUtilization } from "@/utils/batches"
 import { buildAxiosFetch } from "@/utils/fetch"
 import type { AxiosFetch } from "@/utils/fetch"
 import type { AxiosUploadOptions, CustomUploadOptions } from "./bee-client.d.ts"
@@ -284,14 +285,17 @@ export default class SwarmBeeClient extends Bee {
   }
 
   async getBatchId(): Promise<string> {
+    const usableBatch = (batch: GatewayBatch | PostageBatch) =>
+      batch.usable && getBatchPercentUtilization(batch) < 1
+
     if (this.userBatches) {
-      const batch = this.userBatches.filter(batch => batch.usable)[0]
+      const batch = this.userBatches.filter(usableBatch)[0]
       if (batch) {
         return batch.id
       }
     }
     const batches = await this.getAllPostageBatches()
-    const usableBatches = batches.filter(batch => batch.usable)
+    const usableBatches = batches.filter(usableBatch)
     return usableBatches[0]?.batchID || this.emptyBatchId
   }
 

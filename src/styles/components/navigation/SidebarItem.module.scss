@@ -45,6 +45,10 @@
   .responsive & {
     @apply mx-auto lg:mx-0;
   }
+
+  [data-sidebar-floating="true"] & {
+    @apply mx-0 w-5 h-5;
+  }
 }
 
 .sidebarItemTitle {
@@ -54,5 +58,10 @@
 
   .responsive & {
     @apply hidden lg:inline;
+  }
+
+  [data-sidebar-floating="true"] & {
+    @apply font-semibold;
+    @apply inline;
   }
 }

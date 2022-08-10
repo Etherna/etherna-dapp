@@ -61,7 +61,8 @@ export default class SwarmPlaylistReader {
     }
 
     if (!this.reference) {
-      const topic = SwarmPlaylistIO.getFeedTopicName(this.id!)
+      const topicName = SwarmPlaylistIO.getFeedTopicName(this.id!)
+      const topic = this.beeClient.makeFeedTopic(topicName)
       const reader = this.beeClient.makeFeedReader("sequence", topic, this.owner!)
       this.reference = (await reader.download()).reference
     }

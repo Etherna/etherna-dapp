@@ -15,12 +15,13 @@
  *  
  */
 
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import classNames from "classnames"
 
 import classes from "@/styles/components/studio/StudioTableView.module.scss"
 
 import Pagination from "@/components/common/Pagination"
+import TableVideoPlaceholder from "@/components/placeholders/TableVideoPlaceholder"
 
 type StudioTableViewProps<T = any> = {
   className?: string
@@ -42,26 +43,27 @@ type StudioTableViewProps<T = any> = {
   onSelectionChange?(selectedItems: T[]): void
 }
 
-const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
-  const {
-    className,
-    title,
-    items,
-    columns,
-    page,
-    total,
-    itemsPerPage = 20,
-    isLoading,
-    showSelection,
-    selectionActions,
-    onPageChange,
-    onSelectionChange,
-  } = props
-
+const StudioTableView = <T, A>({
+  className,
+  title,
+  items,
+  columns,
+  page,
+  total,
+  itemsPerPage = 20,
+  isLoading,
+  showSelection,
+  selectionActions,
+  onPageChange,
+  onSelectionChange,
+}: StudioTableViewProps<T>) => {
   const [selectedItems, setSelectedItems] = useState<T[]>([])
 
   useEffect(() => {
-    setSelectedItems([])
+    if (selectedItems.length > 0) {
+      setSelectedItems([])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items])
 
   useEffect(() => {
@@ -69,7 +71,7 @@ const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItems])
 
-  const toggleSelection = (item?: T, selected?: boolean) => {
+  const toggleSelection = useCallback((item?: T, selected?: boolean) => {
     if (!item) {
       if (selectedItems.length) setSelectedItems([])
       else setSelectedItems(items ?? [])
@@ -84,7 +86,7 @@ const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
         }
       }
     }
-  }
+  }, [items, selectedItems])
 
   return (
     <div className={classNames(classes.studioTableContainer, className)}>
@@ -161,6 +163,10 @@ const StudioTableView = <T, A>(props: StudioTableViewProps<T>) => {
                 })}
               </tr>
             ))}
+
+            {(isLoading && !items?.length) && (
+              <TableVideoPlaceholder />
+            )}
           </tbody>
         </table>
       </div>
