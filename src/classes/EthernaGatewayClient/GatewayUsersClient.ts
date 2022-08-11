@@ -163,7 +163,7 @@ export default class GatewayUsersClient {
   async diluteBatch(batchId: string, depth: number) {
     const endpoint = `${this.url}/users/current/batches/${batchId}/dilute/${depth}`
 
-    await http.get(endpoint, {
+    await http.patch(endpoint, null, {
       withCredentials: true
     })
 

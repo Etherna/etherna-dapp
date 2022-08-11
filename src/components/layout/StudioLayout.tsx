@@ -38,7 +38,7 @@ const StudioLayout: React.FC<StudioLayoutProps> = ({ children }) => {
       <h1 className={classes.title}><SparklesIcon /> Creator Studio</h1>
 
       <div className={classes.content}>
-        <DropdownSidebar>
+        <DropdownSidebar className={classes.sidebar}>
           <SidebarItem
             to={routes.studioVideos}
             title="Videos"
@@ -54,10 +54,10 @@ const StudioLayout: React.FC<StudioLayoutProps> = ({ children }) => {
             isResponsive={false}
           />
           <SidebarItem
-            to={routes.studioStorage}
+            to={routes.studioPostages}
             title="Postages"
             iconSvg={<CashIcon />}
-            isActive={pathname => /\/studio\/storage/.test(pathname)}
+            isActive={pathname => /\/studio\/postages/.test(pathname)}
             isResponsive={false}
           />
         </DropdownSidebar>

@@ -28,7 +28,8 @@
 }
 
 .sidebar {
-  @apply flex flex-row items-start space-x-2;
-  @apply overflow-x-auto lg:overscroll-x-none;
-  @apply lg:flex-col lg:space-x-0 lg:space-y-2 lg:max-w-xs;
+  .content & {
+    @apply lg:self-start;
+    @apply lg:sticky lg:top-20;
+  }
 }

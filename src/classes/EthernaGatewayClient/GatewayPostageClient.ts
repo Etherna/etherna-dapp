@@ -37,7 +37,7 @@ export default class GatewayPostageClient {
   async topupBatch(batchId: string, byAmount: number | string) {
     const endpoint = `${this.url}/postage/batches/${batchId}/topup/${byAmount}`
 
-    await http.get(endpoint, {
+    await http.patch(endpoint, null, {
       withCredentials: true
     })
 

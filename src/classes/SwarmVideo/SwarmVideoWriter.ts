@@ -15,10 +15,12 @@
  */
 
 import Axios from "axios"
+import type { BatchId } from "@ethersphere/bee-js"
 
 import SwarmVideoIO from "."
 import SwarmImageIO from "@/classes/SwarmImage"
 import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
+import { BatchUpdateType } from "@/stores/batches"
 import { getVideoDuration, getVideoResolution } from "@/utils/media"
 import type { SwarmVideoUploadOptions, SwarmVideoWriterOptions } from "./types"
 import type { AnyBatch } from "../SwarmBatchesManager/types"
@@ -34,6 +36,8 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
   reference?: string
   indexReference?: string
   video?: Video
+
+  onBatchCreatedPending?(batchId: BatchId): void
 
   private _videoRaw: SwarmVideoRaw
 
@@ -193,12 +197,14 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
       // get batch id and set it to raw manifest
       batch = await this.createBatchForSize(fullSize)
       this.videoRaw.batchId = this.getBatchId(batch)
+      // send event
+      this.onBatchCreatedPending?.(this.videoRaw.batchId)
       // wait for the batch to be usable
-      await this.waitBatchPropagation(batch)
+      await this.waitBatchPropagation(batch, BatchUpdateType.Create)
     } else if (!this.canUploadTo(batch, size)) {
       // increase batch size
       await this.increaseBatchSize(batch, size)
-      await this.waitBatchPropagation(batch)
+      await this.waitBatchPropagation(batch, BatchUpdateType.Topup | BatchUpdateType.Dilute)
     }
 
     const fetch = this.beeClient.getFetch({

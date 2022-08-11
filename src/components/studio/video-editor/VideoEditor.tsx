@@ -35,6 +35,7 @@ import WalletState from "@/components/studio/other/WalletState"
 import SwarmVideoIO from "@/classes/SwarmVideo"
 import {
   useVideoEditorBaseActions,
+  useVideoEditorInfoActions,
   useVideoEditorSaveActions,
   useVideoEditorState
 } from "@/context/video-editor-context/hooks"
@@ -42,6 +43,7 @@ import routes from "@/routes"
 import useSelector from "@/state/useSelector"
 import { useWallet } from "@/state/hooks/env"
 import { useConfirmation, useErrorMessage } from "@/state/hooks/ui"
+import useBatchesStore from "@/stores/batches"
 
 const PORTAL_ID = "video-drag-portal"
 
@@ -60,6 +62,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const [{ reference, queue, videoWriter, hasChanges, saveTo, offerResources }] = useVideoEditorState()
   const [privateLink, setPrivateLink] = useState<string>()
   const [batchStatus, setBatchStatus] = useState<"creating" | "fetching" | "updating" | undefined>()
+  const removeBatchUpdate = useBatchesStore(state => state.removeBatchUpdate)
 
   const {
     reference: newReference,
@@ -73,6 +76,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     saveVideoResources,
     resetState: resetSaveState,
   } = useVideoEditorSaveActions()
+  const { cacheState } = useVideoEditorInfoActions()
 
   const { isLocked, selectedAddress } = useWallet()
   const { resetState } = useVideoEditorBaseActions()
@@ -116,7 +120,8 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
       videoWriter.videoRaw.batchId = defaultBatchId as BatchId
     }
 
-    videoWriter.onBatchCreating = () => setBatchStatus("creating")
+    videoWriter.onBatchCreating = () => { setBatchStatus("creating") }
+    videoWriter.onBatchCreatedPending = () => { cacheState() }
     videoWriter.onBatchCreated = () => setBatchStatus(undefined)
     videoWriter.onBatchesLoading = () => setBatchStatus("fetching")
     videoWriter.onBatchesLoaded = () => setBatchStatus(undefined)
@@ -129,6 +134,10 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const resetAll = () => {
     resetState()
     resetSaveState()
+
+    if (videoWriter.videoRaw.batchId) {
+      removeBatchUpdate(videoWriter.videoRaw.batchId)
+    }
   }
 
   const askToClearState = async () => {

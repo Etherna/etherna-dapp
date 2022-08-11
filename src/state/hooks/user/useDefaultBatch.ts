@@ -24,6 +24,7 @@ import useSelector from "@/state/useSelector"
 import { EnvActions, EnvActionTypes } from "@/state/reducers/enviromentReducer"
 import { UserActions, UserActionTypes } from "@/state/reducers/userReducer"
 import { useBeeAuthentication } from "@/state/hooks/ui"
+import { BatchUpdateType } from "@/stores/batches"
 import dayjs from "@/utils/dayjs"
 import { getBatchSpace, parsePostageBatch } from "@/utils/batches"
 import type { GatewayBatch } from "@/definitions/api-gateway"
@@ -162,7 +163,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
 
         const batchId = await beeClient.createBatch(depth, amount)
         let batch = await beeClient.getBatch(batchId)
-        batch = await batchesManager.waitBatchPropagation(batch) as PostageBatch
+        batch = await batchesManager.waitBatchPropagation(batch, BatchUpdateType.Create) as PostageBatch
 
         return parsePostageBatch(batch, address)
       }

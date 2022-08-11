@@ -19,7 +19,7 @@ import type { Crop } from "react-image-crop"
 
 import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
 import type EthernaIndexClient from "@/classes/EthernaIndexClient"
-import type EthernaAuthClient from "@/classes/EthernaAuthClient"
+import type EthernaSSOClient from "@/classes/EthernaSSOClient"
 import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type { SwarmImage } from "./swarm-image"
 import type { Keymap, KeymapNamespace } from "./keyboard"
@@ -40,7 +40,7 @@ export type EnvState = {
   creditUrl: string
   indexClient: EthernaIndexClient
   gatewayClient: EthernaGatewayClient
-  authClient: EthernaAuthClient
+  authClient: EthernaSSOClient
   beeClient: SwarmBeeClient
   bytePrice?: number
   isStandaloneGateway?: boolean

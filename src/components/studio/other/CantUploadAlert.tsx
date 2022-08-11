@@ -41,7 +41,7 @@ const CantUploadAlert: React.FC = () => {
       Come back when your postage batch is ready.
 
       <span className="block mt-3">
-        <Button as="a" href={routes.studioStorage}>
+        <Button as="a" href={routes.studioPostages}>
           Check your postages
         </Button>
       </span>

@@ -44,10 +44,18 @@ const useVideoEditorInfoActions = () => {
     dispatch({ type: VideoEditorActionTypes.UPDATE_DESCRIPTION, description })
   )
 
+  /**
+   * Cache current video state
+   */
+  const cacheState = () => (
+    dispatch({ type: VideoEditorActionTypes.CACHE })
+  )
+
   return {
     updatePinContent,
     updateTitle,
     updateDescription,
+    cacheState,
   }
 }
 

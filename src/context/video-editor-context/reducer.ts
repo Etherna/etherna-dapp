@@ -35,6 +35,7 @@ export const VideoEditorActionTypes = {
   UPDATE_OFFER_RESOURCES: "videoeditor/update-offer-resources",
   UPDATE_SAVE_TO: "videoeditor/update-save-to",
   RESET: "videoeditor/reset",
+  CACHE: "videoeditor/cache",
 } as const
 
 type AddQueueAction = {
@@ -92,6 +93,9 @@ type UpdateDescriptionAction = {
 type ResetAction = {
   type: typeof VideoEditorActionTypes.RESET
 }
+type CacheAction = {
+  type: typeof VideoEditorActionTypes.CACHE
+}
 
 export type AnyVideoEditorAction = (
   AddQueueAction |
@@ -106,7 +110,8 @@ export type AnyVideoEditorAction = (
   UpdateSaveToAction |
   UpdateTitleAction |
   UpdateDescriptionAction |
-  ResetAction
+  ResetAction |
+  CacheAction
 )
 
 // Reducer

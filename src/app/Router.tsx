@@ -134,7 +134,7 @@ const Router = () => {
                     <Route path="channel" element={<ChannelEdit />} />
                   </Route>
                   <Route path="" element={<BatchesRoute />}>
-                    <Route path="storage" element={<Storage />} />
+                    <Route path="postages" element={<Storage />} />
                   </Route>
                 </Route>
               </Route>

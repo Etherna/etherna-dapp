@@ -17,6 +17,9 @@
 import type { BatchId, PostageBatch } from "@ethersphere/bee-js"
 
 import { calcDilutedTTL, getBatchCapacity, getBatchSpace, ttlToAmount } from "@/utils/batches"
+import FlagEnumManager from "@/classes/FlagEnumManager"
+import batchesStore, { BatchUpdateType } from "@/stores/batches"
+import type { UpdatingBatch } from "@/stores/batches"
 import type { AnyBatch, SwarmBatchesManagerOptions } from "./types"
 import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
@@ -34,7 +37,7 @@ export default class SwarmBatchesManager {
   onBatchesLoaded?(batches: AnyBatch[]): void
   onBatchCreating?(): void
   onBatchCreated?(batch: AnyBatch): void
-  onBatchUpdating?(batch: AnyBatch): void
+  onBatchUpdating?(batchId: BatchId): void
   onBatchUpdated?(batch: AnyBatch): void
 
   protected beeClient: SwarmBeeClient
@@ -44,13 +47,21 @@ export default class SwarmBatchesManager {
 
   public defaultBlockTime = import.meta.env.DEV ? 15 : 5.2 // goerli testnet vs gnosis
 
-  private updateQueueCount = 0
-
   constructor(opts: SwarmBatchesManagerOptions) {
     this.address = opts.address
     this.gatewayType = opts.gatewayType
     this.beeClient = opts.beeClient
     this.gatewayClient = opts.gatewayClient
+
+    batchesStore.getState().updatingBatches.forEach(batchUpdate => {
+      const flag = new FlagEnumManager(batchUpdate.flag)
+      if (flag.has(BatchUpdateType.Create)) {
+        this.onBatchCreating?.()
+      }
+      if (flag.has(BatchUpdateType.Dilute) || flag.has(BatchUpdateType.Topup)) {
+        this.onBatchUpdating?.(batchUpdate.id)
+      }
+    })
   }
 
   public get cachedPrice() {
@@ -103,10 +114,10 @@ export default class SwarmBatchesManager {
       batch = await this.beeClient.getBatch(batchId)
     }
 
-    const isCreating = !batch.usable && (+batch.amount === 0 || batch.depth === 0)
+    const isCreating = !batch.usable
 
     if (isCreating && waitPropagation) {
-      await this.waitBatchPropagation(batch)
+      batch = await this.waitBatchPropagation(batch, BatchUpdateType.Create)
     }
 
     return batch
@@ -121,8 +132,7 @@ export default class SwarmBatchesManager {
   async topupBatch(batchId: BatchId, byAmount: number | string): Promise<void> {
     let batch = this.findBatchById(batchId)
     if (batch) {
-      this.updateQueueCount++
-      this.onBatchUpdating?.(batch)
+      this.onBatchUpdating?.(this.getBatchId(batch))
     }
 
     if (this.gatewayType === "etherna-gateway") {
@@ -141,8 +151,7 @@ export default class SwarmBatchesManager {
   async diluteBatch(batchId: BatchId, depth: number): Promise<void> {
     let batch = this.findBatchById(batchId)
     if (batch) {
-      this.updateQueueCount++
-      this.onBatchUpdating?.(batch)
+      this.onBatchUpdating?.(this.getBatchId(batch))
     }
 
     if (this.gatewayType === "etherna-gateway") {
@@ -239,7 +248,8 @@ export default class SwarmBatchesManager {
 
     await this.diluteBatch(batchId, depth)
 
-    await this.waitBatchPropagation(batch)
+    // bee returns error until dilute has finished
+    await this.waitBatchPropagation(batch, BatchUpdateType.Dilute)
 
     const newTTL = calcDilutedTTL(batch.batchTTL, batch.depth, depth)
 
@@ -268,8 +278,12 @@ export default class SwarmBatchesManager {
     return true
   }
 
-  async waitBatchPropagation(batch: AnyBatch, interval = 5000) {
-    let topupPromiseResolve: ((batch: AnyBatch) => void) | undefined
+  async waitBatchPropagation(batch: AnyBatch | UpdatingBatch, updateType: BatchUpdateType, interval = 5000) {
+    let propagationPromiseResolve: ((batch: AnyBatch) => void) | undefined
+
+    const flag = new FlagEnumManager(updateType)
+
+    batchesStore.getState().addBatchUpdate(batch, updateType)
 
     const waitPropagation = () => {
       setTimeout(async () => {
@@ -282,18 +296,24 @@ export default class SwarmBatchesManager {
         // topup
         const increasedAmount = fetchedBatch.amount > batch.amount
 
-        if (hasCreated || increasedDepth || increasedAmount) {
+        const canFinish =
+          (!flag.has(BatchUpdateType.Create) || flag.has(BatchUpdateType.Create) && hasCreated) &&
+          (!flag.has(BatchUpdateType.Dilute) || flag.has(BatchUpdateType.Dilute) && increasedDepth) &&
+          (!flag.has(BatchUpdateType.Topup) || flag.has(BatchUpdateType.Topup) && increasedAmount)
+
+        if (canFinish) {
           const index = this.batches.findIndex(b => this.getBatchId(b) === this.getBatchId(fetchedBatch))
           this.batches[index] = fetchedBatch
+
+          batchesStore.getState().removeBatchUpdate(this.getBatchId(fetchedBatch))
 
           if (hasCreated) {
             this.onBatchCreated?.(fetchedBatch)
           } else {
-            this.updateQueueCount--
-            this.updateQueueCount === 0 && this.onBatchUpdated?.(fetchedBatch)
+            this.onBatchUpdated?.(fetchedBatch)
           }
 
-          topupPromiseResolve?.(fetchedBatch)
+          propagationPromiseResolve?.(fetchedBatch)
         } else {
           waitPropagation()
         }
@@ -301,9 +321,20 @@ export default class SwarmBatchesManager {
     }
 
     return new Promise<AnyBatch>(res => {
-      topupPromiseResolve = res
+      propagationPromiseResolve = res
       waitPropagation()
     })
+  }
+
+  isCreatingBatch(batch: AnyBatch | UpdatingBatch) {
+    const isCreating = batchesStore
+      .getState()
+      .updatingBatches
+      .findIndex(
+        b => b.id === this.getBatchId(batch) && new FlagEnumManager(b.flag).has(BatchUpdateType.Create)
+      ) >= 0
+
+    return isCreating
   }
 
   canUploadTo(batch: AnyBatch, size: number): boolean {
@@ -411,7 +442,7 @@ export default class SwarmBatchesManager {
     }
   }
 
-  getBatchId(batch: AnyBatch): BatchId {
+  getBatchId(batch: ({ id: BatchId } | { batchID: BatchId })): BatchId {
     return "id" in batch ? batch.id : batch.batchID
   }
 }

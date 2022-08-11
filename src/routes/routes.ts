@@ -51,8 +51,8 @@ const routes = {
   studioVideoNew: `/studio/videos/new`,
   /** `/studio/channel` */
   studioChannel: `/studio/channel`,
-  /** `/studio/storage` */
-  studioStorage: `/studio/storage`,
+  /** `/studio/postages` */
+  studioPostages: `/studio/postages`,
 }
 
 export default routes

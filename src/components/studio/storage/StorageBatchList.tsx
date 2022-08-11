@@ -18,6 +18,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import classes from "@/styles/components/studio/storage/StorageBatchList.module.scss"
+import { BadgeCheckIcon } from "@heroicons/react/solid"
 
 import StorageBatch from "./StorageBatch"
 import StorageBatchEditor from "./StorageBatchEditor"
@@ -25,11 +26,13 @@ import Button from "@/components/common/Button"
 import Modal from "@/components/common/Modal"
 import AlertPopup from "@/components/common/AlertPopup"
 import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
-import useSelector from "@/state/useSelector"
 import useLocalStorage from "@/hooks/useLocalStorage"
+import useSelector from "@/state/useSelector"
+import { useErrorMessage } from "@/state/hooks/ui"
+import useBatchesStore, { BatchUpdateType } from "@/stores/batches"
 import { parsePostageBatch } from "@/utils/batches"
 import type { GatewayBatch } from "@/definitions/api-gateway"
-import { BadgeCheckIcon } from "@heroicons/react/solid"
+import FlagEnumManager from "@/classes/FlagEnumManager"
 
 type StorageBatchListProps = {
   batches: GatewayBatch[]
@@ -37,7 +40,9 @@ type StorageBatchListProps = {
 }
 
 const StorageBatchList: React.FC<StorageBatchListProps> = ({ batches, onBatchUpdate }) => {
-  const [updatingBatches, setUpdatingBatches] = useLocalStorage<Partial<GatewayBatch>[]>("updatingBatches", [])
+  const updatingBatches = useBatchesStore(state => state.updatingBatches)
+  const addBatchUpdate = useBatchesStore(state => state.addBatchUpdate)
+  const removeBatchUpdate = useBatchesStore(state => state.removeBatchUpdate)
   const defaultBatchId = useSelector(state => state.user.defaultBatchId)
   const address = useSelector(state => state.user.address)
   const gatewayClient = useSelector(state => state.env.gatewayClient)
@@ -49,6 +54,7 @@ const StorageBatchList: React.FC<StorageBatchListProps> = ({ batches, onBatchUpd
   const [editorAmount, setEditorAmount] = useState<string | undefined>()
   const [isUpdatingBatch, setIsUpdatingBatch] = useState(false)
   const [showUpdateSuccess, setShowUpdateSuccess] = useState(false)
+  const { showError } = useErrorMessage()
   const batchesManager = useRef(new SwarmBatchesManager({
     address: address!,
     beeClient,
@@ -67,16 +73,11 @@ const StorageBatchList: React.FC<StorageBatchListProps> = ({ batches, onBatchUpd
 
     const selectedBatch = updatingBatches[0]
 
-    const batch = await batchesManager.current.waitBatchPropagation(selectedBatch as GatewayBatch)
-
-    const index = updatingBatches.indexOf(selectedBatch)
-    updatingBatches.splice(index, 1)
-    setUpdatingBatches([...updatingBatches])
-
+    const batch = await batchesManager.current.waitBatchPropagation(selectedBatch, selectedBatch.flag)
     const gatewayBatch = "batchID" in batch ? parsePostageBatch(batch, address) : batch
 
     onBatchUpdate?.(gatewayBatch)
-  }, [address, updatingBatches, isUpdatingBatch, onBatchUpdate, setUpdatingBatches])
+  }, [address, updatingBatches, isUpdatingBatch, onBatchUpdate])
 
   const openSettings = useCallback((batch: GatewayBatch) => {
     setEditorDepth(batch.depth)
@@ -92,25 +93,33 @@ const StorageBatchList: React.FC<StorageBatchListProps> = ({ batches, onBatchUpd
 
     const batchManager = batchesManager.current
 
-    setUpdatingBatches([
-      ...(updatingBatches ?? []), {
-        id: editingBatch!.id,
-        depth: editorDepth!,
-        amount: editorAmount!,
-      }
-    ])
+    const dilute = editorDepth && editorDepth > editingBatch!.depth
+    const topup = editorAmount && BigInt(editorAmount) > BigInt(0)
 
-    if (editorDepth && editorDepth > editingBatch!.depth) {
-      await batchManager.diluteBatch(editingBatch!.id, editorDepth)
-    }
-    if (editorAmount) {
-      await batchManager.topupBatch(editingBatch!.id, editorAmount)
+    const flag = new FlagEnumManager()
+    dilute && flag.add(BatchUpdateType.Dilute)
+    topup && flag.add(BatchUpdateType.Topup)
+
+    addBatchUpdate(editingBatch!, flag.get())
+
+    try {
+      if (dilute) {
+        await batchManager.diluteBatch(editingBatch!.id, editorDepth)
+      }
+      if (topup) {
+        await batchManager.topupBatch(editingBatch!.id, editorAmount)
+      }
+
+      setShowUpdateSuccess(true)
+      setShowBatchEditor(false)
+    } catch (error: any) {
+      showError("Error updating batch", error.message)
+
+      removeBatchUpdate(editingBatch!.id)
     }
 
     setIsUpdatingBatch(false)
-    setShowUpdateSuccess(true)
-    setShowBatchEditor(false)
-  }, [editingBatch, editorAmount, editorDepth, updatingBatches, setUpdatingBatches])
+  }, [editorDepth, editingBatch, editorAmount, addBatchUpdate, showError, removeBatchUpdate])
 
   const getBatchName = useCallback((batch: GatewayBatch | undefined, i: number) => {
     return batch?.id === defaultBatchId
