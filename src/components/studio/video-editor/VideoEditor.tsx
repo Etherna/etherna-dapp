@@ -15,8 +15,9 @@
  *  
  */
 
-import React, { useEffect, useImperativeHandle, useMemo, useState } from "react"
+import React, { useEffect, useImperativeHandle, useState } from "react"
 import { Navigate } from "react-router"
+import type { BatchId } from "@ethersphere/bee-js"
 
 import { EyeIcon, FilmIcon } from "@heroicons/react/solid"
 import { ClipboardListIcon } from "@heroicons/react/outline"
@@ -41,7 +42,6 @@ import routes from "@/routes"
 import useSelector from "@/state/useSelector"
 import { useWallet } from "@/state/hooks/env"
 import { useConfirmation, useErrorMessage } from "@/state/hooks/ui"
-import type { BatchId } from "@ethersphere/bee-js"
 
 const PORTAL_ID = "video-drag-portal"
 
