@@ -48,6 +48,20 @@ const PostageBatchEditor: React.FC<PostageBatchEditorProps> = ({ batch, batchesM
     return gatewayType === "etherna-gateway" ? EthernaGatewayClient.maxBatchDepth : 50
   }, [gatewayType])
 
+  const ttlReadable = useMemo(() => {
+    let expiration: string
+    const expirationTime = dayjs.duration({ seconds: ttl })
+    const expireInDays = expirationTime.asDays()
+    if (expireInDays < 0) {
+      expiration = "never"
+    } else if (expireInDays < 365) {
+      expiration = expirationTime.humanize()
+    } else {
+      expiration = `${+(expireInDays / 365).toFixed(1)} years`
+    }
+    return expiration
+  }, [ttl])
+
   useEffect(() => {
     batchesManager.fetchPrice().then(setcurrentPrice)
   }, [batchesManager])
@@ -108,7 +122,7 @@ const PostageBatchEditor: React.FC<PostageBatchEditorProps> = ({ batch, batchesM
           value={ttl}
           onChange={onTTLChange}
         />
-        <small className="font-mono">{dayjs.duration(ttl, "seconds").humanize()}</small>
+        <small className="font-mono">{ttlReadable}</small>
       </FormGroup>
 
       {gatewayType === "bee" && (

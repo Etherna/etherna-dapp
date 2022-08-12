@@ -20,9 +20,7 @@
 }
 
 .storageMessage {
-  @apply text-sm font-medium;
-  @apply text-gray-500 dark:text-gray-400;
-  @apply mb-4;
+  @apply mb-4 self-start;
 }
 
 .storageLoading {

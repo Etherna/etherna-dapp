@@ -1,0 +1,77 @@
+.capacity {
+  @apply relative;
+  @apply w-14 h-2.5;
+  @apply rounded overflow-hidden;
+  @apply bg-gray-200 dark:bg-gray-700;
+}
+
+.capacityProgress {
+  @apply absolute left-0 inset-y-0;
+  @apply bg-primary-400;
+
+  &.midFull {
+    @apply bg-yellow-400;
+  }
+  &.almostFull {
+    @apply bg-red-500;
+  }
+
+  .loading & {
+    @apply absolute inset-0 w-full;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      theme("colors.primary.500") 50%,
+      transparent 100%
+    );
+    @apply animate-slide;
+  }
+}
+
+.capacityPrimary {
+  &,
+  &.midFull,
+  &.almostFull {
+    @apply bg-black dark:bg-white;
+  }
+}
+
+.capacitySecondary {
+  &,
+  &.midFull,
+  &.almostFull {
+    @apply bg-gray-400 dark:bg-gray-300;
+  }
+}
+
+.capacitySuccess {
+  &,
+  &.midFull,
+  &.almostFull {
+    @apply bg-blue-500 dark:bg-blue-500;
+  }
+}
+
+.capacityWarning {
+  &,
+  &.midFull,
+  &.almostFull {
+    @apply bg-yellow-500 dark:bg-yellow-500;
+  }
+}
+
+.capacityError {
+  &,
+  &.midFull,
+  &.almostFull {
+    @apply bg-red-500 dark:bg-red-500;
+  }
+}
+
+.capacityAlert {
+  &,
+  &.midFull,
+  &.almostFull {
+    @apply bg-pink-500 dark:bg-pink-500;
+  }
+}

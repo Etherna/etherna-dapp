@@ -14,12 +14,27 @@
  *  limitations under the License.
  */
 
-.storageList {
-  @apply grid gap-5 grid-flow-row-dense;
-  @apply grid-cols-1 md:grid-cols-2 lg:grid-cols-1;
-  @apply mt-5;
+.batchTitle {
+  @apply font-medium leading-none;
+}
 
-  @screen xl {
-    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+.batchId {
+  @apply inline-block truncate overflow-hidden;
+  @apply w-40 xl:w-auto;
+  @apply text-xs text-gray-600 dark:text-gray-400;
+  @apply leading-none mt-1;
+}
+
+.batchExpiration {
+  @apply text-sm font-medium;
+
+  &.expired {
+    @apply text-red-500;
   }
+}
+
+.batchSpace {
+  @apply shrink-0;
+  @apply text-xs font-medium font-mono;
+  @apply ml-2;
 }

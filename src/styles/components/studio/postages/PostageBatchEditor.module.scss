@@ -18,13 +18,13 @@
   @apply w-full h-5 mt-1;
 
   :global(.track) {
-    @apply bg-gray-400 dark:bg-gray-600;
+    @apply bg-gray-300 dark:bg-gray-600;
     @apply h-1 rounded-full;
     @apply mt-2;
   }
 
   :global(.track-0) {
-    @apply bg-gray-900 dark:bg-gray-50;
+    @apply bg-gray-800 dark:bg-gray-50;
   }
 
   :global(.thumb) {

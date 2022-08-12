@@ -40,17 +40,12 @@
 
   .popupContent {
     @apply bg-white dark:bg-gray-800;
-    @supports (backdrop-filter: blur(4px)) {
-      @apply bg-white/80 dark:bg-gray-800/80;
-      @apply backdrop-blur;
-    }
 
     .popupTopbarItem {
       @apply mx-0 px-0;
       @apply text-sm font-semibold;
       @apply text-gray-800 dark:text-gray-200;
       @apply hover:text-gray-900 dark:hover:text-white;
-      @apply hover:bg-transparent;
 
       &-icon {
         @apply mr-2;

@@ -25,6 +25,7 @@ type AlertProps = {
   title?: string
   className?: string
   type: "success" | "danger" | "warning" | "info"
+  small?: boolean
   onClose?: () => void
 }
 
@@ -33,6 +34,7 @@ const Alert: React.FC<AlertProps> = ({
   type = "info",
   className,
   title,
+  small,
   onClose,
 }) => {
   return (
@@ -42,6 +44,7 @@ const Alert: React.FC<AlertProps> = ({
         [classes.alertDanger]: type === "danger",
         [classes.alertWarning]: type === "warning",
         [classes.alertInfo]: type === "info",
+        [classes.alertSmall]: small,
       })}
     >
       {(title || onClose) && (

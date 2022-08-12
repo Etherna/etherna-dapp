@@ -61,6 +61,7 @@ const StudioLayout: React.FC<StudioLayoutProps> = ({ children }) => {
             isResponsive={false}
           />
         </DropdownSidebar>
+
         {children}
       </div>
     </Container>

@@ -24,7 +24,7 @@
 
 .content {
   @apply flex flex-col space-y-4;
-  @apply lg:flex-row lg:space-y-0 lg:space-x-14;
+  @apply lg:flex-row lg:space-y-0 lg:space-x-6 xl:space-x-14;
 }
 
 .sidebar {

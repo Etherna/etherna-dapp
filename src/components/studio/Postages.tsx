@@ -19,6 +19,7 @@ import React from "react"
 
 import classes from "@/styles/components/studio/Postages.module.scss"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
+import { InformationCircleIcon } from "@heroicons/react/solid"
 
 import PostageBatchList from "./postages/PostageBatchList"
 import Alert from "@/components/common/Alert"
@@ -27,16 +28,21 @@ import useBatches from "@/state/hooks/user/useBatches"
 
 const Postages: React.FC = () => {
   const gatewayType = useSelector(state => state.env.gatewayType)
-  const { batches } = useSelector(state => state.user)
+  const batches = useSelector(state => state.user.batches)
   const { updateBatch } = useBatches()
 
   return (
     <div className={classes.storage}>
-      <p className={classes.storageMessage}>
-        Postages are required to upload data on the network. <br />
-        They might expire in the future or run out of space,
-        so keep an eye on them!
-      </p>
+      <Alert type="info" className={classes.storageMessage} small>
+        <div className="flex items-start space-x-2">
+          <InformationCircleIcon width={18} />
+          <span>
+            Postages are required to upload data on the network. <br />
+            They might expire in the future or run out of space,
+            so keep an eye on them!
+          </span>
+        </div>
+      </Alert>
 
       {(!batches || !batches.length) && (
         <Alert title="No batches found" type="danger">

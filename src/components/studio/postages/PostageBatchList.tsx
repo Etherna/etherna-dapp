@@ -16,21 +16,28 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import classNames from "classnames"
 
 import classes from "@/styles/components/studio/postages/PostageBatchList.module.scss"
 import { BadgeCheckIcon } from "@heroicons/react/solid"
+import { CogIcon } from "@heroicons/react/outline"
 
-import PostageBatch from "./PostageBatch"
 import PostageBatchEditor from "./PostageBatchEditor"
+import StudioTableView from "../StudioTableView"
 import Button from "@/components/common/Button"
 import Modal from "@/components/common/Modal"
 import AlertPopup from "@/components/common/AlertPopup"
+import Capacity from "@/components/common/Capacity"
+import CustomSelect from "@/components/common/CustomSelect"
+import FormGroup from "@/components/common/FormGroup"
 import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
 import FlagEnumManager from "@/classes/FlagEnumManager"
 import useSelector from "@/state/useSelector"
 import { useErrorMessage } from "@/state/hooks/ui"
 import useBatchesStore, { BatchUpdateType } from "@/stores/batches"
-import { parsePostageBatch } from "@/utils/batches"
+import { getBatchPercentUtilization, getBatchSpace, parsePostageBatch } from "@/utils/batches"
+import { convertBytes } from "@/utils/converters"
+import dayjs from "@/utils/dayjs"
 import type { GatewayBatch } from "@/definitions/api-gateway"
 
 type PostageBatchListProps = {
@@ -47,10 +54,13 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
   const gatewayClient = useSelector(state => state.env.gatewayClient)
   const beeClient = useSelector(state => state.env.beeClient)
   const gatewayType = useSelector(state => state.env.gatewayType)
+  const [page, setPage] = useState(1)
+  const [perPage, setPerPage] = useState(25)
   const [editingBatch, setEditingBatch] = useState<GatewayBatch>()
   const [showBatchEditor, setShowBatchEditor] = useState(false)
   const [editorDepth, setEditorDepth] = useState<number>()
   const [editorAmount, setEditorAmount] = useState<string | undefined>()
+  const [filter, setFilter] = useState<"all" | "active" | "expiring" | "expired">("active")
   const [isUpdatingBatch, setIsUpdatingBatch] = useState(false)
   const [showUpdateSuccess, setShowUpdateSuccess] = useState(false)
   const { showError } = useErrorMessage()
@@ -60,6 +70,30 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
     gatewayClient,
     gatewayType,
   }))
+
+  const filteredBatches = useMemo(() => {
+    return batches
+      .filter(batch => {
+        switch (filter) {
+          case "all":
+            return true
+          case "active":
+            return batch.batchTTL > 0
+          case "expiring":
+            return batch.batchTTL > 0 && dayjs.duration(batch.batchTTL, "second").asDays() <= 31
+          case "expired":
+            return batch.batchTTL === -1 && !batch.usable
+        }
+      })
+  }, [batches, filter])
+
+  const pageBatches = useMemo(() => {
+    return filteredBatches.slice((page - 1) * perPage, page * perPage)
+  }, [filteredBatches, perPage, page])
+
+  useEffect(() => {
+    setPage(1)
+  }, [filter])
 
   useEffect(() => {
     waitBatchesUpdate()
@@ -126,20 +160,115 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
       : batch?.label || `Postage batch ${i + 1}`
   }, [defaultBatchId])
 
+  const getBatchExpiration = useCallback((batch: GatewayBatch) => {
+    let expiration = ""
+    if (batch.batchTTL === -1 && batch.usable) {
+      expiration = "never"
+    } else if (batch.batchTTL === -1 && !batch.usable) {
+      expiration = "expired"
+    } else {
+      const expirationTime = dayjs.duration({ seconds: batch.batchTTL })
+      const expireInDays = expirationTime.asDays()
+      if (expireInDays < 0) {
+        expiration = "never"
+      } else if (expireInDays < 365) {
+        expiration = expirationTime.humanize()
+      } else {
+        expiration = `${+(expireInDays / 365).toFixed(1)} years`
+      }
+    }
+    return expiration
+  }, [])
+
+  const isBatchExpired = useCallback((batch: GatewayBatch) => {
+    const isExpired = batch.batchTTL === -1 && !batch.usable
+    return isExpired
+  }, [])
+
   return (
     <>
-      <ul className={classes.storageList}>
-        {batches.map((batch, i) => (
-          <PostageBatch
-            batch={batch}
-            title={getBatchName(batch, i)}
-            isMain={batch.id === defaultBatchId}
-            isUpdating={!!updatingBatches?.find(b => b.id === batch.id)}
-            onSettingsClick={() => openSettings(batch)}
-            key={batch.id}
-          />
-        ))}
-      </ul>
+      <FormGroup label="Show:">
+        <CustomSelect
+          value={filter}
+          options={[
+            { value: "all", label: "All" },
+            { value: "active", label: "Active" },
+            { value: "expiring", label: "Expiring soon" },
+            { value: "expired", label: "Expired" },
+          ]}
+          onChange={filter => setFilter(filter as any)}
+        />
+      </FormGroup>
+
+      <StudioTableView
+        page={page}
+        total={filteredBatches.length}
+        itemsPerPage={perPage}
+        items={pageBatches}
+        columns={[{
+          title: "Name",
+          width: "1fr",
+          render: batch => (
+            <div className="">
+              <p className={classes.batchTitle}>{getBatchName(batch, batches.indexOf(batch))}</p>
+              <small className={classes.batchId}>{batch.id}</small>
+            </div>
+          )
+        }, {
+          title: "Expiration",
+          width: "110px",
+          render: batch => {
+            const expiration = getBatchExpiration(batch)
+            const isExpired = isBatchExpired(batch)
+            return (
+              <span className={classNames(classes.batchExpiration, { [classes.expired]: isExpired })}>
+                {expiration}
+              </span>
+            )
+          }
+        }, {
+          title: "Capacity",
+          width: "240px",
+          render: batch => {
+            const { total, used } = getBatchSpace(batch)
+            return (
+              <div className="flex items-center">
+                <Capacity
+                  value={getBatchPercentUtilization(batch)}
+                  limit={1}
+                  isLoading={!!updatingBatches.find(b => b.id === batch.id)}
+                />
+
+                <p className={classes.batchSpace}>
+                  <span>{convertBytes(used).readable}</span>
+                  <span> / </span>
+                  <span>{convertBytes(total).readable}</span>
+                </p>
+              </div>
+            )
+          }
+        }, {
+          title: "",
+          width: "60px",
+          render: batch => (
+            <>
+              {!updatingBatches.find(b => b.id === batch.id) && !isBatchExpired(batch) && (
+                <Button
+                  modifier="transparent"
+                  iconOnly
+                  onClick={() => openSettings(batch)}
+                >
+                  <CogIcon />
+                </Button>
+              )}
+            </>
+          )
+        }]}
+        onPageChange={(page, perPage) => {
+          setPage(page)
+          perPage && setPerPage(perPage)
+        }}
+      />
 
       <Modal
         show={showBatchEditor}
