@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-.storageBatch {
+.postageBatch {
   @apply bg-gray-100 dark:bg-gray-800;
   @apply text-gray-600 dark:text-gray-400;
   @apply text-sm;
@@ -22,19 +22,19 @@
   @apply p-4;
 }
 
-.storageBatchHeader {
+.postageBatchHeader {
   @apply flex flex-wrap items-baseline;
   @apply mb-4;
   @apply sm:items-center;
 }
 
-.storageBatchTitle {
+.postageBatchTitle {
   @apply text-gray-800 dark:text-gray-300;
   @apply text-xl font-semibold;
   @apply mr-2 mb-0;
 }
 
-.storageBatchSettings {
+.postageBatchSettings {
   @apply ml-4 text-gray-500 dark:text-gray-500;
 
   svg {
@@ -42,18 +42,18 @@
   }
 }
 
-.storageBatchSubtitle {
+.postageBatchSubtitle {
   @apply text-gray-800 dark:text-gray-300;
   @apply text-base font-semibold;
 }
 
-.storageBatchSize {
+.postageBatchSize {
   @apply text-2xl font-semibold font-mono uppercase;
   @apply text-gray-400 dark:text-gray-500;
   @apply ml-auto;
 }
 
-.storageBatchExpiring {
+.postageBatchExpiring {
   @apply ml-3;
   @apply text-gray-600 dark:text-gray-300;
   @apply font-medium;
@@ -63,8 +63,8 @@
   }
 }
 
-.storageBatchProgress {
-  .storageBatch & {
+.postageBatchProgress {
+  .postageBatch & {
     @apply h-6 rounded-md overflow-hidden;
 
     > * {
@@ -85,7 +85,7 @@
   }
 }
 
-.storageBatchDataList {
+.postageBatchDataList {
   @apply flex items-baseline;
   @apply mt-2;
   @apply uppercase font-medium;

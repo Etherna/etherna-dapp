@@ -17,15 +17,15 @@
 
 import React from "react"
 
-import classes from "@/styles/components/studio/Storage.module.scss"
+import classes from "@/styles/components/studio/Postages.module.scss"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
-import StorageBatchList from "./storage/StorageBatchList"
+import PostageBatchList from "./postages/PostageBatchList"
 import Alert from "@/components/common/Alert"
 import useSelector from "@/state/useSelector"
 import useBatches from "@/state/hooks/user/useBatches"
 
-const Storage: React.FC = () => {
+const Postages: React.FC = () => {
   const gatewayType = useSelector(state => state.env.gatewayType)
   const { batches } = useSelector(state => state.user)
   const { updateBatch } = useBatches()
@@ -55,10 +55,10 @@ const Storage: React.FC = () => {
         </p>
       )}
       {(batches && batches.length > 0) && (
-        <StorageBatchList batches={batches} onBatchUpdate={updateBatch} />
+        <PostageBatchList batches={batches} onBatchUpdate={updateBatch} />
       )}
     </div>
   )
 }
 
-export default Storage
+export default Postages

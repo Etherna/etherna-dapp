@@ -17,7 +17,7 @@
 
 import React, { useCallback, useEffect, useState, startTransition, useMemo } from "react"
 
-import classes from "@/styles/components/studio/storage/StorageBatchEditor.module.scss"
+import classes from "@/styles/components/studio/postages/PostageBatchEditor.module.scss"
 
 import Spinner from "@/components/common/Spinner"
 import FormGroup from "@/components/common/FormGroup"
@@ -31,14 +31,14 @@ import { clamp } from "@/utils/math"
 import type { GatewayBatch } from "@/definitions/api-gateway"
 import type { GatewayType } from "@/definitions/extension-host"
 
-type StorageBatchEditorProps = {
+type PostageBatchEditorProps = {
   batch: GatewayBatch
   batchesManager: SwarmBatchesManager
   gatewayType?: GatewayType
   onChange(depth: number, amount: string | undefined): void
 }
 
-const StorageBatchEditor: React.FC<StorageBatchEditorProps> = ({ batch, batchesManager, gatewayType, onChange }) => {
+const PostageBatchEditor: React.FC<PostageBatchEditorProps> = ({ batch, batchesManager, gatewayType, onChange }) => {
   const [depth, setDepth] = useState(batch.depth)
   const [ttl, setTtl] = useState(batch.batchTTL)
   const [amount, setAmount] = useState("")
@@ -122,4 +122,4 @@ const StorageBatchEditor: React.FC<StorageBatchEditorProps> = ({ batch, batchesM
   )
 }
 
-export default StorageBatchEditor
+export default PostageBatchEditor

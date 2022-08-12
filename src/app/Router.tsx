@@ -38,7 +38,7 @@ const AsyncChannel = lazy(() => import("@/pages/channel"))
 const AsyncChannelEdit = lazy(() => import("@/pages/studio/channel-edit"))
 const AsyncVideosList = lazy(() => import("@/pages/studio/videos-list"))
 const AsyncVideoEdit = lazy(() => import("@/pages/studio/video-edit"))
-const AsyncStorage = lazy(() => import("@/pages/studio/storage"))
+const AsyncPostages = lazy(() => import("@/pages/studio/postages"))
 const AsyncProfiles = lazy(() => import("@/pages/profiles"))
 const AsyncWatch = lazy(() => import("@/pages/watch"))
 const AsyncEmbed = lazy(() => import("@/pages/embed"))
@@ -85,8 +85,8 @@ const VideosList = () => (
 const VideoEdit = () => (
   <Suspense fallback={<PageLoader />}><AsyncVideoEdit /></Suspense>
 )
-const Storage = () => (
-  <Suspense fallback={<PageLoader />}><AsyncStorage /></Suspense>
+const Postages = () => (
+  <Suspense fallback={<PageLoader />}><AsyncPostages /></Suspense>
 )
 const Shortcuts = () => (
   <Suspense fallback={<PageLoader />}><AsyncShortcuts /></Suspense>
@@ -134,7 +134,7 @@ const Router = () => {
                     <Route path="channel" element={<ChannelEdit />} />
                   </Route>
                   <Route path="" element={<BatchesRoute />}>
-                    <Route path="postages" element={<Storage />} />
+                    <Route path="postages" element={<Postages />} />
                   </Route>
                 </Route>
               </Route>

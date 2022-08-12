@@ -18,7 +18,7 @@
 import React, { useMemo } from "react"
 import classNames from "classnames"
 
-import classes from "@/styles/components/studio/storage/StorageBatch.module.scss"
+import classes from "@/styles/components/studio/postages/PostageBatch.module.scss"
 import { CogIcon } from "@heroicons/react/outline"
 
 import Spinner from "@/components/common/Spinner"
@@ -38,7 +38,7 @@ type StorageBatchProps = {
   onSettingsClick?: () => void
 }
 
-const StorageBatch: React.FC<StorageBatchProps> = ({
+const PostageBatch: React.FC<StorageBatchProps> = ({
   batch,
   title,
   isMain,
@@ -74,15 +74,15 @@ const StorageBatch: React.FC<StorageBatchProps> = ({
 
   return (
     <>
-      <li className={classes.storageBatch}>
-        <header className={classes.storageBatchHeader}>
-          <h3 className={classes.storageBatchTitle}>{title}</h3>
-          <span className={classes.storageBatchSize}>
+      <li className={classes.postageBatch}>
+        <header className={classes.postageBatchHeader}>
+          <h3 className={classes.postageBatchTitle}>{title}</h3>
+          <span className={classes.postageBatchSize}>
             {convertBytes(totalSpace).readable}
           </span>
           {(batch.usable && !isUpdating) && (
             <Button
-              className={classes.storageBatchSettings}
+              className={classes.postageBatchSettings}
               aspect="link"
               modifier="muted"
               onClick={onSettingsClick}
@@ -102,7 +102,7 @@ const StorageBatch: React.FC<StorageBatchProps> = ({
         <span>
           Expiring
           <span
-            className={classNames(classes.storageBatchExpiring, {
+            className={classNames(classes.postageBatchExpiring, {
               [classes.expired]: isExpired
             })}
           >
@@ -112,15 +112,15 @@ const StorageBatch: React.FC<StorageBatchProps> = ({
         </span>
 
         <div className="mt-5">
-          <h4 className={classes.storageBatchSubtitle}>Space utilization</h4>
+          <h4 className={classes.postageBatchSubtitle}>Space utilization</h4>
           <ProgressBar
-            className={classNames(classes.storageBatchProgress, {
+            className={classNames(classes.postageBatchProgress, {
               [classes.warning]: usagePercent >= 80,
               [classes.danger]: usagePercent >= 95,
             })}
             progress={usagePercent}
           />
-          <dl className={classes.storageBatchDataList}>
+          <dl className={classes.postageBatchDataList}>
             <dt>Used</dt>
             <dd>{convertBytes(usedSpace, 3).readable}</dd>
             <dt>Available</dt>
@@ -132,4 +132,4 @@ const StorageBatch: React.FC<StorageBatchProps> = ({
   )
 }
 
-export default StorageBatch
+export default PostageBatch

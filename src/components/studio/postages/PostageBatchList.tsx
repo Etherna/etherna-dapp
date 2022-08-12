@@ -17,29 +17,28 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
-import classes from "@/styles/components/studio/storage/StorageBatchList.module.scss"
+import classes from "@/styles/components/studio/postages/PostageBatchList.module.scss"
 import { BadgeCheckIcon } from "@heroicons/react/solid"
 
-import StorageBatch from "./StorageBatch"
-import StorageBatchEditor from "./StorageBatchEditor"
+import PostageBatch from "./PostageBatch"
+import PostageBatchEditor from "./PostageBatchEditor"
 import Button from "@/components/common/Button"
 import Modal from "@/components/common/Modal"
 import AlertPopup from "@/components/common/AlertPopup"
 import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
-import useLocalStorage from "@/hooks/useLocalStorage"
+import FlagEnumManager from "@/classes/FlagEnumManager"
 import useSelector from "@/state/useSelector"
 import { useErrorMessage } from "@/state/hooks/ui"
 import useBatchesStore, { BatchUpdateType } from "@/stores/batches"
 import { parsePostageBatch } from "@/utils/batches"
 import type { GatewayBatch } from "@/definitions/api-gateway"
-import FlagEnumManager from "@/classes/FlagEnumManager"
 
-type StorageBatchListProps = {
+type PostageBatchListProps = {
   batches: GatewayBatch[]
   onBatchUpdate?(batch: GatewayBatch): void
 }
 
-const StorageBatchList: React.FC<StorageBatchListProps> = ({ batches, onBatchUpdate }) => {
+const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpdate }) => {
   const updatingBatches = useBatchesStore(state => state.updatingBatches)
   const addBatchUpdate = useBatchesStore(state => state.addBatchUpdate)
   const removeBatchUpdate = useBatchesStore(state => state.removeBatchUpdate)
@@ -131,7 +130,7 @@ const StorageBatchList: React.FC<StorageBatchListProps> = ({ batches, onBatchUpd
     <>
       <ul className={classes.storageList}>
         {batches.map((batch, i) => (
-          <StorageBatch
+          <PostageBatch
             batch={batch}
             title={getBatchName(batch, i)}
             isMain={batch.id === defaultBatchId}
@@ -157,7 +156,7 @@ const StorageBatchList: React.FC<StorageBatchListProps> = ({ batches, onBatchUpd
         }
       >
         {editingBatch && (
-          <StorageBatchEditor
+          <PostageBatchEditor
             batch={editingBatch}
             batchesManager={batchesManager.current}
             gatewayType={gatewayType}
@@ -186,4 +185,4 @@ const StorageBatchList: React.FC<StorageBatchListProps> = ({ batches, onBatchUpd
   )
 }
 
-export default StorageBatchList
+export default PostageBatchList

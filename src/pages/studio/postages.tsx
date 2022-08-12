@@ -19,16 +19,16 @@ import React from "react"
 
 import Container from "@/components/common/Container"
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
-import Storage from "@/components/studio/Storage"
+import Postages from "@/components/studio/Postages"
 
-const StoragePage = () => {
+const PostagesPage = () => {
   return (
     <AppLayoutWrapper>
       <Container noPaddingX noPaddingY fluid>
-        <Storage />
+        <Postages />
       </Container>
     </AppLayoutWrapper>
   )
 }
 
-export default StoragePage
+export default PostagesPage
