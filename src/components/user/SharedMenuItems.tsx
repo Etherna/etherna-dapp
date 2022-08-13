@@ -18,7 +18,7 @@
 import React from "react"
 
 // import { ReactComponent as IndexIcon } from "@/assets/icons/navigation/index.svg"
-import { MoonIcon } from "@heroicons/react/solid"
+import { MoonIcon, ShieldCheckIcon } from "@heroicons/react/solid"
 import { ReactComponent as GatewayIcon } from "@/assets/icons/navigation/gateway.svg"
 import { ReactComponent as ShortcutsIcon } from "@/assets/icons/shortcuts.svg"
 
@@ -28,10 +28,12 @@ import DropdownItem from "@/components/common/DropdownItem"
 import GatewayExtension from "@/components/env/GatewayExtension"
 import { useDarkMode } from "@/state/hooks/env"
 import routes from "@/routes"
+import useSelector from "@/state/useSelector"
 
 type SharedMenuItemsProps = {}
 
 const SharedMenuItems: React.FC<SharedMenuItemsProps> = () => {
+  const isSignedIn = useSelector(state => state.user.isSignedIn)
   const { darkMode, toggleDarkMode } = useDarkMode()
 
   const handleDarkModeChange = () => {
@@ -40,6 +42,15 @@ const SharedMenuItems: React.FC<SharedMenuItemsProps> = () => {
 
   return (
     <>
+      {!isSignedIn && (
+        <>
+          <DropdownItem href={routes.alphaPasss} icon={<ShieldCheckIcon />}>
+            Request Alpha Pass
+          </DropdownItem>
+          <hr />
+        </>
+      )}
+
       {/* <DropdownItem
         icon={<IndexIcon />}
       >
