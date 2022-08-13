@@ -22,8 +22,7 @@ import { DotsVerticalIcon } from "@heroicons/react/solid"
 
 import SharedMenuItems from "./SharedMenuItems"
 import SignedInMenuItems from "./SignedInMenuItems"
-import AlphaPassButton from "./AlphaPassButton"
-// import SigninButton from "./SigninButton"
+import SigninButton from "./SigninButton"
 import Avatar from "./Avatar"
 import Button from "@/components/common/Button"
 import Dropdown from "@/components/common/Dropdown"
@@ -83,8 +82,7 @@ const UserMenu: React.FC = () => {
       </Dropdown>
 
       {!isFullySignedIn && (
-        // <SigninButton>Sign in</SigninButton>
-        <AlphaPassButton>Request invitation</AlphaPassButton>
+        <SigninButton>Sign in</SigninButton>
       )}
     </>
   )
