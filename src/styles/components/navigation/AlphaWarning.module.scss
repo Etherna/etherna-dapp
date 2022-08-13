@@ -35,6 +35,7 @@
   @apply flex p-6 z-50 isolate;
   @apply items-start md:items-stretch;
   @apply overflow-auto;
+  @apply transition-all;
 }
 
 .alphaDialog {

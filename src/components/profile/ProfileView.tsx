@@ -15,7 +15,7 @@
  *  
  */
 
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import ProfileAbout from "./ProfileAbout"
 import ProfileVideos from "./ProfileVideos"
@@ -42,19 +42,28 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
   const { channelPlaylist, loadPlaylists } = useUserPlaylists(profileAddress, { resolveChannel: true })
   const { videos, hasMore, isFetching, loadMore } = usePlaylistVideos(channelPlaylist, {
     owner: profile,
-    waitProfile: true,
-    autofetch: true,
     limit: 20,
   })
+
+  const isLoading = useMemo(() => {
+    return isFetching || !profile || !channelPlaylist
+  }, [channelPlaylist, profile, isFetching])
 
   useEffect(() => {
     loadPlaylists()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileAddress])
 
-  const handleFetchedProfile = (profile: Profile | null) => {
+  useEffect(() => {
+    if (profile && channelPlaylist) {
+      loadMore()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [channelPlaylist, profile])
+
+  const handleFetchedProfile = useCallback((profile: Profile | null) => {
     setProfile(profile)
-  }
+  }, [])
 
   return (
     <>
@@ -89,7 +98,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
         {activeTab === "videos" && (
           <ProfileVideos
             hasMoreVideos={hasMore}
-            isFetching={isFetching}
+            isFetching={isLoading}
             onLoadMore={loadMore}
             videos={videos}
           />

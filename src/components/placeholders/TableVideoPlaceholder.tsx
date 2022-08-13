@@ -6,7 +6,7 @@ type TableVideoPlaceholderProps = {
   count?: number
 }
 
-const TableVideoPlaceholder: React.FC<TableVideoPlaceholderProps> = ({ count = 2 }) => {
+const TableVideoPlaceholder: React.FC<TableVideoPlaceholderProps> = ({ count = 4 }) => {
   return (
     <>
       {Array(count).fill(0).map((_, i) => (
