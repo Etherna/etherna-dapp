@@ -27,7 +27,7 @@ type VideoPreviewPlaceholderProps = {
 const VideoPreviewPlaceholder: React.FC<VideoPreviewPlaceholderProps> = ({ mini }) => {
   return (
     <div className="flex flex-col">
-      <Placeholder className="pt-[62%]" width="100%" height="100%" round="none" />
+      <Placeholder className="pt-[62%]" width="100%" round="none" />
       <div className="flex items-top mt-2">
         {!mini && (
           <Placeholder width="2.5rem" height="2.5rem" round="full" />

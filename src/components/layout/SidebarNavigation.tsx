@@ -35,6 +35,7 @@ import { LayoutReducerTypes } from "@/context/layout-context"
 import { useLayoutState } from "@/context/layout-context/hooks"
 import routes from "@/routes"
 import { urlOrigin, urlPath } from "@/utils/urls"
+import AlphaPassButton from "../user/AlphaPassButton"
 
 const SidebarNavigation: React.FC = () => {
   const [state, dispatch] = useLayoutState()

@@ -38,8 +38,11 @@ $btn-modifiers: (
   svg {
     @apply h-[1.2em];
   }
-  svg:not(.btnSpinner) {
-    @apply mr-1.5;
+
+  :not(.btnIcon) {
+    svg:not(.btnSpinner) {
+      @apply mr-1.5;
+    }
   }
 
   &:disabled {

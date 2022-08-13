@@ -25,14 +25,12 @@ import type { Profile } from "@/definitions/swarm-profile"
 
 type PlaylistVideosOptions = {
   owner?: Profile | null
-  waitProfile?: boolean
   limit?: number
-  autofetch?: boolean
 }
 
 export default function usePlaylistVideos(
   playlist: SwarmPlaylist | undefined,
-  opts: PlaylistVideosOptions = { limit: -1, autofetch: true }
+  opts: PlaylistVideosOptions = { limit: -1 }
 ) {
   const beeClient = useSelector(state => state.env.beeClient)
   const indexClient = useSelector(state => state.env.indexClient)
@@ -42,7 +40,6 @@ export default function usePlaylistVideos(
   const [total, setTotal] = useState(0)
   const [isEncrypted, setIsEncrypted] = useState(playlist?.type === "private" && !playlist.videos)
 
-
   useEffect(() => {
     if (playlist) {
       setVideos(undefined)
@@ -51,27 +48,8 @@ export default function usePlaylistVideos(
     }
   }, [playlist])
 
-  useEffect(() => {
-    if (opts.waitProfile) {
-      if (!opts.owner) {
-        setIsFetching(true)
-        return
-      } else {
-        setIsFetching(false)
-      }
-    }
-
-    if (playlist && opts.autofetch && hasMore) {
-      loadMore()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts, playlist, hasMore])
-
   const fetchVideos = async (from: number, to: number): Promise<Video[]> => {
-    if (
-      !playlist?.videos ||
-      (opts.waitProfile && !opts.owner)
-    ) {
+    if (!playlist?.videos) {
       setIsFetching(false)
       return []
     }
