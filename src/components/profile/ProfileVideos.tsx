@@ -29,11 +29,9 @@ type ProfileVideosProps = {
 }
 
 const ProfileVideos: React.FC<ProfileVideosProps> = ({ videos, isFetching, hasMoreVideos, onLoadMore }) => {
-  if (videos == null) return null
-
   return (
     <>
-      {!isFetching && videos.length === 0 && (
+      {!isFetching && videos?.length === 0 && (
         <p className="text-gray-500 text-center my-16">This profile has yet to upload a video</p>
       )}
 
@@ -44,7 +42,7 @@ const ProfileVideos: React.FC<ProfileVideosProps> = ({ videos, isFetching, hasMo
         scrollThreshold={30}
         loader={<div />}
       >
-        <VideoGrid videos={videos} mini={true} isFetching={isFetching} decentralizedLink />
+        <VideoGrid videos={videos ?? []} mini={true} isFetching={isFetching} decentralizedLink />
       </InfiniteScroller>
     </>
   )

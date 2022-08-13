@@ -37,8 +37,6 @@ const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress }) => {
   const { channelPlaylist, loadPlaylists } = useUserPlaylists(profileAddress, { resolveChannel: true })
   const { videos, isFetching, loadMore } = usePlaylistVideos(channelPlaylist, {
     owner: profile ? profile : undefined,
-    waitProfile: true,
-    autofetch: true,
     limit: 5,
   })
 
@@ -51,6 +49,13 @@ const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress }) => {
     profile && loadPlaylists()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile])
+
+  useEffect(() => {
+    if (profile && channelPlaylist) {
+      loadMore()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [channelPlaylist, profile])
 
   if (!profile) return null
 

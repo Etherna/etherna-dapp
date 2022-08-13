@@ -46,6 +46,7 @@ const VideoGrid: React.FC<VideoGridProps> = ({
 
   const LabelTag = mini ? "h5" : "h3"
 
+
   return (
     <>
       {label && (
