@@ -21,7 +21,7 @@ import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@/definitions/swar
 import type { IndexVideo } from "@/definitions/api-index"
 import type { SchemaVersion } from "@/definitions/schema"
 
-const lastVersion: SchemaVersion = "1.0"
+const lastVersion: SchemaVersion = "1.1"
 
 const SwarmVideoIO = {
   Reader: SwarmVideoReader,
