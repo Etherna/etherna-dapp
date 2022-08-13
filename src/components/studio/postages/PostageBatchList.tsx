@@ -193,7 +193,7 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
           options={[
             { value: "all", label: "All" },
             { value: "active", label: "Active" },
-            { value: "expiring", label: "Expiring soon" },
+            { value: "expiring", label: "Expiring soon (31 days)" },
             { value: "expired", label: "Expired" },
           ]}
           onChange={filter => setFilter(filter as any)}
