@@ -67,7 +67,6 @@ const Videos: React.FC = () => {
 
   const { videos, total, isFetching, fetchPage } = usePlaylistVideos(channelPlaylist, {
     owner: profile,
-    autofetch: false,
     limit: perPage,
   })
 
