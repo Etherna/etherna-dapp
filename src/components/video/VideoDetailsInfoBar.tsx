@@ -21,10 +21,11 @@ import classes from "@/styles/components/video/VideoDetailsInfoBar.module.scss"
 
 import VideoRating from "./VideoRating"
 import VideoStatusBadge from "./VideoStatusBadge"
+import VideoOffersButton from "./VideoOffersButton"
+import VideoShareButton from "./VideoShareButton"
 import VideoOffersBadge from "./VideoOffersBadge"
 import dayjs from "@/utils/dayjs"
 import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
-import VideoShareButton from "./VideoShareButton"
 
 type VideoDetailsInfoBarProps = {
   video: Video
@@ -60,6 +61,7 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
               />
             )}
             <VideoShareButton reference={video.reference} indexReference={video.indexReference} />
+            <VideoOffersButton video={video} videoOffers={videoOffers} />
           </div>
         </div>
       </div>

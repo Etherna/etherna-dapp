@@ -16,51 +16,47 @@
  */
 
 import React, { useState } from "react"
-import classNames from "classnames"
 
-import classes from "@/styles/components/video/VideoOffersBadge.module.scss"
 import { CurrencyDollarIcon } from "@heroicons/react/outline"
 
+import VideoDetailsButton from "./VideoDetailsButton"
+import VideoOffersModal from "@/components/modals/VideoOffersModal"
 import useVideoOffers from "@/hooks/useVideoOffers"
 import useSelector from "@/state/useSelector"
 import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 
-type VideoOffersBadgeProps = {
+type VideoOffersButtonProps = {
   video: Video | null | undefined
   videoOffers?: VideoOffersStatus
 }
 
-const VideoOffersBadge: React.FC<VideoOffersBadgeProps> = ({ video, videoOffers }) => {
+const VideoOffersButton: React.FC<VideoOffersButtonProps> = ({ video, videoOffers }) => {
   const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
   const { videoOffersStatus, offerResources, unofferResources } = useVideoOffers(video, {
     routeState: videoOffers,
     disable: isStandaloneGateway,
   })
-  const offersStatus = videoOffersStatus?.offersStatus
+  const [showOffersModal, setShowOffersModal] = useState(false)
 
-  if (!video) return null
-  if (isStandaloneGateway) return null
-  if (offersStatus === "none") return null
-
-  const getLabel = () => {
-    switch (offersStatus) {
-      case "full": case "sources": return "Free to watch"
-      case "partial": return "Partially free to watch"
-      default: return "Pay to watch"
-    }
-  }
+  if (!video || isStandaloneGateway) return null
 
   return (
-    <div
-      className={classNames(classes.videoOffersBadge, {
-        [classes.fullOffered]: offersStatus === "full" || offersStatus === "sources",
-        [classes.partialOffered]: offersStatus === "partial",
-      })}
-    >
-      <CurrencyDollarIcon aria-hidden />
-      {getLabel()}
-    </div>
+    <>
+      <VideoDetailsButton onClick={() => setShowOffersModal(true)}>
+        <CurrencyDollarIcon aria-hidden />
+        Offer content
+      </VideoDetailsButton>
+
+      <VideoOffersModal
+        show={showOffersModal}
+        offersStatus={videoOffersStatus}
+        video={video}
+        offerResources={async () => await offerResources()}
+        unofferResources={async () => await unofferResources()}
+        onClose={() => setShowOffersModal(false)}
+      />
+    </>
   )
 }
 
-export default VideoOffersBadge
+export default VideoOffersButton
