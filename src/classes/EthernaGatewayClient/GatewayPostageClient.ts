@@ -18,14 +18,16 @@ import http from "@/utils/request"
 
 export default class GatewayPostageClient {
   url: string
+  abortController?: AbortController
 
   /**
    * Init an gateway user client
    * 
    * @param {string} url Api host + api url
    */
-  constructor(url: string) {
+  constructor(url: string, abortController?: AbortController) {
     this.url = url
+    this.abortController = abortController
   }
 
   /**
@@ -38,7 +40,8 @@ export default class GatewayPostageClient {
     const endpoint = `${this.url}/postage/batches/${batchId}/topup/${byAmount}`
 
     await http.patch(endpoint, null, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     return true

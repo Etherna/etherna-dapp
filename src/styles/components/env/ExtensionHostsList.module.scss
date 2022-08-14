@@ -43,6 +43,10 @@
     @apply whitespace-nowrap;
   }
 
+  .host {
+    @apply flex flex-col items-start;
+  }
+
   .host,
   .type {
     @apply text-xs;
@@ -85,4 +89,18 @@
   > svg:not([hidden]) {
     @apply h-5 mr-0;
   }
+}
+
+.extensionSignedIn,
+.extensionSignedOut {
+  @apply block mt-1;
+  @apply text-xs font-medium;
+}
+
+.extensionSignedIn {
+  @apply text-green-500;
+}
+
+.extensionSignedOut {
+  @apply text-yellow-500;
 }

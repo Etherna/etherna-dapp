@@ -29,9 +29,7 @@ import type { GatewayExtensionHost, IndexExtensionHost } from "@/definitions/ext
 import type { ExtensionParamConfig } from "@/components/env/ExtensionHostPanel"
 
 const ExtensionEditorModal = <T extends IndexExtensionHost | GatewayExtensionHost,>() => {
-  const { extensionName } = useSelector(state => state.ui)
-  const { isSignedIn, isSignedInGateway } = useSelector(state => state.user)
-  const { isStandaloneGateway, indexClient, gatewayClient } = useSelector(state => state.env)
+  const extensionName = useSelector(state => state.ui.extensionName)
 
   const STORAGE_LIST_KEY = `setting:${extensionName}-hosts`
   const STORAGE_SELECTED_KEY = `setting:${extensionName}-url`
@@ -47,17 +45,6 @@ const ExtensionEditorModal = <T extends IndexExtensionHost | GatewayExtensionHos
       default: return ""
     }
   }, [editingExtension])
-
-  const [signedIn, signInUrl] = useMemo(() => {
-    switch (editingExtension) {
-      case "index":
-        return [isSignedIn || false, indexClient.loginPath]
-      case "gateway":
-        return [isSignedInGateway || false, isStandaloneGateway ? null : gatewayClient.loginPath]
-      default:
-        return [false, null]
-    }
-  }, [editingExtension, gatewayClient, indexClient, isSignedIn, isSignedInGateway, isStandaloneGateway])
 
   const initialValue: T | undefined = useMemo(() => {
     switch (editingExtension) {
@@ -81,7 +68,9 @@ const ExtensionEditorModal = <T extends IndexExtensionHost | GatewayExtensionHos
           ...defaultParams, {
             key: "type",
             label: "Gateway Type",
-            mandatory: true,
+            mandatory: false,
+            hidden: true,
+            default: "bee",
             type: "gatetype",
             options: [{
               value: "etherna-gateway",
@@ -161,8 +150,7 @@ const ExtensionEditorModal = <T extends IndexExtensionHost | GatewayExtensionHos
         defaultUrl={defaultUrl}
         initialValue={initialValue}
         description={description}
-        isSignedIn={signedIn}
-        signInUrl={signInUrl}
+        type={extensionName ?? "index"}
       />
     </Modal>
   )

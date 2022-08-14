@@ -19,6 +19,7 @@ import type { SwarmVideoRaw } from "./swarm-video"
 
 export type IndexClientOptions = {
   host: string
+  abortController?: AbortController
   loginPath?: string
   logoutPath?: string
 }

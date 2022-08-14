@@ -55,3 +55,25 @@ $ticks-count: 12;
     }
   }
 }
+
+.spinnerLine {
+  @apply relative rounded-sm overflow-hidden;
+  @apply flex;
+  @apply bg-gray-500/20;
+  @apply h-1;
+}
+
+.spinnerLineTick {
+  @apply mx-auto w-1/2 rounded-sm;
+  @apply bg-primary-500;
+  animation: bounce 1.25s infinite alternate linear;
+
+  @keyframes bounce {
+    0% {
+      transform: translateX(-180%);
+    }
+    100% {
+      transform: translateX(180%);
+    }
+  }
+}

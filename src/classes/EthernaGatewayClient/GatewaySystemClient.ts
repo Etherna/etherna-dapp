@@ -19,14 +19,16 @@ import type { GatewayChainState } from "@/definitions/api-gateway"
 
 export default class GatewaySystemClient {
   url: string
+  abortController?: AbortController
 
   /**
    * Init an gateway settings client
    * 
    * @param url Api host + api url
    */
-  constructor(url: string) {
+  constructor(url: string, abortController?: AbortController) {
     this.url = url
+    this.abortController = abortController
   }
 
   /**
@@ -38,7 +40,8 @@ export default class GatewaySystemClient {
     const endpoint = `${this.url}/system/byteprice`
 
     const resp = await http.get<number>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (typeof resp.data !== "number") {
@@ -57,7 +60,8 @@ export default class GatewaySystemClient {
     const endpoint = `${this.url}/system/chainstate`
 
     const resp = await http.get<GatewayChainState>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (typeof resp.data !== "object") {
@@ -77,7 +81,8 @@ export default class GatewaySystemClient {
     const endpoint = `${this.url}/system/postagebatchref/${referenceId}`
 
     const resp = await http.get<string>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     const batchId = resp.data

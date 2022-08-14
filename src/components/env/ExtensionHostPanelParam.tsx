@@ -17,13 +17,13 @@
 
 import React from "react"
 import { RadioGroup } from "@headlessui/react"
+import classNames from "classnames"
 
 import classes from "@/styles/components/env/ExtensionHostPanelParam.module.scss"
 import { CheckCircleIcon } from "@heroicons/react/solid"
 
 import TextField from "@/components/common/TextField"
 import type { ExtensionParamConfig } from "./ExtensionHostPanel"
-import classNames from "classnames"
 
 type ExtensionHostPanelParamProps = {
   value: string
@@ -37,7 +37,6 @@ const ExtensionHostPanelParam: React.FC<ExtensionHostPanelParamProps> = ({
   paramConfig,
   onChange,
 }) => {
-
   switch (paramConfig.type ?? "text") {
     case "text":
       return (
@@ -47,6 +46,7 @@ const ExtensionHostPanelParam: React.FC<ExtensionHostPanelParamProps> = ({
           value={value}
           onChange={onChange}
           autoFocus
+          small
         />
       )
     case "gatetype":

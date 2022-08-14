@@ -35,10 +35,15 @@ export default class EthernaIndexClient {
     const apiPath = `/api/v${import.meta.env.VITE_APP_API_VERSION}`
     const url = `${host}${apiPath}`
 
-    this.videos = new IndexVideosClient(url)
-    this.users = new IndexUsersClient(url)
+    this.videos = new IndexVideosClient(url, options.abortController)
+    this.users = new IndexUsersClient(url, options.abortController)
     this.loginPath = `${host}${options.loginPath || "/account/login"}`
     this.logoutPath = `${host}${options.logoutPath || "/account/logout"}`
+  }
+
+  set abortController(value: AbortController) {
+    this.videos.abortController = value
+    this.users.abortController = value
   }
 
   /**

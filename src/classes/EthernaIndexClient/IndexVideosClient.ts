@@ -25,14 +25,16 @@ import type {
 
 export default class IndexVideosClient {
   url: string
+  abortController?: AbortController
 
   /**
    * Init an index video client
    * 
    * @param url Api host + api url
    */
-  constructor(url: string) {
+  constructor(url: string, abortController?: AbortController) {
     this.url = url
+    this.abortController = abortController
   }
 
   /**
@@ -46,6 +48,7 @@ export default class IndexVideosClient {
     const endpoint = `${this.url}/videos/latest`
     const resp = await http.get<IndexVideo[]>(endpoint, {
       params: { page, take },
+      signal: this.abortController?.signal,
     })
 
     if (!Array.isArray(resp.data)) {
@@ -63,7 +66,9 @@ export default class IndexVideosClient {
    */
   async fetchVideoFromId(id: string) {
     const endpoint = `${this.url}/videos/${id}`
-    const resp = await http.get<IndexVideo>(endpoint)
+    const resp = await http.get<IndexVideo>(endpoint, {
+      signal: this.abortController?.signal,
+    })
 
     if (typeof resp.data !== "object") {
       throw new Error("Cannot fetch the video")
@@ -79,7 +84,9 @@ export default class IndexVideosClient {
    */
   async fetchHashValidation(hash: string) {
     const endpoint = `${this.url}/videos/manifest/${hash}/validation`
-    const resp = await http.get<IndexVideoValidation>(endpoint)
+    const resp = await http.get<IndexVideoValidation>(endpoint, {
+      signal: this.abortController?.signal,
+    })
 
     if (typeof resp.data !== "object") {
       throw new Error("Cannot fetch the hash validation")
@@ -95,7 +102,9 @@ export default class IndexVideosClient {
    */
   async fetchValidations(id: string) {
     const endpoint = `${this.url}/videos/${id}/validations`
-    const resp = await http.get<IndexVideoValidation[]>(endpoint)
+    const resp = await http.get<IndexVideoValidation[]>(endpoint, {
+      signal: this.abortController?.signal,
+    })
 
     if (Array.isArray(resp.data)) {
       throw new Error("Cannot fetch the video validations")
@@ -111,7 +120,9 @@ export default class IndexVideosClient {
    */
   async fetchVideoFromHash(hash: string) {
     const endpoint = `${this.url}/videos/manifest/${hash}`
-    const resp = await http.get<IndexVideo>(endpoint)
+    const resp = await http.get<IndexVideo>(endpoint, {
+      signal: this.abortController?.signal,
+    })
 
     if (typeof resp.data !== "object") {
       throw new Error("Cannot fetch the video")
@@ -134,7 +145,8 @@ export default class IndexVideosClient {
       encryptionKey,
       encryptionType: encryptionKey ? "AES256" : "Plain",
     }, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (typeof resp.data !== "string") {
@@ -157,7 +169,8 @@ export default class IndexVideosClient {
       params: {
         newHash,
       },
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (typeof resp.data !== "object") {
@@ -176,7 +189,8 @@ export default class IndexVideosClient {
   async deleteVideo(id: string) {
     const endpoint = `${this.url}/videos/${id}`
     await http.delete(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     return true
@@ -194,7 +208,8 @@ export default class IndexVideosClient {
     const endpoint = `${this.url}/videos/${id}/comments`
     const resp = await http.get<IndexVideoComment[]>(endpoint, {
       params: { page, take },
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (!Array.isArray(resp.data)) {
@@ -218,7 +233,8 @@ export default class IndexVideosClient {
       headers: {
         "accept": "text/plain",
         "content-type": "application/json",
-      }
+      },
+      signal: this.abortController?.signal,
     })
 
     return resp.data
@@ -236,7 +252,8 @@ export default class IndexVideosClient {
       params: {
         value: vote
       },
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     return resp.data
@@ -255,7 +272,8 @@ export default class IndexVideosClient {
       params: {
         description: code
       },
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     return resp.data

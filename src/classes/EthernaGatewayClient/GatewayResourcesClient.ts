@@ -18,14 +18,16 @@ import http from "@/utils/request"
 
 export default class GatewayResourcesClient {
   url: string
+  abortController?: AbortController
 
   /**
    * Init an gateway settings client
    * 
    * @param url Api host + api url
    */
-  constructor(url: string) {
+  constructor(url: string, abortController?: AbortController) {
     this.url = url
+    this.abortController = abortController
   }
 
   /**
@@ -38,7 +40,8 @@ export default class GatewayResourcesClient {
     const endpoint = `${this.url}/resources/${reference}/isoffered`
 
     const resp = await http.get<boolean>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (typeof resp.data !== "boolean") {
@@ -58,7 +61,8 @@ export default class GatewayResourcesClient {
     const endpoint = `${this.url}/resources/${reference}/offers`
 
     const resp = await http.get<string[]>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (typeof resp.data !== "object") {
@@ -79,6 +83,7 @@ export default class GatewayResourcesClient {
 
     await http.post(endpoint, undefined, {
       withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     return true
@@ -94,7 +99,8 @@ export default class GatewayResourcesClient {
     const endpoint = `${this.url}/resources/${reference}/offers`
 
     await http.delete(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     return true

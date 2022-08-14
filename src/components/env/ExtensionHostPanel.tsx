@@ -28,6 +28,7 @@ import useLocalStorage from "@/hooks/useLocalStorage"
 import { useConfirmation, useErrorMessage } from "@/state/hooks/ui"
 import { isSafeURL } from "@/utils/urls"
 import type { GatewayExtensionHost, IndexExtensionHost } from "@/definitions/extension-host"
+import type { ExtensionType } from "@/definitions/app-state"
 
 type ExtensionHostPanelProps<T extends IndexExtensionHost | GatewayExtensionHost> = {
   listStorageKey: string
@@ -36,8 +37,7 @@ type ExtensionHostPanelProps<T extends IndexExtensionHost | GatewayExtensionHost
   initialValue?: T
   defaultUrl?: string
   description?: string
-  isSignedIn: boolean
-  signInUrl?: string | null
+  type: ExtensionType
   onChange?(extension: T): void
 }
 
@@ -45,6 +45,8 @@ export type ExtensionParamConfig = {
   key: keyof (IndexExtensionHost & GatewayExtensionHost)
   label: string
   mandatory: boolean
+  hidden?: boolean
+  default?: string
   type?: "text" | "gatetype"
   options?: { value: string, label: string, description?: string }[]
 }
@@ -56,8 +58,7 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost,
   initialValue,
   defaultUrl,
   description,
-  isSignedIn,
-  signInUrl,
+  type,
   onChange,
 }: ExtensionHostPanelProps<T>) => {
   const defaultValue = initialValue ? [initialValue] : []
@@ -164,12 +165,15 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost,
     const newHosts = [...hosts!]
     const selectedHostIndex = newHosts.findIndex(host => host.url === editorTempExtension!.url)
 
+    for (const param of hostParams) {
+      const key = param.key as keyof T
+      editorTempExtension![key] = editorTempExtension![key] ? editorTempExtension![key] : param.default ?? null as any
+    }
+
     if (selectedHostIndex === -1) {
       newHosts.push(editorTempExtension!)
     } else {
-      for (const param of hostParams) {
-        newHosts[selectedHostIndex][param.key as keyof T] = editorTempExtension![param.key as keyof T] as any
-      }
+      newHosts[selectedHostIndex] = editorTempExtension!
     }
 
     setHosts(newHosts)
@@ -200,6 +204,7 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost,
             onSelect={selectHost}
             onEdit={editHost}
             onDelete={askToDeleteHost}
+            type={type}
           />
         </div>
       </div>

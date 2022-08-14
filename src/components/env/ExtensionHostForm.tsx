@@ -76,7 +76,7 @@ const ExtensionHostForm = <T extends IndexExtensionHost | GatewayExtensionHost,>
 
   return (
     <form>
-      {params.map(param => (
+      {params.filter(param => !param.hidden).map(param => (
         <FormGroup key={param.key as string}>
           <Label htmlFor={param.key as string}>{param.label}</Label>
           <ExtensionHostPanelParam

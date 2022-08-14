@@ -19,14 +19,16 @@ import type { GatewayBatch, GatewayBatchPreview, GatewayCredit, GatewayCurrentUs
 
 export default class GatewayUsersClient {
   url: string
+  abortController?: AbortController
 
   /**
    * Init an gateway user client
    * 
    * @param {string} url Api host + api url
    */
-  constructor(url: string) {
+  constructor(url: string, abortController?: AbortController) {
     this.url = url
+    this.abortController = abortController
   }
 
   /**
@@ -37,7 +39,8 @@ export default class GatewayUsersClient {
     const endpoint = `${this.url}/users/current`
 
     const resp = await http.get<GatewayCurrentUser>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (typeof resp.data !== "object") {
@@ -56,7 +59,8 @@ export default class GatewayUsersClient {
     const endpoint = `${this.url}/users/current/credit`
 
     const resp = await http.get<GatewayCredit>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (typeof resp.data !== "object") {
@@ -75,7 +79,8 @@ export default class GatewayUsersClient {
     const endpoint = `${this.url}/users/current/batches`
 
     const resp = await http.get<GatewayBatchPreview[]>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (!Array.isArray(resp.data)) {
@@ -100,7 +105,8 @@ export default class GatewayUsersClient {
         depth,
         amount,
       },
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     const referenceId = resp.data
@@ -144,7 +150,8 @@ export default class GatewayUsersClient {
     const endpoint = `${this.url}/users/current/batches/${batchId}`
 
     const resp = await http.get<GatewayBatch>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (typeof resp.data !== "object") {
@@ -164,7 +171,8 @@ export default class GatewayUsersClient {
     const endpoint = `${this.url}/users/current/batches/${batchId}/dilute/${depth}`
 
     await http.patch(endpoint, null, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     return true
@@ -179,7 +187,8 @@ export default class GatewayUsersClient {
     const endpoint = `${this.url}/users/current/offeredResources`
 
     const resp = await http.get<string[]>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (typeof resp.data !== "object") {
@@ -202,7 +211,8 @@ export default class GatewayUsersClient {
     const endpoint = `${this.url}/system/postagebatchref/${referenceId}`
 
     const resp = await http.get<string>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     const batchId = resp.data

@@ -18,6 +18,7 @@ import type { PostageBatch, BatchId } from "@ethersphere/bee-js"
 
 export type GatewayClientOptions = {
   host: string
+  abortController?: AbortController
   loginPath?: string
   logoutPath?: string
 }

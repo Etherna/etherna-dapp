@@ -44,12 +44,19 @@ export default class EthernaGatewayClient {
     const apiPath = `/api/v${import.meta.env.VITE_APP_API_VERSION}`
     const url = `${this.url}${apiPath}`
 
-    this.resources = new GatewayResourcesClient(url)
-    this.users = new GatewayUsersClient(url)
-    this.system = new GatewaySystemClient(url)
-    this.postage = new GatewayPostageClient(url)
+    this.resources = new GatewayResourcesClient(url, options.abortController)
+    this.users = new GatewayUsersClient(url, options.abortController)
+    this.system = new GatewaySystemClient(url, options.abortController)
+    this.postage = new GatewayPostageClient(url, options.abortController)
     this.loginPath = `${this.url}${options.loginPath || "/account/login"}`
     this.logoutPath = `${this.url}${options.logoutPath || "/account/logout"}`
+  }
+
+  set abortController(value: AbortController) {
+    this.resources.abortController = value
+    this.users.abortController = value
+    this.system.abortController = value
+    this.postage.abortController = value
   }
 
   /**
