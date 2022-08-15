@@ -92,6 +92,19 @@ export const fetchAccounts = async () => {
 }
 
 /**
+ * Switch the wallet account
+ */
+export const switchAccount = async (address: string) => {
+  if (!window.ethereum || !window.ethereum.request) return
+  return await window.ethereum.request({
+    method: "wallet_requestPermissions",
+    params: [{
+      eth_accounts: { [address]: true },
+    }]
+  })
+}
+
+/**
  * Check if the wallet is locked
  */
 export const checkWalletLocked = () => {

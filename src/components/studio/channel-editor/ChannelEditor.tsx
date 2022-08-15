@@ -66,7 +66,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
   const updateProfile = useProfileUpdate(profileAddress)
   const { updateProfile: updateSwarmProfile } = useSwarmProfile({ address: profileAddress })
 
-  const { isLocked, selectedAddress } = useWallet()
+  const { isLocked } = useWallet()
 
   const avatarRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
@@ -193,11 +193,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
 
   return (
     <div className={classes.channelEditor}>
-      <WalletState
-        isLocked={isLocked}
-        selectedAddress={selectedAddress}
-        profileAddress={profileAddress}
-      />
+      <WalletState />
 
       <div className={classes.cover}>
         <label

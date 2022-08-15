@@ -199,7 +199,7 @@ const run = async () => {
   const shouldRunEthernaIndex = runAllServices || args.includes("--index")
   const shouldRunEthernaCredit = runAllServices || args.includes("--credit")
   const shouldRunEthernaGateway = runAllServices || args.includes("--gateway")
-  const shouldRunEthernaBeehive = false//runAllServices || args.includes("--beehive")
+  const shouldRunEthernaBeehive = runAllServices || args.includes("--beehive")
   const shouldRunProxy = runAllServices || args.includes("--proxy")
 
   if (shouldRunBeeNode) {

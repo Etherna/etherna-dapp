@@ -158,9 +158,9 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
     })
 
     // update bee client with signer for feed update
-    if (identity?.etherManagedPrivateKey) {
+    if (identity?.accountType === "web2") {
       const beeClientSigner = new SwarmBeeClient(beeClient.url, {
-        signer: identity.etherManagedPrivateKey,
+        signer: identity.etherManagedPrivateKey!,
         stampsUrl: gatewayStampsUrl
       })
 
@@ -169,7 +169,7 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
         beeClient: beeClientSigner,
         signerWallet: "etherna"
       })
-    } else if (window.ethereum && window.ethereum.request) {
+    } else if (identity?.accountType === "web3") {
       const beeClientSigner = new SwarmBeeClient(beeClient.url, {
         signer: {
           address: addressBytes(address) as EthAddress,

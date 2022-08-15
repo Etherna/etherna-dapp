@@ -54,7 +54,6 @@ export type VideoEditorHandle = {
 }
 
 const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
-  const { address } = useSelector(state => state.user)
   const [{ reference, queue, videoWriter, hasChanges, saveTo, offerResources }] = useVideoEditorState()
   const [privateLink, setPrivateLink] = useState<string>()
 
@@ -71,7 +70,6 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     resetState: resetSaveState,
   } = useVideoEditorSaveActions()
 
-  const { isLocked, selectedAddress } = useWallet()
   const { resetState } = useVideoEditorBaseActions()
   const { waitConfirmation } = useConfirmation()
 
@@ -124,11 +122,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   return (
     <>
       <div className="my-6 space-y-4">
-        <WalletState
-          isLocked={isLocked}
-          selectedAddress={selectedAddress}
-          profileAddress={address!}
-        />
+        <WalletState />
 
         {addedToChannel === false && (
           <Alert title="Video not added to channel" type="warning">
