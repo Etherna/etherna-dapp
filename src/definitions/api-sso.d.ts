@@ -21,6 +21,7 @@ export type AuthClientOptions = {
 }
 
 export type AuthIdentity = {
+  accountType: "web2" | "web3"
   email: string | null
   etherAddress: string
   etherManagedPrivateKey: string | null

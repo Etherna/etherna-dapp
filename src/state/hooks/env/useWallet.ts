@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import useSelector from "@/state/useSelector"
-import { checkWalletLocked, fetchAccounts } from "@/utils/ethereum"
+import { checkWalletLocked, fetchAccounts, switchAccount as switchTo } from "@/utils/ethereum"
 
 export default function useWallet() {
   const { currentWallet } = useSelector(state => state.env)
@@ -26,6 +26,11 @@ export default function useWallet() {
   const [selectedAddress, setSelectedAddress] = useState<string>()
 
   useEffect(() => {
+    const onAccountsChanged = (accounts: string[]) => {
+      setIsLocked(accounts.length === 0)
+      setSelectedAddress(accounts[0])
+    }
+
     if (currentWallet === "metamask") {
       setIsLocked(checkWalletLocked())
       setSelectedAddress(window.ethereum?.selectedAddress)
@@ -40,19 +45,31 @@ export default function useWallet() {
     }
   }, [currentWallet])
 
-  const onAccountsChanged = (accounts: string[]) => {
-    setIsLocked(accounts.length === 0)
-    setSelectedAddress(accounts[0])
-  }
+  const unlockWallet = useCallback(async () => {
+    try {
+      const accounts = await fetchAccounts() as string[]
+      setSelectedAddress(accounts[0])
+    } catch (error: any) {
+      if (error.code === -32002) {
+        alert("Already proccesing an unlock request. Manually unlock your wallet.")
+      }
+    }
+  }, [])
 
-  const unlockWallet = async () => {
-    const accounts = await fetchAccounts() as string[]
-    setSelectedAddress(accounts[0])
-  }
+  const switchAccount = useCallback(async (address: string) => {
+    try {
+      await switchTo(address)
+    } catch (error: any) {
+      if (error.code === -32002) {
+        alert("Already proccesing an switch request. Manually switch account.")
+      }
+    }
+  }, [])
 
   return {
     isLocked,
     selectedAddress,
     unlockWallet,
+    switchAccount,
   }
 }

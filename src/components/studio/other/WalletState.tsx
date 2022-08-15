@@ -17,34 +17,35 @@
 
 import React, { useMemo } from "react"
 
+import Button from "@/components/common/Button"
 import Alert from "@/components/common/Alert"
+import { useWallet } from "@/state/hooks/env"
+import useSelector from "@/state/useSelector"
 
 type WalletStateProps = {
-  isLocked?: boolean
-  selectedAddress?: string
-  profileAddress: string
 }
 
-const WalletState: React.FC<WalletStateProps> = ({
-  isLocked,
-  selectedAddress,
-  profileAddress,
-}) => {
+const WalletState: React.FC<WalletStateProps> = () => {
+  const address = useSelector(state => state.user.address)
+  const { isLocked, selectedAddress, unlockWallet, switchAccount } = useWallet()
+
   const sameAddress = useMemo(() => {
     if (!selectedAddress) return false
-    return selectedAddress.toLowerCase() === profileAddress.toLowerCase()
-  }, [selectedAddress, profileAddress])
+    return selectedAddress.toLowerCase() === address?.toLowerCase()
+  }, [selectedAddress, address])
 
   return (
     <>
       {isLocked && (
-        <Alert title="Wallet Locked" type="warning">
-          Please unlock your wallet before saving.
+        <Alert title="Unlock your wallet to continue" type="info">
+          <Button className="mt-3" onClick={unlockWallet}>Unlock</Button>
         </Alert>
       )}
       {(selectedAddress && !sameAddress) && (
         <Alert title="Wrong Account" type="warning">
-          Please switch to the account <pre><strong>{profileAddress}</strong></pre> before saving.
+          Please switch to the account <pre><strong>{address}</strong></pre> before saving.
+          <br />
+          <Button className="mt-3" onClick={() => switchAccount(address!)}>Switch</Button>
         </Alert>
       )}
     </>
