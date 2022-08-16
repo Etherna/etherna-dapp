@@ -38,7 +38,8 @@
     "react-slider": "2.0.1",
     "redux": "4.2.0",
     "redux-thunk": "2.4.1",
-    "uuid": "8.3.2"
+    "uuid": "8.3.2",
+    "xss": "1.0.13"
   },
   "devDependencies": {
     "@tailwindcss/forms": "0.5.2",

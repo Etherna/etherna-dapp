@@ -17,6 +17,7 @@
 
 import React, { useEffect, useRef, useState } from "react"
 import classNames from "classnames"
+import { filterXSS } from "xss"
 
 import classes from "@/styles/components/common/Image.module.scss"
 
@@ -142,7 +143,7 @@ const Image: React.FC<ImageProps> = ({
           onLoad={onLoadImage}
         >
           <img
-            src={src}
+            src={filterXSS(src)}
             alt={alt}
             style={{
               ...style,

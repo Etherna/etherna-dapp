@@ -18,6 +18,7 @@
 import React, { useMemo } from "react"
 import classNames from "classnames"
 import { parse } from "micro-down"
+import { filterXSS } from "xss"
 
 import classes from "@/styles/components/common/MarkdownPreview.module.scss"
 
@@ -44,7 +45,7 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({
     const formattedMarkdown = forceNewLine
       ? value.replace(/\n/g, "<br />")
       : value
-    return parse(formattedMarkdown)
+    return filterXSS(parse(formattedMarkdown))
   }, [value, forceNewLine])
 
   return (
