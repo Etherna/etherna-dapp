@@ -22,7 +22,11 @@ import Button from "@/components/common/Button"
 import useSelector from "@/state/useSelector"
 import routes from "@/routes"
 
-const CantUploadAlert: React.FC = () => {
+type OnlyUsableBatchProps = {
+  children: React.ReactNode
+}
+
+const OnlyUsableBatch: React.FC<OnlyUsableBatchProps> = ({ children }) => {
   const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
   const batches = useSelector(state => state.user.batches)
   const isLoadingProfile = useSelector(state => state.ui.isLoadingProfile)
@@ -43,7 +47,7 @@ const CantUploadAlert: React.FC = () => {
   }, [loading, noBatches, isStandaloneGateway, noUsableBatches])
 
   if (isLoadingProfile) return null
-  if (!loading && !noBatches && !noUsableBatches) return null
+  if (!loading && !noBatches && !noUsableBatches) return <>{children}</>
 
   return (
     <Alert className="my-6" type="warning" title={title}>
@@ -59,4 +63,4 @@ const CantUploadAlert: React.FC = () => {
   )
 }
 
-export default CantUploadAlert
+export default OnlyUsableBatch

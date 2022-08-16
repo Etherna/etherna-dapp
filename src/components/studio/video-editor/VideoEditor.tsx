@@ -37,8 +37,6 @@ import {
   useVideoEditorState
 } from "@/context/video-editor-context/hooks"
 import routes from "@/routes"
-import useSelector from "@/state/useSelector"
-import { useWallet } from "@/state/hooks/env"
 import { useConfirmation } from "@/state/hooks/ui"
 
 const PORTAL_ID = "video-drag-portal"
