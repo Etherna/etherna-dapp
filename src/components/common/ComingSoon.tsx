@@ -18,7 +18,7 @@
 import React from "react"
 
 import classes from "@/styles/components/common/ComingSoon.module.scss"
-import { ReactComponent as SoonIllustration } from "@/assets/backgrounds/soon-illustration.svg"
+import { ClockIcon } from "@heroicons/react/outline"
 
 type ComingSoonProps = {
   title?: string
@@ -29,8 +29,13 @@ const ComingSoon: React.FC<ComingSoonProps> = ({ title = "Coming Soon!", descrip
   return (
     <div className={classes.comingSoon}>
       <div className={classes.comingSoonContent}>
-        <h2 className={classes.comingSoonTitle}>{title}</h2>
-        <SoonIllustration className={classes.comingSoonImage} aria-hidden />
+        <h2 className={classes.comingSoonTitle}>
+          <ClockIcon aria-hidden />
+          {title}
+        </h2>
+        <a href="https://info.etherna.io/#roadmap" target="_blank" rel="noreferrer">Roadmap ↗</a>
+
+        <p className={classes.comingSoonLabel}>Feature description:</p>
         <p className={classes.comingSoonDescription}>{description}</p>
       </div>
     </div>
