@@ -15,31 +15,21 @@
  *  
  */
 
-import React, { useState } from "react"
+import React from "react"
 import classNames from "classnames"
 
 import classes from "@/styles/components/video/VideoOffersBadge.module.scss"
 import { CurrencyDollarIcon } from "@heroicons/react/outline"
 
-import useVideoOffers from "@/hooks/useVideoOffers"
-import useSelector from "@/state/useSelector"
 import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 
 type VideoOffersBadgeProps = {
   video: Video | null | undefined
-  videoOffers?: VideoOffersStatus
+  offersStatus: VideoOffersStatus["offersStatus"] | undefined
 }
 
-const VideoOffersBadge: React.FC<VideoOffersBadgeProps> = ({ video, videoOffers }) => {
-  const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
-  const { videoOffersStatus, offerResources, unofferResources } = useVideoOffers(video, {
-    routeState: videoOffers,
-    disable: isStandaloneGateway,
-  })
-  const offersStatus = videoOffersStatus?.offersStatus
-
+const VideoOffersBadge: React.FC<VideoOffersBadgeProps> = ({ video, offersStatus }) => {
   if (!video) return null
-  if (isStandaloneGateway) return null
   if (offersStatus === "none") return null
 
   const getLabel = () => {

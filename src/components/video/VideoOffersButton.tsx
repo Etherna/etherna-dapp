@@ -27,18 +27,20 @@ import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 
 type VideoOffersButtonProps = {
   video: Video | null | undefined
-  videoOffers?: VideoOffersStatus
+  videoOffersStatus: VideoOffersStatus | undefined
+  onOfferResources(): Promise<void>
+  onUnofferResources(): Promise<void>
 }
 
-const VideoOffersButton: React.FC<VideoOffersButtonProps> = ({ video, videoOffers }) => {
-  const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
-  const { videoOffersStatus, offerResources, unofferResources } = useVideoOffers(video, {
-    routeState: videoOffers,
-    disable: isStandaloneGateway,
-  })
+const VideoOffersButton: React.FC<VideoOffersButtonProps> = ({
+  video,
+  videoOffersStatus,
+  onOfferResources,
+  onUnofferResources,
+}) => {
   const [showOffersModal, setShowOffersModal] = useState(false)
 
-  if (!video || isStandaloneGateway) return null
+  if (!video) return null
 
   return (
     <>
@@ -51,8 +53,8 @@ const VideoOffersButton: React.FC<VideoOffersButtonProps> = ({ video, videoOffer
         show={showOffersModal}
         offersStatus={videoOffersStatus}
         video={video}
-        offerResources={async () => await offerResources()}
-        unofferResources={async () => await unofferResources()}
+        offerResources={onOfferResources}
+        unofferResources={onUnofferResources}
         onClose={() => setShowOffersModal(false)}
       />
     </>
