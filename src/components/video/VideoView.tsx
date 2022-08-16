@@ -110,7 +110,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
                 thumbnailUrl={posterUrl}
               />
 
-              <VideoDetails video={video} />
+              <VideoDetails video={video} videoOffers={routeState?.videoOffers} />
             </div>
 
             <aside className="lg:w-1/4 hidden">

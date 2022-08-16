@@ -15,7 +15,8 @@
  *  
  */
 
-import React from "react"
+import React, { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 
 import classes from "@/styles/components/video/VideoDetailsInfoBar.module.scss"
 
@@ -24,6 +25,8 @@ import VideoStatusBadge from "./VideoStatusBadge"
 import VideoOffersButton from "./VideoOffersButton"
 import VideoShareButton from "./VideoShareButton"
 import VideoOffersBadge from "./VideoOffersBadge"
+import useVideoOffers from "@/hooks/useVideoOffers"
+import useSelector from "@/state/useSelector"
 import dayjs from "@/utils/dayjs"
 import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 
@@ -33,12 +36,35 @@ type VideoDetailsInfoBarProps = {
 }
 
 const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoOffers }) => {
+  const navigate = useNavigate()
+  const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
+  const { videoOffersStatus, offerResources, unofferResources } = useVideoOffers(video, {
+    routeState: videoOffers,
+    disable: isStandaloneGateway,
+  })
+
+  useEffect(() => {
+    if (videoOffersStatus) {
+      // Replace current route state to avoid refresh inconsistency
+      navigate(".", {
+        replace: true,
+        state: {
+          video,
+          videoOffers: videoOffersStatus,
+        }
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [videoOffersStatus])
+
   return (
     <div className={classes.videoDetailsInfoBar}>
       <div className={classes.videoDetailsTop}>
         <div className={classes.videoDetailsBadges}>
           <VideoStatusBadge status={video.isVideoOnIndex ? "available" : "unindexed"} />
-          <VideoOffersBadge video={video} videoOffers={videoOffers} />
+          {!isStandaloneGateway && (
+            <VideoOffersBadge video={video} offersStatus={videoOffersStatus?.offersStatus} />
+          )}
         </div>
       </div>
 
@@ -61,7 +87,14 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
               />
             )}
             <VideoShareButton reference={video.reference} indexReference={video.indexReference} />
-            <VideoOffersButton video={video} videoOffers={videoOffers} />
+            {!isStandaloneGateway && (
+              <VideoOffersButton
+                video={video}
+                videoOffersStatus={videoOffersStatus}
+                onOfferResources={offerResources}
+                onUnofferResources={unofferResources}
+              />
+            )}
           </div>
         </div>
       </div>
