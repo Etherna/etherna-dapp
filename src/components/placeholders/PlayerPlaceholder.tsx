@@ -22,10 +22,15 @@ import Placeholder from "@/components/common/Placeholder"
 const PlayerPlaceholder = () => {
   return (
     <>
-      <Placeholder width="100%" ratio={0.42} className="mt-12 mb-8" round="lg" />
+      <Placeholder width="100%" ratio={0.42} className="mt-12 mb-8" />
       <div className="flex flex-col">
-        <Placeholder width="100%" height="1rem" round="sm" />
-        <Placeholder className="mt-1" width="60%" height="0.75rem" round="sm" />
+        <Placeholder width="60%" height="1.5rem" round="sm" />
+        <Placeholder className="mt-6" width="100%" height="5rem" round="md" />
+
+        <div className="flex items-center mt-6">
+          <Placeholder width="2.5rem" height="2.5rem" round="full" />
+          <Placeholder className="ml-2" width="6rem" height="1rem" round="sm" />
+        </div>
       </div>
     </>
   )
