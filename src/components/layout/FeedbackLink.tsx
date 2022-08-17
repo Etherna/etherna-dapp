@@ -18,8 +18,13 @@
 import React, { useEffect, useState } from "react"
 
 import SidebarLinksItem from "@/components/navigation/SidebarLinksItem"
+import TabbarItem from "@/components/navigation/TabbarItem"
 
-const FeedbackLink = () => {
+type FeedbackLinkProps = {
+  wrapper: typeof SidebarLinksItem | typeof TabbarItem
+}
+
+const FeedbackLink: React.FC<FeedbackLinkProps> = ({ wrapper: Wrapper }) => {
   const [blocked, setBlocked] = useState(false)
 
   useEffect(() => {
@@ -49,7 +54,7 @@ const FeedbackLink = () => {
   }
 
   return (
-    <SidebarLinksItem
+    <Wrapper
       id="jira_feedback_btn"
       title="Feedback"
       tooltip={blocked ? "The feedback script has been blocked by your AdBlocker" : undefined}

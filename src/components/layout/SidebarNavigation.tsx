@@ -110,7 +110,7 @@ const SidebarNavigation: React.FC = () => {
           to="https://info.etherna.io/blog/"
           target="_blank"
         />
-        <FeedbackLink />
+        <FeedbackLink wrapper={SidebarLinksItem} />
         <SidebarLinksItem
           title="GitHub"
           to="https://github.com/etherna/etherna-dapp"
