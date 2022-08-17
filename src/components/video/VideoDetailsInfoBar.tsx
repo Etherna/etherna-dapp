@@ -15,8 +15,7 @@
  *  
  */
 
-import React, { useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import React from "react"
 
 import classes from "@/styles/components/video/VideoDetailsInfoBar.module.scss"
 
@@ -36,26 +35,11 @@ type VideoDetailsInfoBarProps = {
 }
 
 const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoOffers }) => {
-  const navigate = useNavigate()
   const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
   const { videoOffersStatus, offerResources, unofferResources } = useVideoOffers(video, {
     routeState: videoOffers,
     disable: isStandaloneGateway,
   })
-
-  useEffect(() => {
-    if (videoOffersStatus) {
-      // Replace current route state to avoid refresh inconsistency
-      navigate(".", {
-        replace: true,
-        state: {
-          video,
-          videoOffers: videoOffersStatus,
-        }
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [videoOffersStatus])
 
   return (
     <div className={classes.videoDetailsInfoBar}>
