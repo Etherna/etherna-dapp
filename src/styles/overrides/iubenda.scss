@@ -1,0 +1,40 @@
+body {
+  #iubenda_policy {
+    .iub_base_container {
+      @apply dark:text-gray-400;
+
+      h1 {
+        @apply dark:text-gray-50;
+      }
+      h2 {
+        @apply dark:text-gray-200;
+      }
+      h3 {
+        @apply dark:text-gray-300;
+      }
+      h4,
+      h5,
+      h6 {
+        @apply dark:text-gray-400;
+      }
+
+      p {
+        @apply dark:text-gray-400;
+      }
+
+      a {
+        @apply dark:text-gray-100 dark:hover:text-gray-50;
+      }
+
+      .box_primary {
+        @apply dark:bg-gray-800 dark:border-gray-600;
+
+        &.expand {
+          .expand-click {
+            @apply dark:border-b-gray-600;
+          }
+        }
+      }
+    }
+  }
+}
