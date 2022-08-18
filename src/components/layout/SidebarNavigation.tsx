@@ -126,11 +126,11 @@ const SidebarNavigation: React.FC = () => {
           to={urlOrigin(import.meta.env.VITE_APP_GATEWAY_URL)}
           target="_blank"
         />
-        <SidebarLinksItem
+        {/* <SidebarLinksItem
           title="Credit"
           to={urlOrigin(import.meta.env.VITE_APP_CREDIT_URL)}
           target="_blank"
-        />
+        /> */}
         <SidebarLinksItem
           title="Privacy Policy"
           to={routes.privacyPolicy}
