@@ -23,6 +23,7 @@ const STORAGE_KEY = "videoEditorState"
 
 type CacheState = Omit<VideoEditorContextState, "videoWriter"> & {
   videoRaw: SwarmVideoRaw
+  indexReference: string | undefined
 }
 
 export default class VideoEditorCache {
@@ -57,6 +58,7 @@ export default class VideoEditorCache {
     const value = window.localStorage.getItem(STORAGE_KEY)!
     const {
       reference,
+      indexReference,
       queue,
       videoRaw,
       pinContent,
@@ -69,6 +71,7 @@ export default class VideoEditorCache {
       beeClient,
     })
     videoWriter.reference = reference
+    videoWriter.indexReference = indexReference
     videoWriter.videoRaw = videoRaw
 
     // only keep successful uploads
@@ -100,9 +103,11 @@ export default class VideoEditorCache {
       hasChanges,
     } = state
     const videoRaw = videoWriter.videoRaw
+    const indexReference = videoWriter.indexReference
 
     const cacheState: CacheState = {
       reference,
+      indexReference,
       ownerAddress,
       queue,
       videoRaw,
