@@ -67,5 +67,5 @@ export const keyEventToString = (e: KeyboardEvent) => {
   if (e.shiftKey) result.push("Shift")
   if (character) result.push(character)
 
-  return result.join(" + ")
+  return result.join("+").toLowerCase()
 }

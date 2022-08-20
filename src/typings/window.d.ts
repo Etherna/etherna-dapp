@@ -51,5 +51,10 @@ declare global {
   interface Navigator {
     // polyfills
     msMaxTouchPoints?: typeof navigator.maxTouchPoints
+    userAgentData?: {
+      brands: { brand: string, version: string }[]
+      mobile: boolean
+      platform: string
+    }
   }
 }

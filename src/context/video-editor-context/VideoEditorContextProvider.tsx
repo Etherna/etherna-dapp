@@ -74,6 +74,7 @@ const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
       saveTo: videoData && !videoData.indexReference ? "channel" : "channel-index",
       offerResources: hasOffers,
       hasChanges: false,
+      descriptionExeeded: false,
     }
   }
 
