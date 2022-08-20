@@ -95,9 +95,13 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
       saveLabel={reference ? "Update" : "Publish"}
       canSave={canSave}
       actions={
-        <Button aspect="link" modifier="muted" onClick={askToClearState}>
-          <TrashIcon /> Clear all
-        </Button>
+        <>
+          {!reference && (
+            <Button aspect="link" modifier="muted" onClick={askToClearState}>
+              <TrashIcon /> Clear all
+            </Button>
+          )}
+        </>
       }
       backTo={routes.studioVideos}
       backPrompt={backPrompt}
