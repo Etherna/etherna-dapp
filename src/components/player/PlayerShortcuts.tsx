@@ -33,6 +33,15 @@ const PlayerShortcuts: React.FC<PlayerShortcutsProps> = ({ children }) => {
   const { isPlaying, muted } = state
 
   const handleShortcut = (action: string, event: Event) => {
+    const target = event.target as HTMLElement
+
+    if (target.nodeName === "INPUT" || target.nodeName === "TEXTAREA") {
+      return
+    }
+    if (target.className.includes("DraftEditor")) {
+      return
+    }
+
     event.preventDefault()
     event.stopPropagation()
     // eslint-disable-next-line default-case
