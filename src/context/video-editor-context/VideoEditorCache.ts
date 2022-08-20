@@ -21,7 +21,7 @@ import type { SwarmVideoRaw } from "@/definitions/swarm-video"
 
 const STORAGE_KEY = "videoEditorState"
 
-type CacheState = Omit<VideoEditorContextState, "videoWriter"> & {
+type CacheState = Omit<VideoEditorContextState, "videoWriter" | "descriptionExeeded"> & {
   videoRaw: SwarmVideoRaw
   indexReference: string | undefined
 }
@@ -86,6 +86,7 @@ export default class VideoEditorCache {
       saveTo,
       offerResources,
       hasChanges,
+      descriptionExeeded: false,
     }
 
     return state

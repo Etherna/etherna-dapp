@@ -15,36 +15,26 @@
  *  
  */
 
-import React from "react"
-import { Shortcuts } from "react-shortcuts"
+import React, { useCallback } from "react"
 
 import classes from "@/styles/components/player/PlayerShortcuts.module.scss"
 
 import { PlayerReducerTypes } from "@/context/player-context"
 import { usePlayerState } from "@/context/player-context/hooks"
 import { PlayerActions } from "@/keyboard"
+import useShortcuts from "@/hooks/useShortcuts"
+import useSelector from "@/state/useSelector"
 
 type PlayerShortcutsProps = {
   children?: React.ReactNode
 }
 
 const PlayerShortcuts: React.FC<PlayerShortcutsProps> = ({ children }) => {
+  const keymap = useSelector(state => state.env.keymap)
   const [state, dispatch] = usePlayerState()
   const { isPlaying, muted } = state
 
-  const handleShortcut = (action: string, event: Event) => {
-    const target = event.target as HTMLElement
-
-    if (target.nodeName === "INPUT" || target.nodeName === "TEXTAREA") {
-      return
-    }
-    if (target.className.includes("DraftEditor")) {
-      return
-    }
-
-    event.preventDefault()
-    event.stopPropagation()
-    // eslint-disable-next-line default-case
+  const handleShortcut = useCallback((action: string) => {
     switch (action) {
       case PlayerActions.PLAYPAUSE:
         dispatch({
@@ -136,13 +126,13 @@ const PlayerShortcuts: React.FC<PlayerShortcutsProps> = ({ children }) => {
         dispatch({ type: PlayerReducerTypes.UPDATE_PROGRESS, atPercent: 0.9 })
         break
     }
-  }
+  }, [dispatch, isPlaying, muted])
+
+  useShortcuts(keymap.PLAYER, handleShortcut)
 
   return (
     <div className={classes.shortcutsHandler}>
-      <Shortcuts name="PLAYER" handler={handleShortcut} global={true} targetNodeSelector="body">
-        {children}
-      </Shortcuts>
+      {children}
     </div>
   )
 }

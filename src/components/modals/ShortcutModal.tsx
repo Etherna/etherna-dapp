@@ -80,15 +80,15 @@ const ShortcutModal = ({ show = false }) => {
       showCloseButton={true}
       footerButtons={
         <>
-          <Button modifier="danger" onClick={deleteShortcut}>
-            Delete
-          </Button>
           <Button
             modifier="muted"
             onClick={overrideShortcut}
             disabled={!!existingShortcut}
           >
             Save
+          </Button>
+          <Button modifier="danger" onClick={deleteShortcut}>
+            Delete
           </Button>
         </>
       }

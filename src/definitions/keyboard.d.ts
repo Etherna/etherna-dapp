@@ -16,7 +16,7 @@
 
 export type KeymapNamespace = "APP" | "PLAYER"
 
-type Shortcuts = {
+export type Shortcuts = {
   [key: string]: string | undefined
 }
 
