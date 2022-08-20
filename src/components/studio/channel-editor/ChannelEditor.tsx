@@ -78,6 +78,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
   const [coverPreview, setCoverPreview] = useState<string>()
   const [isUploadingCover, setUploadingCover] = useState(false)
   const [isUploadingAvatar, setUploadingAvatar] = useState(false)
+  const [hasExceededLimit, setHasExceededLimit] = useState(false)
 
   useEffect(() => {
     setProfileName(profile.name)
@@ -116,6 +117,10 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
 
     if (!profileName) {
       return showError("Set your name", "Please provide a name for your channel before submitting.")
+    }
+
+    if (hasExceededLimit) {
+      return showError("Channel description is too long", "Please provide a shorter bio. Limit is 5000 characters.")
     }
 
     try {
@@ -274,6 +279,8 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
         <MarkdownEditor
           placeholder="Write something about you"
           value={profileDescription}
+          charactersLimit={5000}
+          onCharacterLimitChange={setHasExceededLimit}
           onChange={value => setProfileDescription(value)}
         />
       </div>

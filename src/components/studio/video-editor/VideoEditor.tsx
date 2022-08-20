@@ -52,7 +52,15 @@ export type VideoEditorHandle = {
 }
 
 const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
-  const [{ reference, queue, videoWriter, hasChanges, saveTo, offerResources }] = useVideoEditorState()
+  const [{
+    reference,
+    queue,
+    videoWriter,
+    hasChanges,
+    saveTo,
+    offerResources,
+    descriptionExeeded
+  }] = useVideoEditorState()
   const [privateLink, setPrivateLink] = useState<string>()
 
   const {
@@ -81,7 +89,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
 
   useImperativeHandle(ref, () => ({
     isEmpty: queue.length === 0,
-    canSubmitVideo: canPublishVideo && !hasQueuedProcesses,
+    canSubmitVideo: canPublishVideo && !hasQueuedProcesses && !descriptionExeeded,
     submitVideo: () => saveVideo(offerResources),
     saveVideoToChannel,
     saveVideoToIndex,

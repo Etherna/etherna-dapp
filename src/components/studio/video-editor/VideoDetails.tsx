@@ -29,7 +29,7 @@ type VideoDetailsProps = {
 
 const VideoDetails: React.FC<VideoDetailsProps> = ({ isSubmitting }) => {
   const [{ videoWriter }] = useVideoEditorState()
-  const { updateTitle, updateDescription } = useVideoEditorInfoActions()
+  const { updateTitle, updateDescription, updateDescriptionExceeded } = useVideoEditorInfoActions()
 
   const thumbFlow = useRef<ThumbnailUploadHandlers>(null)
 
@@ -56,6 +56,7 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ isSubmitting }) => {
           value={videoWriter.description ?? ""}
           charactersLimit={5000}
           onChange={value => updateDescription(value)}
+          onCharacterLimitChange={exceeded => updateDescriptionExceeded(exceeded)}
           disabled={isSubmitting}
         />
       </FormGroup>
