@@ -15,7 +15,8 @@
  *  
  */
 
-import React from "react"
+import React, { useEffect, useMemo, useRef } from "react"
+import classNames from "classnames"
 
 import classes from "@/styles/components/common/Kbd.module.scss"
 
@@ -25,42 +26,63 @@ type KbdProps = {
 }
 
 const Kbd: React.FC<KbdProps> = ({ shortcut, className }) => {
-  const isApple = /(Mac|iPhone|iPod|iPad|iPhone|iPod|iPad)/i.test(navigator.platform)
-  const multiKeys = shortcut.split("+").map(k => {
-    let key = k.trim().toLowerCase()
-    switch (key) {
-      case "enter":
-        return "↩︎"
-      case "cmd":
-      case "command":
-        return "⌘"
-      case "del":
-      case "delete":
-        return "⌦"
-      case "backspace":
-        return "⌫"
-      case "control":
-        return "ctrl"
-      case "option":
-      case "alt":
-        return isApple ? "⌥" : "alt"
-      case "shoft":
-        return "⇧"
-      case "left":
-        return "←"
-      case "right":
-        return "→"
-      case "up":
-        return "↑"
-      case "down":
-        return "↓"
-      default:
-        return key
+  const kbdWrapper = useRef<HTMLDivElement>(null)
+  const initialFontSize = useRef<number>()
+
+  const multiKeys = useMemo(() => {
+    const platform = navigator?.userAgentData?.platform || navigator?.platform || "unknown"
+    const isApple = /(Mac|iPhone|iPod|iPad|iPhone|iPod|iPad)/i.test(platform)
+    const multiKeys = shortcut.split("+").map(k => {
+      let key = k.trim().toLowerCase()
+      switch (key) {
+        case "enter":
+          return "↩︎"
+        case "cmd":
+        case "command":
+          return "⌘"
+        case "del":
+        case "delete":
+          return "⌦"
+        case "backspace":
+          return "⌫"
+        case "control":
+          return "ctrl"
+        case "option":
+        case "alt":
+          return isApple ? "⌥" : "alt"
+        case "shift":
+          return "⇧"
+        case "left":
+          return "←"
+        case "right":
+          return "→"
+        case "up":
+          return "↑"
+        case "down":
+          return "↓"
+        default:
+          return key
+      }
+    })
+    return multiKeys
+  }, [shortcut])
+
+  useEffect(() => {
+    if (!kbdWrapper.current) return
+    if (!initialFontSize.current) {
+      initialFontSize.current = parseInt(getComputedStyle(kbdWrapper.current).fontSize)
     }
-  })
+
+    let fontSize = initialFontSize.current
+    kbdWrapper.current.style.fontSize = fontSize + "px"
+    while (kbdWrapper.current.scrollWidth > kbdWrapper.current.clientWidth) {
+      fontSize -= 2
+      kbdWrapper.current.style.fontSize = fontSize + "px"
+    }
+  }, [shortcut])
 
   return (
-    <span className={className}>
+    <span className={classNames(classes.kbdWrapper, className)} ref={kbdWrapper}>
       {multiKeys.map((k, i) => (
         <React.Fragment key={i}>
           <kbd className={classes.kbd}>{k}</kbd>
