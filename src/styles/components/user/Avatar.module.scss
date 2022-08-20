@@ -15,7 +15,7 @@
  */
 
 .avatar {
-  @apply flex;
+  @apply flex shrink-0;
   @apply relative w-10 h-10;
 
   > * {
@@ -24,7 +24,8 @@
     @apply flex-grow;
   }
 
-  img, .img {
+  img,
+  .img {
     @apply w-full h-full object-cover overflow-hidden;
   }
 
