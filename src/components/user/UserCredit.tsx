@@ -24,6 +24,7 @@ import Button from "@/components/common/Button"
 import Popup from "@/components/common/Popup"
 import useSelector from "@/state/useSelector"
 import { urlOrigin } from "@/utils/urls"
+import { getDecimalParts } from "@/utils/math"
 
 const UserCredit: React.FC = () => {
   const { creditUrl, bytePrice } = useSelector(state => state.env)
@@ -33,6 +34,11 @@ const UserCredit: React.FC = () => {
     if (credit == null || !bytePrice) return "0.000"
     return +(credit / bytePrice * 0.000000001).toFixed(3)
   }, [credit, bytePrice])
+
+  const readableCredit = useMemo(() => {
+    const { integer, decimal } = getDecimalParts(credit ?? 0, 12)
+    return `${integer}.${decimal}`
+  }, [credit])
 
   if (!isSignedInGateway || credit == null) return null
 
@@ -47,7 +53,7 @@ const UserCredit: React.FC = () => {
         <div className={classes.userCreditPopup}>
           <p className="text-xs mb-4">You current balance is:</p>
           <p className="text-2xl font-bold break-all">
-            {credit}
+            {readableCredit}
             <span className="text-sm text-gray-600 dark:text-gray-400 tracking-tighter">CHF</span>
           </p>
           {bytePrice && (
