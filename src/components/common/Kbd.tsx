@@ -32,7 +32,7 @@ const Kbd: React.FC<KbdProps> = ({ shortcut, className }) => {
   const multiKeys = useMemo(() => {
     const platform = navigator?.userAgentData?.platform || navigator?.platform || "unknown"
     const isApple = /(Mac|iPhone|iPod|iPad|iPhone|iPod|iPad)/i.test(platform)
-    const multiKeys = shortcut.split("+").map(k => {
+    const multiKeys = (shortcut ?? "").split("+").map(k => {
       let key = k.trim().toLowerCase()
       switch (key) {
         case "enter":

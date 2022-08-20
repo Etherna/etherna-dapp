@@ -32,8 +32,8 @@ import { keyEventToString } from "@/utils/keyboard"
 
 const ShortcutModal = ({ show = false }) => {
   const { shortcutNamespace, shortcutKey, keymap, lang } = useSelector(state => state.env)
-  const [shortcut, setShortcut] = useState<string>()
-  const [existingShortcut, setExistingShortcut] = useState(false)
+  const [shortcut, setShortcut] = useState<string | null>()
+  const [existingShortcut, setExistingShortcut] = useState<string | null>(null)
   const editorRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -58,7 +58,8 @@ const ShortcutModal = ({ show = false }) => {
   }
 
   const deleteShortcut = () => {
-    setShortcut(undefined)
+    setShortcut(null)
+    setExistingShortcut(null)
   }
 
   const overrideShortcut = () => {
@@ -71,7 +72,7 @@ const ShortcutModal = ({ show = false }) => {
 
     const shortcut = keyEventToString(e.nativeEvent)
     setShortcut(shortcut)
-    setExistingShortcut(!!shortcutExists(shortcut))
+    setExistingShortcut(shortcutExists(shortcut))
   }
 
   return (
@@ -88,7 +89,7 @@ const ShortcutModal = ({ show = false }) => {
             Save
           </Button>
           <Button modifier="danger" onClick={deleteShortcut}>
-            Delete
+            Clear
           </Button>
         </>
       }
