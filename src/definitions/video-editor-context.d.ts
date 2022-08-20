@@ -40,6 +40,8 @@ export type VideoEditorContextState = {
   offerResources: boolean
   /** Whether the user made come changes */
   hasChanges: boolean
+  /** Whether the description is too long */
+  descriptionExeeded: boolean
 }
 
 export type VideoEditorQueueName = SwarmVideoQuality | typeof THUMBNAIL_QUEUE_NAME
