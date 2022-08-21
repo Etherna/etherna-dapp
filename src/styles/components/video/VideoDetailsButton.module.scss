@@ -15,7 +15,7 @@
  */
 
 .videoDetailsBtn {
-  @apply inline-flex items-center;
+  @apply inline-flex items-center whitespace-nowrap;
   @apply bg-transparent border-none;
   @apply font-medium;
   @apply px-2 py-1 rounded;

@@ -21,19 +21,18 @@
 }
 
 .modalWrapper {
-  @apply flex items-end justify-center;
-  @apply min-h-screen pt-4 px-4 pb-20;
+  @apply flex items-center justify-center;
+  @apply min-h-screen py-4 px-4;
   @apply text-center;
-  @apply sm:block sm:p-0;
 }
 
 .modalDialog {
   @apply relative;
-  @apply inline-block align-bottom rounded-lg text-left overflow-hidden;
+  @apply inline-block align-middle rounded-lg text-left overflow-hidden;
   @apply w-full;
   @apply bg-white dark:bg-gray-700;
   @apply shadow-xl;
-  @apply sm:my-8 sm:align-middle sm:max-w-lg;
+  @apply sm:my-8 sm:max-w-lg;
 
   .large & {
     @apply sm:max-w-xl;
