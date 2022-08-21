@@ -17,13 +17,13 @@
 
 import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
+import classNames from "classnames"
 
 import classes from "@/styles/components/video/VideoPreview.module.scss"
 import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 
 import VideoMenu from "./VideoMenu"
-import StateLink from "@/components/common/StateLink"
 import Image from "@/components/common/Image"
 import Time from "@/components/media/Time"
 import Avatar from "@/components/user/Avatar"
@@ -33,7 +33,6 @@ import { shortenEthAddr, checkIsEthAddress } from "@/utils/ethereum"
 import dayjs from "@/utils/dayjs"
 import { encodedSvg } from "@/utils/svg"
 import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
-import classNames from "classnames"
 
 type VideoPreviewProps = {
   video: Video
