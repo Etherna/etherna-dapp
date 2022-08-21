@@ -15,7 +15,7 @@
  *  
  */
 
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Link, Navigate } from "react-router-dom"
 import classNames from "classnames"
 
@@ -71,6 +71,10 @@ const Videos: React.FC = () => {
   })
 
   const { videosOffersStatus, offerVideoResources, unofferVideoResources } = useVideosResources(videos)
+
+  const isLoading = useMemo(() => {
+    return isFetching || !channelPlaylist
+  }, [channelPlaylist, isFetching])
 
   useEffect(() => {
     if (address) {
@@ -217,7 +221,7 @@ const Videos: React.FC = () => {
 
       <StudioTableView
         className={classes.videoTable}
-        isLoading={isFetching}
+        isLoading={isLoading}
         page={page}
         total={total}
         itemsPerPage={perPage}
