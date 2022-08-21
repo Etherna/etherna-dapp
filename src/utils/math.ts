@@ -27,7 +27,7 @@ export const clamp = (value: number, min: number, max: number) =>
  * @param fractionDigits If provided will round to a number of digits
  */
 export const getDecimalParts = (num: number, fractionDigits?: number) => {
-  const formatted = new Intl.NumberFormat(undefined, {
+  const formatted = new Intl.NumberFormat("en-US", {
     notation: "standard",
     maximumFractionDigits: fractionDigits,
   }).format(num)
