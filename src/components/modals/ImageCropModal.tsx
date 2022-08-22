@@ -15,11 +15,14 @@
  *  
  */
 
-import React, { useState, useRef } from "react"
-import ReactCrop, { centerCrop, Crop, makeAspectCrop } from "react-image-crop"
+import React, { useState, useMemo, useCallback, useEffect } from "react"
+import type { Crop } from "react-image-crop"
 
-import Modal from "@/components/common/Modal"
+import "@/styles/overrides/react-slider.scss"
+
 import Button from "@/components/common/Button"
+import Modal from "@/components/common/Modal"
+import ImageCropper from "@/components/media/ImageCropper"
 import useSelector from "@/state/useSelector"
 import { useImageCrop } from "@/state/hooks/ui"
 
@@ -28,61 +31,25 @@ type ImageCropModalProps = {
 }
 
 const ImageCropModal: React.FC<ImageCropModalProps> = ({ show = false }) => {
-  const imgRef = useRef<HTMLImageElement>()
   const { imageType, image } = useSelector(state => state.ui)
   const [crop, setCrop] = useState<Crop>()
   const { finishCropping } = useImageCrop()
 
-  const aspectRatio = imageType === "avatar" ? 1 : 1920 / 450
+  const aspectRatio = useMemo(() => {
+    return imageType === "avatar" ? 1 : 1920 / 450
+  }, [imageType])
 
-  const imageLoaded = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    imgRef.current = e.currentTarget
-
-    const { width, height } = e.currentTarget
-
-    const crop = centerCrop(
-      makeAspectCrop(
-        {
-          unit: "px",
-          width,
-          height,
-        },
-        aspectRatio,
-        width,
-        height,
-      ),
-      width,
-      height,
-    )
-
-    setCrop(crop)
-  }
-
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     finishCropping(undefined)
-  }
+  }, [finishCropping])
 
-  const handleContinue = () => {
-    if (!imgRef.current) return
-
-    const scaleX = imgRef.current.naturalWidth / imgRef.current.width
-    const scaleY = imgRef.current.naturalHeight / imgRef.current.height
-
-    const scaledCrop = {
-      ...(crop ?? {}),
-      x: (crop?.x ?? 0) * scaleX,
-      y: (crop?.y ?? 0) * scaleY,
-      width: (crop?.width ?? 0) * scaleX,
-      height: (crop?.height ?? 0) * scaleY,
-    }
-    finishCropping(scaledCrop)
-  }
+  const handleContinue = useCallback(() => {
+    finishCropping(crop)
+  }, [crop, finishCropping])
 
   return (
     <Modal
       show={show}
-      showCloseButton={false}
-      showCancelButton={true}
       title="Crop the image"
       footerButtons={
         <Button onClick={handleContinue}>
@@ -90,19 +57,15 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ show = false }) => {
         </Button>
       }
       onClose={handleCancel}
+      showCancelButton
       large
     >
-      <div className="flex justify-center my-6">
-        <ReactCrop
-          crop={crop}
-          onChange={setCrop}
-          aspect={aspectRatio}
-        >
-          {image && (
-            <img src={image} onLoad={imageLoaded} />
-          )}
-        </ReactCrop>
-      </div>
+      <ImageCropper
+        imageSrc={image}
+        aspectRatio={aspectRatio}
+        circular={imageType === "avatar"}
+        onChange={setCrop}
+      />
     </Modal>
   )
 }
