@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import http from "./request"
+
 /**
  * Get a video duration
  * 
@@ -78,3 +80,40 @@ const videoSource = (videoObj: string | File | ArrayBuffer) =>
     : videoObj instanceof File
       ? URL.createObjectURL(videoObj)
       : URL.createObjectURL(new Blob([videoObj], { type: "video/mp4" }))
+
+export const downloadImageData = async (imageUrl: string): Promise<Uint8Array | null> => {
+  try {
+    const resp = await http.get(imageUrl, {
+      responseType: "arraybuffer",
+      withCredentials: true,
+    })
+    return new Uint8Array(resp.data)
+  } catch (error) {
+    return null
+  }
+}
+
+export const isAnimatedImage = (imageData: Uint8Array): boolean => {
+  // make sure it's a gif (GIF8)
+  if (
+    imageData[0] !== 0x47 ||
+    imageData[1] !== 0x49 ||
+    imageData[2] !== 0x46 ||
+    imageData[3] !== 0x38
+  ) {
+    return false
+  }
+
+  let frames = 0
+
+  for (let i = 0; i < imageData.length - 9, frames < 2; ++i) {
+    if (imageData[i] === 0x00 && imageData[i + 1] === 0x21 &&
+      imageData[i + 2] === 0xF9 && imageData[i + 3] === 0x04 &&
+      imageData[i + 8] === 0x00 &&
+      (imageData[i + 9] === 0x2C || imageData[i + 9] === 0x21)) {
+      frames++
+    }
+  }
+
+  return frames > 1
+}

@@ -193,6 +193,7 @@ export default function useVideoEditorSaveActions() {
     if (!checkAccountability()) return
 
     try {
+      console.log("initialReference", initialReference)
       !initialReference && await addVideosToPlaylist(channelPlaylist!.id, [videoWriter.video!])
       initialReference && await updateVideoInPlaylist(channelPlaylist!.id, initialReference, videoWriter.video!)
       return true
