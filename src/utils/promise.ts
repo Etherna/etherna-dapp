@@ -39,6 +39,7 @@ export const fullfilledPromisesResult = <T>(promises: PromiseSettledResult<T>[])
 export const wait = (delay = 1000) =>
   new Promise<void>(res => {
     if (import.meta.env.DEV) {
+      console.info(`Delaying for ${delay}ms`)
       setTimeout(res, delay)
     } else {
       res()
