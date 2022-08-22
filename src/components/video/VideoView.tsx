@@ -15,11 +15,12 @@
  *  
  */
 
-import React, { useState, useEffect, useMemo, useCallback } from "react"
+import React, { useEffect, useMemo, useCallback } from "react"
 import classNames from "classnames"
 
 import classes from "@/styles/components/video/VideoView.module.scss"
 
+import VideoJsonLd from "./VideoJsonLd"
 import NotFound from "@/components/common/NotFound"
 import SEO from "@/components/layout/SEO"
 import Player from "@/components/player/Player"
@@ -29,8 +30,8 @@ import useSwarmVideo from "@/hooks/useSwarmVideo"
 import useResetRouteState from "@/hooks/useResetRouteState"
 import useSelector from "@/state/useSelector"
 import { useErrorMessage } from "@/state/hooks/ui"
+import routes from "@/routes"
 import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
-import PlayerPlaceholder from "../placeholders/PlayerPlaceholder"
 
 type VideoViewProps = {
   reference: string
@@ -48,8 +49,6 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
     fetchProfile: true
   })
   const beeClient = useSelector(state => state.env.beeClient)
-
-  const [isFetchingVideo, setIsFetchingVideo] = useState(false)
   const { showError } = useErrorMessage()
 
   const posterUrl = useMemo(() => {
@@ -68,16 +67,12 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
   }, [video])
 
   const fetchVideo = useCallback(async () => {
-    setIsFetchingVideo(true)
-
     try {
       await loadVideo()
     } catch (error: any) {
       console.error(error)
       showError("Cannot load the video", error.message)
     }
-
-    setIsFetchingVideo(false)
   }, [loadVideo, showError])
 
   if (notFound) {
@@ -86,7 +81,24 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
 
   return (
     <>
-      <SEO title={video?.title || reference} />
+      <SEO
+        title={video?.title || reference}
+        type="video.other"
+        image={video?.thumbnail?.src}
+        canonicalUrl={video ? routes.withOrigin.watch(video.reference) : undefined}
+      >
+        {video && (
+          <VideoJsonLd
+            title={video.title ?? ""}
+            description={video.description ?? ""}
+            thumbnailUrl={video.thumbnail?.src}
+            canonicalUrl={routes.withOrigin.watch(video.reference)}
+            duration={video.duration}
+            datePublished={video.createdAt ? new Date(video.createdAt) : undefined}
+          />
+        )}
+      </SEO>
+
       {embed ? (
         <Player
           hash={reference}
