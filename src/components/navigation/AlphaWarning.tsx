@@ -24,6 +24,7 @@ import { ReactComponent as BugIcon } from "@/assets/icons/bug.svg"
 import { ReactComponent as DiscordLogo } from "@/assets/brand/logo-discord.svg"
 
 import useLocalStorage from "@/hooks/useLocalStorage"
+import { isBotUserAgent } from "@/utils/browser"
 
 const AlphaWarning: React.FC = () => {
   const [hide, setHide] = useLocalStorage("setting:hide-alpha-warning", false)
@@ -120,6 +121,8 @@ const AlphaWarning: React.FC = () => {
   const handleFeedback = () => {
     window.ATL_JQ_PAGE_PROPS?.showCollectorDialog?.()
   }
+
+  if (isBotUserAgent()) return null
 
   return (
     <>
