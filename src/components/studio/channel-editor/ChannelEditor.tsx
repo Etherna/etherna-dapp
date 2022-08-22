@@ -33,6 +33,7 @@ import { useProfileUpdate } from "@/state/hooks/profile"
 import { useErrorMessage, useImageCrop } from "@/state/hooks/ui"
 import { useWallet } from "@/state/hooks/env"
 import makeBlockies from "@/utils/makeBlockies"
+import { isAnimatedImage } from "@/utils/media"
 import type { SwarmImage, SwarmImageRaw } from "@/definitions/swarm-image"
 import type { Profile } from "@/definitions/swarm-profile"
 
@@ -153,6 +154,10 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>, type: ImageType) => {
     const file = e.currentTarget.files![0]
     if (!file) return
+
+    if (isAnimatedImage(new Uint8Array(await file.arrayBuffer()))) {
+      return showError("Wrong image format", "Animated images are not allowed")
+    }
 
     // reset input
     e.target.value = ""

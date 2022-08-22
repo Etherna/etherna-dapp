@@ -29,6 +29,7 @@ import {
 } from "@/context/video-editor-context/hooks"
 import { useErrorMessage } from "@/state/hooks/ui"
 import { isMimeWebCompatible } from "@/utils/mime-types"
+import { isAnimatedImage } from "@/utils/media"
 
 type ThumbnailUploadProps = {
   disabled?: boolean
@@ -87,6 +88,10 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
   }
 
   const uploadThumbnail = async (buffer: ArrayBuffer) => {
+    if (isAnimatedImage(new Uint8Array(buffer))) {
+      throw new Error("Animated images are not allowed")
+    }
+
     // show loading start while processing responsive images
     updateQueueCompletion(THUMBNAIL_QUEUE_NAME, 1)
 
