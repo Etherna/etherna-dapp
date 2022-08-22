@@ -30,3 +30,22 @@
     @apply hidden;
   }
 }
+
+.simple-slider {
+  @apply w-full h-5;
+
+  .track {
+    @apply bg-gray-300 dark:bg-gray-600;
+    @apply h-1 rounded-full;
+    @apply mt-2;
+  }
+
+  .track-0 {
+    @apply bg-gray-800 dark:bg-gray-50;
+  }
+
+  .thumb {
+    @apply w-2 h-full rounded-full;
+    @apply bg-gray-800 dark:bg-gray-200;
+  }
+}

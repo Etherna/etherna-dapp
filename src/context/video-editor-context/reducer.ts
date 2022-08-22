@@ -31,6 +31,7 @@ export const VideoEditorActionTypes = {
   UPDATE_DURATION: "videoeditor/update-duration",
   UPDATE_TITLE: "videoeditor/update-title",
   UPDATE_DESCRIPTION: "videoeditor/update-description",
+  UPDATE_DESCRIPTION_EXCEEDED: "videoeditor/update-description-exceeded",
   UPDATE_PIN_CONTENT: "videoeditor/update-pin-content",
   UPDATE_OFFER_RESOURCES: "videoeditor/update-offer-resources",
   UPDATE_SAVE_TO: "videoeditor/update-save-to",
@@ -90,6 +91,10 @@ type UpdateDescriptionAction = {
   type: typeof VideoEditorActionTypes.UPDATE_DESCRIPTION
   description: string
 }
+type UpdateDescriptionExceededAction = {
+  type: typeof VideoEditorActionTypes.UPDATE_DESCRIPTION_EXCEEDED
+  descriptionExeeded: boolean
+}
 type ResetAction = {
   type: typeof VideoEditorActionTypes.RESET
 }
@@ -110,6 +115,7 @@ export type AnyVideoEditorAction = (
   UpdateSaveToAction |
   UpdateTitleAction |
   UpdateDescriptionAction |
+  UpdateDescriptionExceededAction |
   ResetAction |
   CacheAction
 )
@@ -168,6 +174,10 @@ const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEdit
       state.videoWriter.description = action.description
       newState = { ...state }
       break
+    case VideoEditorActionTypes.UPDATE_DESCRIPTION_EXCEEDED:
+      state.descriptionExeeded = action.descriptionExeeded
+      newState = { ...state }
+      break
     case VideoEditorActionTypes.UPDATE_SAVE_TO:
       newState = { ...state, saveTo: action.saveTo }
       break
@@ -186,6 +196,7 @@ const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEdit
         videoWriter: state.videoWriter.resetCopy(),
         hasChanges: false,
         offerResources: false,
+        descriptionExeeded: false,
         saveTo: "channel-index",
       }
       break

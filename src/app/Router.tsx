@@ -44,6 +44,7 @@ const AsyncWatch = lazy(() => import("@/pages/watch"))
 const AsyncEmbed = lazy(() => import("@/pages/embed"))
 const AsyncSearch = lazy(() => import("@/pages/search"))
 const AsyncShortcuts = lazy(() => import("@/pages/shortcuts"))
+const AsyncPrivacyPolicy = lazy(() => import("@/pages/privacy-policy"))
 const AsyncNotFound = lazy(() => import("@/pages/404"))
 
 const Home = () => (
@@ -94,6 +95,9 @@ const Shortcuts = () => (
 const Search = () => (
   <Suspense fallback={<PageLoader />}><AsyncSearch /></Suspense>
 )
+const PrivacyPolicy = () => (
+  <Suspense fallback={<PageLoader />}><AsyncPrivacyPolicy /></Suspense>
+)
 const NotFound = () => (
   <Suspense fallback={<PageLoader />}><AsyncNotFound /></Suspense>
 )
@@ -120,6 +124,7 @@ const Router = () => {
               <Route path="/channel/:id" element={<Channel />} />
               <Route path="/search" element={<Search />} />
               <Route path="/shortcuts" element={<Shortcuts />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
               <Route path="/watch" element={<VideoRoute />}>
                 <Route path=":hash" element={<Watch />} />

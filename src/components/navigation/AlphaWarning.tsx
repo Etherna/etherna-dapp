@@ -24,6 +24,7 @@ import { ReactComponent as BugIcon } from "@/assets/icons/bug.svg"
 import { ReactComponent as DiscordLogo } from "@/assets/brand/logo-discord.svg"
 
 import useLocalStorage from "@/hooks/useLocalStorage"
+import { isBotUserAgent } from "@/utils/browser"
 
 const AlphaWarning: React.FC = () => {
   const [hide, setHide] = useLocalStorage("setting:hide-alpha-warning", false)
@@ -121,6 +122,8 @@ const AlphaWarning: React.FC = () => {
     window.ATL_JQ_PAGE_PROPS?.showCollectorDialog?.()
   }
 
+  if (isBotUserAgent()) return null
+
   return (
     <>
       <button
@@ -162,7 +165,8 @@ const AlphaWarning: React.FC = () => {
               <Dialog.Title className={classes.alphaDialogTitle}>Alpha Realease</Dialog.Title>
               <Dialog.Description className={classes.alphaDialogText}>
                 The current version of this application is in alpha,
-                meaning it might have bugs as well as downtime moments. <br />
+                meaning it might have bugs as well as downtime moments and data loss.
+                <br /><br />
                 We appreciate if you report any possible bug by clicking on the button below.
               </Dialog.Description>
             </div>

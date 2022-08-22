@@ -27,20 +27,17 @@ export const clamp = (value: number, min: number, max: number) =>
  * @param fractionDigits If provided will round to a number of digits
  */
 export const getDecimalParts = (num: number, fractionDigits?: number) => {
-  const abs = Math.abs(num)
-  const decimalFull = abs - Math.floor(abs)
-  const decimal = +(
-    fractionDigits
-      ? +decimalFull.toFixed(fractionDigits)
-      : decimalFull
-  ).toString().replace(/^0./, "")
+  const formatted = new Intl.NumberFormat("en-US", {
+    notation: "standard",
+    maximumFractionDigits: fractionDigits,
+  }).format(num)
 
-  const integer = Math.round(abs - decimalFull)
+  const [integer, decimal] = formatted.split(".")
   const sign = num < 0 ? -1 : 1
 
   return {
     integer,
-    decimal,
+    decimal: decimal || "0",
     sign
   }
 }

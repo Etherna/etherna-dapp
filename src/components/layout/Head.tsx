@@ -16,16 +16,14 @@
  */
 
 import React from "react"
-import { Outlet } from "react-router-dom"
+import { createPortal } from "react-dom"
 
-import StateProviderWrapper from "@/state/StateProviderWrapper"
-
-const StateProviderRoute: React.FC = () => {
-  return (
-    <StateProviderWrapper>
-      <Outlet />
-    </StateProviderWrapper>
-  )
+type HeadProps = {
+  children: React.ReactNode
 }
 
-export default StateProviderRoute
+const Head: React.FC<HeadProps> = ({ children }) => {
+  return createPortal(children, document.head)
+}
+
+export default Head

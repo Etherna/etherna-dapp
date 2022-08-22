@@ -15,20 +15,18 @@
  *  
  */
 
-import React, { useRef, useState } from "react"
-import type { EditorState } from "draft-js"
+import React, { useState } from "react"
+import classNames from "classnames"
 
 import classes from "@/styles/components/video/CommentForm.module.scss"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
 import Button from "@/components/common/Button"
-import TextField from "@/components/common/TextField"
 import MarkdownEditor from "@/components/common/MarkdownEditor"
 import Avatar from "@/components/user/Avatar"
 import useSelector from "@/state/useSelector"
 import { showError } from "@/state/actions/modals"
 import type { IndexVideoComment } from "@/definitions/api-index"
-import classNames from "classnames"
 
 type CommentFormProps = {
   indexReference: string
@@ -39,6 +37,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPost
   const [text, setText] = useState("")
   const [isFocused, setIsFocused] = useState(false)
   const [isPosting, setIsPosting] = useState(false)
+  const [hasExceededLimit, setHasExceededLimit] = useState(false)
 
   const { isSignedIn, address } = useSelector(state => state.user)
   const { avatar } = useSelector(state => state.profile)
@@ -87,16 +86,17 @@ const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPost
         })}
         placeholder="Add a public comment"
         value={text}
-        charactersLimit={1000}
+        charactersLimit={2000}
         onChange={setText}
         onFocus={() => setIsFocused(true)}
+        onCharacterLimitChange={setHasExceededLimit}
         disabled={isPosting}
       />
 
       {isFocused && (
         <div className={classes.commentFormActions}>
           <Button modifier="transparent" onClick={onCancel} disabled={isPosting}>Cancel</Button>
-          <Button type="submit" disabled={isPosting || !text}>
+          <Button type="submit" disabled={isPosting || !text || hasExceededLimit}>
             {isPosting ? (
               <Spinner width={20} height={20} />
             ) : (

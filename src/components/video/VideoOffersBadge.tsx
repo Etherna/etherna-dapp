@@ -15,33 +15,22 @@
  *  
  */
 
-import React, { useState } from "react"
+import React from "react"
 import classNames from "classnames"
 
 import classes from "@/styles/components/video/VideoOffersBadge.module.scss"
-import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
+import { CurrencyDollarIcon } from "@heroicons/react/outline"
 
-import VideoOffersModal from "@/components/modals/VideoOffersModal"
-import useVideoOffers from "@/hooks/useVideoOffers"
-import useSelector from "@/state/useSelector"
 import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 
 type VideoOffersBadgeProps = {
   video: Video | null | undefined
-  videoOffers?: VideoOffersStatus
+  offersStatus: VideoOffersStatus["offersStatus"] | undefined
 }
 
-const VideoOffersBadge: React.FC<VideoOffersBadgeProps> = ({ video, videoOffers }) => {
-  const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
-  const { videoOffersStatus, offerResources, unofferResources } = useVideoOffers(video, {
-    routeState: videoOffers,
-    disable: isStandaloneGateway,
-  })
-  const [showOffersModal, setShowOffersModal] = useState(false)
-
-  if (!video || isStandaloneGateway) return null
-
-  const offersStatus = videoOffersStatus?.offersStatus
+const VideoOffersBadge: React.FC<VideoOffersBadgeProps> = ({ video, offersStatus }) => {
+  if (!video) return null
+  if (offersStatus === "none") return null
 
   const getLabel = () => {
     switch (offersStatus) {
@@ -52,27 +41,15 @@ const VideoOffersBadge: React.FC<VideoOffersBadgeProps> = ({ video, videoOffers 
   }
 
   return (
-    <>
-      <button
-        className={classNames(classes.videoOffersBadge, {
-          [classes.fullOffered]: offersStatus === "full" || offersStatus === "sources",
-          [classes.partialOffered]: offersStatus === "partial",
-        })}
-        onClick={() => setShowOffersModal(true)}
-      >
-        <CreditIcon aria-hidden />
-        {getLabel()}
-      </button>
-
-      <VideoOffersModal
-        show={showOffersModal}
-        offersStatus={videoOffersStatus}
-        video={video}
-        offerResources={async () => await offerResources()}
-        unofferResources={async () => await unofferResources()}
-        onClose={() => setShowOffersModal(false)}
-      />
-    </>
+    <div
+      className={classNames(classes.videoOffersBadge, {
+        [classes.fullOffered]: offersStatus === "full" || offersStatus === "sources",
+        [classes.partialOffered]: offersStatus === "partial",
+      })}
+    >
+      <CurrencyDollarIcon aria-hidden />
+      {getLabel()}
+    </div>
   )
 }
 

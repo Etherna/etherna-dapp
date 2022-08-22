@@ -58,8 +58,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
     if (profile && channelPlaylist) {
       loadMore()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [channelPlaylist, profile])
+  }, [channelPlaylist, profile, loadMore])
 
   const handleFetchedProfile = useCallback((profile: Profile | null) => {
     setProfile(profile)

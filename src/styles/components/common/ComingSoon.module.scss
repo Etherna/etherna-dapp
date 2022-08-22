@@ -23,15 +23,23 @@
   @apply flex flex-col;
 }
 
-.comingSoonImage {
-  @apply w-full h-auto;
-}
-
 .comingSoonTitle {
+  @apply flex items-center;
   @apply text-lg lg:text-2xl;
   @apply font-bold;
+
+  svg {
+    @apply h-[1.2em] mr-2;
+  }
+}
+
+.comingSoonLabel {
+  @apply mt-6;
+  @apply text-sm font-medium;
+  @apply text-gray-700 dark:text-gray-400;
 }
 
 .comingSoonDescription {
-  @apply text-gray-700 dark:text-gray-400;
+  @apply mt-2;
+  @apply text-gray-800 dark:text-gray-200;
 }

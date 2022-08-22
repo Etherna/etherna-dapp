@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import SwarmVideoIO from "@/classes/SwarmVideo"
 import { showError } from "@/state/actions/modals"
@@ -48,7 +48,7 @@ export default function usePlaylistVideos(
     }
   }, [playlist])
 
-  const fetchVideos = async (from: number, to: number): Promise<Video[]> => {
+  const fetchVideos = useCallback(async (from: number, to: number): Promise<Video[]> => {
     if (!playlist?.videos) {
       setIsFetching(false)
       return []
@@ -79,18 +79,18 @@ export default function usePlaylistVideos(
       setIsFetching(false)
       return []
     }
-  }
+  }, [beeClient, indexClient, opts.owner, playlist])
 
-  const fetchPage = async (page: number) => {
+  const fetchPage = useCallback(async (page: number) => {
     const limit = opts.limit
     if (!limit || limit < 1) throw new Error("Limit must be set to be greater than 1")
     const from = ((page - 1) * limit)
     const to = from + limit
     const newVideos = await fetchVideos(from, to)
     setVideos(newVideos)
-  }
+  }, [fetchVideos, opts.limit])
 
-  const loadMore = async () => {
+  const loadMore = useCallback(async () => {
     if (isFetching) return
     if (!hasMore) {
       setIsFetching(false)
@@ -108,7 +108,7 @@ export default function usePlaylistVideos(
       ...(videos ?? []),
       ...newVideos,
     ])
-  }
+  }, [fetchVideos, hasMore, isFetching, opts.limit, playlist.videos, videos])
 
   return {
     videos,

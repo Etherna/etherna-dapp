@@ -21,10 +21,13 @@ import classes from "@/styles/components/video/VideoDetailsInfoBar.module.scss"
 
 import VideoRating from "./VideoRating"
 import VideoStatusBadge from "./VideoStatusBadge"
+import VideoOffersButton from "./VideoOffersButton"
+import VideoShareButton from "./VideoShareButton"
 import VideoOffersBadge from "./VideoOffersBadge"
+import useVideoOffers from "@/hooks/useVideoOffers"
+import useSelector from "@/state/useSelector"
 import dayjs from "@/utils/dayjs"
 import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
-import VideoShareButton from "./VideoShareButton"
 
 type VideoDetailsInfoBarProps = {
   video: Video
@@ -32,12 +35,20 @@ type VideoDetailsInfoBarProps = {
 }
 
 const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoOffers }) => {
+  const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
+  const { videoOffersStatus, offerResources, unofferResources } = useVideoOffers(video, {
+    routeState: videoOffers,
+    disable: isStandaloneGateway,
+  })
+
   return (
     <div className={classes.videoDetailsInfoBar}>
       <div className={classes.videoDetailsTop}>
         <div className={classes.videoDetailsBadges}>
           <VideoStatusBadge status={video.isVideoOnIndex ? "available" : "unindexed"} />
-          <VideoOffersBadge video={video} videoOffers={videoOffers} />
+          {!isStandaloneGateway && (
+            <VideoOffersBadge video={video} offersStatus={videoOffersStatus?.offersStatus} />
+          )}
         </div>
       </div>
 
@@ -60,6 +71,14 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
               />
             )}
             <VideoShareButton reference={video.reference} indexReference={video.indexReference} />
+            {!isStandaloneGateway && (
+              <VideoOffersButton
+                video={video}
+                videoOffersStatus={videoOffersStatus}
+                onOfferResources={offerResources}
+                onUnofferResources={unofferResources}
+              />
+            )}
           </div>
         </div>
       </div>

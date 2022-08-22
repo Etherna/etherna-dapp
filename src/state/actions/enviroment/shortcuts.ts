@@ -33,13 +33,7 @@ export const editShortcut = (namespace: KeymapNamespace, key: string) => {
 }
 
 export const resetShortcut = (namespace: KeymapNamespace, key: string) => {
-  store.dispatch({
-    type: EnvActionTypes.EDIT_SHORTCUT,
-    shortcutNamespace: namespace,
-    shortcutKey: key,
-  })
-
-  saveShortcut(null)
+  updateShortcut(namespace, key, undefined)
 }
 
 export const hasCustomShortcut = (namespace: string, key: string) => {
@@ -48,15 +42,26 @@ export const hasCustomShortcut = (namespace: string, key: string) => {
 }
 
 export const saveShortcut = (newShortcut: string | null | undefined) => {
-  const { keymap, shortcutNamespace, shortcutKey } = store.getState().env
+  const { shortcutNamespace, shortcutKey } = store.getState().env
+  updateShortcut(shortcutNamespace, shortcutKey, newShortcut)
+}
 
-  if (!shortcutNamespace || !shortcutKey) return
+export const updateShortcut = (
+  namespace: KeymapNamespace | undefined,
+  shortcutKey: string | undefined,
+  newShortcut: string | null | undefined
+) => {
+  const { keymap } = store.getState().env
+
+  if (!namespace || !shortcutKey) return
 
   // Create keymap in redux store
   let newKeymap = {
     ...keymap,
   }
-  newKeymap[shortcutNamespace][shortcutKey] = newShortcut || defaultKeymap[shortcutNamespace][shortcutKey]
+  newKeymap[namespace][shortcutKey] = newShortcut !== undefined
+    ? newShortcut || ""
+    : defaultKeymap[namespace][shortcutKey]
   store.dispatch({
     type: EnvActionTypes.UPDATE_KEYMAP,
     keymap: newKeymap,
@@ -64,11 +69,11 @@ export const saveShortcut = (newShortcut: string | null | undefined) => {
 
   // Save locally user's keymap preferences
   let keymapOverride = localKeymap()
-  keymapOverride[shortcutNamespace] = keymapOverride[shortcutNamespace] || {}
-  if (newShortcut != null) {
-    keymapOverride[shortcutNamespace][shortcutKey] = newShortcut
+  keymapOverride[namespace] = keymapOverride[namespace] || {}
+  if (newShortcut !== undefined) {
+    keymapOverride[namespace][shortcutKey] = newShortcut
   } else {
-    delete keymapOverride[shortcutNamespace][shortcutKey]
+    delete keymapOverride[namespace][shortcutKey]
   }
   saveKeymap(keymapOverride)
 
@@ -93,7 +98,7 @@ export const shortcutExists = (shortcut: string) => {
       }
     }
   }
-  return false
+  return null
 }
 
 // Private functions

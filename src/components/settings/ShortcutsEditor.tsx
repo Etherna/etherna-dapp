@@ -46,7 +46,9 @@ const ShortcutsEditor: React.FC<ShortcutsEditorProps> = ({ namespace }) => {
               <tr key={shortcut}>
                 <td>{lang.get(`player.${shortcut}`)}</td>
                 <td>
-                  <Kbd shortcut={shortcuts[shortcut]!} />
+                  {shortcuts[shortcut] && (
+                    <Kbd shortcut={shortcuts[shortcut]!} />
+                  )}
                 </td>
                 <td>
                   <div className="flex">

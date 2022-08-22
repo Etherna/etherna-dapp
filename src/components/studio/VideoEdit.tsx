@@ -23,7 +23,7 @@ import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
 import StudioEditView from "./StudioEditView"
 import VideoEditor from "./video-editor/VideoEditor"
-import CantUploadAlert from "./other/CantUploadAlert"
+import OnlyUsableBatch from "./other/OnlyUsableBatch"
 import Button from "@/components/common/Button"
 import { VideoEditorContextProvider } from "@/context/video-editor-context"
 import useSwarmVideo from "@/hooks/useSwarmVideo"
@@ -90,23 +90,27 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   }
 
   return (
-    <>
-      <StudioEditView
-        title={reference ? "Edit video" : "Publish new video"}
-        saveLabel={reference ? "Update" : "Publish"}
-        canSave={canSave}
-        actions={
-          <Button aspect="link" modifier="muted" onClick={askToClearState}>
-            <TrashIcon /> Clear all
-          </Button>
-        }
-        backTo={routes.studioVideos}
-        backPrompt={backPrompt}
-        onSave={handleSave}
-      >
-        {isLoading || (reference && !video) ? (
-          <Spinner className="mt-10 mx-auto w-10 text-primary-500" />
-        ) : (
+    <StudioEditView
+      title={reference ? "Edit video" : "Publish new video"}
+      saveLabel={reference ? "Update" : "Publish"}
+      canSave={canSave}
+      actions={
+        <>
+          {!reference && (
+            <Button aspect="link" modifier="muted" onClick={askToClearState}>
+              <TrashIcon /> Clear all
+            </Button>
+          )}
+        </>
+      }
+      backTo={routes.studioVideos}
+      backPrompt={backPrompt}
+      onSave={handleSave}
+    >
+      {isLoading || (reference && !video) ? (
+        <Spinner className="mt-10 mx-auto w-10 text-primary-500" />
+      ) : (
+        <OnlyUsableBatch>
           <VideoEditorContextProvider reference={reference} videoData={video!} hasOffers={stateHasOffers}>
             <VideoEditor ref={ref => {
               if (!ref) return
@@ -118,9 +122,9 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
               ref.canSubmitVideo !== canSave && setCanSave(ref.canSubmitVideo)
             }} />
           </VideoEditorContextProvider>
-        )}
-      </StudioEditView>
-    </>
+        </OnlyUsableBatch>
+      )}
+    </StudioEditView>
   )
 }
 

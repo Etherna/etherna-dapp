@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-const routes = {
+const routePaths = {
   /** `/` */
   home: `/`,
   /** `/frames` */
@@ -53,6 +53,28 @@ const routes = {
   studioChannel: `/studio/channel`,
   /** `/studio/postages` */
   studioPostages: `/studio/postages`,
+}
+
+const withOrigin = (paths: typeof routePaths): typeof routePaths => {
+  const routeNames = Object.keys(paths) as (keyof typeof routePaths)[]
+  const withOriginRoutes = routeNames.reduce(
+    (acc, routeName) => {
+      const routePath = paths[routeName]
+      return {
+        ...acc,
+        [routeName]: typeof routePath === "string"
+          ? `${window.location.origin}${paths[routeName]}`
+          : (...args: any[]) => `${window.location.origin}${routePath(args as any)}`,
+      }
+    },
+    {} as typeof routePaths,
+  )
+  return withOriginRoutes
+}
+
+const routes = {
+  ...routePaths,
+  withOrigin: withOrigin(routePaths),
 }
 
 export default routes

@@ -15,19 +15,22 @@
  *  
  */
 
-import React, { useState, useEffect, useMemo } from "react"
+import React, { useEffect, useMemo, useCallback } from "react"
 import classNames from "classnames"
 
 import classes from "@/styles/components/video/VideoView.module.scss"
 
+import VideoJsonLd from "./VideoJsonLd"
 import NotFound from "@/components/common/NotFound"
 import SEO from "@/components/layout/SEO"
 import Player from "@/components/player/Player"
 import VideoDetails from "@/components/video/VideoDetails"
 import SwarmImageIO from "@/classes/SwarmImage"
 import useSwarmVideo from "@/hooks/useSwarmVideo"
+import useResetRouteState from "@/hooks/useResetRouteState"
 import useSelector from "@/state/useSelector"
 import { useErrorMessage } from "@/state/hooks/ui"
+import routes from "@/routes"
 import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 
 type VideoViewProps = {
@@ -37,6 +40,8 @@ type VideoViewProps = {
 }
 
 const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) => {
+  useResetRouteState()
+
   const { video, notFound, loadVideo } = useSwarmVideo({
     reference,
     routeState: routeState?.video,
@@ -44,8 +49,6 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
     fetchProfile: true
   })
   const beeClient = useSelector(state => state.env.beeClient)
-
-  const [isFetchingVideo, setIsFetchingVideo] = useState(false)
   const { showError } = useErrorMessage()
 
   const posterUrl = useMemo(() => {
@@ -63,37 +66,46 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [video])
 
-  const fetchVideo = async () => {
-    setIsFetchingVideo(true)
-
+  const fetchVideo = useCallback(async () => {
     try {
       await loadVideo()
     } catch (error: any) {
       console.error(error)
       showError("Cannot load the video", error.message)
     }
-
-    setIsFetchingVideo(false)
-  }
+  }, [loadVideo, showError])
 
   if (notFound) {
     return <NotFound message="This video cannot be found" />
   }
 
-  if (isFetchingVideo || !video) {
-    return <div />
-  }
-
   return (
     <>
-      <SEO title={video.title || reference} />
+      <SEO
+        title={video?.title || reference}
+        type="video.other"
+        image={video?.thumbnail?.src}
+        canonicalUrl={video ? routes.withOrigin.watch(video.reference) : undefined}
+      >
+        {video && (
+          <VideoJsonLd
+            title={video.title ?? ""}
+            description={video.description ?? ""}
+            thumbnailUrl={video.thumbnail?.src}
+            canonicalUrl={routes.withOrigin.watch(video.reference)}
+            duration={video.duration}
+            datePublished={video.createdAt ? new Date(video.createdAt) : undefined}
+          />
+        )}
+      </SEO>
+
       {embed ? (
         <Player
           hash={reference}
-          title={video.title || reference}
-          owner={video.owner}
-          sources={video.sources}
-          originalQuality={video.originalQuality}
+          title={video?.title || reference}
+          owner={video?.owner}
+          sources={video?.sources ?? []}
+          originalQuality={video?.originalQuality}
           thumbnailUrl={posterUrl}
           embed
         />
@@ -103,14 +115,16 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
             <div className="col lg:w-3/4">
               <Player
                 hash={reference}
-                title={video.title || reference}
-                owner={video.owner}
-                sources={video.sources}
-                originalQuality={video.originalQuality}
+                title={video?.title || reference}
+                owner={video?.owner}
+                sources={video?.sources ?? []}
+                originalQuality={video?.originalQuality}
                 thumbnailUrl={posterUrl}
               />
 
-              <VideoDetails video={video} />
+              {video && (
+                <VideoDetails video={video} videoOffers={routeState?.videoOffers} />
+              )}
             </div>
 
             <aside className="lg:w-1/4 hidden">

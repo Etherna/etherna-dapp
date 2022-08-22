@@ -51,10 +51,19 @@ const useVideoEditorInfoActions = () => {
     dispatch({ type: VideoEditorActionTypes.CACHE })
   )
 
+  /**
+   * Update video description exceeded
+   * @param descriptionExeeded Has description exceeded limit
+   */
+  const updateDescriptionExceeded = (descriptionExeeded: boolean) => (
+    dispatch({ type: VideoEditorActionTypes.UPDATE_DESCRIPTION_EXCEEDED, descriptionExeeded })
+  )
+
   return {
     updatePinContent,
     updateTitle,
     updateDescription,
+    updateDescriptionExceeded,
     cacheState,
   }
 }

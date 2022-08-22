@@ -15,20 +15,20 @@
  */
 
 .tabbarItem {
-  @apply flex-grow;
+  @apply flex-grow w-full;
   @apply min-w-[15%];
   @apply max-w-[96px];
   @apply flex flex-col items-center justify-items-center rounded;
   @apply space-y-0.5 px-4 py-1;
   @apply cursor-pointer transition-colors duration-300;
   @apply active:bg-gray-200 active:text-gray-800;
-  @apply hover:bg-gray-200 hover:text-gray-800;
+  @apply active:bg-gray-200 active:text-gray-800;
   @apply text-gray-800 dark:text-gray-200;
   @apply dark:active:bg-gray-800 dark:active:text-gray-100;
-  @apply dark:hover:bg-gray-800 dark:hover:text-gray-100;
+  @apply dark:active:bg-gray-800 dark:active:text-gray-100;
 
   &.active {
-    @apply text-green-500 hover:text-green-500;
+    @apply text-green-500 active:text-green-500;
   }
 
   &.submenu {
@@ -37,19 +37,44 @@
   }
 }
 
+.tabbarItemContent {
+  @apply w-full flex items-center;
+}
+
 .tabbarItemIcon {
-  @apply w-5 h-5;
+  @apply w-5 h-5 shrink-0;
+
   svg {
     @apply fill-current;
+  }
+
+  .submenu & {
+    @apply mt-0 mr-5;
   }
 }
 
 .tabbarItemTitle {
-  @apply font-semibold;
+  @apply font-semibold whitespace-nowrap;
   font-size: 10px;
 
   .submenu & {
-    @apply mt-0 ml-5;
     @apply text-sm;
+  }
+}
+
+.tabbarItemAccordion {
+  @apply flex-grow flex-wrap;
+
+  .tabbarItemContent {
+    @apply flex flex-col items-stretch w-full;
+    @apply pl-6;
+    @apply max-h-0 overflow-hidden;
+    transition-property: max-height;
+    @apply duration-300 ease-in-out;
+
+    .tabbarItem {
+      @apply flex-row items-center grow-0;
+      @apply py-1.5;
+    }
   }
 }

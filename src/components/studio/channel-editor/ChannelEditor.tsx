@@ -33,6 +33,7 @@ import { useProfileUpdate } from "@/state/hooks/profile"
 import { useErrorMessage, useImageCrop } from "@/state/hooks/ui"
 import { useWallet } from "@/state/hooks/env"
 import makeBlockies from "@/utils/makeBlockies"
+import { isAnimatedImage } from "@/utils/media"
 import type { SwarmImage, SwarmImageRaw } from "@/definitions/swarm-image"
 import type { Profile } from "@/definitions/swarm-profile"
 
@@ -66,7 +67,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
   const updateProfile = useProfileUpdate(profileAddress)
   const { updateProfile: updateSwarmProfile } = useSwarmProfile({ address: profileAddress })
 
-  const { isLocked, selectedAddress } = useWallet()
+  const { isLocked } = useWallet()
 
   const avatarRef = useRef<HTMLInputElement>(null)
   const coverRef = useRef<HTMLInputElement>(null)
@@ -78,6 +79,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
   const [coverPreview, setCoverPreview] = useState<string>()
   const [isUploadingCover, setUploadingCover] = useState(false)
   const [isUploadingAvatar, setUploadingAvatar] = useState(false)
+  const [hasExceededLimit, setHasExceededLimit] = useState(false)
 
   useEffect(() => {
     setProfileName(profile.name)
@@ -118,6 +120,10 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
       return showError("Set your name", "Please provide a name for your channel before submitting.")
     }
 
+    if (hasExceededLimit) {
+      return showError("Channel description is too long", "Please provide a shorter bio. Limit is 5000 characters.")
+    }
+
     try {
       const profileInfo: Profile = {
         address: profileAddress,
@@ -148,6 +154,10 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>, type: ImageType) => {
     const file = e.currentTarget.files![0]
     if (!file) return
+
+    if (isAnimatedImage(new Uint8Array(await file.arrayBuffer()))) {
+      return showError("Wrong image format", "Animated images are not allowed")
+    }
 
     // reset input
     e.target.value = ""
@@ -193,11 +203,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
 
   return (
     <div className={classes.channelEditor}>
-      <WalletState
-        isLocked={isLocked}
-        selectedAddress={selectedAddress}
-        profileAddress={profileAddress}
-      />
+      <WalletState />
 
       <div className={classes.cover}>
         <label
@@ -278,6 +284,8 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
         <MarkdownEditor
           placeholder="Write something about you"
           value={profileDescription}
+          charactersLimit={5000}
+          onCharacterLimitChange={setHasExceededLimit}
           onChange={value => setProfileDescription(value)}
         />
       </div>

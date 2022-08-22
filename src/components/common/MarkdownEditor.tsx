@@ -41,6 +41,7 @@ type MarkdownEditorProps = {
   onChange?(markdown: string): void
   onFocus?(): void
   onBlur?(): void
+  onCharacterLimitChange?(exeeded: boolean): void
 }
 
 type ToolbarConfig = {
@@ -73,9 +74,11 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   onChange,
   onFocus,
   onBlur,
+  onCharacterLimitChange,
 }) => {
   const [markdown, setMarkdown] = useState(value)
   const [hasFocus, setHasFocus] = useState(false)
+  const [hasExceededLimit, setHasExceededLimit] = useState(false)
   const [state, setState] = useState<EditorState>(() => {
     const rawData = markdownToDraft(value ?? "")
     const contentState = convertFromRaw(rawData)
@@ -103,6 +106,17 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       })
     }
   }, [value])
+
+  useEffect(() => {
+    if (!charactersLimit) return
+    setHasExceededLimit(textLength >= charactersLimit)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [textLength, charactersLimit])
+
+  useEffect(() => {
+    onCharacterLimitChange?.(hasExceededLimit)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasExceededLimit])
 
   const handleBeforeInput = (chars: string, editorState: EditorState, eventTimeStamp: number) => {
     const currentContent = editorState.getCurrentContent()
@@ -193,7 +207,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         {charactersLimit && (
           <span
             className={classNames(textfieldClasses.textFieldCharCounter, {
-              [textfieldClasses.limitReached]: textLength === charactersLimit
+              [textfieldClasses.limitReached]: textLength >= charactersLimit
             })}
             data-editor-limit
           >

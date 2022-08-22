@@ -23,7 +23,7 @@ import type { GatewayType } from "@/definitions/extension-host"
 
 const STORAGE_KEY = "videoEditorState"
 
-type CacheState = Omit<VideoEditorContextState, "videoWriter"> & {
+type CacheState = Omit<VideoEditorContextState, "videoWriter" | "descriptionExeeded"> & {
   videoRaw: SwarmVideoRaw
   indexReference: string | undefined
 }
@@ -60,6 +60,7 @@ export default class VideoEditorCache {
     const value = window.localStorage.getItem(STORAGE_KEY)!
     const {
       reference,
+      indexReference,
       queue,
       videoRaw,
       indexReference,
@@ -75,6 +76,7 @@ export default class VideoEditorCache {
       gatewayType,
     })
     videoWriter.reference = reference
+    videoWriter.indexReference = indexReference
     videoWriter.videoRaw = videoRaw
     videoWriter.indexReference = indexReference
 
@@ -90,6 +92,7 @@ export default class VideoEditorCache {
       saveTo,
       offerResources,
       hasChanges,
+      descriptionExeeded: false,
     }
 
     return state
@@ -107,9 +110,11 @@ export default class VideoEditorCache {
       hasChanges,
     } = state
     const videoRaw = videoWriter.videoRaw
+    const indexReference = videoWriter.indexReference
 
     const cacheState: CacheState = {
       reference,
+      indexReference,
       ownerAddress,
       queue,
       videoRaw,

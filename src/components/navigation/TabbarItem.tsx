@@ -15,12 +15,13 @@
  *  
  */
 
-import React, { useMemo, ElementType } from "react"
+import React, { useMemo, ElementType, useState, useCallback, useRef } from "react"
 import { useLocation } from "react-router"
 import { NavLink } from "react-router-dom"
 import classNames from "classnames"
 
 import classes from "@/styles/components/navigation/TabbarItem.module.scss"
+import { ChevronDownIcon } from "@heroicons/react/solid"
 
 export type TabbarItemProps = {
   children?: React.ReactNode
@@ -32,6 +33,7 @@ export type TabbarItemProps = {
   iconSvg?: React.ReactNode
   isActive?: ((pathname: string) => boolean) | boolean
   isSubmenu?: boolean
+  isAccordion?: boolean
   onClick?: () => void
 }
 
@@ -45,40 +47,61 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
   iconSvg,
   isActive,
   isSubmenu,
+  isAccordion,
   onClick,
 }) => {
   const { pathname } = useLocation()
   const isCurrentPage = (typeof isActive === "function" ? isActive(pathname) : isActive) ?? false
+  const [accordionOpen, setAccordionOpen] = useState(false)
+  const accordionContent = useRef<HTMLDivElement>(null)
+
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    if (isAccordion) {
+      setAccordionOpen(open => !open)
+    }
+    onClick?.()
+  }, [isAccordion, onClick])
 
   const Wrapper: React.FC<{ children: React.ReactNode }> = useMemo(() => {
+    const className = classNames(classes.tabbarItem, {
+      [classes.active]: isCurrentPage,
+      [classes.submenu]: isSubmenu,
+      [classes.tabbarItemAccordion]: isAccordion,
+    })
     return ({ children }) => (
       <>
         {to ? (
-          <NavLink
-            className={classNames(classes.tabbarItem, {
-              [classes.active]: isCurrentPage,
-              [classes.submenu]: isSubmenu
-            })}
-            to={to}
-            target={target}
-            rel={rel}
-          >
-            {children}
-          </NavLink>
+          to.startsWith("http") ? (
+            <a
+              className={className}
+              href={to}
+              target={target}
+              rel={rel}
+            >
+              {children}
+              <span className="ml-1">↗</span>
+            </a>
+          ) : (
+            <NavLink
+              className={className}
+              to={to}
+              target={target}
+              rel={rel}
+            >
+              {children}
+            </NavLink>
+          )
         ) : (
           <As
-            className={classNames(classes.tabbarItem, {
-              [classes.active]: isCurrentPage,
-              [classes.submenu]: isSubmenu
-            })}
-            onClick={onClick}
+            className={className}
+            onClick={handleClick}
           >
             {children}
           </As>
         )}
       </>
     )
-  }, [As, to, target, rel, isSubmenu, isCurrentPage, onClick])
+  }, [to, isCurrentPage, isSubmenu, isAccordion, target, rel, As, handleClick])
 
   return (
     <Wrapper>
@@ -89,10 +112,25 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
       )}
 
       {title && (
-        <span className={classes.tabbarItemTitle}>{title}</span>
+        <span className={classes.tabbarItemTitle}>
+          {title}
+          {isAccordion && (
+            <ChevronDownIcon className={classNames("inline ml-2", { "rotate-180": accordionOpen })} height={16} />
+          )}
+        </span>
       )}
 
-      {children}
+      {children && (
+        <div
+          className={classNames(classes.tabbarItemContent)}
+          ref={accordionContent}
+          style={
+            isAccordion ? { maxHeight: accordionOpen ? accordionContent.current?.scrollHeight : 0 } : undefined
+          }
+        >
+          {children}
+        </div>
+      )}
     </Wrapper>
   )
 }

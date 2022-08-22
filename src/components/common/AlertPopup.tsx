@@ -22,6 +22,8 @@ import classNames from "classnames"
 import classes from "@/styles/components/common/AlertPopup.module.scss"
 import { CheckCircleIcon, ExclamationIcon } from "@heroicons/react/solid"
 
+import { isBotUserAgent } from "@/utils/browser"
+
 type AlertAction = {
   title: string
   type: "default" | "cancel" | "destructive"
@@ -92,6 +94,8 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
     e.stopPropagation()
     return false
   }
+
+  if (isBotUserAgent()) return null
 
   return (
     <Transition.Root

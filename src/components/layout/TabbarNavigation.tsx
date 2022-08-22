@@ -17,16 +17,18 @@
 
 import React from "react"
 
-import { BookmarkIcon, HomeIcon, UserIcon } from "@heroicons/react/solid"
+import { BookmarkIcon, HomeIcon, UserIcon, ExternalLinkIcon } from "@heroicons/react/solid"
 import { ReactComponent as FramesIcon } from "@/assets/icons/navigation/frames.svg"
 import { ReactComponent as PlaylistIcon } from "@/assets/icons/navigation/playlists.svg"
 
+import FeedbackLink from "./FeedbackLink"
 import Tabbar from "@/components/navigation/Tabbar"
 import TabbarItem from "@/components/navigation/TabbarItem"
 import TabbarMenuItem from "@/components/navigation/TabbarMenuItem"
 // import IndexExtension from "@/components/env/IndexExtension"
 import GatewayExtension from "@/components/env/GatewayExtension"
 import routes from "@/routes"
+import { urlOrigin, urlPath } from "@/utils/urls"
 
 const TabbarNavigation: React.FC = () => {
   return (
@@ -63,6 +65,48 @@ const TabbarNavigation: React.FC = () => {
           iconSvg={<BookmarkIcon />}
           isSubmenu
         />
+        <TabbarItem
+          title="Useful links"
+          iconSvg={<ExternalLinkIcon />}
+          isAccordion
+          isSubmenu
+        >
+          <TabbarItem
+            title="About Etherna"
+            to="https://info.etherna.io/"
+            target="_blank"
+          />
+          <TabbarItem
+            title="Blog"
+            to="https://info.etherna.io/blog/"
+            target="_blank"
+          />
+          <TabbarItem
+            title="GitHub"
+            to="https://github.com/etherna"
+            target="_blank"
+          />
+          <TabbarItem
+            title="Index Api"
+            to={urlPath(import.meta.env.VITE_APP_INDEX_URL, "/swagger")}
+            target="_blank"
+          />
+          <TabbarItem
+            title="Gateway"
+            to={urlOrigin(import.meta.env.VITE_APP_GATEWAY_URL)}
+            target="_blank"
+          />
+          <TabbarItem
+            title="Credit"
+            to={urlOrigin(import.meta.env.VITE_APP_CREDIT_URL)}
+            target="_blank"
+          />
+          <TabbarItem
+            title="Privacy Policy"
+            to={routes.privacyPolicy}
+          />
+          <FeedbackLink wrapper={TabbarItem} />
+        </TabbarItem>
         {/* <TabbarItem isSubmenu>
           <IndexExtension />
         </TabbarItem> */}

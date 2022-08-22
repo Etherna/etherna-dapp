@@ -35,14 +35,12 @@ export default class SwarmImageWriter {
   playlist: SwarmPlaylist
   playlistRaw: SwarmPlaylistRaw
 
-  private isFeedManifest: boolean
   private beeClient: SwarmBeeClient
 
   constructor(playlist: SwarmPlaylist, opts: SwarmPlaylistWriterOptions) {
     this.playlist = playlist
     this.playlistRaw = this.parsePlaylistToRaw(playlist, playlist.encryptedReference)
     this.beeClient = opts.beeClient
-    this.isFeedManifest = opts.initialType === "public" && !!playlist.reference
   }
 
   /**
@@ -78,12 +76,7 @@ export default class SwarmImageWriter {
       const topic = this.beeClient.makeFeedTopic(topicName)
       const writer = this.beeClient.makeFeedWriter("sequence", topic)
       await writer.upload(batchId, reference)
-      if (!this.isFeedManifest) {
-        const rootManifest = await this.beeClient.createFeedManifest(batchId, "sequence", topic, this.playlist.owner)
-        reference = rootManifest.reference
-      } else {
-        reference = this.playlist.reference as Reference
-      }
+      reference = await this.beeClient.createFeedManifest(batchId, "sequence", topic, this.playlist.owner)
     }
 
     return reference

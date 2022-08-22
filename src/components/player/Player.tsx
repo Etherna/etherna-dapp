@@ -18,6 +18,7 @@
 import React, { useRef, useState, useEffect, useCallback, useMemo } from "react"
 import classNames from "classnames"
 import Axios, { Canceler } from "axios"
+import { filterXSS } from "xss"
 
 import classes from "@/styles/components/player/Player.module.scss"
 
@@ -269,9 +270,9 @@ const InnerPlayer: React.FC<PlayerProps> = ({
   }
 
   if (!source) {
-    return (
+    return !embed ? (
       <PlayerPlaceholder />
-    )
+    ) : null
   }
 
   return (
@@ -293,7 +294,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
             }
           }}
           className={classes.playerVideo}
-          src={source}
+          src={filterXSS(source)}
           autoPlay={false}
           preload="metadata"
           poster={!error && thumbnailUrl ? thumbnailUrl : undefined}

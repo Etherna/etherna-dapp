@@ -59,7 +59,15 @@ export type VideoEditorHandle = {
 
 const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const { address, defaultBatchId } = useSelector(state => state.user)
-  const [{ reference, queue, videoWriter, hasChanges, saveTo, offerResources }] = useVideoEditorState()
+  const [{
+    reference,
+    queue,
+    videoWriter,
+    hasChanges,
+    saveTo,
+    offerResources,
+    descriptionExeeded
+  }] = useVideoEditorState()
   const [privateLink, setPrivateLink] = useState<string>()
   const [batchStatus, setBatchStatus] = useState<"creating" | "fetching" | "updating" | undefined>()
   const removeBatchUpdate = useBatchesStore(state => state.removeBatchUpdate)
@@ -78,7 +86,6 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   } = useVideoEditorSaveActions()
   const { cacheState } = useVideoEditorInfoActions()
 
-  const { isLocked, selectedAddress } = useWallet()
   const { resetState } = useVideoEditorBaseActions()
   const { waitConfirmation } = useConfirmation()
   const { showError } = useErrorMessage()
@@ -92,10 +99,8 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
 
   useImperativeHandle(ref, () => ({
     isEmpty: queue.length === 0,
-    canSubmitVideo: canPublishVideo && !hasQueuedProcesses,
-    submitVideo: async () => {
-      await saveVideo(offerResources)
-    },
+    canSubmitVideo: canPublishVideo && !hasQueuedProcesses && !descriptionExeeded,
+    submitVideo: () => saveVideo(offerResources),
     saveVideoToChannel,
     saveVideoToIndex,
     resetState: resetAll,
@@ -159,11 +164,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   return (
     <>
       <div className="my-6 space-y-4">
-        <WalletState
-          isLocked={isLocked}
-          selectedAddress={selectedAddress}
-          profileAddress={address!}
-        />
+        <WalletState />
 
         {batchStatus && (
           <BatchLoading
