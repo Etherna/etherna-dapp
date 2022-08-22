@@ -51,6 +51,7 @@ export default defineConfig(({ mode }) => ({
   },
   define: {
     global: "window",
+    process: {},
   },
   resolve: {
     alias: [
@@ -58,6 +59,7 @@ export default defineConfig(({ mode }) => ({
       { find: "stream", replacement: "stream-browserify" },
       { find: "buffer", replacement: "buffer-browserify" },
       { find: "util", replacement: "util-browser" },
+      { find: "events", replacement: "events-browserify" },
     ],
   },
   plugins: [

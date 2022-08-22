@@ -37,7 +37,7 @@ const OnlyUsableBatch: React.FC<OnlyUsableBatchProps> = ({ children }) => {
   }, [isStandaloneGateway])
 
   if (isLoadingProfile) return null
-  if (!loading && !noBatches && !noUsableBatches) return <>{children}</>
+  if (defaultBatch) return <>{children}</>
 
   return (
     <Alert className="my-6" type="warning" title={title}>

@@ -60,7 +60,6 @@ export default class VideoEditorCache {
     const value = window.localStorage.getItem(STORAGE_KEY)!
     const {
       reference,
-      indexReference,
       queue,
       videoRaw,
       indexReference,
@@ -122,7 +121,6 @@ export default class VideoEditorCache {
       saveTo,
       offerResources,
       hasChanges,
-      indexReference: videoWriter.indexReference,
     }
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(cacheState))
   }

@@ -78,6 +78,7 @@
     "eslint-plugin-jsx-a11y": "6.6.1",
     "eslint-plugin-react": "7.30.1",
     "eslint-plugin-react-hooks": "4.6.0",
+    "events-browserify": "0.0.1",
     "ftp-deploy": "2.4.3",
     "postcss": "8.4.16",
     "redux-logger": "3.0.6",

@@ -108,7 +108,7 @@ export default function usePlaylistVideos(
       ...(videos ?? []),
       ...newVideos,
     ])
-  }, [fetchVideos, hasMore, isFetching, opts.limit, playlist.videos, videos])
+  }, [fetchVideos, hasMore, isFetching, opts.limit, playlist, videos])
 
   return {
     videos,

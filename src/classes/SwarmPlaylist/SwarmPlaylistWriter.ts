@@ -76,7 +76,8 @@ export default class SwarmImageWriter {
       const topic = this.beeClient.makeFeedTopic(topicName)
       const writer = this.beeClient.makeFeedWriter("sequence", topic)
       await writer.upload(batchId, reference)
-      reference = await this.beeClient.createFeedManifest(batchId, "sequence", topic, this.playlist.owner)
+      const feedManifest = await this.beeClient.createFeedManifest(batchId, "sequence", topic, this.playlist.owner)
+      reference = feedManifest.reference
     }
 
     return reference
