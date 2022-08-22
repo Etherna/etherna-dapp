@@ -84,6 +84,8 @@
 .videoInfoTitle {
   @apply font-semibold mb-0 leading-tight text-base;
   @apply text-gray-900 dark:text-gray-100;
+  @apply line-clamp-2;
+  @apply max-w-full flex-grow overflow-hidden text-ellipsis;
 }
 .videoInfoProfileName {
   @apply mb-0 font-semibold text-sm text-gray-600 transition-colors duration-200;

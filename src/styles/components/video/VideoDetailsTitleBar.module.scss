@@ -24,6 +24,8 @@
   @apply flex-1;
   @apply font-semibold text-2xl;
   @apply mb-0;
+  @apply line-clamp-4;
+  @apply max-w-full flex-grow overflow-hidden text-ellipsis;
 
   &.untitled {
     @apply opacity-50;

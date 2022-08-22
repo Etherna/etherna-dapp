@@ -28,9 +28,12 @@ type VideoDetailsTitleBarProps = {
 const VideoDetailsTitleBar: React.FC<VideoDetailsTitleBarProps> = ({ title, children }) => {
   return (
     <div className={classes.videoDetailsTitlebar}>
-      <h1 className={classNames(classes.videoDetailsTitle, {
-        [classes.untitled]: !title
-      })}>
+      <h1
+        className={classNames(classes.videoDetailsTitle, {
+          [classes.untitled]: !title
+        })}
+        title={title ?? ""}
+      >
         {title || "Untitled"}
       </h1>
 
