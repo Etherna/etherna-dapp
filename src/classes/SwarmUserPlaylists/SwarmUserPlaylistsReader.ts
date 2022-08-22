@@ -51,23 +51,23 @@ export default class SwarmUserPlaylistsReader {
   }
 
   private async resolveChannel() {
-    // this.channelPlaylist = await this.resolvePlaylistOrDefault(
-    //   this.rawPlaylists?.channel,
-    //   SwarmUserPlaylistsIO.getDefaultChannelPlaylist(this.owner)
-    // )
-    this.channelPlaylist = await this.depracated_resolvePlaylistFromId(
+    this.channelPlaylist = await this.resolvePlaylistOrDefault(
+      this.rawPlaylists?.channel,
       SwarmUserPlaylistsIO.getDefaultChannelPlaylist(this.owner)
     )
+    // this.channelPlaylist = await this.depracated_resolvePlaylistFromId(
+    //   SwarmUserPlaylistsIO.getDefaultChannelPlaylist(this.owner)
+    // )
   }
 
   private async resolveSaved() {
-    // this.savedPlaylist = await this.resolvePlaylistOrDefault(
-    //   this.rawPlaylists?.saved,
-    //   SwarmUserPlaylistsIO.getDefaultSavedPlaylist(this.owner)
-    // )
-    this.savedPlaylist = await this.depracated_resolvePlaylistFromId(
+    this.savedPlaylist = await this.resolvePlaylistOrDefault(
+      this.rawPlaylists?.saved,
       SwarmUserPlaylistsIO.getDefaultSavedPlaylist(this.owner)
     )
+    // this.savedPlaylist = await this.depracated_resolvePlaylistFromId(
+    //   SwarmUserPlaylistsIO.getDefaultSavedPlaylist(this.owner)
+    // )
   }
 
   private async resolveCustom() {
