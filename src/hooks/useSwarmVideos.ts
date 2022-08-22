@@ -89,7 +89,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
     try {
       const indexVideos = await indexClient.videos.fetchLatestVideos(page, take)
       const newVideos = await Promise.all(indexVideos.map(videoLoadPromise))
-      import.meta.env.DEV && await wait(1500)
+      import.meta.env.DEV && await wait(1000)
 
       if (newVideos.length < take) {
         setHasMore(false)
