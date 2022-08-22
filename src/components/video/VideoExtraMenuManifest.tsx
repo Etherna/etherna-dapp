@@ -25,6 +25,7 @@ import Button from "@/components/common/Button"
 import Modal from "@/components/common/Modal"
 import SwarmResourcesIO from "@/classes/SwarmResources"
 import type { Video } from "@/definitions/swarm-video"
+import useSelector from "@/state/useSelector"
 
 type VideoExtraMenuManifestProps = {
   video: Video
@@ -33,6 +34,8 @@ type VideoExtraMenuManifestProps = {
 }
 
 const VideoExtraMenuManifest: React.FC<VideoExtraMenuManifestProps> = ({ video, show, setShow }) => {
+  const beeClient = useSelector(state => state.env.beeClient)
+
   const sources = useMemo(() => {
     const references = SwarmResourcesIO.getVideoReferences(video)
     return references.map(reference => ({
@@ -80,7 +83,9 @@ const VideoExtraMenuManifest: React.FC<VideoExtraMenuManifestProps> = ({ video, 
               {source.label}
             </div>
             <span className={classes.sourcesListItemLink}>
-              {source.reference}
+              <a href={beeClient.getBzzUrl(source.reference)} target="_blank" rel="noreferrer">
+                {source.reference}
+              </a>
             </span>
           </li>
         ))}
