@@ -36,13 +36,11 @@ export const fullfilledPromisesResult = <T>(promises: PromiseSettledResult<T>[])
     .map(promise => (promise as PromiseFulfilledResult<T>).value)
 }
 
-export const wait = (delay = 1000) => {
-  return new Promise<void>(res => {
+export const wait = (delay = 1000) =>
+  new Promise<void>(res => {
     if (import.meta.env.DEV) {
-      console.info(`Delaying for ${delay}ms`)
       setTimeout(res, delay)
     } else {
       res()
     }
   })
-}
