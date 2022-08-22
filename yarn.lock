@@ -2279,6 +2279,11 @@
   dependencies:
     redux "^4.0.0"
 
+"@types/remove-markdown@0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@types/remove-markdown/-/remove-markdown-0.3.1.tgz#82bc3664c313f50f7c77f1bb59935f567689dc63"
+  integrity sha512-JpJNEJEsmmltyL2LdE8KRjJ0L2ad5vgLibqNj85clohT9AyTrfN6jvHxStPshDkmtcL/ShFu0p2tbY7DBS1mqQ==
+
 "@types/revalidator@*":
   version "0.3.8"
   resolved "https://registry.yarnpkg.com/@types/revalidator/-/revalidator-0.3.8.tgz#86e0b03b49736000ad42ce6b002725e74c6805ff"
@@ -5751,6 +5756,11 @@ react-router@6.3.0:
   dependencies:
     history "^5.2.0"
 
+react-schemaorg@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-schemaorg/-/react-schemaorg-2.0.0.tgz#9d168816e3630382d366fbc5fc4c337617467dbb"
+  integrity sha512-UqciFKA203ewNjn0zC09uYKuJSvMD8L75L1s/cW4rc7cS64w8l7vaI3SYkuoI/nwCBkJRmOkSJedWDUZBlYZwg==
+
 react-slider@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/react-slider/-/react-slider-2.0.1.tgz#51fb80aaebb98a07d6563b757a49c437a5142fed"
@@ -5940,6 +5950,11 @@ remarkable@^2.0.1:
     argparse "^1.0.10"
     autolinker "^3.11.0"
 
+remove-markdown@0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/remove-markdown/-/remove-markdown-0.5.0.tgz#a596264bbd60b9ceab2e2ae86e5789eee91aee32"
+  integrity sha512-x917M80K97K5IN1L8lUvFehsfhR8cYjGQ/yAMRI9E7JIKivtl5Emo5iD13DhMr+VojzMCiYk8V2byNPwT/oapg==
+
 require-directory@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/require-directory/-/require-directory-2.1.1.tgz#8c64ad5fd30dab1c976e2344ffe7f792a6a6df42"
@@ -6098,6 +6113,11 @@ scheduler@^0.23.0:
   integrity sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==
   dependencies:
     loose-envify "^1.1.0"
+
+schema-dts@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/schema-dts/-/schema-dts-1.1.0.tgz#33227971076ef1daa33e56a3127a8aae030e81c9"
+  integrity sha512-vdmbs/5ycj4zyKpZIDqTcy+IZi4s7c38RVAYuDmRi7zgxUT8wRWPMLzg0jr7FjdVunYu9yZ00F3+XcZTTFcTOQ==
 
 semver@7.0.0:
   version "7.0.0"

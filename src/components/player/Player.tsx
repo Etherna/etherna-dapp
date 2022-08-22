@@ -270,9 +270,9 @@ const InnerPlayer: React.FC<PlayerProps> = ({
   }
 
   if (!source) {
-    return (
+    return !embed ? (
       <PlayerPlaceholder />
-    )
+    ) : null
   }
 
   return (

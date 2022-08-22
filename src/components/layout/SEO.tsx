@@ -17,72 +17,100 @@
 
 import React from "react"
 import { Helmet } from "react-helmet-async"
+import type { MetaProps } from "react-helmet-async"
 
 import useSelector from "@/state/useSelector"
+import Head from "./Head"
 
 type SEOProps = {
+  children?: React.ReactNode
   description?: string
   lang?: string
   title: string
+  canonicalUrl?: string
   meta?: { name: string, content: string }[]
+  type?: "website" | "video.other"
+  image?: string
 }
 
-function SEO({
+const SEO: React.FC<SEOProps> = ({
+  children,
   description,
   lang = "en",
   meta = [],
   title,
-}: SEOProps) {
+  canonicalUrl,
+  type = "website",
+  image,
+}) => {
   const darkMode = useSelector(state => state.env.darkMode)
   const siteTitle = import.meta.env.VITE_APP_NAME
   const siteTagline = import.meta.env.VITE_APP_TAGLINE
 
   return (
-    <Helmet
-      htmlAttributes={{
-        lang,
-      }}
-      title={title}
-      titleTemplate={`%s – ${title === siteTitle ? siteTagline : siteTitle}`}
-      meta={[
-        {
-          name: `theme-color`,
-          content: darkMode ? `#111827` : `#f9fafb`,
-        },
-        {
-          name: `description`,
-          content: description,
-        },
-        {
-          property: `og:title`,
-          content: title,
-        },
-        {
-          property: `og:description`,
-          content: description,
-        },
-        {
-          property: `og:type`,
-          content: `website`,
-        },
-        {
-          name: `twitter:card`,
-          content: `summary`,
-        },
-        {
-          name: `twitter:creator`,
-          content: siteTitle,
-        },
-        {
-          name: `twitter:title`,
-          content: title,
-        },
-        {
-          name: `twitter:description`,
-          content: description,
-        },
-      ].concat(meta)}
-    />
+    <>
+      <Helmet
+        htmlAttributes={{
+          lang,
+        }}
+        title={title}
+        titleTemplate={`%s – ${title === siteTitle ? siteTagline : siteTitle}`}
+        meta={[
+          {
+            name: `theme-color`,
+            content: darkMode ? `#111827` : `#f9fafb`,
+          },
+          {
+            name: `description`,
+            content: description || "A transparent, decentralized and open source video platform",
+          },
+          {
+            property: `keywords`,
+            content: `video, sharing, decentralized, ads free, transparent video platform, upload`,
+          },
+          {
+            property: `og:title`,
+            content: title,
+          },
+          description && {
+            property: `og:description`,
+            content: description,
+          },
+          image && {
+            property: `og:image`,
+            content: image,
+          },
+          type && {
+            property: `og:type`,
+            content: type,
+          },
+          {
+            name: `twitter:card`,
+            content: `summary`,
+          },
+          {
+            name: `twitter:creator`,
+            content: siteTitle,
+          },
+          {
+            name: `twitter:title`,
+            content: title,
+          },
+          description && {
+            name: `twitter:description`,
+            content: description,
+          },
+        ].filter(Boolean).concat(meta) as MetaProps[]}
+      >
+        {canonicalUrl && (
+          <link rel="canonical" href={canonicalUrl} />
+        )}
+      </Helmet>
+
+      <Head>
+        {children}
+      </Head>
+    </>
   )
 }
 
