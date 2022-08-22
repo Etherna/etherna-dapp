@@ -23,6 +23,7 @@ import classes from "@/styles/components/common/Modal.module.scss"
 import { XIcon } from "@heroicons/react/solid"
 
 import Button from "@/components/common/Button"
+import { isBotUserAgent } from "@/utils/browser"
 
 type ModalProps = {
   children?: React.ReactNode
@@ -61,6 +62,8 @@ const Modal: React.FC<ModalProps> = ({
     setShow?.(false)
     onClose?.()
   }
+
+  if (isBotUserAgent()) return null
 
   return (
     <Transition.Root show={show} as={Fragment}>
