@@ -83,7 +83,7 @@ const TabbarNavigation: React.FC = () => {
           />
           <TabbarItem
             title="GitHub"
-            to="https://github.com/etherna/etherna-dapp"
+            to="https://github.com/etherna"
             target="_blank"
           />
           <TabbarItem
