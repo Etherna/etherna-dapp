@@ -91,7 +91,7 @@ export default class SwarmVideoReader {
 
     const [rawVideo, ownerProfile] = await Promise.all([
       !indexVideo?.lastValidManifest ||
-        (indexVideo?.lastValidManifest && this.isValidatingManifest(indexVideo.lastValidManifest))
+        (indexVideo?.lastValidManifest && SwarmVideoIO.isValidatingManifest(indexVideo.lastValidManifest))
         ? this.fetchRawVideo()
         : Promise.resolve(null),
       this.ownerAddress
@@ -163,7 +163,7 @@ export default class SwarmVideoReader {
       createdAt: indexVideoData ? +new Date(indexVideoData.creationDateTime) : videoData?.createdAt ?? null,
       isVideoOnIndex: !!indexVideoData,
       isValidatedOnIndex: !!indexVideoData?.lastValidManifest
-        ? !this.isValidatingManifest(indexVideoData.lastValidManifest)
+        ? !SwarmVideoIO.isValidatingManifest(indexVideoData.lastValidManifest)
         : false,
       creationDateTime: indexVideoData?.creationDateTime,
       encryptionKey: indexVideoData?.encryptionKey,
@@ -235,15 +235,6 @@ export default class SwarmVideoReader {
     } catch {
       return null
     }
-  }
-
-  private isValidatingManifest(manifest: IndexVideoManifest): boolean {
-    return manifest.title === null &&
-      manifest.description === null &&
-      manifest.duration === null &&
-      manifest.thumbnail === null &&
-      manifest.originalQuality === null &&
-      manifest.sources.length === 0
   }
 
   private loadVideoFromPrefetch() {

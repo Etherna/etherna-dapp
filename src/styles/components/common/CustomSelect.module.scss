@@ -22,8 +22,13 @@
   }
 }
 
+.customSelectLabel {
+  @apply text-sm mx-2;
+  @apply text-gray-600 dark:text-gray-300;
+}
+
 .customSelectButton {
-  @apply inline-flex rounded-md;
+  @apply inline-flex items-center rounded-md;
   @apply border border-gray-500 dark:border-gray-400;
 }
 

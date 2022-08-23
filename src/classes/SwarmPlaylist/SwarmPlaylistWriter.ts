@@ -82,6 +82,11 @@ export default class SwarmImageWriter {
     return reference
   }
 
+  removeVideos(references: string[]) {
+    const videos = (this.playlist.videos ?? []).filter(video => !references.includes(video.reference))
+    this.playlist.videos = videos
+  }
+
   private parsePlaylistToRaw(playlist: SwarmPlaylist, encryptedReference: string | undefined): SwarmPlaylistRaw {
     return playlist.type === "private" ? {
       type: "private",

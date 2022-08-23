@@ -30,6 +30,7 @@ type Option = {
 }
 
 type CustomSelectProps = {
+  label?: string
   value: string | null | undefined
   options: Option[]
   selectedRender?: React.ReactNode
@@ -38,6 +39,7 @@ type CustomSelectProps = {
 }
 
 const CustomSelect: React.FC<CustomSelectProps> = ({
+  label,
   value,
   options,
   selectedRender,
@@ -61,6 +63,9 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
             [classes.disabled]: disabled
           })}>
             <div className={classes.customSelectButton}>
+              {label && (
+                <span className={classes.customSelectLabel}>{label}</span>
+              )}
               {selectedRender && (
                 <div className={classes.customSelectValue}>{selectedRender}</div>
               )}

@@ -64,6 +64,24 @@ export default class IndexUsersClient {
   }
 
   /**
+   * Fetch user's videos
+   * @param address User's address
+   */
+  async fetchVideos(address: string, page = 0, take = 25) {
+    const endpoint = `${this.url}/users/${address}/videos`
+
+    const resp = await http.get<IndexVideo[]>(endpoint, {
+      params: { page, take },
+    })
+
+    if (!Array.isArray(resp.data)) {
+      throw new Error("Cannot fetch user's videos")
+    }
+
+    return resp.data
+  }
+
+  /**
    * Get the current logged user's info
    */
   async fetchCurrentUser() {
