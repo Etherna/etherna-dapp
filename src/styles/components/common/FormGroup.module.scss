@@ -23,7 +23,7 @@
     @apply opacity-50 pointer-events-none cursor-default;
   }
 
-  label {
+  > label {
     @apply text-sm font-semibold text-gray-700 dark:text-gray-400;
     @apply mb-2;
   }

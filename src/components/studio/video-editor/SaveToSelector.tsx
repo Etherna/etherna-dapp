@@ -17,7 +17,7 @@
 
 import React, { useCallback, useEffect, useMemo } from "react"
 
-import Toggle from "@/components/common/Toggle"
+import SelectionToggle from "@/components/common/SelectionToggle"
 import Spinner from "@/components/common/Spinner"
 import Label from "@/components/common/Label"
 import FieldDesrcription from "@/components/common/FieldDesrcription"
@@ -102,21 +102,24 @@ const SaveToSelector: React.FC = () => {
       {isFetching ? (
         <Spinner />
       ) : (
-        sources.map(source => {
-          const toggled = isToggled(source.source, source.identifier)
-          return (
-            <Toggle
-              checked={toggled}
-              label={source.name}
-              onChange={() => toggleAddTo({
-                source: source.source,
-                identifier: source.identifier,
-                add: !toggled,
-              })}
-              key={source.identifier}
-            />
-          )
-        })
+        <div className="grid grid-cols-2 gap-3">
+          {sources.map(source => {
+            const toggled = isToggled(source.source, source.identifier)
+            return (
+              <SelectionToggle
+                checked={toggled}
+                label={source.name}
+                description={source.description}
+                onChange={() => toggleAddTo({
+                  source: source.source,
+                  identifier: source.identifier,
+                  add: !toggled,
+                })}
+                key={source.identifier}
+              />
+            )
+          })}
+        </div>
       )}
 
       <FieldDesrcription>

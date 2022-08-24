@@ -105,7 +105,7 @@
 
 .customSelectOptionDescription {
   @apply text-gray-500 dark:text-gray-400;
-  @apply mt-2;
+  @apply mt-0.5;
 
   .customSelectOption.active & {
     @apply text-gray-500 dark:text-gray-400;
