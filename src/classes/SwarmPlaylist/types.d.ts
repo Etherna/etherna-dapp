@@ -22,10 +22,9 @@ import type { SwarmPlaylist, SwarmPlaylistType } from "@/definitions/swarm-playl
 export type SwarmPlaylistReaderOptions = {
   beeClient: SwarmBeeClient
   owner?: string
-  id?: string
+  id?: string | "__channel" | "__saved"
 }
 
 export type SwarmPlaylistWriterOptions = {
   beeClient: SwarmBeeClient
-  initialType?: SwarmPlaylistType
 }

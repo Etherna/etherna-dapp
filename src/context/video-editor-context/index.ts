@@ -16,9 +16,46 @@
 
 import { createContext } from "react"
 
-import type { VideoEditorContextStore } from "@/definitions/video-editor-context"
+import { parseLocalStorage } from "@/utils/local-storage"
+import { urlHostname } from "@/utils/urls"
+import type { VideoEditorContextStore, PublishSource, PublishSourceSave } from "@/definitions/video-editor-context"
+import type { IndexExtensionHost } from "@/definitions/extension-host"
 
 export const VideoEditorContext = createContext<VideoEditorContextStore | undefined>(undefined)
+
+export const getAllSources = () => {
+  const indexes = parseLocalStorage<IndexExtensionHost[]>("setting:index-hosts") ?? [{
+    name: "Etherna Index",
+    url: import.meta.env.VITE_APP_INDEX_URL,
+  }]
+
+  const sources: PublishSource[] = [
+    {
+      source: "playlist",
+      name: "Public channel",
+      description: "Decentralized feed",
+      identifier: "__channel",
+      videoId: undefined,
+    },
+    ...indexes.map(host => ({
+      source: "index" as "index",
+      name: host.name,
+      description: urlHostname(host.url) ?? "",
+      identifier: host.url,
+      videoId: undefined,
+    }))
+  ]
+
+  return sources
+}
+
+export const getDefaultAddTo = () => {
+  return getAllSources().map(source => ({
+    source: source.source,
+    identifier: source.identifier,
+    add: false,
+  } as PublishSourceSave))
+}
 
 // forward exports
 export { default as VideoEditorContextProvider } from "./VideoEditorContextProvider"

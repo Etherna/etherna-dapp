@@ -15,35 +15,41 @@
  */
 
 import { useEffect, useState } from "react"
+import { AxiosError } from "axios"
 
 import useVideoEditorState from "./useVideoEditorState"
 import VideoEditorCache from "../VideoEditorCache"
+import EthernaIndexClient from "@/classes/EthernaIndexClient"
 import useUserPlaylists from "@/hooks/useUserPlaylists"
 import useSelector from "@/state/useSelector"
 import { useErrorMessage } from "@/state/hooks/ui"
 import { useWallet } from "@/state/hooks/env"
 import { Profile } from "@/definitions/swarm-profile"
 import SwarmResourcesIO from "@/classes/SwarmResources"
+import type { PublishSource, PublishSourceSave } from "@/definitions/video-editor-context"
 
 type SaveOpts = {
   saveManifest: boolean
-  saveToChannel: boolean
-  saveToIndex: boolean
   offerResources: boolean
+}
+
+export type PublishStatus = {
+  source: PublishSource
+  ok: boolean
+  type: "add" | "remove"
 }
 
 export default function useVideoEditorSaveActions() {
   const [state] = useVideoEditorState()
-  const { videoWriter, saveTo, reference: initialReference } = state
-  const { indexClient, gatewayClient } = useSelector(state => state.env)
+  const { videoWriter, sources, reference: initialReference } = state
+  const { gatewayClient } = useSelector(state => state.env)
   const { address, batches } = useSelector(state => state.user)
   const profile = useSelector(state => state.profile)
   const { isLocked } = useWallet()
 
   const [reference, setReference] = useState<string>()
   const [isSaving, setIsSaving] = useState(false)
-  const [addedToChannel, setAddedToChannel] = useState<boolean>()
-  const [addedToIndex, setAddedToIndex] = useState<boolean>()
+  const [pusblishStatus, setPublishStatus] = useState<PublishStatus[]>()
   const [resourcesOffered, setResourcesOffered] = useState<boolean>()
 
   const { showError } = useErrorMessage()
@@ -54,6 +60,7 @@ export default function useVideoEditorSaveActions() {
     addVideosToPlaylist,
     updateVideoInPlaylist,
     removeVideosFromPlaylist,
+    playlistHasVideo,
   } = useUserPlaylists(address!, { resolveChannel: true })
 
   useEffect(() => {
@@ -63,12 +70,12 @@ export default function useVideoEditorSaveActions() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address])
 
-  const saveVideo = async (opts: SaveOpts) => {
-    const { saveManifest, saveToChannel, saveToIndex, offerResources } = opts
+  const saveVideoTo = async (saveToSources: PublishSourceSave[], opts: SaveOpts) => {
+    const { saveManifest, offerResources } = opts
 
     setIsSaving(true)
 
-    // Unoffer previous resources
+    // Unoffer previous resources before offering new ones
     if (saveManifest && initialReference) {
       setResourcesOffered(undefined)
       const offered = await unofferVideoResources()
@@ -80,33 +87,44 @@ export default function useVideoEditorSaveActions() {
     const newReference = saveManifest ? await uploadManifest() : reference
     if (!newReference) return setIsSaving(false)
 
-    // Add/Remove to channel
-    if (saveToChannel) {
-      setAddedToChannel(undefined)
+    // Add/remove to sources
+    const newPublishStatus: PublishStatus[] = [...(pusblishStatus ?? [])]
+    for (const source of saveToSources) {
+      let statusIndex = newPublishStatus.findIndex(
+        ps => ps.source.source === source.source && ps.source.identifier === source.identifier
+      )
 
-      if (saveTo === "channel" || saveTo === "channel-index") {
-        const added = await addToChannel()
-        setAddedToChannel(added)
+      if (statusIndex === -1) {
+        const fullSource = sources.find(
+          s => s.source === source.source && s.identifier === source.identifier
+        )!
+        newPublishStatus.push({ source: fullSource, ok: false, type: "add" })
+        statusIndex = newPublishStatus.length - 1
+      }
 
-        !added && showError("Cannot add to channel", "Try again later.")
-      } else if (initialReference) {
-        await removeFromChannel()
+      if (source.source === "playlist") {
+        if (source.add) {
+          const ok = await addToPlaylist(source.identifier)
+          newPublishStatus[statusIndex].ok = ok
+          newPublishStatus[statusIndex].type = "add"
+        } else {
+          const ok = await removeFromPlaylist(source.identifier)
+          newPublishStatus[statusIndex].ok = ok
+          newPublishStatus[statusIndex].type = "remove"
+        }
+      } else if (source.source === "index") {
+        if (source.add) {
+          const ok = await addToIndex(source.identifier)
+          newPublishStatus[statusIndex].ok = ok
+          newPublishStatus[statusIndex].type = "add"
+        } else {
+          const ok = await removeFromIndex(source.identifier)
+          newPublishStatus[statusIndex].ok = ok
+          newPublishStatus[statusIndex].type = "remove"
+        }
       }
     }
-
-    // Add/Remove to index
-    if (saveToIndex) {
-      setAddedToIndex(undefined)
-
-      if (saveTo === "channel-index") {
-        const added = await addToIndex()
-        setAddedToIndex(added)
-
-        !added && showError("Cannot add to current index", "Try again later.")
-      } else if (initialReference) {
-        await removeFromIndex()
-      }
-    }
+    setPublishStatus(newPublishStatus)
 
     // Offer resources
     if (offerResources) {
@@ -124,8 +142,7 @@ export default function useVideoEditorSaveActions() {
   }
 
   const resetState = () => {
-    setAddedToChannel(undefined)
-    setAddedToIndex(undefined)
+    setPublishStatus(undefined)
     setReference(undefined)
     setIsSaving(false)
   }
@@ -188,52 +205,76 @@ export default function useVideoEditorSaveActions() {
     }
   }
 
-  const addToChannel = async () => {
-    if (!checkChannel()) return
-    if (!checkAccountability()) return
+  const addToPlaylist = async (id: string) => {
+    if (!checkChannel()) return false
+    if (!checkAccountability()) return false
 
     try {
-      !initialReference && await addVideosToPlaylist(channelPlaylist!.id, [videoWriter.video!])
-      initialReference && await updateVideoInPlaylist(channelPlaylist!.id, initialReference, videoWriter.video!)
+      const isUpdate = initialReference && playlistHasVideo(id, initialReference)
+      !isUpdate && await addVideosToPlaylist(id, [videoWriter.video!])
+      isUpdate && await updateVideoInPlaylist(id, initialReference, videoWriter.video!)
       return true
     } catch (error) {
       return false
     }
   }
 
-  const removeFromChannel = async () => {
-    if (!checkChannel()) return
-    if (!checkAccountability()) return
+  const removeFromPlaylist = async (id: string) => {
+    if (!checkChannel()) return false
+    if (!checkAccountability()) return false
 
     try {
-      await removeVideosFromPlaylist(channelPlaylist!.id, [videoWriter.reference!])
+      initialReference && await removeVideosFromPlaylist(id, [initialReference])
       return true
     } catch (error) {
       return false
     }
   }
 
-  const addToIndex = async () => {
+  const getVideoIndexId = (indexUrl: string) => {
+    return sources.find(s => s.source === "index" && s.identifier === indexUrl)!.videoId
+  }
+
+  const addToIndex = async (url: string) => {
     try {
-      if (videoWriter.indexReference) {
-        await indexClient.videos.updateVideo(videoWriter.indexReference, videoWriter.reference!)
+      const indexReference = getVideoIndexId(url)
+
+      const indexClient = new EthernaIndexClient({
+        host: url,
+      })
+      if (indexReference) {
+        await indexClient.videos.updateVideo(indexReference, videoWriter.reference!)
       } else {
         await indexClient.videos.createVideo(videoWriter.reference!)
       }
       return true
     } catch (error) {
+      const axiosError = error as AxiosError
+      const data = (axiosError.response?.data as any) ?? ""
+      if (/duplicate/i.test(data.toString()) && axiosError.response?.status === 400) {
+        return true
+      }
       return false
     }
   }
 
-  const removeFromIndex = async () => {
-    if (!videoWriter.indexReference) return true
+  const removeFromIndex = async (url: string) => {
+    const indexReference = getVideoIndexId(url)
+
+    if (!indexReference) return true
 
     try {
-      await indexClient.videos.deleteVideo(videoWriter.indexReference)
+      const indexClient = new EthernaIndexClient({
+        host: url,
+      })
+      await indexClient.videos.deleteVideo(indexReference)
       videoWriter.indexReference = undefined
       return true
     } catch (error) {
+      const axiosError = error as AxiosError
+      if (axiosError.response?.status === 404) {
+        return true
+      }
       return false
     }
   }
@@ -265,32 +306,19 @@ export default function useVideoEditorSaveActions() {
   return {
     reference,
     isSaving,
-    addedToChannel,
-    addedToIndex,
     resourcesOffered,
-    saveVideo: (offerResources = false) => saveVideo({
+    pusblishStatus,
+    saveVideoTo: (sources: PublishSourceSave[], offerResources = false) => saveVideoTo(sources, {
       saveManifest: true,
-      saveToChannel: true,
-      saveToIndex: true,
       offerResources,
     }),
-    saveVideoToChannel: () => saveVideo({
+    reSaveTo: (source: PublishSourceSave) => saveVideoTo([source], {
       saveManifest: false,
-      saveToChannel: true,
-      saveToIndex: false,
-      offerResources: false
+      offerResources: false,
     }),
-    saveVideoToIndex: () => saveVideo({
+    saveVideoResources: () => saveVideoTo([], {
       saveManifest: false,
-      saveToChannel: false,
-      saveToIndex: true,
-      offerResources: false
-    }),
-    saveVideoResources: () => saveVideo({
-      saveManifest: false,
-      saveToChannel: false,
-      saveToIndex: false,
-      offerResources: true
+      offerResources: true,
     }),
     resetState,
   }

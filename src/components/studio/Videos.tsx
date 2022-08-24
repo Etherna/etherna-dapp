@@ -20,7 +20,7 @@ import { Link, Navigate } from "react-router-dom"
 import classNames from "classnames"
 
 import classes from "@/styles/components/studio/Videos.module.scss"
-import { TrashIcon, DocumentDuplicateIcon, PencilIcon } from "@heroicons/react/solid"
+import { TrashIcon, PencilIcon } from "@heroicons/react/solid"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
@@ -29,73 +29,68 @@ import StudioTableView from "./StudioTableView"
 import VideoDeleteModal from "./video-editor/VideoDeleteModal"
 import Button from "@/components/common/Button"
 import Image from "@/components/common/Image"
+import CustomSelect from "@/components/common/CustomSelect"
 import VideoOffersModal from "@/components/modals/VideoOffersModal"
-import SwarmVideoIO from "@/classes/SwarmVideo"
-import usePlaylistVideos from "@/hooks/usePlaylistVideos"
-import useUserPlaylists from "@/hooks/useUserPlaylists"
+import useUserVideos from "@/hooks/useUserVideos"
 import useVideosResources from "@/hooks/useVideosResources"
+import useVideosIndexStatus from "@/hooks/useVideosIndexStatus"
 import routes from "@/routes"
 import useSelector from "@/state/useSelector"
-import { showError } from "@/state/actions/modals"
-import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
 import { convertTime } from "@/utils/converters"
 import { encodedSvg } from "@/utils/svg"
+import { urlHostname } from "@/utils/urls"
+import dayjs from "@/utils/dayjs"
 import type { Profile } from "@/definitions/swarm-profile"
 import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
+import type { VideosSource } from "@/hooks/useUserVideos"
 
 const Videos: React.FC = () => {
   const profileInfo = useSelector(state => state.profile)
   const address = useSelector(state => state.user.address)
-  const beeClient = useSelector(state => state.env.beeClient)
-  const indexClient = useSelector(state => state.env.indexClient)
+  const indexUrl = useSelector(state => state.env.indexUrl)
   const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
 
-  const [profile, setProfile] = useState<Profile>()
+  const sources = useMemo(() => {
+    return [
+      { id: "channel", type: "channel" },
+      { id: indexUrl, type: "index", indexUrl },
+    ] as (VideosSource & { id: string })[]
+  }, [indexUrl])
+  const [source, setSource] = useState(sources[0].id)
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
   const [selectedVideos, setSelectedVideos] = useState<Video[]>([])
   const [selectedVideoOffers, setSelectedVideoOffers] = useState<{ video: Video, offersStatus: VideoOffersStatus }>()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
 
-  const {
-    channelPlaylist,
-    loadPlaylists,
-    addVideosToPlaylist,
-    removeVideosFromPlaylist,
-  } = useUserPlaylists(address!, { resolveChannel: true })
+  const currentSource = useMemo(() => {
+    return sources.find(s => s.id === source)!
+  }, [source, sources])
 
-  const { videos, total, isFetching, fetchPage } = usePlaylistVideos(channelPlaylist, {
-    owner: profile,
+  const profile: Profile = useMemo(() => {
+    return {
+      address: address!,
+      avatar: profileInfo.avatar ?? null,
+      cover: profileInfo.cover ?? null,
+      name: profileInfo.name ?? shortenEthAddr(address),
+      description: profileInfo.description ?? null
+    }
+  }, [address, profileInfo.avatar, profileInfo.cover, profileInfo.description, profileInfo.name])
+
+  const { isFetching, videos, total, fetchPage, deleteVideosFromSource } = useUserVideos({
+    source: currentSource,
+    profile,
     limit: perPage,
   })
-
   const { videosOffersStatus, offerVideoResources, unofferVideoResources } = useVideosResources(videos)
-
-  const isLoading = useMemo(() => {
-    return isFetching || !channelPlaylist
-  }, [channelPlaylist, isFetching])
+  const { videosIndexStatus } = useVideosIndexStatus(videos, indexUrl)
 
   useEffect(() => {
-    if (address) {
-      setProfile({
-        address,
-        avatar: profileInfo.avatar ?? null,
-        cover: profileInfo.cover ?? null,
-        name: profileInfo.name ?? shortenEthAddr(address),
-        description: profileInfo.description ?? null
-      })
-      loadPlaylists()
-    }
+    setPage(1)
+    fetchPage(1)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address])
-
-  useEffect(() => {
-    if (channelPlaylist && profile) {
-      fetchPage(page)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [channelPlaylist, profile, page, perPage])
+  }, [source])
 
   useEffect(() => {
     if (videosOffersStatus && selectedVideoOffers) {
@@ -107,65 +102,17 @@ const Videos: React.FC = () => {
   }, [videosOffersStatus])
 
   const deleteSelectedVideos = useCallback(async () => {
-    if (!channelPlaylist) {
-      return showError(
-        "Channel error",
-        "Channel video list not fetched."
-      )
-    }
-
-    const removedReferences: string[] = []
-    for (const video of selectedVideos) {
-      const videoWriter = new SwarmVideoIO.Writer(video, video.ownerAddress || address!, {
-        beeClient,
-      })
-      try {
-        await Promise.allSettled([
-          videoWriter.unpinVideo(),
-          video.indexReference
-            ? await indexClient.videos.deleteVideo(video.indexReference)
-            : Promise.resolve(true)
-        ])
-        removedReferences.push(video.reference)
-      } catch (error: any) {
-        showError(`Cannot delete the video: ${video.title}`, error.message)
-      }
-    }
-    await removeVideosFromPlaylist(channelPlaylist.id, removedReferences)
-
+    await deleteVideosFromSource(selectedVideos)
     setShowDeleteModal(false)
-  }, [address, beeClient, channelPlaylist, indexClient.videos, selectedVideos, removeVideosFromPlaylist])
-
-  const duplicateVideo = useCallback(async (video: Video) => {
-    const count = prompt("Count", "1")
-    if (!count) return
-
-    const start = (channelPlaylist!.videos?.length ?? 0) + 1
-
-    let newVideos: Video[] = []
-    for (let i = 0; i < +count; i++) {
-      const newvideo: Video = { ...video }
-      newvideo.reference = ""
-      newvideo.title = video.title!.replace(/( - \d)?$/, ` - ${start + i}`)
-
-      const writer = new SwarmVideoIO.Writer(newvideo, address!, {
-        beeClient,
-      })
-      await writer.update(profile)
-      newVideos.push(writer.video!)
-    }
-
-    await addVideosToPlaylist(channelPlaylist!.id, newVideos)
-
-    alert("Copy completed!")
-  }, [address, beeClient, channelPlaylist, profile, addVideosToPlaylist])
+  }, [deleteVideosFromSource, selectedVideos])
 
   const renderVideoStatus = useCallback((video: Video) => {
-    const status = video.isVideoOnIndex
-      ? video.isValidatedOnIndex
-        ? "public"
-        : "processing"
-      : "unindexed"
+    if (videosIndexStatus === undefined) {
+      return <Spinner className="w-5 h-5" />
+    }
+
+    const status = videosIndexStatus[video.reference] ?? "unindexed"
+
     return (
       <span className={classNames(classes.videoStatus, {
         [classes.public]: status === "public",
@@ -174,7 +121,7 @@ const Videos: React.FC = () => {
         {status.replace(/^[a-z]{1}/, letter => letter.toUpperCase())}
       </span>
     )
-  }, [])
+  }, [videosIndexStatus])
 
   const renderOffersStatus = useCallback((video: Video) => {
     if (isStandaloneGateway) {
@@ -186,7 +133,7 @@ const Videos: React.FC = () => {
     }
 
     const videoResourcesStatus = videosOffersStatus[video.reference]
-    const status = videoResourcesStatus.offersStatus
+    const status = videoResourcesStatus?.offersStatus ?? "none"
 
     return (
       <button
@@ -215,13 +162,26 @@ const Videos: React.FC = () => {
 
   return (
     <>
-      <Button as="a" href={routes.studioVideoNew}>
-        Create new video
-      </Button>
+      <div className="flex flex-wrap items-center justify-between">
+        <CustomSelect
+          label="Source:"
+          value={source}
+          options={
+            sources.map(source => ({
+              value: source.id,
+              label: source.type === "channel" ? "Public channel" : `Index`,
+              description: source.type === "channel" ? "Decentralized feed" : urlHostname(source.indexUrl)
+            }))}
+          onChange={setSource}
+        />
+        <Button as="a" href={routes.studioVideoNew}>
+          Create new video
+        </Button>
+      </div>
 
       <StudioTableView
         className={classes.videoTable}
-        isLoading={isLoading}
+        isLoading={isFetching}
         page={page}
         total={total}
         itemsPerPage={perPage}
@@ -253,7 +213,7 @@ const Videos: React.FC = () => {
           hideOnMobile: true,
           render: item => convertTime(item.duration).readable
         }, {
-          title: "Status",
+          title: "Index Status",
           hideOnMobile: true,
           render: item => renderVideoStatus(item)
         }, isStandaloneGateway ? null : {
@@ -263,26 +223,17 @@ const Videos: React.FC = () => {
         }, {
           title: "Date",
           hideOnMobile: true,
-          render: item => item.creationDateTime ? dayjs(item.creationDateTime).format("LLL") : ""
+          render: item => item.createdAt ? dayjs(item.createdAt).format("LLL") : ""
         }, {
           title: "",
           width: "1%",
           render: item => (
             <div className="flex">
-              {import.meta.env.DEV && (
-                <Button
-                  modifier="transparent"
-                  onClick={() => duplicateVideo(item)}
-                  iconOnly
-                >
-                  <DocumentDuplicateIcon />
-                </Button>
-              )}
               <Button
                 href={routes.studioVideoEdit(item.reference)}
                 routeState={{
                   video: item,
-                  hasOffers: videosOffersStatus ? videosOffersStatus[item.reference].offersStatus !== "none" : false
+                  hasOffers: videosOffersStatus ? videosOffersStatus[item.reference]?.offersStatus !== "none" : false
                 }}
                 modifier="transparent"
                 iconOnly
@@ -313,6 +264,7 @@ const Videos: React.FC = () => {
       />
 
       <VideoDeleteModal
+        source={currentSource}
         show={showDeleteModal}
         videos={selectedVideos}
         deleteHandler={deleteSelectedVideos}

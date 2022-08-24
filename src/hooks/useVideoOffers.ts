@@ -14,21 +14,24 @@
  *  limitations under the License.
  */
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import SwarmResourcesIO from "@/classes/SwarmResources"
 import useSelector from "@/state/useSelector"
 import type SwarmResourcesReader from "@/classes/SwarmResources/SwarmResourcesReader"
-import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
+import type { SwarmVideoRaw, Video, VideoOffersStatus } from "@/definitions/swarm-video"
+import SwarmVideoIO from "@/classes/SwarmVideo"
 
 type UseVideoOffersOpts = {
   routeState?: VideoOffersStatus
   disable?: boolean
+  reference?: string
 }
 
-export default function useVideoOffers(video: Video | null | undefined, opts?: UseVideoOffersOpts) {
-  const { gatewayClient } = useSelector(state => state.env)
-  const { address } = useSelector(state => state.user)
+export default function useVideoOffers(video: Video | SwarmVideoRaw | null | undefined, opts?: UseVideoOffersOpts) {
+  const beeClient = useSelector(state => state.env.beeClient)
+  const gatewayClient = useSelector(state => state.env.gatewayClient)
+  const address = useSelector(state => state.user.address)
   const [videoOffersStatus, setVideoOffersStatus] = useState<VideoOffersStatus>()
 
   useEffect(() => {
@@ -43,38 +46,61 @@ export default function useVideoOffers(video: Video | null | undefined, opts?: U
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [video, opts])
 
-  const fetchVideoStatus = async () => {
+  const getParsedVideo = useCallback(() => {
+    if (!video) {
+      throw new Error("No video provided")
+    }
+
+    const isFullVideo = "reference" in video
+
+    if (!isFullVideo && !opts?.reference) {
+      throw new Error("Missing reference. Reference is required when using a raw video.")
+    }
+    const parsedVideo = isFullVideo
+      ? video
+      : new SwarmVideoIO.Reader(opts!.reference!, address, {
+        beeClient,
+        videoData: video,
+      }).video
+
+    return parsedVideo
+  }, [address, beeClient, opts, video])
+
+  const fetchVideoStatus = useCallback(async () => {
     if (!video) return
 
     try {
-      const reader = new SwarmResourcesIO.Reader(video, { gatewayClient })
+      const parsedVideos = getParsedVideo()
+      const reader = new SwarmResourcesIO.Reader(parsedVideos, { gatewayClient })
       await reader.download()
 
       setVideoOffersStatus(parseReaderStatus(reader, address))
     } catch (error) {
       console.error(error)
     }
-  }
+  }, [video, getParsedVideo, gatewayClient, address])
 
-  const offerResources = async () => {
+  const offerResources = useCallback(async () => {
     if (!video) throw new Error("Video not loaded")
 
-    const writer = new SwarmResourcesIO.Writer(video, { gatewayClient })
+    const parsedVideos = getParsedVideo()
+    const writer = new SwarmResourcesIO.Writer(parsedVideos, { gatewayClient })
     await writer.offerResources()
-    const reader = new SwarmResourcesIO.Reader(video, { gatewayClient })
+    const reader = new SwarmResourcesIO.Reader(parsedVideos, { gatewayClient })
     await reader.download()
     setVideoOffersStatus(parseReaderStatus(reader, address))
-  }
+  }, [video, getParsedVideo, gatewayClient, address])
 
-  const unofferResources = async () => {
+  const unofferResources = useCallback(async () => {
     if (!video) throw new Error("Video not loaded")
 
-    const writer = new SwarmResourcesIO.Writer(video, { gatewayClient })
+    const parsedVideos = getParsedVideo()
+    const writer = new SwarmResourcesIO.Writer(parsedVideos, { gatewayClient })
     await writer.unofferResources()
-    const reader = new SwarmResourcesIO.Reader(video, { gatewayClient })
+    const reader = new SwarmResourcesIO.Reader(parsedVideos, { gatewayClient })
     await reader.download()
     setVideoOffersStatus(parseReaderStatus(reader, address))
-  }
+  }, [video, getParsedVideo, gatewayClient, address])
 
   return {
     videoOffersStatus,

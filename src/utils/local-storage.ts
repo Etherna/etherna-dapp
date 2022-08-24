@@ -19,7 +19,11 @@
  * @param key Storage key
  * @returns The JSON parsed value
  */
-export const parseLocalStorage = <T>(key: string) => {
+export const parseLocalStorage = <T>(key: string): T | null => {
   const value = localStorage.getItem(key)
-  return value ? JSON.parse(value) as T : null
+  try {
+    return value ? JSON.parse(value) as T : null
+  } catch (error) {
+    return null
+  }
 }

@@ -34,14 +34,38 @@ export type VideoEditorContextState = {
   queue: VideoEditorQueue[]
   /** Pin content on Swarm */
   pinContent: boolean | undefined
-  /** Where to save the video manifest */
-  saveTo: "channel" | "channel-index" | "none"
+  /** Whether the video resources are already offered by user */
+  isOffered: boolean | undefined
   /** Whether the video resources should be offered */
   offerResources: boolean
+  /** A map with various indexes ids of the video */
+  indexData: {
+    indexUrl: string
+    videoId: string
+  }[]
+  /** All the publishing sources */
+  sources: PublishSource[]
+  /** Sources where to publish the video to */
+  saveTo: PublishSourceSave[]
   /** Whether the user made come changes */
   hasChanges: boolean
   /** Whether the description is too long */
   descriptionExeeded: boolean
+}
+
+export type PublishSourceType = "playlist" | "index"
+
+export type PublishSource = {
+  source: PublishSourceType
+  /** the id for playlists or the url for the index */
+  identifier: string
+  name: string
+  description: string
+  videoId: string | undefined
+}
+
+export type PublishSourceSave = Omit<PublishSource, "name" | "description" | "videoId"> & {
+  add: boolean
 }
 
 export type VideoEditorQueueName = SwarmVideoQuality | typeof THUMBNAIL_QUEUE_NAME

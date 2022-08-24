@@ -14,33 +14,54 @@
  *  limitations under the License.
  */
 
+import { useCallback } from "react"
+
 import useVideoEditorState from "./useVideoEditorState"
 import { VideoEditorActionTypes } from "../reducer"
-import type { VideoEditorContextState } from "@/definitions/video-editor-context"
+import type { PublishSource, PublishSourceSave } from "@/definitions/video-editor-context"
 
 export default function useVideoEditorExtrasActions() {
-  const [, dispatch] = useVideoEditorState()
+  const [{ saveTo, isOffered, offerResources }, dispatch] = useVideoEditorState()
 
   /**
    * Update where to save the current video
    * 
-   * @param saveTo Save to value
+   * @param source Save to value
    */
-  const updateSaveTo = (saveTo: VideoEditorContextState["saveTo"]) => (
-    dispatch({ type: VideoEditorActionTypes.UPDATE_SAVE_TO, saveTo })
-  )
+  const toggleAddTo = useCallback((source: PublishSourceSave) => {
+    dispatch({
+      type: VideoEditorActionTypes.TOGGLE_SAVE_TO,
+      sourceSave: source,
+    })
+  }, [dispatch])
+
+  /**
+   * Update where to save the current video
+   * 
+   * @param source Save to value
+   */
+  const updateSources = useCallback((sources: PublishSource[]) => {
+    dispatch({
+      type: VideoEditorActionTypes.UPDATE_SOURCES,
+      sources,
+    })
+  }, [dispatch])
 
   /**
    * Update whethere to offer video resources
    * 
    * @param offerResources Offer resoruces
    */
-  const updateOfferResources = (offerResources: boolean) => (
+  const updateOfferResources = useCallback((offerResources: boolean) => (
     dispatch({ type: VideoEditorActionTypes.UPDATE_OFFER_RESOURCES, offerResources })
-  )
+  ), [dispatch])
 
   return {
-    updateSaveTo,
+    saveTo,
+    isOffered,
+    offerResources,
+    toggleAddTo,
+    updateSources,
     updateOfferResources,
   }
 }

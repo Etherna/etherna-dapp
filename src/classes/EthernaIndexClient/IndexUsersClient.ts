@@ -15,7 +15,7 @@
  */
 
 import http from "@/utils/request"
-import { IndexCurrentUser, IndexUser, IndexUserVideos, IndexVideo } from "@/definitions/api-index"
+import { IndexCurrentUser, IndexUser, IndexUserVideos, IndexVideo, PaginatedResult } from "@/definitions/api-index"
 
 export default class IndexUsersClient {
   url: string
@@ -58,6 +58,24 @@ export default class IndexUsersClient {
 
     if (typeof resp.data !== "object") {
       throw new Error("Cannot fetch user")
+    }
+
+    return resp.data
+  }
+
+  /**
+   * Fetch user's videos
+   * @param address User's address
+   */
+  async fetchVideos(address: string, page = 0, take = 25) {
+    const endpoint = `${this.url}/users/${address}/videos2`
+
+    const resp = await http.get<PaginatedResult<IndexVideo>>(endpoint, {
+      params: { page, take },
+    })
+
+    if (typeof resp.data !== "object" || !Array.isArray(resp.data.elements)) {
+      throw new Error("Cannot fetch user's videos")
     }
 
     return resp.data

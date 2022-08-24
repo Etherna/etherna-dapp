@@ -31,6 +31,8 @@ export default function useVideosResources(videos: Video[] | undefined) {
   useEffect(() => {
     if (isStandaloneGateway) return
 
+    setVideosOffersStatus(undefined)
+
     if (videos) {
       fetchVideosStatus()
     }

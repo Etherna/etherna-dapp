@@ -26,7 +26,6 @@ import SEO from "@/components/layout/SEO"
 import ProfileInfo from "@/components/profile/ProfileInfo"
 import routes from "@/routes"
 import usePlaylistVideos from "@/hooks/usePlaylistVideos"
-import useUserPlaylists from "@/hooks/useUserPlaylists"
 import useSelector from "@/state/useSelector"
 import type { Profile } from "@/definitions/swarm-profile"
 
@@ -39,26 +38,36 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
   const [activeTab, setActiveTab] = useState("videos")
   const { address } = useSelector(state => state.user)
   const { isMobile } = useSelector(state => state.env)
-  const { channelPlaylist, loadPlaylists } = useUserPlaylists(profileAddress, { resolveChannel: true })
-  const { videos, hasMore, isFetching, loadMore } = usePlaylistVideos(channelPlaylist, {
+  // const { channelPlaylist, loadPlaylists } = useUserPlaylists(profileAddress, { resolveChannel: true })
+  const {
+    playlist,
+    videos,
+    hasMore,
+    isFetching,
+    isLoadingPlaylist,
+    loadMore,
+    loadPlaylist,
+  } = usePlaylistVideos("__channel", {
     owner: profile,
     limit: 20,
   })
 
   const isLoading = useMemo(() => {
-    return isFetching || !profile || !channelPlaylist
-  }, [channelPlaylist, profile, isFetching])
+    return isFetching || !profile || isLoadingPlaylist
+  }, [isFetching, profile, isLoadingPlaylist])
 
   useEffect(() => {
-    loadPlaylists()
+    if (profile) {
+      loadPlaylist()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileAddress])
+  }, [profile])
 
   useEffect(() => {
-    if (profile && channelPlaylist) {
+    if (profile && playlist) {
       loadMore()
     }
-  }, [channelPlaylist, profile, loadMore])
+  }, [playlist, profile, loadMore])
 
   const handleFetchedProfile = useCallback((profile: Profile | null) => {
     setProfile(profile)
