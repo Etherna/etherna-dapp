@@ -35,10 +35,17 @@ type PostageBatchEditorProps = {
   batch: GatewayBatch
   batchesManager: SwarmBatchesManager
   gatewayType?: GatewayType
+  disabled?: boolean
   onChange(depth: number, amount: string | undefined): void
 }
 
-const PostageBatchEditor: React.FC<PostageBatchEditorProps> = ({ batch, batchesManager, gatewayType, onChange }) => {
+const PostageBatchEditor: React.FC<PostageBatchEditorProps> = ({
+  batch,
+  batchesManager,
+  gatewayType,
+  disabled,
+  onChange
+}) => {
   const [depth, setDepth] = useState(batch.depth)
   const [ttl, setTtl] = useState(batch.batchTTL)
   const [amount, setAmount] = useState("")
@@ -69,13 +76,14 @@ const PostageBatchEditor: React.FC<PostageBatchEditorProps> = ({ batch, batchesM
   useEffect(() => {
     if (!currentPrice) return
 
-    const ttlDiff = clamp(ttl - batch.batchTTL, 0, ttl)
+    const dilutedTTL = calcDilutedTTL(batch.batchTTL, batch.depth, depth)
+    const ttlDiff = clamp(ttl - dilutedTTL, 0, ttl)
     const newAmount = ttlToAmount(ttlDiff, currentPrice!, batchesManager.defaultBlockTime).toString()
 
     startTransition(() => {
       setAmount(newAmount)
     })
-  }, [batch.batchTTL, batchesManager.defaultBlockTime, currentPrice, ttl])
+  }, [batch, batchesManager.defaultBlockTime, currentPrice, ttl, depth])
 
   useEffect(() => {
     onChange(depth, amount)
@@ -109,8 +117,13 @@ const PostageBatchEditor: React.FC<PostageBatchEditorProps> = ({ batch, batchesM
           step={1}
           value={depth}
           onChange={onDepthChange}
+          disabled={disabled}
         />
-        <small className="font-mono">{convertBytes(getBatchCapacity(depth)).readable}</small>
+        <small className="font-mono">
+          <span>{convertBytes(getBatchCapacity(depth)).readable}</span>
+          <span> / </span>
+          <span>batch depth: {depth}</span>
+        </small>
       </FormGroup>
 
       <FormGroup label="Duration:">
@@ -121,8 +134,13 @@ const PostageBatchEditor: React.FC<PostageBatchEditorProps> = ({ batch, batchesM
           step={dayjs.duration(1, "day").asSeconds()}
           value={ttl}
           onChange={onTTLChange}
+          disabled={disabled}
         />
-        <small className="font-mono">{ttlReadable}</small>
+        <small className="font-mono">
+          <span>{ttlReadable}</span>
+          <span> / </span>
+          <span>batch amount: {amount}</span>
+        </small>
       </FormGroup>
 
       {gatewayType === "bee" && (

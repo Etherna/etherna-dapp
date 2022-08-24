@@ -38,3 +38,14 @@
   @apply text-xs font-medium font-mono;
   @apply ml-2;
 }
+
+.batchStatus {
+  @apply flex items-center;
+  @apply text-sm font-medium;
+  @apply text-gray-900 dark:text-gray-100;
+  @apply leading-none;
+
+  svg {
+    @apply h-4 w-4 mr-2;
+  }
+}

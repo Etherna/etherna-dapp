@@ -132,7 +132,7 @@ export const calcBatchPrice = (depth: number, amount: bigint | string): string =
   // @ts-ignore
   const readablePrice = price.toString() / (10 ** tokenDecimals)
 
-  return `${readablePrice} xBZZ`
+  return `${readablePrice} BZZ`
 }
 
 /**

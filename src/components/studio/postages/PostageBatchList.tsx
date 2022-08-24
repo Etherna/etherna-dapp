@@ -19,7 +19,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import classNames from "classnames"
 
 import classes from "@/styles/components/studio/postages/PostageBatchList.module.scss"
-import { BadgeCheckIcon } from "@heroicons/react/solid"
+import { CheckCircleIcon, InformationCircleIcon } from "@heroicons/react/solid"
 import { CogIcon } from "@heroicons/react/outline"
 
 import PostageBatchEditor from "./PostageBatchEditor"
@@ -31,7 +31,6 @@ import Capacity from "@/components/common/Capacity"
 import CustomSelect from "@/components/common/CustomSelect"
 import FormGroup from "@/components/common/FormGroup"
 import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
-import FlagEnumManager from "@/classes/FlagEnumManager"
 import useSelector from "@/state/useSelector"
 import { useErrorMessage } from "@/state/hooks/ui"
 import useBatchesStore, { BatchUpdateType } from "@/stores/batches"
@@ -61,6 +60,7 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
   const [editorDepth, setEditorDepth] = useState<number>()
   const [editorAmount, setEditorAmount] = useState<string | undefined>()
   const [filter, setFilter] = useState<"all" | "active" | "expiring" | "expired">("active")
+  const [status, setStatus] = useState<"dilute-request" | "dilute-propagation" | "topup-request">()
   const [isUpdatingBatch, setIsUpdatingBatch] = useState(false)
   const [showUpdateSuccess, setShowUpdateSuccess] = useState(false)
   const { showError } = useErrorMessage()
@@ -129,17 +129,20 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
     const dilute = editorDepth && editorDepth > editingBatch!.depth
     const topup = editorAmount && BigInt(editorAmount) > BigInt(0)
 
-    const flag = new FlagEnumManager()
-    dilute && flag.add(BatchUpdateType.Dilute)
-    topup && flag.add(BatchUpdateType.Topup)
-
-    addBatchUpdate(editingBatch!, flag.get())
-
     try {
       if (dilute) {
+        addBatchUpdate(editingBatch!, BatchUpdateType.Dilute)
+        setStatus("dilute-request")
         await batchManager.diluteBatch(editingBatch!.id, editorDepth)
       }
+      if (dilute && topup) {
+        setStatus("dilute-propagation")
+        await batchManager.waitBatchPropagation(editingBatch!, BatchUpdateType.Dilute)
+        removeBatchUpdate(editingBatch!.id)
+      }
       if (topup) {
+        setStatus("topup-request")
+        addBatchUpdate(editingBatch!, BatchUpdateType.Topup)
         await batchManager.topupBatch(editingBatch!.id, editorAmount)
       }
 
@@ -149,9 +152,10 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
       showError("Error updating batch", error.message)
 
       removeBatchUpdate(editingBatch!.id)
+    } finally {
+      setStatus(undefined)
+      setIsUpdatingBatch(false)
     }
-
-    setIsUpdatingBatch(false)
   }, [editorDepth, editingBatch, editorAmount, addBatchUpdate, showError, removeBatchUpdate])
 
   const getBatchName = useCallback((batch: GatewayBatch | undefined, i: number) => {
@@ -285,26 +289,40 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
         }
       >
         {editingBatch && (
-          <PostageBatchEditor
-            batch={editingBatch}
-            batchesManager={batchesManager.current}
-            gatewayType={gatewayType}
-            onChange={(depth, amount) => {
-              setEditorDepth(depth)
-              setEditorAmount(amount)
-            }}
-          />
+          <>
+            <PostageBatchEditor
+              batch={editingBatch}
+              batchesManager={batchesManager.current}
+              gatewayType={gatewayType}
+              onChange={(depth, amount) => {
+                setEditorDepth(depth)
+                setEditorAmount(amount)
+              }}
+            />
+
+            {status && (
+              <div className="mt-3">
+                <small className={classes.batchStatus}>
+                  <InformationCircleIcon />
+                  {status === "dilute-request" && "Sendind request to increase postage batch capacity..."}
+                  {status === "dilute-propagation" &&
+                    "Waiting batch propagation. (This process may take a few minutes)"}
+                  {status === "topup-request" && "Sending request to increase postage batch duration..."}
+                </small>
+              </div>
+            )}
+          </>
         )}
       </Modal>
 
       <AlertPopup
         show={showUpdateSuccess}
-        icon={<BadgeCheckIcon />}
+        icon={<CheckCircleIcon className="text-green-500" />}
         title="Batch updated!"
         message="Now it might take a few minutes for the changes to take effect."
         actions={[{
           title: "OK",
-          type: "cancel",
+          type: "default",
           action() {
             setShowUpdateSuccess(false)
           },
