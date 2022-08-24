@@ -15,7 +15,7 @@
  *  
  */
 
-import React from "react"
+import React, { useCallback, useRef } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { Listbox } from "@headlessui/react"
 import classNames from "classnames"
@@ -39,12 +39,17 @@ const DropdownSidebar: React.FC<DropdownSidebarProps> = ({ className, defaultTit
   const activeItem = React.Children.toArray(children)
     .find(item => isActive(item as any)) as React.ReactElement | undefined
 
-  const goTo = (path: string) => {
+  const goTo = useCallback((path: string) => {
     navigate(path)
-  }
+  }, [navigate])
 
   return (
-    <Listbox as="aside" className={classNames(classes.dropdownSidebar, className)} value={pathname} onChange={goTo}>
+    <Listbox
+      as="aside"
+      className={classNames(classes.dropdownSidebar, className)}
+      value={pathname}
+      onChange={goTo}
+    >
       {({ open }) => (
         <>
           <Listbox.Button className={classes.dropdownSidebarSelector}>
@@ -58,13 +63,14 @@ const DropdownSidebar: React.FC<DropdownSidebarProps> = ({ className, defaultTit
           })} static>
             {React.Children.map(children, (item: any, i) => (
               <Listbox.Option
+                as="div"
                 className={classNames(classes.dropdownSidebarOption)}
                 value={item.props.to}
                 key={i}
               >
                 {({ active }) => (
                   <span className={classNames({ [classes.active]: active })}>
-                    {item}
+                    {React.cloneElement(item, { to: undefined })}
                   </span>
                 )}
               </Listbox.Option>
