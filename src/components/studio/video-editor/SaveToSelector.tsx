@@ -15,37 +15,110 @@
  *  
  */
 
-import React from "react"
+import React, { useCallback, useEffect, useMemo } from "react"
 
-import CustomSelect from "@/components/common/CustomSelect"
+import Toggle from "@/components/common/Toggle"
+import Spinner from "@/components/common/Spinner"
 import Label from "@/components/common/Label"
 import FieldDesrcription from "@/components/common/FieldDesrcription"
-import { useVideoEditorState, useVideoEditorExtrasActions } from "@/context/video-editor-context/hooks"
+import { useVideoEditorExtrasActions, useVideoEditorState } from "@/context/video-editor-context/hooks"
+import useVideoPublishStatus from "@/hooks/useVideoPublishStatus"
+import useSelector from "@/state/useSelector"
+import type { PublishSourceType } from "@/definitions/video-editor-context"
 
 const SaveToSelector: React.FC = () => {
-  const [{ saveTo }] = useVideoEditorState()
-  const { updateSaveTo } = useVideoEditorExtrasActions()
+  const address = useSelector(state => state.user.address)
+  const [{ reference, sources }] = useVideoEditorState()
+  const { saveTo, toggleAddTo, updateSources } = useVideoEditorExtrasActions()
+  const [playlistIds, indexesUrls] = useMemo(() => {
+    return [
+      sources.filter(source => source.source === "playlist").map(source => source.identifier),
+      sources.filter(source => source.source === "index").map(source => source.identifier),
+    ]
+  }, [sources])
+  const { isFetching, videoIndexesStatus, videoPlaylistsStatus } = useVideoPublishStatus({
+    reference,
+    indexesUrls,
+    playlistIds,
+    ownerAddress: address!,
+  })
+
+  const isToggled = useCallback((source: PublishSourceType, identifier: string) => {
+    return saveTo.find(s => s.source === source && s.identifier === identifier)!.add
+  }, [saveTo])
+
+  useEffect(() => {
+    if (!videoIndexesStatus) return
+
+    updateSources(sources.map(pubSource => ({
+      ...pubSource,
+      videoId: pubSource.source === "index"
+        ? videoIndexesStatus[pubSource.identifier]?.videoId ?? pubSource.videoId
+        : pubSource.videoId,
+    })))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [videoIndexesStatus])
+
+  useEffect(() => {
+    if (!videoIndexesStatus) return
+
+    Object.keys(videoIndexesStatus).forEach(url => {
+      const currentValue = isToggled("index", url)
+      const toggle = currentValue
+        ? videoIndexesStatus[url].status !== "public"
+        : videoIndexesStatus[url].status === "public"
+
+      toggle && toggleAddTo({
+        source: "index" as "index" | "playlist",
+        identifier: url,
+        add: !currentValue,
+      })
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [videoIndexesStatus])
+
+  useEffect(() => {
+    if (!videoPlaylistsStatus) return
+
+    Object.keys(videoPlaylistsStatus).forEach(id => {
+      const currentValue = isToggled("playlist", id)
+      const toggle = currentValue
+        ? videoPlaylistsStatus[id].status !== "public"
+        : videoPlaylistsStatus[id].status === "public"
+
+      toggle && toggleAddTo({
+        source: "playlist" as "index" | "playlist",
+        identifier: id,
+        add: !currentValue,
+      })
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [videoPlaylistsStatus])
 
   return (
     <>
       <Label>Save to</Label>
-      <CustomSelect
-        value={saveTo}
-        options={[{
-          value: "channel",
-          label: "Public Channel",
-          description: "Add this video only to your public channel"
-        }, {
-          value: "channel-index",
-          label: "Public Channel + Current Index",
-          description: "Add this video only to both your public channel and current index"
-        }, {
-          value: "none",
-          label: "None (private)",
-          description: "Don't post the video (share direct link)"
-        }]}
-        onChange={updateSaveTo}
-      />
+
+      {isFetching ? (
+        <Spinner />
+      ) : (
+        sources.map(source => {
+          const toggled = isToggled(source.source, source.identifier)
+          return (
+            <Toggle
+              checked={toggled}
+              label={source.name}
+              onChange={() => toggleAddTo({
+                source: source.source,
+                identifier: source.identifier,
+                add: !toggled,
+              })}
+              key={source.identifier}
+            />
+          )
+        })
+      )}
+
       <FieldDesrcription>
         Choose where you want to post your video.
       </FieldDesrcription>

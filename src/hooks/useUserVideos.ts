@@ -105,14 +105,11 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
   }, [beeClient, opts.profile, getPlaylist])
 
   const fetchIndexVideos = useCallback(async (page: number, limit: number): Promise<Video[]> => {
-    const videoReferences = await indexClient.current!.users.fetchVideos(address!, page, limit)
-    // FIXME: remove to workaround when pagination is implemented
-    // https://etherna.atlassian.net/browse/EID-161
-    if (videoReferences.length < limit) {
-      setTotal(page * limit + videoReferences.length)
-    }
+    const resp = await indexClient.current!.users.fetchVideos(address!, page, limit)
 
-    return videoReferences.map(video => {
+    setTotal(resp.totalElements)
+
+    return resp.elements.map(video => {
       return new SwarmVideoIO.Reader(video.lastValidManifest!.hash, video.ownerAddress, {
         beeClient,
         indexData: video,

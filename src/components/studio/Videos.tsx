@@ -223,7 +223,7 @@ const Videos: React.FC = () => {
         }, {
           title: "Date",
           hideOnMobile: true,
-          render: item => item.creationDateTime ? dayjs(item.creationDateTime).format("LLL") : ""
+          render: item => item.createdAt ? dayjs(item.createdAt).format("LLL") : ""
         }, {
           title: "",
           width: "1%",

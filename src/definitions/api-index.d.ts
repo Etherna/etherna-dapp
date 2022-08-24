@@ -16,6 +16,14 @@
 
 import { SwarmVideoRaw } from "./swarm-video"
 
+export type PaginatedResult<T> = {
+  elements: T[]
+  currentPage: number
+  maxPage: number
+  pageSize: number
+  totalElements: number
+}
+
 export type IndexClientOptions = {
   host: string
   loginPath?: string

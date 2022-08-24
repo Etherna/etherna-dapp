@@ -14,16 +14,26 @@
  *  limitations under the License.
  */
 
-import { VideoEditorContextState } from "."
+import { getAllSources, VideoEditorContextState } from "."
 import SwarmVideoIO from "@/classes/SwarmVideo"
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type { SwarmVideoRaw } from "@/definitions/swarm-video"
 
 const STORAGE_KEY = "videoEditorState"
 
-type CacheState = Omit<VideoEditorContextState, "videoWriter" | "descriptionExeeded"> & {
+/* eslint-disable @typescript-eslint/indent */
+type ReducedContextState = Omit<
+  VideoEditorContextState,
+  "videoWriter" |
+  "descriptionExeeded" |
+  "isOffered" |
+  "indexData" |
+  "sources"
+>
+/* eslint-enable @typescript-eslint/indent */
+
+type CacheState = ReducedContextState & {
   videoRaw: SwarmVideoRaw
-  indexReference: string | undefined
 }
 
 export default class VideoEditorCache {
@@ -58,7 +68,6 @@ export default class VideoEditorCache {
     const value = window.localStorage.getItem(STORAGE_KEY)!
     const {
       reference,
-      indexReference,
       queue,
       videoRaw,
       pinContent,
@@ -71,7 +80,6 @@ export default class VideoEditorCache {
       beeClient,
     })
     videoWriter.reference = reference
-    videoWriter.indexReference = indexReference
     videoWriter.videoRaw = videoRaw
 
     // only keep successful uploads
@@ -83,10 +91,13 @@ export default class VideoEditorCache {
       queue: filteredQueue,
       videoWriter,
       pinContent,
-      saveTo,
       offerResources,
       hasChanges,
       descriptionExeeded: false,
+      saveTo,
+      sources: getAllSources(),
+      indexData: [],
+      isOffered: undefined,
     }
 
     return state
@@ -104,11 +115,9 @@ export default class VideoEditorCache {
       hasChanges,
     } = state
     const videoRaw = videoWriter.videoRaw
-    const indexReference = videoWriter.indexReference
 
     const cacheState: CacheState = {
       reference,
-      indexReference,
       ownerAddress,
       queue,
       videoRaw,

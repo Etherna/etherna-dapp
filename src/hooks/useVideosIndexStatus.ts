@@ -31,6 +31,8 @@ export default function useVideosIndexStatus(videos: Video[] | undefined, indexU
       host: indexUrl,
     })
 
+    setVideosIndexStatus(undefined)
+
     if (videos) {
       fetchVideosStatus()
     }
