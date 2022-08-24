@@ -223,6 +223,32 @@ export const createRequest = () => {
   return request
 }
 
+export const getResponseErrorMessage = (error: AxiosError): string => {
+  const data = error.response?.data
+  if (data) {
+    if (typeof data === "string") return data
+
+    try {
+      return JSON.stringify(data)
+    } catch {
+      switch (error.response?.status) {
+        case 400:
+          return "Bad request"
+        case 401:
+          return "Unauthorized"
+        case 403:
+          return "Forbidden"
+        case 404:
+          return "Not found"
+        default:
+          return "Internal server error"
+      }
+    }
+  } else {
+    return error.message
+  }
+}
+
 const request = createRequest()
 
 export default request

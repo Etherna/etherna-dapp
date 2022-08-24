@@ -42,7 +42,7 @@ const Toggle: React.FC<ToggleProps> = ({
     <Switch.Group>
       <div className={classNames(classes.toggle, className)}>
         {label && (
-          <Switch.Label className={classes.toggleLabel}>Enable notifications</Switch.Label>
+          <Switch.Label className={classes.toggleLabel}>{label}</Switch.Label>
         )}
         <Switch
           checked={checked}

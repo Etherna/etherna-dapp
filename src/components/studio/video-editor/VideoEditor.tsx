@@ -15,8 +15,8 @@
  *  
  */
 
-import React, { useEffect, useImperativeHandle, useState } from "react"
-import { Navigate } from "react-router"
+import React, { useEffect, useImperativeHandle, useMemo, useState } from "react"
+import { useNavigate } from "react-router"
 import type { BatchId } from "@ethersphere/bee-js"
 
 import { EyeIcon, FilmIcon } from "@heroicons/react/solid"
@@ -51,14 +51,13 @@ export type VideoEditorHandle = {
   canSubmitVideo: boolean
   isEmpty: boolean
   submitVideo(): Promise<void>
-  saveVideoToChannel(): Promise<void>
-  saveVideoToIndex(): Promise<void>
   askToClearState(): Promise<void>
   resetState(): void
 }
 
 const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
-  const { address, defaultBatchId } = useSelector(state => state.user)
+  const navigate = useNavigate()
+  const { defaultBatchId } = useSelector(state => state.user)
   const [{
     reference,
     queue,
@@ -75,12 +74,10 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const {
     reference: newReference,
     isSaving,
-    addedToChannel,
-    addedToIndex,
+    pusblishStatus,
     resourcesOffered,
-    saveVideo,
-    saveVideoToChannel,
-    saveVideoToIndex,
+    saveVideoTo,
+    reSaveTo,
     saveVideoResources,
     resetState: resetSaveState,
   } = useVideoEditorSaveActions()
@@ -89,28 +86,32 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const { resetState } = useVideoEditorBaseActions()
   const { waitConfirmation } = useConfirmation()
   const { showError } = useErrorMessage()
-  const hasQueuedProcesses = queue.filter(q => !q.reference).length > 0
   const hasOriginalVideo = videoWriter.originalQuality && videoWriter.sources.length > 0
   const canPublishVideo = !!videoWriter.videoRaw.title && hasOriginalVideo
-  const saveRedirect = newReference && saveTo !== "none" && (
-    (saveTo === "channel" && addedToChannel) ||
-    (saveTo === "channel-index" && addedToChannel && addedToIndex)
-  )
+  const hasQueuedProcesses = useMemo(() => {
+    return queue.filter(q => !q.reference).length > 0
+  }, [queue])
+  const isPrivateVideo = useMemo(() => {
+    return saveTo.every(s => !s.add)
+  }, [saveTo])
+  const saveRedirect = useMemo(() => {
+    const hasPublishErrors = pusblishStatus?.some(s => !s.ok)
+    return !!newReference && !isPrivateVideo && !hasPublishErrors
+  }, [newReference, pusblishStatus, isPrivateVideo])
 
   useImperativeHandle(ref, () => ({
     isEmpty: queue.length === 0,
     canSubmitVideo: canPublishVideo && !hasQueuedProcesses && !descriptionExeeded,
-    submitVideo: () => saveVideo(offerResources),
-    saveVideoToChannel,
-    saveVideoToIndex,
+    submitVideo: () => saveVideoTo(saveTo, offerResources),
     resetState: resetAll,
     askToClearState,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [canPublishVideo, hasQueuedProcesses, offerResources, queue, saveVideo, saveVideoToChannel, saveVideoToIndex])
+  }), [canPublishVideo, hasQueuedProcesses, offerResources, queue, saveVideoTo, descriptionExeeded])
 
   useEffect(() => {
-    if (newReference && saveTo === "none") setPrivateLink(location.origin + routes.watch(newReference))
-    if (newReference) resetAll()
+    if (newReference && isPrivateVideo) {
+      setPrivateLink(location.origin + routes.watch(newReference))
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newReference])
 
@@ -156,10 +157,11 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   }
 
   if (saveRedirect) {
-    return <Navigate to={routes.studioVideos} />
+    resetAll()
+    navigate(routes.studioVideos)
   }
 
-  const usePortal = !reference && !hasChanges
+  const usePortal = !reference && !hasChanges && (pusblishStatus ?? []).length === 0
 
   return (
     <>
@@ -181,19 +183,25 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
           />
         )}
 
-        {addedToChannel === false && (
-          <Alert title="Video not added to channel" type="warning">
-            Try again! <br />
-            <Button loading={isSaving} onClick={saveVideoToChannel}>Add to channel</Button>
+        {pusblishStatus?.filter(status => !status.ok).map(({ source, type }) => (
+          <Alert
+            type="warning"
+            title={`Video not added to ${source.name}`}
+            key={source.source + source.identifier}
+          >
+            Try again!
+            <br />
+            <Button
+              loading={isSaving}
+              onClick={() => reSaveTo(
+                saveTo.find(s => s.source === source.source && s.identifier === source.identifier)!
+              )}
+            >
+              {type === "add" ? "Add to " : "Remove from "}
+              {source.name}
+            </Button>
           </Alert>
-        )}
-
-        {(addedToIndex === false && newReference) && (
-          <Alert title="Video not added to index" type="warning">
-            Try again! <br />
-            <Button loading={isSaving} onClick={saveVideoToIndex}>Add to index</Button>
-          </Alert>
-        )}
+        ))}
 
         {(resourcesOffered === false && newReference) && (
           <Alert title="Video resources not offered" type="warning">
@@ -217,45 +225,48 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
       {usePortal && (
         <div id={PORTAL_ID}></div>
       )}
-      <div style={{ display: usePortal ? "none" : undefined }}>
-        <div className="row">
-          <div className="col">
-            <ProgressTab defaultKey="details">
-              <ProgressTabLink
-                tabKey="details"
-                title="Details"
-                iconSvg={<ClipboardListIcon />}
-                text="Title, description, ..."
-              />
-              <ProgressTabLink
-                tabKey="sources"
-                title="Sources"
-                iconSvg={<FilmIcon />}
-                progressList={queue.filter(q => SwarmVideoIO.getSourceQuality(q.name) > 0).map(q => ({
-                  progress: q.completion ? q.completion / 100 : null,
-                  completed: !!q.reference
-                }))}
-              />
-              <ProgressTabLink
-                tabKey="extra"
-                title="Extra"
-                iconSvg={<EyeIcon />}
-                text="Audience, visibility, ..."
-              />
 
-              <ProgressTabContent tabKey="details">
-                <VideoDetails isSubmitting={isSaving} />
-              </ProgressTabContent>
-              <ProgressTabContent tabKey="sources">
-                <VideoSources initialDragPortal={`#${PORTAL_ID}`} isSubmitting={isSaving} />
-              </ProgressTabContent>
-              <ProgressTabContent tabKey="extra">
-                <VideoExtra isSubmitting={isSaving} />
-              </ProgressTabContent>
-            </ProgressTab>
+      {!pusblishStatus?.length && (
+        <div style={{ display: usePortal ? "none" : undefined }}>
+          <div className="row">
+            <div className="col">
+              <ProgressTab defaultKey="details">
+                <ProgressTabLink
+                  tabKey="details"
+                  title="Details"
+                  iconSvg={<ClipboardListIcon />}
+                  text="Title, description, ..."
+                />
+                <ProgressTabLink
+                  tabKey="sources"
+                  title="Sources"
+                  iconSvg={<FilmIcon />}
+                  progressList={queue.filter(q => SwarmVideoIO.getSourceQuality(q.name) > 0).map(q => ({
+                    progress: q.completion ? q.completion / 100 : null,
+                    completed: !!q.reference
+                  }))}
+                />
+                <ProgressTabLink
+                  tabKey="extra"
+                  title="Extra"
+                  iconSvg={<EyeIcon />}
+                  text="Audience, visibility, ..."
+                />
+
+                <ProgressTabContent tabKey="details">
+                  <VideoDetails isSubmitting={isSaving} />
+                </ProgressTabContent>
+                <ProgressTabContent tabKey="sources">
+                  <VideoSources initialDragPortal={`#${PORTAL_ID}`} isSubmitting={isSaving} />
+                </ProgressTabContent>
+                <ProgressTabContent tabKey="extra">
+                  <VideoExtra isSubmitting={isSaving} />
+                </ProgressTabContent>
+              </ProgressTab>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   )
 })

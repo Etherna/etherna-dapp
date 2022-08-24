@@ -18,7 +18,7 @@ import SwarmVideoReader from "./SwarmVideoReader"
 import SwarmVideoWriter from "./SwarmVideoWriter"
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@/definitions/swarm-video"
-import type { IndexVideo } from "@/definitions/api-index"
+import type { IndexVideo, IndexVideoManifest } from "@/definitions/api-index"
 import type { SchemaVersion } from "@/definitions/schema"
 
 const lastVersion: SchemaVersion = "1.1"
@@ -78,7 +78,15 @@ const SwarmVideoIO = {
         quality: `${NaN}p`
       }],
     }
-  }
+  },
+  isValidatingManifest(manifest: IndexVideoManifest): boolean {
+    return manifest.title === null &&
+      manifest.description === null &&
+      manifest.duration === null &&
+      manifest.thumbnail === null &&
+      manifest.originalQuality === null &&
+      manifest.sources.length === 0
+  },
 }
 
 export default SwarmVideoIO

@@ -118,3 +118,5 @@ export type VideoOffersStatus = {
   userUnOfferedResourses: string[]
   globalOffers: { reference: string, offeredBy: string[] }[]
 }
+
+export type VideoIndexStatus = "public" | "processing" | "unindexed" | "error"

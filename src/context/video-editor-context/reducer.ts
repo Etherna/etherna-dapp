@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-import { VideoEditorContextState, VideoEditorQueue } from "."
+import { getAllSources, getDefaultAddTo, VideoEditorContextState, VideoEditorQueue } from "."
 import VideoEditorCache from "./VideoEditorCache"
 import { deepCloneArray } from "@/utils/array"
-import type { VideoEditorQueueName } from "@/definitions/video-editor-context"
+import type { PublishSource, PublishSourceSave, VideoEditorQueueName } from "@/definitions/video-editor-context"
 import type { SwarmVideoQuality } from "@/definitions/swarm-video"
 
 // Actions
@@ -33,8 +33,11 @@ export const VideoEditorActionTypes = {
   UPDATE_DESCRIPTION: "videoeditor/update-description",
   UPDATE_DESCRIPTION_EXCEEDED: "videoeditor/update-description-exceeded",
   UPDATE_PIN_CONTENT: "videoeditor/update-pin-content",
+  UPDATE_IS_OFFERED: "videoeditor/update-is-offered",
   UPDATE_OFFER_RESOURCES: "videoeditor/update-offer-resources",
-  UPDATE_SAVE_TO: "videoeditor/update-save-to",
+  UPDATE_INDEX_DATA: "videoeditor/update-index-data",
+  UPDATE_SOURCES: "videoeditor/update-sources",
+  TOGGLE_SAVE_TO: "videoeditor/toggle-save-to",
   RESET: "videoeditor/reset",
   CACHE: "videoeditor/cache",
 } as const
@@ -79,9 +82,17 @@ type UpdateOfferResourcesAction = {
   type: typeof VideoEditorActionTypes.UPDATE_OFFER_RESOURCES
   offerResources: boolean
 }
-type UpdateSaveToAction = {
-  type: typeof VideoEditorActionTypes.UPDATE_SAVE_TO
-  saveTo: VideoEditorContextState["saveTo"]
+type UpdateIsOfferedAction = {
+  type: typeof VideoEditorActionTypes.UPDATE_IS_OFFERED
+  isOffered: boolean
+}
+type UpdateIndexDataAction = {
+  type: typeof VideoEditorActionTypes.UPDATE_INDEX_DATA
+  indexData: VideoEditorContextState["indexData"]
+}
+type ToggleSaveToAction = {
+  type: typeof VideoEditorActionTypes.TOGGLE_SAVE_TO
+  sourceSave: PublishSourceSave
 }
 type UpdateTitleAction = {
   type: typeof VideoEditorActionTypes.UPDATE_TITLE
@@ -94,6 +105,10 @@ type UpdateDescriptionAction = {
 type UpdateDescriptionExceededAction = {
   type: typeof VideoEditorActionTypes.UPDATE_DESCRIPTION_EXCEEDED
   descriptionExeeded: boolean
+}
+type UpdateSourcesAction = {
+  type: typeof VideoEditorActionTypes.UPDATE_SOURCES
+  sources: PublishSource[]
 }
 type ResetAction = {
   type: typeof VideoEditorActionTypes.RESET
@@ -112,10 +127,13 @@ export type AnyVideoEditorAction = (
   UpdateDurationAction |
   UpdatePinContentAction |
   UpdateOfferResourcesAction |
-  UpdateSaveToAction |
+  UpdateIsOfferedAction |
+  UpdateIndexDataAction |
+  ToggleSaveToAction |
   UpdateTitleAction |
   UpdateDescriptionAction |
   UpdateDescriptionExceededAction |
+  UpdateSourcesAction |
   ResetAction |
   CacheAction
 )
@@ -178,14 +196,32 @@ const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEdit
       state.descriptionExeeded = action.descriptionExeeded
       newState = { ...state }
       break
-    case VideoEditorActionTypes.UPDATE_SAVE_TO:
-      newState = { ...state, saveTo: action.saveTo }
+    case VideoEditorActionTypes.UPDATE_INDEX_DATA:
+      newState = { ...state, indexData: action.indexData }
+      break
+    case VideoEditorActionTypes.TOGGLE_SAVE_TO:
+      state.saveTo = state.saveTo.map(({ source, identifier, add }) => ({
+        source,
+        identifier,
+        add:
+          source === action.sourceSave.source &&
+            identifier === action.sourceSave.identifier
+            ? action.sourceSave.add
+            : add
+      }))
+      newState = { ...state }
       break
     case VideoEditorActionTypes.UPDATE_PIN_CONTENT:
       newState = { ...state, pinContent: action.pinContent }
       break
+    case VideoEditorActionTypes.UPDATE_IS_OFFERED:
+      newState = { ...state, isOffered: action.isOffered }
+      break
     case VideoEditorActionTypes.UPDATE_OFFER_RESOURCES:
       newState = { ...state, offerResources: action.offerResources }
+      break
+    case VideoEditorActionTypes.UPDATE_SOURCES:
+      newState = { ...state, sources: action.sources }
       break
     case VideoEditorActionTypes.RESET:
       newState = {
@@ -197,7 +233,10 @@ const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEdit
         hasChanges: false,
         offerResources: false,
         descriptionExeeded: false,
-        saveTo: "channel-index",
+        saveTo: getDefaultAddTo(),
+        sources: getAllSources(),
+        indexData: [],
+        isOffered: undefined,
       }
       break
   }

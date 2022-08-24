@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { VideoEditorContextState } from "."
+import { getAllSources, VideoEditorContextState } from "."
 import SwarmVideoIO from "@/classes/SwarmVideo"
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import EthernaGatewayClient from "@/classes/EthernaGatewayClient"
@@ -23,9 +23,19 @@ import type { GatewayType } from "@/definitions/extension-host"
 
 const STORAGE_KEY = "videoEditorState"
 
-type CacheState = Omit<VideoEditorContextState, "videoWriter" | "descriptionExeeded"> & {
+/* eslint-disable @typescript-eslint/indent */
+type ReducedContextState = Omit<
+  VideoEditorContextState,
+  "videoWriter" |
+  "descriptionExeeded" |
+  "isOffered" |
+  "indexData" |
+  "sources"
+>
+/* eslint-enable @typescript-eslint/indent */
+
+type CacheState = ReducedContextState & {
   videoRaw: SwarmVideoRaw
-  indexReference: string | undefined
 }
 
 export default class VideoEditorCache {
@@ -62,7 +72,6 @@ export default class VideoEditorCache {
       reference,
       queue,
       videoRaw,
-      indexReference,
       pinContent,
       ownerAddress,
       hasChanges,
@@ -75,9 +84,7 @@ export default class VideoEditorCache {
       gatewayType,
     })
     videoWriter.reference = reference
-    videoWriter.indexReference = indexReference
     videoWriter.videoRaw = videoRaw
-    videoWriter.indexReference = indexReference
 
     // only keep successful uploads
     const filteredQueue = queue.filter(queue => !!queue.reference)
@@ -88,10 +95,13 @@ export default class VideoEditorCache {
       queue: filteredQueue,
       videoWriter,
       pinContent,
-      saveTo,
       offerResources,
       hasChanges,
       descriptionExeeded: false,
+      saveTo,
+      sources: getAllSources(),
+      indexData: [],
+      isOffered: undefined,
     }
 
     return state
@@ -109,11 +119,9 @@ export default class VideoEditorCache {
       hasChanges,
     } = state
     const videoRaw = videoWriter.videoRaw
-    const indexReference = videoWriter.indexReference
 
     const cacheState: CacheState = {
       reference,
-      indexReference,
       ownerAddress,
       queue,
       videoRaw,

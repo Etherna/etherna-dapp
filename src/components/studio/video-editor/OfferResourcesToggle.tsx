@@ -15,25 +15,39 @@
  *  
  */
 
-import React from "react"
+import React, { useEffect } from "react"
 
 import Label from "@/components/common/Label"
+import Spinner from "@/components/common/Spinner"
 import FieldDesrcription from "@/components/common/FieldDesrcription"
 import Toggle from "@/components/common/Toggle"
 import { useVideoEditorExtrasActions, useVideoEditorState } from "@/context/video-editor-context/hooks"
+import useVideoOffers from "@/hooks/useVideoOffers"
 
 const OfferResourcesToggle: React.FC = () => {
-  const [{ offerResources }] = useVideoEditorState()
-  const { updateOfferResources } = useVideoEditorExtrasActions()
+  const [{ reference, videoWriter }] = useVideoEditorState()
+  const { offerResources, updateOfferResources } = useVideoEditorExtrasActions()
+  const { videoOffersStatus } = useVideoOffers(videoWriter.videoRaw, {
+    reference
+  })
+
+  useEffect(() => {
+    if (!videoOffersStatus) return
+    updateOfferResources(videoOffersStatus.offersStatus !== "none")
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [videoOffersStatus])
 
   return (
     <>
       <Label>Offer resources</Label>
-      <Toggle
-        // label={pinContent ? "Pinning enabled" : "Pinning disabled"}
-        checked={offerResources}
-        onChange={updateOfferResources}
-      />
+      {videoOffersStatus === undefined && reference ? (
+        <Spinner />
+      ) : (
+        <Toggle
+          checked={offerResources}
+          onChange={updateOfferResources}
+        />
+      )}
       <FieldDesrcription>
         By offering the video resources you make the video available for everyone for free.
       </FieldDesrcription>

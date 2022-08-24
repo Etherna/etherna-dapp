@@ -36,7 +36,6 @@ type VideoEditProps = {
   reference: string | undefined
   routeState?: {
     video: Video
-    hasOffers: boolean
   }
 }
 
@@ -49,7 +48,6 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   const { address } = useSelector(state => state.user)
 
   const stateVideo = routeState?.video
-  const stateHasOffers = routeState?.hasOffers
 
   const { waitConfirmation } = useConfirmation()
   const { video, isLoading, loadVideo } = useSwarmVideo({
@@ -111,7 +109,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
         <Spinner className="mt-10 mx-auto w-10 text-primary-500" />
       ) : (
         <OnlyUsableBatch>
-          <VideoEditorContextProvider reference={reference} videoData={video!} hasOffers={stateHasOffers}>
+          <VideoEditorContextProvider reference={reference} videoData={video!}>
             <VideoEditor ref={ref => {
               if (!ref) return
 

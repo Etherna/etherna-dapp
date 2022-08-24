@@ -17,7 +17,7 @@
 
 import React, { useReducer } from "react"
 
-import { VideoEditorContext } from "."
+import { getAllSources, getDefaultAddTo, VideoEditorContext } from "."
 import videoEditorReducer from "./reducer"
 import VideoEditorCache from "./VideoEditorCache"
 import { THUMBNAIL_QUEUE_NAME } from "@/components/studio/video-editor/ThumbnailUpload"
@@ -32,14 +32,12 @@ type VideoEditorContextProviderProps = {
   children: React.ReactNode
   reference: string | undefined
   videoData?: Video
-  hasOffers?: boolean
 }
 
 const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
   children,
   reference,
   videoData,
-  hasOffers = false,
 }) => {
   const { address } = useSelector(state => state.user)
   const { beeClient, gatewayClient, gatewayType } = useSelector(state => state.env)
@@ -73,8 +71,11 @@ const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
         completion: 100,
         name: THUMBNAIL_QUEUE_NAME
       }] : []),
-      saveTo: videoData && !videoData.indexReference ? "channel" : "channel-index",
-      offerResources: hasOffers,
+      saveTo: getDefaultAddTo(),
+      sources: getAllSources(),
+      isOffered: undefined,
+      offerResources: false,
+      indexData: [],
       hasChanges: false,
       descriptionExeeded: false,
     }

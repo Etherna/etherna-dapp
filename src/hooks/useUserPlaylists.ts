@@ -14,12 +14,11 @@
  *  limitations under the License.
  */
 
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import SwarmUserPlaylistsIO from "@/classes/SwarmUserPlaylists"
 import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
 import useSelector from "@/state/useSelector"
-import { showError } from "@/state/actions/modals"
 import { deepCloneObject } from "@/utils/object"
 import { deepCloneArray } from "@/utils/array"
 import type { SwarmUserPlaylistsDownloadOptions } from "@/classes/SwarmUserPlaylists/types"
@@ -54,7 +53,7 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
     setCustomPlaylists(undefined)
   }, [owner])
 
-  const loadPlaylists = async () => {
+  const loadPlaylists = useCallback(async () => {
     setIsFetchingPlaylists(true)
     try {
       const reader = new SwarmUserPlaylistsIO.Reader(owner, {
@@ -79,65 +78,33 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
       console.error(error)
       setIsFetchingPlaylists(false)
     }
-  }
+  }, [owner, beeClient, opts])
 
-  const addVideosToPlaylist = async (playlistId: string, videos: Video[], publishedAt?: number) => {
-    const initialPlaylist = allPlaylists.find(playlist => playlist.id === playlistId)
+  const playlistHasVideo = useCallback((playlistId: string, reference: string) => {
+    const playlist = allPlaylists.find(playlist => playlist.id === playlistId)
 
-    if (!initialPlaylist) return showError("Playlist not loaded", "")
+    if (!playlist) throw new Error("Playlist not loaded")
 
-    const newPlaylist = deepCloneObject(initialPlaylist)
-    newPlaylist.videos = [
-      ...videos.map(video => ({
-        reference: video.reference,
-        title: video.title,
-        addedAt: +new Date(),
-        publishedAt: publishedAt,
-      } as SwarmPlaylistVideo)),
-      ...(newPlaylist.videos ?? []),
-    ].filter((vid, i, self) => self.findIndex(vid2 => vid2.reference === vid.reference) === i)
-    await updatePlaylistAndUser(initialPlaylist, newPlaylist)
-  }
+    const index = playlist.videos?.findIndex(video => video.reference === reference) ?? -1
 
-  const updateVideoInPlaylist = async (playlistId: string, previousReference: string, newVideo: Video) => {
-    const initialPlaylist = allPlaylists.find(playlist => playlist.id === playlistId)
+    return index >= 0
+  }, [allPlaylists])
 
-    if (!initialPlaylist) return showError("Playlist not loaded", "")
-
-    const newPlaylist = deepCloneObject(initialPlaylist)
-    const index = newPlaylist.videos?.findIndex(video => video.reference === previousReference)
-
-    if (index == null || index === -1) {
-      throw new Error(`Coudn't find video with reference ${previousReference} in your channel videos`)
-    }
-
-    newPlaylist.videos!.splice(index, 1, {
-      reference: newVideo.reference,
-      title: newVideo.title || "",
-      addedAt: newPlaylist.videos![index].addedAt,
-      publishedAt: newPlaylist.videos![index].publishedAt,
+  const updatePlaylist = useCallback(async (playlist: SwarmPlaylist, initialType: SwarmPlaylistType) => {
+    const playlistWriter = new SwarmPlaylistIO.Writer(playlist, {
+      beeClient,
     })
+    return await playlistWriter.upload()
+  }, [beeClient])
 
-    newPlaylist.videos = [
-      ...(newPlaylist.videos ?? []),
-    ].filter((vid, i, self) => self.findIndex(vid2 => vid2.reference === vid.reference) === i)
+  const updateUserPlaylists = useCallback(async (rawPlaylists: SwarmUserPlaylistsRaw) => {
+    const userPlaylistsWriter = new SwarmUserPlaylistsIO.Writer(rawPlaylists, {
+      beeClient,
+    })
+    await userPlaylistsWriter.upload()
+  }, [beeClient])
 
-    await updatePlaylistAndUser(initialPlaylist, newPlaylist)
-  }
-
-  const removeVideosFromPlaylist = async (playlistId: string, videosReferences: string[]) => {
-    const initialPlaylist = allPlaylists.find(playlist => playlist.id === playlistId)
-
-    if (!initialPlaylist) return showError("Playlist not loaded", "")
-
-    const newPlaylist = deepCloneObject(initialPlaylist)
-    const newVideos = deepCloneArray(newPlaylist.videos ?? [])
-      .filter(video => !videosReferences.includes(video.reference))
-    newPlaylist.videos = newVideos
-    await updatePlaylistAndUser(initialPlaylist, newPlaylist)
-  }
-
-  const updatePlaylistAndUser = async (initialPlaylist: SwarmPlaylist, newPlaylist: SwarmPlaylist) => {
+  const updatePlaylistAndUser = useCallback(async (initialPlaylist: SwarmPlaylist, newPlaylist: SwarmPlaylist) => {
     // update & get new reference
     const reference = await updatePlaylist(newPlaylist, initialPlaylist.type)
     newPlaylist.reference = reference
@@ -159,22 +126,63 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
     }
     // update user playlists
     await updateUserPlaylists(playlistsRaw)
-  }
+  }, [rawPlaylists, customPlaylists, channelPlaylist?.id, savedPlaylist?.id, updateUserPlaylists, updatePlaylist])
 
-  const updatePlaylist = async (playlist: SwarmPlaylist, initialType: SwarmPlaylistType) => {
-    const playlistWriter = new SwarmPlaylistIO.Writer(playlist, {
-      beeClient,
-      initialType,
-    })
-    return await playlistWriter.upload()
-  }
+  const addVideosToPlaylist = useCallback(async (playlistId: string, videos: Video[], publishedAt?: number) => {
+    const initialPlaylist = allPlaylists.find(playlist => playlist.id === playlistId)
 
-  const updateUserPlaylists = async (rawPlaylists: SwarmUserPlaylistsRaw) => {
-    const userPlaylistsWriter = new SwarmUserPlaylistsIO.Writer(rawPlaylists, {
-      beeClient,
+    if (!initialPlaylist) throw new Error("Playlist not loaded")
+
+    const newPlaylist = deepCloneObject(initialPlaylist)
+    newPlaylist.videos = [
+      ...videos.map(video => ({
+        reference: video.reference,
+        title: video.title,
+        addedAt: +new Date(),
+        publishedAt: publishedAt,
+      } as SwarmPlaylistVideo)),
+      ...(newPlaylist.videos ?? []),
+    ].filter((vid, i, self) => self.findIndex(vid2 => vid2.reference === vid.reference) === i)
+    await updatePlaylistAndUser(initialPlaylist, newPlaylist)
+  }, [allPlaylists, updatePlaylistAndUser])
+
+  const updateVideoInPlaylist = useCallback(async (playlistId: string, previousReference: string, newVideo: Video) => {
+    const initialPlaylist = allPlaylists.find(playlist => playlist.id === playlistId)
+
+    if (!initialPlaylist) throw new Error("Playlist not loaded")
+
+    const newPlaylist = deepCloneObject(initialPlaylist)
+    const index = newPlaylist.videos?.findIndex(video => video.reference === previousReference)
+
+    if (index == null || index === -1) {
+      throw new Error(`Coudn't find video with reference ${previousReference} in your channel videos`)
+    }
+
+    newPlaylist.videos!.splice(index, 1, {
+      reference: newVideo.reference,
+      title: newVideo.title || "",
+      addedAt: newPlaylist.videos![index].addedAt,
+      publishedAt: newPlaylist.videos![index].publishedAt,
     })
-    await userPlaylistsWriter.upload()
-  }
+
+    newPlaylist.videos = [
+      ...(newPlaylist.videos ?? []),
+    ].filter((vid, i, self) => self.findIndex(vid2 => vid2.reference === vid.reference) === i)
+
+    await updatePlaylistAndUser(initialPlaylist, newPlaylist)
+  }, [allPlaylists, updatePlaylistAndUser])
+
+  const removeVideosFromPlaylist = useCallback(async (playlistId: string, videosReferences: string[]) => {
+    const initialPlaylist = allPlaylists.find(playlist => playlist.id === playlistId)
+
+    if (!initialPlaylist) throw new Error("Playlist not loaded")
+
+    const newPlaylist = deepCloneObject(initialPlaylist)
+    const newVideos = deepCloneArray(newPlaylist.videos ?? [])
+      .filter(video => !videosReferences.includes(video.reference))
+    newPlaylist.videos = newVideos
+    await updatePlaylistAndUser(initialPlaylist, newPlaylist)
+  }, [allPlaylists, updatePlaylistAndUser])
 
   return {
     isFetchingPlaylists,
@@ -185,5 +193,6 @@ export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylist
     addVideosToPlaylist,
     updateVideoInPlaylist,
     removeVideosFromPlaylist,
+    playlistHasVideo,
   }
 }
