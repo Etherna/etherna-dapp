@@ -26,7 +26,7 @@
 }
 
 .videoTitleInfo {
-  @apply flex flex-col items-start space-y-2;
+  @apply flex flex-col flex-grow items-start space-y-2;
 
   .videoStatus {
     @apply xl:hidden;
@@ -48,8 +48,12 @@
   }
 }
 
+.videoBadges {
+  @apply grid gap-2 grid-flow-col auto-cols-max;
+}
+
 .videoStatus {
-  @apply text-2xs md:text-xs font-semibold;
+  @apply text-2xs md:text-xs font-semibold whitespace-nowrap;
   @apply px-1 py-0.5 rounded;
   @apply md:px-1.5 md:py-1;
   @apply bg-gray-300 dark:bg-gray-600;

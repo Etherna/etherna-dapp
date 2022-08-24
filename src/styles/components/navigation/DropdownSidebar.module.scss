@@ -16,6 +16,7 @@
 
 .dropdownSidebar {
   @apply relative;
+  @apply mb-10 lg:mb-0;
 }
 
 .dropdownSidebarSelector {

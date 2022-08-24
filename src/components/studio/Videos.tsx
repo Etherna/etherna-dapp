@@ -77,7 +77,7 @@ const Videos: React.FC = () => {
       name: profileInfo.name ?? shortenEthAddr(address),
       description: profileInfo.description ?? null
     }
-  }, [address, profileInfo.avatar, profileInfo.cover, profileInfo.description, profileInfo.name])
+  }, [address, profileInfo])
 
   const { isFetching, videos, total, fetchPage, deleteVideosFromSource } = useUserVideos({
     source: currentSource,
@@ -181,7 +181,7 @@ const Videos: React.FC = () => {
       </div>
 
       <StudioTableView
-        className={classes.videoTable}
+        className={classNames(classes.videoTable, "mt-8")}
         isLoading={isFetching}
         page={page}
         total={total}
@@ -204,8 +204,10 @@ const Videos: React.FC = () => {
                 <Link className={classes.videoTitleText} to={routes.watch(item.indexReference || item.reference)}>
                   <h3>{item.title}</h3>
                 </Link>
-                {renderVideoStatus(item)}
-                {renderOffersStatus(item)}
+                <div className={classes.videoBadges}>
+                  {renderVideoStatus(item)}
+                  {renderOffersStatus(item)}
+                </div>
               </div>
             </div>
           )

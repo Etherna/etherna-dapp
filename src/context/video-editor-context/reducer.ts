@@ -138,6 +138,14 @@ export type AnyVideoEditorAction = (
   CacheAction
 )
 
+const changingExcludeActions: string[] = [
+  VideoEditorActionTypes.UPDATE_DESCRIPTION_EXCEEDED,
+  VideoEditorActionTypes.UPDATE_INDEX_DATA,
+  VideoEditorActionTypes.UPDATE_OFFER_RESOURCES,
+  VideoEditorActionTypes.UPDATE_SOURCES,
+  VideoEditorActionTypes.RESET,
+]
+
 // Reducer
 const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEditorAction): VideoEditorContextState => {
   let newState = state
@@ -244,7 +252,9 @@ const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEdit
   if (action.type === VideoEditorActionTypes.RESET) {
     VideoEditorCache.deleteCache()
   } else {
-    newState.hasChanges = true
+    if (!changingExcludeActions.includes(action.type)) {
+      newState.hasChanges = true
+    }
     VideoEditorCache.saveState(newState)
   }
 

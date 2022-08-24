@@ -49,7 +49,7 @@ export default function useVideoEditorSaveActions() {
 
   const [reference, setReference] = useState<string>()
   const [isSaving, setIsSaving] = useState(false)
-  const [pusblishStatus, setPublishStatus] = useState<PublishStatus[]>()
+  const [publishStatus, setPublishStatus] = useState<PublishStatus[]>()
   const [resourcesOffered, setResourcesOffered] = useState<boolean>()
 
   const { showError } = useErrorMessage()
@@ -88,7 +88,7 @@ export default function useVideoEditorSaveActions() {
     if (!newReference) return setIsSaving(false)
 
     // Add/remove to sources
-    const newPublishStatus: PublishStatus[] = [...(pusblishStatus ?? [])]
+    const newPublishStatus: PublishStatus[] = [...(publishStatus ?? [])]
     for (const source of saveToSources) {
       let statusIndex = newPublishStatus.findIndex(
         ps => ps.source.source === source.source && ps.source.identifier === source.identifier
@@ -307,7 +307,7 @@ export default function useVideoEditorSaveActions() {
     reference,
     isSaving,
     resourcesOffered,
-    pusblishStatus,
+    publishStatus,
     saveVideoTo: (sources: PublishSourceSave[], offerResources = false) => saveVideoTo(sources, {
       saveManifest: true,
       offerResources,

@@ -74,7 +74,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const {
     reference: newReference,
     isSaving,
-    pusblishStatus,
+    publishStatus,
     resourcesOffered,
     saveVideoTo,
     reSaveTo,
@@ -95,9 +95,9 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     return saveTo.every(s => !s.add)
   }, [saveTo])
   const saveRedirect = useMemo(() => {
-    const hasPublishErrors = pusblishStatus?.some(s => !s.ok)
+    const hasPublishErrors = publishStatus?.some(s => !s.ok)
     return !!newReference && !isPrivateVideo && !hasPublishErrors
-  }, [newReference, pusblishStatus, isPrivateVideo])
+  }, [newReference, publishStatus, isPrivateVideo])
 
   useImperativeHandle(ref, () => ({
     isEmpty: queue.length === 0,
@@ -161,7 +161,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     navigate(routes.studioVideos)
   }
 
-  const usePortal = !reference && !hasChanges && (pusblishStatus ?? []).length === 0
+  const usePortal = !reference && !hasChanges && (publishStatus ?? []).length === 0
 
   return (
     <>
@@ -183,7 +183,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
           />
         )}
 
-        {pusblishStatus?.filter(status => !status.ok).map(({ source, type }) => (
+        {publishStatus?.filter(status => !status.ok).map(({ source, type }) => (
           <Alert
             type="warning"
             title={`Video not added to ${source.name}`}
@@ -226,7 +226,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
         <div id={PORTAL_ID}></div>
       )}
 
-      {!pusblishStatus?.length && (
+      {!publishStatus?.length && (
         <div style={{ display: usePortal ? "none" : undefined }}>
           <div className="row">
             <div className="col">
