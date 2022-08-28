@@ -51,8 +51,15 @@ export default function usePlaylistVideos(
   const { showError } = useErrorMessage()
 
   useEffect(() => {
+    if (opts.owner) return
+
+    setVideos(undefined)
+    setHasMore(false)
+    setIsEncrypted(false)
+  }, [playlistReference, opts.owner])
+
+  useEffect(() => {
     if (playlist) {
-      setVideos(undefined)
       setHasMore((playlist.videos ?? []).length > 0)
       setIsEncrypted(playlist.type === "private" && !playlist.videos)
     }
