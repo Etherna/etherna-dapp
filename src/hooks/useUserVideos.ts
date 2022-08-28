@@ -135,8 +135,10 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
       const newVideos = await fetchVideos(page - 1, limit)
       setVideos(newVideos)
     } catch (error: any) {
-      showError("Fetching error", getResponseErrorMessage(error))
       setVideos([])
+      if (error.response?.status !== 404) {
+        showError("Fetching error", getResponseErrorMessage(error))
+      }
     } finally {
       setCurrentPage(page)
       setIsFetching(false)

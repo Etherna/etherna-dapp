@@ -36,6 +36,7 @@ export default function useVideoOffers(video: Video | SwarmVideoRaw | null | und
 
   useEffect(() => {
     if (opts?.disable) return
+    if (video && !("reference" in video) && !opts?.reference) return
 
     if (video && !videoOffersStatus && !opts?.routeState) {
       fetchVideoStatus()

@@ -57,6 +57,10 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
   }, [isFetching, profile, isLoadingPlaylist])
 
   useEffect(() => {
+    setProfile(null)
+  }, [profileAddress])
+
+  useEffect(() => {
     if (profile) {
       loadPlaylist()
     }
