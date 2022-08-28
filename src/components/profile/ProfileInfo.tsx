@@ -25,6 +25,7 @@ import useSwarmProfile from "@/hooks/useSwarmProfile"
 import useErrorMessage from "@/state/hooks/ui/useErrorMessage"
 import makeBlockies from "@/utils/makeBlockies"
 import { checkIsEthAddress, shortenEthAddr } from "@/utils/ethereum"
+import { getResponseErrorMessage } from "@/utils/request"
 import type { Profile } from "@/definitions/swarm-profile"
 
 type ProfileInfoProps = {
@@ -61,7 +62,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
       await loadProfile()
     } catch (error: any) {
       console.error(error)
-      showError("Error", "Failed to fetch the profile information")
+      showError("Error", getResponseErrorMessage(error))
     }
   }
 
