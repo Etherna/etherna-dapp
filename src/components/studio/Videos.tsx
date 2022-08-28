@@ -20,7 +20,7 @@ import { Link, Navigate } from "react-router-dom"
 import classNames from "classnames"
 
 import classes from "@/styles/components/studio/Videos.module.scss"
-import { TrashIcon, PencilIcon } from "@heroicons/react/solid"
+import { TrashIcon, PencilIcon, InformationCircleIcon } from "@heroicons/react/solid"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
@@ -44,6 +44,9 @@ import dayjs from "@/utils/dayjs"
 import type { Profile } from "@/definitions/swarm-profile"
 import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 import type { VideosSource } from "@/hooks/useUserVideos"
+import SwarmVideoIO from "@/classes/SwarmVideo"
+import Badge from "../common/Badge"
+import Tooltip from "../common/Tooltip"
 
 const Videos: React.FC = () => {
   const profileInfo = useSelector(state => state.profile)
@@ -115,12 +118,12 @@ const Videos: React.FC = () => {
     const status = videosIndexStatus[video.reference] ?? "unindexed"
 
     return (
-      <span className={classNames(classes.videoStatus, {
-        [classes.public]: status === "public",
-        [classes.processing]: status === "processing",
-      })}>
+      <Badge
+        color={status === "public" ? "success" : status === "processing" ? "info" : "muted"}
+        small
+      >
         {status.replace(/^[a-z]{1}/, letter => letter.toUpperCase())}
-      </span>
+      </Badge>
     )
   }, [videosIndexStatus])
 
@@ -137,23 +140,28 @@ const Videos: React.FC = () => {
     const status = videoResourcesStatus?.offersStatus ?? "none"
 
     return (
-      <button
-        className={classNames(classes.offersStatus, {
-          [classes.fullOffered]: status === "full",
-          [classes.partialOffered]: status === "partial",
-          [classes.sourcesOffered]: status === "sources",
-        })}
+      <Badge
+        color={
+          status === "full"
+            ? "success"
+            : status === "partial"
+              ? "indigo"
+              : status === "sources"
+                ? "info"
+                : "muted"
+        }
+        small
+        prefix={<CreditIcon width={16} aria-hidden />}
         onClick={() => setSelectedVideoOffers({
           video,
           offersStatus: videoResourcesStatus,
         })}
       >
-        <CreditIcon aria-hidden />
         {status === "none" && "None (viewers cost)"}
         {status === "full" && "Fully offered"}
         {status === "sources" && "Video sources offered"}
         {status === "partial" && "Partially offered"}
-      </button>
+      </Badge>
     )
   }, [gatewayType, videosOffersStatus])
 
@@ -231,7 +239,16 @@ const Videos: React.FC = () => {
           title: "",
           width: "1%",
           render: item => (
-            <div className="flex">
+            <div className="flex items-center">
+              {(!item.v || +item.v < +SwarmVideoIO.lastVersion || !item.batchId) && (
+                <Tooltip text="Migration required">
+                  <div>
+                    <Badge color="warning" rounded>
+                      <InformationCircleIcon width={12} />
+                    </Badge>
+                  </div>
+                </Tooltip>
+              )}
               <Button
                 href={routes.studioVideoEdit(item.reference)}
                 routeState={{
