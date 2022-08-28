@@ -72,11 +72,11 @@
 }
 
 .videoInfoAvatar {
-  @apply mr-2;
   @apply w-8 h-8;
 }
 
 .videoInfoStats {
+  @apply ml-2;
   @apply flex flex-col flex-grow;
   @apply overflow-hidden;
 }

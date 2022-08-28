@@ -15,7 +15,7 @@
  *  
  */
 
-import React, { useEffect, useRef, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import classNames from "classnames"
 import { filterXSS } from "xss"
 
@@ -55,7 +55,7 @@ const Image: React.FC<ImageProps> = ({
   const beeClient = useSelector(state => state.env.beeClient)
   const [src, setSrc] = useState<string | undefined>(staticSrc)
   const [imgLoaded, setImgLoaded] = useState(!blurredDataURL || placeholder === "empty")
-  const [rootEl, setRootEl] = useState<HTMLDivElement>()
+  const rootEl = useRef<HTMLDivElement>(null)
   const resizeObserver = useRef<ResizeObserver>()
   const sourcesSizes = Object.keys(sources ?? {})
 
@@ -64,55 +64,23 @@ const Image: React.FC<ImageProps> = ({
   }
 
   useEffect(() => {
-    if (rootEl && layout === "responsive" && sourcesSizes.length) {
+    if (rootEl.current && layout === "responsive" && sourcesSizes.length) {
       resizeObserver.current = new ResizeObserver(onContainerResize)
-      resizeObserver.current.observe(rootEl)
+      resizeObserver.current.observe(rootEl.current)
     }
     return () => {
       resizeObserver.current?.disconnect()
       resizeObserver.current = undefined
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rootEl, layout, sourcesSizes])
+  }, [rootEl.current, layout, sourcesSizes])
 
   useEffect(() => {
     updateCurrentSrc()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [staticSrc, sources, rootEl])
+  }, [staticSrc, sources, rootEl.current])
 
-  const onContainerResize = (entries: ResizeObserverEntry[]) => {
-    if (layout === "responsive") {
-      updateCurrentSrc()
-    }
-  }
-
-  const updateCurrentSrc = () => {
-    if (!rootEl) return
-
-    if (sources) {
-      const newSrc = getOptimizedSrc(sources, rootEl.clientWidth)
-      setSrc(newSrc)
-      newSrc !== src && setImgLoaded(false)
-    } else {
-      setSrc(staticSrc ?? fallbackSrc)
-    }
-  }
-
-  const onLoadImage = () => {
-    setImgLoaded(true)
-  }
-
-  const onError = () => {
-    if (!fallbackSrc) return setImgLoaded(true)
-
-    if (src !== fallbackSrc) {
-      setSrc(fallbackSrc)
-    } else {
-      setImgLoaded(true)
-    }
-  }
-
-  const getOptimizedSrc = (sources: Record<`${number}w`, string>, size: number): string => {
+  const getOptimizedSrc = useCallback((sources: Record<`${number}w`, string>, size: number): string => {
     const screenSize = size * (window.devicePixelRatio ?? 1)
     const sizes = Object.keys(sources).map(size => parseInt(size)).sort()
     const largest = sizes[sizes.length - 1]
@@ -122,7 +90,39 @@ const Image: React.FC<ImageProps> = ({
     const optimized = sizes.find(size => size > screenSize)
     const optimizedReference = optimized ? sources[`${optimized}w`] : sources[`${largest}w`]
     return optimizedReference ? beeClient.getBzzUrl(optimizedReference) : ""
-  }
+  }, [beeClient])
+
+  const updateCurrentSrc = useCallback(() => {
+    if (!rootEl.current) return
+
+    if (sources) {
+      const newSrc = getOptimizedSrc(sources, rootEl.current.clientWidth)
+      setSrc(newSrc)
+      newSrc !== src && setImgLoaded(false)
+    } else {
+      setSrc(staticSrc ?? fallbackSrc)
+    }
+  }, [src, sources, staticSrc, fallbackSrc, getOptimizedSrc])
+
+  const onContainerResize = useCallback((entries: ResizeObserverEntry[]) => {
+    if (layout === "responsive") {
+      updateCurrentSrc()
+    }
+  }, [layout, updateCurrentSrc])
+
+  const onLoadImage = useCallback(() => {
+    setImgLoaded(true)
+  }, [])
+
+  const onError = useCallback(() => {
+    if (!fallbackSrc) return setImgLoaded(true)
+
+    if (src !== fallbackSrc) {
+      setSrc(fallbackSrc)
+    } else {
+      setImgLoaded(true)
+    }
+  }, [fallbackSrc, src])
 
   return (
     <div
@@ -134,7 +134,7 @@ const Image: React.FC<ImageProps> = ({
       style={{
         paddingBottom: layout === "responsive" ? `${Math.round(1 / aspectRatio! * 100)}%` : undefined
       }}
-      ref={el => el && setRootEl(el)}
+      ref={rootEl}
     >
       {src && (
         <picture

@@ -21,7 +21,7 @@ import SwarmImageIO from "@/classes/SwarmImage"
 import SwarmProfileIO from "@/classes/SwarmProfile"
 import type { SwarmVideoReaderOptions } from "./types"
 import type { Profile } from "@/definitions/swarm-profile"
-import type { IndexVideo, IndexVideoManifest } from "@/definitions/api-index"
+import type { IndexVideo } from "@/definitions/api-index"
 import type { SwarmVideoRaw, Video } from "@/definitions/swarm-video"
 
 /**
@@ -51,9 +51,9 @@ export default class SwarmVideoReader {
     this.indexClient = opts.indexClient
     this.indexData = opts.indexData ?? undefined
     this.profileData = opts.profileData
-    this.fetchProfile = opts.fetchProfile || true
-    this.fetchFromCache = opts.fetchFromCache || true
-    this.updateCache = opts.updateCache || true
+    this.fetchProfile = opts.fetchProfile ?? true
+    this.fetchFromCache = opts.fetchFromCache ?? true
+    this.updateCache = opts.updateCache ?? true
     this.video = this.doubleParseVideo(opts.videoData, opts.indexData, opts.profileData)
     this.videoRaw = this.parseVideo(this.video)
 
@@ -214,6 +214,8 @@ export default class SwarmVideoReader {
   }
 
   private async fetchRawVideo(): Promise<SwarmVideoRaw | null> {
+    if (this.videoRaw) return this.videoRaw
+
     try {
       const resp = await this.beeClient.downloadFile(this.reference)
       const meta = resp.data.json() as SwarmVideoRaw

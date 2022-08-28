@@ -25,17 +25,17 @@ import type { Profile, ProfileRaw } from "@/definitions/swarm-profile"
 
 const ProfileProperties = ["address", "name", "avatar", "cover", "description", "location", "website", "birthday"]
 
+const ProfileCache = new Map<string, Profile>()
+
 /**
  * Load a profile from swarm hash or feed
  */
 export default class SwarmProfileReader {
   address: string
   profile?: Profile
-  loadedFromPrefetch: boolean = false
 
   private beeClient: SwarmBeeClient
   private fetchFromCache: boolean
-  private updateCache: boolean
 
   static avatarResponsiveSizes = [128, 256, 512]
   static coverResponsiveSizes = SwarmImageIO.Writer.defaultResponsiveSizes
@@ -43,8 +43,7 @@ export default class SwarmProfileReader {
   constructor(address: string, opts: SwarmProfileReaderOptions) {
     this.beeClient = opts.beeClient
     this.address = address
-    this.fetchFromCache = opts.fetchFromCache || true
-    this.updateCache = opts.updateCache || true
+    this.fetchFromCache = opts.fetchFromCache ?? true
 
     if (this.hasPrefetch) {
       this.loadProfileFromPrefetch()
@@ -60,8 +59,7 @@ export default class SwarmProfileReader {
   }
 
   get hasCache(): boolean {
-    // TODO
-    return false
+    return ProfileCache.has(this.address)
   }
 
 
@@ -74,7 +72,8 @@ export default class SwarmProfileReader {
    * @returns The profile object
    */
   async download(forced = false) {
-    if (this.loadedFromPrefetch && !forced) return this.profile
+    if (this.profile && !forced) return this.profile
+    if (this.hasCache && !forced) return this.loadProfileFromCache()
     if (!this.address || this.address === "0x0") return undefined
 
     let profile = SwarmProfileIO.getDefaultProfile(this.address) as ProfileRaw
@@ -100,7 +99,7 @@ export default class SwarmProfileReader {
     this.profile = parsedProfile
     this.profile.v = SwarmProfileIO.lastVersion
 
-    if (this.updateCache) {
+    if (this.fetchFromCache) {
       this.updateProfileCache(parsedProfile)
     }
 
@@ -138,15 +137,24 @@ export default class SwarmProfileReader {
     const prefetchProfile = window.prefetchData?.profile
     if (prefetchProfile) {
       this.profile = prefetchProfile
-      this.loadedFromPrefetch = true
     }
   }
 
   private loadProfileFromCache() {
-    //
+    const profile = ProfileCache.get(this.address)
+    if (profile) {
+      this.profile = profile
+      return profile
+    }
   }
 
   private updateProfileCache(profile: Profile) {
-    //
+    ProfileCache.set(profile.address, profile)
+
+    if (ProfileCache.size > 100) {
+      while (ProfileCache.size > 100) {
+        ProfileCache.delete(ProfileCache.keys().next().value)
+      }
+    }
   }
 }
