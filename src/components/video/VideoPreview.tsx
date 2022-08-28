@@ -30,7 +30,7 @@ import Time from "@/components/media/Time"
 import Avatar from "@/components/user/Avatar"
 import routes from "@/routes"
 import useSelector from "@/state/useSelector"
-import { shortenEthAddr, checkIsEthAddress } from "@/utils/ethereum"
+import { shortenEthAddr } from "@/utils/ethereum"
 import dayjs from "@/utils/dayjs"
 import { encodedSvg } from "@/utils/svg"
 import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
@@ -75,21 +75,15 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
     return videoOffers?.offersStatus === "full" || videoOffers?.offersStatus === "sources"
   }, [videoOffers])
 
-  const [profileLink, videoSearch, videoPath] = useMemo(() => {
+  const profileLink = useMemo(() => {
     const profileLink = ownerAddress ? routes.channel(ownerAddress) : null
-    const videoLink = routes.watch(decentralizedLink ? video.reference : video.indexReference ?? video.reference)
-    const videoSearch = new URL(videoLink, document.baseURI).search
-    const videoPath = videoLink.replace(videoSearch, "")
-    return [profileLink, videoLink, videoSearch, videoPath]
-  }, [ownerAddress, decentralizedLink, video.reference, video.indexReference])
+    return profileLink
+  }, [ownerAddress])
 
   return (
     <div className={classes.videoPreview}>
       <Link
-        to={{
-          pathname: videoPath,
-          search: videoSearch,
-        }}
+        to={routes.watch(decentralizedLink ? video.reference : video.indexReference ?? video.reference)}
         state={{ video, videoOffers }}
       >
         <div className={classes.videoThumbnail}>
@@ -120,10 +114,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
         )}
         <div className={classes.videoInfoStats}>
           <Link
-            to={{
-              pathname: videoPath,
-              search: videoSearch,
-            }}
+            to={routes.watch(decentralizedLink ? video.reference : video.indexReference ?? video.reference)}
             state={{ video, videoOffers }}
           >
             <h4 className={classes.videoInfoTitle}>{video.title || "???"}</h4>
