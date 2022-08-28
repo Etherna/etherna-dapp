@@ -31,17 +31,29 @@ export default function useWallet() {
       setSelectedAddress(accounts[0])
     }
 
+    const onConnect = () => {
+      //console.log("CONNECTED", window.ethereum?.selectedAddress)
+    }
+
+    const onDisconnect = () => {
+      //console.log("DISCONNECTED")
+    }
+
     if (currentWallet === "metamask") {
       setIsLocked(checkWalletLocked())
       setSelectedAddress(window.ethereum?.selectedAddress)
 
       window.ethereum?.on?.("accountsChanged", onAccountsChanged)
+      window.ethereum?.on?.("connect", onConnect)
+      window.ethereum?.on?.("disconnect", onDisconnect)
     } else {
       setIsLocked(false)
     }
 
     return () => {
       window.ethereum?.removeListener?.("accountsChanged", onAccountsChanged)
+      window.ethereum?.removeListener?.("connect", onConnect)
+      window.ethereum?.removeListener?.("disconnect", onDisconnect)
     }
   }, [currentWallet])
 
@@ -49,6 +61,7 @@ export default function useWallet() {
     try {
       const accounts = await fetchAccounts() as string[]
       setSelectedAddress(accounts[0])
+      setIsLocked(false)
     } catch (error: any) {
       if (error.code === -32002) {
         alert("Already proccesing an unlock request. Manually unlock your wallet.")
@@ -59,12 +72,13 @@ export default function useWallet() {
   const switchAccount = useCallback(async (address: string) => {
     try {
       await switchTo(address)
+      await unlockWallet()
     } catch (error: any) {
       if (error.code === -32002) {
         alert("Already proccesing an switch request. Manually switch account.")
       }
     }
-  }, [])
+  }, [unlockWallet])
 
   return {
     isLocked,
