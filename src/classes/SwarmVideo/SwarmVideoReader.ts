@@ -42,6 +42,7 @@ export default class SwarmVideoReader {
   private indexClient?: EthernaIndexClient
   private indexData?: IndexVideo
   private profileData?: Profile
+  private isDefaultVideo: boolean
 
   constructor(reference: string, ownerAddress: string | undefined, opts: SwarmVideoReaderOptions) {
     this.reference = SwarmVideoIO.isSwarmReference(reference) ? reference : ""
@@ -56,6 +57,7 @@ export default class SwarmVideoReader {
     this.updateCache = opts.updateCache ?? true
     this.video = this.doubleParseVideo(opts.videoData, opts.indexData, opts.profileData)
     this.videoRaw = this.parseVideo(this.video)
+    this.isDefaultVideo = !opts.videoData || !opts.indexData
 
     if (this.hasPrefetch) {
       this.loadVideoFromPrefetch()
@@ -90,10 +92,7 @@ export default class SwarmVideoReader {
     const indexVideo = await this.fetchIndexVideo()
 
     const [rawVideo, ownerProfile] = await Promise.all([
-      !indexVideo?.lastValidManifest ||
-        (indexVideo?.lastValidManifest && SwarmVideoIO.isValidatingManifest(indexVideo.lastValidManifest))
-        ? this.fetchRawVideo()
-        : Promise.resolve(null),
+      this.fetchRawVideo(),
       this.ownerAddress
         ? this.fetchOwnerProfile(this.ownerAddress)
         : Promise.resolve(null)
@@ -148,7 +147,7 @@ export default class SwarmVideoReader {
       title: indexVideoData?.lastValidManifest?.title || videoData?.title || null,
       description: indexVideoData?.lastValidManifest?.description || videoData?.description || null,
       originalQuality: indexVideoData?.lastValidManifest?.originalQuality || videoData?.originalQuality || null,
-      duration: indexVideoData?.lastValidManifest?.duration || videoData?.duration || NaN,
+      duration: indexVideoData?.lastValidManifest?.duration || videoData?.duration || 0,
       thumbnail: indexVideoData?.lastValidManifest?.thumbnail || videoData?.thumbnail
         ? new SwarmImageIO.Reader(indexVideoData?.lastValidManifest?.thumbnail || videoData?.thumbnail!, {
           beeClient: this.beeClient
@@ -214,7 +213,7 @@ export default class SwarmVideoReader {
   }
 
   private async fetchRawVideo(): Promise<SwarmVideoRaw | null> {
-    if (this.videoRaw) return this.videoRaw
+    if (!this.isDefaultVideo) return this.videoRaw
 
     try {
       const resp = await this.beeClient.downloadFile(this.reference)

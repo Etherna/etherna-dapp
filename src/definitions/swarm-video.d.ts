@@ -109,6 +109,7 @@ export type Video = SwarmVideo & VideoIndexed & {
 
 export type VideoOffersStatus = {
   offersStatus: "full" | "partial" | "sources" | "none"
+  userOffersStatus: "full" | "partial" | "sources" | "none"
   userOfferedResourses: string[]
   userUnOfferedResourses: string[]
   globalOffers: { reference: string, offeredBy: string[] }[]

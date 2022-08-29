@@ -19,7 +19,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Link, Navigate } from "react-router-dom"
 import classNames from "classnames"
 
-import classes from "@/styles/components/studio/Videos.module.scss"
+import classes, { videoStatus } from "@/styles/components/studio/Videos.module.scss"
 import { TrashIcon, PencilIcon } from "@heroicons/react/solid"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
@@ -128,12 +128,12 @@ const Videos: React.FC = () => {
       return null
     }
 
-    if (videosOffersStatus === undefined) {
+    if (videosOffersStatus === undefined || videosOffersStatus[video.reference] === undefined) {
       return <Spinner className="w-5 h-5" />
     }
 
     const videoResourcesStatus = videosOffersStatus[video.reference]
-    const status = videoResourcesStatus?.offersStatus ?? "none"
+    const status = videoResourcesStatus.userOffersStatus
 
     return (
       <button
@@ -148,7 +148,7 @@ const Videos: React.FC = () => {
         })}
       >
         <CreditIcon aria-hidden />
-        {status === "none" && "None (viewers cost)"}
+        {status === "none" && "No offers (viewers cost)"}
         {status === "full" && "Fully offered"}
         {status === "sources" && "Video sources offered"}
         {status === "partial" && "Partially offered"}
@@ -217,7 +217,7 @@ const Videos: React.FC = () => {
           hideOnMobile: true,
           render: item => renderVideoStatus(item)
         }, isStandaloneGateway ? null : {
-          title: "Offered",
+          title: "Offered (by you)",
           hideOnMobile: true,
           render: item => renderOffersStatus(item)
         }, {
