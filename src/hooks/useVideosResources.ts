@@ -32,8 +32,6 @@ export default function useVideosResources(videos: Video[] | undefined) {
   useEffect(() => {
     if (isStandaloneGateway) return
 
-    setVideosOffersStatus(undefined)
-
     if (videos) {
       fetchVideosStatus()
     }
@@ -56,12 +54,15 @@ export default function useVideosResources(videos: Video[] | undefined) {
         readers.map(reader => reader.download())
       )
 
-      const statuses: Record<string, VideoOffersStatus> = {}
+      const statuses: Record<string, VideoOffersStatus> = {
+        ...videosOffersStatus,
+      }
 
       for (const reader of readers) {
         statuses[reader.video.reference] = parseReaderStatus(reader, address)
       }
 
+      videosQueue.current = []
       mounted.current && setVideosOffersStatus(statuses)
     } catch (error) {
       console.error(error)

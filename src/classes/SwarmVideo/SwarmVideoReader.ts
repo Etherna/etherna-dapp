@@ -99,7 +99,6 @@ export default class SwarmVideoReader {
     ])
 
     // update local video instances
-    console.log(rawVideo)
     this.video = this.doubleParseVideo(rawVideo, indexVideo, ownerProfile)
     this.videoRaw = this.parseVideo(this.video)
 
