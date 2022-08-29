@@ -19,7 +19,7 @@
 }
 
 .cover {
-  @apply flex items-center w-full bg-gray-200 min-h-24 -mb-8 overflow-hidden;
+  @apply flex items-center w-full bg-gray-200 min-h-24 overflow-hidden;
   @apply dark:bg-gray-800;
 }
 
@@ -27,33 +27,63 @@
   @apply w-full h-auto;
 }
 
+.profileHeader {
+  @apply flex items-start w-full;
+  @apply p-4;
+}
+
+.profileHeaderInfo {
+  @apply flex flex-col w-full;
+  @apply ml-4 md:ml-0;
+  @apply space-y-4 md:space-y-0 md:space-x-4;
+  @apply md:flex-row md:items-start md:justify-between;
+}
+
+.profileHeaderActions {
+  @apply shrink-0;
+  @apply grid auto-cols-min gap-3;
+}
+
+.profileContent {
+  @apply flex flex-col w-full;
+  @apply md:flex-row;
+}
+
+.profileContentNav {
+  @apply shrink-0;
+  @apply w-full md:max-w-xxs p-4;
+}
+
+.profileContentMain {
+  @apply flex-1 p-4;
+}
+
 .profileAvatar {
-  @apply relative w-24 h-24 border-4 rounded-full overflow-hidden;
-  @apply border-white bg-gray-200;
-  @apply dark:border-gray-900 dark:bg-gray-700;
+  @apply shrink-0 md:w-56;
+  @apply md:pr-4;
+  @apply -mt-8;
 
-  @screen sm {
-    @apply w-32 h-32 mx-auto;
-  }
-  @screen md {
-    @apply w-40 h-40;
-  }
+  > * {
+    @apply relative flex border-4 rounded-full overflow-hidden;
+    @apply border-white bg-gray-200;
+    @apply dark:border-gray-900 dark:bg-gray-700;
+    @apply w-24 h-24;
+    @apply sm:w-32 sm:h-32;
+    @apply md:w-40 md:h-40;
 
-  img {
-    @apply w-full h-full object-cover;
+    img {
+      @apply object-cover;
+    }
   }
 }
 
 .profileName {
-  @apply mb-0;
-  @apply text-2xl font-semibold leading-tight overflow-hidden;
+  @apply mb-0 flex-grow;
+  @apply leading-[2.25rem];
+  @apply text-2xl font-semibold overflow-hidden;
   @apply break-all;
-  @apply w-full text-center;
+  @apply text-left;
   @apply text-gray-900 dark:text-gray-100;
-
-  @screen sm {
-    @apply text-center;
-  }
 }
 
 .profileBio {

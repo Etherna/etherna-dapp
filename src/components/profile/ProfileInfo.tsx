@@ -16,6 +16,7 @@
  */
 
 import React, { useEffect } from "react"
+import Tippy from "@tippyjs/react"
 
 import classes from "@/styles/components/profile/ProfileInfo.module.scss"
 
@@ -27,6 +28,7 @@ import makeBlockies from "@/utils/makeBlockies"
 import { checkIsEthAddress, shortenEthAddr } from "@/utils/ethereum"
 import { getResponseErrorMessage } from "@/utils/request"
 import type { Profile } from "@/definitions/swarm-profile"
+import Skeleton from "../common/Skeleton"
 
 type ProfileInfoProps = {
   children: React.ReactNode
@@ -82,44 +84,44 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
         )}
       </div>
 
-      {isLoading ? (
-        <ProfileInfoPlaceholder>{children}</ProfileInfoPlaceholder>
-      ) : (
-        <>
-          <div className="row items-center">
-            <div className="col md:max-w-xxs px-4">
-              <div className={classes.profileAvatar}>
-                <Image
-                  sources={profile?.avatar?.sources}
-                  placeholder="blur"
-                  blurredDataURL={profile?.avatar?.blurredBase64}
-                  layout="fill"
-                  fallbackSrc={makeBlockies(profileAddress)}
-                  alt={profileName}
-                />
-              </div>
-            </div>
-            <div className="col flex-1 px-4">
-              <div className="flex">{actions}</div>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col md:max-w-xxs p-4">
+      <header className={classes.profileHeader}>
+        <div className={classes.profileAvatar}>
+          <span>
+            <Skeleton show={isLoading}>
+              <Image
+                sources={profile?.avatar?.sources}
+                placeholder="blur"
+                blurredDataURL={profile?.avatar?.blurredBase64}
+                layout="fill"
+                fallbackSrc={makeBlockies(profileAddress)}
+                alt={profileName}
+              />
+            </Skeleton>
+          </span>
+        </div>
+        <div className={classes.profileHeaderInfo}>
+          <Skeleton show={isLoading}>
+            <Tippy content={profile?.name ?? profileAddress}>
               <h1 className={classes.profileName}>
-                {checkIsEthAddress(profileName)
-                  ? shortenEthAddr(profileName)
-                  : profileName || shortenEthAddr(profileName)}
+                {profile?.name ?? shortenEthAddr(profileAddress)}
               </h1>
-              {nav}
-            </div>
-            <div className="col flex-1 p-4">
-              {/* Main content */}
-              {children}
-            </div>
+            </Tippy>
+          </Skeleton>
+          <div className={classes.profileHeaderActions}>
+            <div className="flex">{actions}</div>
           </div>
-        </>
-      )}
+        </div>
+      </header>
+
+      <div className={classes.profileContent}>
+        <div className={classes.profileContentNav}>
+          {nav}
+        </div>
+        <div className={classes.profileContentMain}>
+          {/* Main content */}
+          {children}
+        </div>
+      </div>
     </div>
   )
 }
