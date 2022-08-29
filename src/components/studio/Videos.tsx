@@ -19,7 +19,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Link, Navigate } from "react-router-dom"
 import classNames from "classnames"
 
-import classes, { videoStatus } from "@/styles/components/studio/Videos.module.scss"
+import classes from "@/styles/components/studio/Videos.module.scss"
 import { TrashIcon, PencilIcon } from "@heroicons/react/solid"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
