@@ -15,6 +15,7 @@
  */
 
 .player {
+  @apply flex flex-col;
   @apply relative overflow-hidden z-0;
   @apply mb-6 lg:mt-6;
   @apply -mx-4 md:mx-0;
@@ -27,12 +28,18 @@
     @apply w-screen h-screen;
     @apply m-0 lg:m-0;
   }
+
+  @apply landscape:fixed landscape:inset-0 landscape:z-10;
+  @apply landscape:mb-0;
+  @apply landscape:pb-[60px];
 }
 
 .playerVideo {
   @apply max-h-[80vh] w-full;
   @apply object-contain;
   @apply bg-white/50 dark:bg-black/50;
+  @apply landscape:bg-gray-900 dark:landscape:bg-gray-900;
+  @apply landscape:flex-grow landscape:flex-shrink landscape:max-h-full;
 
   .embed & {
     @apply max-h-screen;
@@ -40,6 +47,8 @@
 }
 
 .playerToolbarWrapper {
+  @apply landscape:shrink-0;
+
   &.floating {
     @apply absolute bottom-0 inset-x-0;
     @apply opacity-0 transition duration-100;

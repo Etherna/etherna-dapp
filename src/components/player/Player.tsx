@@ -152,7 +152,22 @@ const InnerPlayer: React.FC<PlayerProps> = ({
     videoMutationObserverRef.current.observe(video, { attributes: true })
   }, [hiddenControls])
 
-  const togglePlay = () => {
+  const stopIdleTimeout = useCallback(() => {
+    clearTimeout(idleTimeoutRef.current)
+    setIdle(false)
+  }, [])
+
+  const startIdleTimeout = useCallback((forceStart: boolean | React.MouseEvent = false) => {
+    stopIdleTimeout()
+
+    if (forceStart || isPlaying) {
+      idleTimeoutRef.current = setTimeout(() => {
+        setIdle(true)
+      }, 3000) as unknown as number
+    }
+  }, [isPlaying, stopIdleTimeout])
+
+  const togglePlay = useCallback(() => {
     const playing = !isPlaying
     dispatch({
       type: PlayerReducerTypes.TOGGLE_PLAY,
@@ -164,55 +179,40 @@ const InnerPlayer: React.FC<PlayerProps> = ({
     } else {
       stopIdleTimeout()
     }
-  }
+  }, [isPlaying, dispatch, startIdleTimeout, stopIdleTimeout])
 
-  const startIdleTimeout = (forceStart: boolean | React.MouseEvent = false) => {
-    stopIdleTimeout()
-
-    if (forceStart || isPlaying) {
-      idleTimeoutRef.current = setTimeout(() => {
-        setIdle(true)
-      }, 3000) as unknown as number
-    }
-  }
-
-  const stopIdleTimeout = () => {
-    clearTimeout(idleTimeoutRef.current)
-    setIdle(false)
-  }
-
-  const onMouseEnter = () => {
+  const onMouseEnter = useCallback(() => {
     if (isPlaying) {
       setIdle(false)
       startIdleTimeout()
     }
-  }
+  }, [isPlaying, startIdleTimeout])
 
-  const onMouseMouse = () => {
+  const onMouseMouse = useCallback(() => {
     if (isPlaying) {
       startIdleTimeout()
     }
-  }
+  }, [isPlaying, startIdleTimeout])
 
-  const onMouseLeave = () => {
+  const onMouseLeave = useCallback(() => {
     if (isPlaying) {
       clearTimeout(idleTimeoutRef.current)
       setIdle(true)
     }
-  }
+  }, [isPlaying])
 
   // Video events
 
-  const onLoadMetadata = () => {
+  const onLoadMetadata = useCallback(() => {
     if (videoElement) {
       dispatch({
         type: PlayerReducerTypes.UPDATE_DURATION,
         duration: videoElement.duration,
       })
     }
-  }
+  }, [dispatch, videoElement])
 
-  const onProgress = () => {
+  const onProgress = useCallback(() => {
     if (error) {
       dispatch({
         type: PlayerReducerTypes.SET_PLAYBACK_ERROR,
@@ -223,23 +223,23 @@ const InnerPlayer: React.FC<PlayerProps> = ({
     dispatch({
       type: PlayerReducerTypes.REFRESH_BUFFERING,
     })
-  }
+  }, [dispatch, error])
 
-  const onTimeUpdate = () => {
+  const onTimeUpdate = useCallback(() => {
     dispatch({
       type: PlayerReducerTypes.REFRESH_CURRENT_TIME,
     })
-  }
+  }, [dispatch])
 
-  const renderError = (code: number, message: string) => {
+  const renderError = useCallback((code: number, message: string) => {
     dispatch({
       type: PlayerReducerTypes.SET_PLAYBACK_ERROR,
       errorCode: code,
       errorMessage: message
     })
-  }
+  }, [dispatch])
 
-  const onPlaybackError = async (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+  const onPlaybackError = useCallback(async (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
     const currentSrc = e.currentTarget.src
     if (!currentSrc) return
 
@@ -267,7 +267,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
         renderError(500, error.message)
       }
     }
-  }
+  }, [renderError])
 
   if (!source) {
     return !embed ? (
