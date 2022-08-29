@@ -30,7 +30,7 @@
 .videoGrid {
   @apply pb-24;
   $video-size: 200px;
-  $video-size-mini: 120px;
+  $video-size-mini: 180px;
 
   @apply grid grid-flow-row-dense gap-4;
   grid-template-columns: repeat(auto-fill, minmax($video-size, 1fr));

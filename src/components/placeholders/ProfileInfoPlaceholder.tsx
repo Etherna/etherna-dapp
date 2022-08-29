@@ -30,14 +30,14 @@ const ProfileInfoPlaceholder: React.FC<{ children: React.ReactNode }> = ({ child
             <Placeholder width="100%" height="100%" round="full" />
           </div>
         </div>
-        <div className="col flex-1 px-4">
-          <div className="flex space-y-2">
+        <div className="col flex-1 px-4 mt-4">
+          <div className="flex items-center space-y-2">
+            <Placeholder height="1.85rem" className="w-1/2 sm:mx-auto md:ml-0" round="md" />
           </div>
         </div>
       </div>
       <div className="row">
         <div className="col md:max-w-xxs p-4">
-          <Placeholder height="1.85rem" className="w-1/2 sm:mx-auto md:w-[100%] mb-8" round="md" />
           <Placeholder width="100%" height="2.2rem" className="mt-2" round="full" />
           <Placeholder width="100%" height="2.2rem" className="mt-2" round="full" />
         </div>
