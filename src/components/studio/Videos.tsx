@@ -133,7 +133,7 @@ const Videos: React.FC = () => {
     }
 
     const videoResourcesStatus = videosOffersStatus[video.reference]
-    const status = videoResourcesStatus?.offersStatus ?? "none"
+    const status = videoResourcesStatus?.userOffersStatus ?? "none"
 
     return (
       <button
@@ -148,7 +148,7 @@ const Videos: React.FC = () => {
         })}
       >
         <CreditIcon aria-hidden />
-        {status === "none" && "None (viewers cost)"}
+        {status === "none" && "No offers (viewers cost)"}
         {status === "full" && "Fully offered"}
         {status === "sources" && "Video sources offered"}
         {status === "partial" && "Partially offered"}
@@ -217,7 +217,7 @@ const Videos: React.FC = () => {
           hideOnMobile: true,
           render: item => renderVideoStatus(item)
         }, isStandaloneGateway ? null : {
-          title: "Offered",
+          title: "Offered (by you)",
           hideOnMobile: true,
           render: item => renderOffersStatus(item)
         }, {
