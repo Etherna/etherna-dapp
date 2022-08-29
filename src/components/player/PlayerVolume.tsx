@@ -15,7 +15,7 @@
  *  
  */
 
-import React, { useState } from "react"
+import React, { useCallback, useState } from "react"
 
 import { ReactComponent as MutedIcon } from "@/assets/icons/player/muted.svg"
 import { ReactComponent as VolumeLowIcon } from "@/assets/icons/player/volume-low.svg"
@@ -32,19 +32,22 @@ const PlayerVolume: React.FC = () => {
   const [state, dispatch] = usePlayerState()
   const { muted, volume } = state
 
-  const toggleMute = () => {
+  const toggleMute = useCallback(() => {
     dispatch({
       type: PlayerReducerTypes.TOGGLE_MUTED,
       muted: !muted,
     })
-  }
+  }, [dispatch, muted])
 
-  const updateVolume = (value: number | number[] | null | undefined) => {
+  const updateVolume = useCallback((value: number | number[] | null | undefined) => {
+    if (muted) {
+      toggleMute()
+    }
     dispatch({
       type: PlayerReducerTypes.UPDATE_VOLUME,
       volume: value as number,
     })
-  }
+  }, [dispatch, muted, toggleMute])
 
   return (
     <PlayerToolbarButton
@@ -60,8 +63,17 @@ const PlayerVolume: React.FC = () => {
       onClick={isTouch ? undefined : toggleMute}
       hasMenu
     >
+      {isTouch && (
+        <button onClick={toggleMute}>
+          {muted ? (
+            <VolumeIcon height={16} />
+          ) : (
+            <MutedIcon height={16} />
+          )}
+        </button>
+      )}
       <Slider
-        value={volume}
+        value={muted ? 0 : volume}
         min={0}
         max={1}
         step={0.01}
