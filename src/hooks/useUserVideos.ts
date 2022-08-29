@@ -94,13 +94,14 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
     const from = page * limit
     const to = from + limit
     const references = playlist.videos?.slice(from, to) ?? []
-    return await Promise.all(references.map(video => {
-      const reader = new SwarmVideoIO.Reader(video.reference, playlist.owner, {
+    return await Promise.all(references.map(async playlistVid => {
+      const reader = new SwarmVideoIO.Reader(playlistVid.reference, playlist.owner, {
         beeClient,
         fetchProfile: false,
         profileData: opts.profile,
       })
-      return reader.download()
+      const video = await reader.download(true)
+      return video
     }))
   }, [beeClient, opts.profile, getPlaylist])
 
