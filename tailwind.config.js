@@ -93,6 +93,7 @@ module.exports = {
       animation: {
         "spinSlow": "spinSlow 2s linear infinite",
         "slide": "slide 2s cubic-bezier(0.2, 0.7, 0.7, 0.4) infinite",
+        "skip": "skip 1s cubic-bezier(0.2, 0.7, 0.7, 0.4) 0s 2 forwards",
       },
       keyframes: {
         spinSlow: {
@@ -105,6 +106,17 @@ module.exports = {
           },
           "100%": {
             left: "100%",
+          },
+        },
+        skip: {
+          "0%": {
+            opacity: 0.2,
+          },
+          "70%": {
+            opacity: 1,
+          },
+          "100%": {
+            opacity: 1,
           },
         },
       },
