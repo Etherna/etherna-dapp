@@ -232,11 +232,11 @@ const playerContextReducer = (state: PlayerContextState, action: AnyPlayerAction
 
     case PlayerReducerTypes.UPDATE_PROGRESS: {
       let currentTime = state.videoEl?.currentTime || 0
-      if (action.bySec) {
+      if (action.bySec !== undefined) {
         currentTime += action.bySec
-      } else if (action.byPercent) {
+      } else if (action.byPercent !== undefined) {
         currentTime += action.byPercent * state.duration
-      } else if (action.atPercent) {
+      } else if (action.atPercent !== undefined) {
         currentTime = action.atPercent * state.duration
       }
       currentTime = clamp(currentTime, 0, state.duration)
