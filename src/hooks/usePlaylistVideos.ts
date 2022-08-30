@@ -92,6 +92,8 @@ export default function usePlaylistVideos(
       const playlist = await reader.download()
       setPlaylist(playlist)
     } catch (error: any) {
+      if (error.response.status === 404) return
+
       showError("Error loading channel", getResponseErrorMessage(error))
     } finally {
       setIsLoadingPlaylist(false)
