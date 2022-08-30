@@ -31,14 +31,15 @@ import PlayerQuality from "./PlayerQuality"
 
 type PlayerToolbarProps = {
   floating?: boolean
+  focus?: boolean
 }
 
-const PlayerToolbar: React.FC<PlayerToolbarProps> = ({ floating }) => {
+const PlayerToolbar: React.FC<PlayerToolbarProps> = ({ floating, focus }) => {
   return (
     <div className={classNames(classes.playerToolbar, {
       [classes.floating]: floating,
     })}>
-      <PlayerToolbarProgress />
+      <PlayerToolbarProgress focus={focus} />
 
       <div className={classes.playerToolbarContent}>
         <div className={classes.playerToolbarPlaybackGroup}>

@@ -1,3 +1,4 @@
+const { default: postcss } = require("postcss")
 const plugin = require("tailwindcss/plugin")
 
 /** @type {import('tailwindcss/types').Config} */
@@ -40,6 +41,7 @@ module.exports = {
       },
       spacing: {
         container: "1rem",
+        15: "3.75rem",
         120: "30rem",
       },
       hueRotate: {
@@ -91,6 +93,7 @@ module.exports = {
       animation: {
         "spinSlow": "spinSlow 2s linear infinite",
         "slide": "slide 2s cubic-bezier(0.2, 0.7, 0.7, 0.4) infinite",
+        "skip": "skip 1s cubic-bezier(0.2, 0.7, 0.7, 0.4) 0s 2 forwards",
       },
       keyframes: {
         spinSlow: {
@@ -103,6 +106,17 @@ module.exports = {
           },
           "100%": {
             left: "100%",
+          },
+        },
+        skip: {
+          "0%": {
+            opacity: 0.2,
+          },
+          "70%": {
+            opacity: 1,
+          },
+          "100%": {
+            opacity: 1,
           },
         },
       },
@@ -118,7 +132,7 @@ module.exports = {
     require("@tailwindcss/typography"),
     require("@tailwindcss/forms"),
     require("@tailwindcss/line-clamp"),
-    plugin(function ({ addUtilities }) {
+    plugin(function ({ addUtilities, addVariant, e }) {
       const utils = {
         ".absolute-center": {
           "position": "absolute",
@@ -131,6 +145,16 @@ module.exports = {
       }
 
       addUtilities(utils, ["responsive"])
+
+      addVariant("landscape-touch", ({ container, separator }) => {
+        const landscapeRule = postcss
+          .atRule({ name: "media", params: "(orientation: landscape) and (max-width: 1024px) and (pointer: coarse)" })
+        landscapeRule.append(container.nodes)
+        container.append(landscapeRule)
+        landscapeRule.walkRules(rule => {
+          rule.selector = `.${e(`landscape-touch${separator}${rule.selector.slice(1)}`)}`
+        })
+      })
     }),
   ],
 }

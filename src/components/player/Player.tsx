@@ -29,6 +29,7 @@ import PlayerToolbar from "./PlayerToolbar"
 import PlayerVideoInfo from "./PlayerVideoInfo"
 import PlayerWatchOn from "./PlayerWatchOn"
 import PlayerPlayLayer from "./PlayerPlayLayer"
+import PlayerTouchOverlay from "./PlayerTouchOverlay"
 import PlayerPlaceholder from "@/components/placeholders/PlayerPlaceholder"
 import { PlayerContextProvider, PlayerReducerTypes } from "@/context/player-context"
 import { usePlayerState } from "@/context/player-context/hooks"
@@ -37,6 +38,8 @@ import http from "@/utils/request"
 import { isTouchDevice } from "@/utils/browser"
 import type { VideoSource } from "@/definitions/swarm-video"
 import type { Profile } from "@/definitions/swarm-profile"
+
+const DEFAULT_SKIP = 5
 
 type PlayerProps = {
   hash: string
@@ -64,10 +67,16 @@ const InnerPlayer: React.FC<PlayerProps> = ({
 
   const [hiddenControls, setHiddenControls] = useState(false)
   const [idle, setIdle] = useState(false)
+  const [focus, setFocus] = useState(false)
   const [videoElement, setVideoElement] = useState<HTMLVideoElement>()
   const videoMutationObserverRef = useRef<MutationObserver>()
   const idleTimeoutRef = useRef<number>()
-  const floating = !isTouchDevice()
+  const focusTimeoutRef = useRef<number>()
+
+  const [isTouch, floating] = useMemo(() => {
+    const isTouch = isTouchDevice()
+    return [isTouch, !isTouch]
+  }, [])
 
   const showControls = useMemo(() => {
     const defaultShow = !hiddenControls && videoElement && !error
@@ -152,7 +161,28 @@ const InnerPlayer: React.FC<PlayerProps> = ({
     videoMutationObserverRef.current.observe(video, { attributes: true })
   }, [hiddenControls])
 
-  const togglePlay = () => {
+  const stopIdleTimeout = useCallback(() => {
+    clearTimeout(idleTimeoutRef.current)
+    setIdle(false)
+  }, [])
+
+  const startIdleTimeout = useCallback((forceStart: boolean | React.MouseEvent = false) => {
+    stopIdleTimeout()
+
+    if (forceStart || isPlaying) {
+      idleTimeoutRef.current = window.setTimeout(() => {
+        setIdle(true)
+      }, 5000)
+    }
+  }, [isPlaying, stopIdleTimeout])
+
+  const startFocusTimeout = useCallback(() => {
+    focusTimeoutRef.current = window.setTimeout(() => {
+      setFocus(false)
+    }, 3000)
+  }, [])
+
+  const togglePlay = useCallback(() => {
     const playing = !isPlaying
     dispatch({
       type: PlayerReducerTypes.TOGGLE_PLAY,
@@ -164,55 +194,54 @@ const InnerPlayer: React.FC<PlayerProps> = ({
     } else {
       stopIdleTimeout()
     }
-  }
+  }, [isPlaying, dispatch, startIdleTimeout, stopIdleTimeout])
 
-  const startIdleTimeout = (forceStart: boolean | React.MouseEvent = false) => {
-    stopIdleTimeout()
-
-    if (forceStart || isPlaying) {
-      idleTimeoutRef.current = setTimeout(() => {
-        setIdle(true)
-      }, 3000) as unknown as number
-    }
-  }
-
-  const stopIdleTimeout = () => {
-    clearTimeout(idleTimeoutRef.current)
-    setIdle(false)
-  }
-
-  const onMouseEnter = () => {
+  const onMouseEnter = useCallback(() => {
     if (isPlaying) {
       setIdle(false)
       startIdleTimeout()
     }
-  }
+    if (isTouch) {
+      setFocus(true)
+      startFocusTimeout()
+    }
+  }, [isPlaying, isTouch, startFocusTimeout, startIdleTimeout])
 
-  const onMouseMouse = () => {
+  const onMouseMouse = useCallback(() => {
     if (isPlaying) {
       startIdleTimeout()
     }
-  }
+    startFocusTimeout()
+  }, [isPlaying, startFocusTimeout, startIdleTimeout])
 
-  const onMouseLeave = () => {
+  const onMouseLeave = useCallback(() => {
     if (isPlaying) {
       clearTimeout(idleTimeoutRef.current)
+      clearTimeout(focusTimeoutRef.current)
       setIdle(true)
+      setFocus(false)
     }
-  }
+  }, [isPlaying])
+
+  const skipProgress = useCallback((direction: "prev" | "next") => {
+    dispatch({
+      type: PlayerReducerTypes.UPDATE_PROGRESS,
+      bySec: direction === "prev" ? -DEFAULT_SKIP : DEFAULT_SKIP,
+    })
+  }, [dispatch])
 
   // Video events
 
-  const onLoadMetadata = () => {
+  const onLoadMetadata = useCallback(() => {
     if (videoElement) {
       dispatch({
         type: PlayerReducerTypes.UPDATE_DURATION,
         duration: videoElement.duration,
       })
     }
-  }
+  }, [dispatch, videoElement])
 
-  const onProgress = () => {
+  const onProgress = useCallback(() => {
     if (error) {
       dispatch({
         type: PlayerReducerTypes.SET_PLAYBACK_ERROR,
@@ -223,23 +252,23 @@ const InnerPlayer: React.FC<PlayerProps> = ({
     dispatch({
       type: PlayerReducerTypes.REFRESH_BUFFERING,
     })
-  }
+  }, [dispatch, error])
 
-  const onTimeUpdate = () => {
+  const onTimeUpdate = useCallback(() => {
     dispatch({
       type: PlayerReducerTypes.REFRESH_CURRENT_TIME,
     })
-  }
+  }, [dispatch])
 
-  const renderError = (code: number, message: string) => {
+  const renderError = useCallback((code: number, message: string) => {
     dispatch({
       type: PlayerReducerTypes.SET_PLAYBACK_ERROR,
       errorCode: code,
       errorMessage: message
     })
-  }
+  }, [dispatch])
 
-  const onPlaybackError = async (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+  const onPlaybackError = useCallback(async (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
     const currentSrc = e.currentTarget.src
     if (!currentSrc) return
 
@@ -267,7 +296,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
         renderError(500, error.message)
       }
     }
-  }
+  }, [renderError])
 
   if (!source) {
     return !embed ? (
@@ -283,9 +312,9 @@ const InnerPlayer: React.FC<PlayerProps> = ({
           [classes.idle]: idle,
           [classes.embed]: embed,
         })}
-        onMouseEnter={onMouseEnter}
-        onMouseMove={onMouseMouse}
-        onMouseLeave={onMouseLeave}
+        onMouseEnter={floating ? onMouseEnter : undefined}
+        onMouseMove={floating ? onMouseMouse : undefined}
+        onMouseLeave={floating ? onMouseLeave : undefined}
       >
         <video
           ref={v => {
@@ -299,18 +328,21 @@ const InnerPlayer: React.FC<PlayerProps> = ({
           preload="metadata"
           poster={!error && thumbnailUrl ? thumbnailUrl : undefined}
           controls={false}
-          onClick={togglePlay}
+          onClick={isTouch ? undefined : togglePlay}
           onLoadedMetadata={onLoadMetadata}
           onProgress={onProgress}
           onPause={stopIdleTimeout}
           onTimeUpdate={onTimeUpdate}
           onError={onPlaybackError}
+          onMouseOver={floating ? undefined : onMouseEnter}
+          onMouseMove={floating ? undefined : onMouseMouse}
+          onMouseLeave={floating ? undefined : onMouseLeave}
           data-matomo-title={title}
         />
 
         {showControls && (
           <div className={classNames(classes.playerToolbarWrapper, { [classes.floating]: floating })}>
-            <PlayerToolbar floating={floating} />
+            <PlayerToolbar floating={floating} focus={focus} />
           </div>
         )}
 
@@ -332,6 +364,19 @@ const InnerPlayer: React.FC<PlayerProps> = ({
 
         {(!isPlaying && currentTime === 0 && !error) && (
           <PlayerPlayLayer thumbnailUrl={thumbnailUrl} floating={floating} onPlay={togglePlay} />
+        )}
+
+        {isTouchDevice() && currentTime > 0 && !error && (
+          <PlayerTouchOverlay
+            floating={floating}
+            focus={focus}
+            isPlaying={isPlaying}
+            skipBySeconds={DEFAULT_SKIP}
+            onFocus={onMouseEnter}
+            onPlayPause={togglePlay}
+            onSkipPrev={() => skipProgress("prev")}
+            onSkipNext={() => skipProgress("next")}
+          />
         )}
 
         {error && (

@@ -15,7 +15,7 @@
  *  
  */
 
-import React from "react"
+import React, { useCallback, useRef } from "react"
 
 import classes from "@/styles/components/player/PlayerToolbarButton.module.scss"
 
@@ -23,7 +23,7 @@ type PlayerToolbarButtonProps = {
   children?: React.ReactNode
   hasMenu?: boolean
   icon?: React.ReactElement<React.SVGAttributes<SVGElement>>
-  onClick?(): void
+  onClick?(e: React.MouseEvent): void
 }
 
 const PlayerToolbarButton: React.FC<PlayerToolbarButtonProps> = ({
@@ -32,13 +32,22 @@ const PlayerToolbarButton: React.FC<PlayerToolbarButtonProps> = ({
   hasMenu,
   onClick
 }) => {
+  const menuEl = useRef<HTMLDivElement>(null)
+
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    const target = e.target as HTMLDivElement
+    if (menuEl.current?.contains(target) || target === menuEl.current) return
+
+    onClick?.(e)
+  }, [onClick])
+
   return (
-    <div className={classes.playerToolbarButton} onClick={onClick} role="button">
+    <div className={classes.playerToolbarButton} onClick={handleClick} role="button">
       {icon}
 
       {hasMenu ? (
         <div className={classes.playerToolbarButtonMenu}>
-          <div className={classes.playerToolbarButtonMenuList}>
+          <div className={classes.playerToolbarButtonMenuList} ref={menuEl}>
             {children}
           </div>
         </div>
