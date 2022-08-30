@@ -15,7 +15,7 @@
  *  
  */
 
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useRef, useState } from "react"
 import classNames from "classnames"
 
 import classes from "@/styles/components/player/PlayerToolbarProgress.module.scss"
@@ -34,6 +34,7 @@ const PlayerToolbarProgress: React.FC<PlayerToolbarProgressProps> = ({ focus }) 
   const { buffering, currentTime, duration } = state
   const [tooltipValue, setTooltipValue] = useState<number>()
   const [isHover, setIsHover] = useState(false)
+  const progressContainer = useRef<HTMLDivElement>(null)
 
   const updateCurrentTime = useCallback((val: number) => {
     setTooltipValue(undefined)
@@ -51,6 +52,7 @@ const PlayerToolbarProgress: React.FC<PlayerToolbarProgressProps> = ({ focus }) 
       })}
       onMouseOver={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
+      ref={progressContainer}
     >
       <Slider
         className={classes.playerToolbarProgressSlider}
@@ -98,7 +100,11 @@ const PlayerToolbarProgress: React.FC<PlayerToolbarProgressProps> = ({ focus }) 
       <div className={classes.playerToolbarProgressBuffering} style={{ width: `${buffering * 100}%` }} />
       <span
         className={classes.playerToolbarProgressTooltip}
-        style={{ left: `${Math.max(tooltipValue ?? currentTime, 0.06) * 100}%` }}
+        style={{
+          left: (tooltipValue ?? currentTime) * (progressContainer.current?.clientWidth ?? 0) < 16
+            ? 12
+            : `${tooltipValue ?? currentTime * 100}%`
+        }}
       >
         <Time duration={(tooltipValue ?? currentTime) * duration} />
       </span>

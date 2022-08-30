@@ -32,7 +32,7 @@ const PlayerVolume: React.FC = () => {
   const [state, dispatch] = usePlayerState()
   const { muted, volume } = state
 
-  const toggleMute = useCallback(() => {
+  const toggleMute = useCallback((e: React.MouseEvent) => {
     dispatch({
       type: PlayerReducerTypes.TOGGLE_MUTED,
       muted: !muted,
@@ -40,14 +40,11 @@ const PlayerVolume: React.FC = () => {
   }, [dispatch, muted])
 
   const updateVolume = useCallback((value: number | number[] | null | undefined) => {
-    if (muted) {
-      toggleMute()
-    }
     dispatch({
       type: PlayerReducerTypes.UPDATE_VOLUME,
       volume: value as number,
     })
-  }, [dispatch, muted, toggleMute])
+  }, [dispatch])
 
   return (
     <PlayerToolbarButton
@@ -80,6 +77,39 @@ const PlayerVolume: React.FC = () => {
         invert={true}
         orientation="vertical"
         className="vertical-slider"
+        renderTrack={({ className }, { index, value }) => (
+          <div
+            className={className}
+            style={{
+              position: "absolute",
+              top: index === 0 ? `${100 - value * 100}%` : 0,
+              bottom: index === 0 ? 0 : `${100 - value * 100}%`,
+            }}
+            key={index}
+          />
+        )}
+        renderThumb={(props, { valueNow }) => (
+          <div
+            className={props.className}
+            style={{
+              ...props.style,
+              bottom: `${valueNow * 100}%`,
+            }}
+            onMouseDown={props.onMouseDown}
+            onTouchStart={props.onTouchStart}
+            onFocus={props.onFocus}
+            tabIndex={props.tabIndex}
+            role={props.role}
+            aria-orientation={props["aria-orientation"]}
+            aria-valuenow={props["aria-valuenow"]}
+            aria-valuemin={props["aria-valuemin"]}
+            aria-valuemax={props["aria-valuemax"]}
+            aria-label={props["aria-label"]}
+            aria-labelledby={props["aria-labelledby"]}
+            ref={props.ref}
+            key={props.key}
+          />
+        )}
         onChange={updateVolume}
       />
     </PlayerToolbarButton>

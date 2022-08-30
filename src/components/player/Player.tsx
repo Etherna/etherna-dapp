@@ -201,9 +201,11 @@ const InnerPlayer: React.FC<PlayerProps> = ({
       setIdle(false)
       startIdleTimeout()
     }
-    setFocus(true)
-    startFocusTimeout()
-  }, [isPlaying, startFocusTimeout, startIdleTimeout])
+    if (isTouch) {
+      setFocus(true)
+      startFocusTimeout()
+    }
+  }, [isPlaying, isTouch, startFocusTimeout, startIdleTimeout])
 
   const onMouseMouse = useCallback(() => {
     if (isPlaying) {
