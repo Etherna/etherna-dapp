@@ -61,7 +61,7 @@ const PlayerVolume: React.FC = () => {
       hasMenu
     >
       {isTouch && (
-        <button onClick={toggleMute}>
+        <button className="mb-3" onClick={toggleMute}>
           {muted ? (
             <VolumeIcon height={16} />
           ) : (
