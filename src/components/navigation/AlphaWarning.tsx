@@ -25,6 +25,7 @@ import { ReactComponent as DiscordLogo } from "@/assets/brand/logo-discord.svg"
 
 import useLocalStorage from "@/hooks/useLocalStorage"
 import { isBotUserAgent } from "@/utils/browser"
+import Tippy from "@tippyjs/react"
 
 const AlphaWarning: React.FC = () => {
   const [hide, setHide] = useLocalStorage("setting:hide-alpha-warning", false)
@@ -177,7 +178,14 @@ const AlphaWarning: React.FC = () => {
                 onClick={handleFeedback}
                 disabled={feedbackBlocked}
               >
-                <BugIcon /> Report bug
+                <Tippy
+                  content={feedbackBlocked ? "The feedback script has been blocked by your AdBlocker" : undefined}
+                  disabled={!feedbackBlocked}
+                >
+                  <span className="flex items-center">
+                    <BugIcon /> Report bug
+                  </span>
+                </Tippy>
               </button>
               <a
                 href="https://discord.gg/vfHYEXf"

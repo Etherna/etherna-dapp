@@ -49,7 +49,7 @@ const SwarmVideoIO = {
       createdAt: indexData?.creationDateTime ? +new Date(indexData.creationDateTime) : +new Date(),
       originalQuality: null,
       ownerAddress: indexData?.ownerAddress ?? null,
-      duration: NaN,
+      duration: 0,
       isVideoOnIndex: !!indexData,
       isValidatedOnIndex: !!indexData?.lastValidManifest,
       thumbnail: null,

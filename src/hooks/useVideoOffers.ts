@@ -36,6 +36,7 @@ export default function useVideoOffers(video: Video | SwarmVideoRaw | null | und
 
   useEffect(() => {
     if (opts?.disable) return
+    if (video && !("reference" in video) && !opts?.reference) return
 
     if (video && !videoOffersStatus && !opts?.routeState) {
       fetchVideoStatus()
@@ -110,22 +111,9 @@ export default function useVideoOffers(video: Video | SwarmVideoRaw | null | und
 }
 
 export const parseReaderStatus = (reader: SwarmResourcesReader, userAddress: string | undefined): VideoOffersStatus => {
-  const resourcesCount = reader.resourcesStatus?.length ?? 0
-  const offeredResourcesCount = (reader.resourcesStatus ?? [])
-    .filter(status => status.isOffered).length
-  const allSourcesOffered = reader.video.sources.length > 0 && reader.video.sources
-    .map(source => reader.getReferenceStatus(source.reference))
-    .every(status => status?.isOffered)
-  const fullyOffered = offeredResourcesCount === resourcesCount
-
   return {
-    offersStatus: offeredResourcesCount > 0
-      ? fullyOffered
-        ? "full"
-        : allSourcesOffered
-          ? "sources"
-          : "partial"
-      : "none",
+    offersStatus: getStatus(reader),
+    userOffersStatus: getStatus(reader, userAddress),
     globalOffers: reader.resourcesStatus ?? [],
     userOfferedResourses: userAddress
       ? (reader.resourcesStatus?.map(status => status.reference) ?? [])
@@ -136,4 +124,24 @@ export const parseReaderStatus = (reader: SwarmResourcesReader, userAddress: str
         .filter(reference => !reader.getReferenceStatus(reference)?.offeredBy.includes(userAddress))
       : [],
   }
+}
+
+function getStatus(reader: SwarmResourcesReader, byAddress?: string) {
+  const resourcesStatus = (reader.resourcesStatus ?? [])
+    .filter(r => !byAddress || r.offeredBy.includes(byAddress))
+  const resourcesCount = resourcesStatus.length
+  const offeredResourcesCount = resourcesStatus
+    .filter(status => status.isOffered).length
+  const allSourcesOffered = reader.video.sources.length > 0 && reader.video.sources
+    .map(source => reader.getReferenceStatus(source.reference))
+    .every(status => status?.isOffered && (!byAddress || status.offeredBy.includes(byAddress)))
+  const fullyOffered = offeredResourcesCount === resourcesCount
+
+  return offeredResourcesCount > 0
+    ? fullyOffered
+      ? "full"
+      : allSourcesOffered
+        ? "sources"
+        : "partial"
+    : "none"
 }

@@ -68,11 +68,10 @@
 }
 
 .videoInfo {
-  @apply flex mt-2;
+  @apply flex space-x-2 mt-2;
 }
 
 .videoInfoAvatar {
-  @apply mr-2;
   @apply w-8 h-8;
 }
 

@@ -15,22 +15,69 @@
  */
 
 .playerToolbarProgress {
-  @apply relative;
+  @apply relative w-full;
+}
+
+.playerToolbarProgressSlider {
   @apply w-full h-1;
-  @apply bg-white/30 backdrop-blur;
-  @apply cursor-pointer;
+  @apply transition duration-200;
+
+  :global(.track) {
+    @apply bg-gray-600;
+    @apply cursor-pointer;
+    @apply h-full;
+  }
+
+  :global(.track-0) {
+    @apply bg-primary-500 z-1;
+  }
+
+  :global(.thumb) {
+    @apply opacity-0 transition-opacity duration-200;
+    @apply w-5 h-5 rounded-full;
+    @apply -translate-x-1/2 -translate-y-1/2 mt-0.5;
+    @apply bg-primary-500;
+
+    .focus & {
+      @apply opacity-100;
+    }
+  }
 }
 
 .playerToolbarProgressBuffering {
-  @apply absolute left-0;
-  @apply h-full rounded-full;
-  @apply bg-white bg-opacity-50;
+  @apply absolute left-0 top-0;
+  @apply h-full;
+  @apply bg-primary-300/20;
   @apply pointer-events-none;
 }
 
-.playerToolbarProgressTime {
-  @apply absolute left-0;
-  @apply h-full rounded-full;
-  @apply bg-green-500;
-  @apply pointer-events-none;
+.playerToolbarProgressTooltip {
+  @apply opacity-0 transition-opacity duration-200;
+  @apply absolute left-0 bottom-0;
+  @apply -translate-x-1/2 mb-5;
+  @apply text-xs font-medium;
+  @apply bg-gray-900 rounded-sm px-1 py-0.5;
+
+  .showTime & {
+    @apply opacity-100;
+  }
 }
+
+// .playerToolbarProgressTime {
+//   @apply absolute left-0;
+//   @apply h-full rounded-full;
+//   @apply bg-primary-500;
+//   @apply pointer-events-none;
+// }
+
+// .playerToolbarProgressHandle {
+//   // @apply hidden;
+//   @apply absolute left-0;
+//   @apply w-5 h-5 rounded-full;
+//   @apply -translate-x-1/2 -translate-y-1/2 mt-0.5 mr-0.5;
+//   @apply bg-primary-500;
+
+//   .focus & {
+//     @apply block;
+//   }
+// }

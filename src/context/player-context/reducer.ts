@@ -232,11 +232,11 @@ const playerContextReducer = (state: PlayerContextState, action: AnyPlayerAction
 
     case PlayerReducerTypes.UPDATE_PROGRESS: {
       let currentTime = state.videoEl?.currentTime || 0
-      if (action.bySec) {
+      if (action.bySec !== undefined) {
         currentTime += action.bySec
-      } else if (action.byPercent) {
+      } else if (action.byPercent !== undefined) {
         currentTime += action.byPercent * state.duration
-      } else if (action.atPercent) {
+      } else if (action.atPercent !== undefined) {
         currentTime = action.atPercent * state.duration
       }
       currentTime = clamp(currentTime, 0, state.duration)
@@ -263,11 +263,11 @@ const playerContextReducer = (state: PlayerContextState, action: AnyPlayerAction
     case PlayerReducerTypes.UPDATE_VOLUME: {
       let volume = state.videoEl?.volume || 1
 
-      if (action.volume) {
+      if (action.volume !== undefined) {
         volume = action.volume
-      } else if (action.byPercent) {
+      } else if (action.byPercent !== undefined) {
         volume += action.byPercent
-      } else if (action.atPercent) {
+      } else if (action.atPercent !== undefined) {
         volume = action.atPercent
       }
       volume = clamp(volume, 0, 1)
@@ -279,6 +279,7 @@ const playerContextReducer = (state: PlayerContextState, action: AnyPlayerAction
       return {
         ...state,
         volume: volume,
+        muted: volume === 0,
       }
     }
 

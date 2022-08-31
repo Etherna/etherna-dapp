@@ -27,7 +27,8 @@
     }
   }
   .thumb {
-    @apply hidden;
+    @apply w-5 h-5 bg-white rounded-full;
+    @apply -ml-1.5 -mb-1.5;
   }
 }
 

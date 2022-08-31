@@ -14,13 +14,12 @@
  *  limitations under the License.
  */
 
-import type { Profile } from "@/definitions/swarm-profile"
+.skeleton {
+  @apply inline-flex;
+  @apply bg-gray-200 dark:bg-gray-600;
+  @apply animate-pulse;
 
-export type SwarmProfileReaderOptions = {
-  beeClient: SwarmBeeClient
-  fetchFromCache?: boolean
-}
-
-export type SwarmProfileWriterOptions = {
-  beeClient: SwarmBeeClient
+  > * {
+    @apply invisible;
+  }
 }

@@ -57,6 +57,10 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
   }, [isFetching, profile, isLoadingPlaylist])
 
   useEffect(() => {
+    setProfile(null)
+  }, [profileAddress])
+
+  useEffect(() => {
     if (profile) {
       loadPlaylist()
     }
@@ -79,7 +83,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
       <ProfileInfo
         profileAddress={profileAddress}
         nav={
-          <NavPills vertical={!isMobile} className="mt-10">
+          <NavPills vertical={!isMobile}>
             <NavPillsItem active={activeTab === "videos"} onClick={() => setActiveTab("videos")}>
               Videos
             </NavPillsItem>
@@ -89,12 +93,11 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
           </NavPills>
         }
         actions={
-          <div className="flex ml-auto">
+          <div className="flex flex-grow items-center justify-between">
             {address === profileAddress && (
               <Button
                 as="a"
                 href={routes.studioChannel}
-                className="ml-2"
               >
                 Customize
               </Button>

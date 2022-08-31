@@ -94,13 +94,14 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
     const from = page * limit
     const to = from + limit
     const references = playlist.videos?.slice(from, to) ?? []
-    return await Promise.all(references.map(video => {
-      const reader = new SwarmVideoIO.Reader(video.reference, playlist.owner, {
+    return await Promise.all(references.map(async playlistVid => {
+      const reader = new SwarmVideoIO.Reader(playlistVid.reference, playlist.owner, {
         beeClient,
         fetchProfile: false,
         profileData: opts.profile,
       })
-      return reader.download()
+      const video = await reader.download(true)
+      return video
     }))
   }, [beeClient, opts.profile, getPlaylist])
 
@@ -135,8 +136,10 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
       const newVideos = await fetchVideos(page - 1, limit)
       setVideos(newVideos)
     } catch (error: any) {
-      showError("Fetching error", getResponseErrorMessage(error))
       setVideos([])
+      if (error.response?.status !== 404) {
+        showError("Fetching error", getResponseErrorMessage(error))
+      }
     } finally {
       setCurrentPage(page)
       setIsFetching(false)

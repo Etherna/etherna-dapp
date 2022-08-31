@@ -224,11 +224,15 @@ export const createRequest = () => {
 }
 
 export const getResponseErrorMessage = (error: AxiosError): string => {
-  const data = error.response?.data
-  if (data) {
+  const response = error.response
+  if (response) {
+    const data = error.response?.data
+
     if (typeof data === "string") return data
 
     try {
+      if (!data) throw "CODE"
+
       return JSON.stringify(data)
     } catch {
       switch (error.response?.status) {
@@ -236,6 +240,8 @@ export const getResponseErrorMessage = (error: AxiosError): string => {
           return "Bad request"
         case 401:
           return "Unauthorized"
+        case 402:
+          return "Insufficient Credit"
         case 403:
           return "Forbidden"
         case 404:

@@ -132,12 +132,12 @@ const Videos: React.FC = () => {
       return null
     }
 
-    if (videosOffersStatus === undefined) {
+    if (videosOffersStatus === undefined || videosOffersStatus[video.reference] === undefined) {
       return <Spinner className="w-5 h-5" />
     }
 
     const videoResourcesStatus = videosOffersStatus[video.reference]
-    const status = videoResourcesStatus?.offersStatus ?? "none"
+    const status = videoResourcesStatus.userOffersStatus
 
     return (
       <Badge
@@ -157,7 +157,7 @@ const Videos: React.FC = () => {
           offersStatus: videoResourcesStatus,
         })}
       >
-        {status === "none" && "None (viewers cost)"}
+        {status === "none" && "No offers (viewers cost)"}
         {status === "full" && "Fully offered"}
         {status === "sources" && "Video sources offered"}
         {status === "partial" && "Partially offered"}
@@ -228,7 +228,7 @@ const Videos: React.FC = () => {
           hideOnMobile: true,
           render: item => renderVideoStatus(item)
         }, gatewayType === "bee" ? null : {
-          title: "Offered",
+          title: "Offered (by you)",
           hideOnMobile: true,
           render: item => renderOffersStatus(item)
         }, {

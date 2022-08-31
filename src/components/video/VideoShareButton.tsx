@@ -81,7 +81,7 @@ const VideoShareButton: React.FC<VideoShareButtonProps> = ({ reference, indexRef
             </CopyText>
           )}
           {sharePage === "link" && (
-            <CopyText label="Decentralized">
+            <CopyText label="Decentralized (permalink)">
               {import.meta.env.VITE_APP_PUBLIC_URL + routes.watch(reference)}
             </CopyText>
           )}
@@ -92,7 +92,7 @@ const VideoShareButton: React.FC<VideoShareButtonProps> = ({ reference, indexRef
             </CopyText>
           )}
           {sharePage === "embed" && (
-            <CopyText label="Decentralized">
+            <CopyText label="Decentralized (permalink)">
               {getIFrame(import.meta.env.VITE_APP_PUBLIC_URL + routes.embed(reference))}
             </CopyText>
           )}

@@ -39,7 +39,6 @@ const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({ comment, videoAut
   const { creationDateTime, text, ownerAddress } = comment
   const { profile, isLoading, loadProfile } = useSwarmProfile({
     address: ownerAddress,
-    updateCache: true,
     fetchFromCache: true,
   })
 

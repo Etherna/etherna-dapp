@@ -21,7 +21,7 @@ import SwarmImageIO from "@/classes/SwarmImage"
 import SwarmProfileIO from "@/classes/SwarmProfile"
 import type { SwarmVideoReaderOptions } from "./types"
 import type { Profile } from "@/definitions/swarm-profile"
-import type { IndexVideo, IndexVideoManifest } from "@/definitions/api-index"
+import type { IndexVideo } from "@/definitions/api-index"
 import type { SwarmVideoRaw, Video } from "@/definitions/swarm-video"
 
 /**
@@ -42,6 +42,7 @@ export default class SwarmVideoReader {
   private indexClient?: EthernaIndexClient
   private indexData?: IndexVideo
   private profileData?: Profile
+  private isDefaultVideo: boolean
 
   constructor(reference: string, ownerAddress: string | undefined, opts: SwarmVideoReaderOptions) {
     this.reference = SwarmVideoIO.isSwarmReference(reference) ? reference : ""
@@ -51,11 +52,12 @@ export default class SwarmVideoReader {
     this.indexClient = opts.indexClient
     this.indexData = opts.indexData ?? undefined
     this.profileData = opts.profileData
-    this.fetchProfile = opts.fetchProfile || true
-    this.fetchFromCache = opts.fetchFromCache || true
-    this.updateCache = opts.updateCache || true
+    this.fetchProfile = opts.fetchProfile ?? true
+    this.fetchFromCache = opts.fetchFromCache ?? true
+    this.updateCache = opts.updateCache ?? true
     this.video = this.doubleParseVideo(opts.videoData, opts.indexData, opts.profileData)
     this.videoRaw = this.parseVideo(this.video)
+    this.isDefaultVideo = !opts.videoData || !opts.indexData
 
     if (this.hasPrefetch) {
       this.loadVideoFromPrefetch()
@@ -145,7 +147,7 @@ export default class SwarmVideoReader {
       title: indexVideoData?.lastValidManifest?.title || videoData?.title || null,
       description: indexVideoData?.lastValidManifest?.description || videoData?.description || null,
       originalQuality: indexVideoData?.lastValidManifest?.originalQuality || videoData?.originalQuality || null,
-      duration: indexVideoData?.lastValidManifest?.duration || videoData?.duration || NaN,
+      duration: indexVideoData?.lastValidManifest?.duration || videoData?.duration || 0,
       thumbnail: indexVideoData?.lastValidManifest?.thumbnail || videoData?.thumbnail
         ? new SwarmImageIO.Reader(indexVideoData?.lastValidManifest?.thumbnail || videoData?.thumbnail!, {
           beeClient: this.beeClient
@@ -213,6 +215,8 @@ export default class SwarmVideoReader {
   }
 
   private async fetchRawVideo(): Promise<SwarmVideoRaw | null> {
+    if (!this.isDefaultVideo) return this.videoRaw
+
     try {
       const resp = await this.beeClient.downloadFile(this.reference)
       const meta = resp.data.json() as SwarmVideoRaw

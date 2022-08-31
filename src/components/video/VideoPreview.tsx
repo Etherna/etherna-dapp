@@ -25,14 +25,17 @@ import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-p
 
 import VideoMenu from "./VideoMenu"
 import Image from "@/components/common/Image"
+import Skeleton from "@/components/common/Skeleton"
 import Time from "@/components/media/Time"
 import Avatar from "@/components/user/Avatar"
 import routes from "@/routes"
 import useSelector from "@/state/useSelector"
-import { shortenEthAddr, checkIsEthAddress } from "@/utils/ethereum"
+import { shortenEthAddr } from "@/utils/ethereum"
 import dayjs from "@/utils/dayjs"
 import { encodedSvg } from "@/utils/svg"
 import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
+
+const thumbnailPreview = encodedSvg(<ThumbPlaceholder />)
 
 type VideoPreviewProps = {
   video: Video
@@ -49,40 +52,46 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
 }) => {
   const { address } = useSelector(state => state.user)
 
-  const ownerAddress = video.ownerAddress
-  const profileName = (video.owner?.name) || shortenEthAddr(ownerAddress)
-  const profileAvatar = video.owner?.avatar
+  const [ownerAddress, profileName] = useMemo(() => {
+    const ownerAddress = video.ownerAddress
+    const profileName = (video.owner?.name) || shortenEthAddr(ownerAddress)
+    return [ownerAddress, profileName]
+  }, [video.ownerAddress, video.owner])
 
-  const profileLink = ownerAddress ? routes.channel(ownerAddress) : null
-  const videoLink = routes.watch(decentralizedLink ? video.reference : video.indexReference ?? video.reference)
-  const videoSearch = new URL(videoLink, document.baseURI).search
-  const videoPath = videoLink.replace(videoSearch, "")
+  const profileAvatar = useMemo(() => {
+    const profileAvatar = video.owner?.avatar
+    return profileAvatar
+  }, [video.owner?.avatar])
+
+  const videoThumbnail = useMemo(() => {
+    return video.thumbnail
+  }, [video.thumbnail])
+
+  const isLoadingProfile = useMemo(() => {
+    return !video.owner
+  }, [video.owner])
 
   const isVideoOffered = useMemo(() => {
     return videoOffers?.offersStatus === "full" || videoOffers?.offersStatus === "sources"
   }, [videoOffers])
 
-  const VideoLink: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <Link
-      to={{
-        pathname: videoPath,
-        search: videoSearch,
-      }}
-      state={{ video, videoOffers }}
-    >
-      {children}
-    </Link>
-  )
+  const profileLink = useMemo(() => {
+    const profileLink = ownerAddress ? routes.channel(ownerAddress) : null
+    return profileLink
+  }, [ownerAddress])
 
   return (
     <div className={classes.videoPreview}>
-      <VideoLink>
+      <Link
+        to={routes.watch(decentralizedLink ? video.reference : video.indexReference ?? video.reference)}
+        state={{ video, videoOffers }}
+      >
         <div className={classes.videoThumbnail}>
           <Image
-            sources={video.thumbnail?.sources}
+            sources={videoThumbnail?.sources}
             placeholder="blur"
-            blurredDataURL={video.thumbnail?.blurredBase64}
-            fallbackSrc={encodedSvg(<ThumbPlaceholder />)}
+            blurredDataURL={videoThumbnail?.blurredBase64}
+            fallbackSrc={thumbnailPreview}
           />
           {video.duration && video.duration > 0 && (
             <div className={classes.videoThumbnailDuration}>
@@ -90,30 +99,33 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
             </div>
           )}
         </div>
-      </VideoLink>
+      </Link>
       <div className={classes.videoInfo}>
         {!hideProfile && profileLink && (
           <Link to={profileLink}>
-            <Avatar
-              className={classes.videoInfoAvatar}
-              image={profileAvatar}
-              address={ownerAddress}
-            />
+            <Skeleton show={isLoadingProfile} rounded>
+              <Avatar
+                className={classes.videoInfoAvatar}
+                image={profileAvatar}
+                address={ownerAddress}
+              />
+            </Skeleton>
           </Link>
         )}
         <div className={classes.videoInfoStats}>
-          <VideoLink>
+          <Link
+            to={routes.watch(decentralizedLink ? video.reference : video.indexReference ?? video.reference)}
+            state={{ video, videoOffers }}
+          >
             <h4 className={classes.videoInfoTitle}>{video.title || "???"}</h4>
-          </VideoLink>
+          </Link>
           {!hideProfile && profileLink && (
             <Link to={profileLink}>
-              <div>
+              <Skeleton show={isLoadingProfile}>
                 <h5 className={classes.videoInfoProfileName}>
-                  {checkIsEthAddress(profileName)
-                    ? shortenEthAddr(profileName)
-                    : profileName || shortenEthAddr(profileName)}
+                  {profileName}
                 </h5>
-              </div>
+              </Skeleton>
             </Link>
           )}
           {video.creationDateTime && (

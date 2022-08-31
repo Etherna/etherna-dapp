@@ -45,7 +45,15 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({
     const formattedMarkdown = forceNewLine
       ? value.replace(/\n/g, "<br />")
       : value
-    return filterXSS(parse(formattedMarkdown))
+    const html = filterXSS(parse(formattedMarkdown))
+    const safeLinksHtml = html.replace(
+      /<a href="(.*?)">(.*?)<\/a>/g,
+      (_, href: string, text: string) => {
+        const url = text.startsWith("http") ? text : href
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
+      }
+    )
+    return safeLinksHtml
   }, [value, forceNewLine])
 
   return (

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { parseReaderStatus } from "./useVideoOffers"
 import useMounted from "./useMounted"
@@ -26,12 +26,11 @@ export default function useVideosResources(videos: Video[] | undefined) {
   const { gatewayClient, isStandaloneGateway } = useSelector(state => state.env)
   const { address } = useSelector(state => state.user)
   const [videosOffersStatus, setVideosOffersStatus] = useState<Record<string, VideoOffersStatus>>()
+  const videosQueue = useRef<string[]>([])
   const mounted = useMounted()
 
   useEffect(() => {
     if (isStandaloneGateway) return
-
-    setVideosOffersStatus(undefined)
 
     if (videos) {
       fetchVideosStatus()
@@ -44,17 +43,26 @@ export default function useVideosResources(videos: Video[] | undefined) {
     if (!mounted.current) return
 
     try {
-      const readers = videos.map(video => new SwarmResourcesIO.Reader(video, { gatewayClient }))
+      const videosToFetch = videos.filter(
+        video => !videosOffersStatus?.[video.reference] && !videosQueue.current.includes(video.reference)
+      )
+
+      videosQueue.current = [...videosQueue.current, ...videosToFetch.map(video => video.reference)]
+
+      const readers = videosToFetch.map(video => new SwarmResourcesIO.Reader(video, { gatewayClient }))
       await Promise.allSettled(
         readers.map(reader => reader.download())
       )
 
-      const statuses: Record<string, VideoOffersStatus> = {}
+      const statuses: Record<string, VideoOffersStatus> = {
+        ...videosOffersStatus,
+      }
 
       for (const reader of readers) {
         statuses[reader.video.reference] = parseReaderStatus(reader, address)
       }
 
+      videosQueue.current = []
       mounted.current && setVideosOffersStatus(statuses)
     } catch (error) {
       console.error(error)

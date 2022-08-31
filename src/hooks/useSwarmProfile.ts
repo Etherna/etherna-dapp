@@ -24,12 +24,9 @@ import type { Profile } from "@/definitions/swarm-profile"
 type SwarmProfileOptions = {
   address: string
   fetchFromCache?: boolean
-  updateCache?: boolean
 }
 
 export default function useSwarmProfile(opts: SwarmProfileOptions) {
-  const { fetchFromCache, updateCache } = opts
-
   const { beeClient } = useSelector(state => state.env)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [isLoading, setIsloading] = useState(false)
@@ -40,8 +37,7 @@ export default function useSwarmProfile(opts: SwarmProfileOptions) {
 
     const profileReader = new SwarmProfileIO.Reader(opts.address, {
       beeClient,
-      fetchFromCache,
-      updateCache,
+      fetchFromCache: opts.fetchFromCache,
     })
 
     let profile = SwarmProfileIO.getDefaultProfile(opts.address)

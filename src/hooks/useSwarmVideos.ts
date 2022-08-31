@@ -14,21 +14,20 @@
  *  limitations under the License.
  */
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 import SwarmVideoIO from "@/classes/SwarmVideo"
+import SwarmProfileIO from "@/classes/SwarmProfile"
 import useSelector from "@/state/useSelector"
+import { showError } from "@/state/actions/modals"
 import { wait } from "@/utils/promise"
-import type { Profile } from "@/definitions/swarm-profile"
+import { getResponseErrorMessage } from "@/utils/request"
 import type { Video } from "@/definitions/swarm-video"
 import type { IndexVideo } from "@/definitions/api-index"
-import { showError } from "@/state/actions/modals"
 
 type SwarmVideosOptions = {
   seedLimit?: number
   fetchLimit?: number
-  profileData?: Profile
-  waitProfile?: boolean
 }
 
 const DEFAULT_SEED_LIMIT = 50
@@ -42,42 +41,52 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
   const [hasMore, setHasMore] = useState(true)
 
   useEffect(() => {
-    if (opts.waitProfile && !opts.profileData) {
-      // waiting profile is fetching
-      setIsFetching(true)
-      return
-    }
     fetchVideos()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, opts.waitProfile, opts.profileData])
+  }, [page])
 
-  useEffect(() => {
-    if (opts.profileData) {
-      updateVideosProfile(opts.profileData)
-    }
-  }, [opts.profileData])
+  const loadVideoProfiles = useCallback(async (videos: Video[]) => {
+    const addresses = videos
+      .filter(video => !video.owner)
+      .map(video => video.ownerAddress)
+      .filter((address, index, self) => address && self.indexOf(address) === index) as string[]
 
-  const updateVideosProfile = (profile: Profile) => {
-    setVideos(videos => videos?.map(video => ({
-      ...video,
-      owner: profile
-    })))
-  }
+    const profiles = await Promise.all(
+      addresses.map(async address => {
+        const profileReader = new SwarmProfileIO.Reader(address, {
+          beeClient,
+          fetchFromCache: true,
+        })
+        const profile = await profileReader.download()
+        return profile
+      }),
+    )
+    import.meta.env.DEV && await wait(1000)
 
-  const videoLoadPromise = (indexData: IndexVideo) => {
-    const { profileData } = opts
-    const fetchProfile = !profileData
+    setVideos(videos => {
+      const updatedVideos = [...(videos ?? [])]
+      for (const video of updatedVideos) {
+        if (!video.owner) {
+          const profile = profiles.find(profile => profile?.address === video.ownerAddress) ??
+            SwarmProfileIO.getDefaultProfile(video.ownerAddress ?? "0x0")
+          video.owner = profile
+        }
+      }
+      return updatedVideos
+    })
+  }, [beeClient])
+
+  const videoLoadPromise = useCallback((indexData: IndexVideo) => {
     const swarmVideoReader = new SwarmVideoIO.Reader(indexData.id, indexData.ownerAddress, {
       beeClient,
       indexClient,
       indexData,
-      profileData,
-      fetchProfile,
+      fetchProfile: false,
     })
     return swarmVideoReader.download()
-  }
+  }, [beeClient, indexClient])
 
-  const fetchVideos = async () => {
+  const fetchVideos = useCallback(async () => {
     if (!hasMore) {
       return setIsFetching(false)
     }
@@ -101,26 +110,28 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
           ...newVideos
         ].filter((vid, i, self) => self.indexOf(vid) === i)
       })
-    } catch (error) {
-      showError("Fetch error", "Coudn't fetch the videos. Try again later.")
+
+      loadVideoProfiles(newVideos)
+    } catch (error: any) {
+      showError("Coudn't fetch the videos", getResponseErrorMessage(error))
     }
 
     setIsFetching(false)
-  }
+  }, [hasMore, page, indexClient, opts.seedLimit, opts.fetchLimit, videoLoadPromise, loadVideoProfiles])
 
   // Returns
-  const loadMore = () => {
+  const loadMore = useCallback(() => {
     if (!isFetching && hasMore) {
       setPage(page => page + 1)
     }
-  }
+  }, [isFetching, hasMore])
 
-  const refresh = () => {
+  const refresh = useCallback(() => {
     setVideos([])
     setHasMore(true)
     setPage(0)
     fetchVideos()
-  }
+  }, [fetchVideos])
 
   return {
     videos,
