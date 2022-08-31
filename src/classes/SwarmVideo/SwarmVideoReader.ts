@@ -141,6 +141,9 @@ export default class SwarmVideoReader {
       ? indexVideoData?.lastValidManifest?.sources
       : videoData?.sources
 
+    const indexCreationTimestamp = indexVideoData ? +new Date(indexVideoData.creationDateTime) : null
+    const createdAt = indexCreationTimestamp ?? videoData?.createdAt ?? null
+
     return {
       reference: indexVideoData?.lastValidManifest?.hash || (videoData as Video).reference || this.reference,
       indexReference: indexVideoData?.id || this.indexReference,
@@ -159,7 +162,10 @@ export default class SwarmVideoReader {
       })),
       ownerAddress: indexVideoData?.ownerAddress || videoData?.ownerAddress || owner?.address || "",
       owner: videoData && "owner" in videoData ? videoData.owner : owner ?? undefined,
-      createdAt: indexVideoData ? +new Date(indexVideoData.creationDateTime) : videoData?.createdAt ?? null,
+      createdAt: createdAt,
+      updatedAt: indexVideoData?.lastValidManifest
+        ? indexVideoData.lastValidManifest.updatedAt ?? videoData?.updatedAt ?? createdAt
+        : videoData?.updatedAt ?? createdAt,
       isVideoOnIndex: !!indexVideoData,
       isValidatedOnIndex: !!indexVideoData?.lastValidManifest
         ? !SwarmVideoIO.isValidatingManifest(indexVideoData.lastValidManifest)
@@ -183,6 +189,7 @@ export default class SwarmVideoReader {
       title: video.title ?? "",
       description: video.description ?? "",
       createdAt: video.createdAt ?? +new Date(),
+      updatedAt: video.updatedAt ?? +new Date(),
       originalQuality: video.originalQuality ?? `${NaN}p`,
       ownerAddress: video.ownerAddress ?? this.ownerAddress ?? "",
       duration: video.duration,

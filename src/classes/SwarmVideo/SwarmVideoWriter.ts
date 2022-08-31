@@ -140,6 +140,7 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
     if (!this.reference) {
       this.videoRaw.createdAt = +new Date()
     }
+    this.videoRaw.updatedAt = +new Date()
     this.videoRaw.batchId = batchId
     this.videoRaw.v = SwarmVideoIO.lastVersion
 

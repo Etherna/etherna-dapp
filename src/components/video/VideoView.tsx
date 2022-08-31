@@ -93,6 +93,8 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
             description={video.description ?? ""}
             thumbnailUrl={video.thumbnail?.src}
             canonicalUrl={routes.withOrigin.watch(video.reference)}
+            contentUrl={video.sources[0].source}
+            embedUrl={routes.withOrigin.embed(video.reference)}
             duration={video.duration}
             datePublished={video.createdAt ? new Date(video.createdAt) : undefined}
           />

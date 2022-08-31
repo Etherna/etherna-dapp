@@ -58,6 +58,7 @@ export type IndexVideo = {
   lastValidManifest: IndexVideoManifest | null
   totDownvotes: number
   totUpvotes: number
+  updatedAt?: number
   batchId?: BatchId
 }
 

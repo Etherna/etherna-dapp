@@ -29,6 +29,8 @@ export type SwarmVideoRaw = {
   description: string
   /** Video creation timestamp */
   createdAt: number
+  /** Video update timestamp */
+  updatedAt?: number
   /**  Quality of the original video */
   originalQuality: SwarmVideoQuality
   /**  Address of the owner of the video */
@@ -67,6 +69,8 @@ export type SwarmVideo = {
   description: string | null
   /** Video creation timestamp */
   createdAt: number | null
+  /** Video update timestamp */
+  updatedAt: number | null
   /**  Quality of the original video */
   originalQuality: SwarmVideoQuality | null
   /**  Address of the owner of the video */

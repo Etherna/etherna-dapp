@@ -28,9 +28,12 @@ export type VideoJsonLdProps = {
   duration: number
   keywords?: string
   canonicalUrl: string
+  contentUrl: string
+  embedUrl: string
   thumbnailUrl?: string
   description?: string
   datePublished?: Date
+  dateUpdated?: Date
 }
 
 const VideoJsonLd: React.FC<VideoJsonLdProps> = ({
@@ -38,9 +41,12 @@ const VideoJsonLd: React.FC<VideoJsonLdProps> = ({
   duration,
   keywords,
   canonicalUrl,
+  contentUrl,
+  embedUrl,
   thumbnailUrl,
   description,
   datePublished,
+  dateUpdated,
 }) => {
   const ptDuration = useMemo(() => {
     const { hours, minutes, seconds } = timeComponents(duration)
@@ -63,6 +69,9 @@ const VideoJsonLd: React.FC<VideoJsonLdProps> = ({
         url: canonicalUrl,
         duration: ptDuration,
         datePublished: datePublished ? dayjs(datePublished).format("YYYY-MM-DD") : undefined,
+        uploadDate: datePublished ? dayjs(datePublished).format("YYYY-MM-DD") : undefined,
+        embedUrl,
+        contentUrl,
       }}
     />
   )
