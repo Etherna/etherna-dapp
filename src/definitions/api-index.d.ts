@@ -75,7 +75,7 @@ export type IndexVideoCreation = {
 export type IndexVideoValidation = {
   errorDetails: Array<{ errorMessage: string, errorNumber: string | number }>
   hash: string
-  isValid: boolean
+  isValid: boolean | null
   validationTime: string
 }
 
