@@ -30,7 +30,7 @@ const StudioVideoEdit = () => {
   const routeState = useRouteState<{ video: Video, hasOffers: boolean }>()
 
   return (
-    <AppLayoutWrapper>
+    <AppLayoutWrapper floatingSidebar hideSidebar>
       <Container noPaddingX noPaddingY>
         <VideoEdit reference={hash} routeState={routeState} />
       </Container>

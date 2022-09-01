@@ -23,7 +23,7 @@ import Postages from "@/components/studio/Postages"
 
 const PostagesPage = () => {
   return (
-    <AppLayoutWrapper>
+    <AppLayoutWrapper floatingSidebar hideSidebar>
       <Container noPaddingX noPaddingY fluid>
         <Postages />
       </Container>
