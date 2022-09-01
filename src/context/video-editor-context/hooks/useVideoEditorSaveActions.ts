@@ -20,12 +20,13 @@ import { AxiosError } from "axios"
 import useVideoEditorState from "./useVideoEditorState"
 import VideoEditorCache from "../VideoEditorCache"
 import EthernaIndexClient from "@/classes/EthernaIndexClient"
+import SwarmResourcesIO from "@/classes/SwarmResources"
 import useUserPlaylists from "@/hooks/useUserPlaylists"
 import useSelector from "@/state/useSelector"
 import { useErrorMessage } from "@/state/hooks/ui"
 import { useWallet } from "@/state/hooks/env"
-import { Profile } from "@/definitions/swarm-profile"
-import SwarmResourcesIO from "@/classes/SwarmResources"
+import { getResponseErrorMessage } from "@/utils/request"
+import type { Profile } from "@/definitions/swarm-profile"
 import type { PublishSource, PublishSourceSave } from "@/definitions/video-editor-context"
 
 type SaveOpts = {
@@ -148,11 +149,6 @@ export default function useVideoEditorSaveActions() {
   }
 
   const checkAccountability = () => {
-    if (!defaultBatch) {
-      showError("Cannot upload", "You don't have any storage yet.")
-      return false
-    }
-
     if (isLocked) {
       showError("Wallet Locked", "Please unlock your wallet before saving.")
       return false
@@ -200,7 +196,8 @@ export default function useVideoEditorSaveActions() {
       }
       const newReference = await videoWriter.update(ownerProfile)
       return newReference
-    } catch (error) {
+    } catch (error: any) {
+      showError("Manifest error", getResponseErrorMessage(error))
       return null
     }
   }

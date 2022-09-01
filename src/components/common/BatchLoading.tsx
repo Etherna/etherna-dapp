@@ -19,16 +19,18 @@ import React from "react"
 import classNames from "classnames"
 
 import classes from "@/styles/components/common/BatchLoading.module.scss"
-import { SparklesIcon, ExclamationCircleIcon } from "@heroicons/react/solid"
+import { SparklesIcon, ExclamationCircleIcon, PlusIcon } from "@heroicons/react/solid"
 
 import ProgressBar from "./ProgressBar"
+import Button from "./Button"
 
 type BatchLoadingProps = {
   className?: string
-  type: "fetching" | "creating" | "updating"
+  type: "fetching" | "creating" | "updating" | "error"
   title?: string
   message?: string
   error?: string
+  onCreate?(): void
 }
 
 const BatchLoading: React.FC<BatchLoadingProps> = ({
@@ -36,6 +38,7 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
   type,
   message = "This process might take several seconds",
   error,
+  onCreate,
 }) => {
   return (
     <div
@@ -68,6 +71,13 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
       <p className={classes.batchLoadingMessage}>
         {typeof error === "object" ? JSON.stringify(error) : error || message}
       </p>
+
+      {type === "fetching" && error && (
+        <Button className="mt-4" modifier="inverted" small onClick={onCreate}>
+          <PlusIcon aria-hidden />
+          create new batch
+        </Button>
+      )}
     </div>
   )
 }

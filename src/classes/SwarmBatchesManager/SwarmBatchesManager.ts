@@ -35,6 +35,7 @@ export default class SwarmBatchesManager {
 
   onBatchesLoading?(): void
   onBatchesLoaded?(batches: AnyBatch[]): void
+  onBatchLoadError?(batchId: BatchId, error: any): void
   onBatchCreating?(): void
   onBatchCreated?(batch: AnyBatch): void
   onBatchUpdating?(batchId: BatchId): void
@@ -91,10 +92,15 @@ export default class SwarmBatchesManager {
       // @ts-ignore
       .filter<PromiseFulfilledResult<AnyBatch>>(batch => batch.status === "fulfilled")
       .map(batch => batch.value)
-    // FIXME: https://etherna.atlassian.net/browse/ESG-138
-    // .filter(batch => "ownerAddress" in batch ? batch.ownerAddress === this.address : true)
 
     this.onBatchesLoaded?.(this.batches)
+
+    batches
+      // @ts-ignore
+      .filter<PromiseRejectedResult>(batch => batch.status === "rejected")
+      .forEach((result, i) => {
+        this.onBatchLoadError?.(batchIds[i], result.reason)
+      })
 
     return this.batches
   }

@@ -15,7 +15,7 @@
  *  
  */
 
-import React, { useEffect, useImperativeHandle, useMemo, useState } from "react"
+import React, { startTransition, useEffect, useImperativeHandle, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 
 import { EyeIcon, FilmIcon } from "@heroicons/react/solid"
@@ -68,6 +68,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   const [isMigrating, setIsMigrating] = useState(false)
   const [privateLink, setPrivateLink] = useState<string>()
   const [batchStatus, setBatchStatus] = useState<"creating" | "fetching" | "updating" | undefined>()
+  const [batchLoadErrored, setBatchLoadErrored] = useState(false)
   const removeBatchUpdate = useBatchesStore(state => state.removeBatchUpdate)
 
   const {
@@ -100,7 +101,11 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
 
   useImperativeHandle(ref, () => ({
     isEmpty: queue.length === 0,
-    canSubmitVideo: canPublishVideo && !hasQueuedProcesses && !descriptionExeeded && !requiresMigration,
+    canSubmitVideo: canPublishVideo &&
+      !hasQueuedProcesses &&
+      !descriptionExeeded &&
+      !requiresMigration &&
+      batchStatus === undefined,
     submitVideo: () => saveVideoTo(saveTo, offerResources),
     resetState: resetAll,
     askToClearState,
@@ -128,6 +133,12 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     videoWriter.onBatchesLoaded = () => setBatchStatus(undefined)
     videoWriter.onBatchUpdating = () => setBatchStatus("updating")
     videoWriter.onBatchUpdated = () => setBatchStatus(undefined)
+    videoWriter.onBatchLoadError = () => {
+      startTransition(() => {
+        setBatchLoadErrored(true)
+        setBatchStatus("fetching")
+      })
+    }
     videoWriter.loadBatches()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoWriter])
@@ -151,12 +162,12 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     clear && resetAll()
   }
 
-  const migrate = async () => {
+  const createBatch = async () => {
+    setBatchLoadErrored(false)
+
     const totalSize =
       videoWriter.videoRaw.sources.reduce((sum, s) => sum + s.size, 0) +
       2 ** 20 * 100 // 100mb extra
-
-    setIsMigrating(true)
 
     try {
       const batch = await videoWriter.createBatchForSize(totalSize)
@@ -165,9 +176,13 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
       setRequiresMigration(false)
     } catch (error: any) {
       showError("Cannot create batch", getResponseErrorMessage(error))
-    } finally {
-      setIsMigrating(false)
     }
+  }
+
+  const migrate = async () => {
+    setIsMigrating(true)
+    await createBatch()
+    setIsMigrating(false)
   }
 
   if (saveRedirect) {
@@ -201,6 +216,12 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
               `Please wait while we ${batchStatus === "creating" ? "create" : "load"} your postage batch.` + `\n` +
               `Postage bastches are used to distribute your video to the network.`
             }
+            error={
+              batchLoadErrored
+                ? "Coudn't find the postage batch. Try changing the gateway or create a new one."
+                : undefined
+            }
+            onCreate={createBatch}
           />
         )}
 
