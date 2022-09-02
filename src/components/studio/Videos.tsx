@@ -20,7 +20,7 @@ import { Link, Navigate } from "react-router-dom"
 import classNames from "classnames"
 
 import classes from "@/styles/components/studio/Videos.module.scss"
-import { TrashIcon, PencilIcon } from "@heroicons/react/solid"
+import { TrashIcon, PencilIcon, InformationCircleIcon } from "@heroicons/react/solid"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
@@ -44,12 +44,16 @@ import dayjs from "@/utils/dayjs"
 import type { Profile } from "@/definitions/swarm-profile"
 import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 import type { VideosSource } from "@/hooks/useUserVideos"
+import SwarmVideoIO from "@/classes/SwarmVideo"
+import Badge from "../common/Badge"
+import Tooltip from "../common/Tooltip"
 
 const Videos: React.FC = () => {
   const profileInfo = useSelector(state => state.profile)
   const address = useSelector(state => state.user.address)
   const indexUrl = useSelector(state => state.env.indexUrl)
-  const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
+  const gatewayClient = useSelector(state => state.env.gatewayClient)
+  const gatewayType = useSelector(state => state.env.gatewayType)
 
   const sources = useMemo(() => {
     return [
@@ -76,7 +80,7 @@ const Videos: React.FC = () => {
       name: profileInfo.name ?? shortenEthAddr(address),
       description: profileInfo.description ?? null
     }
-  }, [address, profileInfo.avatar, profileInfo.cover, profileInfo.description, profileInfo.name])
+  }, [address, profileInfo])
 
   const { isFetching, videos, total, fetchPage, deleteVideosFromSource } = useUserVideos({
     source: currentSource,
@@ -114,17 +118,17 @@ const Videos: React.FC = () => {
     const status = videosIndexStatus[video.reference] ?? "unindexed"
 
     return (
-      <span className={classNames(classes.videoStatus, {
-        [classes.public]: status === "public",
-        [classes.processing]: status === "processing",
-      })}>
+      <Badge
+        color={status === "public" ? "success" : status === "processing" ? "info" : "muted"}
+        small
+      >
         {status.replace(/^[a-z]{1}/, letter => letter.toUpperCase())}
-      </span>
+      </Badge>
     )
   }, [videosIndexStatus])
 
   const renderOffersStatus = useCallback((video: Video) => {
-    if (isStandaloneGateway) {
+    if (gatewayType === "bee") {
       return null
     }
 
@@ -136,25 +140,30 @@ const Videos: React.FC = () => {
     const status = videoResourcesStatus.userOffersStatus
 
     return (
-      <button
-        className={classNames(classes.offersStatus, {
-          [classes.fullOffered]: status === "full",
-          [classes.partialOffered]: status === "partial",
-          [classes.sourcesOffered]: status === "sources",
-        })}
+      <Badge
+        color={
+          status === "full"
+            ? "success"
+            : status === "partial"
+              ? "indigo"
+              : status === "sources"
+                ? "info"
+                : "muted"
+        }
+        small
+        prefix={<CreditIcon width={16} aria-hidden />}
         onClick={() => setSelectedVideoOffers({
           video,
           offersStatus: videoResourcesStatus,
         })}
       >
-        <CreditIcon aria-hidden />
         {status === "none" && "No offers (viewers cost)"}
         {status === "full" && "Fully offered"}
         {status === "sources" && "Video sources offered"}
         {status === "partial" && "Partially offered"}
-      </button>
+      </Badge>
     )
-  }, [isStandaloneGateway, videosOffersStatus])
+  }, [gatewayType, videosOffersStatus])
 
   if (!address) {
     return <Navigate to={routes.home} />
@@ -180,7 +189,7 @@ const Videos: React.FC = () => {
       </div>
 
       <StudioTableView
-        className={classes.videoTable}
+        className={classNames(classes.videoTable, "mt-8")}
         isLoading={isFetching}
         page={page}
         total={total}
@@ -203,8 +212,10 @@ const Videos: React.FC = () => {
                 <Link className={classes.videoTitleText} to={routes.watch(item.indexReference || item.reference)}>
                   <h3>{item.title}</h3>
                 </Link>
-                {renderVideoStatus(item)}
-                {renderOffersStatus(item)}
+                <div className={classes.videoBadges}>
+                  {renderVideoStatus(item)}
+                  {renderOffersStatus(item)}
+                </div>
               </div>
             </div>
           )
@@ -216,7 +227,7 @@ const Videos: React.FC = () => {
           title: "Index Status",
           hideOnMobile: true,
           render: item => renderVideoStatus(item)
-        }, isStandaloneGateway ? null : {
+        }, gatewayType === "bee" ? null : {
           title: "Offered (by you)",
           hideOnMobile: true,
           render: item => renderOffersStatus(item)
@@ -228,7 +239,16 @@ const Videos: React.FC = () => {
           title: "",
           width: "1%",
           render: item => (
-            <div className="flex">
+            <div className="flex items-center">
+              {(!item.v || +item.v < +SwarmVideoIO.lastVersion || !item.batchId) && (
+                <Tooltip text="Migration required">
+                  <div>
+                    <Badge color="warning" rounded>
+                      <InformationCircleIcon width={12} />
+                    </Badge>
+                  </div>
+                </Tooltip>
+              )}
               <Button
                 href={routes.studioVideoEdit(item.reference)}
                 routeState={{

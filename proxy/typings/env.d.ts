@@ -26,19 +26,21 @@ declare global {
       ETHERNA_GATEWAY_PROJECT_PATH: string
       ETHERNA_BEEHIVE_PROJECT_PATH: string
       BEE_LOCAL_INSTANCE: string
+      BEE_MODE: "dev" | "testnet"
+      BEE_SWAP_ENDPOINT: string
       BEE_SEED_ENABLED: string
       BEE_ENDPOINT: string
-      BEE_DEBUG_ENDPOINT: string
+      BEE_ADMIN_PASSWORD: string
+      BEE_HTTPS: string
+      BEE_HTTPS_PORT: string
       SSL_KEY_FILE: string
       SSL_CRT_FILE: string
       NODE_TLS_REJECT_UNAUTHORIZED: string
       GATEWAY_PORT: string
       GATEWAY_PROXY_BEE_HOST: string
-      GATEWAY_PROXY_BEE_DEBUG_HOST: string
       GATEWAY_PROXY_VALIDATOR_HOST: string
       GATEWAY_PROXY_STANDALONE: string
       GATEWAY_PROXY_DISABLE_VALIDATION: string
-      GATEWAY_PROXY_DISABLE_DEBUG: string
     }
   }
 }

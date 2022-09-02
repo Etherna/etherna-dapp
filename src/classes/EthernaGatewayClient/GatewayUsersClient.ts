@@ -19,14 +19,16 @@ import type { GatewayBatch, GatewayBatchPreview, GatewayCredit, GatewayCurrentUs
 
 export default class GatewayUsersClient {
   url: string
+  abortController?: AbortController
 
   /**
    * Init an gateway user client
    * 
    * @param {string} url Api host + api url
    */
-  constructor(url: string) {
+  constructor(url: string, abortController?: AbortController) {
     this.url = url
+    this.abortController = abortController
   }
 
   /**
@@ -37,7 +39,8 @@ export default class GatewayUsersClient {
     const endpoint = `${this.url}/users/current`
 
     const resp = await http.get<GatewayCurrentUser>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (typeof resp.data !== "object") {
@@ -56,7 +59,8 @@ export default class GatewayUsersClient {
     const endpoint = `${this.url}/users/current/credit`
 
     const resp = await http.get<GatewayCredit>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (typeof resp.data !== "object") {
@@ -75,7 +79,8 @@ export default class GatewayUsersClient {
     const endpoint = `${this.url}/users/current/batches`
 
     const resp = await http.get<GatewayBatchPreview[]>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (!Array.isArray(resp.data)) {
@@ -83,6 +88,56 @@ export default class GatewayUsersClient {
     }
 
     return resp.data
+  }
+
+  /**
+   * Create a new batch
+   * 
+   * @param depth Depth of the batch (size)
+   * @param amount Amount of the batch (TTL)
+   * @returns The newly created batch
+   */
+  async createBatch(depth: number, amount: bigint | string): Promise<GatewayBatch> {
+    const endpoint = `${this.url}/users/current/batches`
+
+    const resp = await http.post<string>(endpoint, null, {
+      params: {
+        depth,
+        amount,
+      },
+      withCredentials: true,
+      signal: this.abortController?.signal,
+    })
+
+    const referenceId = resp.data
+
+    if (typeof referenceId !== "string") {
+      throw new Error("Coudn't create a new batch")
+    }
+
+    let resolver: (batch: GatewayBatch) => void
+    let timeout: number
+
+    const fetchBatch = async () => {
+      clearTimeout(timeout)
+
+      timeout = window.setTimeout(async () => {
+        try {
+          const newBatchId = await this.fetchPostageBatchRef(referenceId)
+          if (newBatchId) {
+            const batch = await this.fetchBatch(newBatchId)
+            return resolver(batch)
+          }
+        } catch { }
+
+        fetchBatch()
+      }, 5000)
+    }
+
+    return await new Promise<GatewayBatch>(resolve => {
+      resolver = resolve
+      fetchBatch()
+    })
   }
 
   /**
@@ -95,7 +150,8 @@ export default class GatewayUsersClient {
     const endpoint = `${this.url}/users/current/batches/${batchId}`
 
     const resp = await http.get<GatewayBatch>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (typeof resp.data !== "object") {
@@ -103,6 +159,23 @@ export default class GatewayUsersClient {
     }
 
     return resp.data
+  }
+
+  /**
+   * Dilute batch (increase size)
+   * 
+   * @param batchId Id of the swarm batch
+   * @param depth New batch depth
+   */
+  async diluteBatch(batchId: string, depth: number) {
+    const endpoint = `${this.url}/users/current/batches/${batchId}/dilute/${depth}`
+
+    await http.patch(endpoint, null, {
+      withCredentials: true,
+      signal: this.abortController?.signal,
+    })
+
+    return true
   }
 
   /**
@@ -114,7 +187,8 @@ export default class GatewayUsersClient {
     const endpoint = `${this.url}/users/current/offeredResources`
 
     const resp = await http.get<string[]>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (typeof resp.data !== "object") {
@@ -122,5 +196,31 @@ export default class GatewayUsersClient {
     }
 
     return resp.data
+  }
+
+
+  // SYSTEM
+
+  /**
+   * Fetch creation batch id
+   * 
+   * @param referenceId Reference id of the batch
+   * @returns The created batch id if completed
+   */
+  async fetchPostageBatchRef(referenceId: string) {
+    const endpoint = `${this.url}/system/postagebatchref/${referenceId}`
+
+    const resp = await http.get<string>(endpoint, {
+      withCredentials: true,
+      signal: this.abortController?.signal,
+    })
+
+    const batchId = resp.data
+
+    if (!batchId || typeof resp.data !== "string") {
+      throw new Error("Batch still processing")
+    }
+
+    return batchId
   }
 }

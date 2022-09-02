@@ -20,6 +20,7 @@ import type { IndexEncryptionType } from "@/classes/EthernaIndexClient/types"
 import type { SwarmImage, SwarmImageRaw } from "./swarm-image"
 import type { Profile } from "./swarm-profile"
 import type { SchemaVersion } from "./schema"
+import type { BatchId } from "@ethersphere/bee-js"
 
 export type SwarmVideoRaw = {
   /**  Title of the video */
@@ -28,6 +29,8 @@ export type SwarmVideoRaw = {
   description: string
   /** Video creation timestamp */
   createdAt: number
+  /** Video update timestamp */
+  updatedAt?: number
   /**  Quality of the original video */
   originalQuality: SwarmVideoQuality
   /**  Address of the owner of the video */
@@ -38,6 +41,8 @@ export type SwarmVideoRaw = {
   thumbnail: SwarmImageRaw | null
   /**  List of available qualities of the video */
   sources: SwarmVideoSourceRaw[]
+  /** batch id used */
+  batchId?: BatchId
   /** Schema version */
   v?: SchemaVersion
 }
@@ -64,6 +69,8 @@ export type SwarmVideo = {
   description: string | null
   /** Video creation timestamp */
   createdAt: number | null
+  /** Video update timestamp */
+  updatedAt: number | null
   /**  Quality of the original video */
   originalQuality: SwarmVideoQuality | null
   /**  Address of the owner of the video */
@@ -74,6 +81,8 @@ export type SwarmVideo = {
   thumbnail: SwarmImage | null
   /**  All qualities of video */
   sources: VideoSource[]
+  /** batch id used */
+  batchId?: BatchId
   /** Schema version */
   v?: SchemaVersion
 }

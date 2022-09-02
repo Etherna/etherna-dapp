@@ -53,7 +53,7 @@ export const getDefaultAddTo = () => {
   return getAllSources().map(source => ({
     source: source.source,
     identifier: source.identifier,
-    add: false,
+    add: true,
   } as PublishSourceSave))
 }
 

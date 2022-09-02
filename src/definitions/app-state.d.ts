@@ -24,6 +24,7 @@ import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type { SwarmImage } from "./swarm-image"
 import type { Keymap, KeymapNamespace } from "./keyboard"
 import type { GatewayBatch } from "./api-gateway"
+import type { GatewayType } from "./extension-host"
 
 export type AppState = {
   env: EnvState
@@ -35,7 +36,7 @@ export type AppState = {
 export type EnvState = {
   indexUrl: string
   gatewayUrl: string
-  gatewayStampsUrl?: string
+  gatewayType: GatewayType
   creditUrl: string
   indexClient: EthernaIndexClient
   gatewayClient: EthernaGatewayClient
@@ -77,13 +78,14 @@ export type UIState = {
   confirmButtonTitle?: string
   confirmButtonType?: "default" | "destructive"
 
+  showBeeAuthentication?: boolean
+
   isConnectingWallet?: boolean
   isLoadingProfile?: boolean
   showNetwokChangeModal?: boolean
   isEditingShortcut?: boolean
   isCroppingImage?: boolean
 
-  imageCrop?: Partial<Crop>
   imageType?: "avatar" | "cover"
   image?: string
 
@@ -99,6 +101,8 @@ export type UserState = {
   creditUnlimited?: boolean
   isSignedIn?: boolean
   isSignedInGateway?: boolean
+  defaultBatchId?: string
+  defaultBatch?: GatewayBatch
   batches?: GatewayBatch[]
 }
 

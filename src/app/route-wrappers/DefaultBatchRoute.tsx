@@ -1,4 +1,4 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,29 +12,26 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *  
  */
 
-.storage {
-  @apply flex flex-col;
-  @apply max-w-screen-lg;
+import React from "react"
+import { Outlet } from "react-router-dom"
+
+import useDefaultBatch from "@/state/hooks/user/useDefaultBatch"
+
+import BatchLoading from "@/components/common/BatchLoading"
+
+const DefaultBatchRoute: React.FC = () => {
+  const { isFetchingBatch, isCreatingBatch, error } = useDefaultBatch({ autofetch: true })
+
+  return (
+    (isFetchingBatch || isCreatingBatch || error) ? (
+      <BatchLoading type={isCreatingBatch ? "creating" : "fetching"} error={error} />
+    ) : (
+      <Outlet />
+    )
+  )
 }
 
-.storageList {
-  @apply grid gap-5 grid-flow-row-dense;
-  @apply grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2;
-  @apply mt-5;
-
-  @screen xl {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 512px));
-  }
-}
-
-.storageLoading {
-  @apply flex items-center mx-auto;
-  @apply text-gray-500 dark:text-gray-400;
-  @apply font-medium;
-
-  svg {
-    @apply w-[1.2em] h-[1.2em] mr-2;
-  }
-}
+export default DefaultBatchRoute

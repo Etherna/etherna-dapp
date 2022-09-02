@@ -21,8 +21,11 @@ import chalk from "chalk"
 import url from "url"
 import { exec } from "child_process"
 import DotEnv from "dotenv"
+import bcrypt from "bcryptjs"
+
 import { createPostageBatch } from "./create-postage-batch.mjs"
 import { loadSeed } from "./swarm-seed.mjs"
+import proxyBeeOverHttps from "./bee-https-proxy.mjs"
 
 DotEnv.config({
   path: fs.existsSync(path.resolve(`.env.development`))
@@ -124,8 +127,27 @@ const execProject = (projectPath) => {
  * Run the bee instance
  */
 const execBee = () => {
-  const execCms = `bee dev --cors-allowed-origins=*`
-  return exec(execCms, execCallback)
+  const adminPassword = bcrypt.hashSync(process.env.BEE_ADMIN_PASSWORD)
+  const testnetParams = [
+    `--mainnet=false`,
+    `--password='${process.env.BEE_PASSWORD}'`,
+    `--full-node=true`,
+    `--swap-endpoint='${process.env.BEE_SWAP_ENDPOINT}'`,
+    `--debug-api-enable=true`,
+  ]
+  const params = [
+    process.env.BEE_MODE === "dev" ? "dev" : "start",
+    `--cors-allowed-origins=*`,
+    `--admin-password='${adminPassword}'`,
+    `--restricted`,
+    ...(process.env.BEE_MODE === "testnet" ? testnetParams : []),
+  ]
+  const execCms = `bee ${params.join(" ")}`
+  const childProcess = exec(execCms, execCallback)
+  if (Boolean(process.env.BEE_HTTPS)) {
+    proxyBeeOverHttps()
+  }
+  return childProcess
 }
 
 /**
@@ -206,8 +228,11 @@ const run = async () => {
     const beeProcess = execBee()
     processes.push(beeProcess)
     await waitService(process.env.BEE_ENDPOINT, "Bee Node")
-    const batchId = await createPostageBatch()
-    await loadSeed(batchId)
+
+    if (process.env.BEE_MODE === "dev") {
+      const batchId = await createPostageBatch()
+      await loadSeed(batchId)
+    }
   }
 
   if (shouldRunEthernaSSO) {

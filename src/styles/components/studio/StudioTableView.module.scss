@@ -25,7 +25,6 @@
 
 .studioTable {
   @apply min-w-full;
-  @apply mt-5;
   @apply transition-opacity duration-200 ease-out;
 
   &.loading {
@@ -35,7 +34,7 @@
   thead {
     @apply pb-4;
   }
-  
+
   tr > th {
     @apply font-medium text-left;
     @apply text-gray-600 dark:text-gray-300;
@@ -50,7 +49,8 @@
     @apply border-t border-gray-200 dark:border-gray-800;
   }
 
-  th, td {
+  th,
+  td {
     @apply py-2;
 
     &.hideMobile {
@@ -65,12 +65,13 @@
 }
 
 .studioTableToolbarActions {
-  @apply invisible;
-  @apply flex items-center ml-auto;
+  @apply hidden lg:flex;
+  @apply lg:invisible;
+  @apply items-center ml-auto;
   @apply space-x-3;
 
   &.show {
-    @apply visible;
+    @apply flex visible;
   }
 }
 

@@ -29,7 +29,6 @@ const PrivateKeyPath = path.resolve("..", process.env.SSL_KEY_FILE)
 const CertificatePath = path.resolve("..", process.env.SSL_CRT_FILE)
 const ProxyHosts = {
   bee: process.env.GATEWAY_PROXY_BEE_HOST,
-  beeDebug: process.env.GATEWAY_PROXY_BEE_DEBUG_HOST,
   gateway: process.env.GATEWAY_PROXY_VALIDATOR_HOST,
 }
 
@@ -45,17 +44,13 @@ if (fs.existsSync(PrivateKeyPath) && fs.existsSync(CertificatePath)) {
       return
     }
 
-    const beeDebugRegex = /^\/(addresses|balances|chequebook|reservestate|settlements|transactions|stamps)\/?.*/
-    const beeRegex = /^\/(bytes|chunks|bzz|tags|pins|soc|feeds|pss)\/?.*/
+    const beeRegex = /^\/(bytes|chunks|bzz|tags|pins|soc|feeds|pss|stamps)\/?.*/
     const isBee = beeRegex.test(req.url)
-    const isBeeDebug = beeDebugRegex.test(req.url)
     const standaloneNode = process.env.GATEWAY_PROXY_STANDALONE === "true"
     const shouldValidate = !standaloneNode && process.env.GATEWAY_PROXY_DISABLE_VALIDATION !== "true"
-    const shouldProxyBeeDebug = process.env.GATEWAY_PROXY_DISABLE_DEBUG !== "true"
 
     let hostType: keyof typeof ProxyHosts = standaloneNode ? "bee" : "gateway"
     if (isBee) hostType = "bee"
-    if (isBeeDebug && shouldProxyBeeDebug) hostType = "beeDebug"
 
     const host = ProxyHosts[hostType]
 

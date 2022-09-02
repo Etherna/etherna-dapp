@@ -89,9 +89,8 @@ export default class SwarmVideoReader {
   async download(forced = false) {
     if (this.loadedFromPrefetch && !forced) return this.video
 
-    const indexVideo = await this.fetchIndexVideo()
-
-    const [rawVideo, ownerProfile] = await Promise.all([
+    const [indexVideo, rawVideo, ownerProfile] = await Promise.all([
+      this.fetchIndexVideo(),
       this.fetchRawVideo(),
       this.ownerAddress
         ? this.fetchOwnerProfile(this.ownerAddress)
@@ -101,6 +100,7 @@ export default class SwarmVideoReader {
     // update local video instances
     this.video = this.doubleParseVideo(rawVideo, indexVideo, ownerProfile)
     this.videoRaw = this.parseVideo(this.video)
+    this.indexReference = this.indexReference ?? indexVideo?.id
 
     let owner = ownerProfile
     if (!owner && this.videoRaw.ownerAddress) {
@@ -141,6 +141,9 @@ export default class SwarmVideoReader {
       ? indexVideoData?.lastValidManifest?.sources
       : videoData?.sources
 
+    const indexCreationTimestamp = indexVideoData ? +new Date(indexVideoData.creationDateTime) : null
+    const createdAt = indexCreationTimestamp ?? videoData?.createdAt ?? null
+
     return {
       reference: indexVideoData?.lastValidManifest?.hash || (videoData as Video).reference || this.reference,
       indexReference: indexVideoData?.id || this.indexReference,
@@ -159,7 +162,10 @@ export default class SwarmVideoReader {
       })),
       ownerAddress: indexVideoData?.ownerAddress || videoData?.ownerAddress || owner?.address || "",
       owner: videoData && "owner" in videoData ? videoData.owner : owner ?? undefined,
-      createdAt: indexVideoData ? +new Date(indexVideoData.creationDateTime) : videoData?.createdAt ?? null,
+      createdAt: createdAt,
+      updatedAt: indexVideoData?.lastValidManifest
+        ? indexVideoData.lastValidManifest.updatedAt ?? videoData?.updatedAt ?? createdAt
+        : videoData?.updatedAt ?? createdAt,
       isVideoOnIndex: !!indexVideoData,
       isValidatedOnIndex: !!indexVideoData?.lastValidManifest
         ? !SwarmVideoIO.isValidatingManifest(indexVideoData.lastValidManifest)
@@ -169,6 +175,7 @@ export default class SwarmVideoReader {
       encryptionType: indexVideoData?.encryptionType,
       totDownvotes: indexVideoData?.totDownvotes,
       totUpvotes: indexVideoData?.totUpvotes,
+      batchId: indexVideoData?.batchId ?? videoData?.batchId,
       v: SwarmVideoIO.lastVersion,
     }
   }
@@ -182,6 +189,7 @@ export default class SwarmVideoReader {
       title: video.title ?? "",
       description: video.description ?? "",
       createdAt: video.createdAt ?? +new Date(),
+      updatedAt: video.updatedAt ?? +new Date(),
       originalQuality: video.originalQuality ?? `${NaN}p`,
       ownerAddress: video.ownerAddress ?? this.ownerAddress ?? "",
       duration: video.duration,
@@ -194,6 +202,7 @@ export default class SwarmVideoReader {
         bitrate: source.bitrate,
         quality: source.quality,
       })),
+      batchId: video.batchId,
       v: SwarmVideoIO.lastVersion,
     }
   }

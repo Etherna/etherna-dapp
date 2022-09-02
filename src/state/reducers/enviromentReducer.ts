@@ -109,9 +109,9 @@ autoUpgradeEthernaService("setting:gateway-url", import.meta.env.VITE_APP_GATEWA
 // Init reducer
 const indexUrl = parseLocalStorage<string>("setting:index-url") || import.meta.env.VITE_APP_INDEX_URL
 const gatewayUrl = parseLocalStorage<string>("setting:gateway-url") || import.meta.env.VITE_APP_GATEWAY_URL
-const gatewayStampsUrl = parseLocalStorage<GatewayExtensionHost[]>("setting:gateway-hosts")
+const gatewayType = parseLocalStorage<GatewayExtensionHost[]>("setting:gateway-hosts")
   ?.find(host => host.url === gatewayUrl)
-  ?.stampsUrl
+  ?.type ?? "etherna-gateway"
 const creditUrl = import.meta.env.VITE_APP_CREDIT_URL
 const indexClient = new EthernaIndexClient({
   host: EthernaIndexClient.defaultHost,
@@ -122,14 +122,12 @@ const gatewayClient = new EthernaGatewayClient({
 const authClient = new EthernaSSOClient({
   host: EthernaSSOClient.defaultHost,
 })
-const beeClient = new SwarmBeeClient(EthernaGatewayClient.defaultHost, {
-  stampsUrl: gatewayStampsUrl
-})
+const beeClient = new SwarmBeeClient(EthernaGatewayClient.defaultHost)
 
 const initialState: EnvState = {
   indexUrl,
   gatewayUrl,
-  gatewayStampsUrl,
+  gatewayType,
   creditUrl,
   indexClient,
   gatewayClient,
@@ -166,6 +164,9 @@ const enviromentReducer = (state: EnvState = initialState, action: EnvActions): 
       return {
         ...state,
         gatewayUrl: action.gatewayUrl,
+        gatewayType: parseLocalStorage<GatewayExtensionHost[]>("setting:gateway-hosts")
+          ?.find(host => host.url === gatewayUrl)
+          ?.type ?? "etherna-gateway",
         beeClient: action.beeClient
       }
 
@@ -182,7 +183,6 @@ const enviromentReducer = (state: EnvState = initialState, action: EnvActions): 
         beeClient: new SwarmBeeClient(state.beeClient.url, {
           signer: state.beeClient.signer,
           userBatches: action.batches,
-          stampsUrl: state.beeClient.stampsUrl,
         })
       }
 

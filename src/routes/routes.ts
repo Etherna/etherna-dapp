@@ -51,8 +51,8 @@ const routePaths = {
   studioVideoNew: `/studio/videos/new`,
   /** `/studio/channel` */
   studioChannel: `/studio/channel`,
-  /** `/studio/storage` */
-  studioStorage: `/studio/storage`,
+  /** `/studio/postages` */
+  studioPostages: `/studio/postages`,
 }
 
 const withOrigin = (paths: typeof routePaths): typeof routePaths => {

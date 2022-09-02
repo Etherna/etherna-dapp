@@ -13,15 +13,47 @@ DotEnv.config({
 })
 
 export async function createPostageBatch(amount = 10000000, depth = 20) {
+  console.log(chalk.blueBright(`Authenticating...`))
+
+  const token = await authToken()
+
   console.log(chalk.blueBright(`Creating a postage batch with ${amount} BZZ / ${depth} depth...`))
+
   try {
-    const batchResp = await axios.post(`${process.env.BEE_DEBUG_ENDPOINT}/stamps/${amount}/${depth}`)
+    const batchResp = await axios.post(`${process.env.BEE_ENDPOINT}/stamps/${amount}/${depth}`, null, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
     const { batchID } = batchResp.data
     console.log(chalk.blueBright(`Created postage batch: ${batchID}`))
     return batchID
   } catch (error) {
     console.log(chalk.red(`Cannot create postage batch: ${error.message}`))
     console.log(error.request.data)
+  }
+}
+
+async function authToken() {
+  const username = ""
+  const password = process.env.BEE_ADMIN_PASSWORD
+  const credentials = Buffer.from(`${username}:${password}`).toString("base64")
+
+  const data = {
+    role: "maintainer",
+    expiry: 3600 * 24,
+  }
+
+  try {
+    const resp = await axios.post(`${process.env.BEE_ENDPOINT}/auth`, data, {
+      headers: {
+        Authorization: `Basic ${credentials}`,
+        "Content-Type": "application/json",
+      },
+    })
+    return resp.data.key
+  } catch (error) {
+    console.log(error.response?.data ?? error)
   }
 }
 

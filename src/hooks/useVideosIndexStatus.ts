@@ -46,18 +46,18 @@ export default function useVideosIndexStatus(videos: Video[] | undefined, indexU
     try {
       const data = await Promise.allSettled(
         videos.map(
-          video => indexClient.current!.videos.fetchVideoFromHash(video.reference)
+          video => indexClient.current!.videos.fetchHashValidation(video.reference)
         )
       )
 
       const videosIndexStatus = data.reduce((acc, promiseResult, i) => {
         const status: VideoIndexStatus = promiseResult.status === "rejected"
           ? "unindexed"
-          : promiseResult.value.lastValidManifest === null
-            ? "error"
-            : SwarmVideoIO.isValidatingManifest(promiseResult.value.lastValidManifest)
-              ? "processing"
-              : "public"
+          : promiseResult.value.isValid === null
+            ? "processing"
+            : promiseResult.value.isValid
+              ? "public"
+              : "error"
         return {
           ...acc,
           [videos[i].reference]: status

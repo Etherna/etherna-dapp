@@ -34,6 +34,8 @@ export type ProfileRaw = {
   website?: string
   /** User's birthday */
   birthday?: string
+  /** default batch id used */
+  batchId?: string
   /** Schema version */
   v?: SchemaVersion
 }
@@ -55,6 +57,8 @@ export type Profile = {
   website?: string
   /** User's birthday */
   birthday?: string
+  /** default batch id used */
+  batchId?: string
   /** Schema version */
   v?: SchemaVersion
 }

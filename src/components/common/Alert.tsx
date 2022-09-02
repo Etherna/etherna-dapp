@@ -25,6 +25,7 @@ type AlertProps = {
   title?: string
   className?: string
   type: "success" | "danger" | "warning" | "info"
+  small?: boolean
   onClose?: () => void
 }
 
@@ -33,6 +34,7 @@ const Alert: React.FC<AlertProps> = ({
   type = "info",
   className,
   title,
+  small,
   onClose,
 }) => {
   return (
@@ -42,19 +44,22 @@ const Alert: React.FC<AlertProps> = ({
         [classes.alertDanger]: type === "danger",
         [classes.alertWarning]: type === "warning",
         [classes.alertInfo]: type === "info",
+        [classes.alertSmall]: small,
       })}
     >
-      <div className={classes.alertHeader}>
-        {title && <div className={classes.alertTitle}>{title}</div>}
+      {(title || onClose) && (
+        <div className={classes.alertHeader}>
+          {title && <div className={classes.alertTitle}>{title}</div>}
 
-        {onClose && (
-          <button className={classes.close} onClick={onClose}>
-            <span className="m-auto" aria-hidden="true">
-              &times;
-            </span>
-          </button>
-        )}
-      </div>
+          {onClose && (
+            <button className={classes.close} onClick={onClose}>
+              <span className="m-auto" aria-hidden="true">
+                &times;
+              </span>
+            </button>
+          )}
+        </div>
+      )}
       <div className={classes.alertBody}>{children}</div>
     </div>
   )

@@ -14,16 +14,15 @@
  *  limitations under the License.
  */
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
 import type { Dispatch } from "redux"
 
 import useSelector from "@/state/useSelector"
-import { EnvActions, EnvActionTypes } from "@/state/reducers/enviromentReducer"
 import { UserActions, UserActionTypes } from "@/state/reducers/userReducer"
-import type { GatewayBatch, GatewayBatchPreview } from "@/definitions/api-gateway"
-
-let batchesFetchTries = 0
+import { useBeeAuthentication } from "@/state/hooks/ui"
+import { parsePostageBatch } from "@/utils/batches"
+import type { GatewayBatch } from "@/definitions/api-gateway"
 
 type UseBatchesOpts = {
   autofetch?: boolean
@@ -31,96 +30,79 @@ type UseBatchesOpts = {
 
 export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) {
   const [isFetchingBatches, setIsFetchingBatches] = useState(false)
-  const { gatewayClient, beeClient } = useSelector(state => state.env)
-  const { batches } = useSelector(state => state.user)
-  const dispatch = useDispatch<Dispatch<UserActions | EnvActions>>()
+  const [error, setError] = useState<string | undefined>()
+
+  const gatewayClient = useSelector(state => state.env.gatewayClient)
+  const gatewayType = useSelector(state => state.env.gatewayType)
+  const beeClient = useSelector(state => state.env.beeClient)
+  const address = useSelector(state => state.user.address)
+  const batches = useSelector(state => state.user.batches)
+  const isLoadingProfile = useSelector(state => state.ui.isLoadingProfile)
+
+  const dispatch = useDispatch<Dispatch<UserActions>>()
+  const { waitAuth } = useBeeAuthentication()
+  const timeout = useRef<number>()
+
+  useEffect(() => {
+    return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      clearTimeout(timeout.current)
+    }
+  }, [])
 
   useEffect(() => {
     if (!opts.autofetch) return
-    if (!batches || !batches.length) {
-      fetchBatches()
-    }
+    if (isLoadingProfile) return
+
+    fetchAllBatches()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts.autofetch])
+  }, [opts.autofetch, isLoadingProfile])
 
-  const fetchBatches = async () => {
-    batchesFetchTries++
+  const fetchAllBatches = async () => {
+    setIsFetchingBatches(true)
 
-    let userBatches: GatewayBatch[] = []
-    let batchesPreview: GatewayBatchPreview[] = []
+    let batches: GatewayBatch[] = []
 
     try {
-      setIsFetchingBatches(true)
-
-      batchesPreview = await gatewayClient.users.fetchBatches()
-
-      if (batchesPreview.length === 0) {
-        // waiting to auto create default batch
-        console.warn("Still no batches. Re-Trying in 10 seconds.")
-        batchesFetchTries < 5 && setTimeout(() => {
-          fetchBatches()
-        }, 10000)
-        return
-      }
-
-      userBatches = await Promise.all(
-        batchesPreview.map(batchPreview => gatewayClient.users.fetchBatch(batchPreview.batchId))
-      )
-    } catch (error) {
-      if (batchesPreview.length > 0 && import.meta.env.PROD) {
-        userBatches = batchesPreview.map(batchPreview => ({
-          id: batchPreview.batchId,
-          depth: 20,
-          bucketDepth: 0,
-          amountPaid: 0,
-          normalisedBalance: 0,
-          batchTTL: 0,
-          usable: false,
-          utilization: 0,
-          blockNumber: 0,
-          exists: false,
-          immutableFlag: false,
-          label: "",
-          ownerAddress: null,
-        }))
+      if (gatewayType === "etherna-gateway") {
+        const batchesPreview = await gatewayClient.users.fetchBatches()
+        batches = await Promise.all(batchesPreview.map(
+          async batchPreview => gatewayClient.users.fetchBatch(batchPreview.batchId)
+        ))
       } else {
-        // Try to fetch from /stamps endpoint
-        const batches = await beeClient.getAllPostageBatch()
-        const usableBatches = batches.filter(batch => batch.usable)
-        userBatches = usableBatches.map(batch => ({
-          id: batch.batchID,
-          depth: batch.depth,
-          bucketDepth: batch.bucketDepth,
-          amountPaid: +batch.amount,
-          normalisedBalance: 0,
-          batchTTL: -1,
-          usable: batch.usable,
-          utilization: batch.utilization,
-          blockNumber: batch.blockNumber,
-          exists: true,
-          immutableFlag: batch.immutableFlag,
-          label: batch.label,
-          ownerAddress: null,
-        }))
+        await waitAuth()
+
+        batches = (await beeClient.getAllPostageBatches()).map(batch => parsePostageBatch(batch, address))
       }
+
+      dispatch({
+        type: UserActionTypes.USER_SET_BATCHES,
+        batches,
+      })
+    } catch (error: any) {
+      setError(error.message)
     }
-
-    dispatch({
-      type: EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES,
-      batches: userBatches,
-    })
-
-    dispatch({
-      type: UserActionTypes.USER_SET_BATCHES,
-      batches: userBatches,
-    })
 
     setIsFetchingBatches(false)
   }
 
+  const updateBatch = (batch: GatewayBatch) => {
+    const updatedBatches = [...(batches ?? [])]
+    const index = updatedBatches.findIndex(b => b.id === batch.id)
+    if (index >= 0) {
+      updatedBatches[index] = batch
+    }
+
+    dispatch({
+      type: UserActionTypes.USER_SET_BATCHES,
+      batches: updatedBatches,
+    })
+  }
+
   return {
     isFetchingBatches,
-    batches,
-    fetchBatches,
+    error,
+    fetchAllBatches,
+    updateBatch,
   }
 }

@@ -60,7 +60,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
   profileAddress,
 }, ref) => {
   const beeClient = useSelector(state => state.env.beeClient)
-  const batches = useSelector(state => state.user.batches)
+  const defaultBatch = useSelector(state => state.user.defaultBatch)
   const profile = useSelector(state => state.profile)
   const { cropImage } = useImageCrop()
   const { showError } = useErrorMessage()
@@ -108,7 +108,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(({
   }))
 
   const handleSubmit = async () => {
-    if (!batches || batches.length === 0) {
+    if (!defaultBatch) {
       return showError("Cannot upload", "You don't have any storage yet.")
     }
 

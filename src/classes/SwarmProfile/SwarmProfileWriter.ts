@@ -24,7 +24,17 @@ import type { SwarmProfileWriterOptions } from "./types"
 import type { SwarmImage } from "@/definitions/swarm-image"
 import type { Profile, ProfileRaw } from "@/definitions/swarm-profile"
 
-const ProfileProperties = ["address", "name", "avatar", "cover", "description", "location", "website", "birthday"]
+const ProfileProperties = [
+  "address",
+  "name",
+  "avatar",
+  "cover",
+  "description",
+  "location",
+  "website",
+  "birthday",
+  "batchId"
+]
 
 /**
  * Load a profile from swarm hash or feed
@@ -119,6 +129,7 @@ export default class SwarmProfileWriter {
     }
     validatedProfile.avatar = this.parseImage(profile.avatar)
     validatedProfile.cover = this.parseImage(profile.cover)
+    validatedProfile.batchId = this.beeClient.userBatches[0].id ?? profile.batchId
     validatedProfile.v = SwarmProfileIO.lastVersion
 
     return validatedProfile

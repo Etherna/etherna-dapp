@@ -14,36 +14,35 @@
  *  limitations under the License.
  */
 
-import http from "@/utils/request"
-
-export default class GatewaySettingsClient {
-  url: string
-
-  /**
-   * Init an gateway settings client
-   * 
-   * @param url Api host + api url
-   */
-  constructor(url: string) {
-    this.url = url
+export default class FlagEnumManager {
+  constructor(private value: number = 0) {
   }
 
-  /**
-   * Get the current byte price
-   * 
-   * @returns Dollar price per single byte
-   */
-  async fetchCurrentBytePrice() {
-    const endpoint = `${this.url}/system/byteprice`
+  public get() {
+    return this.value
+  }
 
-    const resp = await http.get<number>(endpoint, {
-      withCredentials: true
-    })
+  public set(value: number): this {
+    this.value = value
+    return this
+  }
 
-    if (typeof resp.data !== "number") {
-      throw new Error("Cannot fetch byte price")
-    }
+  public has(key: number): boolean {
+    return !!(this.value & key)
+  }
 
-    return resp.data
+  public add(key: number): this {
+    this.value |= key
+    return this
+  }
+
+  public delete(key: number): this {
+    this.value &= ~key
+    return this
+  }
+
+  public toggle(key: number): this {
+    this.has(key) ? this.delete(key) : this.add(key)
+    return this
   }
 }

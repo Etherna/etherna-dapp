@@ -20,12 +20,13 @@ import { AxiosError } from "axios"
 import useVideoEditorState from "./useVideoEditorState"
 import VideoEditorCache from "../VideoEditorCache"
 import EthernaIndexClient from "@/classes/EthernaIndexClient"
+import SwarmResourcesIO from "@/classes/SwarmResources"
 import useUserPlaylists from "@/hooks/useUserPlaylists"
 import useSelector from "@/state/useSelector"
 import { useErrorMessage } from "@/state/hooks/ui"
 import { useWallet } from "@/state/hooks/env"
-import { Profile } from "@/definitions/swarm-profile"
-import SwarmResourcesIO from "@/classes/SwarmResources"
+import { getResponseErrorMessage } from "@/utils/request"
+import type { Profile } from "@/definitions/swarm-profile"
 import type { PublishSource, PublishSourceSave } from "@/definitions/video-editor-context"
 
 type SaveOpts = {
@@ -43,13 +44,13 @@ export default function useVideoEditorSaveActions() {
   const [state] = useVideoEditorState()
   const { videoWriter, sources, reference: initialReference } = state
   const { gatewayClient } = useSelector(state => state.env)
-  const { address, batches } = useSelector(state => state.user)
+  const { address, defaultBatch } = useSelector(state => state.user)
   const profile = useSelector(state => state.profile)
   const { isLocked } = useWallet()
 
   const [reference, setReference] = useState<string>()
   const [isSaving, setIsSaving] = useState(false)
-  const [pusblishStatus, setPublishStatus] = useState<PublishStatus[]>()
+  const [publishStatus, setPublishStatus] = useState<PublishStatus[]>()
   const [resourcesOffered, setResourcesOffered] = useState<boolean>()
 
   const { showError } = useErrorMessage()
@@ -88,7 +89,7 @@ export default function useVideoEditorSaveActions() {
     if (!newReference) return setIsSaving(false)
 
     // Add/remove to sources
-    const newPublishStatus: PublishStatus[] = [...(pusblishStatus ?? [])]
+    const newPublishStatus: PublishStatus[] = [...(publishStatus ?? [])]
     for (const source of saveToSources) {
       let statusIndex = newPublishStatus.findIndex(
         ps => ps.source.source === source.source && ps.source.identifier === source.identifier
@@ -148,11 +149,6 @@ export default function useVideoEditorSaveActions() {
   }
 
   const checkAccountability = () => {
-    if (!batches || batches.length === 0) {
-      showError("Cannot upload", "You don't have any storage yet.")
-      return false
-    }
-
     if (isLocked) {
       showError("Wallet Locked", "Please unlock your wallet before saving.")
       return false
@@ -200,7 +196,8 @@ export default function useVideoEditorSaveActions() {
       }
       const newReference = await videoWriter.update(ownerProfile)
       return newReference
-    } catch (error) {
+    } catch (error: any) {
+      showError("Manifest error", getResponseErrorMessage(error))
       return null
     }
   }
@@ -307,7 +304,7 @@ export default function useVideoEditorSaveActions() {
     reference,
     isSaving,
     resourcesOffered,
-    pusblishStatus,
+    publishStatus,
     saveVideoTo: (sources: PublishSourceSave[], offerResources = false) => saveVideoTo(sources, {
       saveManifest: true,
       offerResources,

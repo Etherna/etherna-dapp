@@ -15,7 +15,7 @@
  *  
  */
 
-import React, { useEffect, useImperativeHandle, useMemo, useState } from "react"
+import React, { startTransition, useEffect, useImperativeHandle, useMemo, useState } from "react"
 import { useNavigate } from "react-router"
 
 import { EyeIcon, FilmIcon } from "@heroicons/react/solid"
@@ -25,6 +25,7 @@ import VideoDetails from "./VideoDetails"
 import VideoSources from "./VideoSources"
 import VideoExtra from "./VideoExtra"
 import Alert from "@/components/common/Alert"
+import BatchLoading from "@/components/common/BatchLoading"
 import Button from "@/components/common/Button"
 import ProgressTab from "@/components/common/ProgressTab"
 import ProgressTabContent from "@/components/common/ProgressTabContent"
@@ -33,11 +34,14 @@ import WalletState from "@/components/studio/other/WalletState"
 import SwarmVideoIO from "@/classes/SwarmVideo"
 import {
   useVideoEditorBaseActions,
+  useVideoEditorInfoActions,
   useVideoEditorSaveActions,
   useVideoEditorState
 } from "@/context/video-editor-context/hooks"
 import routes from "@/routes"
-import { useConfirmation } from "@/state/hooks/ui"
+import { useConfirmation, useErrorMessage } from "@/state/hooks/ui"
+import useBatchesStore, { BatchUpdateType } from "@/stores/batches"
+import { getResponseErrorMessage } from "@/utils/request"
 
 const PORTAL_ID = "video-drag-portal"
 
@@ -60,21 +64,27 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     offerResources,
     descriptionExeeded
   }] = useVideoEditorState()
+  const [requiresMigration, setRequiresMigration] = useState(false)
+  const [isMigrating, setIsMigrating] = useState(false)
   const [privateLink, setPrivateLink] = useState<string>()
+  const [batchStatus, setBatchStatus] = useState<"creating" | "fetching" | "updating" | undefined>()
+  const [batchLoadErrored, setBatchLoadErrored] = useState(false)
+  const removeBatchUpdate = useBatchesStore(state => state.removeBatchUpdate)
 
   const {
     reference: newReference,
     isSaving,
-    pusblishStatus,
+    publishStatus,
     resourcesOffered,
     saveVideoTo,
     reSaveTo,
     saveVideoResources,
     resetState: resetSaveState,
   } = useVideoEditorSaveActions()
-
+  const { cacheState } = useVideoEditorInfoActions()
   const { resetState } = useVideoEditorBaseActions()
   const { waitConfirmation } = useConfirmation()
+  const { showError } = useErrorMessage()
 
   const hasOriginalVideo = videoWriter.originalQuality && videoWriter.sources.length > 0
   const canPublishVideo = !!videoWriter.videoRaw.title && hasOriginalVideo
@@ -85,13 +95,17 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     return saveTo.every(s => !s.add)
   }, [saveTo])
   const saveRedirect = useMemo(() => {
-    const hasPublishErrors = pusblishStatus?.some(s => !s.ok)
+    const hasPublishErrors = publishStatus?.some(s => !s.ok)
     return !!newReference && !isPrivateVideo && !hasPublishErrors
-  }, [newReference, pusblishStatus, isPrivateVideo])
+  }, [newReference, publishStatus, isPrivateVideo])
 
   useImperativeHandle(ref, () => ({
     isEmpty: queue.length === 0,
-    canSubmitVideo: canPublishVideo && !hasQueuedProcesses && !descriptionExeeded,
+    canSubmitVideo: canPublishVideo &&
+      !hasQueuedProcesses &&
+      !descriptionExeeded &&
+      !requiresMigration &&
+      batchStatus === undefined,
     submitVideo: () => saveVideoTo(saveTo, offerResources),
     resetState: resetAll,
     askToClearState,
@@ -105,9 +119,37 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newReference])
 
+  useEffect(() => {
+    setBatchStatus(undefined)
+
+    if (reference && !videoWriter.videoRaw.batchId) {
+      setRequiresMigration(true)
+    }
+
+    videoWriter.onBatchCreating = () => { setBatchStatus("creating") }
+    videoWriter.onBatchCreatedPending = () => { cacheState() }
+    videoWriter.onBatchCreated = () => { setBatchStatus(undefined) }
+    videoWriter.onBatchesLoading = () => setBatchStatus("fetching")
+    videoWriter.onBatchesLoaded = () => setBatchStatus(undefined)
+    videoWriter.onBatchUpdating = () => setBatchStatus("updating")
+    videoWriter.onBatchUpdated = () => setBatchStatus(undefined)
+    videoWriter.onBatchLoadError = () => {
+      startTransition(() => {
+        setBatchLoadErrored(true)
+        setBatchStatus("fetching")
+      })
+    }
+    videoWriter.loadBatches()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [videoWriter])
+
   const resetAll = () => {
     resetState()
     resetSaveState()
+
+    if (videoWriter.videoRaw.batchId) {
+      removeBatchUpdate(videoWriter.videoRaw.batchId)
+    }
   }
 
   const askToClearState = async () => {
@@ -120,19 +162,70 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     clear && resetAll()
   }
 
+  const createBatch = async () => {
+    setBatchLoadErrored(false)
+
+    const totalSize =
+      videoWriter.videoRaw.sources.reduce((sum, s) => sum + s.size, 0) +
+      2 ** 20 * 100 // 100mb extra
+
+    try {
+      const batch = await videoWriter.createBatchForSize(totalSize)
+      videoWriter.videoRaw.batchId = videoWriter.getBatchId(batch)
+      videoWriter.waitBatchPropagation(batch, BatchUpdateType.Create)
+      setRequiresMigration(false)
+    } catch (error: any) {
+      showError("Cannot create batch", getResponseErrorMessage(error))
+    }
+  }
+
+  const migrate = async () => {
+    setIsMigrating(true)
+    await createBatch()
+    setIsMigrating(false)
+  }
+
   if (saveRedirect) {
     resetAll()
     navigate(routes.studioVideos)
   }
 
-  const usePortal = !reference && !hasChanges && (pusblishStatus ?? []).length === 0
+  const usePortal = !reference && !hasChanges && (publishStatus ?? []).length === 0
 
   return (
     <>
       <div className="my-6 space-y-4">
         <WalletState />
 
-        {pusblishStatus?.filter(status => !status.ok).map(({ source, type }) => (
+        {(requiresMigration && !isMigrating) && (
+          <Alert type="warning">
+            <p>This video requires a migration.</p>
+            <Button onClick={migrate}>Start migration</Button>
+          </Alert>
+        )}
+
+        {batchStatus && (
+          <BatchLoading
+            type={batchStatus}
+            title={
+              batchStatus === "creating"
+                ? "Creating a postage batch for your video"
+                : "Loading your video postage batches"
+            }
+            message={
+              `Please wait while we ${batchStatus === "creating" ? "create" : "load"} your postage batch.` + `\n` +
+              `Postage bastches are used to distribute your video to the network.`
+            }
+            error={
+              batchLoadErrored
+                ? "Coudn't find the postage batch. Try changing the gateway or create a new one."
+                : undefined
+            }
+            onCreate={createBatch}
+          />
+        )}
+
+        {publishStatus?.filter(status => !status.ok).map(({ source, type }) => (
           <Alert
             type="warning"
             title={`Video not added to ${source.name}`}
@@ -175,7 +268,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
         <div id={PORTAL_ID}></div>
       )}
 
-      {!pusblishStatus?.length && (
+      {!publishStatus?.length && (
         <div style={{ display: usePortal ? "none" : undefined }}>
           <div className="row">
             <div className="col">

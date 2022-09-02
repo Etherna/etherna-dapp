@@ -19,15 +19,12 @@ import { Dispatch } from "redux"
 
 import { UIActions, UIActionTypes } from "@/state/reducers/uiReducer"
 
-let waitingInterval: number | undefined
-let waitingStatus: boolean | undefined
+let resolveConfirmation: ((success: boolean) => void) | undefined
 
 export default function useConfirmation() {
   const dispatch = useDispatch<Dispatch<UIActions>>()
 
   const showConfirmation = (title: string, message: string) => {
-    waitingStatus = undefined
-
     dispatch({
       type: UIActionTypes.TOGGLE_CONFIRMATION,
       confirmMessage: message,
@@ -40,7 +37,7 @@ export default function useConfirmation() {
       type: UIActionTypes.TOGGLE_CONFIRMATION
     })
 
-    waitingStatus = success
+    resolveConfirmation?.(success)
   }
 
   const waitConfirmation = async (
@@ -54,25 +51,8 @@ export default function useConfirmation() {
       confirmButtonType: confirmType
     })
 
-    clearInterval(waitingInterval)
-
     return new Promise<boolean>((resolve) => {
-      waitingInterval = window.setInterval(() => {
-        const confirmationSuccess = waitingStatus
-
-        if (confirmationSuccess !== undefined) {
-          dispatch({
-            type: UIActionTypes.TOGGLE_CONFIRMATION
-          })
-
-          clearInterval(waitingInterval)
-
-          waitingStatus = undefined
-          waitingInterval = undefined
-
-          resolve(confirmationSuccess)
-        }
-      }, 500)
+      resolveConfirmation = resolve
     })
   }
 

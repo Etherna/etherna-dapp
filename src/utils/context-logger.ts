@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+/* eslint-disable no-console */
+
 type Reducer<State = any, Action = any> = (state: State, action: Action) => State
 
 let lastAction: any

@@ -15,9 +15,11 @@
  */
 
 import { Bee } from "@ethersphere/bee-js"
+import cookie from "cookiejs"
 import type { BatchId, BeeOptions, PostageBatch, UploadResult } from "@ethersphere/bee-js"
 
 import http, { createRequest } from "@/utils/request"
+import { getBatchPercentUtilization } from "@/utils/batches"
 import { buildAxiosFetch } from "@/utils/fetch"
 import type { AxiosFetch } from "@/utils/fetch"
 import type { AxiosUploadOptions, CustomUploadOptions } from "./bee-client.d.ts"
@@ -25,16 +27,18 @@ import type { GatewayBatch } from "@/definitions/api-gateway"
 
 export type MultipleFileUpload = { buffer: Uint8Array, type?: string }[]
 
+const TOKEN_COOKIE_NAME = "bee-token"
+const TOKEN_EXPIRATION_SETTING = "setting:token-expiration"
+
 /**
  * Extend default Bee client with more functionalities
  */
 export default class SwarmBeeClient extends Bee {
 
-  public stampsUrl?: string
   public userBatches: GatewayBatch[]
   public emptyBatchId = "0000000000000000000000000000000000000000000000000000000000000000" as BatchId
 
-  constructor(url: string, options?: BeeOptions & { userBatches?: GatewayBatch[], stampsUrl?: string }) {
+  constructor(url: string, options?: BeeOptions & { userBatches?: GatewayBatch[] }) {
     const request = createRequest()
     request.defaults.withCredentials = true
 
@@ -42,8 +46,20 @@ export default class SwarmBeeClient extends Bee {
       ...options,
       fetch: buildAxiosFetch(request)
     })
-    this.stampsUrl = options?.stampsUrl
     this.userBatches = options?.userBatches ?? []
+  }
+
+  public get isAuthenticated(): boolean {
+    const token = this.authToken
+    const tokenExpiration = localStorage.getItem(TOKEN_EXPIRATION_SETTING)
+    const expirationDate = tokenExpiration ? new Date(+tokenExpiration) : new Date()
+
+    return !!token && expirationDate > new Date()
+  }
+
+  public get authToken(): string | null {
+    const token = cookie.get(TOKEN_COOKIE_NAME) as string | null
+    return token
   }
 
   /**
@@ -112,32 +128,165 @@ export default class SwarmBeeClient extends Bee {
     }
   }
 
-  async getAllPostageBatch(): Promise<PostageBatch[]> {
-    const stampsUrl = this.stampsUrl || this.url + "/stamps"
+  async authenticate(username: string, password: string): Promise<void> {
+    let token = this.authToken
+    const tokenExpiration = localStorage.getItem(TOKEN_EXPIRATION_SETTING)
+    const expirationDate = tokenExpiration ? new Date(tokenExpiration) : new Date()
 
+    if (token && expirationDate <= new Date()) {
+      token = await this.refreshToken(token)
+    }
+
+    const expiry = 3600 * 24 // 1 day
+
+    if (!token) {
+      const credentials = btoa(`${username}:${password}`)
+
+      const data = {
+        role: "maintainer",
+        expiry
+      }
+
+      const resp = await http.post(`${this.url}/auth`, data, {
+        headers: {
+          Authorization: `Basic ${credentials}`,
+          "Content-Type": "application/json",
+        },
+      })
+
+      token = resp.data.key
+    }
+
+    this.saveToken(token, expiry)
+  }
+
+  async refreshToken(token: string): Promise<string | null> {
     try {
-      const postageResp = await http.get<{ stamps: PostageBatch[] }>(stampsUrl)
-      return postageResp.data.stamps
-    } catch { }
+      const resp = await http.post(`${this.url}/refresh`, null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+      const newToken = resp.data.key
 
-    return [{
-      batchID: this.emptyBatchId,
-      batchTTL: -1,
-      amount: "0",
-      depth: 0,
-      blockNumber: 0,
-      bucketDepth: 0,
-      exists: false,
-      immutableFlag: false,
-      label: "",
-      usable: false,
-      utilization: 0,
-    }]
+      this.saveToken(newToken)
+
+      return newToken
+    } catch (error: any) {
+      console.error(error.response)
+      // cookie.remove(TOKEN_COOKIE_NAME)
+      return null
+    }
+  }
+
+  saveToken(token: string | null, expiry = 3600 * 24) {
+    if (!token) {
+      // cookie.remove(TOKEN_COOKIE_NAME)
+      // localStorage.removeItem(TOKEN_EXPIRATION_SETTING)
+    } else {
+      const expiration = +new Date() + (expiry * 1000)
+
+      const cookieExpiration = new Date()
+      cookieExpiration.setFullYear(cookieExpiration.getFullYear() + 10)
+
+      localStorage.setItem(TOKEN_EXPIRATION_SETTING, expiration.toString())
+      cookie.set(TOKEN_COOKIE_NAME, token!, {
+        sameSite: "Strict",
+        expires: 3600 * 1000 * 87660,
+        secure: true,
+      })
+    }
+  }
+
+  async getBatch(batchId: string): Promise<PostageBatch> {
+    const token = this.authToken
+
+    const resp = await http.get(`${this.url}/stamps/${batchId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    return resp.data
+  }
+
+  async getCurrentPrice(): Promise<number> {
+    const token = this.authToken
+
+    const resp = await http.get(`${this.url}/chainstate`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    return resp.data.currentPrice
+  }
+
+  async createBatch(depth = 20, amount: bigint | string = "10000000"): Promise<BatchId> {
+    const token = this.authToken
+
+    const resp = await http.post<{ batchID: BatchId }>(`${this.url}/stamps/${amount}/${depth}`, null, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    const batchId = resp.data.batchID
+
+    return batchId
+  }
+
+  /**
+   * Topup batch (increase TTL)
+   * 
+   * @param batchId Id of the swarm batch
+   * @param byAmount Amount to add to the batch
+   */
+  async topupBatch(batchId: string, byAmount: number | string): Promise<boolean> {
+    const token = this.authToken
+    const stampsUrl = `${this.url}/stamps/topup/${batchId}/${byAmount}`
+
+    await http.patch<{ batchID: BatchId }>(stampsUrl, null, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return true
+  }
+
+  /**
+   * Dillute batch (increase size)
+   * 
+   * @param batchId Id of the swarm batch
+   * @param depth New depth of the batch
+   */
+  async diluteBatch(batchId: string, depth: number): Promise<boolean> {
+    const token = this.authToken
+    const stampsUrl = `${this.url}/stamps/dilute/${batchId}/${depth}`
+
+    await http.patch<{ batchID: BatchId }>(stampsUrl, null, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return true
+  }
+
+  async getAllPostageBatches(): Promise<PostageBatch[]> {
+    const token = this.authToken
+    const stampsUrl = this.url + "/stamps"
+
+    const postageResp = await http.get<{ stamps: PostageBatch[] }>(stampsUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    return postageResp.data.stamps
   }
 
   async getBatchId(): Promise<string> {
     const usableBatch = (batch: GatewayBatch | PostageBatch) =>
-      batch.usable && (batch.utilization / 2 ** (batch.depth - batch.bucketDepth)) < 1
+      batch.usable && getBatchPercentUtilization(batch) < 1
 
     if (this.userBatches) {
       const batch = this.userBatches.filter(usableBatch)[0]
@@ -145,7 +294,7 @@ export default class SwarmBeeClient extends Bee {
         return batch.id
       }
     }
-    const batches = await this.getAllPostageBatch()
+    const batches = await this.getAllPostageBatches()
     const usableBatches = batches.filter(usableBatch)
     return usableBatches[0]?.batchID || this.emptyBatchId
   }

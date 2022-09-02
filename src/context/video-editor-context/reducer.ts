@@ -39,6 +39,7 @@ export const VideoEditorActionTypes = {
   UPDATE_SOURCES: "videoeditor/update-sources",
   TOGGLE_SAVE_TO: "videoeditor/toggle-save-to",
   RESET: "videoeditor/reset",
+  CACHE: "videoeditor/cache",
 } as const
 
 type AddQueueAction = {
@@ -112,6 +113,9 @@ type UpdateSourcesAction = {
 type ResetAction = {
   type: typeof VideoEditorActionTypes.RESET
 }
+type CacheAction = {
+  type: typeof VideoEditorActionTypes.CACHE
+}
 
 export type AnyVideoEditorAction = (
   AddQueueAction |
@@ -130,8 +134,17 @@ export type AnyVideoEditorAction = (
   UpdateDescriptionAction |
   UpdateDescriptionExceededAction |
   UpdateSourcesAction |
-  ResetAction
+  ResetAction |
+  CacheAction
 )
+
+const changingExcludeActions: string[] = [
+  VideoEditorActionTypes.UPDATE_DESCRIPTION_EXCEEDED,
+  VideoEditorActionTypes.UPDATE_INDEX_DATA,
+  VideoEditorActionTypes.UPDATE_OFFER_RESOURCES,
+  VideoEditorActionTypes.UPDATE_SOURCES,
+  VideoEditorActionTypes.RESET,
+]
 
 // Reducer
 const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEditorAction): VideoEditorContextState => {
@@ -239,7 +252,9 @@ const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEdit
   if (action.type === VideoEditorActionTypes.RESET) {
     VideoEditorCache.deleteCache()
   } else {
-    newState.hasChanges = true
+    if (!changingExcludeActions.includes(action.type)) {
+      newState.hasChanges = true
+    }
     VideoEditorCache.saveState(newState)
   }
 

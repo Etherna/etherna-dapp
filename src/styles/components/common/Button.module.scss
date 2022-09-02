@@ -48,10 +48,14 @@ $btn-modifiers: (
   &:disabled {
     @apply opacity-50 pointer-events-none cursor-default;
   }
+
+  &:is(a) {
+    text-decoration: none !important;
+  }
 }
 
 .btnDefault {
-  @apply py-2 px-5 rounded;
+  @apply py-2 px-5 rounded-md;
   @apply text-sm;
 }
 

@@ -28,35 +28,25 @@ type OnlyUsableBatchProps = {
 
 const OnlyUsableBatch: React.FC<OnlyUsableBatchProps> = ({ children }) => {
   const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
-  const batches = useSelector(state => state.user.batches)
+  const defaultBatch = useSelector(state => state.user.defaultBatch)
   const isLoadingProfile = useSelector(state => state.ui.isLoadingProfile)
 
-  const [loading, noBatches, noUsableBatches] = useMemo(() => {
-    const loading = batches == null
-    const noBatches = batches && batches.length === 0
-    const noUsableBatches = batches && batches.every(batch => !batch.usable)
-    return [loading, noBatches, noUsableBatches]
-  }, [batches])
-
   const title = useMemo(() => {
-    if (loading) return "You storage is loading"
-    if (noBatches && isStandaloneGateway) return "No storage found"
-    if (noBatches) return "We are creating you first storage"
-    if (noUsableBatches) return "Your storage is not usable"
-    return "No storage found"
-  }, [loading, noBatches, isStandaloneGateway, noUsableBatches])
+    if (isStandaloneGateway) return "No postage batch found. You need to create one."
+    return "No postage batch found"
+  }, [isStandaloneGateway])
 
   if (isLoadingProfile) return null
-  if (!loading && !noBatches && !noUsableBatches) return <>{children}</>
+  if (defaultBatch) return <>{children}</>
 
   return (
     <Alert className="my-6" type="warning" title={title}>
       You might not be able to upload yet. <br />
-      Come back when your storage is ready.
+      Come back when your postage batch is ready.
 
       <span className="block mt-3">
-        <Button as="a" href={routes.studioStorage}>
-          Check your storage
+        <Button as="a" href={routes.studioPostages}>
+          Check your postages
         </Button>
       </span>
     </Alert>

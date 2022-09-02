@@ -15,7 +15,8 @@
  *  
  */
 
-import React, { useEffect } from "react"
+import React, { Fragment, useEffect } from "react"
+import { Dialog, Transition } from "@headlessui/react"
 import classNames from "classnames"
 
 import classes from "@/styles/components/common/AlertPopup.module.scss"
@@ -97,37 +98,61 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
   if (isBotUserAgent()) return null
 
   return (
-    <div className={classNames(classes.alertPopupContainer, { [classes.show]: show })} onMouseDown={onMouseDown}>
-      <div className={classNames(classes.alertPopup, { [classes.show]: show })}>
-        {icon && (
-          <figure className={classes.alertPopupIcon}>
-            <Icon />
-          </figure>
-        )}
+    <Transition.Root
+      show={show}
+      as={Fragment}
+    >
+      <Dialog
+        as="div"
+        className={classNames(classes.alertPopupContainer, {
+          [classes.show]: show,
+        })}
+        open={show}
+        onClose={() => { }}
+        tabIndex={0}
+        onMouseDown={onMouseDown}
+      >
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-200"
+          enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-90"
+          enterTo="opacity-100 translate-y-0 sm:scale-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+          leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-90"
+        >
+          <Dialog.Panel className={classes.alertPopup}>
+            {icon && (
+              <figure className={classes.alertPopupIcon}>
+                <Icon />
+              </figure>
+            )}
 
-        {title && (
-          <div className={classes.alertPopupTitle}>{title}</div>
-        )}
+            {title && (
+              <div className={classes.alertPopupTitle}>{title}</div>
+            )}
 
-        {message && (
-          <div className={classes.alertPopupMessage}>{message}</div>
-        )}
+            {message && (
+              <div className={classes.alertPopupMessage}>{message}</div>
+            )}
 
-        <div className={classes.alertPopupActions}>
-          {(!actions || actions.length === 0) && (
-            <AlertPopupAction title="OK" type="default" action={() => onAction?.("default")} />
-          )}
-          {actions && actions.length > 0 && actions.map((action, i) => (
-            <AlertPopupAction
-              title={action.title}
-              type={action.type}
-              action={action.action}
-              key={i}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
+            <div className={classes.alertPopupActions}>
+              {(!actions || actions.length === 0) && (
+                <AlertPopupAction title="OK" type="default" action={() => onAction?.("default")} />
+              )}
+              {actions && actions.length > 0 && actions.map((action, i) => (
+                <AlertPopupAction
+                  title={action.title}
+                  type={action.type}
+                  action={action.action}
+                  key={i}
+                />
+              ))}
+            </div>
+          </Dialog.Panel>
+        </Transition.Child>
+      </Dialog>
+    </Transition.Root>
   )
 }
 

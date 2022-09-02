@@ -17,7 +17,7 @@
 import { useEffect } from "react"
 import { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
-import type { EthAddress } from "@ethersphere/bee-js/dist/src/utils/eth"
+import type { EthAddress } from "@ethersphere/bee-js/dist/types/utils/eth"
 
 import type { AxiosError } from "axios"
 
@@ -39,7 +39,7 @@ type AutoSigninOpts = {
 }
 
 export default function useAutoSignin(opts: AutoSigninOpts = {}) {
-  const { indexClient, gatewayClient, authClient, beeClient, gatewayStampsUrl } = useSelector(state => state.env)
+  const { indexClient, gatewayClient, authClient, beeClient } = useSelector(state => state.env)
   const dispatch = useDispatch<Dispatch<UserActions | EnvActions | UIActions | ProfileActions>>()
 
   useEffect(() => {
@@ -138,7 +138,7 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
 
   const fetchCurrentBytePrice = async () => {
     try {
-      const bytePrice = await gatewayClient.settings.fetchCurrentBytePrice()
+      const bytePrice = await gatewayClient.system.fetchCurrentBytePrice()
 
       dispatch({
         type: EnvActionTypes.UPDATE_BYTE_PRICE,
@@ -161,7 +161,6 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
     if (identity?.accountType === "web2") {
       const beeClientSigner = new SwarmBeeClient(beeClient.url, {
         signer: identity.etherManagedPrivateKey!,
-        stampsUrl: gatewayStampsUrl
       })
 
       dispatch({
@@ -185,7 +184,6 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
             }
           }
         },
-        stampsUrl: gatewayStampsUrl
       })
 
       dispatch({
@@ -211,6 +209,11 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
         website: profile.website,
         birthday: profile.birthday,
         existsOnIndex: true,
+      })
+
+      dispatch({
+        type: UserActionTypes.USER_SET_DEFAULT_BATCH_ID,
+        batchId: profile.batchId,
       })
     } catch (error: any) {
       console.error(error)

@@ -23,6 +23,8 @@ export const UserActionTypes = {
   USER_UPDATE_IDENTITY: "USER_UPDATE_IDENTITY",
   USER_UPDATE_CREDIT: "USER_UPDATE_CREDIT",
   USER_UPDATE_SIGNEDIN: "USER_UPDATE_SIGNEDIN",
+  USER_SET_DEFAULT_BATCH_ID: "USER_SET_DEFAULT_BATCH_ID",
+  USER_SET_DEFAULT_BATCH: "USER_SET_DEFAULT_BATCH",
   USER_SET_BATCHES: "USER_SET_BATCHES",
 } as const
 
@@ -49,6 +51,14 @@ type UpdateSignedInAction = {
   isSignedIn: boolean
   isSignedInGateway: boolean
 }
+type SetDefaultBatchIdAction = {
+  type: typeof UserActionTypes.USER_SET_DEFAULT_BATCH_ID
+  batchId: string | undefined
+}
+type SetDefaultBatcheAction = {
+  type: typeof UserActionTypes.USER_SET_DEFAULT_BATCH
+  batch: GatewayBatch | undefined
+}
 type SetBatchesAction = {
   type: typeof UserActionTypes.USER_SET_BATCHES
   batches: GatewayBatch[]
@@ -60,6 +70,8 @@ export type UserActions = (
   UpdateIdentityAction |
   UpdateCreditAction |
   UpdateSignedInAction |
+  SetDefaultBatchIdAction |
+  SetDefaultBatcheAction |
   SetBatchesAction
 )
 
@@ -97,6 +109,18 @@ const userReducer = (state: UserState = {}, action: UserActions): UserState => {
         ...state,
         isSignedIn: action.isSignedIn,
         isSignedInGateway: action.isSignedInGateway,
+      }
+
+    case UserActionTypes.USER_SET_DEFAULT_BATCH_ID:
+      return {
+        ...state,
+        defaultBatchId: action.batchId,
+      }
+
+    case UserActionTypes.USER_SET_DEFAULT_BATCH:
+      return {
+        ...state,
+        defaultBatch: action.batch,
       }
 
     case UserActionTypes.USER_SET_BATCHES:

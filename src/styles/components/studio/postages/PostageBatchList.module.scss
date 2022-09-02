@@ -1,4 +1,4 @@
-/*
+/* 
  *  Copyright 2021-present Etherna Sagl
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,40 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
  */
 
-import React from "react"
-
-import Container from "@/components/common/Container"
-import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
-import Storage from "@/components/studio/Storage"
-
-const StoragePage = () => {
-  return (
-    <AppLayoutWrapper>
-      <Container noPaddingX noPaddingY fluid>
-        <Storage />
-      </Container>
-    </AppLayoutWrapper>
-  )
+.batchTitle {
+  @apply font-medium leading-none;
 }
 
-export default StoragePage
+.batchId {
+  @apply inline-block truncate overflow-hidden;
+  @apply w-40 xl:w-auto;
+  @apply text-xs text-gray-600 dark:text-gray-400;
+  @apply leading-none mt-1;
+}
+
+.batchExpiration {
+  @apply text-sm font-medium;
+
+  &.expired {
+    @apply text-red-500;
+  }
+}
+
+.batchSpace {
+  @apply shrink-0;
+  @apply text-xs font-medium font-mono;
+  @apply ml-2;
+}
+
+.batchStatus {
+  @apply flex items-center;
+  @apply text-sm font-medium;
+  @apply text-gray-900 dark:text-gray-100;
+  @apply leading-none;
+
+  svg {
+    @apply h-4 w-4 mr-2;
+  }
+}

@@ -19,13 +19,15 @@ import { IndexCurrentUser, IndexUser, IndexUserVideos, IndexVideo, PaginatedResu
 
 export default class IndexUsersClient {
   url: string
+  abortController?: AbortController
 
   /**
    * Init an index users client
    * @param url Api host + api url
    */
-  constructor(url: string) {
+  constructor(url: string, abortController?: AbortController) {
     this.url = url
+    this.abortController = abortController
   }
 
   /**
@@ -38,6 +40,7 @@ export default class IndexUsersClient {
 
     const resp = await http.get<IndexUser[]>(endpoint, {
       params: { page, take },
+      signal: this.abortController?.signal,
     })
 
     if (!Array.isArray(resp.data)) {
@@ -54,7 +57,9 @@ export default class IndexUsersClient {
   async fetchUser(address: string) {
     const endpoint = `${this.url}/users/${address}`
 
-    const resp = await http.get<IndexUser>(endpoint)
+    const resp = await http.get<IndexUser>(endpoint, {
+      signal: this.abortController?.signal,
+    })
 
     if (typeof resp.data !== "object") {
       throw new Error("Cannot fetch user")
@@ -88,7 +93,8 @@ export default class IndexUsersClient {
     const endpoint = `${this.url}/users/current`
 
     const resp = await http.get<IndexCurrentUser>(endpoint, {
-      withCredentials: true
+      withCredentials: true,
+      signal: this.abortController?.signal,
     })
 
     if (typeof resp.data !== "object") {

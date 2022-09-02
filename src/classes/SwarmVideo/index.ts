@@ -21,7 +21,7 @@ import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@/definitions/swar
 import type { IndexVideo, IndexVideoManifest } from "@/definitions/api-index"
 import type { SchemaVersion } from "@/definitions/schema"
 
-const lastVersion: SchemaVersion = "1.0"
+const lastVersion: SchemaVersion = "1.1"
 
 const SwarmVideoIO = {
   Reader: SwarmVideoReader,
@@ -47,6 +47,7 @@ const SwarmVideoIO = {
       title: null,
       description: null,
       createdAt: indexData?.creationDateTime ? +new Date(indexData.creationDateTime) : +new Date(),
+      updatedAt: +new Date(),
       originalQuality: null,
       ownerAddress: indexData?.ownerAddress ?? null,
       duration: 0,
@@ -67,6 +68,7 @@ const SwarmVideoIO = {
       title: "",
       description: "",
       createdAt: +new Date(),
+      updatedAt: +new Date(),
       originalQuality: `${NaN}p`,
       ownerAddress: "",
       duration: NaN,

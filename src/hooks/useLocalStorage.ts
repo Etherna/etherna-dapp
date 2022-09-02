@@ -14,7 +14,9 @@
  *  limitations under the License.
  */
 
-import { useState } from "react"
+import { useCallback, useState } from "react"
+
+type UseLocalStorageReturn<T> = [T | null, (value: T | ((oldValue: T) => T)) => void]
 
 /**
  * Get / Set a local storage value
@@ -22,8 +24,8 @@ import { useState } from "react"
  * @param defaultValue Default value
  * @returns The parsed value
  */
-export default function useLocalStorage<T>(key: string, defaultValue: T | null = null): [T | null, (value: T) => void] {
-  const [storedValue, setStoredValue] = useState(() => {
+export default function useLocalStorage<T>(key: string, defaultValue: T | null = null): UseLocalStorageReturn<T> {
+  const getItem = useCallback(() => {
     try {
       const item = window.localStorage.getItem(key)
       return item ? JSON.parse(item) as T : defaultValue
@@ -31,18 +33,22 @@ export default function useLocalStorage<T>(key: string, defaultValue: T | null =
       console.error(error)
       return defaultValue
     }
-  })
+  }, [defaultValue, key])
 
-  const setValue = (value: T) => {
+  const [storedValue, setStoredValue] = useState(getItem())
+
+  const setValue = useCallback((value: T | ((oldValue: T) => T)) => {
     try {
-      // Save state
-      setStoredValue(value)
+      // Save state @ts-ignore
+      // @ts-ignore
+      const val = typeof value === "function" ? value(getItem()) : value
+      setStoredValue(val)
       // Save to local storage
       window.localStorage.setItem(key, JSON.stringify(value))
     } catch (error: any) {
       console.error(error)
     }
-  }
+  }, [getItem, key])
 
   return [storedValue, setValue]
 }

@@ -45,6 +45,13 @@ const useVideoEditorInfoActions = () => {
   )
 
   /**
+   * Cache current video state
+   */
+  const cacheState = () => (
+    dispatch({ type: VideoEditorActionTypes.CACHE })
+  )
+
+  /**
    * Update video description exceeded
    * @param descriptionExeeded Has description exceeded limit
    */
@@ -57,6 +64,7 @@ const useVideoEditorInfoActions = () => {
     updateTitle,
     updateDescription,
     updateDescriptionExceeded,
+    cacheState,
   }
 }
 

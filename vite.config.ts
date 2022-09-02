@@ -21,6 +21,7 @@ import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 import svgr from "vite-plugin-svgr"
 import eslintPlugin from "vite-plugin-eslint"
+import checker from "vite-plugin-checker"
 import { dynamicBase } from "vite-plugin-dynamic-base"
 
 // https://vitejs.dev/config/
@@ -50,17 +51,24 @@ export default defineConfig(({ mode }) => ({
   },
   define: {
     global: "window",
+    process: {},
   },
   resolve: {
     alias: [
       { find: "@", replacement: resolve(__dirname, "src") },
       { find: "stream", replacement: "stream-browserify" },
+      { find: "buffer", replacement: "buffer-browserify" },
+      { find: "util", replacement: "util-browser" },
+      { find: "events", replacement: "events-browserify" },
     ],
   },
   plugins: [
     react(),
     svgr(),
     eslintPlugin({ cache: false }),
+    checker({
+      typescript: true,
+    }),
     dynamicBase({
       publicPath: " window.__dynamic_base__",
       transformIndexHtml: true,

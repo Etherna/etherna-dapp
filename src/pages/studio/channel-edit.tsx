@@ -23,7 +23,7 @@ import ChannelEditor from "@/components/studio/ChannelEdit"
 
 const ChannelEditPage = () => {
   return (
-    <AppLayoutWrapper>
+    <AppLayoutWrapper floatingSidebar hideSidebar>
       <Container noPaddingX noPaddingY fluid>
         <ChannelEditor />
       </Container>

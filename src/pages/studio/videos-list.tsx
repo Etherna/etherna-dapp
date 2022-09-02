@@ -23,7 +23,7 @@ import Videos from "@/components/studio/Videos"
 
 const StudioVideoEdit = () => {
   return (
-    <AppLayoutWrapper>
+    <AppLayoutWrapper floatingSidebar hideSidebar>
       <Container noPaddingX noPaddingY>
         <Videos />
       </Container>

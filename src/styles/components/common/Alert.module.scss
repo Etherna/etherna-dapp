@@ -19,15 +19,19 @@
 
   &.alertSuccess {
     @apply bg-green-100 border-green-200 text-green-600;
+    @apply dark:bg-green-200 dark:border-green-300 dark:text-green-800;
   }
   &.alertDanger {
     @apply bg-red-100 border-red-200 text-red-600;
+    @apply dark:bg-red-200 dark:border-red-300 dark:text-red-700;
   }
   &.alertWarning {
     @apply bg-orange-100 border-orange-200 text-orange-600;
+    @apply dark:bg-orange-200 dark:border-orange-300 dark:text-orange-700;
   }
   &.alertInfo {
     @apply bg-blue-100 border-blue-200 text-blue-600;
+    @apply dark:bg-blue-200 dark:border-blue-300 dark:text-blue-700;
   }
 }
 
@@ -43,7 +47,7 @@
 .alertBody {
   .alertSuccess & {
     button,
-    [role=button] {
+    [role="button"] {
       @apply bg-green-600 text-white;
       @apply dark:bg-green-600 dark:text-white;
     }
@@ -55,7 +59,7 @@
   }
   .alertDanger & {
     button,
-    [role=button] {
+    [role="button"] {
       @apply bg-red-600 text-white;
       @apply dark:bg-red-600 dark:text-white;
     }
@@ -67,7 +71,7 @@
   }
   .alertWarning & {
     button,
-    [role=button] {
+    [role="button"] {
       @apply bg-orange-600 text-white;
       @apply dark:bg-orange-600 dark:text-white;
     }
@@ -79,7 +83,7 @@
   }
   .alertInfo & {
     button,
-    [role=button] {
+    [role="button"] {
       @apply bg-blue-600 text-white;
       @apply dark:bg-blue-600 dark:text-white;
     }
@@ -89,12 +93,20 @@
       @apply font-medium underline hover:no-underline;
     }
   }
+
+  .alertSmall & {
+    @apply text-sm leading-tight font-medium;
+  }
+}
+
+.alertSmall {
+  @apply px-3 py-2 rounded;
 }
 
 .close {
   @apply flex-shrink-0;
-  @apply rounded-full p-2 text-2xl;
-  
+  @apply rounded-full text-2xl;
+
   body &:not([hidden]) {
     @apply bg-transparent dark:bg-transparent;
     @apply leading-none;

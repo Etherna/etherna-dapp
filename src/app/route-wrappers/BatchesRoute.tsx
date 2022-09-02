@@ -18,22 +18,20 @@
 import React from "react"
 import { Outlet } from "react-router-dom"
 
-import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
-
 import useBatches from "@/state/hooks/user/useBatches"
 
-const BatchesRoute: React.FC = () => {
-  const { isFetchingBatches } = useBatches({ autofetch: true })
+import BatchLoading from "@/components/common/BatchLoading"
+
+const DefaultBatchRoute: React.FC = () => {
+  const { isFetchingBatches, error } = useBatches({ autofetch: true })
 
   return (
-    isFetchingBatches ? (
-      <div className="w-full flex items-center justify-center p-8">
-        <Spinner width={24} height={24} />
-      </div>
+    (isFetchingBatches || error) ? (
+      <BatchLoading type="fetching" error={error} />
     ) : (
       <Outlet />
     )
   )
 }
 
-export default BatchesRoute
+export default DefaultBatchRoute

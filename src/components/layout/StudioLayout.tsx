@@ -18,7 +18,7 @@
 import React from "react"
 
 import classes from "@/styles/components/layout/StudioLayout.module.scss"
-import { SparklesIcon, LightBulbIcon, FilmIcon, ServerIcon } from "@heroicons/react/solid"
+import { SparklesIcon, UserCircleIcon, FilmIcon, CashIcon } from "@heroicons/react/solid"
 
 import SEO from "./SEO"
 import Container from "@/components/common/Container"
@@ -38,7 +38,7 @@ const StudioLayout: React.FC<StudioLayoutProps> = ({ children }) => {
       <h1 className={classes.title}><SparklesIcon /> Creator Studio</h1>
 
       <div className={classes.content}>
-        <DropdownSidebar>
+        <DropdownSidebar className={classes.sidebar}>
           <SidebarItem
             to={routes.studioVideos}
             title="Videos"
@@ -49,18 +49,19 @@ const StudioLayout: React.FC<StudioLayoutProps> = ({ children }) => {
           <SidebarItem
             to={routes.studioChannel}
             title="Customize"
-            iconSvg={<LightBulbIcon />}
+            iconSvg={<UserCircleIcon />}
             isActive={pathname => /\/studio\/channel/.test(pathname)}
             isResponsive={false}
           />
           <SidebarItem
-            to={routes.studioStorage}
-            title="Storage"
-            iconSvg={<ServerIcon />}
-            isActive={pathname => /\/studio\/storage/.test(pathname)}
+            to={routes.studioPostages}
+            title="Postages"
+            iconSvg={<CashIcon />}
+            isActive={pathname => /\/studio\/postages/.test(pathname)}
             isResponsive={false}
           />
         </DropdownSidebar>
+
         {children}
       </div>
     </Container>

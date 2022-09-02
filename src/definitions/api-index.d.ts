@@ -14,7 +14,8 @@
  *  limitations under the License.
  */
 
-import { SwarmVideoRaw } from "./swarm-video"
+import type { BatchId } from "@ethersphere/bee-js"
+import type { SwarmVideoRaw } from "./swarm-video"
 
 export type PaginatedResult<T> = {
   elements: T[]
@@ -26,6 +27,7 @@ export type PaginatedResult<T> = {
 
 export type IndexClientOptions = {
   host: string
+  abortController?: AbortController
   loginPath?: string
   logoutPath?: string
 }
@@ -56,6 +58,8 @@ export type IndexVideo = {
   lastValidManifest: IndexVideoManifest | null
   totDownvotes: number
   totUpvotes: number
+  updatedAt?: number
+  batchId?: BatchId
 }
 
 export type IndexVideoManifest = Omit<SwarmVideoRaw, "createdAt" | "ownerAddress"> & { hash: string }
@@ -71,7 +75,7 @@ export type IndexVideoCreation = {
 export type IndexVideoValidation = {
   errorDetails: Array<{ errorMessage: string, errorNumber: string | number }>
   hash: string
-  isValid: boolean
+  isValid: boolean | null
   validationTime: string
 }
 

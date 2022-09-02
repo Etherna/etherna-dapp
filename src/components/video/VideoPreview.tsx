@@ -23,7 +23,6 @@ import classes from "@/styles/components/video/VideoPreview.module.scss"
 import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 
-import VideoMenu from "./VideoMenu"
 import Image from "@/components/common/Image"
 import Skeleton from "@/components/common/Skeleton"
 import Time from "@/components/media/Time"
@@ -142,9 +141,6 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
             )}
           </ul>
         </div>
-        {address === ownerAddress && (
-          <VideoMenu video={video} hasOffers={videoOffers ? videoOffers.offersStatus !== "none" : false} />
-        )}
       </div>
     </div>
   )

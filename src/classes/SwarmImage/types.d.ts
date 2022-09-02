@@ -15,6 +15,7 @@
  */
 
 import type { Canceler } from "axios"
+import type { BatchId } from "@ethersphere/bee-js"
 
 import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 
@@ -29,6 +30,7 @@ export type SwarmImageWriterOptions = {
 }
 
 export type SwarmImageUploadOptions = {
+  batchId?: BatchId
   onUploadProgress?: (progress: number) => void
   onCancelToken?: (canceler: Canceler) => void
 }

@@ -22,30 +22,48 @@ import classes from "@/styles/components/common/Spinner.module.scss"
 
 export type SpinnerProps = {
   className?: string
+  type?: "spinner" | "bouncing-line"
   size?: number | string
+  height?: number | string
 }
 
 const ticksCount = 12
 
-const Spinner: React.FC<SpinnerProps> = ({ size, className }) => {
-  const ticks = new Array(ticksCount).fill(0)
-  return (
-    <div
-      className={classNames(classes.spinner, className)}
-      style={{
-        fontSize: typeof size === "number" ? `${size}px` : size
-      }}
-    >
-      {ticks.map((_, i) => {
-        return (
-          <div
-            className={classes.spinnerTick}
-            key={i}
-          />
-        )
-      })}
-    </div>
-  )
+const Spinner: React.FC<SpinnerProps> = ({
+  className,
+  size,
+  height,
+  type = "spinner",
+}) => {
+  switch (type) {
+    case "spinner":
+      return (
+        <div
+          className={classNames(classes.spinner, className)}
+          style={{
+            fontSize: typeof size === "number" ? `${size}px` : size
+          }}
+        >
+          {Array(ticksCount).fill(0).map((_, i) => {
+            return (
+              <div
+                className={classes.spinnerTick}
+                key={i}
+              />
+            )
+          })}
+        </div>
+      )
+    case "bouncing-line":
+      return (
+        <div
+          className={classNames(classes.spinnerLine, className)}
+          style={{ width: size, height }}
+        >
+          <span className={classes.spinnerLineTick} />
+        </div>
+      )
+  }
 }
 
 export default Spinner

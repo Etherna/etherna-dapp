@@ -22,7 +22,7 @@ import classNames from "classnames"
 import classes from "@/styles/components/common/Button.module.scss"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
-type ButtonProps = {
+export type ButtonProps = {
   children?: React.ReactNode
   as?: React.ElementType
   href?: string

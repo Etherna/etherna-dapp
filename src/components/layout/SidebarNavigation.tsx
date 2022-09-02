@@ -125,6 +125,13 @@ const SidebarNavigation: React.FC = () => {
           to={urlOrigin(import.meta.env.VITE_APP_GATEWAY_URL)}
           target="_blank"
         />
+        {import.meta.env.VITE_APP_MATOMO_URL && (
+          <SidebarLinksItem
+            title="Analytics"
+            to={urlOrigin(import.meta.env.VITE_APP_MATOMO_URL)}
+            target="_blank"
+          />
+        )}
         {/* <SidebarLinksItem
           title="Credit"
           to={urlOrigin(import.meta.env.VITE_APP_CREDIT_URL)}

@@ -15,18 +15,23 @@
  */
 
 import GatewayUsersClient from "./GatewayUsersClient"
-import GatewaySettingsClient from "./GatewaySettingsClient"
+import GatewaySystemClient from "./GatewaySystemClient"
 import GatewayResourcesClient from "./GatewayResourcesClient"
+import GatewayPostageClient from "./GatewayPostageClient"
 import { isSafeURL, safeURL, urlOrigin } from "@/utils/urls"
 import { parseLocalStorage } from "@/utils/local-storage"
 import type { GatewayClientOptions } from "@/definitions/api-gateway"
 
 export default class EthernaGatewayClient {
+  url: string
   resources: GatewayResourcesClient
   users: GatewayUsersClient
-  settings: GatewaySettingsClient
+  system: GatewaySystemClient
+  postage: GatewayPostageClient
   loginPath: string
   logoutPath: string
+
+  static maxBatchDepth = 20
 
   /**
    * Init an gateway client
@@ -34,15 +39,24 @@ export default class EthernaGatewayClient {
    * @param options Client options
    */
   constructor(options: GatewayClientOptions) {
-    const host = options.host.replace(/\/?$/, "")
-    const apiPath = `/api/v${import.meta.env.VITE_APP_API_VERSION}`
-    const url = `${host}${apiPath}`
+    this.url = options.host.replace(/\/?$/, "")
 
-    this.resources = new GatewayResourcesClient(url)
-    this.users = new GatewayUsersClient(url)
-    this.settings = new GatewaySettingsClient(url)
-    this.loginPath = `${host}${options.loginPath || "/account/login"}`
-    this.logoutPath = `${host}${options.logoutPath || "/account/logout"}`
+    const apiPath = `/api/v${import.meta.env.VITE_APP_API_VERSION}`
+    const url = `${this.url}${apiPath}`
+
+    this.resources = new GatewayResourcesClient(url, options.abortController)
+    this.users = new GatewayUsersClient(url, options.abortController)
+    this.system = new GatewaySystemClient(url, options.abortController)
+    this.postage = new GatewayPostageClient(url, options.abortController)
+    this.loginPath = `${this.url}${options.loginPath || "/account/login"}`
+    this.logoutPath = `${this.url}${options.logoutPath || "/account/logout"}`
+  }
+
+  set abortController(value: AbortController) {
+    this.resources.abortController = value
+    this.users.abortController = value
+    this.system.abortController = value
+    this.postage.abortController = value
   }
 
   /**

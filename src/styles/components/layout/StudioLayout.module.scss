@@ -24,11 +24,12 @@
 
 .content {
   @apply flex flex-col space-y-4;
-  @apply lg:flex-row lg:space-y-0 lg:space-x-14;
+  @apply lg:flex-row lg:space-y-0 lg:space-x-6 xl:space-x-14;
 }
 
 .sidebar {
-  @apply flex flex-row items-start space-x-2;
-  @apply overflow-x-auto lg:overscroll-x-none;
-  @apply lg:flex-col lg:space-x-0 lg:space-y-2 lg:max-w-xs;
+  .content & {
+    @apply lg:self-start;
+    @apply lg:sticky lg:top-20;
+  }
 }
