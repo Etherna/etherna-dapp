@@ -191,8 +191,9 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
 
   return (
     <>
-      <FormGroup label="Show:">
+      <FormGroup>
         <CustomSelect
+          label="Show: "
           value={filter}
           options={[
             { value: "all", label: "All" },
