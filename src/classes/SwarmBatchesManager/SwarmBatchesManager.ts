@@ -46,7 +46,7 @@ export default class SwarmBatchesManager {
   protected gatewayType: GatewayType
   protected address: string
 
-  public defaultBlockTime = import.meta.env.DEV ? 15 : 5.2 // goerli testnet vs gnosis
+  public defaultBlockTime = import.meta.env.DEV ? 15 : 5 // goerli testnet vs gnosis
 
   constructor(opts: SwarmBatchesManagerOptions) {
     this.address = opts.address
