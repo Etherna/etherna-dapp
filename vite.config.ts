@@ -37,7 +37,6 @@ export default defineConfig(({ mode }) => ({
       cert: fs.readFileSync("proxy/sslcert/cert.pem"),
     },
     port: 3000,
-    host: "localhost",
   },
   css: {
     modules: {
@@ -51,15 +50,11 @@ export default defineConfig(({ mode }) => ({
   },
   define: {
     global: "window",
-    process: {},
   },
   resolve: {
     alias: [
       { find: "@", replacement: resolve(__dirname, "src") },
       { find: "stream", replacement: "stream-browserify" },
-      { find: "buffer", replacement: "buffer-browserify" },
-      { find: "util", replacement: "util-browser" },
-      { find: "events", replacement: "events-browserify" },
     ],
   },
   plugins: [

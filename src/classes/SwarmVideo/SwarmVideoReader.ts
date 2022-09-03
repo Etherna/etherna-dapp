@@ -175,7 +175,7 @@ export default class SwarmVideoReader {
       encryptionType: indexVideoData?.encryptionType,
       totDownvotes: indexVideoData?.totDownvotes,
       totUpvotes: indexVideoData?.totUpvotes,
-      batchId: indexVideoData?.batchId ?? videoData?.batchId,
+      batchId: indexVideoData?.lastValidManifest?.batchId ?? videoData?.batchId,
       v: SwarmVideoIO.lastVersion,
     }
   }

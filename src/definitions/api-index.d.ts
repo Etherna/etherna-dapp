@@ -58,8 +58,6 @@ export type IndexVideo = {
   lastValidManifest: IndexVideoManifest | null
   totDownvotes: number
   totUpvotes: number
-  updatedAt?: number
-  batchId?: BatchId
 }
 
 export type IndexVideoManifest = Omit<SwarmVideoRaw, "createdAt" | "ownerAddress"> & { hash: string }

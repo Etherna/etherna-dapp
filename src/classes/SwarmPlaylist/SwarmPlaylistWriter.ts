@@ -15,7 +15,6 @@
  */
 
 import { AES } from "crypto-ts"
-import type { Reference } from "@ethersphere/bee-js"
 
 import SwarmPlaylistIO from "."
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
@@ -77,7 +76,7 @@ export default class SwarmImageWriter {
       const writer = this.beeClient.makeFeedWriter("sequence", topic)
       await writer.upload(batchId, reference)
       const feedManifest = await this.beeClient.createFeedManifest(batchId, "sequence", topic, this.playlist.owner)
-      reference = feedManifest.reference
+      reference = feedManifest
     }
 
     return reference
