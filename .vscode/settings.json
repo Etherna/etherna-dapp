@@ -1,6 +1,4 @@
 {
-  "scss.validate": false,
-  "css.validate": false,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
@@ -17,6 +15,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescriptreact]": {
+    "tailwindCSS.validate": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[css]": {
@@ -28,12 +27,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "svg.preview.background": "transparent",
-  "license-header-manager.excludeFolders": [
-    "node_modules",
-    "build",
-    "images",
-    "config"
-  ],
+  "license-header-manager.excludeFolders": ["node_modules", "build", "images", "config"],
   "license-header-manager.excludeExtensions": [".js"],
   "license-header-manager.additionalCommentStyles": [
     {

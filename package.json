@@ -5,6 +5,17 @@
   "version": "0.1.0",
   "author": "Mattia Dalzocchio",
   "license": "Apache-2.0",
+  "scripts": {
+    "dev": "vite --host",
+    "start": "node scripts/etherna-services.mjs",
+    "start:proxy": "node scripts/etherna-services.mjs --proxy",
+    "start:bee": "node scripts/etherna-services.mjs --bee",
+    "postage": "node scripts/create-postage-batch.mjs",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "format": "prettier --write src '!**/*.{ts,tsx}'",
+    "lint": "eslint \"**/*.{ts,tsx}\""
+  },
   "dependencies": {
     "@datapunt/matomo-tracker-react": "0.5.1",
     "@ethersphere/bee-js": "3.2.0",
@@ -85,7 +96,7 @@
     "prettier-plugin-tailwindcss": "0.1.13",
     "redux-logger": "3.0.6",
     "stream-browserify": "3.0.0",
-    "string-hash": "1.1.3",
+    "tailwind-scrollbar": "1.3.1",
     "tailwindcss": "3.1.8",
     "typescript": "4.7.4",
     "vite": "3.0.5",
@@ -103,16 +114,6 @@
     "dotenv": "16.0.1",
     "prompt": "1.3.0",
     "wait-on": "6.0.1"
-  },
-  "scripts": {
-    "dev": "vite --host",
-    "start": "node scripts/etherna-services.mjs",
-    "start:proxy": "node scripts/etherna-services.mjs --proxy",
-    "start:bee": "node scripts/etherna-services.mjs --bee",
-    "postage": "node scripts/create-postage-batch.mjs",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "lint": "eslint \"**/*.{ts,tsx}\""
   },
   "browserslist": {
     "production": [

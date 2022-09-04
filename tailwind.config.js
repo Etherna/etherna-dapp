@@ -3,11 +3,7 @@ const plugin = require("tailwindcss/plugin")
 
 /** @type {import('tailwindcss/types').Config} */
 module.exports = {
-  content: [
-    "./index.html",
-    "./public/**/*.html",
-    "./src/**/*.tsx",
-  ],
+  content: ["./index.html", "./public/**/*.html", "./src/**/*.tsx"],
   darkMode: "class",
   theme: {
     extend: {
@@ -58,14 +54,14 @@ module.exports = {
           "system-ui",
           "-apple-system",
           "BlinkMacSystemFont",
-          "\"Segoe UI\"",
+          '"Segoe UI"',
           "Roboto",
-          "\"Helvetica Neue\"",
+          '"Helvetica Neue"',
           "sans-serif",
-          "\"Apple Color Emoji\"",
-          "\"Segoe UI Emoji\"",
-          "\"Segoe UI Symbol\"",
-          "\"Noto Color Emoji\"",
+          '"Apple Color Emoji"',
+          '"Segoe UI Emoji"',
+          '"Segoe UI Symbol"',
+          '"Noto Color Emoji"',
         ],
       },
       fontSize: {
@@ -88,17 +84,17 @@ module.exports = {
         "6xl": "72rem",
       },
       minHeight: ({ theme }) => ({
-        ...theme("spacing")
+        ...theme("spacing"),
       }),
       animation: {
-        "spinSlow": "spinSlow 2s linear infinite",
-        "slide": "slide 2s cubic-bezier(0.2, 0.7, 0.7, 0.4) infinite",
-        "skip": "skip 1s cubic-bezier(0.2, 0.7, 0.7, 0.4) 0s 2 forwards",
+        spinSlow: "spinSlow 2s linear infinite",
+        slide: "slide 2s cubic-bezier(0.2, 0.7, 0.7, 0.4) infinite",
+        skip: "skip 1s cubic-bezier(0.2, 0.7, 0.7, 0.4) 0s 2 forwards",
       },
       keyframes: {
         spinSlow: {
-          "from": { transform: "rotate(360deg)" },
-          "to": { transform: "rotate(0deg)" },
+          from: { transform: "rotate(360deg)" },
+          to: { transform: "rotate(0deg)" },
         },
         slide: {
           "0%": {
@@ -132,23 +128,30 @@ module.exports = {
     require("@tailwindcss/typography"),
     require("@tailwindcss/forms"),
     require("@tailwindcss/line-clamp"),
-    plugin(function ({ addUtilities, addVariant, e }) {
+    require("tailwind-scrollbar"),
+    plugin(({ addUtilities, addVariant, addComponents, e }) => {
       const utils = {
         ".absolute-center": {
-          "position": "absolute",
-          "left": "50%",
-          "top": "50%",
+          position: "absolute",
+          left: "50%",
+          top: "50%",
           "--tw-translate-x": "-50%",
           "--tw-translate-y": "-50%",
-          "transform": "var(--tw-transform)",
-        }
+          transform: "var(--tw-transform)",
+        },
       }
 
       addUtilities(utils, ["responsive"])
 
+      const components = {}
+
+      addComponents(components, ["responsive"])
+
       addVariant("landscape-touch", ({ container, separator }) => {
-        const landscapeRule = postcss
-          .atRule({ name: "media", params: "(orientation: landscape) and (max-width: 1024px) and (pointer: coarse)" })
+        const landscapeRule = postcss.atRule({
+          name: "media",
+          params: "(orientation: landscape) and (max-width: 1024px) and (pointer: coarse)",
+        })
         landscapeRule.append(container.nodes)
         container.append(landscapeRule)
         landscapeRule.walkRules(rule => {

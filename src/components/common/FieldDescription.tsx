@@ -15,28 +15,29 @@
  *
  */
 import React from "react"
-import { Link } from "react-router-dom"
 
-import routes from "@/routes"
+import classNames from "classnames"
 
-type NotFoundProps = {
-  message?: string
-  showBackLink?: boolean
+import Text from "@/components/ui/display/Text"
+
+type FieldDescriptionProps = {
+  children?: React.ReactNode
+  smaller?: boolean
 }
 
-const NotFound: React.FC<NotFoundProps> = ({
-  message = "This page cannot be found",
-  showBackLink,
-}) => {
+const FieldDescription: React.FC<FieldDescriptionProps> = ({ children, smaller }) => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
-      <h1 className="text-2xl flex items-center -mt-16">
-        <span className="py-3 pr-6 mr-6 border-r border-gray-300 dark:border-gray-600">404</span>
-        <span className="font-normal text-base">{message}</span>
-      </h1>
-      {showBackLink && <Link to={routes.home}>← Back to Etherna</Link>}
-    </div>
+    <Text
+      size="xs"
+      className={classNames("text-gray-500 dark:text-gray-400 mt-1.5", {
+        "max-w-md": !smaller,
+        "max-w-xs": smaller,
+      })}
+      data-component="field-description"
+    >
+      {children}
+    </Text>
   )
 }
 
-export default NotFound
+export default FieldDescription

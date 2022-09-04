@@ -1,21 +1,21 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
-
 import React, { useCallback, useEffect, useRef, useState } from "react"
+
 import classNames from "classnames"
 import { filterXSS } from "xss"
 
@@ -50,7 +50,7 @@ const Image: React.FC<ImageProps> = ({
   alt,
   className,
   placeholderClassName,
-  style
+  style,
 }) => {
   const beeClient = useSelector(state => state.env.beeClient)
   const [src, setSrc] = useState<string | undefined>(staticSrc)
@@ -80,17 +80,22 @@ const Image: React.FC<ImageProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [staticSrc, sources, rootEl.current])
 
-  const getOptimizedSrc = useCallback((sources: Record<`${number}w`, string>, size: number): string => {
-    const screenSize = size * (window.devicePixelRatio ?? 1)
-    const sizes = Object.keys(sources).map(size => parseInt(size)).sort()
-    const largest = sizes[sizes.length - 1]
+  const getOptimizedSrc = useCallback(
+    (sources: Record<`${number}w`, string>, size: number): string => {
+      const screenSize = size * (window.devicePixelRatio ?? 1)
+      const sizes = Object.keys(sources)
+        .map(size => parseInt(size))
+        .sort()
+      const largest = sizes[sizes.length - 1]
 
-    if (size > largest) return beeClient.getBzzUrl(sources[`${largest}w`])
+      if (size > largest) return beeClient.getBzzUrl(sources[`${largest}w`])
 
-    const optimized = sizes.find(size => size > screenSize)
-    const optimizedReference = optimized ? sources[`${optimized}w`] : sources[`${largest}w`]
-    return optimizedReference ? beeClient.getBzzUrl(optimizedReference) : ""
-  }, [beeClient])
+      const optimized = sizes.find(size => size > screenSize)
+      const optimizedReference = optimized ? sources[`${optimized}w`] : sources[`${largest}w`]
+      return optimizedReference ? beeClient.getBzzUrl(optimizedReference) : ""
+    },
+    [beeClient]
+  )
 
   const updateCurrentSrc = useCallback(() => {
     if (!rootEl.current) return
@@ -104,11 +109,14 @@ const Image: React.FC<ImageProps> = ({
     }
   }, [src, sources, staticSrc, fallbackSrc, getOptimizedSrc])
 
-  const onContainerResize = useCallback((entries: ResizeObserverEntry[]) => {
-    if (layout === "responsive") {
-      updateCurrentSrc()
-    }
-  }, [layout, updateCurrentSrc])
+  const onContainerResize = useCallback(
+    (entries: ResizeObserverEntry[]) => {
+      if (layout === "responsive") {
+        updateCurrentSrc()
+      }
+    },
+    [layout, updateCurrentSrc]
+  )
 
   const onLoadImage = useCallback(() => {
     setImgLoaded(true)
@@ -126,23 +134,25 @@ const Image: React.FC<ImageProps> = ({
 
   return (
     <div
-      className={classNames(classes.image, className, {
-        [classes.fill]: layout === "fill",
-        [classes.responsive]: layout === "responsive",
-        [classes.loaded]: imgLoaded
-      })}
+      className={classNames(
+        "relative",
+        {
+          "absolute inset-0": layout === "fill",
+          "w-full": layout === "responsive",
+        },
+        className
+      )}
       style={{
-        paddingBottom: layout === "responsive" ? `${Math.round(1 / aspectRatio! * 100)}%` : undefined
+        paddingBottom:
+          layout === "responsive" ? `${Math.round((1 / aspectRatio!) * 100)}%` : undefined,
       }}
       ref={rootEl}
+      data-component="image"
     >
       {src && (
-        <picture
-          className={classes.imagePicture}
-          onError={onError}
-          onLoad={onLoadImage}
-        >
+        <picture onError={onError} onLoad={onLoadImage}>
           <img
+            className="absolute inset-0 w-full h-full"
             src={filterXSS(src)}
             alt={alt}
             style={{
@@ -154,11 +164,19 @@ const Image: React.FC<ImageProps> = ({
         </picture>
       )}
       <div
-        className={classNames(classes.imagePlaceholder, placeholderClassName)}
+        className={classNames(
+          "absolute inset-0 transition-opacity duration-300",
+          "bg-no-repeat bg-cover bg-gray-400 dark:bg-gray-600",
+          {
+            "opacity-0": imgLoaded,
+          },
+          placeholderClassName
+        )}
         style={{
           ...style,
           objectFit,
-          backgroundImage: placeholder === "blur" && blurredDataURL ? `url(${blurredDataURL})` : undefined,
+          backgroundImage:
+            placeholder === "blur" && blurredDataURL ? `url(${blurredDataURL})` : undefined,
         }}
       />
     </div>
