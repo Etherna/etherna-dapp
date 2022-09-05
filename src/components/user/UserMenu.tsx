@@ -19,16 +19,11 @@ import React from "react"
 import { LogoutIcon } from "@heroicons/react/outline"
 import { DotsVerticalIcon } from "@heroicons/react/solid"
 
-import Avatar from "./Avatar"
 import SharedMenuItems from "./SharedMenuItems"
 import SignedInMenuItems from "./SignedInMenuItems"
 import SigninButton from "./SigninButton"
-import Button from "@/components/common/Button"
-import Dropdown from "@/components/common/Dropdown"
-import DropdownItem from "@/components/common/DropdownItem"
-import DropdownMenu from "@/components/common/DropdownMenu"
-import DropdownToggle from "@/components/common/DropdownToggle"
-import Placeholder from "@/components/common/Placeholder"
+import { Button, Dropdown } from "@/components/ui/actions"
+import { Avatar, Skeleton } from "@/components/ui/display"
 import useSignout from "@/state/hooks/user/useSignout"
 import useSelector from "@/state/useSelector"
 
@@ -42,23 +37,27 @@ const UserMenu: React.FC = () => {
   const isFullySignedIn = isSignedIn === true
 
   if (isSigningIn) {
-    return <Placeholder width="2.25rem" height="2.25rem" round="full" />
+    return (
+      <Skeleton roundedFull>
+        <div className="w-9 h-9" />
+      </Skeleton>
+    )
   }
 
   return (
     <>
       <Dropdown>
-        <DropdownToggle>
-          <Button as="div" modifier="transparent" rounded iconOnly>
+        <Dropdown.Toggle>
+          <Button as="div" color="transparent" rounded>
             {isFullySignedIn ? (
               <Avatar image={avatar} address={address} size={36} />
             ) : (
-              <DotsVerticalIcon />
+              <DotsVerticalIcon aria-hidden />
             )}
           </Button>
-        </DropdownToggle>
+        </Dropdown.Toggle>
 
-        <DropdownMenu>
+        <Dropdown.Menu>
           <>
             {isFullySignedIn && <SignedInMenuItems />}
 
@@ -67,13 +66,13 @@ const UserMenu: React.FC = () => {
             {isFullySignedIn && (
               <>
                 <Dropdown.Separator />
-                <DropdownItem action={signout} icon={<LogoutIcon />}>
+                <Dropdown.Item action={signout} icon={<LogoutIcon />}>
                   Sign out
-                </DropdownItem>
+                </Dropdown.Item>
               </>
             )}
           </>
-        </DropdownMenu>
+        </Dropdown.Menu>
       </Dropdown>
 
       {!isFullySignedIn && <SigninButton>Sign in</SigninButton>}

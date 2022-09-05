@@ -1,27 +1,24 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
-
 import React, { useEffect, useState } from "react"
 import classNames from "classnames"
 
-import classes from "@/styles/components/user/UserCreditBadge.module.scss"
-
-import { getDecimalParts } from "@/utils/math"
 import { isTouchDevice } from "@/utils/browser"
+import { getDecimalParts } from "@/utils/math"
 
 type UserCreditBadgeProps = {
   credit: number
@@ -47,21 +44,35 @@ const UserCreditBadge: React.FC<UserCreditBadgeProps> = ({ credit }) => {
 
   return (
     <div
-      className={classNames(classes.userCreditBadge, {
-        [classes.expandable]: expandable,
-        "user-credit-badge-warning": false, // gbReproduction < 1 && gbReproduction >= 0.1,
-        "user-credit-badge-danger": false, // gbReproduction < 0.1,
-      })}
+      className={classNames(
+        "relative flex items-baseline h-9 px-4 py-1.5 overflow-hidden rounded-full cursor-pointer",
+        "bg-gray-200/70 dark:bg-gray-800/70 backdrop-blur",
+        {
+          "after:absolute after:right-0 after:inset-y-0 after:w-12 after:hover:opacity-0 after:md:content-none":
+            expandable,
+          "after:bg-gradient-to-r after:from-gray-100/10 after:via-gray-100/80 after:to-gray-100 ":
+            expandable,
+          "after:dark:from-gray-800/10 after:dark:via-gray-800/80 after:dark:to-gray-800":
+            expandable,
+        }
+      )}
       onMouseEnter={() => setIsHover(!isTouch)}
       onMouseLeave={() => setIsHover(false)}
     >
-      {/* <span className={classes.userCreditCurrency}>CHF</span> */}
-      <div className={classes.userCreditValue}>
-        <span className={classes.userCreditValueInteger}>
-          {integer}.
-        </span>
+      {/* <span className="hidden xs:inline text-xs tracking-tighter text-gray-600 dark:text-gray-400 mr-1">CHF</span> */}
+      <div
+        className={classNames(
+          "flex items-baseline relative overflow-hidden",
+          "text-gray-900 dark:text-gray-200"
+        )}
+      >
+        <span className="text-xl font-semibold">{integer}.</span>
         <span
-          className={classes.userCreditValueDecimal}
+          className={classNames(
+            "inline-block text-base font-medium opacity-60",
+            "transition-[max-width] duration-300",
+            "md:!max-w-[unset]"
+          )}
           style={{ maxWidth: `${currentDecimalWidth}px` }}
           ref={el => el && setCreditDecimalEl(el)}
         >
