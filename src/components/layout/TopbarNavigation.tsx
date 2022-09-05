@@ -21,12 +21,8 @@ import { PlusIcon } from "@heroicons/react/solid"
 
 import SearchItem from "./SearchItem"
 import Logo from "@/components/common/Logo"
-import AlphaWarning from "@/components/navigation/AlphaWarning"
-import Topbar from "@/components/navigation/Topbar"
-import TopbarItem from "@/components/navigation/TopbarItem"
-import TopbarLogo from "@/components/navigation/TopbarLogo"
-import TopbarPopupItem from "@/components/navigation/TopbarPopupItem"
-import TopbarSpace from "@/components/navigation/TopbarSpace"
+import AlphaWarning from "@/components/modals/AlphaWarning"
+import { Topbar } from "@/components/ui/navigation"
 import UserCredit from "@/components/user/UserCredit"
 import UserMenu from "@/components/user/UserMenu"
 import { LayoutReducerTypes } from "@/context/layout-context"
@@ -50,32 +46,32 @@ const TopbarNavigation: React.FC = () => {
 
   return (
     <Topbar>
-      {floatingSidebar && <TopbarItem iconSvg={<MenuAlt4Icon />} onClick={toggleSidebar} />}
+      {floatingSidebar && <Topbar.Item prefix={<MenuAlt4Icon />} onClick={toggleSidebar} />}
 
-      <TopbarLogo logo={<Logo />} logoCompact={<Logo compact />} floating={floatingSidebar} />
+      <Topbar.Logo logo={<Logo />} logoCompact={<Logo compact />} floating={floatingSidebar} />
 
-      <TopbarPopupItem toggle={<PlusIcon />} hideMobile>
-        <TopbarItem to={routes.studioVideoNew} iconSvg={<UploadIcon />}>
+      <Topbar.PopupItem toggle={<PlusIcon />} hideMobile>
+        <Topbar.Item to={routes.studioVideoNew} prefix={<UploadIcon />}>
           Upload a video
-        </TopbarItem>
-      </TopbarPopupItem>
+        </Topbar.Item>
+      </Topbar.PopupItem>
       <SearchItem />
 
-      <TopbarSpace flexible />
+      <Topbar.Space flexible />
 
       <AlphaWarning />
 
-      <TopbarSpace flexible />
+      <Topbar.Space flexible />
 
       {isSignedIn === true && !isLoadingProfile && (
-        <TopbarItem ignoreHoverState>
+        <Topbar.Item ignoreHoverState>
           <UserCredit />
-        </TopbarItem>
+        </Topbar.Item>
       )}
 
-      <TopbarItem ignoreHoverState>
+      <Topbar.Item ignoreHoverState>
         <UserMenu />
-      </TopbarItem>
+      </Topbar.Item>
     </Topbar>
   )
 }

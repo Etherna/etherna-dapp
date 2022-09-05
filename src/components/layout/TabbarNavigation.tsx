@@ -23,76 +23,74 @@ import { ReactComponent as PlaylistIcon } from "@/assets/icons/navigation/playli
 import FeedbackLink from "./FeedbackLink"
 // import IndexExtension from "@/components/env/IndexExtension"
 import GatewayExtension from "@/components/env/GatewayExtension"
-import Tabbar from "@/components/navigation/Tabbar"
-import TabbarItem from "@/components/navigation/TabbarItem"
-import TabbarMenuItem from "@/components/navigation/TabbarMenuItem"
+import { Tabbar } from "@/components/ui/navigation"
 import routes from "@/routes"
 import { urlOrigin, urlPath } from "@/utils/urls"
 
 const TabbarNavigation: React.FC = () => {
   return (
     <Tabbar>
-      <TabbarItem
+      <Tabbar.Item
         title="Home"
         to="/"
         isActive={pathname => pathname === "/"}
         iconSvg={<HomeIcon />}
       />
-      <TabbarItem
+      <Tabbar.Item
         title="Frames"
         to={routes.frames}
         isActive={pathname => /^\/frames\//.test(pathname)}
         iconSvg={<FramesIcon />}
       />
-      <TabbarItem
+      <Tabbar.Item
         title="Following"
         to={routes.following}
         isActive={pathname => /^\/following\//.test(pathname)}
         iconSvg={<UserIcon />}
       />
-      <TabbarItem
+      <Tabbar.Item
         title="Playlists"
         to={routes.playlists}
         isActive={pathname => /^\/playlists\//.test(pathname)}
         iconSvg={<PlaylistIcon />}
       />
-      <TabbarMenuItem as="div" title="More">
-        <TabbarItem
+      <Tabbar.MenuItem as="div" title="More">
+        <Tabbar.Item
           title="Saved"
           to={routes.saved}
           isActive={pathname => /^\/saved\//.test(pathname)}
           iconSvg={<BookmarkIcon />}
           isSubmenu
         />
-        <TabbarItem title="Useful links" iconSvg={<ExternalLinkIcon />} isAccordion isSubmenu>
-          <TabbarItem title="About Etherna" to="https://info.etherna.io/" target="_blank" />
-          <TabbarItem title="Blog" to="https://info.etherna.io/blog/" target="_blank" />
-          <TabbarItem title="GitHub" to="https://github.com/etherna" target="_blank" />
-          <TabbarItem
+        <Tabbar.Item title="Useful links" iconSvg={<ExternalLinkIcon />} isAccordion isSubmenu>
+          <Tabbar.Item title="About Etherna" to="https://info.etherna.io/" target="_blank" />
+          <Tabbar.Item title="Blog" to="https://info.etherna.io/blog/" target="_blank" />
+          <Tabbar.Item title="GitHub" to="https://github.com/etherna" target="_blank" />
+          <Tabbar.Item
             title="Index Api"
             to={urlPath(import.meta.env.VITE_APP_INDEX_URL, "/swagger")}
             target="_blank"
           />
-          <TabbarItem
+          <Tabbar.Item
             title="Gateway"
             to={urlOrigin(import.meta.env.VITE_APP_GATEWAY_URL)}
             target="_blank"
           />
-          <TabbarItem
+          <Tabbar.Item
             title="Credit"
             to={urlOrigin(import.meta.env.VITE_APP_CREDIT_URL)}
             target="_blank"
           />
-          <TabbarItem title="Privacy Policy" to={routes.privacyPolicy} />
-          <FeedbackLink wrapper={TabbarItem} />
-        </TabbarItem>
-        {/* <TabbarItem isSubmenu>
+          <Tabbar.Item title="Privacy Policy" to={routes.privacyPolicy} />
+          <FeedbackLink wrapper={Tabbar.Item} />
+        </Tabbar.Item>
+        {/* <Tabbar.Item isSubmenu>
           <IndexExtension />
-        </TabbarItem> */}
-        <TabbarItem isSubmenu>
+        </Tabbar.Item> */}
+        <Tabbar.Item isSubmenu>
           <GatewayExtension />
-        </TabbarItem>
-      </TabbarMenuItem>
+        </Tabbar.Item>
+      </Tabbar.MenuItem>
     </Tabbar>
   )
 }

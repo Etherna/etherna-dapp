@@ -16,13 +16,11 @@
  */
 import React from "react"
 
-import classes from "@/styles/components/layout/StudioLayout.module.scss"
 import { SparklesIcon, UserCircleIcon, FilmIcon, CashIcon } from "@heroicons/react/solid"
 
 import SEO from "./SEO"
-import DropdownSidebar from "@/components/navigation/DropdownSidebar"
-import SidebarItem from "@/components/navigation/SidebarItem"
 import { Container } from "@/components/ui/layout"
+import { DropdownSidebar, Sidebar } from "@/components/ui/navigation"
 import routes from "@/routes"
 
 type StudioLayoutProps = {
@@ -40,21 +38,21 @@ const StudioLayout: React.FC<StudioLayoutProps> = ({ children }) => {
 
       <div className="flex flex-col space-y-4 lg:flex-row lg:space-y-0 lg:space-x-6 xl:space-x-14">
         <DropdownSidebar className="lg:self-start lg:sticky lg:top-20">
-          <SidebarItem
+          <Sidebar.Item
             to={routes.studioVideos}
             title="Videos"
             iconSvg={<FilmIcon />}
             isActive={pathname => /\/studio\/videos/.test(pathname)}
             isResponsive={false}
           />
-          <SidebarItem
+          <Sidebar.Item
             to={routes.studioChannel}
             title="Customize"
             iconSvg={<UserCircleIcon />}
             isActive={pathname => /\/studio\/channel/.test(pathname)}
             isResponsive={false}
           />
-          <SidebarItem
+          <Sidebar.Item
             to={routes.studioPostages}
             title="Postages"
             iconSvg={<CashIcon />}

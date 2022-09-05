@@ -16,11 +16,10 @@
  */
 import React, { useEffect, useState } from "react"
 
-import type SidebarLinksItem from "@/components/navigation/SidebarLinksItem"
-import type TabbarItem from "@/components/navigation/TabbarItem"
+import type { Sidebar, Tabbar } from "@/components/ui/navigation"
 
 type FeedbackLinkProps = {
-  wrapper: typeof SidebarLinksItem | typeof TabbarItem
+  wrapper: typeof Sidebar.LinksItem | typeof Tabbar.Item
 }
 
 const FeedbackLink: React.FC<FeedbackLinkProps> = ({ wrapper: Wrapper }) => {

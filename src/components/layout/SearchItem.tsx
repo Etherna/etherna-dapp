@@ -22,8 +22,8 @@ import classNames from "classnames"
 import { SearchIcon } from "@heroicons/react/outline"
 import { XIcon } from "@heroicons/react/solid"
 
-import TopbarItem from "@/components/navigation/TopbarItem"
 import { TextInput } from "@/components/ui/inputs"
+import { Topbar } from "@/components/ui/navigation"
 import routes from "@/routes"
 
 const SearchItem: React.FC = () => {
@@ -42,12 +42,12 @@ const SearchItem: React.FC = () => {
   }
 
   return (
-    <TopbarItem
+    <Topbar.Item
       className={classNames({
         "absolute left-1 top-1 right-1 md:relative md:top-0 z-1": showInput,
         "bg-gray-200 dark:bg-gray-800": showInput,
       })}
-      iconSvg={<SearchIcon aria-hidden />}
+      prefix={<SearchIcon aria-hidden />}
       onClick={() => setShowInput(true)}
     >
       {showInput && (
@@ -70,7 +70,7 @@ const SearchItem: React.FC = () => {
           </button>
         </>
       )}
-    </TopbarItem>
+    </Topbar.Item>
   )
 }
 

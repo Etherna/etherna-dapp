@@ -24,12 +24,7 @@ import FeedbackLink from "./FeedbackLink"
 import Logo from "@/components/common/Logo"
 // import IndexExtension from "@/components/env/IndexExtension"
 import GatewayExtension from "@/components/env/GatewayExtension"
-import Sidebar from "@/components/navigation/Sidebar"
-import SidebarItem from "@/components/navigation/SidebarItem"
-import SidebarLinks from "@/components/navigation/SidebarLinks"
-import SidebarLinksItem from "@/components/navigation/SidebarLinksItem"
-import SidebarLogo from "@/components/navigation/SidebarLogo"
-import SidebarSpace from "@/components/navigation/SidebarSpace"
+import { Sidebar } from "@/components/ui/navigation"
 import { LayoutReducerTypes } from "@/context/layout-context"
 import { useLayoutState } from "@/context/layout-context/hooks"
 import routes from "@/routes"
@@ -48,81 +43,81 @@ const SidebarNavigation: React.FC = () => {
 
   return (
     <Sidebar floating={floatingSidebar} show={!hideSidebar} onClose={hodeSidebar}>
-      <SidebarLogo logo={<Logo />} logoCompact={<Logo compact />} />
+      <Sidebar.Logo logo={<Logo />} logoCompact={<Logo compact />} />
 
-      <SidebarSpace customHeight="1rem" />
+      <Sidebar.Space customHeight="1rem" />
 
-      {/* <SidebarItem isStatic compact>
+      {/* <Sidebar.Item isStatic compact>
         <IndexExtension compactMobile />
-      </SidebarItem> */}
-      <SidebarItem isStatic compact>
+      </Sidebar.Item> */}
+      <Sidebar.Item isStatic compact>
         <GatewayExtension compactMobile />
-      </SidebarItem>
+      </Sidebar.Item>
 
-      <SidebarSpace customHeight="1rem" />
+      <Sidebar.Space customHeight="1rem" />
 
-      <SidebarItem
+      <Sidebar.Item
         title="Home"
         to="/"
         isActive={pathname => pathname === "/"}
         iconSvg={<HomeIcon />}
       />
-      <SidebarItem
+      <Sidebar.Item
         title="Frames"
         to={routes.frames}
         isActive={pathname => /^\/frames\/?/.test(pathname)}
         iconSvg={<FramesIcon />}
       />
-      <SidebarItem
+      <Sidebar.Item
         title="Following"
         to={routes.following}
         isActive={pathname => /^\/following\/?/.test(pathname)}
         iconSvg={<UserIcon />}
       />
-      <SidebarItem
+      <Sidebar.Item
         title="Playlists"
         to={routes.playlists}
         isActive={pathname => /^\/playlists\/?/.test(pathname)}
         iconSvg={<PlaylistIcon />}
       />
-      <SidebarItem
+      <Sidebar.Item
         title="Saved"
         to={routes.saved}
         isActive={pathname => /^\/saved\/?/.test(pathname)}
         iconSvg={<BookmarkIcon />}
       />
 
-      <SidebarSpace flexible />
+      <Sidebar.Space flexible />
 
-      <SidebarLinks>
-        <SidebarLinksItem title="About Etherna" to="https://info.etherna.io/" target="_blank" />
-        <SidebarLinksItem title="Blog" to="https://info.etherna.io/blog/" target="_blank" />
-        <FeedbackLink wrapper={SidebarLinksItem} />
-        <SidebarLinksItem title="GitHub" to="https://github.com/etherna" target="_blank" />
-        <SidebarLinksItem
+      <Sidebar.Links>
+        <Sidebar.LinksItem title="About Etherna" to="https://info.etherna.io/" target="_blank" />
+        <Sidebar.LinksItem title="Blog" to="https://info.etherna.io/blog/" target="_blank" />
+        <FeedbackLink wrapper={Sidebar.LinksItem} />
+        <Sidebar.LinksItem title="GitHub" to="https://github.com/etherna" target="_blank" />
+        <Sidebar.LinksItem
           title="Index Api"
           to={urlPath(import.meta.env.VITE_APP_INDEX_URL, "/swagger")}
           target="_blank"
         />
-        <SidebarLinksItem
+        <Sidebar.LinksItem
           title="Gateway"
           to={urlOrigin(import.meta.env.VITE_APP_GATEWAY_URL)}
           target="_blank"
         />
         {import.meta.env.VITE_APP_MATOMO_URL && (
-          <SidebarLinksItem
+          <Sidebar.LinksItem
             title="Analytics"
             to={urlOrigin(import.meta.env.VITE_APP_MATOMO_URL)}
             target="_blank"
           />
         )}
-        {/* <SidebarLinksItem
+        {/* <Sidebar.LinksItem
           title="Credit"
           to={urlOrigin(import.meta.env.VITE_APP_CREDIT_URL)}
           target="_blank"
         /> */}
-        <SidebarLinksItem title="Privacy Policy" to={routes.privacyPolicy} />
-      </SidebarLinks>
+        <Sidebar.LinksItem title="Privacy Policy" to={routes.privacyPolicy} />
+      </Sidebar.Links>
     </Sidebar>
   )
 }
