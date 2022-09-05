@@ -5518,10 +5518,10 @@ react-schemaorg@2.0.0:
   resolved "https://registry.yarnpkg.com/react-schemaorg/-/react-schemaorg-2.0.0.tgz#9d168816e3630382d366fbc5fc4c337617467dbb"
   integrity sha512-UqciFKA203ewNjn0zC09uYKuJSvMD8L75L1s/cW4rc7cS64w8l7vaI3SYkuoI/nwCBkJRmOkSJedWDUZBlYZwg==
 
-react-slider@2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/react-slider/-/react-slider-2.0.1.tgz#51fb80aaebb98a07d6563b757a49c437a5142fed"
-  integrity sha512-EnPLeyPGQcgpU9i+OvdD6W1Fk+rHg7LOVGvREXqLnbSngYvnE+d++nus0iHho1kcDw6NzF1OXzqWXAEs2Nbl4Q==
+react-slider@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-slider/-/react-slider-2.0.3.tgz#0bf641ef8bd65aeda433c397dcc408509d125fc2"
+  integrity sha512-EiauNG+AJdh5sMZrkXkSPKDLuI173QRJr6avjk0q52ke/KkFoG4kwzY2dER49FTu+Wazo4VL2xiu4Pr8gmXFTw==
   dependencies:
     prop-types "^15.8.1"
 

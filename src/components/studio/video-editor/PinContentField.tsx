@@ -1,29 +1,24 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
-
 import React, { useEffect, useState } from "react"
 
-import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
-
-import Alert from "@/components/common/Alert"
-import Label from "@/components/common/Label"
-import FormGroup from "@/components/common/FormGroup"
-import FieldDesrcription from "@/components/common/FieldDesrcription"
-import Toggle from "@/components/common/Toggle"
+import FieldDescription from "@/components/common/FieldDescription"
+import { Alert, FormGroup, Label, Spinner } from "@/components/ui/display"
+import { Toggle } from "@/components/ui/inputs"
 import useSelector from "@/state/useSelector"
 import { urlOrigin } from "@/utils/urls"
 
@@ -67,16 +62,14 @@ const PinContentField = ({ pinningEnabled, onChange }: PinContentFieldProps) => 
     <FormGroup>
       <Label htmlFor="pinContent">Pin Content</Label>
 
-      {pinningAvailable === undefined && (
-        <Spinner width="20" />
-      )}
+      {pinningAvailable === undefined && <Spinner size={20} />}
       {pinningAvailable === false && (
-        <Alert title="Pinning unavailable" type="warning">
+        <Alert title="Pinning unavailable" color="warning">
           Pinning is disabled on the current gateway <em>{urlOrigin(gatewayUrl)}</em>.
         </Alert>
       )}
       {errorMessage && (
-        <Alert title="An error has occurred" type="danger">
+        <Alert title="An error has occurred" color="error">
           {errorMessage}
         </Alert>
       )}
@@ -88,9 +81,9 @@ const PinContentField = ({ pinningEnabled, onChange }: PinContentFieldProps) => 
           onChange={handlePinChange}
         />
       )}
-      <FieldDesrcription>
+      <FieldDescription>
         Pinning a video will make sure the node will always have a copy of the file.
-      </FieldDesrcription>
+      </FieldDescription>
     </FormGroup>
   )
 }

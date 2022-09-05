@@ -1,32 +1,31 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
-
 import React, { useCallback, useMemo, useState } from "react"
+import classNames from "classnames"
 
 import classes from "@/styles/components/studio/video-editor/VideoDeleteModal.module.scss"
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 
-import Modal from "@/components/common/Modal"
-import Button from "@/components/common/Button"
 import Image from "@/components/common/Image"
-import { useErrorMessage } from "@/state/hooks/ui"
-import { encodedSvg } from "@/utils/svg"
+import { Button, Modal } from "@/components/ui/actions"
 import type { Video } from "@/definitions/swarm-video"
 import type { VideosSource } from "@/hooks/useUserVideos"
+import { useErrorMessage } from "@/state/hooks/ui"
+import { encodedSvg } from "@/utils/svg"
 
 type VideoDeleteModalProps = {
   source: VideosSource
@@ -41,7 +40,7 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
   show,
   videos,
   deleteHandler,
-  onCancel
+  onCancel,
 }) => {
   const [isDeleting, setIsDeleting] = useState(false)
   const { showError } = useErrorMessage()
@@ -49,7 +48,10 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
   const title = useMemo(() => {
     return "Remove {0} from {1}?"
       .replace("{0}", videos.length > 1 ? `these ${videos.length} videos` : "this video")
-      .replace("{1}", `from ${source.type === "channel" ? `public channel` : `index: "${source.indexUrl}"`}`)
+      .replace(
+        "{1}",
+        `from ${source.type === "channel" ? `public channel` : `index: "${source.indexUrl}"`}`
+      )
   }, [source, videos.length])
 
   const handleDelete = useCallback(async () => {
@@ -73,18 +75,24 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
       showCancelButton={!isDeleting}
       title={title}
       footerButtons={
-        <Button modifier="danger" loading={isDeleting} onClick={handleDelete}>
+        <Button color="error" loading={isDeleting} onClick={handleDelete}>
           Yes, Remove
         </Button>
       }
       onClose={onCancel}
       large
     >
-      <div className={classes.videoDeleteContent}>
-        <div className={classes.videoDeleteThumbs}>
+      <div className="flex flex-col sm:flex-row">
+        <div className="relative w-full sm:w-1/3 sm:min-h-24">
           {videos.slice(0, 3).map((video, i) => (
-            <div className={classes.videoDeleteThumbWrapper} key={i}>
-              <div className={classes.videoDeleteThumb} key={i}>
+            <div
+              className={classNames("absolute w-[91%] h-[80%] top-0 left-0 z-[2]", {
+                "ml-[3%] mt-[3%] z-[1]": i === 1,
+                "ml-[6%] mt-[6%] z-[0]": i === 2,
+              })}
+              key={i}
+            >
+              <div className="relative w-full h-full bg-gray-300 dark:bg-gray-600" key={i}>
                 <Image
                   src={encodedSvg(<ThumbPlaceholder />)}
                   sources={video.thumbnail?.sources}
@@ -96,16 +104,16 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
             </div>
           ))}
         </div>
-        <div className={classes.videoDeleteTitleList}>
+        <div className="flex-grow max-h-40 overflow-y-auto sm:pl-4">
           {videos.map((video, i) => (
-            <h4 className={classes.videoDeleteTitle} key={i}>
+            <h4 className="text-base font-semibold" key={i}>
               {video.title || "Untitled"}
             </h4>
           ))}
         </div>
       </div>
 
-      <p className={classes.videoDeleteMessage}>
+      <p className="block leading-tight mt-2">
         Do you confirm to remove this {videos.length > 1 ? "videos" : "video"}? <br />
         This operation cannot be undone.
       </p>

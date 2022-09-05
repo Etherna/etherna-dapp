@@ -1,29 +1,26 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
-
 import React, { useCallback, useEffect, useState } from "react"
 import classNames from "classnames"
 
-import classes from "@/styles/components/studio/StudioTableView.module.scss"
-
-import Pagination from "@/components/common/Pagination"
 import TableVideoPlaceholder from "@/components/placeholders/TableVideoPlaceholder"
+import { Pagination } from "@/components/ui/navigation"
 
-type StudioTableViewProps<T = any> = {
+type TableProps<T = any> = {
   className?: string
   title?: string
   page?: number
@@ -43,7 +40,7 @@ type StudioTableViewProps<T = any> = {
   onSelectionChange?(selectedItems: T[]): void
 }
 
-const StudioTableView = <T, A>({
+const Table = <T, A>({
   className,
   title,
   items,
@@ -56,7 +53,7 @@ const StudioTableView = <T, A>({
   selectionActions,
   onPageChange,
   onSelectionChange,
-}: StudioTableViewProps<T>) => {
+}: TableProps<T>) => {
   const [selectedItems, setSelectedItems] = useState<T[]>([])
 
   useEffect(() => {
@@ -71,48 +68,53 @@ const StudioTableView = <T, A>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItems])
 
-  const toggleSelection = useCallback((item?: T, selected?: boolean) => {
-    if (!item) {
-      if (selectedItems.length) setSelectedItems([])
-      else setSelectedItems(items ?? [])
-    } else {
-      if (selected) {
-        setSelectedItems(items => [...items, item])
+  const toggleSelection = useCallback(
+    (item?: T, selected?: boolean) => {
+      if (!item) {
+        if (selectedItems.length) setSelectedItems([])
+        else setSelectedItems(items ?? [])
       } else {
-        const index = selectedItems.indexOf(item)
-        if (index >= 0) {
-          selectedItems.splice(index, 1)
-          setSelectedItems([...selectedItems])
+        if (selected) {
+          setSelectedItems(items => [...items, item])
+        } else {
+          const index = selectedItems.indexOf(item)
+          if (index >= 0) {
+            selectedItems.splice(index, 1)
+            setSelectedItems([...selectedItems])
+          }
         }
       }
-    }
-  }, [items, selectedItems])
+    },
+    [items, selectedItems]
+  )
 
   return (
-    <div className={classNames(classes.studioTableContainer, className)}>
+    <div className={classNames("w-full", className)} data-component="table">
       {(title || selectionActions) && (
-        <div className={classes.studioTableToolbar}>
-          {(title || selectionActions) && (
-            <h2 className={classes.studioTableTitle}>{title}</h2>
-          )}
+        <div className="flex items-center flex-wrap py-1">
+          {(title || selectionActions) && <h2 className="text-lg lg:text-xl">{title}</h2>}
           {selectionActions && (
-            <div className={classNames(classes.studioTableToolbarActions, {
-              [classes.show]: selectedItems.length > 0
-            })}>
+            <div
+              className={classNames("hidden lg:flex lg:invisible items-center ml-auto space-x-3", {
+                "flex visible": selectedItems.length > 0,
+              })}
+            >
               {selectionActions}
             </div>
           )}
         </div>
       )}
 
-      <div className={classes.studioTableWrapper}>
-        <table className={classNames(classes.studioTable, {
-          [classes.loading]: isLoading
-        })}>
-          <thead>
+      <div className="w-full overflow-x-auto">
+        <table
+          className={classNames("min-w-full transition-opacity duration-200 ease-out", {
+            "opacity-30 pointer-events-none": isLoading,
+          })}
+        >
+          <thead className="pb-4">
             <tr>
               {showSelection && (
-                <th style={{ width: "32px" }}>
+                <th className="py-2" style={{ width: "32px" }}>
                   <input
                     type="checkbox"
                     checked={selectedItems.length == items?.length && selectedItems.length > 0}
@@ -124,9 +126,13 @@ const StudioTableView = <T, A>({
                 if (!col) return null
                 return (
                   <th
-                    className={classNames({
-                      [classes.hideMobile]: col.hideOnMobile
-                    })}
+                    className={classNames(
+                      "py-2 font-medium text-left text-gray-600 dark:text-gray-300",
+                      "border-b border-gray-300 dark:border-gray-700",
+                      {
+                        "hidden xl:table-cell": col.hideOnMobile,
+                      }
+                    )}
                     style={{ width: col.width }}
                     key={i}
                   >
@@ -138,9 +144,9 @@ const StudioTableView = <T, A>({
           </thead>
           <tbody>
             {items?.map((item, i) => (
-              <tr key={i}>
+              <tr className="group" key={i}>
                 {showSelection && (
-                  <td>
+                  <td className="py-2 border-t border-gray-200 dark:border-gray-800 group-first:border-t-0">
                     <input
                       type="checkbox"
                       checked={selectedItems.indexOf(item) >= 0}
@@ -152,9 +158,12 @@ const StudioTableView = <T, A>({
                   if (!col) return null
                   return (
                     <td
-                      className={classNames({
-                        [classes.hideMobile]: col.hideOnMobile
-                      })}
+                      className={classNames(
+                        "py-2 border-t border-gray-200 dark:border-gray-800 group-first:border-t-0",
+                        {
+                          "hidden xl:table-cell": col.hideOnMobile,
+                        }
+                      )}
                       key={i}
                     >
                       {col.render(item)}
@@ -164,9 +173,7 @@ const StudioTableView = <T, A>({
               </tr>
             ))}
 
-            {(isLoading && !items?.length) && (
-              <TableVideoPlaceholder />
-            )}
+            {isLoading && !items?.length && <TableVideoPlaceholder />}
           </tbody>
         </table>
       </div>
@@ -182,4 +189,4 @@ const StudioTableView = <T, A>({
   )
 }
 
-export default StudioTableView
+export default Table

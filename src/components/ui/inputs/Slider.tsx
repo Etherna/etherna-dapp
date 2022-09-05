@@ -15,9 +15,40 @@
  *
  */
 import React from "react"
-import Slider from "react-slider"
+import ReactSliderLib from "react-slider"
 import type { ReactSliderProps } from "react-slider"
+import classNames from "classnames"
 
-import "@/styles/overrides/react-slider.scss"
+const ReactSlider = ReactSliderLib as unknown as React.FC<ReactSliderProps>
 
-export default Slider as unknown as React.FC<ReactSliderProps>
+const SimpleSlider: React.FC<ReactSliderProps> = props => {
+  return (
+    <ReactSlider
+      {...props}
+      className={classNames("w-full h-5", props.className)}
+      renderTrack={(_, { index, value }) => (
+        <div
+          className={classNames("bg-gray-300 dark:bg-gray-600 h-1 rounded-full mt-2", {
+            "bg-gray-800 dark:bg-gray-50": index === 0,
+          })}
+          style={{
+            position: "absolute",
+            left: index === 0 ? 0 : `${value}%`,
+            right: index === 1 ? 0 : `${100 - value}%`,
+          }}
+          key={index}
+        />
+      )}
+      thumbClassName="w-2 h-full rounded-full bg-gray-800 dark:bg-gray-200"
+    />
+  )
+}
+
+const Slider: React.FC<ReactSliderProps> & {
+  Simple: typeof SimpleSlider
+} = props => {
+  return <ReactSlider {...props} />
+}
+Slider.Simple = SimpleSlider
+
+export default Slider

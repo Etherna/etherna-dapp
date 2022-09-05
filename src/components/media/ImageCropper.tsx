@@ -185,8 +185,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
 
       {circular && (
         <div className="mt-2">
-          <Slider
-            className="simple-slider"
+          <Slider.Simple
             min={0.2}
             max={3}
             value={scale}

@@ -1,30 +1,31 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
-
 import React, { useCallback, useEffect, useMemo } from "react"
 
-import SelectionToggle from "@/components/common/SelectionToggle"
-import Spinner from "@/components/common/Spinner"
-import Label from "@/components/common/Label"
-import FieldDesrcription from "@/components/common/FieldDesrcription"
-import { useVideoEditorExtrasActions, useVideoEditorState } from "@/context/video-editor-context/hooks"
+import FieldDescription from "@/components/common/FieldDescription"
+import { Label, Spinner } from "@/components/ui/display"
+import { SelectionToggle } from "@/components/ui/inputs"
+import {
+  useVideoEditorExtrasActions,
+  useVideoEditorState,
+} from "@/context/video-editor-context/hooks"
+import type { PublishSourceType } from "@/definitions/video-editor-context"
 import useVideoPublishStatus from "@/hooks/useVideoPublishStatus"
 import useSelector from "@/state/useSelector"
-import type { PublishSourceType } from "@/definitions/video-editor-context"
 
 const SaveToSelector: React.FC = () => {
   const address = useSelector(state => state.user.address)
@@ -43,19 +44,25 @@ const SaveToSelector: React.FC = () => {
     ownerAddress: address!,
   })
 
-  const isToggled = useCallback((source: PublishSourceType, identifier: string) => {
-    return saveTo.find(s => s.source === source && s.identifier === identifier)!.add
-  }, [saveTo])
+  const isToggled = useCallback(
+    (source: PublishSourceType, identifier: string) => {
+      return saveTo.find(s => s.source === source && s.identifier === identifier)!.add
+    },
+    [saveTo]
+  )
 
   useEffect(() => {
     if (!videoIndexesStatus) return
 
-    updateSources(sources.map(pubSource => ({
-      ...pubSource,
-      videoId: pubSource.source === "index"
-        ? videoIndexesStatus[pubSource.identifier]?.videoId ?? pubSource.videoId
-        : pubSource.videoId,
-    })))
+    updateSources(
+      sources.map(pubSource => ({
+        ...pubSource,
+        videoId:
+          pubSource.source === "index"
+            ? videoIndexesStatus[pubSource.identifier]?.videoId ?? pubSource.videoId
+            : pubSource.videoId,
+      }))
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoIndexesStatus])
 
@@ -68,11 +75,12 @@ const SaveToSelector: React.FC = () => {
         ? videoIndexesStatus[url].status !== "public"
         : videoIndexesStatus[url].status === "public"
 
-      toggle && toggleAddTo({
-        source: "index" as "index" | "playlist",
-        identifier: url,
-        add: !currentValue,
-      })
+      toggle &&
+        toggleAddTo({
+          source: "index" as "index" | "playlist",
+          identifier: url,
+          add: !currentValue,
+        })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoIndexesStatus])
@@ -86,11 +94,12 @@ const SaveToSelector: React.FC = () => {
         ? videoPlaylistsStatus[id].status !== "public"
         : videoPlaylistsStatus[id].status === "public"
 
-      toggle && toggleAddTo({
-        source: "playlist" as "index" | "playlist",
-        identifier: id,
-        add: !currentValue,
-      })
+      toggle &&
+        toggleAddTo({
+          source: "playlist" as "index" | "playlist",
+          identifier: id,
+          add: !currentValue,
+        })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoPlaylistsStatus])
@@ -110,11 +119,13 @@ const SaveToSelector: React.FC = () => {
                 checked={toggled}
                 label={source.name}
                 description={source.description}
-                onChange={() => toggleAddTo({
-                  source: source.source,
-                  identifier: source.identifier,
-                  add: !toggled,
-                })}
+                onChange={() =>
+                  toggleAddTo({
+                    source: source.source,
+                    identifier: source.identifier,
+                    add: !toggled,
+                  })
+                }
                 key={source.identifier}
               />
             )
@@ -122,9 +133,7 @@ const SaveToSelector: React.FC = () => {
         </div>
       )}
 
-      <FieldDesrcription>
-        Choose where you want to post your video.
-      </FieldDesrcription>
+      <FieldDescription>Choose where you want to post your video.</FieldDescription>
     </>
   )
 }
