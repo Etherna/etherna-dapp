@@ -1,29 +1,27 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
-
-import React, { useState } from "react"
+import React, { useCallback, useState } from "react"
 
 import { ShieldCheckIcon } from "@heroicons/react/outline"
 
-import Modal from "@/components/common/Modal"
-import Button from "@/components/common/Button"
-import FormGroup from "@/components/common/FormGroup"
-import TextField from "@/components/common/TextField"
-import Alert from "@/components/common/Alert"
+import { Button, Modal } from "@/components/ui/actions"
+import { FormGroup } from "@/components/ui/display"
+import { Alert } from "@/components/ui/display"
+import { TextInput } from "@/components/ui/inputs"
 import useBeeAuthentication from "@/state/hooks/ui/useBeeAuthentication"
 import useSelector from "@/state/useSelector"
 
@@ -40,7 +38,7 @@ const BeeAuthModal: React.FC<BeeAuthModalProps> = ({ show = false }) => {
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string>()
 
-  async function handleAuth() {
+  const handleAuth = useCallback(async () => {
     setIsAuthenticating(true)
     try {
       await beeClient.authenticate(username, password)
@@ -51,7 +49,7 @@ const BeeAuthModal: React.FC<BeeAuthModalProps> = ({ show = false }) => {
       setError(errorMessage)
     }
     setIsAuthenticating(false)
-  }
+  }, [beeClient, hideAuth, password, username])
 
   return (
     <Modal
@@ -70,21 +68,21 @@ const BeeAuthModal: React.FC<BeeAuthModalProps> = ({ show = false }) => {
           >
             Sign in
           </Button>
-          <Button modifier="muted" onClick={() => hideAuth(false)} disabled={isAuthenticating}>
+          <Button color="muted" onClick={() => hideAuth(false)} disabled={isAuthenticating}>
             Cancel
           </Button>
         </>
       }
     >
       <FormGroup>
-        <TextField value={username} type="text" onChange={setUsername} onEnter={handleAuth} />
+        <TextInput value={username} type="text" onChange={setUsername} onEnter={handleAuth} />
       </FormGroup>
       <FormGroup>
-        <TextField value={password} type="password" onChange={setPassword} onEnter={handleAuth} />
+        <TextInput value={password} type="password" onChange={setPassword} onEnter={handleAuth} />
       </FormGroup>
       {error && (
         <FormGroup>
-          <Alert title="Authentication error" type="danger" onClose={() => setError(undefined)}>
+          <Alert title="Authentication error" color="error" onClose={() => setError(undefined)}>
             {error}
           </Alert>
         </FormGroup>

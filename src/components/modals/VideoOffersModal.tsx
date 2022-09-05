@@ -1,33 +1,31 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
-
 import React, { useState } from "react"
-import classNames from "classnames"
 import Tippy from "@tippyjs/react"
+import classNames from "classnames"
 
 import classes from "@/styles/components/modals/VideoOffersModal.module.scss"
 
-import Modal from "@/components/common/Modal"
-import Button from "@/components/common/Button"
-import SegmentedControl from "@/components/common/SegmentedControl"
 import SwarmResourcesIO from "@/classes/SwarmResources"
-import useSelector from "@/state/useSelector"
-import { showError } from "@/state/actions/modals"
+import { Button, Modal } from "@/components/ui/actions"
+import { SegmentedControl } from "@/components/ui/inputs"
 import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
+import { showError } from "@/state/actions/modals"
+import useSelector from "@/state/useSelector"
 
 type VideoOffersModalProps = {
   show: boolean
@@ -80,19 +78,21 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
       title="Video offers"
       footerButtons={
         <>
-          <Button modifier="muted" onClick={onClose}>
+          <Button color="muted" onClick={onClose}>
             OK
           </Button>
           {offersStatus && (
             <div className="sm:mr-auto sm:space-x-2">
               {offersStatus.userOfferedResourses.length > 0 && (
-                <Button modifier="danger" onClick={unofferAllResources} loading={isRemovingOffers}>
+                <Button color="error" onClick={unofferAllResources} loading={isRemovingOffers}>
                   Remove your offers
                 </Button>
               )}
               {offersStatus.userUnOfferedResourses.length > 0 && (
                 <Button onClick={offerAllResources} loading={isAddingOffers}>
-                  {offersStatus.userOfferedResourses.length > 0 ? "Offer missing resources" : "Offer resources"}
+                  {offersStatus.userOfferedResourses.length > 0
+                    ? "Offer missing resources"
+                    : "Offer resources"}
                 </Button>
               )}
             </div>
@@ -104,19 +104,22 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
       <SegmentedControl
         defaultValue="user"
         value={offersTab}
-        entries={[{
-          label: "Yours",
-          value: "user",
-          tip: "Show all resources offered by you"
-        }, {
-          label: "Global",
-          value: "global",
-          tip: "Show all resources offers from any users"
-        }]}
+        entries={[
+          {
+            label: "Yours",
+            value: "user",
+            tip: "Show all resources offered by you",
+          },
+          {
+            label: "Global",
+            value: "global",
+            tip: "Show all resources offers from any users",
+          },
+        ]}
         onChange={setOffersTab}
       />
 
-      {(video && offersStatus) && (
+      {video && offersStatus && (
         <table className={classes.offersModalTable}>
           <thead>
             <tr>
@@ -140,17 +143,14 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
                   >
                     <span
                       className={classNames(classes.offersModalStatus, {
-                        [classes.offered]: offersTab === "user"
-                          ? address && resourceStatus.offeredBy.includes(address)
-                          : offersTab === "global" && resourceStatus.offeredBy.length > 0,
+                        [classes.offered]:
+                          offersTab === "user"
+                            ? address && resourceStatus.offeredBy.includes(address)
+                            : offersTab === "global" && resourceStatus.offeredBy.length > 0,
                         [classes.counter]: offersTab === "global",
                       })}
                     >
-                      {
-                        offersTab === "global"
-                          ? resourceStatus.offeredBy.length
-                          : ""
-                      }
+                      {offersTab === "global" ? resourceStatus.offeredBy.length : ""}
                     </span>
                   </Tippy>
                 </td>

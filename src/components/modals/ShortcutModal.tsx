@@ -1,36 +1,37 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
-
-import React, { useEffect, useState, useRef } from "react"
+import React, { useEffect, useState, useRef, useCallback } from "react"
 import classNames from "classnames"
 
 import classes from "@/styles/components/modals/ShortcutModal.module.scss"
 import { ExclamationIcon } from "@heroicons/react/solid"
 
-import Modal from "@/components/common/Modal"
-import Button from "@/components/common/Button"
-import Kbd from "@/components/common/Kbd"
-import { closeShortcutModal } from "@/state/actions/modals"
+import { Button, Modal } from "@/components/ui/actions"
+import { Kbd } from "@/components/ui/display"
 import { saveShortcut, shortcutExists } from "@/state/actions/enviroment/shortcuts"
+import { closeShortcutModal } from "@/state/actions/modals"
 import useSelector from "@/state/useSelector"
 import { keyEventToString } from "@/utils/keyboard"
 
+type ShortcutModalProsp = {
+  show?: boolean
+}
 
-const ShortcutModal = ({ show = false }) => {
+const ShortcutModal: React.FC<ShortcutModalProsp> = ({ show = false }) => {
   const { shortcutNamespace, shortcutKey, keymap, lang } = useSelector(state => state.env)
   const [shortcut, setShortcut] = useState<string | null>()
   const [existingShortcut, setExistingShortcut] = useState<string | null>(null)
@@ -49,31 +50,32 @@ const ShortcutModal = ({ show = false }) => {
 
   useEffect(() => {
     focusEditor()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editorRef])
 
-  const focusEditor = () => {
+  const focusEditor = useCallback(() => {
     if (editorRef && editorRef.current) {
       editorRef.current.focus()
     }
-  }
+  }, [])
 
-  const deleteShortcut = () => {
+  const deleteShortcut = useCallback(() => {
     setShortcut(null)
     setExistingShortcut(null)
-  }
+  }, [])
 
-  const overrideShortcut = () => {
+  const overrideShortcut = useCallback(() => {
     saveShortcut(shortcut)
-  }
+  }, [shortcut])
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     e.stopPropagation()
     e.preventDefault()
 
     const shortcut = keyEventToString(e.nativeEvent)
     setShortcut(shortcut)
     setExistingShortcut(shortcutExists(shortcut))
-  }
+  }, [])
 
   return (
     <Modal
@@ -81,14 +83,10 @@ const ShortcutModal = ({ show = false }) => {
       showCloseButton={true}
       footerButtons={
         <>
-          <Button
-            modifier="muted"
-            onClick={overrideShortcut}
-            disabled={!!existingShortcut}
-          >
+          <Button color="muted" onClick={overrideShortcut} disabled={!!existingShortcut}>
             Save
           </Button>
-          <Button modifier="danger" onClick={deleteShortcut}>
+          <Button color="error" onClick={deleteShortcut}>
             Clear
           </Button>
         </>
