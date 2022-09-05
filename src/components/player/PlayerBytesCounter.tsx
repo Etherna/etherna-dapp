@@ -1,24 +1,21 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
-
 import React, { useMemo } from "react"
 import classNames from "classnames"
-
-import classes from "@/styles/components/player/PlayerBytesCounter.module.scss"
 
 import { usePlayerState } from "@/context/player-context/hooks"
 import useSelector from "@/state/useSelector"
@@ -43,30 +40,57 @@ const PlayerBytesCounter: React.FC = () => {
     return [watchablePercent, remainingSeconds]
   }, [bytePrice, credit, currentTime, duration, sourceSize])
 
+  const [unknown, limited, zero] = useMemo(() => {
+    const unknown = !sourceSize
+    const limited = sourceSize && watchablePercent && watchablePercent > 0
+    const zero = sourceSize && watchablePercent === 0
+    return [unknown, limited, zero]
+  }, [sourceSize, watchablePercent])
+
   if (!watchablePercent || watchablePercent >= 1) return null
   if (!remainingSeconds) return null
 
   return (
-    <div className={classNames(classes.counter, {
-      [classes.unknown]: !sourceSize,
-      [classes.limited]: sourceSize && watchablePercent > 0,
-      [classes.zero]: sourceSize && watchablePercent === 0,
-    })}>
-      <span className={classes.counterSignal}>
-        <span className={classes.counterSignalPing} />
-        <span className={classes.counterSignalLight} />
+    <div
+      className={classNames(
+        "flex items-center mt-4 mb-6 text-xs font-medium",
+        "text-gray-700 dark:text-gray-300"
+      )}
+      data-component="player-bytes-counter"
+    >
+      <span className="relative flex h-3 w-3 mr-1">
+        <span
+          className={classNames(
+            "animate-[ping_1s_ease-out_1s_3] absolute inline-flex h-full w-full rounded-full",
+            {
+              "bg-gray-400/75 dark:bg-gray-400/75": unknown,
+              "bg-amber-300/75 dark:bg-amber-300/75": limited,
+              "bg-red-400/75 dark:bg-red-400/75": zero,
+            }
+          )}
+        />
+        <span
+          className={classNames("relative inline-flex h-3 w-3 rounded-full", {
+            "bg-gray-300 dark:bg-gray-500": unknown,
+            "bg-amber-400 dark:bg-amber-500": limited,
+            "bg-red-500 dark:bg-red-500": zero,
+          })}
+        />
       </span>
-      <span className={classes.counterLabel}>
-        {!sourceSize ? "Unknown watch time" : ""}
-      </span>
-      <span className={classes.counterLabel}>
-        {!sourceSize && (
-          <span>{" | We coudn't get an estimate for this video"}</span>
-        )}
-        {(sourceSize && remainingSeconds > 0) ? (
+      <span className="ml-1">{!sourceSize ? "Unknown watch time" : ""}</span>
+      <span className="ml-1">
+        {!sourceSize && <span>{" | We coudn't get an estimate for this video"}</span>}
+        {sourceSize && remainingSeconds > 0 ? (
           <>
             <span>With your credit you can only enjoy the remaining </span>
-            <span className={classes.counterAmount}>{convertTime(remainingSeconds).readable}</span>
+            <span
+              className={classNames(
+                "relative text-gray-900 dark:text-gray-50 font-semibold",
+                "after:absolute after:h-px after:inset-x-0 after:top-full after:bg-gray-50"
+              )}
+            >
+              {convertTime(remainingSeconds).readable}
+            </span>
             <span> of this video</span>
           </>
         ) : (

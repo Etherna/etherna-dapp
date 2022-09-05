@@ -14,26 +14,8 @@
  *  limitations under the License.
  */
 
-.vertical-slider {
-  @apply w-2 h-32 my-4 mx-auto rounded-full;
-  @apply bg-white bg-opacity-50;
-  touch-action: none;
-
-  .track {
-    @apply w-full bottom-0 rounded-full;
-
-    &.track-0 {
-      @apply bg-white;
-    }
-  }
-  .thumb {
-    @apply w-5 h-5 bg-white rounded-full;
-    @apply -ml-1.5 -mb-1.5;
-  }
-}
-
 .simple-slider {
-  @apply w-full h-5;
+  @apply h-5 w-full;
 
   .track {
     @apply bg-gray-300 dark:bg-gray-600;
@@ -46,7 +28,7 @@
   }
 
   .thumb {
-    @apply w-2 h-full rounded-full;
+    @apply h-full w-2 rounded-full;
     @apply bg-gray-800 dark:bg-gray-200;
   }
 }
