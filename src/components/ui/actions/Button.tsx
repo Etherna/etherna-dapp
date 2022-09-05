@@ -16,7 +16,6 @@
  */
 import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
-
 import classNames from "classnames"
 
 import { Spinner } from "../display"
@@ -31,7 +30,7 @@ export type ButtonProps = {
   color?:
     | "primary"
     | "success"
-    | "danger"
+    | "error"
     | "warning"
     | "info"
     | "transparent"
@@ -141,10 +140,10 @@ const Button: React.FC<ButtonProps> = ({
           "border-green-500 text-green-500 active:border-green-600 active:bg-primary-500/10":
             color === "success" && aspect === "outline",
           "text-green-500 active:text-green-600": color === "success" && aspect === "text",
-          "bg-red-500 text-white active:bg-red-600": color === "danger" && aspect === "fill",
+          "bg-red-500 text-white active:bg-red-600": color === "error" && aspect === "fill",
           "border-red-500 text-red-500 active:border-red-600 active:bg-primary-500/10":
-            color === "danger" && aspect === "outline",
-          "text-red-500 active:text-red-600": color === "danger" && aspect === "text",
+            color === "error" && aspect === "outline",
+          "text-red-500 active:text-red-600": color === "error" && aspect === "text",
           "bg-yellow-500 text-white active:bg-yellow-600": color === "warning" && aspect === "fill",
           "border-yellow-500 text-yellow-500 active:border-yellow-600 active:bg-primary-500/10":
             color === "warning" && aspect === "outline",

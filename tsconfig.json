@@ -17,6 +17,7 @@
     "noImplicitReturns": false,
     "noImplicitThis": false,
     "noEmit": true,
+    "importsNotUsedAsValues": "error",
     "jsx": "react",
     "baseUrl": ".",
     "paths": {

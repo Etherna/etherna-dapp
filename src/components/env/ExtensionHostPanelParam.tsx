@@ -1,29 +1,27 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
-
 import React from "react"
 import { RadioGroup } from "@headlessui/react"
 import classNames from "classnames"
 
-import classes from "@/styles/components/env/ExtensionHostPanelParam.module.scss"
 import { CheckCircleIcon } from "@heroicons/react/solid"
 
-import TextField from "@/components/common/TextField"
 import type { ExtensionParamConfig } from "./ExtensionHostPanel"
+import { TextInput } from "@/components/ui/inputs"
 
 type ExtensionHostPanelParamProps = {
   value: string
@@ -40,7 +38,7 @@ const ExtensionHostPanelParam: React.FC<ExtensionHostPanelParamProps> = ({
   switch (paramConfig.type ?? "text") {
     case "text":
       return (
-        <TextField
+        <TextInput
           id={paramConfig.key}
           type="text"
           value={value}
@@ -51,24 +49,32 @@ const ExtensionHostPanelParam: React.FC<ExtensionHostPanelParamProps> = ({
       )
     case "gatetype":
       return (
-        <RadioGroup className={classes.radioGroup} value={value} onChange={onChange}>
+        <RadioGroup className="flex flex-col space-y-1.5" value={value} onChange={onChange}>
           {paramConfig.options?.map(config => (
             <RadioGroup.Option value={config.value} key={config.value}>
               {({ active, checked }) => (
                 <div
-                  className={classNames(classes.radio, {
-                    [classes.active]: active,
-                    [classes.checked]: checked,
-                  })}
+                  className={classNames(
+                    "flex items-start justify-between",
+                    "border border-gray-400 dark:border-gray-400",
+                    "px-2.5 py-2 rounded-md cursor-pointer",
+                    {
+                      "border-gray-900 dark:border-gray-100": active,
+                      "ring-2 ring-primary-500 border-primary-500 hover:border-primary-500":
+                        checked,
+                    }
+                  )}
                 >
-                  <div className={classes.radioContent}>
-                    <RadioGroup.Label className={classes.radioLabel}>{config.label}</RadioGroup.Label>
-                    <RadioGroup.Description className={classes.radioDescription}>
+                  <div className="flex flex-col">
+                    <RadioGroup.Label className="text-sm text-gray-700 dark:text-gray-200 font-semibold mb-0 cursor-pointer">
+                      {config.label}
+                    </RadioGroup.Label>
+                    <RadioGroup.Description className="text-xs leading-tight text-gray-600 dark:text-gray-400 whitespace-pre-line">
                       {config.description}
                     </RadioGroup.Description>
                   </div>
                   {checked && (
-                    <CheckCircleIcon className={classes.radioCheck} />
+                    <CheckCircleIcon className="w-5 h-5 shrink-0 text-3xl text-primary-500" />
                   )}
                 </div>
               )}

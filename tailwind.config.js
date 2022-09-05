@@ -158,6 +158,12 @@ module.exports = {
           rule.selector = `.${e(`landscape-touch${separator}${rule.selector.slice(1)}`)}`
         })
       })
+
+      addVariant("floating-sidebar", ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `[data-sidebar-floating="true"] .${e(`floating-sidebar${separator}${className}`)}`
+        })
+      })
     }),
   ],
 }

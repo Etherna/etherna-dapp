@@ -11,11 +11,18 @@
   "importOrder": [
     "^react",
     "<THIRD_PARTY_MODULES>",
-    "(^@heroicons)|((.s?css)$)|(^@/assets)",
-    "(^..?/)|(^@/)"
+    "",
+    ".s?css$",
+    "^@heroicons",
+    "^@/assets",
+    "",
+    "(^..?/)|(^@/)",
+    "",
+    "<THIRD_PARTY_TYPES>",
+    "<TYPE>"
   ],
-  "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true,
+  "importOrderSeparation": false,
+  "importOrderMergeDuplicateImports": true,
   "plugins": [
     "prettier-plugin-tailwindcss"
   ]
