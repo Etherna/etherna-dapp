@@ -1,5 +1,6 @@
 export { default as Select } from "./Select"
 export { default as SegmentedControl } from "./SegmentedControl"
 export { default as SelectionToggle } from "./SelectionToggle"
+export { default as Slider } from "./Slider"
 export { default as TextInput } from "./TextInput"
 export { default as Toggle } from "./Toggle"

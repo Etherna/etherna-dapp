@@ -1,29 +1,27 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
-
 import React, { useMemo, useRef, useState } from "react"
-import ReactDOM from "react-dom"
+import { createPortal } from "react-dom"
 import classNames from "classnames"
 
-import classes from "@/styles/components/media/FileDrag.module.scss"
 import { ReactComponent as DragIcon } from "@/assets/icons/drag.svg"
 
-import Button from "@/components/common/Button"
-import FieldDesrcription from "@/components/common/FieldDesrcription"
+import FieldDescription from "@/components/common/FieldDescription"
+import { Button } from "@/components/ui/actions"
 import { useErrorMessage } from "@/state/hooks/ui"
 import { isMimeCompatible } from "@/utils/mime-types"
 
@@ -37,7 +35,7 @@ type FileDragProps = {
   onSelectFile(file: File): void
 }
 
-const FileDrag: React.FC<FileDragProps> = (props) => {
+const FileDrag: React.FC<FileDragProps> = props => {
   const { portal } = props
   const portalEl = portal ? document.querySelector(portal) : null
 
@@ -47,8 +45,10 @@ const FileDrag: React.FC<FileDragProps> = (props) => {
   }, [])
 
   if (portalEl) {
-    return ReactDOM.createPortal(
-      <div className={classes.dragInputPortal}>{children}</div>,
+    return createPortal(
+      <div className="max-w-2xl px-4 py-8 rounded bg-gray-900/5 dark:bg-gray-100/5">
+        {children}
+      </div>,
       portalEl
     )
   } else {
@@ -152,30 +152,33 @@ const FileDragContent: React.FC<FileDragProps> = ({
   return (
     <>
       {file ? (
-        <div className={classes.fileDragProcessing}>
-          <div className={classes.fileDragProcessingHeader}>
-            <p className={classes.fileDragProcessingTitle}>
-              <span>You selected <span className="text-black dark:text-white">{file.name}</span>. </span>
+        <div className="pr-3 focus:outline-none">
+          <div className="flex items-start">
+            <p className="text-gray-700 dark:text-gray-400 pr-6">
+              <span>
+                You selected <span className="text-black dark:text-white">{file.name}</span>.{" "}
+              </span>
               Are you sure you want to upload this file?
             </p>
             <Button
-              className={classes.fileDragProcessingCancel}
-              aspect="link"
-              modifier="muted"
+              className="p-0 ml-auto"
+              aspect="text"
+              color="muted"
               onClick={handleCancel}
               disabled={disabled}
             >
               Cancel
             </Button>
           </div>
-          <div className={classes.fileDragProcessingActionList}>
+          <div className="space-y-5 mt-4">
             <div>
               <Button onClick={() => handleFileProcessing()} disabled={disabled}>
                 Upload
               </Button>
-              <FieldDesrcription>
-                Upload this source as is without any encoding (make sure is optimized for the browser).
-              </FieldDesrcription>
+              <FieldDescription>
+                Upload this source as is without any encoding (make sure is optimized for the
+                browser).
+              </FieldDescription>
             </div>
           </div>
         </div>
@@ -188,37 +191,58 @@ const FileDragContent: React.FC<FileDragProps> = ({
           role="button"
           tabIndex={0}
         >
-          <label
-            htmlFor={id}
-            className={classNames(classes.dragInput, {
-              [classes.dragOver]: isDragOver,
-            })}
-          >
+          <label htmlFor={id} className="block">
             <input
               type="file"
+              className="hidden"
               id={id}
               accept={mimeTypes}
               onChange={e => handleFileSelect(e.target.files)}
               disabled={disabled}
               ref={inputRef}
             />
-            <div className={classes.dragContent}>
-              <DragIcon className={classes.dragIcon} />
+            <div className="flex flex-col items-center space-y-3">
+              <DragIcon
+                className={classNames(
+                  "w-12 h-12 transition-colors duration-200 text-gray-500 dark:text-gray-300",
+                  {
+                    "text-blue-400 dark:text-blue-300": isDragOver,
+                  }
+                )}
+                aria-hidden
+              />
 
-              <span className={classes.dragInfo}>
+              <span className="font-medium text-gray-600 dark:text-gray-400">
                 <span className="text-lg">{label || "Drag here"}</span>
               </span>
-              <span className={classNames(classes.dragInfo, classes.dragSelect)}>
-                <span className="text-sm font-normal">or</span>
-              </span>
-              <Button as="div" className={classes.dragSelect} lighter>Select</Button>
 
-              {uploadLimit && (
-                <small className={classNames(classes.dragSize, classes.dragSelect)}>{uploadLimit}MB</small>
-              )}
-              <small className={classNames(classes.dragSize, classes.dragSelect)}>
-                {mimeTypes.split(",").map(mime => "." + mime.replace(/^[a-z0-9]+\//, "")).join(" ")}
-              </small>
+              <div
+                className={classNames("transition-colors duration-200", {
+                  "opacity-20": isDragOver,
+                })}
+              >
+                <span className="font-medium text-gray-600 dark:text-gray-400">
+                  <span className="text-sm font-normal">or</span>
+                </span>
+                <Button as="div" lighter>
+                  Select
+                </Button>
+
+                <small
+                  className={classNames(
+                    "mt-2 flex flex-col",
+                    "text-xs font-medium text-gray-600 dark:text-gray-400"
+                  )}
+                >
+                  {uploadLimit && <span>{uploadLimit}MB</span>}
+                  <span>
+                    {mimeTypes
+                      .split(",")
+                      .map(mime => "." + mime.replace(/^[a-z0-9]+\//, ""))
+                      .join(" ")}
+                  </span>
+                </small>
+              </div>
             </div>
           </label>
         </div>
