@@ -15,14 +15,14 @@
  *
  */
 import React from "react"
-
 import classNames from "classnames"
 
 export type SkeletonProps = {
   children: React.ReactNode
   className?: string
   show?: boolean
-  rounded?: boolean
+  roundedFull?: boolean
+  roundedThin?: boolean
   squared?: boolean
   width?: string | number
   height?: string | number
@@ -32,7 +32,8 @@ const Skeleton: React.FC<SkeletonProps> = ({
   children,
   className,
   show = true,
-  rounded,
+  roundedFull,
+  roundedThin,
   squared,
   width,
   height,
@@ -45,8 +46,9 @@ const Skeleton: React.FC<SkeletonProps> = ({
         "inline-flex bg-gray-200 dark:bg-gray-600 animate-pulse",
         "[&>*]:invisible",
         {
-          "rounded-md": !squared && !rounded,
-          "rounded-full": rounded,
+          "rounded-sm": roundedThin,
+          "rounded-full": roundedFull,
+          "rounded-md": !squared && !roundedFull && !roundedThin,
         },
         className
       )}
