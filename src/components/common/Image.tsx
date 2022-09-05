@@ -15,15 +15,15 @@
  *
  */
 import React, { useCallback, useEffect, useRef, useState } from "react"
-
 import classNames from "classnames"
 import { filterXSS } from "xss"
-
-import classes from "@/styles/components/common/Image.module.scss"
 
 import useSelector from "@/state/useSelector"
 
 type ImageProps = {
+  className?: string
+  imgClassName?: string
+  placeholderClassName?: string
   src?: string
   sources?: Record<`${number}w`, string>
   fallbackSrc?: string
@@ -33,12 +33,13 @@ type ImageProps = {
   layout?: "fill" | "responsive"
   objectFit?: "cover" | "contain"
   alt?: string
-  className?: string
-  placeholderClassName?: string
   style?: React.CSSProperties
 }
 
 const Image: React.FC<ImageProps> = ({
+  className,
+  imgClassName,
+  placeholderClassName,
   src: staticSrc,
   sources,
   fallbackSrc,
@@ -48,8 +49,6 @@ const Image: React.FC<ImageProps> = ({
   layout = "fill",
   objectFit = "cover",
   alt,
-  className,
-  placeholderClassName,
   style,
 }) => {
   const beeClient = useSelector(state => state.env.beeClient)
@@ -152,7 +151,7 @@ const Image: React.FC<ImageProps> = ({
       {src && (
         <picture onError={onError} onLoad={onLoadImage}>
           <img
-            className="absolute inset-0 w-full h-full"
+            className={classNames("absolute inset-0 w-full h-full", imgClassName)}
             src={filterXSS(src)}
             alt={alt}
             style={{

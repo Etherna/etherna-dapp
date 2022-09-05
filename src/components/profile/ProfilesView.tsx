@@ -1,29 +1,26 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
-
 import React, { useState, useEffect } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
-import classes from "@/styles/components/profile/Profiles.module.scss"
-
 import ProfilePreview from "./ProfilePreview"
 import ProfilePreviewPlaceholder from "@/components/placeholders/ProfilePreviewPlaceholder"
-import useSelector from "@/state/useSelector"
 import type { IndexUser } from "@/definitions/api-index"
+import useSelector from "@/state/useSelector"
 
 const FETCH_COUNT = 10
 
@@ -58,7 +55,7 @@ const ProfilesView = () => {
   }
 
   return (
-    <div className={classes.profiles}>
+    <div className="mt-6">
       {profiles === undefined && <ProfilePreviewPlaceholder />}
 
       <InfiniteScroller
@@ -70,10 +67,7 @@ const ProfilesView = () => {
       >
         {profiles ? (
           profiles.map((profile, index) => (
-            <ProfilePreview
-              profileAddress={profile.address}
-              key={`${profile.address}-${index}`}
-            />
+            <ProfilePreview profileAddress={profile.address} key={`${profile.address}-${index}`} />
           ))
         ) : (
           <div></div>
