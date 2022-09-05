@@ -15,7 +15,6 @@
  *
  */
 import React, { useCallback, useMemo } from "react"
-
 import classNames from "classnames"
 
 import { Label } from "../display"
@@ -23,6 +22,7 @@ import { Label } from "../display"
 export type TextInputProps = {
   id?: string
   className?: string
+  inputClassName?: string
   value: string
   type?: "text" | "password" | "email" | "url" | "date" | "time" | "tel"
   autoComplete?:
@@ -78,6 +78,7 @@ const TextInputCharsLimit: React.FC<TextInputCharsLimitProps> = ({ textLength, l
 const TextInput: React.FC<TextInputProps> & { CharactersLimit: typeof TextInputCharsLimit } = ({
   id,
   className,
+  inputClassName,
   value,
   checked,
   type = "text",
@@ -151,7 +152,8 @@ const TextInput: React.FC<TextInputProps> & { CharactersLimit: typeof TextInputC
               "text-base": !small,
               "text-sm": small,
               "pb-8": !!charactersLimit,
-            }
+            },
+            inputClassName
           )}
           type={type}
           autoComplete={autoComplete}

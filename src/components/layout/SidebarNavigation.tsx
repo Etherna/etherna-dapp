@@ -1,20 +1,19 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
-
 import React from "react"
 
 import { BookmarkIcon, HomeIcon, UserIcon } from "@heroicons/react/solid"
@@ -23,14 +22,14 @@ import { ReactComponent as PlaylistIcon } from "@/assets/icons/navigation/playli
 
 import FeedbackLink from "./FeedbackLink"
 import Logo from "@/components/common/Logo"
-import Sidebar from "@/components/navigation/Sidebar"
-import SidebarItem from "@/components/navigation/SidebarItem"
-import SidebarLogo from "@/components/navigation/SidebarLogo"
-import SidebarLinksItem from "@/components/navigation/SidebarLinksItem"
-import SidebarLinks from "@/components/navigation/SidebarLinks"
-import SidebarSpace from "@/components/navigation/SidebarSpace"
 // import IndexExtension from "@/components/env/IndexExtension"
 import GatewayExtension from "@/components/env/GatewayExtension"
+import Sidebar from "@/components/navigation/Sidebar"
+import SidebarItem from "@/components/navigation/SidebarItem"
+import SidebarLinks from "@/components/navigation/SidebarLinks"
+import SidebarLinksItem from "@/components/navigation/SidebarLinksItem"
+import SidebarLogo from "@/components/navigation/SidebarLogo"
+import SidebarSpace from "@/components/navigation/SidebarSpace"
 import { LayoutReducerTypes } from "@/context/layout-context"
 import { useLayoutState } from "@/context/layout-context/hooks"
 import routes from "@/routes"
@@ -43,16 +42,13 @@ const SidebarNavigation: React.FC = () => {
   const hodeSidebar = () => {
     dispatch({
       type: LayoutReducerTypes.SET_SIDEBAR_HIDDEN,
-      hideSidebar: true
+      hideSidebar: true,
     })
   }
 
   return (
     <Sidebar floating={floatingSidebar} show={!hideSidebar} onClose={hodeSidebar}>
-      <SidebarLogo
-        logo={<Logo />}
-        logoCompact={<Logo compact />}
-      />
+      <SidebarLogo logo={<Logo />} logoCompact={<Logo compact />} />
 
       <SidebarSpace customHeight="1rem" />
 
@@ -99,22 +95,10 @@ const SidebarNavigation: React.FC = () => {
       <SidebarSpace flexible />
 
       <SidebarLinks>
-        <SidebarLinksItem
-          title="About Etherna"
-          to="https://info.etherna.io/"
-          target="_blank"
-        />
-        <SidebarLinksItem
-          title="Blog"
-          to="https://info.etherna.io/blog/"
-          target="_blank"
-        />
+        <SidebarLinksItem title="About Etherna" to="https://info.etherna.io/" target="_blank" />
+        <SidebarLinksItem title="Blog" to="https://info.etherna.io/blog/" target="_blank" />
         <FeedbackLink wrapper={SidebarLinksItem} />
-        <SidebarLinksItem
-          title="GitHub"
-          to="https://github.com/etherna"
-          target="_blank"
-        />
+        <SidebarLinksItem title="GitHub" to="https://github.com/etherna" target="_blank" />
         <SidebarLinksItem
           title="Index Api"
           to={urlPath(import.meta.env.VITE_APP_INDEX_URL, "/swagger")}
@@ -137,10 +121,7 @@ const SidebarNavigation: React.FC = () => {
           to={urlOrigin(import.meta.env.VITE_APP_CREDIT_URL)}
           target="_blank"
         /> */}
-        <SidebarLinksItem
-          title="Privacy Policy"
-          to={routes.privacyPolicy}
-        />
+        <SidebarLinksItem title="Privacy Policy" to={routes.privacyPolicy} />
       </SidebarLinks>
     </Sidebar>
   )

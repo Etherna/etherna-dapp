@@ -1,24 +1,23 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
-
 import React, { useEffect, useState } from "react"
 
-import SidebarLinksItem from "@/components/navigation/SidebarLinksItem"
-import TabbarItem from "@/components/navigation/TabbarItem"
+import type SidebarLinksItem from "@/components/navigation/SidebarLinksItem"
+import type TabbarItem from "@/components/navigation/TabbarItem"
 
 type FeedbackLinkProps = {
   wrapper: typeof SidebarLinksItem | typeof TabbarItem
@@ -34,9 +33,9 @@ const FeedbackLink: React.FC<FeedbackLinkProps> = ({ wrapper: Wrapper }) => {
       script.async = true
       script.onload = () => {
         window.ATL_JQ_PAGE_PROPS = {
-          triggerFunction: (showCollectorDialog) => {
+          triggerFunction: showCollectorDialog => {
             window.ATL_JQ_PAGE_PROPS!.showCollectorDialog = showCollectorDialog
-          }
+          },
         }
         setTimeout(() => {
           if (!window.ATL_JQ_PAGE_PROPS!.showCollectorDialog) {
