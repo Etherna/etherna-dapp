@@ -18,7 +18,7 @@
 import React from "react"
 import { Outlet } from "react-router-dom"
 
-import SigninMessage from "@/components/navigation/SigninMessage"
+import SigninMessage from "@/components/common/SigninMessage"
 import useSelector from "@/state/useSelector"
 
 const SignedInRoute: React.FC = () => {

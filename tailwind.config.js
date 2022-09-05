@@ -65,7 +65,7 @@ module.exports = {
         ],
       },
       fontSize: {
-        "2xs": ["0.65rem", { lineHeight: "1rem" }],
+        "2xs": ["0.625rem", { lineHeight: "1rem" }],
         md: ["1.125rem", { lineHeight: "1.5rem" }],
       },
       maxWidth: {
@@ -129,6 +129,7 @@ module.exports = {
     require("@tailwindcss/forms"),
     require("@tailwindcss/line-clamp"),
     require("tailwind-scrollbar"),
+    require("tailwindcss-safe-area"),
     plugin(({ addUtilities, addVariant, addComponents, e }) => {
       const utils = {
         ".absolute-center": {
@@ -162,6 +163,12 @@ module.exports = {
       addVariant("floating-sidebar", ({ modifySelectors, separator }) => {
         modifySelectors(({ className }) => {
           return `[data-sidebar-floating="true"] .${e(`floating-sidebar${separator}${className}`)}`
+        })
+      })
+
+      addVariant("fixed-sidebar", ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `[data-sidebar-floating="false"] .${e(`fixed-sidebar${separator}${className}`)}`
         })
       })
     }),
