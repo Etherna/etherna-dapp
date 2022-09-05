@@ -15,10 +15,7 @@
  *
  */
 import React, { useEffect, useMemo, useRef } from "react"
-
 import classNames from "classnames"
-
-import classes from "@/styles/components/common/Kbd.module.scss"
 
 type KbdProps = {
   shortcut: string

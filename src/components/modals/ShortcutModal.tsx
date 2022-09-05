@@ -17,7 +17,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react"
 import classNames from "classnames"
 
-import classes from "@/styles/components/modals/ShortcutModal.module.scss"
 import { ExclamationIcon } from "@heroicons/react/solid"
 
 import { Button, Modal } from "@/components/ui/actions"
@@ -95,14 +94,28 @@ const ShortcutModal: React.FC<ShortcutModalProsp> = ({ show = false }) => {
     >
       <div
         ref={editorRef}
-        className={classNames(classes.shortcutPreviewContainer, {
-          [classes.shortcutError]: existingShortcut,
-        })}
+        className={classNames(
+          "my-5 p-12 flex relative w-full rounded-lg",
+          "bg-gray-200 dark:bg-gray-800",
+          "focus:outline-none focus:ring",
+          {
+            "border-2 border-red-500": existingShortcut,
+          }
+        )}
         tabIndex={0}
         onClick={focusEditor}
         onKeyDown={handleKeyDown}
       >
-        {shortcut && <Kbd className={classes.shortcutPreview} shortcut={shortcut} />}
+        {shortcut && (
+          <Kbd
+            className={classNames(
+              "absolute-center text-6xl w-full text-center text-gray-500 pointer-events-none",
+              "[&>*]:leading-none [&>*]:align-baseline",
+              "[&_kbd]:border-b-0"
+            )}
+            shortcut={shortcut}
+          />
+        )}
       </div>
       {existingShortcut && (
         <div className="flex items-center my-4">

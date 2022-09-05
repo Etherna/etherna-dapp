@@ -18,8 +18,6 @@ import React, { useState } from "react"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
 
-import classes from "@/styles/components/modals/VideoOffersModal.module.scss"
-
 import SwarmResourcesIO from "@/classes/SwarmResources"
 import { Button, Modal } from "@/components/ui/actions"
 import { SegmentedControl } from "@/components/ui/inputs"
@@ -120,7 +118,7 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
       />
 
       {video && offersStatus && (
-        <table className={classes.offersModalTable}>
+        <table className="w-full mt-4">
           <thead>
             <tr>
               <th></th>
@@ -142,13 +140,17 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
                     }
                   >
                     <span
-                      className={classNames(classes.offersModalStatus, {
-                        [classes.offered]:
-                          offersTab === "user"
-                            ? address && resourceStatus.offeredBy.includes(address)
-                            : offersTab === "global" && resourceStatus.offeredBy.length > 0,
-                        [classes.counter]: offersTab === "global",
-                      })}
+                      className={classNames(
+                        "px-1 w-4 h-4 inline-flex rounded-full text-xs font-semibold",
+                        "bg-gray-200 dark:bg-gray-400 text-gray-600 dark:text-gray-800",
+                        {
+                          "bg-emerald-500 dark:bg-emerald-500 text-white dark:text-white":
+                            offersTab === "user"
+                              ? address && resourceStatus.offeredBy.includes(address)
+                              : offersTab === "global" && resourceStatus.offeredBy.length > 0,
+                          "px-2 w-auto": offersTab === "global",
+                        }
+                      )}
                     >
                       {offersTab === "global" ? resourceStatus.offeredBy.length : ""}
                     </span>
