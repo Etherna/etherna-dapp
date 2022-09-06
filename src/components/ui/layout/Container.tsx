@@ -15,7 +15,6 @@
  *
  */
 import React from "react"
-
 import classNames from "classnames"
 
 export type ContainerProps = {
@@ -27,8 +26,8 @@ export type ContainerProps = {
   flex?: number | string
   row?: boolean
   fluid?: boolean
-  paddingX?: boolean
-  paddingY?: boolean
+  noPaddingX?: boolean
+  noPaddingY?: boolean
 }
 
 const Container: React.FC<ContainerProps> = ({
@@ -40,8 +39,8 @@ const Container: React.FC<ContainerProps> = ({
   flex,
   row,
   fluid,
-  paddingX,
-  paddingY,
+  noPaddingX,
+  noPaddingY,
 }) => {
   return (
     <As
@@ -51,8 +50,8 @@ const Container: React.FC<ContainerProps> = ({
         {
           "max-w-screen-xl": !fluid,
           "flex-row": row,
-          "px-container": paddingX,
-          "py-container": paddingY,
+          "px-container": !noPaddingX,
+          "py-container": !noPaddingY,
           "items-start": align === "start",
           "items-center": align === "center",
           "items-end": align === "end",

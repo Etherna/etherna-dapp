@@ -16,7 +16,7 @@
  */
 import React from "react"
 
-import Avatar from "@/components/user/Avatar"
+import { Avatar } from "@/components/ui/display"
 import type { Profile } from "@/definitions/swarm-profile"
 import routes from "@/routes"
 import { shortenEthAddr } from "@/utils/ethereum"

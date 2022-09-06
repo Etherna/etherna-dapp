@@ -1,29 +1,37 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import pick from "lodash/pick"
 
 import SwarmProfileIO from "."
-import SwarmImageIO from "@/classes/SwarmImage"
-import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type { SwarmProfileReaderOptions } from "./types"
+import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import SwarmImageIO from "@/classes/SwarmImage"
 import type { SwarmImageRaw } from "@/definitions/swarm-image"
 import type { Profile, ProfileRaw } from "@/definitions/swarm-profile"
 
-const ProfileProperties = ["address", "name", "avatar", "cover", "description", "location", "website", "birthday"]
+const ProfileProperties = [
+  "address",
+  "name",
+  "avatar",
+  "cover",
+  "description",
+  "location",
+  "website",
+  "birthday",
+]
 
 const ProfileCache = new Map<string, Profile>()
 
@@ -62,12 +70,11 @@ export default class SwarmProfileReader {
     return ProfileCache.has(this.address)
   }
 
-
   // Public methods
 
   /**
    * Download profile data
-   * 
+   *
    * @param forced If true will download the profile even with prefetched data (default = false)
    * @returns The profile object
    */
@@ -85,7 +92,7 @@ export default class SwarmProfileReader {
       const feed = await reader.download()
       const profileResp = await this.beeClient.downloadFile(feed.reference)
       profile = profileResp.data.json() as Profile
-    } catch { }
+    } catch {}
 
     const parsedProfile = pick(
       {
@@ -108,7 +115,7 @@ export default class SwarmProfileReader {
 
   /**
    * Manually set the profile info
-   * 
+   *
    * @param profile The profile info
    */
   setProfile(profile: Profile) {
@@ -120,14 +127,14 @@ export default class SwarmProfileReader {
 
   /**
    * Parse raw image in image
-   * 
+   *
    * @param imageRaw The raw image object
    * @returns The parsed Swarm Image
    */
   private parseRawImage = (imageRaw: SwarmImageRaw | null) => {
     if (imageRaw) {
       return new SwarmImageIO.Reader(imageRaw, {
-        beeClient: this.beeClient
+        beeClient: this.beeClient,
       }).image
     }
     return null

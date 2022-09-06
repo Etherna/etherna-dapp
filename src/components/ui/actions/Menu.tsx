@@ -16,12 +16,12 @@
  */
 import React, { useContext, useMemo, useState } from "react"
 import { usePopper } from "react-popper"
-
 import { Menu as HLMenu } from "@headlessui/react"
 import type { Placement } from "@popperjs/core"
 import classNames from "classnames"
 
-import { Breakpoint, Drawer } from "../layout"
+import { Drawer } from "../display"
+import { Breakpoint } from "../layout"
 import UIButton from "./Button"
 import type { ButtonProps } from "./Button"
 

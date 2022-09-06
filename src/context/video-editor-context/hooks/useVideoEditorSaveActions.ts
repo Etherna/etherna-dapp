@@ -1,33 +1,32 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { useEffect, useState } from "react"
-import { AxiosError } from "axios"
+import type { AxiosError } from "axios"
 
-import useVideoEditorState from "./useVideoEditorState"
 import VideoEditorCache from "../VideoEditorCache"
+import useVideoEditorState from "./useVideoEditorState"
 import EthernaIndexClient from "@/classes/EthernaIndexClient"
 import SwarmResourcesIO from "@/classes/SwarmResources"
-import useUserPlaylists from "@/hooks/useUserPlaylists"
-import useSelector from "@/state/useSelector"
-import { useErrorMessage } from "@/state/hooks/ui"
-import { useWallet } from "@/state/hooks/env"
-import { getResponseErrorMessage } from "@/utils/request"
 import type { Profile } from "@/definitions/swarm-profile"
 import type { PublishSource, PublishSourceSave } from "@/definitions/video-editor-context"
+import useUserPlaylists from "@/hooks/useUserPlaylists"
+import { useWallet } from "@/state/hooks/env"
+import { useErrorMessage } from "@/state/hooks/ui"
+import useSelector from "@/state/useSelector"
+import { getResponseErrorMessage } from "@/utils/request"
 
 type SaveOpts = {
   saveManifest: boolean
@@ -208,8 +207,8 @@ export default function useVideoEditorSaveActions() {
 
     try {
       const isUpdate = initialReference && playlistHasVideo(id, initialReference)
-      !isUpdate && await addVideosToPlaylist(id, [videoWriter.video!])
-      isUpdate && await updateVideoInPlaylist(id, initialReference, videoWriter.video!)
+      !isUpdate && (await addVideosToPlaylist(id, [videoWriter.video!]))
+      isUpdate && (await updateVideoInPlaylist(id, initialReference, videoWriter.video!))
       return true
     } catch (error) {
       return false
@@ -221,7 +220,7 @@ export default function useVideoEditorSaveActions() {
     if (!checkAccountability()) return false
 
     try {
-      initialReference && await removeVideosFromPlaylist(id, [initialReference])
+      initialReference && (await removeVideosFromPlaylist(id, [initialReference]))
       return true
     } catch (error) {
       return false
@@ -305,18 +304,21 @@ export default function useVideoEditorSaveActions() {
     isSaving,
     resourcesOffered,
     publishStatus,
-    saveVideoTo: (sources: PublishSourceSave[], offerResources = false) => saveVideoTo(sources, {
-      saveManifest: true,
-      offerResources,
-    }),
-    reSaveTo: (source: PublishSourceSave) => saveVideoTo([source], {
-      saveManifest: false,
-      offerResources: false,
-    }),
-    saveVideoResources: () => saveVideoTo([], {
-      saveManifest: false,
-      offerResources: true,
-    }),
+    saveVideoTo: (sources: PublishSourceSave[], offerResources = false) =>
+      saveVideoTo(sources, {
+        saveManifest: true,
+        offerResources,
+      }),
+    reSaveTo: (source: PublishSourceSave) =>
+      saveVideoTo([source], {
+        saveManifest: false,
+        offerResources: false,
+      }),
+    saveVideoResources: () =>
+      saveVideoTo([], {
+        saveManifest: false,
+        offerResources: true,
+      }),
     resetState,
   }
 }

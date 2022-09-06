@@ -15,13 +15,12 @@
  *
  */
 import React from "react"
-
 import classNames from "classnames"
 
 import { ExclamationCircleIcon, PlusIcon, SparklesIcon } from "@heroicons/react/solid"
 
-import Button from "./Button"
-import ProgressBar from "./ProgressBar"
+import { Button } from "@/components/ui/actions"
+import { ProgressBar } from "@/components/ui/display"
 
 type BatchLoadingProps = {
   className?: string
@@ -80,7 +79,7 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
       </p>
 
       {type === "fetching" && error && (
-        <Button className="mt-4" modifier="inverted" small onClick={onCreate}>
+        <Button className="mt-4" color="inverted" small onClick={onCreate}>
           <PlusIcon aria-hidden />
           create new batch
         </Button>

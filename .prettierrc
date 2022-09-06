@@ -16,7 +16,8 @@
     "^@heroicons",
     "^@/assets",
     "",
-    "(^..?/)|(^@/)",
+    "^[./]",
+    "^@/",
     "",
     "<THIRD_PARTY_TYPES>",
     "<TYPE>"

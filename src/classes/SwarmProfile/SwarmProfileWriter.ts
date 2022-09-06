@@ -1,28 +1,27 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import pick from "lodash/pick"
 
 import SwarmProfileIO from "."
-import SwarmBeeClient from "@/classes/SwarmBeeClient"
-import SwarmImageIO from "@/classes/SwarmImage"
-import { checkIsEthAddress } from "@/utils/ethereum"
 import type { SwarmProfileWriterOptions } from "./types"
+import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import SwarmImageIO from "@/classes/SwarmImage"
 import type { SwarmImage } from "@/definitions/swarm-image"
 import type { Profile, ProfileRaw } from "@/definitions/swarm-profile"
+import { checkIsEthAddress } from "@/utils/ethereum"
 
 const ProfileProperties = [
   "address",
@@ -33,7 +32,7 @@ const ProfileProperties = [
   "location",
   "website",
   "birthday",
-  "batchId"
+  "batchId",
 ]
 
 /**
@@ -58,7 +57,7 @@ export default class SwarmProfileWriter {
 
   /**
    * Create or Update profile info
-   * 
+   *
    * @param profile The updated profile
    * @return The new hash of the profile
    */
@@ -72,7 +71,9 @@ export default class SwarmProfileWriter {
     // Upload json
     const serializedJson = new TextEncoder().encode(JSON.stringify(baseProfile))
     const batchId = await this.beeClient.getBatchId()
-    const reference = (await this.beeClient.uploadFile(batchId, serializedJson, undefined, { fetch })).reference
+    const reference = (
+      await this.beeClient.uploadFile(batchId, serializedJson, undefined, { fetch })
+    ).reference
 
     // update feed
     const topic = this.beeClient.makeFeedTopic(SwarmProfileIO.getFeedTopicName())
@@ -86,7 +87,7 @@ export default class SwarmProfileWriter {
 
   /**
    * Validate a profile by checking its props are in the correct format
-   * 
+   *
    * @param profile Profile to validate
    * @returns The validated profile
    */
@@ -123,7 +124,10 @@ export default class SwarmProfileWriter {
       }
     }
     if (validatedProfile.description) {
-      if (typeof validatedProfile.description !== "string" || validatedProfile.description.length > 500) {
+      if (
+        typeof validatedProfile.description !== "string" ||
+        validatedProfile.description.length > 500
+      ) {
         throw new Error("Description field must be a string not longer than 500")
       }
     }
@@ -137,14 +141,14 @@ export default class SwarmProfileWriter {
 
   /**
    * Parse image to raw image
-   * 
+   *
    * @param image The image object
    * @returns The raw Swarm Image
    */
   private parseImage = (image: SwarmImage | null) => {
     if (image) {
       return new SwarmImageIO.Reader(image, {
-        beeClient: this.beeClient
+        beeClient: this.beeClient,
       }).imageRaw
     }
     return null

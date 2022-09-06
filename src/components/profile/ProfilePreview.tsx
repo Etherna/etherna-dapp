@@ -17,7 +17,7 @@
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 
-import Avatar from "@/components/user/Avatar"
+import { Avatar } from "@/components/ui/display"
 import VideoGrid from "@/components/video/VideoGrid"
 import usePlaylistVideos from "@/hooks/usePlaylistVideos"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
