@@ -15,7 +15,6 @@
  *
  */
 import React, { useEffect, useMemo, useRef, useState } from "react"
-
 import classNames from "classnames"
 import { Editor, EditorState, RichUtils, convertFromRaw, convertToRaw } from "draft-js"
 import type { DraftEditorCommand, DraftHandleValue, EditorProps } from "draft-js"
@@ -29,6 +28,7 @@ import { ReactComponent as OrderedListIconIcon } from "@/assets/icons/rte/ordere
 import { ReactComponent as StrikethroughIcon } from "@/assets/icons/rte/strikethrough.svg"
 import { ReactComponent as UnderlineIcon } from "@/assets/icons/rte/underline.svg"
 import { ReactComponent as UnorderedListIconIcon } from "@/assets/icons/rte/unordered-list.svg"
+
 import "@/styles/overrides/draft-js.scss"
 
 import { Label } from "@/components/ui/display"
@@ -38,9 +38,11 @@ const EditorFix = Editor as unknown as React.FC<EditorProps>
 
 type MarkdownEditorProps = {
   id?: string
+  className?: string
+  toolbarClassName?: string
+  charLimitClassName?: string
   value: string | null | undefined
   label?: string
-  className?: string
   placeholder?: string
   disabled?: boolean
   charactersLimit?: number
@@ -164,6 +166,8 @@ const MarkdownEditorButton: React.FC<MarkdownEditorButtonProps> = ({
 const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   id,
   className,
+  toolbarClassName,
+  charLimitClassName,
   value,
   label,
   placeholder,
@@ -283,7 +287,10 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         <div
           className={classNames(
             "flex items-center px-3 py-1.5 overflow-x-auto pointer-events-none scrollbar-none",
-            { "pointer-events-auto": hasFocus }
+            toolbarClassName,
+            {
+              "pointer-events-auto": hasFocus,
+            }
           )}
           data-editor-toolbar
         >
@@ -323,7 +330,11 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         </div>
 
         {charactersLimit && (
-          <TextInput.CharactersLimit textLength={textLength} limit={charactersLimit} />
+          <TextInput.CharactersLimit
+            className={charLimitClassName}
+            textLength={textLength}
+            limit={charactersLimit}
+          />
         )}
       </div>
     </>

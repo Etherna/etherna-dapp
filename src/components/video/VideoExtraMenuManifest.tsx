@@ -1,28 +1,25 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
-
 import React, { useMemo } from "react"
 
-import classes from "@/styles/components/video/VideoExtraMenuManifest.module.scss"
 import { FilmIcon, PhotographIcon } from "@heroicons/react/solid"
 import { ReactComponent as ManifestIcon } from "@/assets/icons/manifest.svg"
 
-import Button from "@/components/common/Button"
-import Modal from "@/components/common/Modal"
+import { Button, Modal } from "../ui/actions"
 import SwarmResourcesIO from "@/classes/SwarmResources"
 import type { Video } from "@/definitions/swarm-video"
 import useSelector from "@/state/useSelector"
@@ -33,7 +30,11 @@ type VideoExtraMenuManifestProps = {
   setShow(show: boolean): void
 }
 
-const VideoExtraMenuManifest: React.FC<VideoExtraMenuManifestProps> = ({ video, show, setShow }) => {
+const VideoExtraMenuManifest: React.FC<VideoExtraMenuManifestProps> = ({
+  video,
+  show,
+  setShow,
+}) => {
   const beeClient = useSelector(state => state.env.beeClient)
 
   const sources = useMemo(() => {
@@ -52,11 +53,7 @@ const VideoExtraMenuManifest: React.FC<VideoExtraMenuManifestProps> = ({ video, 
       setShow={setShow}
       showCancelButton={false}
       showCloseButton={false}
-      footerButtons={
-        <Button onClick={() => setShow(false)}>
-          OK
-        </Button>
-      }
+      footerButtons={<Button onClick={() => setShow(false)}>OK</Button>}
     >
       <p>
         <span>You can access all the video data directly on the </span>
@@ -73,16 +70,20 @@ const VideoExtraMenuManifest: React.FC<VideoExtraMenuManifestProps> = ({ video, 
         </strong>
         <span> with the hashes provided below</span>
       </p>
-      <ul className={classes.sourcesList}>
+      <ul className="mt-4 flex flex-col">
         {sources.map(source => (
-          <li className={classes.sourcesListItem} key={source.reference}>
-            <div className={classes.sourcesListItemTitle}>
-              {source.type === "metadata" && <ManifestIcon aria-hidden />}
-              {source.type === "video" && <FilmIcon aria-hidden />}
-              {source.type === "thumb" && <PhotographIcon aria-hidden />}
+          <li className="flex flex-col text-sm font-medium mt-3" key={source.reference}>
+            <div className="flex items-center text-base font-semibold">
+              {source.type === "metadata" && (
+                <ManifestIcon width={16} className="mr-1" aria-hidden />
+              )}
+              {source.type === "video" && <FilmIcon width={16} className="mr-1" aria-hidden />}
+              {source.type === "thumb" && (
+                <PhotographIcon width={16} className="mr-1" aria-hidden />
+              )}
               {source.label}
             </div>
-            <span className={classes.sourcesListItemLink}>
+            <span className="w-full block text-xs break-words text-gray-400 dark:text-gray-400">
               <a href={beeClient.getBzzUrl(source.reference)} target="_blank" rel="noreferrer">
                 {source.reference}
               </a>

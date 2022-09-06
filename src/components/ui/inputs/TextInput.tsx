@@ -55,11 +55,16 @@ export type TextInputProps = {
 }
 
 export type TextInputCharsLimitProps = {
+  className?: string
   textLength: number
   limit: number
 }
 
-const TextInputCharsLimit: React.FC<TextInputCharsLimitProps> = ({ textLength, limit }) => {
+const TextInputCharsLimit: React.FC<TextInputCharsLimitProps> = ({
+  className,
+  textLength,
+  limit,
+}) => {
   return (
     <span
       className={classNames(
@@ -67,7 +72,8 @@ const TextInputCharsLimit: React.FC<TextInputCharsLimitProps> = ({ textLength, l
         "text-gray-800/25 dark:text-gray-100/25",
         {
           "text-red-400": textLength === limit,
-        }
+        },
+        className
       )}
     >
       {textLength}/{limit}
