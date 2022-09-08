@@ -28,6 +28,10 @@ import { calcDilutedTTL, getBatchCapacity, getBatchSpace, ttlToAmount } from "@/
 const DEFAULT_TTL = 60 * 60 * 24 * 365 * 2 // 2 years
 const DEFAULT_SIZE = 2 ** 16 // 65kb - basic manifest
 
+const MIN_BATCH_DEPTH = 20
+const MAX_BATCH_DEPTH = 30
+const MAX_ETHERNA_BATCH_DEPTH = 20
+
 let lastPriceFetched: { url: string; price: number } | undefined
 
 export default class SwarmBatchesManager {
@@ -379,9 +383,11 @@ export default class SwarmBatchesManager {
   async calcDepthAmount(size = DEFAULT_SIZE, ttl = DEFAULT_TTL) {
     const price = await this.fetchPrice()
     const amount = ttlToAmount(ttl, price, this.defaultBlockTime).toString()
-    let depth = 17 // min depth
+    let depth = MIN_BATCH_DEPTH
+    const maxDepth =
+      this.gatewayType === "etherna-gateway" ? MAX_ETHERNA_BATCH_DEPTH : MAX_BATCH_DEPTH
 
-    while (size > getBatchCapacity(depth)) {
+    while (size > getBatchCapacity(depth) && depth < maxDepth) {
       depth += 1
     }
 
