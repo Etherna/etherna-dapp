@@ -62,8 +62,9 @@ const ProgressTabLink: React.FC<ProgressTabLinkProps> = ({
     <button
       className={classNames(
         "flex h-16 flex-col justify-center rounded p-4 text-sm font-medium md:w-44",
-        "bg-gray-200/50 text-gray-800 dark:bg-gray-700/50 dark:text-gray-300",
         {
+          "text-gray-800  dark:text-gray-300": !active,
+          "bg-gray-200/50 dark:bg-gray-700/50": !active,
           "bg-blue-400 text-gray-50": active,
         }
       )}
