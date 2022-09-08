@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,13 +15,13 @@
  */
 
 import SwarmVideoIO from "."
-import EthernaIndexClient from "@/classes/EthernaIndexClient"
-import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type { SwarmVideoReaderOptions } from "./types"
+import type EthernaIndexClient from "@/classes/EthernaIndexClient"
+import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 import SwarmImageIO from "@/classes/SwarmImage"
 import SwarmProfileIO from "@/classes/SwarmProfile"
-import type { SwarmVideoReaderOptions } from "./types"
-import type { Profile } from "@/definitions/swarm-profile"
 import type { IndexVideo } from "@/definitions/api-index"
+import type { Profile } from "@/definitions/swarm-profile"
 import type { SwarmVideoRaw, Video } from "@/definitions/swarm-video"
 
 /**
@@ -77,12 +77,11 @@ export default class SwarmVideoReader {
     return false
   }
 
-
   // Public methods
 
   /**
    * Download and parse the video information
-   * 
+   *
    * @param forced If true will download the video even with prefetched data (default = false)
    * @returns The video object
    */
@@ -92,9 +91,7 @@ export default class SwarmVideoReader {
     const [indexVideo, rawVideo, ownerProfile] = await Promise.all([
       this.fetchIndexVideo(),
       this.fetchRawVideo(),
-      this.ownerAddress
-        ? this.fetchOwnerProfile(this.ownerAddress)
-        : Promise.resolve(null)
+      this.ownerAddress ? this.fetchOwnerProfile(this.ownerAddress) : Promise.resolve(null),
     ])
 
     // update local video instances
@@ -122,7 +119,7 @@ export default class SwarmVideoReader {
   /**
    * Parse and merge video manifest from swarm & index
    * with priority to the index manifest.
-   * 
+   *
    * @param videoData Video manifest parsed or raw
    * @param indexVideoData Video data from index
    * @param owner Owner profile (optional)
@@ -131,34 +128,43 @@ export default class SwarmVideoReader {
   doubleParseVideo(
     videoData: SwarmVideoRaw | Video | null | undefined,
     indexVideoData: IndexVideo | null | undefined,
-    owner?: Profile | null,
+    owner?: Profile | null
   ): Video {
     if (!videoData && !indexVideoData) {
       return SwarmVideoIO.getDefaultVideo(this.reference, indexVideoData, this.beeClient)
     }
 
-    const sources = (indexVideoData?.lastValidManifest?.sources ?? []).length > 0
-      ? indexVideoData?.lastValidManifest?.sources
-      : videoData?.sources
+    const sources =
+      (indexVideoData?.lastValidManifest?.sources ?? []).length > 0
+        ? indexVideoData?.lastValidManifest?.sources
+        : videoData?.sources
 
-    const indexCreationTimestamp = indexVideoData ? +new Date(indexVideoData.creationDateTime) : null
+    const indexCreationTimestamp = indexVideoData
+      ? +new Date(indexVideoData.creationDateTime)
+      : null
     const createdAt = indexCreationTimestamp ?? videoData?.createdAt ?? null
 
     return {
-      reference: indexVideoData?.lastValidManifest?.hash || (videoData as Video).reference || this.reference,
+      reference:
+        indexVideoData?.lastValidManifest?.hash || (videoData as Video).reference || this.reference,
       indexReference: indexVideoData?.id || this.indexReference,
       title: indexVideoData?.lastValidManifest?.title || videoData?.title || null,
       description: indexVideoData?.lastValidManifest?.description || videoData?.description || null,
-      originalQuality: indexVideoData?.lastValidManifest?.originalQuality || videoData?.originalQuality || null,
+      originalQuality:
+        indexVideoData?.lastValidManifest?.originalQuality || videoData?.originalQuality || null,
       duration: indexVideoData?.lastValidManifest?.duration || videoData?.duration || 0,
-      thumbnail: indexVideoData?.lastValidManifest?.thumbnail || videoData?.thumbnail
-        ? new SwarmImageIO.Reader(indexVideoData?.lastValidManifest?.thumbnail || videoData?.thumbnail!, {
-          beeClient: this.beeClient
-        }).image
-        : null,
+      thumbnail:
+        indexVideoData?.lastValidManifest?.thumbnail || videoData?.thumbnail
+          ? new SwarmImageIO.Reader(
+              indexVideoData?.lastValidManifest?.thumbnail || videoData?.thumbnail!,
+              {
+                beeClient: this.beeClient,
+              }
+            ).image
+          : null,
       sources: (sources ?? []).map(rawSource => ({
         ...rawSource,
-        source: this.beeClient.getBzzUrl(rawSource.reference)
+        source: this.beeClient.getBzzUrl(rawSource.reference),
       })),
       ownerAddress: indexVideoData?.ownerAddress || videoData?.ownerAddress || owner?.address || "",
       owner: videoData && "owner" in videoData ? videoData.owner : owner ?? undefined,
@@ -239,9 +245,9 @@ export default class SwarmVideoReader {
     if (!this.fetchProfile) return null
     try {
       const profile = new SwarmProfileIO.Reader(address, {
-        beeClient: this.beeClient
+        beeClient: this.beeClient,
       })
-      return await profile.download() ?? null
+      return (await profile.download()) ?? null
     } catch {
       return null
     }
@@ -263,5 +269,4 @@ export default class SwarmVideoReader {
   private updateVideoCache(video: Video) {
     //
   }
-
 }

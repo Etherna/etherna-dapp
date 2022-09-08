@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,14 +20,16 @@ import type { PostageBatch } from "@ethersphere/bee-js"
 import type { Dispatch } from "redux"
 
 import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
-import useSelector from "@/state/useSelector"
-import { EnvActions, EnvActionTypes } from "@/state/reducers/enviromentReducer"
-import { UserActions, UserActionTypes } from "@/state/reducers/userReducer"
-import { useBeeAuthentication } from "@/state/hooks/ui"
-import { BatchUpdateType } from "@/stores/batches"
-import dayjs from "@/utils/dayjs"
-import { getBatchSpace, parsePostageBatch } from "@/utils/batches"
 import type { GatewayBatch } from "@/definitions/api-gateway"
+import { useBeeAuthentication } from "@/state/hooks/ui"
+import type { EnvActions } from "@/state/reducers/enviromentReducer"
+import { EnvActionTypes } from "@/state/reducers/enviromentReducer"
+import type { UserActions } from "@/state/reducers/userReducer"
+import { UserActionTypes } from "@/state/reducers/userReducer"
+import useSelector from "@/state/useSelector"
+import { BatchUpdateType } from "@/stores/batches"
+import { getBatchSpace, parsePostageBatch } from "@/utils/batches"
+import dayjs from "@/utils/dayjs"
 
 type UseBatchesOpts = {
   autofetch?: boolean
@@ -128,8 +130,10 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
         const bestBatch = batches
           .filter(batch => batch.usable)
           .sort((a, b) => {
-            const scoreA = getBatchSpace(a).available * (a.batchTTL / dayjs.duration(1, "day").asSeconds())
-            const scoreB = getBatchSpace(b).available * (b.batchTTL / dayjs.duration(1, "day").asSeconds())
+            const scoreA =
+              getBatchSpace(a).available * (a.batchTTL / dayjs.duration(1, "day").asSeconds())
+            const scoreB =
+              getBatchSpace(b).available * (b.batchTTL / dayjs.duration(1, "day").asSeconds())
             return scoreB - scoreA
           })[0]
 
@@ -152,7 +156,10 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
       gatewayType,
     })
     const depth = 20
-    const { amount } = await batchesManager.calcDepthAmount(0, dayjs.duration(2, "years").asSeconds())
+    const { amount } = await batchesManager.calcDepthAmount(
+      0,
+      dayjs.duration(2, "years").asSeconds()
+    )
 
     try {
       if (gatewayType === "etherna-gateway") {
@@ -163,7 +170,10 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
 
         const batchId = await beeClient.createBatch(depth, amount)
         let batch = await beeClient.getBatch(batchId)
-        batch = await batchesManager.waitBatchPropagation(batch, BatchUpdateType.Create) as PostageBatch
+        batch = (await batchesManager.waitBatchPropagation(
+          batch,
+          BatchUpdateType.Create
+        )) as PostageBatch
 
         return parsePostageBatch(batch, address)
       }

@@ -1,43 +1,43 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
-import React, { useState } from "react"
+import React, { useCallback, useState } from "react"
+import { useMatomo } from "@datapunt/matomo-tracker-react"
 import axios from "axios"
 import classNames from "classnames"
-import { useMatomo } from "@datapunt/matomo-tracker-react"
 
-import classes from "@/styles/components/user/AlphaPassForm.module.scss"
+import { Button } from "@/components/ui/actions"
+import { Alert, FormGroup } from "@/components/ui/display"
+import { TextInput } from "@/components/ui/inputs"
 
-import TextField from "@/components/common/TextField"
-import Spinner from "@/components/common/Spinner"
-import Button from "@/components/common/Button"
-import FormGroup from "@/components/common/FormGroup"
-import Alert from "@/components/common/Alert"
-
-const whatChoices = [{
-  id: "contentCreator",
-  value: "Content creator"
-}, {
-  id: "contentViewer",
-  value: "Content viewer"
-}, {
-  id: "both",
-  value: "Both"
-}]
+const whatChoices = [
+  {
+    id: "contentCreator",
+    value: "Content creator",
+  },
+  {
+    id: "contentViewer",
+    value: "Content viewer",
+  },
+  {
+    id: "both",
+    value: "Both",
+  },
+]
 
 const AlphaPassForm: React.FC = () => {
   const { trackEvent } = useMatomo()
@@ -53,7 +53,7 @@ const AlphaPassForm: React.FC = () => {
   const [error, setError] = useState<string>()
   const [errorFields, setErrorFields] = useState<Record<string, string>>()
 
-  const sendFormRequest = async () => {
+  const sendFormRequest = useCallback(async () => {
     setIsSubmitting(true)
 
     try {
@@ -105,33 +105,36 @@ const AlphaPassForm: React.FC = () => {
       setError("There was a problem sending your request. Try again later or contact the support.")
       setIsSubmitting(false)
     }
-  }
+  }, [email, name, why, what, social1, social2, trackEvent])
 
   return success ? (
     <div
       className={classNames(
-        classes.alphaPassThankyou,
-        "prose text-gray-900 dark:text-gray-100 prose-a:text-primary-500"
+        "max-w-screen-md text-lg",
+        "prose text-gray-900 prose-a:text-primary-500 dark:text-gray-100"
       )}
     >
-      <p className={classes.alphaPassThankyouTitle}>Thank you for your request 🙏</p>
-      <p>To complete the registration you have to click on the confirmation link that we sent you to your email.</p>
-      <ul className={classes.alphaPassThankyouList}>
+      <p className="text-xl font-semibold">Thank you for your request 🙏</p>
+      <p>
+        To complete the registration you have to click on the confirmation link that we sent you to
+        your email.
+      </p>
+      <ul className="mt-6">
         <li>Check the SPAM folder</li>
         <li>
-          Make sure you provided the correct email ({email}).
-          If this is not the case repeat the registration process in homepage.
+          Make sure you provided the correct email ({email}). If this is not the case repeat the
+          registration process in homepage.
         </li>
         <li>
-          If after these checks you still haven&apos;t received the email
-          contact us at <a href='mailto:info@etherna.io'>info@etherna.io</a>
+          If after these checks you still haven&apos;t received the email contact us at{" "}
+          <a href="mailto:info@etherna.io">info@etherna.io</a>
         </li>
       </ul>
     </div>
   ) : (
-    <form className={classes.alphaPassForm}>
+    <form className="max-w-screen-sm">
       <FormGroup label="Name">
-        <TextField
+        <TextInput
           type="text"
           autoComplete="name"
           error={errorFields?.["name"]}
@@ -141,7 +144,7 @@ const AlphaPassForm: React.FC = () => {
       </FormGroup>
 
       <FormGroup label="Email">
-        <TextField
+        <TextInput
           type="email"
           autoComplete="email"
           error={errorFields?.["email"]}
@@ -151,7 +154,7 @@ const AlphaPassForm: React.FC = () => {
       </FormGroup>
 
       <FormGroup label="Why would you like an Alpha Pass?">
-        <TextField
+        <TextInput
           type="text"
           error={errorFields?.["why"]}
           value={why}
@@ -161,41 +164,37 @@ const AlphaPassForm: React.FC = () => {
       </FormGroup>
 
       <FormGroup label="What kind of user are you?" error={errorFields?.["what"]}>
-        <div className={classes.alphaPassChoices}>
+        <div className="mt-2 flex flex-col items-start">
           {whatChoices.map(choice => (
-            <label htmlFor={choice.id} key={choice.id}>
-              <TextField
+            <label
+              className="mb-2 flex cursor-pointer items-center text-base"
+              htmlFor={choice.id}
+              key={choice.id}
+            >
+              <input
                 type="radio"
                 id={choice.id}
                 value={choice.value}
                 checked={what === choice.value}
-                onChange={val => setWhat(val)}
+                onChange={e => setWhat(e.target.value)}
               />
-              <span>{choice.value}</span>
+              <span className="ml-2 text-base">{choice.value}</span>
             </label>
           ))}
         </div>
       </FormGroup>
 
       <FormGroup label="Social account #1">
-        <TextField
-          type="text"
-          value={social1}
-          onChange={setSocial1}
-        />
+        <TextInput type="text" value={social1} onChange={setSocial1} />
       </FormGroup>
 
       <FormGroup label="Social account #2">
-        <TextField
-          type="text"
-          value={social2}
-          onChange={setSocial2}
-        />
+        <TextInput type="text" value={social2} onChange={setSocial2} />
       </FormGroup>
 
       {error && (
         <FormGroup>
-          <Alert type="danger" title="Oops!" onClose={() => setError(undefined)}>
+          <Alert color="error" title="Oops!" onClose={() => setError(undefined)}>
             {error}
           </Alert>
         </FormGroup>
@@ -204,12 +203,10 @@ const AlphaPassForm: React.FC = () => {
       <FormGroup>
         <Button
           type="button"
+          loading={isSubmitting}
           disabled={isSubmitting}
           onClick={sendFormRequest}
         >
-          {isSubmitting && (
-            <Spinner />
-          )}
           Send Request
         </Button>
       </FormGroup>

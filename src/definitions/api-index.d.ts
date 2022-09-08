@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,6 +15,7 @@
  */
 
 import type { BatchId } from "@ethersphere/bee-js"
+
 import type { SwarmVideoRaw } from "./swarm-video"
 
 export type PaginatedResult<T> = {
@@ -60,7 +61,9 @@ export type IndexVideo = {
   totUpvotes: number
 }
 
-export type IndexVideoManifest = Omit<SwarmVideoRaw, "createdAt" | "ownerAddress"> & { hash: string }
+export type IndexVideoManifest = Omit<SwarmVideoRaw, "createdAt" | "ownerAddress"> & {
+  hash: string
+}
 
 export type IndexVideoCreation = {
   id: string
@@ -71,7 +74,7 @@ export type IndexVideoCreation = {
 }
 
 export type IndexVideoValidation = {
-  errorDetails: Array<{ errorMessage: string, errorNumber: string | number }>
+  errorDetails: Array<{ errorMessage: string; errorNumber: string | number }>
   hash: string
   isValid: boolean | null
   validationTime: string

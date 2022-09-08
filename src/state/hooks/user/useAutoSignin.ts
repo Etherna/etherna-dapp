@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,21 +15,25 @@
  */
 
 import { useEffect } from "react"
-import { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
 import type { EthAddress } from "@ethersphere/bee-js/dist/src/utils/eth"
 import type { AxiosError } from "axios"
+import type { Dispatch } from "redux"
 
-import SwarmProfileIO from "@/classes/SwarmProfile"
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import SwarmProfileIO from "@/classes/SwarmProfile"
+import type { AuthIdentity } from "@/definitions/api-sso"
 import loginRedirect from "@/state/actions/user/login-redirect"
-import { UserActions, UserActionTypes } from "@/state/reducers/userReducer"
-import { EnvActions, EnvActionTypes } from "@/state/reducers/enviromentReducer"
-import { ProfileActions, ProfileActionTypes } from "@/state/reducers/profileReducer"
-import { UIActions, UIActionTypes } from "@/state/reducers/uiReducer"
+import type { EnvActions } from "@/state/reducers/enviromentReducer"
+import { EnvActionTypes } from "@/state/reducers/enviromentReducer"
+import type { ProfileActions } from "@/state/reducers/profileReducer"
+import { ProfileActionTypes } from "@/state/reducers/profileReducer"
+import type { UIActions } from "@/state/reducers/uiReducer"
+import { UIActionTypes } from "@/state/reducers/uiReducer"
+import type { UserActions } from "@/state/reducers/userReducer"
+import { UserActionTypes } from "@/state/reducers/userReducer"
 import useSelector from "@/state/useSelector"
 import { addressBytes, signMessage } from "@/utils/ethereum"
-import type { AuthIdentity } from "@/definitions/api-sso"
 
 type AutoSigninOpts = {
   forceSignin?: boolean
@@ -70,7 +74,7 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
     dispatch({
       type: UserActionTypes.USER_UPDATE_SIGNEDIN,
       isSignedIn: !!currentUser,
-      isSignedInGateway: hasCredit
+      isSignedInGateway: hasCredit,
     })
 
     if (currentUser && identity) {
@@ -121,7 +125,7 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
       if (status === 404) {
         dispatch({
           type: EnvActionTypes.SET_IS_STANDALONE_GATEWAY,
-          isStandalone: true
+          isStandalone: true,
         })
       }
 
@@ -165,13 +169,13 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
       dispatch({
         type: EnvActionTypes.UPDATE_BEE_CLIENT,
         beeClient: beeClientSigner,
-        signerWallet: "etherna"
+        signerWallet: "etherna",
       })
     } else if (identity?.accountType === "web3") {
       const beeClientSigner = new SwarmBeeClient(beeClient.url, {
         signer: {
           address: addressBytes(address) as EthAddress,
-          sign: async (digest) => {
+          sign: async digest => {
             try {
               return await signMessage(digest.hex().toString(), address)
             } catch (error: any) {
@@ -181,14 +185,14 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
                 throw error
               }
             }
-          }
+          },
         },
       })
 
       dispatch({
         type: EnvActionTypes.UPDATE_BEE_CLIENT,
         beeClient: beeClientSigner,
-        signerWallet: "metamask"
+        signerWallet: "metamask",
       })
     }
 

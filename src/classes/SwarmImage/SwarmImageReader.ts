@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,9 +15,9 @@
  */
 
 import SwarmImageIO from "."
-import { blurHashToDataURL } from "@/utils/blur-hash"
 import type { SwarmImageReaderOptions } from "./types"
 import type { SwarmImageRaw, SwarmImage } from "@/definitions/swarm-image"
+import { blurHashToDataURL } from "@/utils/blur-hash"
 
 /**
  * Load an image data from swarm and parse image object
@@ -30,7 +30,7 @@ export default class SwarmImageReader {
     const sources = Object.entries(image.sources)
       .map(([size, reference]) => ({
         size,
-        reference
+        reference,
       }))
       .sort((a, b) => parseInt(b.size) - parseInt(a.size))
 
@@ -40,7 +40,7 @@ export default class SwarmImageReader {
         aspectRatio: image.aspectRatio,
         blurhash: image.blurhash,
         sources: image.sources,
-        v: SwarmImageIO.lastVersion
+        v: SwarmImageIO.lastVersion,
       }
     } else {
       this.imageRaw = image
@@ -48,20 +48,27 @@ export default class SwarmImageReader {
         ...image,
         blurredBase64: blurHashToDataURL(image.blurhash),
         src: opts.beeClient.getBzzUrl(sources[0].reference),
-        srcset: sources.length > 1
-          ? sources.reduce(
-            (srcset, source) =>
-              `${srcset ? srcset + "," : ""} ${source.size} ${opts.beeClient.getBzzUrl(source.reference)}`, ""
-          )
-          : undefined,
-        v: SwarmImageIO.lastVersion
+        srcset:
+          sources.length > 1
+            ? sources.reduce(
+                (srcset, source) =>
+                  `${srcset ? srcset + "," : ""} ${source.size} ${opts.beeClient.getBzzUrl(
+                    source.reference
+                  )}`,
+                ""
+              )
+            : undefined,
+        v: SwarmImageIO.lastVersion,
       }
     }
   }
 
-  static getOriginalSourceReference(image: SwarmImage | SwarmImageRaw | null | undefined): string | undefined {
-    const source = Object.entries(image?.sources ?? {})
-      .sort((a, b) => parseInt(b[0]) - parseInt(a[0]))[0]
+  static getOriginalSourceReference(
+    image: SwarmImage | SwarmImageRaw | null | undefined
+  ): string | undefined {
+    const source = Object.entries(image?.sources ?? {}).sort(
+      (a, b) => parseInt(b[0]) - parseInt(a[0])
+    )[0]
     return source?.[1] ?? undefined
   }
 }

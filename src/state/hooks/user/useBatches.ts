@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,11 +18,12 @@ import { useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
 import type { Dispatch } from "redux"
 
-import useSelector from "@/state/useSelector"
-import { UserActions, UserActionTypes } from "@/state/reducers/userReducer"
-import { useBeeAuthentication } from "@/state/hooks/ui"
-import { parsePostageBatch } from "@/utils/batches"
 import type { GatewayBatch } from "@/definitions/api-gateway"
+import { useBeeAuthentication } from "@/state/hooks/ui"
+import type { UserActions } from "@/state/reducers/userReducer"
+import { UserActionTypes } from "@/state/reducers/userReducer"
+import useSelector from "@/state/useSelector"
+import { parsePostageBatch } from "@/utils/batches"
 
 type UseBatchesOpts = {
   autofetch?: boolean
@@ -66,13 +67,17 @@ export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) 
     try {
       if (gatewayType === "etherna-gateway") {
         const batchesPreview = await gatewayClient.users.fetchBatches()
-        batches = await Promise.all(batchesPreview.map(
-          async batchPreview => gatewayClient.users.fetchBatch(batchPreview.batchId)
-        ))
+        batches = await Promise.all(
+          batchesPreview.map(async batchPreview =>
+            gatewayClient.users.fetchBatch(batchPreview.batchId)
+          )
+        )
       } else {
         await waitAuth()
 
-        batches = (await beeClient.getAllPostageBatches()).map(batch => parsePostageBatch(batch, address))
+        batches = (await beeClient.getAllPostageBatches()).map(batch =>
+          parsePostageBatch(batch, address)
+        )
       }
 
       dispatch({

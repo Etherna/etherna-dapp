@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,21 +16,19 @@
 
 /**
  * Sign a message with the user wallet
- * 
+ *
  * @param digest Hex string of the message
  * @param address Signing address
  * @returns Signed hash
  */
 export const signMessage = async (digest: string, address: string): Promise<string> => {
-  if (!window.ethereum)
-    throw new Error("No wallet installed. Try installing MetaMask extension.")
+  if (!window.ethereum) throw new Error("No wallet installed. Try installing MetaMask extension.")
   if (!window.ethereum.request)
     throw new Error("You have an old version of your wallet. Try to update MetaMask.")
 
   const accounts = await window.ethereum.request({ method: "eth_requestAccounts" })
 
-  if (!accounts || !accounts.length)
-    throw new Error("Unlock your wallet.")
+  if (!accounts || !accounts.length) throw new Error("Unlock your wallet.")
 
   const data = await window.ethereum.request({
     method: "personal_sign",
@@ -41,7 +39,7 @@ export const signMessage = async (digest: string, address: string): Promise<stri
 
 /**
  * Covert an ETH address to bytes
- * 
+ *
  * @param address Full address string (eg: 0xab...)
  * @returns The address bytes
  */
@@ -52,7 +50,7 @@ export const addressBytes = (address: string) => {
 
 /**
  * Check if a string a valid eth address
- * 
+ *
  * @param address Address string value
  */
 export const checkIsEthAddress = (address: string | null | undefined) => {
@@ -62,7 +60,7 @@ export const checkIsEthAddress = (address: string | null | undefined) => {
 
 /**
  * Get the shorten string of a address
- * 
+ *
  * @param address Address string value
  */
 export const shortenEthAddr = (address: string | null | undefined) => {
@@ -73,7 +71,7 @@ export const shortenEthAddr = (address: string | null | undefined) => {
 
 /**
  * Check if a provider is injected by the browser
- * 
+ *
  * @param provider Web3 provider
  */
 export const checkUsingInjectedProvider = (provider: any) => {
@@ -98,9 +96,11 @@ export const switchAccount = async (address: string) => {
   if (!window.ethereum || !window.ethereum.request) return
   return await window.ethereum.request({
     method: "wallet_requestPermissions",
-    params: [{
-      eth_accounts: { [address]: true },
-    }]
+    params: [
+      {
+        eth_accounts: { [address]: true },
+      },
+    ],
   })
 }
 
@@ -116,7 +116,7 @@ export const checkWalletLocked = () => {
 
 /**
  * Get the network name from the id
- * 
+ *
  * @param networkId Id of the networks
  */
 export const getNetworkName = (networkId: number | string | undefined) => {

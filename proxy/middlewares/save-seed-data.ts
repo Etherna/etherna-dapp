@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,9 +15,9 @@
  */
 
 import fs from "fs"
-import path from "path"
 import type { IncomingMessage } from "http"
 import type { Response } from "node-fetch"
+import path from "path"
 
 import parseJSON from "../utils/parse-json.js"
 
@@ -25,12 +25,16 @@ const SeedDataFolder = path.resolve(process.cwd() + "/../") + "/seed"
 
 /**
  * Save seed data locally
- * 
+ *
  * @param req Incoming request
  * @param body Incoming request parsed body
  * @param res Proxy response
  */
-export default async function saveSeedData(req: IncomingMessage, body: Buffer | undefined, res: Response) {
+export default async function saveSeedData(
+  req: IncomingMessage,
+  body: Buffer | undefined,
+  res: Response
+) {
   const shouldSaveSeedData = process.env.BEE_SEED_ENABLED === "true"
 
   // Check if request is seedable
@@ -38,7 +42,7 @@ export default async function saveSeedData(req: IncomingMessage, body: Buffer | 
   if (req.method !== "POST") return
   if (!/^\/(soc|bzz|feeds)/.test(req.url)) return
 
-  // create folders 
+  // create folders
   if (!fs.existsSync(SeedDataFolder)) fs.mkdirSync(SeedDataFolder)
   if (!fs.existsSync(SeedDataFolder + "/data")) fs.mkdirSync(SeedDataFolder + "/data")
 

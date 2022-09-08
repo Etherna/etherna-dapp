@@ -1,28 +1,27 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
 import React, { useEffect, useState } from "react"
 import classNames from "classnames"
 
-import classes from "@/styles/components/video/VideoDetailsDescription.module.scss"
-import { ChevronDownIcon } from "@heroicons/react/solid"
+import { ChevronDownIcon } from "@heroicons/react/24/solid"
 
-import Button from "@/components/common/Button"
 import MarkdownPreview from "@/components/common/MarkdownPreview"
+import { Button } from "@/components/ui/actions"
 
 type VideoDetailsDescriptionProps = {
   description?: string | null
@@ -54,24 +53,30 @@ const VideoDetailsDescription: React.FC<VideoDetailsDescriptionProps> = ({ descr
   }, [descriptionEl])
 
   return (
-    <div className={classNames(classes.videoDescriptionWrapper, {
-      [classes.compress]: shouldCompress,
-      [classes.showMore]: showMore,
-    })}>
+    <div className={classNames("flex flex-col")}>
       <div
-        className={classNames(classes.videoDescription, {
-          [classes.compress]: shouldCompress,
-          [classes.showMore]: showMore,
-        })}
+        className={classNames(
+          "relative mt-4 text-gray-800 dark:text-gray-200",
+          shouldCompress && {
+            "after:absolute after:inset-x-0 after:bottom-0 after:block after:h-20": true,
+            "after:bg-gradient-to-t after:from-gray-50 after:to-gray-50/0": true,
+            "after:dark:from-gray-900 after:dark:to-gray-800/0": true,
+            "after:transition-opacity after:duration-200": true,
+            "max-h-[7.5rem] overflow-hidden transition-[max-height] duration-500 ease-out": true,
+          },
+          {
+            "after:pointer-events-none after:opacity-0": showMore,
+          }
+        )}
         style={{
-          maxHeight: showMore && shouldCompress ? `${descriptionEl!.scrollHeight}px` : ""
+          maxHeight: showMore && shouldCompress ? `${descriptionEl!.scrollHeight}px` : "",
         }}
         ref={el => el && setDescriptionEl(el)}
       >
         {description ? (
           <MarkdownPreview value={description} disableHeading={true} />
         ) : (
-          <p className={classes.videoDescriptionEmpty}>
+          <p className="text-sm text-gray-500">
             <em>{"This video doesn't have a description"}</em>
           </p>
         )}
@@ -79,12 +84,19 @@ const VideoDetailsDescription: React.FC<VideoDetailsDescriptionProps> = ({ descr
 
       {shouldCompress && (
         <Button
-          className={classes.videoDescriptionShowMore}
-          modifier="transparent"
+          aspect="text"
+          prefix={
+            <ChevronDownIcon
+              width={20}
+              className={classNames({
+                "rotate-180": showMore,
+              })}
+              aria-hidden
+            />
+          }
           onClick={() => setShowMore(!showMore)}
         >
           {showMore ? "Show less" : "Show more"}
-          <ChevronDownIcon aria-hidden />
         </Button>
       )}
     </div>

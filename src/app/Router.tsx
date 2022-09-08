@@ -1,32 +1,32 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
 import React, { lazy, Suspense } from "react"
 import { Routes, Route, useLocation, Navigate } from "react-router-dom"
 
 import AppLayoutRoute from "./route-wrappers/AppLayoutRoute"
-import StudioLayoutRoute from "./route-wrappers/StudioLayoutRoute"
-import StateProviderRoute from "./route-wrappers/StateProviderRoute"
 import AuthenticateRoute from "./route-wrappers/AuthenticateRoute"
-import SignedInRoute from "./route-wrappers/SignedInRoute"
-import VideoRoute from "./route-wrappers/VideoRoute"
-import DefaultBatchRoute from "./route-wrappers/DefaultBatchRoute"
 import BatchesRoute from "./route-wrappers/BatchesRoute"
-import PageLoader from "@/components/common/PageLoader"
+import DefaultBatchRoute from "./route-wrappers/DefaultBatchRoute"
+import SignedInRoute from "./route-wrappers/SignedInRoute"
+import StateProviderRoute from "./route-wrappers/StateProviderRoute"
+import StudioLayoutRoute from "./route-wrappers/StudioLayoutRoute"
+import VideoRoute from "./route-wrappers/VideoRoute"
+import { PageLoader } from "@/components/ui/layout"
 
 const AsyncHome = lazy(() => import("@/pages/home"))
 const AsyncAlphaPass = lazy(() => import("@/pages/alpha-pass"))
@@ -48,58 +48,94 @@ const AsyncPrivacyPolicy = lazy(() => import("@/pages/privacy-policy"))
 const AsyncNotFound = lazy(() => import("@/pages/404"))
 
 const Home = () => (
-  <Suspense fallback={<PageLoader />}><AsyncHome /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncHome />
+  </Suspense>
 )
 const Frames = () => (
-  <Suspense fallback={<PageLoader />}><AsyncFrames /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncFrames />
+  </Suspense>
 )
 const AlphaPass = () => (
-  <Suspense fallback={<PageLoader />}><AsyncAlphaPass /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncAlphaPass />
+  </Suspense>
 )
 const Following = () => (
-  <Suspense fallback={<PageLoader />}><AsyncFollowing /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncFollowing />
+  </Suspense>
 )
 const Playlists = () => (
-  <Suspense fallback={<PageLoader />}><AsyncPlaylists /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncPlaylists />
+  </Suspense>
 )
 const Saved = () => (
-  <Suspense fallback={<PageLoader />}><AsyncSaved /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncSaved />
+  </Suspense>
 )
 const Channel = () => (
-  <Suspense fallback={<PageLoader />}><AsyncChannel /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncChannel />
+  </Suspense>
 )
 const Profiles = () => (
-  <Suspense fallback={<PageLoader />}><AsyncProfiles /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncProfiles />
+  </Suspense>
 )
 const Watch = () => (
-  <Suspense fallback={<PageLoader />}><AsyncWatch /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncWatch />
+  </Suspense>
 )
 const Embed = () => (
-  <Suspense fallback={<PageLoader />}><AsyncEmbed /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncEmbed />
+  </Suspense>
 )
 const ChannelEdit = () => (
-  <Suspense fallback={<PageLoader />}><AsyncChannelEdit /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncChannelEdit />
+  </Suspense>
 )
 const VideosList = () => (
-  <Suspense fallback={<PageLoader />}><AsyncVideosList /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncVideosList />
+  </Suspense>
 )
 const VideoEdit = () => (
-  <Suspense fallback={<PageLoader />}><AsyncVideoEdit /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncVideoEdit />
+  </Suspense>
 )
 const Postages = () => (
-  <Suspense fallback={<PageLoader />}><AsyncPostages /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncPostages />
+  </Suspense>
 )
 const Shortcuts = () => (
-  <Suspense fallback={<PageLoader />}><AsyncShortcuts /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncShortcuts />
+  </Suspense>
 )
 const Search = () => (
-  <Suspense fallback={<PageLoader />}><AsyncSearch /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncSearch />
+  </Suspense>
 )
 const PrivacyPolicy = () => (
-  <Suspense fallback={<PageLoader />}><AsyncPrivacyPolicy /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncPrivacyPolicy />
+  </Suspense>
 )
 const NotFound = () => (
-  <Suspense fallback={<PageLoader />}><AsyncNotFound /></Suspense>
+  <Suspense fallback={<PageLoader />}>
+    <AsyncNotFound />
+  </Suspense>
 )
 
 const Router = () => {
@@ -109,11 +145,9 @@ const Router = () => {
   return (
     <>
       <Routes location={backgroundLocation || location}>
-
         <Route path="" element={<StateProviderRoute />}>
           <Route path="" element={<AuthenticateRoute />}>
             <Route path="" element={<AppLayoutRoute />}>
-
               <Route path="/" element={<Home />} />
               <Route path="/request-alpha-pass" element={<AlphaPass />} />
               <Route path="/frames" element={<Frames />} />
@@ -143,7 +177,6 @@ const Router = () => {
                   </Route>
                 </Route>
               </Route>
-
             </Route>
           </Route>
 

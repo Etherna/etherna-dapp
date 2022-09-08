@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,12 +19,12 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
 import SwarmVideoIO from "@/classes/SwarmVideo"
-import useSelector from "@/state/useSelector"
-import { useErrorMessage } from "@/state/hooks/ui"
-import { getResponseErrorMessage } from "@/utils/request"
 import type { SwarmPlaylist } from "@/definitions/swarm-playlist"
-import type { Video } from "@/definitions/swarm-video"
 import type { Profile } from "@/definitions/swarm-profile"
+import type { Video } from "@/definitions/swarm-video"
+import { useErrorMessage } from "@/state/hooks/ui"
+import useSelector from "@/state/useSelector"
+import { getResponseErrorMessage } from "@/utils/request"
 
 type PlaylistVideosOptions = {
   owner?: Profile | null
@@ -79,15 +79,11 @@ export default function usePlaylistVideos(
     const id = isReference ? undefined : playlistReference
 
     try {
-      const reader = new SwarmPlaylistIO.Reader(
-        reference,
-        undefined,
-        {
-          beeClient,
-          id,
-          owner: opts.owner?.address,
-        }
-      )
+      const reader = new SwarmPlaylistIO.Reader(reference, undefined, {
+        beeClient,
+        id,
+        owner: opts.owner?.address,
+      })
 
       const playlist = await reader.download()
       setPlaylist(playlist)
@@ -98,54 +94,61 @@ export default function usePlaylistVideos(
     } finally {
       setIsLoadingPlaylist(false)
     }
-
   }, [beeClient, opts.owner, playlistReference, showError])
 
-  const fetchVideos = useCallback(async (from: number, to: number): Promise<Video[]> => {
-    if (!playlist?.videos) {
-      setIsFetching(false)
-      return []
-    }
+  const fetchVideos = useCallback(
+    async (from: number, to: number): Promise<Video[]> => {
+      if (!playlist?.videos) {
+        setIsFetching(false)
+        return []
+      }
 
-    setTotal(playlist.videos.length)
-    setIsFetching(true)
+      setTotal(playlist.videos.length)
+      setIsFetching(true)
 
-    try {
-      const references = playlist.videos.slice(from, to)
-      const newVideos = await Promise.all(references.map(video => {
-        const reader = new SwarmVideoIO.Reader(video.reference, playlist.owner, {
-          beeClient,
-          indexClient,
-          fetchProfile: !opts.owner,
-          profileData: opts.owner ?? undefined,
-        })
-        return reader.download()
-      }))
+      try {
+        const references = playlist.videos.slice(from, to)
+        const newVideos = await Promise.all(
+          references.map(video => {
+            const reader = new SwarmVideoIO.Reader(video.reference, playlist.owner, {
+              beeClient,
+              indexClient,
+              fetchProfile: !opts.owner,
+              profileData: opts.owner ?? undefined,
+            })
+            return reader.download()
+          })
+        )
 
-      return newVideos
-    } catch (error) {
-      console.error(error)
+        return newVideos
+      } catch (error) {
+        console.error(error)
 
-      showError("Fetching error", "Coudn't fetch playlist videos")
-      return []
-    } finally {
-      setIsFetching(false)
-    }
-  }, [beeClient, indexClient, opts.owner, playlist, showError])
+        showError("Fetching error", "Coudn't fetch playlist videos")
+        return []
+      } finally {
+        setIsFetching(false)
+      }
+    },
+    [beeClient, indexClient, opts.owner, playlist, showError]
+  )
 
-  const fetchPage = useCallback(async (page: number) => {
-    if (fetchingPage.current === page) return
+  const fetchPage = useCallback(
+    async (page: number) => {
+      if (fetchingPage.current === page) return
 
-    const limit = opts.limit
-    if (!limit || limit < 1) throw new Error("Limit must be set to be greater than 1")
-    const from = ((page - 1) * limit)
-    const to = from + limit
+      const limit = opts.limit
+      if (!limit || limit < 1) throw new Error("Limit must be set to be greater than 1")
+      const from = (page - 1) * limit
+      const to = from + limit
 
-    fetchingPage.current = page
-    const newVideos = await fetchVideos(from, to)
-    setVideos(newVideos)
-    fetchingPage.current = undefined
-  }, [fetchVideos, opts.limit])
+      fetchingPage.current = page
+      const newVideos = await fetchVideos(from, to)
+      setVideos(newVideos)
+      fetchingPage.current = undefined
+    },
+    [fetchVideos, opts.limit]
+  )
 
   const loadMore = useCallback(async () => {
     if (isFetching) return
@@ -161,10 +164,7 @@ export default function usePlaylistVideos(
     const to = from + (limit === -1 ? playlist.videos.length ?? 0 : limit)
     const newVideos = await fetchVideos(from, to)
     setHasMore(to < playlist.videos.length)
-    setVideos([
-      ...(videos ?? []),
-      ...newVideos,
-    ])
+    setVideos([...(videos ?? []), ...newVideos])
   }, [fetchVideos, hasMore, isFetching, opts.limit, playlist, videos])
 
   return {

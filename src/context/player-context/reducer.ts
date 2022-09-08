@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { PlayerContextState } from "."
+import type { PlayerContextState } from "."
 import { clamp } from "@/utils/math"
 
 export const PlayerReducerTypes = {
@@ -102,26 +102,28 @@ type RefreshBufferingAction = {
   type: typeof PlayerReducerTypes.REFRESH_BUFFERING
 }
 
-export type AnyPlayerAction = (
-  SetVideoElAction |
-  SetSourceAction |
-  SetSourceQualitiesAction |
-  SetCurrentQualityAction |
-  SetPlaybackErrorAction |
-  TogglePlayAction |
-  ResetPlayAction |
-  ToggleFullScreenAction |
-  TogglePiPAction |
-  ToggleMutedAction |
-  UpdateDurationAction |
-  UpdateProgressAction |
-  UpdatePlaybackRateAction |
-  UpdateVolumeAction |
-  RefreshCurrentTimeAction |
-  RefreshBufferingAction
-)
+export type AnyPlayerAction =
+  | SetVideoElAction
+  | SetSourceAction
+  | SetSourceQualitiesAction
+  | SetCurrentQualityAction
+  | SetPlaybackErrorAction
+  | TogglePlayAction
+  | ResetPlayAction
+  | ToggleFullScreenAction
+  | TogglePiPAction
+  | ToggleMutedAction
+  | UpdateDurationAction
+  | UpdateProgressAction
+  | UpdatePlaybackRateAction
+  | UpdateVolumeAction
+  | RefreshCurrentTimeAction
+  | RefreshBufferingAction
 
-const playerContextReducer = (state: PlayerContextState, action: AnyPlayerAction): PlayerContextState => {
+const playerContextReducer = (
+  state: PlayerContextState,
+  action: AnyPlayerAction
+): PlayerContextState => {
   switch (action.type) {
     case PlayerReducerTypes.SET_VIDEO_ELEMENT: {
       return {
@@ -134,10 +136,9 @@ const playerContextReducer = (state: PlayerContextState, action: AnyPlayerAction
       return {
         ...state,
         source: action.source,
-        sourceSize: action.size
+        sourceSize: action.size,
       }
     }
-
 
     case PlayerReducerTypes.SET_SOURCE_QUALITIES: {
       return {
@@ -157,10 +158,13 @@ const playerContextReducer = (state: PlayerContextState, action: AnyPlayerAction
       const { errorCode, errorMessage } = action
       return {
         ...state,
-        error: errorCode && errorMessage ? {
-          code: errorCode,
-          message: errorMessage
-        } : undefined,
+        error:
+          errorCode && errorMessage
+            ? {
+                code: errorCode,
+                message: errorMessage,
+              }
+            : undefined,
       }
     }
 
@@ -190,7 +194,7 @@ const playerContextReducer = (state: PlayerContextState, action: AnyPlayerAction
     case PlayerReducerTypes.TOGGLE_PICTURE_IN_PICTURE: {
       if (state.videoEl?.requestPictureInPicture) {
         if ((document as any).pictureInPictureElement) {
-          (document as any).exitPictureInPicture()
+          ;(document as any).exitPictureInPicture()
         } else {
           state.videoEl?.requestPictureInPicture()
         }

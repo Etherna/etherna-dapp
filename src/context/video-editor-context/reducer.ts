@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,11 +14,16 @@
  *  limitations under the License.
  */
 
-import { getAllSources, getDefaultAddTo, VideoEditorContextState, VideoEditorQueue } from "."
+import type { VideoEditorContextState, VideoEditorQueue } from "."
+import { getAllSources, getDefaultAddTo } from "."
 import VideoEditorCache from "./VideoEditorCache"
-import { deepCloneArray } from "@/utils/array"
-import type { PublishSource, PublishSourceSave, VideoEditorQueueName } from "@/definitions/video-editor-context"
 import type { SwarmVideoQuality } from "@/definitions/swarm-video"
+import type {
+  PublishSource,
+  PublishSourceSave,
+  VideoEditorQueueName,
+} from "@/definitions/video-editor-context"
+import { deepCloneArray } from "@/utils/array"
 
 // Actions
 export const VideoEditorActionTypes = {
@@ -117,26 +122,25 @@ type CacheAction = {
   type: typeof VideoEditorActionTypes.CACHE
 }
 
-export type AnyVideoEditorAction = (
-  AddQueueAction |
-  UpdateQueueAction |
-  SetQueueError |
-  UpdateQueueNameAction |
-  RemoveQueueAction |
-  UpdateOriginalQualityAction |
-  UpdateDurationAction |
-  UpdatePinContentAction |
-  UpdateOfferResourcesAction |
-  UpdateIsOfferedAction |
-  UpdateIndexDataAction |
-  ToggleSaveToAction |
-  UpdateTitleAction |
-  UpdateDescriptionAction |
-  UpdateDescriptionExceededAction |
-  UpdateSourcesAction |
-  ResetAction |
-  CacheAction
-)
+export type AnyVideoEditorAction =
+  | AddQueueAction
+  | UpdateQueueAction
+  | SetQueueError
+  | UpdateQueueNameAction
+  | RemoveQueueAction
+  | UpdateOriginalQualityAction
+  | UpdateDurationAction
+  | UpdatePinContentAction
+  | UpdateOfferResourcesAction
+  | UpdateIsOfferedAction
+  | UpdateIndexDataAction
+  | ToggleSaveToAction
+  | UpdateTitleAction
+  | UpdateDescriptionAction
+  | UpdateDescriptionExceededAction
+  | UpdateSourcesAction
+  | ResetAction
+  | CacheAction
 
 const changingExcludeActions: string[] = [
   VideoEditorActionTypes.UPDATE_DESCRIPTION_EXCEEDED,
@@ -147,15 +151,21 @@ const changingExcludeActions: string[] = [
 ]
 
 // Reducer
-const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEditorAction): VideoEditorContextState => {
+const videoEditorReducer = (
+  state: VideoEditorContextState,
+  action: AnyVideoEditorAction
+): VideoEditorContextState => {
   let newState = state
 
   switch (action.type) {
     case VideoEditorActionTypes.ADD_QUEUE:
-      const addQueue: VideoEditorQueue[] = [...state.queue, {
-        name: action.name,
-        completion: null
-      }]
+      const addQueue: VideoEditorQueue[] = [
+        ...state.queue,
+        {
+          name: action.name,
+          completion: null,
+        },
+      ]
       newState = { ...state, queue: addQueue }
       break
     case VideoEditorActionTypes.UPDATE_QUEUE:
@@ -212,10 +222,9 @@ const videoEditorReducer = (state: VideoEditorContextState, action: AnyVideoEdit
         source,
         identifier,
         add:
-          source === action.sourceSave.source &&
-            identifier === action.sourceSave.identifier
+          source === action.sourceSave.source && identifier === action.sourceSave.identifier
             ? action.sourceSave.add
-            : add
+            : add,
       }))
       newState = { ...state }
       break

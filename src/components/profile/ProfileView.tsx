@@ -1,33 +1,32 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import ProfileAbout from "./ProfileAbout"
 import ProfileVideos from "./ProfileVideos"
-import Button from "@/components/common/Button"
-import NavPills from "@/components/common/NavPills"
-import NavPillsItem from "@/components/common/NavPillsItem"
 import SEO from "@/components/layout/SEO"
 import ProfileInfo from "@/components/profile/ProfileInfo"
-import routes from "@/routes"
-import usePlaylistVideos from "@/hooks/usePlaylistVideos"
-import useSelector from "@/state/useSelector"
+import { Button } from "@/components/ui/actions"
+import { NavPills } from "@/components/ui/navigation"
 import type { Profile } from "@/definitions/swarm-profile"
+import usePlaylistVideos from "@/hooks/usePlaylistVideos"
+import routes from "@/routes"
+import useSelector from "@/state/useSelector"
 
 type ProfileViewProps = {
   profileAddress: string
@@ -39,18 +38,11 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
   const { address } = useSelector(state => state.user)
   const { isMobile } = useSelector(state => state.env)
   // const { channelPlaylist, loadPlaylists } = useUserPlaylists(profileAddress, { resolveChannel: true })
-  const {
-    playlist,
-    videos,
-    hasMore,
-    isFetching,
-    isLoadingPlaylist,
-    loadMore,
-    loadPlaylist,
-  } = usePlaylistVideos("__channel", {
-    owner: profile,
-    limit: 20,
-  })
+  const { playlist, videos, hasMore, isFetching, isLoadingPlaylist, loadMore, loadPlaylist } =
+    usePlaylistVideos("__channel", {
+      owner: profile,
+      limit: 20,
+    })
 
   const isLoading = useMemo(() => {
     return isFetching || !profile || isLoadingPlaylist
@@ -84,21 +76,18 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
         profileAddress={profileAddress}
         nav={
           <NavPills vertical={!isMobile}>
-            <NavPillsItem active={activeTab === "videos"} onClick={() => setActiveTab("videos")}>
+            <NavPills.Item active={activeTab === "videos"} onClick={() => setActiveTab("videos")}>
               Videos
-            </NavPillsItem>
-            <NavPillsItem active={activeTab === "about"} onClick={() => setActiveTab("about")}>
+            </NavPills.Item>
+            <NavPills.Item active={activeTab === "about"} onClick={() => setActiveTab("about")}>
               About
-            </NavPillsItem>
+            </NavPills.Item>
           </NavPills>
         }
         actions={
           <div className="flex flex-grow items-center justify-between">
             {address === profileAddress && (
-              <Button
-                as="a"
-                href={routes.studioChannel}
-              >
+              <Button as="a" to={routes.studioChannel}>
                 Customize
               </Button>
             )}

@@ -1,16 +1,10 @@
+import axios from "axios"
+import chalk from "chalk"
+import DotEnv from "dotenv"
 import fs from "fs"
 import path from "path"
 import prompt from "prompt"
-import chalk from "chalk"
-import axios from "axios"
-import DotEnv from "dotenv"
 import { fileURLToPath } from "url"
-
-DotEnv.config({
-  path: fs.existsSync(path.resolve(".env.development"))
-    ? ".env.development"
-    : ".env"
-})
 
 export async function createPostageBatch(amount = 10000000, depth = 20) {
   console.log(chalk.blueBright(`Authenticating...`))
@@ -20,11 +14,15 @@ export async function createPostageBatch(amount = 10000000, depth = 20) {
   console.log(chalk.blueBright(`Creating a postage batch with ${amount} BZZ / ${depth} depth...`))
 
   try {
-    const batchResp = await axios.post(`${process.env.BEE_ENDPOINT}/stamps/${amount}/${depth}`, null, {
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const batchResp = await axios.post(
+      `${process.env.BEE_ENDPOINT}/stamps/${amount}/${depth}`,
+      null,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    })
+    )
     const { batchID } = batchResp.data
     console.log(chalk.blueBright(`Created postage batch: ${batchID}`))
     return batchID
@@ -60,11 +58,14 @@ async function authToken() {
 const fund = () => {
   console.log(`Suggested for batch creation: 10000000 BZZ / 20 depth`)
 
-  const properties = [{
-    name: "bzz",
-  }, {
-    name: "depth",
-  }]
+  const properties = [
+    {
+      name: "bzz",
+    },
+    {
+      name: "depth",
+    },
+  ]
 
   prompt.start()
 

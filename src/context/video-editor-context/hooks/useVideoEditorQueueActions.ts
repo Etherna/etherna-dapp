@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-import useVideoEditorState from "./useVideoEditorState"
 import { VideoEditorActionTypes } from "../reducer"
-import { clamp } from "@/utils/math"
+import useVideoEditorState from "./useVideoEditorState"
 import type { VideoEditorQueueName } from "@/definitions/video-editor-context"
+import { clamp } from "@/utils/math"
 
 const useVideoEditorQueueActions = () => {
   const [, dispatch] = useVideoEditorState()
@@ -29,7 +29,7 @@ const useVideoEditorQueueActions = () => {
   const addToQueue = (name: VideoEditorQueueName) => {
     dispatch({
       type: VideoEditorActionTypes.ADD_QUEUE,
-      name
+      name,
     })
   }
 
@@ -40,7 +40,7 @@ const useVideoEditorQueueActions = () => {
   const removeFromQueue = (name: VideoEditorQueueName) => {
     dispatch({
       type: VideoEditorActionTypes.REMOVE_QUEUE,
-      name
+      name,
     })
   }
 
@@ -50,17 +50,18 @@ const useVideoEditorQueueActions = () => {
    * @param completion Completion percentage [0-100]
    * @param finished Whether the upload has finished (default false)
    */
-  const updateQueueCompletion = (name: VideoEditorQueueName, completion: number, reference?: string) => {
-    const clampedValue = clamp(
-      Math.round(completion),
-      0, 100
-    )
+  const updateQueueCompletion = (
+    name: VideoEditorQueueName,
+    completion: number,
+    reference?: string
+  ) => {
+    const clampedValue = clamp(Math.round(completion), 0, 100)
 
     dispatch({
       type: VideoEditorActionTypes.UPDATE_QUEUE,
       name,
       completion: clampedValue,
-      reference
+      reference,
     })
   }
 
@@ -73,7 +74,7 @@ const useVideoEditorQueueActions = () => {
     dispatch({
       type: VideoEditorActionTypes.UPDATE_QUEUE_NAME,
       oldName,
-      newName
+      newName,
     })
   }
 

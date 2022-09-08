@@ -1,37 +1,32 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
 import React from "react"
 
-import { LogoutIcon } from "@heroicons/react/outline"
-import { DotsVerticalIcon } from "@heroicons/react/solid"
+import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline"
+import { EllipsisVerticalIcon } from "@heroicons/react/24/solid"
 
 import SharedMenuItems from "./SharedMenuItems"
 import SignedInMenuItems from "./SignedInMenuItems"
 import SigninButton from "./SigninButton"
-import Avatar from "./Avatar"
-import Button from "@/components/common/Button"
-import Dropdown from "@/components/common/Dropdown"
-import DropdownItem from "@/components/common/DropdownItem"
-import DropdownMenu from "@/components/common/DropdownMenu"
-import DropdownToggle from "@/components/common/DropdownToggle"
-import Placeholder from "@/components/common/Placeholder"
-import useSelector from "@/state/useSelector"
+import { Button, Dropdown } from "@/components/ui/actions"
+import { Avatar, Skeleton } from "@/components/ui/display"
 import useSignout from "@/state/hooks/user/useSignout"
+import useSelector from "@/state/useSelector"
 
 const UserMenu: React.FC = () => {
   const { avatar } = useSelector(state => state.profile)
@@ -44,46 +39,49 @@ const UserMenu: React.FC = () => {
 
   if (isSigningIn) {
     return (
-      <Placeholder width="2.25rem" height="2.25rem" round="full" />
+      <Skeleton roundedFull>
+        <div className="h-9 w-9" />
+      </Skeleton>
     )
   }
 
   return (
     <>
       <Dropdown>
-        <DropdownToggle>
-          <Button as="div" modifier="transparent" rounded iconOnly>
+        <Dropdown.Toggle>
+          <Button as="div" color="inverted" aspect="text" rounded>
             {isFullySignedIn ? (
               <Avatar image={avatar} address={address} size={36} />
             ) : (
-              <DotsVerticalIcon />
+              <EllipsisVerticalIcon width={20} aria-hidden />
             )}
           </Button>
-        </DropdownToggle>
+        </Dropdown.Toggle>
 
-        <DropdownMenu>
+        <Dropdown.Menu>
           <>
-            {isFullySignedIn && (
-              <SignedInMenuItems />
-            )}
+            {isFullySignedIn && <SignedInMenuItems />}
 
             <SharedMenuItems />
 
             {isFullySignedIn && (
               <>
-                <hr />
-                <DropdownItem action={signout} icon={<LogoutIcon />}>
-                  Sign out
-                </DropdownItem>
+                <Dropdown.Separator />
+                <Dropdown.Group>
+                  <Dropdown.Item
+                    action={signout}
+                    icon={<ArrowRightOnRectangleIcon strokeWidth={2} />}
+                  >
+                    Sign out
+                  </Dropdown.Item>
+                </Dropdown.Group>
               </>
             )}
           </>
-        </DropdownMenu>
+        </Dropdown.Menu>
       </Dropdown>
 
-      {!isFullySignedIn && (
-        <SigninButton>Sign in</SigninButton>
-      )}
+      {!isFullySignedIn && <SigninButton>Sign in</SigninButton>}
     </>
   )
 }

@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,10 +17,10 @@
 import { useCallback, useEffect, useState } from "react"
 
 import SwarmResourcesIO from "@/classes/SwarmResources"
-import useSelector from "@/state/useSelector"
 import type SwarmResourcesReader from "@/classes/SwarmResources/SwarmResourcesReader"
-import type { SwarmVideoRaw, Video, VideoOffersStatus } from "@/definitions/swarm-video"
 import SwarmVideoIO from "@/classes/SwarmVideo"
+import type { SwarmVideoRaw, Video, VideoOffersStatus } from "@/definitions/swarm-video"
+import useSelector from "@/state/useSelector"
 
 type UseVideoOffersOpts = {
   routeState?: VideoOffersStatus
@@ -28,7 +28,10 @@ type UseVideoOffersOpts = {
   reference?: string
 }
 
-export default function useVideoOffers(video: Video | SwarmVideoRaw | null | undefined, opts?: UseVideoOffersOpts) {
+export default function useVideoOffers(
+  video: Video | SwarmVideoRaw | null | undefined,
+  opts?: UseVideoOffersOpts
+) {
   const beeClient = useSelector(state => state.env.beeClient)
   const gatewayClient = useSelector(state => state.env.gatewayClient)
   const address = useSelector(state => state.user.address)
@@ -60,9 +63,9 @@ export default function useVideoOffers(video: Video | SwarmVideoRaw | null | und
     const parsedVideo = isFullVideo
       ? video
       : new SwarmVideoIO.Reader(opts!.reference!, address, {
-        beeClient,
-        videoData: video,
-      }).video
+          beeClient,
+          videoData: video,
+        }).video
 
     return parsedVideo
   }, [address, beeClient, opts, video])
@@ -110,38 +113,45 @@ export default function useVideoOffers(video: Video | SwarmVideoRaw | null | und
   }
 }
 
-export const parseReaderStatus = (reader: SwarmResourcesReader, userAddress: string | undefined): VideoOffersStatus => {
+export const parseReaderStatus = (
+  reader: SwarmResourcesReader,
+  userAddress: string | undefined
+): VideoOffersStatus => {
   return {
     offersStatus: getStatus(reader),
     userOffersStatus: getStatus(reader, userAddress),
     globalOffers: reader.resourcesStatus ?? [],
     userOfferedResourses: userAddress
-      ? (reader.resourcesStatus?.map(status => status.reference) ?? [])
-        .filter(reference => reader.getReferenceStatus(reference)?.offeredBy.includes(userAddress))
+      ? (reader.resourcesStatus?.map(status => status.reference) ?? []).filter(reference =>
+          reader.getReferenceStatus(reference)?.offeredBy.includes(userAddress)
+        )
       : [],
     userUnOfferedResourses: userAddress
-      ? (reader.resourcesStatus?.map(status => status.reference) ?? [])
-        .filter(reference => !reader.getReferenceStatus(reference)?.offeredBy.includes(userAddress))
+      ? (reader.resourcesStatus?.map(status => status.reference) ?? []).filter(
+          reference => !reader.getReferenceStatus(reference)?.offeredBy.includes(userAddress)
+        )
       : [],
   }
 }
 
 function getStatus(reader: SwarmResourcesReader, byAddress?: string) {
-  const resourcesStatus = (reader.resourcesStatus ?? [])
-    .filter(r => !byAddress || r.offeredBy.includes(byAddress))
+  const resourcesStatus = (reader.resourcesStatus ?? []).filter(
+    r => !byAddress || r.offeredBy.includes(byAddress)
+  )
   const resourcesCount = resourcesStatus.length
-  const offeredResourcesCount = resourcesStatus
-    .filter(status => status.isOffered).length
-  const allSourcesOffered = reader.video.sources.length > 0 && reader.video.sources
-    .map(source => reader.getReferenceStatus(source.reference))
-    .every(status => status?.isOffered && (!byAddress || status.offeredBy.includes(byAddress)))
+  const offeredResourcesCount = resourcesStatus.filter(status => status.isOffered).length
+  const allSourcesOffered =
+    reader.video.sources.length > 0 &&
+    reader.video.sources
+      .map(source => reader.getReferenceStatus(source.reference))
+      .every(status => status?.isOffered && (!byAddress || status.offeredBy.includes(byAddress)))
   const fullyOffered = offeredResourcesCount === resourcesCount
 
   return offeredResourcesCount > 0
     ? fullyOffered
       ? "full"
       : allSourcesOffered
-        ? "sources"
-        : "partial"
+      ? "sources"
+      : "partial"
     : "none"
 }

@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,23 +14,20 @@
  *  limitations under the License.
  */
 
-import { getAllSources, VideoEditorContextState } from "."
+import type { VideoEditorContextState } from "."
+import { getAllSources } from "."
+import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
+import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 import SwarmVideoIO from "@/classes/SwarmVideo"
-import SwarmBeeClient from "@/classes/SwarmBeeClient"
-import EthernaGatewayClient from "@/classes/EthernaGatewayClient"
-import type { SwarmVideoRaw } from "@/definitions/swarm-video"
 import type { GatewayType } from "@/definitions/extension-host"
+import type { SwarmVideoRaw } from "@/definitions/swarm-video"
 
 const STORAGE_KEY = "videoEditorState"
 
 /* eslint-disable @typescript-eslint/indent */
 type ReducedContextState = Omit<
   VideoEditorContextState,
-  "videoWriter" |
-  "descriptionExeeded" |
-  "isOffered" |
-  "indexData" |
-  "sources"
+  "videoWriter" | "descriptionExeeded" | "isOffered" | "indexData" | "sources"
 >
 /* eslint-enable @typescript-eslint/indent */
 
@@ -45,7 +42,7 @@ export default class VideoEditorCache {
       try {
         JSON.parse(value) as CacheState
         return true
-      } catch { }
+      } catch {}
     }
     return false
   }
@@ -55,18 +52,24 @@ export default class VideoEditorCache {
     if (value) {
       try {
         const cache = JSON.parse(value) as CacheState
-        return !cache.queue.length &&
+        return (
+          !cache.queue.length &&
           !cache.pinContent &&
           !cache.reference &&
           !cache.videoRaw.description &&
           !cache.videoRaw.title &&
           !cache.videoRaw.sources.length
-      } catch { }
+        )
+      } catch {}
     }
     return true
   }
 
-  static loadState(beeClient: SwarmBeeClient, gatewayClient: EthernaGatewayClient, gatewayType: GatewayType) {
+  static loadState(
+    beeClient: SwarmBeeClient,
+    gatewayClient: EthernaGatewayClient,
+    gatewayType: GatewayType
+  ) {
     const value = window.localStorage.getItem(STORAGE_KEY)!
     const {
       reference,

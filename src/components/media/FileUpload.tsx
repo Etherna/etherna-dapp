@@ -1,31 +1,29 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import axios from "axios"
 
-import classes from "@/styles/components/media/FileUpload.module.scss"
-
-import Alert from "@/components/common/Alert"
-import Button from "@/components/common/Button"
+import { Button } from "@/components/ui/actions"
+import { Alert } from "@/components/ui/display"
 import type { FilePreviewRenderProps } from "@/definitions/file-preview"
 
 type FileUploadProps = {
-  children?: React.ReactChild | ((props: FilePreviewRenderProps) => React.ReactChild)
+  children?: React.ReactNode | ((props: FilePreviewRenderProps) => React.ReactNode)
   buffer: ArrayBuffer
   disabled?: boolean
   canUpload?: boolean
@@ -57,8 +55,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canUpload])
 
-
-  const handleStartUpload = async () => {
+  const handleStartUpload = useCallback(async () => {
     setIsUploading(true)
 
     onUploadStart?.()
@@ -86,32 +83,34 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
       onUploadError(errorMessage)
     }
-  }
+  }, [buffer, onUploadFinished, onUploadStart, onUploadError, uploadHandler])
 
-  const handleRemoveFile = () => {
+  const handleRemoveFile = useCallback(() => {
     setIsUploading(false)
     setErrorMessage(undefined)
     onCancel()
-  }
+  }, [onCancel])
 
   return (
-    <div className={classes.fileUpload}>
+    <div className="space-y-2">
       {errorMessage && (
         <>
-          <Alert type="danger" title="Upload error">
+          <Alert color="error" title="Upload error">
             {errorMessage}
           </Alert>
-          <Button modifier="muted" className="mt-2" onClick={handleRemoveFile} small>
+          <Button
+            className="mt-2"
+            color="muted"
+            onClick={handleRemoveFile}
+            small
+            disabled={disabled}
+          >
             Retry
           </Button>
         </>
       )}
 
-      {!errorMessage && (
-        typeof children === "function"
-          ? children({ isUploading })
-          : children
-      )}
+      {!errorMessage && (typeof children === "function" ? children({ isUploading }) : children)}
     </div>
   )
 }

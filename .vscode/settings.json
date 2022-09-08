@@ -1,6 +1,4 @@
 {
-  "scss.validate": false,
-  "css.validate": false,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
@@ -11,24 +9,25 @@
   },
   "eslint.validate": ["javascript", "typescript", "typescriptreact"],
   "[javascript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
+    "tailwindCSS.validate": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "tailwindCSS.validate": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[scss]": {
-    "tailwindCSS.validate": true
+    "tailwindCSS.validate": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "svg.preview.background": "transparent",
-  "license-header-manager.excludeFolders": [
-    "node_modules",
-    "build",
-    "images",
-    "config"
-  ],
+  "license-header-manager.excludeFolders": ["node_modules", "build", "images", "config"],
   "license-header-manager.excludeExtensions": [".js"],
   "license-header-manager.additionalCommentStyles": [
     {

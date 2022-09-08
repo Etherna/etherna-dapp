@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,16 +14,16 @@
  *  limitations under the License.
  */
 
+import type { UploadResult } from "@ethersphere/bee-js"
 import Axios from "axios"
 import imageResize from "image-resizer-js"
-import type { UploadResult } from "@ethersphere/bee-js"
 
 import SwarmImageIO from "."
-import SwarmBeeClient from "@/classes/SwarmBeeClient"
-import { bufferToDataURL, fileToBuffer } from "@/utils/buffer"
-import { imageToBlurHash } from "@/utils/blur-hash"
 import type { SwarmImageUploadOptions, SwarmImageWriterOptions } from "./types"
+import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type { SwarmImageRaw } from "@/definitions/swarm-image"
+import { imageToBlurHash } from "@/utils/blur-hash"
+import { bufferToDataURL, fileToBuffer } from "@/utils/buffer"
 
 /**
  * Handles upload of images on swarm and created responsive source
@@ -63,18 +63,19 @@ export default class SwarmImageWriter {
     this.preGenerateImages = await this.generateImages()
     return Object.values(this.preGenerateImages.responsiveSourcesData).reduce(
       (acc, cur) => acc + cur.length,
-      0,
+      0
     )
   }
 
   /**
    * Upload the image(s) data on swarm
-   * 
+   *
    * @param options Upload options
    * @returns The raw image object
    */
   async upload(options?: SwarmImageUploadOptions): Promise<SwarmImageRaw> {
-    const { blurhash, imageAspectRatio, responsiveSourcesData } = this.preGenerateImages ?? await this.generateImages()
+    const { blurhash, imageAspectRatio, responsiveSourcesData } =
+      this.preGenerateImages ?? (await this.generateImages())
 
     const imageRaw: SwarmImageRaw = {
       blurhash,
@@ -83,7 +84,7 @@ export default class SwarmImageWriter {
       v: SwarmImageIO.lastVersion,
     }
 
-    const batchId = options?.batchId ?? await this.beeClient.getBatchId()
+    const batchId = options?.batchId ?? (await this.beeClient.getBatchId())
     const fetch = this.beeClient.getFetch({
       onUploadProgress: e => {
         if (options?.onUploadProgress) {
@@ -103,7 +104,7 @@ export default class SwarmImageWriter {
     for (const data of Object.values(responsiveSourcesData)) {
       const result = await this.beeClient.uploadFile(batchId, data, undefined, {
         fetch,
-        contentType: this.file.type
+        contentType: this.file.type,
       })
       results.push(result)
     }
@@ -134,7 +135,7 @@ export default class SwarmImageWriter {
     const imageAspectRatio = imageSize.width / imageSize.height
 
     const responsiveSourcesData: { [size: `${number}w`]: Uint8Array } = {
-      [`${imageSize.width}w`]: new Uint8Array(originalImageData)
+      [`${imageSize.width}w`]: new Uint8Array(originalImageData),
     }
 
     if (this.isResponsive) {
@@ -148,19 +149,19 @@ export default class SwarmImageWriter {
     return {
       blurhash,
       imageAspectRatio,
-      responsiveSourcesData
+      responsiveSourcesData,
     }
   }
 
   getFileImageSize(buffer: ArrayBuffer) {
-    return new Promise<{ width: number, height: number }>(async (resolve, reject) => {
+    return new Promise<{ width: number; height: number }>(async (resolve, reject) => {
       try {
         const dataURL = await bufferToDataURL(buffer)
         const img = new Image()
         img.onload = function () {
           resolve({
             width: img.width,
-            height: img.height
+            height: img.height,
           })
         }
         img.onerror = reject

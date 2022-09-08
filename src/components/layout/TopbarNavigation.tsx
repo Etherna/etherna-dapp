@@ -1,39 +1,34 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
-import React from "react"
+import React, { useCallback } from "react"
 
-import { PlusIcon } from "@heroicons/react/solid"
-import { UploadIcon, MenuAlt4Icon } from "@heroicons/react/outline"
+import { ArrowUpTrayIcon, Bars2Icon, PlusIcon } from "@heroicons/react/24/outline"
 
 import SearchItem from "./SearchItem"
 import Logo from "@/components/common/Logo"
-import Topbar from "@/components/navigation/Topbar"
-import TopbarLogo from "@/components/navigation/TopbarLogo"
-import TopbarItem from "@/components/navigation/TopbarItem"
-import TopbarSpace from "@/components/navigation/TopbarSpace"
-import TopbarPopupItem from "@/components/navigation/TopbarPopupItem"
-import AlphaWarning from "@/components/navigation/AlphaWarning"
+import AlphaWarning from "@/components/modals/AlphaWarning"
+import { Topbar } from "@/components/ui/navigation"
 import UserCredit from "@/components/user/UserCredit"
 import UserMenu from "@/components/user/UserMenu"
 import { LayoutReducerTypes } from "@/context/layout-context"
 import { useLayoutState } from "@/context/layout-context/hooks"
-import useSelector from "@/state/useSelector"
 import routes from "@/routes"
+import useSelector from "@/state/useSelector"
 
 const TopbarNavigation: React.FC = () => {
   const { isSignedIn } = useSelector(state => state.user)
@@ -42,50 +37,54 @@ const TopbarNavigation: React.FC = () => {
   const [state, dispatch] = useLayoutState()
   const { floatingSidebar, hideSidebar } = state
 
-  const toggleSidebar = () => {
+  const toggleSidebar = useCallback(() => {
     dispatch({
       type: LayoutReducerTypes.SET_SIDEBAR_HIDDEN,
-      hideSidebar: !hideSidebar
+      hideSidebar: !hideSidebar,
     })
-  }
+  }, [dispatch, hideSidebar])
 
   return (
     <Topbar>
-      {floatingSidebar && (
-        <TopbarItem
-          iconSvg={<MenuAlt4Icon />}
-          onClick={toggleSidebar}
-        />
-      )}
+      <Topbar.Group>
+        {floatingSidebar && (
+          <Topbar.Item onClick={toggleSidebar} hideMobile>
+            <Bars2Icon width={22} strokeWidth={2} />
+          </Topbar.Item>
+        )}
+        <Topbar.Logo logo={<Logo />} logoCompact={<Logo compact />} floating={floatingSidebar} />
+      </Topbar.Group>
 
-      <TopbarLogo
-        logo={<Logo />}
-        logoCompact={<Logo compact />}
-        floating={floatingSidebar}
-      />
+      <Topbar.Group leftCorrection>
+        <Topbar.PopupItem toggle={<PlusIcon strokeWidth={2.5} width={20} aria-hidden />} hideMobile>
+          <Topbar.Item
+            to={routes.studioVideoNew}
+            prefix={<ArrowUpTrayIcon width={20} aria-hidden />}
+          >
+            Upload a video
+          </Topbar.Item>
+        </Topbar.PopupItem>
 
-      <TopbarPopupItem toggle={<PlusIcon />} hideMobile>
-        <TopbarItem to={routes.studioVideoNew} iconSvg={<UploadIcon />}>
-          Upload a video
-        </TopbarItem>
-      </TopbarPopupItem>
-      <SearchItem />
+        <SearchItem />
+      </Topbar.Group>
 
-      <TopbarSpace flexible />
+      <Topbar.Space flexible />
 
       <AlphaWarning />
 
-      <TopbarSpace flexible />
+      <Topbar.Space flexible />
 
-      {isSignedIn === true && !isLoadingProfile && (
-        <TopbarItem ignoreHoverState>
-          <UserCredit />
-        </TopbarItem>
-      )}
+      <Topbar.Group>
+        {isSignedIn === true && !isLoadingProfile && (
+          <Topbar.Item ignoreHoverState noPadding>
+            <UserCredit />
+          </Topbar.Item>
+        )}
 
-      <TopbarItem ignoreHoverState>
-        <UserMenu />
-      </TopbarItem>
+        <Topbar.Item ignoreHoverState noPadding>
+          <UserMenu />
+        </Topbar.Item>
+      </Topbar.Group>
     </Topbar>
   )
 }

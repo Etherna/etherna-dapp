@@ -3,6 +3,7 @@
     "bradlc.vscode-tailwindcss",
     "ionutvmi.path-autocomplete",
     "dbaeumer.vscode-eslint",
-    "ms-vscode.vscode-typescript-tslint-plugin"
+    "ms-vscode.vscode-typescript-tslint-plugin",
+    "esbenp.prettier-vscode"
   ]
 }

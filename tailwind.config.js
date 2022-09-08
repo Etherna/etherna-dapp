@@ -3,11 +3,7 @@ const plugin = require("tailwindcss/plugin")
 
 /** @type {import('tailwindcss/types').Config} */
 module.exports = {
-  content: [
-    "./index.html",
-    "./public/**/*.html",
-    "./src/**/*.tsx",
-  ],
+  content: ["./index.html", "./public/**/*.html", "./src/**/*.tsx"],
   darkMode: "class",
   theme: {
     extend: {
@@ -58,18 +54,18 @@ module.exports = {
           "system-ui",
           "-apple-system",
           "BlinkMacSystemFont",
-          "\"Segoe UI\"",
+          '"Segoe UI"',
           "Roboto",
-          "\"Helvetica Neue\"",
+          '"Helvetica Neue"',
           "sans-serif",
-          "\"Apple Color Emoji\"",
-          "\"Segoe UI Emoji\"",
-          "\"Segoe UI Symbol\"",
-          "\"Noto Color Emoji\"",
+          '"Apple Color Emoji"',
+          '"Segoe UI Emoji"',
+          '"Segoe UI Symbol"',
+          '"Noto Color Emoji"',
         ],
       },
       fontSize: {
-        "2xs": ["0.65rem", { lineHeight: "1rem" }],
+        "2xs": ["0.625rem", { lineHeight: "1rem" }],
         md: ["1.125rem", { lineHeight: "1.5rem" }],
       },
       maxWidth: {
@@ -88,17 +84,17 @@ module.exports = {
         "6xl": "72rem",
       },
       minHeight: ({ theme }) => ({
-        ...theme("spacing")
+        ...theme("spacing"),
       }),
       animation: {
-        "spinSlow": "spinSlow 2s linear infinite",
-        "slide": "slide 2s cubic-bezier(0.2, 0.7, 0.7, 0.4) infinite",
-        "skip": "skip 1s cubic-bezier(0.2, 0.7, 0.7, 0.4) 0s 2 forwards",
+        spinSlow: "spinSlow 2s linear infinite",
+        slide: "slide 2s cubic-bezier(0.2, 0.7, 0.7, 0.4) infinite",
+        skip: "skip 1s cubic-bezier(0.2, 0.7, 0.7, 0.4) 0s 2 forwards",
       },
       keyframes: {
         spinSlow: {
-          "from": { transform: "rotate(360deg)" },
-          "to": { transform: "rotate(0deg)" },
+          from: { transform: "rotate(360deg)" },
+          to: { transform: "rotate(0deg)" },
         },
         slide: {
           "0%": {
@@ -120,6 +116,11 @@ module.exports = {
           },
         },
       },
+      textShadow: {
+        sm: "0 1px 2px var(--tw-shadow-color)",
+        DEFAULT: "0 2px 4px var(--tw-shadow-color)",
+        lg: "0 8px 16px var(--tw-shadow-color)",
+      },
       zIndex: {
         "-1": "-1",
         1: "1",
@@ -132,27 +133,74 @@ module.exports = {
     require("@tailwindcss/typography"),
     require("@tailwindcss/forms"),
     require("@tailwindcss/line-clamp"),
-    plugin(function ({ addUtilities, addVariant, e }) {
+    require("tailwind-scrollbar"),
+    require("tailwindcss-safe-area"),
+    plugin(({ addUtilities, addVariant, addComponents, e, matchUtilities, theme }) => {
       const utils = {
         ".absolute-center": {
-          "position": "absolute",
-          "left": "50%",
-          "top": "50%",
+          position: "absolute",
+          left: "50%",
+          top: "50%",
           "--tw-translate-x": "-50%",
           "--tw-translate-y": "-50%",
-          "transform": "var(--tw-transform)",
-        }
+          transform: "var(--tw-transform)",
+        },
       }
 
       addUtilities(utils, ["responsive"])
 
+      matchUtilities(
+        {
+          "text-shadow": value => ({
+            textShadow: value,
+          }),
+        },
+        { values: theme("textShadow") }
+      )
+
+      const components = {}
+
+      addComponents(components, ["responsive"])
+
       addVariant("landscape-touch", ({ container, separator }) => {
-        const landscapeRule = postcss
-          .atRule({ name: "media", params: "(orientation: landscape) and (max-width: 1024px) and (pointer: coarse)" })
+        const landscapeRule = postcss.atRule({
+          name: "media",
+          params: "(orientation: landscape) and (max-width: 1024px) and (pointer: coarse)",
+        })
         landscapeRule.append(container.nodes)
         container.append(landscapeRule)
         landscapeRule.walkRules(rule => {
           rule.selector = `.${e(`landscape-touch${separator}${rule.selector.slice(1)}`)}`
+        })
+      })
+
+      addVariant("floating-sidebar", ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `[data-sidebar-floating="true"] .${e(`floating-sidebar${separator}${className}`)}`
+        })
+      })
+
+      addVariant("fixed-sidebar", ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `[data-sidebar-floating="false"] .${e(`fixed-sidebar${separator}${className}`)}`
+        })
+      })
+
+      addVariant("playing", ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `[data-playing="true"] .${e(`playing${separator}${className}`)}`
+        })
+      })
+
+      addVariant("paused", ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `[data-playing="false"] .${e(`paused${separator}${className}`)}`
+        })
+      })
+
+      addVariant("mouse-idle", ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `[data-mouse-idle="true"] .${e(`mouse-idle${separator}${className}`)}`
         })
       })
     }),

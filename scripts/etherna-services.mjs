@@ -14,24 +14,19 @@
  *  limitations under the License.
  */
 
+import bcrypt from "bcryptjs"
+import chalk from "chalk"
+import { exec } from "child_process"
 import fs from "fs"
 import path from "path"
-import waitOn from "wait-on"
-import chalk from "chalk"
 import url from "url"
-import { exec } from "child_process"
-import DotEnv from "dotenv"
-import bcrypt from "bcryptjs"
+import waitOn from "wait-on"
 
+import "./env.mjs"
+
+import proxyBeeOverHttps from "./bee-https-proxy.mjs"
 import { createPostageBatch } from "./create-postage-batch.mjs"
 import { loadSeed } from "./swarm-seed.mjs"
-import proxyBeeOverHttps from "./bee-https-proxy.mjs"
-
-DotEnv.config({
-  path: fs.existsSync(path.resolve(`.env.development`))
-    ? `.env.development`
-    : ".env",
-})
 
 /**
  * exec function callback
@@ -79,7 +74,7 @@ const jsonDeepValue = (json, keySearch, ingoreKeys = []) => {
  */
 const stripBOM = content => {
   content = content.toString()
-  if (content.charCodeAt(0) === 0xFEFF) {
+  if (content.charCodeAt(0) === 0xfeff) {
     content = content.slice(1)
   }
   return content
@@ -98,7 +93,8 @@ const serviceHost = projectPath => {
     const json = JSON.parse(stripBOM(data))
     const applicationUrl = jsonDeepValue(json, "applicationUrl", ["iisSettings"])
     if (typeof applicationUrl === "string") {
-      const urls = applicationUrl.split(";")
+      const urls = applicationUrl
+        .split(";")
         .map(url => url.trim())
         .sort((a, b) => {
           const aProtocol = url.parse(a).protocol
@@ -118,7 +114,7 @@ const serviceHost = projectPath => {
  * Run the service
  * @param {string} projectPath The service project path
  */
-const execProject = (projectPath) => {
+const execProject = projectPath => {
   const execCms = `dotnet run -p ${projectPath}`
   return exec(execCms, execCallback)
 }
@@ -157,7 +153,7 @@ const execBee = () => {
  * @returns {Promise<void>} Waiting promise
  */
 const waitService = (projectPath, name) => {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const host = url.parse(projectPath).hostname ? projectPath : serviceHost(projectPath)
     if (host) {
       waitOn({
@@ -167,14 +163,16 @@ const waitService = (projectPath, name) => {
         validateStatus: function (status) {
           // if returns any status code then server is up
           return true
-        }
-      }).then(() => {
-        console.log(chalk.green(`${name} connected!`) + chalk.reset(` Host --> ${host}`))
-        resolve()
-      }).catch(() => {
-        console.log(chalk.red(`Cannot reach ${name} at ${host}`))
-        resolve()
+        },
       })
+        .then(() => {
+          console.log(chalk.green(`${name} connected!`) + chalk.reset(` Host --> ${host}`))
+          resolve()
+        })
+        .catch(() => {
+          console.log(chalk.red(`Cannot reach ${name} at ${host}`))
+          resolve()
+        })
     } else {
       console.log(chalk.yellow(`${name} host not found`))
       resolve()
@@ -184,8 +182,8 @@ const waitService = (projectPath, name) => {
 
 /**
  * Show logs of errors
- * @param {string} service 
- * @param {string} errorData 
+ * @param {string} service
+ * @param {string} errorData
  */
 const logServiceError = (service, errorData) => {
   if (/[15:26:18 ERR]/.test(errorData)) {
@@ -216,7 +214,8 @@ const run = async () => {
   const verbose = args.includes("--verbose")
   const runAllServices = args.filter(arg => arg !== "--verbose").length === 0
 
-  const shouldRunBeeNode = process.env.BEE_LOCAL_INSTANCE === "true" && (runAllServices || args.includes("--bee"))
+  const shouldRunBeeNode =
+    process.env.BEE_LOCAL_INSTANCE === "true" && (runAllServices || args.includes("--bee"))
   const shouldRunEthernaSSO = runAllServices || args.includes("--sso")
   const shouldRunEthernaIndex = runAllServices || args.includes("--index")
   const shouldRunEthernaCredit = runAllServices || args.includes("--credit")
@@ -277,7 +276,7 @@ const run = async () => {
     const validatorProcess = exec(
       "npm run start",
       {
-        cwd: path.resolve("proxy")
+        cwd: path.resolve("proxy"),
       },
       execCallback
     )

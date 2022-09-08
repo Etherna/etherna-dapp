@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,13 +14,15 @@
  *  limitations under the License.
  */
 
-import { Dispatch } from "redux"
 import { useDispatch } from "react-redux"
+import type { Dispatch } from "redux"
 
-import { ProfileActions, ProfileActionTypes } from "@/state/reducers/profileReducer"
-import { UserActions, UserActionTypes } from "@/state/reducers/userReducer"
-import useSelector from "@/state/useSelector"
 import type { Profile } from "@/definitions/swarm-profile"
+import type { ProfileActions } from "@/state/reducers/profileReducer"
+import { ProfileActionTypes } from "@/state/reducers/profileReducer"
+import type { UserActions } from "@/state/reducers/userReducer"
+import { UserActionTypes } from "@/state/reducers/userReducer"
+import useSelector from "@/state/useSelector"
 
 export default function useProfileUpdate(address: string) {
   const dispatch = useDispatch<Dispatch<ProfileActions | UserActions>>()
@@ -38,10 +40,9 @@ export default function useProfileUpdate(address: string) {
       type: UserActionTypes.USER_UPDATE_IDENTITY,
       address,
       prevAddresses,
-      manifest: reference
+      manifest: reference,
     })
   }
 
   return updateProfile
 }
-

@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-import http from "@/utils/request"
 import type {
   IndexVideo,
   IndexVideoComment,
   IndexVideoManifest,
   IndexVideoValidation,
-  VoteValue
+  VoteValue,
 } from "@/definitions/api-index"
+import http from "@/utils/request"
 
 export default class IndexVideosClient {
   url: string
@@ -29,7 +29,7 @@ export default class IndexVideosClient {
 
   /**
    * Init an index video client
-   * 
+   *
    * @param url Api host + api url
    */
   constructor(url: string, abortController?: AbortController) {
@@ -39,7 +39,7 @@ export default class IndexVideosClient {
 
   /**
    * Get a list of recent videos uploaded on the platform
-   * 
+   *
    * @param page Page offset (default = 0)
    * @param take Number of videos to fetch (default = 25)
    * @returns The list of videos
@@ -60,7 +60,7 @@ export default class IndexVideosClient {
 
   /**
    * Get video information by id
-   * 
+   *
    * @param id Video id on Index
    * @returns The video object
    */
@@ -79,7 +79,7 @@ export default class IndexVideosClient {
 
   /**
    * Get video hash validation status
-   * 
+   *
    * @param hash Video hash on Swarm
    */
   async fetchHashValidation(hash: string) {
@@ -97,7 +97,7 @@ export default class IndexVideosClient {
 
   /**
    * Get video validations list
-   * 
+   *
    * @param id Video id on Index
    */
   async fetchValidations(id: string) {
@@ -115,7 +115,7 @@ export default class IndexVideosClient {
 
   /**
    * Get video information
-   * 
+   *
    * @param hash Video hash on Swarm
    */
   async fetchVideoFromHash(hash: string) {
@@ -133,21 +133,25 @@ export default class IndexVideosClient {
 
   /**
    * Create a new video on the index
-   * 
+   *
    * @param hash Hash of the manifest/feed with the video metadata
    * @param encryptionKey Encryption key
    * @returns Video id
    */
   async createVideo(hash: string, encryptionKey?: string) {
     const endpoint = `${this.url}/videos`
-    const resp = await http.post<string>(endpoint, {
-      manifestHash: hash,
-      encryptionKey,
-      encryptionType: encryptionKey ? "AES256" : "Plain",
-    }, {
-      withCredentials: true,
-      signal: this.abortController?.signal,
-    })
+    const resp = await http.post<string>(
+      endpoint,
+      {
+        manifestHash: hash,
+        encryptionKey,
+        encryptionType: encryptionKey ? "AES256" : "Plain",
+      },
+      {
+        withCredentials: true,
+        signal: this.abortController?.signal,
+      }
+    )
 
     if (typeof resp.data !== "string") {
       throw new Error("Cannot create the video")
@@ -158,7 +162,7 @@ export default class IndexVideosClient {
 
   /**
    * Update a video information
-   * 
+   *
    * @param id Id of the video on Index
    * @param newHash New manifest hash with video metadata
    * @returns Video id
@@ -182,7 +186,7 @@ export default class IndexVideosClient {
 
   /**
    * Delete a video from the index
-   * 
+   *
    * @param id Id of the video
    * @returns Success state
    */
@@ -198,7 +202,7 @@ export default class IndexVideosClient {
 
   /**
    * Fetch the video comments
-   * 
+   *
    * @param id Id of the video
    * @param page Page offset (default = 0)
    * @param take Number of comments to fetch (default = 25)
@@ -221,7 +225,7 @@ export default class IndexVideosClient {
 
   /**
    * Post a new comment to a video
-   * 
+   *
    * @param id Id of the video
    * @param message Message string with markdown
    * @returns The comment object
@@ -231,7 +235,7 @@ export default class IndexVideosClient {
     const resp = await http.post<IndexVideoComment>(endpoint, `"${message}"`, {
       withCredentials: true,
       headers: {
-        "accept": "text/plain",
+        accept: "text/plain",
         "content-type": "application/json",
       },
       signal: this.abortController?.signal,
@@ -242,7 +246,7 @@ export default class IndexVideosClient {
 
   /**
    * Give a up/down vote to the video
-   * 
+   *
    * @param id Id of the video
    * @param vote Up / Down / Neutral vote
    */
@@ -250,7 +254,7 @@ export default class IndexVideosClient {
     const endpoint = `${this.url}/videos/${id}/votes`
     const resp = await http.post<IndexVideoComment>(endpoint, null, {
       params: {
-        value: vote
+        value: vote,
       },
       withCredentials: true,
       signal: this.abortController?.signal,
@@ -261,7 +265,7 @@ export default class IndexVideosClient {
 
   /**
    * Report a video
-   * 
+   *
    * @param id Id of the video
    * @param manifestReference Reference of the manifest to report
    * @param code Report code
@@ -270,7 +274,7 @@ export default class IndexVideosClient {
     const endpoint = `${this.url}/videos/${id}/manifest/${manifestReference}/reports`
     const resp = await http.post(endpoint, null, {
       params: {
-        description: code
+        description: code,
       },
       withCredentials: true,
       signal: this.abortController?.signal,

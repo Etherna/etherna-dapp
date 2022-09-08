@@ -3,11 +3,6 @@
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["vite/client", "react/next", "react-dom/next"],
-    "plugins": [
-      {
-        "name": "typescript-plugin-css-modules"
-      }
-    ],
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": false,
@@ -22,6 +17,7 @@
     "noImplicitReturns": false,
     "noImplicitThis": false,
     "noEmit": true,
+    "importsNotUsedAsValues": "error",
     "jsx": "react",
     "baseUrl": ".",
     "paths": {

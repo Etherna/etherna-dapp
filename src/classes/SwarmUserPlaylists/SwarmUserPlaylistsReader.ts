@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,9 +15,9 @@
  */
 
 import SwarmUserPlaylistsIO from "."
-import SwarmBeeClient from "@/classes/SwarmBeeClient"
-import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
 import type { SwarmUserPlaylistsDownloadOptions, SwarmUserPlaylistsReaderOptions } from "./types"
+import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
 import type { SwarmPlaylist, SwarmUserPlaylistsRaw } from "@/definitions/swarm-playlist"
 
 /**
@@ -43,11 +43,13 @@ export default class SwarmUserPlaylistsReader {
   async download(opts?: SwarmUserPlaylistsDownloadOptions): Promise<void> {
     this.rawPlaylists = await this.fetchFeedOrDefault()
 
-    await Promise.allSettled([
-      opts?.resolveChannel ? this.resolveChannel() : false,
-      opts?.resolveSaved ? this.resolveSaved() : false,
-      opts?.resolveCustom ? this.resolveCustom() : false,
-    ].filter(Boolean))
+    await Promise.allSettled(
+      [
+        opts?.resolveChannel ? this.resolveChannel() : false,
+        opts?.resolveSaved ? this.resolveSaved() : false,
+        opts?.resolveCustom ? this.resolveCustom() : false,
+      ].filter(Boolean)
+    )
   }
 
   private async resolveChannel() {
@@ -72,10 +74,12 @@ export default class SwarmUserPlaylistsReader {
 
   private async resolveCustom() {
     this.customPlaylists = await Promise.all(
-      (this.rawPlaylists?.custom ?? []).map(reference => this.resolvePlaylistOrDefault(
-        reference,
-        SwarmUserPlaylistsIO.getDefaultCustomPlaylist(this.owner)
-      ))
+      (this.rawPlaylists?.custom ?? []).map(reference =>
+        this.resolvePlaylistOrDefault(
+          reference,
+          SwarmUserPlaylistsIO.getDefaultCustomPlaylist(this.owner)
+        )
+      )
     )
   }
 

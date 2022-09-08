@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,19 +16,19 @@
 
 import type { BatchId, PostageBatch } from "@ethersphere/bee-js"
 
-import { calcDilutedTTL, getBatchCapacity, getBatchSpace, ttlToAmount } from "@/utils/batches"
+import type { AnyBatch, SwarmBatchesManagerOptions } from "./types"
+import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
 import FlagEnumManager from "@/classes/FlagEnumManager"
+import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type { GatewayType } from "@/definitions/extension-host"
 import batchesStore, { BatchUpdateType } from "@/stores/batches"
 import type { UpdatingBatch } from "@/stores/batches"
-import type { AnyBatch, SwarmBatchesManagerOptions } from "./types"
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
-import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
-import type { GatewayType } from "@/definitions/extension-host"
+import { calcDilutedTTL, getBatchCapacity, getBatchSpace, ttlToAmount } from "@/utils/batches"
 
 const DEFAULT_TTL = 60 * 60 * 24 * 365 * 2 // 2 years
 const DEFAULT_SIZE = 2 ** 16 // 65kb - basic manifest
 
-let lastPriceFetched: { url: string, price: number } | undefined
+let lastPriceFetched: { url: string; price: number } | undefined
 
 export default class SwarmBatchesManager {
   batches: AnyBatch[] = []
@@ -69,13 +69,13 @@ export default class SwarmBatchesManager {
     return lastPriceFetched
   }
 
-  private set cachedPrice(val: { url: string, price: number } | undefined) {
+  private set cachedPrice(val: { url: string; price: number } | undefined) {
     lastPriceFetched = val
   }
 
   /**
    * Load all batches
-   * 
+   *
    * @param batchIds Id of the batches
    * @returns Loaded batches
    */
@@ -84,9 +84,7 @@ export default class SwarmBatchesManager {
 
     this.onBatchesLoading?.()
 
-    const batches = await Promise.allSettled(
-      batchIds.map(id => this.fetchBatch(id, true))
-    )
+    const batches = await Promise.allSettled(batchIds.map(id => this.fetchBatch(id, true)))
 
     this.batches = batches
       // @ts-ignore
@@ -107,7 +105,7 @@ export default class SwarmBatchesManager {
 
   /**
    * Fetch a batch from given id
-   * 
+   *
    * @param batchId Id of the batch to fetch
    * @param waitPropagation Wait for the batch to be propagated
    * @returns The batch (can throw if not found)
@@ -131,7 +129,7 @@ export default class SwarmBatchesManager {
 
   /**
    * Topup a batch (increase TTL)
-   * 
+   *
    * @param batchId Batch to topup
    * @param byAmount Amount to topup
    */
@@ -150,7 +148,7 @@ export default class SwarmBatchesManager {
 
   /**
    * Dilute batch (increase depth)
-   * 
+   *
    * @param batchId Id of the batch to dilute
    * @param depth New depth
    */
@@ -169,7 +167,7 @@ export default class SwarmBatchesManager {
 
   /**
    * Find the right batch for the given size
-   * 
+   *
    * @param size Size needed for the uploads
    * @returns The batch or `undefined` if not found
    */
@@ -185,7 +183,7 @@ export default class SwarmBatchesManager {
 
   /**
    * Find a batch from an id (in memory)
-   * 
+   *
    * @param batchId Batch id to search for
    * @returns The batch or undefined if not found
    */
@@ -195,7 +193,7 @@ export default class SwarmBatchesManager {
 
   /**
    * Get an existing batch or create a new one based on size
-   * 
+   *
    * @param size Size needed for the uploads
    * @param ttl Expiration in seconds (for creation, default is 2 years)
    * @returns The batch
@@ -210,7 +208,7 @@ export default class SwarmBatchesManager {
 
   /**
    * Create new batch based on size and ttl
-   * 
+   *
    * @param size Batch min size
    * @param ttl Batch expiration in seconds
    * @returns The created batch
@@ -238,7 +236,7 @@ export default class SwarmBatchesManager {
 
   /**
    * Auto-increase batch size and re-balance TTL
-   * 
+   *
    * @param batch Batch to extend
    * @param addSize Size to add to the batch
    */
@@ -270,7 +268,7 @@ export default class SwarmBatchesManager {
 
   /**
    * Increase a batch expiration time
-   * 
+   *
    * @param batch Batch to extend
    * @param addTTL Seconds to add to batch
    */
@@ -284,7 +282,11 @@ export default class SwarmBatchesManager {
     return true
   }
 
-  async waitBatchPropagation(batch: AnyBatch | UpdatingBatch, updateType: BatchUpdateType, interval = 5000) {
+  async waitBatchPropagation(
+    batch: AnyBatch | UpdatingBatch,
+    updateType: BatchUpdateType,
+    interval = 5000
+  ) {
     let propagationPromiseResolve: ((batch: AnyBatch) => void) | undefined
 
     const flag = new FlagEnumManager(updateType)
@@ -303,12 +305,15 @@ export default class SwarmBatchesManager {
         const increasedAmount = fetchedBatch.amount > batch.amount
 
         const canFinish =
-          (!flag.has(BatchUpdateType.Create) || flag.has(BatchUpdateType.Create) && hasCreated) &&
-          (!flag.has(BatchUpdateType.Dilute) || flag.has(BatchUpdateType.Dilute) && increasedDepth) &&
-          (!flag.has(BatchUpdateType.Topup) || flag.has(BatchUpdateType.Topup) && increasedAmount)
+          (!flag.has(BatchUpdateType.Create) || (flag.has(BatchUpdateType.Create) && hasCreated)) &&
+          (!flag.has(BatchUpdateType.Dilute) ||
+            (flag.has(BatchUpdateType.Dilute) && increasedDepth)) &&
+          (!flag.has(BatchUpdateType.Topup) || (flag.has(BatchUpdateType.Topup) && increasedAmount))
 
         if (canFinish) {
-          const index = this.batches.findIndex(b => this.getBatchId(b) === this.getBatchId(fetchedBatch))
+          const index = this.batches.findIndex(
+            b => this.getBatchId(b) === this.getBatchId(fetchedBatch)
+          )
           this.batches[index] = fetchedBatch
 
           batchesStore.getState().removeBatchUpdate(this.getBatchId(fetchedBatch))
@@ -333,12 +338,14 @@ export default class SwarmBatchesManager {
   }
 
   isCreatingBatch(batch: AnyBatch | UpdatingBatch) {
-    const isCreating = batchesStore
-      .getState()
-      .updatingBatches
-      .findIndex(
-        b => b.id === this.getBatchId(batch) && new FlagEnumManager(b.flag).has(BatchUpdateType.Create)
-      ) >= 0
+    const isCreating =
+      batchesStore
+        .getState()
+        .updatingBatches.findIndex(
+          b =>
+            b.id === this.getBatchId(batch) &&
+            new FlagEnumManager(b.flag).has(BatchUpdateType.Create)
+        ) >= 0
 
     return isCreating
   }
@@ -350,7 +357,7 @@ export default class SwarmBatchesManager {
 
   /**
    * Refresh a batch after utilization
-   * 
+   *
    * @param batch The batch used
    */
   async refreshBatch(batch: AnyBatch) {
@@ -397,7 +404,7 @@ export default class SwarmBatchesManager {
     const qualityIndex = encodeQualities.indexOf(closestQuality)
     const downscaledQualities = encodeQualities.slice(0, qualityIndex)
     const extraSpaceNeeded = downscaledQualities.reduce((prev, lowerQuality) => {
-      return prev + (videoSizeInBytes * (lowerQuality / quality))
+      return prev + videoSizeInBytes * (lowerQuality / quality)
     }, 0)
 
     // thumbnails, manifest, captions...
@@ -448,7 +455,7 @@ export default class SwarmBatchesManager {
     }
   }
 
-  getBatchId(batch: ({ id: BatchId } | { batchID: BatchId })): BatchId {
+  getBatchId(batch: { id: BatchId } | { batchID: BatchId }): BatchId {
     return "id" in batch ? batch.id : batch.batchID
   }
 }

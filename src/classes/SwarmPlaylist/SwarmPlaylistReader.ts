@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,14 +17,14 @@
 import { AES, enc } from "crypto-ts"
 
 import SwarmPlaylistIO from "."
-import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type { SwarmPlaylistReaderOptions } from "./types"
+import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type {
   SwarmPlaylistRaw,
   SwarmPlaylist,
   EncryptedSwarmPlaylistData,
   SwarmPlaylistVideoRaw,
-  SwarmPlaylistVideo
+  SwarmPlaylistVideo,
 } from "@/definitions/swarm-playlist"
 
 /**
@@ -41,7 +41,7 @@ export default class SwarmPlaylistReader {
   constructor(
     reference: string | undefined,
     playlist: SwarmPlaylist | undefined,
-    opts: SwarmPlaylistReaderOptions,
+    opts: SwarmPlaylistReaderOptions
   ) {
     this.playlist = playlist
     this.reference = reference
@@ -52,7 +52,7 @@ export default class SwarmPlaylistReader {
 
   /**
    * Download playlist data
-   * 
+   *
    * @returns The parsed playlist
    */
   async download(): Promise<SwarmPlaylist> {
@@ -77,7 +77,8 @@ export default class SwarmPlaylistReader {
       createdAt: rawPlaylist.createdAt,
       updatedAt: rawPlaylist.updatedAt,
       type: rawPlaylist.type,
-      encryptedReference: rawPlaylist.type === "private" ? rawPlaylist.encryptedReference : undefined,
+      encryptedReference:
+        rawPlaylist.type === "private" ? rawPlaylist.encryptedReference : undefined,
       encryptionPassword: undefined,
       encryptedData: undefined,
       videos: rawPlaylist.type !== "private" ? this.parseVideos(rawPlaylist.videos) : undefined,
@@ -100,7 +101,7 @@ export default class SwarmPlaylistReader {
 
   /**
    * Decrypt private playlist
-   * 
+   *
    * @param password Playlist password
    */
   decrypt(password: string) {

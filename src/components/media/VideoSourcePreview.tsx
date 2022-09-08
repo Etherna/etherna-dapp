@@ -1,23 +1,21 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
 import React from "react"
-
-import classes from "@/styles/components/media/VideoSourcePreview.module.scss"
 
 type VideoSourcePreviewProps = {
   children?: React.ReactNode
@@ -35,26 +33,24 @@ const VideoSourcePreview: React.FC<VideoSourcePreviewProps> = ({
   actionsRender,
 }) => {
   return (
-    <div className={classes.videoSourcePreview}>
-      <div className={classes.videoSourcePreviewHeader}>
-        <span className={classes.videoSourcePreviewName}>{name}</span>
+    <div className="">
+      <div className="flex flex-wrap items-start">
+        <span className="flex-shrink-0 text-3xl font-bold tracking-tight">{name}</span>
 
-        <div className={classes.videoSourcePreviewAccessories}>
-          {actionsRender && (
-            <span className={classes.videoSourcePreviewActions}>{actionsRender}</span>
-          )}
+        <div className="ml-auto flex items-center space-x-4">
+          {actionsRender && <span className="space-x-2">{actionsRender}</span>}
           {/* {error && (
-            <span className={classes.videoSourcePreviewError}>{error}</span>
+            <span className="text-sm font-medium text-red-500 ml-3">{error}</span>
           )} */}
           {statusText && (
-            <span className={classes.videoSourcePreviewStatus}>{statusText}</span>
+            <span className="ml-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+              {statusText}
+            </span>
           )}
         </div>
       </div>
 
-      <div className={classes.videoSourcePreviewContent}>
-        {children}
-      </div>
+      <div className="mt-3">{children}</div>
     </div>
   )
 }

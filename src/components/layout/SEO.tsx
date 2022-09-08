@@ -1,26 +1,26 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
 import React from "react"
 import { Helmet } from "react-helmet-async"
 import type { MetaProps } from "react-helmet-async"
 
-import useSelector from "@/state/useSelector"
 import Head from "./Head"
+import useSelector from "@/state/useSelector"
 
 type SEOProps = {
   children?: React.ReactNode
@@ -28,7 +28,7 @@ type SEOProps = {
   lang?: string
   title: string
   canonicalUrl?: string
-  meta?: { name: string, content: string }[]
+  meta?: { name: string; content: string }[]
   type?: "website" | "video.other"
   image?: string
 }
@@ -55,61 +55,61 @@ const SEO: React.FC<SEOProps> = ({
         }}
         title={title}
         titleTemplate={`%s – ${title === siteTitle ? siteTagline : siteTitle}`}
-        meta={[
-          {
-            name: `theme-color`,
-            content: darkMode ? `#111827` : `#f9fafb`,
-          },
-          {
-            name: `description`,
-            content: description || "A transparent, decentralized and open source video platform",
-          },
-          {
-            property: `keywords`,
-            content: `video, sharing, decentralized, ads free, transparent video platform, upload`,
-          },
-          {
-            property: `og:title`,
-            content: title,
-          },
-          description && {
-            property: `og:description`,
-            content: description,
-          },
-          image && {
-            property: `og:image`,
-            content: image,
-          },
-          type && {
-            property: `og:type`,
-            content: type,
-          },
-          {
-            name: `twitter:card`,
-            content: `summary`,
-          },
-          {
-            name: `twitter:creator`,
-            content: siteTitle,
-          },
-          {
-            name: `twitter:title`,
-            content: title,
-          },
-          description && {
-            name: `twitter:description`,
-            content: description,
-          },
-        ].filter(Boolean).concat(meta) as MetaProps[]}
+        meta={
+          [
+            {
+              name: `theme-color`,
+              content: darkMode ? `#111827` : `#f9fafb`,
+            },
+            {
+              name: `description`,
+              content: description || "A transparent, decentralized and open source video platform",
+            },
+            {
+              property: `keywords`,
+              content: `video, sharing, decentralized, ads free, transparent video platform, upload`,
+            },
+            {
+              property: `og:title`,
+              content: title,
+            },
+            description && {
+              property: `og:description`,
+              content: description,
+            },
+            image && {
+              property: `og:image`,
+              content: image,
+            },
+            type && {
+              property: `og:type`,
+              content: type,
+            },
+            {
+              name: `twitter:card`,
+              content: `summary`,
+            },
+            {
+              name: `twitter:creator`,
+              content: siteTitle,
+            },
+            {
+              name: `twitter:title`,
+              content: title,
+            },
+            description && {
+              name: `twitter:description`,
+              content: description,
+            },
+          ]
+            .filter(Boolean)
+            .concat(meta) as MetaProps[]
+        }
       >
-        {canonicalUrl && (
-          <link rel="canonical" href={canonicalUrl} />
-        )}
+        {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
       </Helmet>
 
-      <Head>
-        {children}
-      </Head>
+      <Head>{children}</Head>
     </>
   )
 }

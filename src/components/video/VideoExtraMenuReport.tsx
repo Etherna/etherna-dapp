@@ -1,29 +1,26 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
-import React, { useState } from "react"
+import React, { useCallback, useState } from "react"
+import classNames from "classnames"
 
-import classes from "@/styles/components/video/VideoExtraMenuReport.module.scss"
-
-import AlertPopup from "@/components/common/AlertPopup"
-import Button from "@/components/common/Button"
-import Modal from "@/components/common/Modal"
-import useSelector from "@/state/useSelector"
+import { AlertPopup, Button, Modal } from "../ui/actions"
 import { useErrorMessage } from "@/state/hooks/ui"
+import useSelector from "@/state/useSelector"
 
 type VideoExtraMenuReportProps = {
   videoId: string
@@ -56,7 +53,7 @@ const VideoExtraMenuReport: React.FC<VideoExtraMenuReportProps> = ({
   const [isReporting, setIsReporting] = useState(false)
   const [reportCode, setReportCode] = useState("")
 
-  const sendReport = async () => {
+  const sendReport = useCallback(async () => {
     setIsReporting(true)
     try {
       await indexClient.videos.reportVideo(videoId, videoReference, reportCode)
@@ -67,7 +64,7 @@ const VideoExtraMenuReport: React.FC<VideoExtraMenuReportProps> = ({
       showError("Cannot report video", error.message)
     }
     setIsReporting(false)
-  }
+  }, [indexClient.videos, reportCode, setShow, showError, videoId, videoReference])
 
   return (
     <>
@@ -82,10 +79,21 @@ const VideoExtraMenuReport: React.FC<VideoExtraMenuReportProps> = ({
         }
         showCancelButton
       >
-        <div className={classes.reportList}>
+        <div className="flex flex-col space-y-1">
           {Object.keys(CODES).map(key => (
-            <label className={classes.reportRadio} htmlFor={key} key={key}>
-              <input id={key} type="radio" checked={reportCode === key} onChange={() => setReportCode(key)} />
+            <label className="flex items-center" htmlFor={key} key={key}>
+              <input
+                className={classNames(
+                  "mr-3 border-gray-400 bg-gray-200 dark:border-gray-600 dark:bg-gray-800",
+                  "checked:bg-primary-500 checked:dark:bg-primary-600",
+                  "checked:hover:bg-primary-500 checked:dark:hover:bg-primary-600",
+                  "checked:border-primary-600 checked:dark:border-primary-700"
+                )}
+                id={key}
+                type="radio"
+                checked={reportCode === key}
+                onChange={() => setReportCode(key)}
+              />
               <span>{CODES[key]}</span>
             </label>
           ))}
