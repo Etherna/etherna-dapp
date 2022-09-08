@@ -251,7 +251,7 @@ const Topbar: React.FC<TopbarProps> & {
   return (
     <nav
       className={classNames(
-        "fixed inset-x-0 top-0 z-10 flex h-14 items-center px-container py-2.5 lg:h-16 lg:py-3.5",
+        "fixed inset-x-0 top-0 z-10 flex h-14 items-center px-container py-2.5 lg:h-16",
         "md:fixed-sidebar:left-20 lg:fixed-sidebar:left-52 xl:fixed-sidebar:left-64",
         "floating-sidebar:left-0",
         "bg-gray-50/80 backdrop-blur-lg backdrop-filter dark:bg-gray-900/80",
