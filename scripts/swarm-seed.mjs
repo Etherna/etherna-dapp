@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { Bee } from "@ethersphere/bee-js"
+import BeeJS from "@ethersphere/bee-js"
 import chalk from "chalk"
 import DotEnv from "dotenv"
 import fs from "fs"
@@ -25,7 +25,7 @@ DotEnv.config({
 })
 
 const SeedDataFolder = path.resolve("seed")
-const bee = new Bee(new URL(process.env.VITE_APP_GATEWAY_URL).origin)
+const bee = new BeeJS.Bee(new URL(process.env.VITE_APP_GATEWAY_URL).origin)
 
 export async function testSeed() {
   const batchId = "b84f43bd8f1e1f53a2c777546a03872df6537e4e9f1aff4a43bc983b93628fc7"

@@ -45,10 +45,10 @@ const Logo: React.FC<LogoProps> = props => {
       aria-label="Etherna"
       {...omit(props, "compact", "white")}
       className={classNames(
-        "[&>.svg-symbol]:fill-primary-500 [&>.svg-symbol]:dark:fill-gray-50",
-        "[&>.svg-text]:fill-[#7797A3] [&>.svg-text]:dark:fill-gray-50",
         {
-          dark: props.forceWhite,
+          "[&>.svg-symbol]:fill-primary-500 [&>.svg-text]:fill-[#7797A3]": !props.forceWhite,
+          "[&>.svg-symbol]:dark:fill-gray-50 [&>.svg-text]:dark:fill-gray-50": !props.forceWhite,
+          "[&>.svg-symbol]:fill-gray-50 [&>.svg-text]:fill-gray-50": props.forceWhite,
         },
         props.className
       )}
