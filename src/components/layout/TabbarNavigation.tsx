@@ -14,9 +14,15 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
-import { BookmarkIcon, HomeIcon, UserIcon, ExternalLinkIcon } from "@heroicons/react/solid"
+import {
+  BookmarkIcon,
+  HomeIcon,
+  UserIcon,
+  ArrowTopRightOnSquareIcon,
+} from "@heroicons/react/24/solid"
 import { ReactComponent as FramesIcon } from "@/assets/icons/navigation/frames.svg"
 import { ReactComponent as PlaylistIcon } from "@/assets/icons/navigation/playlists.svg"
 
@@ -62,7 +68,12 @@ const TabbarNavigation: React.FC = () => {
           iconSvg={<BookmarkIcon />}
           isSubmenu
         />
-        <Tabbar.Item title="Useful links" iconSvg={<ExternalLinkIcon />} isAccordion isSubmenu>
+        <Tabbar.Item
+          title="Useful links"
+          iconSvg={<ArrowTopRightOnSquareIcon />}
+          isAccordion
+          isSubmenu
+        >
           <Tabbar.Item title="About Etherna" to="https://info.etherna.io/" target="_blank" />
           <Tabbar.Item title="Blog" to="https://info.etherna.io/blog/" target="_blank" />
           <Tabbar.Item title="GitHub" to="https://github.com/etherna" target="_blank" />

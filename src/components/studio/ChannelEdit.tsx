@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useRef } from "react"
+
+import React, { useCallback, useRef } from "react"
 import { Navigate } from "react-router-dom"
 
 import StudioEditView from "./StudioEditView"
@@ -27,11 +28,11 @@ const ChannelEdit: React.FC = () => {
   const address = useSelector(state => state.user.address)
   const saveCallback = useRef<() => Promise<void>>()
 
-  if (!address) return <Navigate to={routes.home} />
-
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     await saveCallback.current?.()
-  }
+  }, [])
+
+  if (!address) return <Navigate to={routes.home} />
 
   return (
     <StudioEditView title="Customize channel" saveLabel="Save" canSave={true} onSave={handleSave}>

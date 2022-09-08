@@ -14,9 +14,10 @@
  *  limitations under the License.
  *
  */
-import React, { useEffect, useMemo, useCallback } from "react"
-import classNames from "classnames"
 
+import React, { useEffect, useMemo, useCallback } from "react"
+
+import { Container } from "../ui/layout"
 import VideoJsonLd from "./VideoJsonLd"
 import SwarmImageIO from "@/classes/SwarmImage"
 import NotFound from "@/components/common/NotFound"
@@ -110,7 +111,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
         />
       ) : (
         <div className="mb-16">
-          <div className="row justify-center">
+          <Container fluid align="center" noPaddingX noPaddingY>
             <div className="col lg:w-3/4">
               <Player
                 hash={reference}
@@ -123,9 +124,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
 
               {video && <VideoDetails video={video} videoOffers={routeState?.videoOffers} />}
             </div>
-
-            <aside className="lg:w-1/4 hidden">{/* Eventually a sidebar */}</aside>
-          </div>
+          </Container>
         </div>
       )}
     </>

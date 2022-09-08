@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React from "react"
+
+import React, { useCallback } from "react"
 
 import { ReactComponent as PipIcon } from "@/assets/icons/player/pip.svg"
 
@@ -25,11 +26,11 @@ import { usePlayerState } from "@/context/player-context/hooks"
 const PlayerPiPButton: React.FC = () => {
   const [, dispatch] = usePlayerState()
 
-  const togglePictureInPicture = () => {
+  const togglePictureInPicture = useCallback(() => {
     dispatch({
       type: PlayerReducerTypes.TOGGLE_PICTURE_IN_PICTURE,
     })
-  }
+  }, [dispatch])
 
   return <PlayerToolbarButton icon={<PipIcon aria-hidden />} onClick={togglePictureInPicture} />
 }

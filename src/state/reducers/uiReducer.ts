@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,6 @@ export const UIActionTypes = {
   SET_CROP_IMAGE: "UI_SET_CROP_IMAGE",
   UPDATE_IMAGE_CROP: "UI_UPDATE_IMAGE_CROP",
 } as const
-
 
 // Export dispatch actions
 type ShowErrorAction = {
@@ -89,21 +88,19 @@ type SetCropImageAction = {
   image: string
 }
 
-export type UIActions = (
-  ShowErrorAction |
-  HideErrorAction |
-  ToggleConfirmationAction |
-  ShowExtensionHostsEditorAction |
-  HideExtensionHostsEditorAction |
-  ToggleConnectingWalletAction |
-  ToggleShowBeeAuthAction |
-  ToggleLoadingProfileAction |
-  ToggleNetworkChangeAction |
-  ToggleEditingShortcutAction |
-  ToggleImageCropperAction |
-  SetCropImageAction
-)
-
+export type UIActions =
+  | ShowErrorAction
+  | HideErrorAction
+  | ToggleConfirmationAction
+  | ShowExtensionHostsEditorAction
+  | HideExtensionHostsEditorAction
+  | ToggleConnectingWalletAction
+  | ToggleShowBeeAuthAction
+  | ToggleLoadingProfileAction
+  | ToggleNetworkChangeAction
+  | ToggleEditingShortcutAction
+  | ToggleImageCropperAction
+  | SetCropImageAction
 
 // Init reducer
 const uiReducer = (state: UIState = {}, action: UIActions): UIState => {

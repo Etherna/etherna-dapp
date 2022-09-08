@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 
 import SwarmImageIO from "@/classes/SwarmImage"
@@ -36,8 +37,8 @@ const ImageSourcePreview: React.FC<ImageSourcePreviewProps> = ({ image }) => {
 
   return (
     <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
-      <img className="w-full h-auto max-w-xxs" src={srcUrl} alt="" />
-      <div className="md:flex-grow overflow-hidden">
+      <img className="h-auto w-full max-w-xxs" src={srcUrl} alt="" />
+      <div className="overflow-hidden md:flex-grow">
         <MediaStats
           stats={[
             {

@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 import classNames from "classnames"
 
@@ -53,15 +54,15 @@ const PlayerBytesCounter: React.FC = () => {
   return (
     <div
       className={classNames(
-        "flex items-center mt-4 mb-6 text-xs font-medium",
+        "mt-4 mb-6 flex items-center text-xs font-medium",
         "text-gray-700 dark:text-gray-300"
       )}
       data-component="player-bytes-counter"
     >
-      <span className="relative flex h-3 w-3 mr-1">
+      <span className="relative mr-1 flex h-3 w-3">
         <span
           className={classNames(
-            "animate-[ping_1s_ease-out_1s_3] absolute inline-flex h-full w-full rounded-full",
+            "absolute inline-flex h-full w-full animate-[ping_1s_ease-out_1s_3] rounded-full",
             {
               "bg-gray-400/75 dark:bg-gray-400/75": unknown,
               "bg-amber-300/75 dark:bg-amber-300/75": limited,
@@ -85,8 +86,8 @@ const PlayerBytesCounter: React.FC = () => {
             <span>With your credit you can only enjoy the remaining </span>
             <span
               className={classNames(
-                "relative text-gray-900 dark:text-gray-50 font-semibold",
-                "after:absolute after:h-px after:inset-x-0 after:top-full after:bg-gray-50"
+                "relative font-semibold text-gray-900 dark:text-gray-50",
+                "after:absolute after:inset-x-0 after:top-full after:h-px after:bg-gray-50"
               )}
             >
               {convertTime(remainingSeconds).readable}

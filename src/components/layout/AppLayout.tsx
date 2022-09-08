@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import Popups from "@/components/layout/Popups"
@@ -40,7 +41,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 }
 
 const AppLayoutContent: React.FC<AppLayoutProps> = ({ children }) => {
-  const [{ emptyLayout }] = useLayoutState()
+  const [{ emptyLayout, floatingSidebar }] = useLayoutState()
 
   if (emptyLayout) {
     return <main>{children}</main>
@@ -48,14 +49,13 @@ const AppLayoutContent: React.FC<AppLayoutProps> = ({ children }) => {
 
   return (
     <>
-      <div className="flex flex-wrap">
+      <div className="flex w-screen flex-wrap" data-sidebar-floating={`${floatingSidebar}`}>
         <SidebarNavigation />
 
-        <div className="w-full">
+        <div className="z-0 flex-grow">
           <TopbarNavigation />
           <TabbarNavigation />
-
-          <main>{children}</main>
+          <main className="w-full">{children}</main>
         </div>
       </div>
 

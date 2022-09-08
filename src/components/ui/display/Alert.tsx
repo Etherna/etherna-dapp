@@ -1,27 +1,26 @@
 /*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *  
+ *
  */
 
 import React, { useCallback, useMemo } from "react"
-
 import classNames from "classnames"
 
-import { XIcon } from "@heroicons/react/outline"
+import { XMarkIcon } from "@heroicons/react/24/outline"
 
-type AlertProps = {
+export type AlertProps = {
   children?: React.ReactNode
   className?: string
   title?: string
@@ -76,10 +75,10 @@ const Alert: React.FC<AlertProps> = ({
     if (!icon) return undefined
     return React.cloneElement(icon, {
       className: classNames("h-5 w-5", {
-        "text-green-400": color === "success",
-        "text-red-400": color === "error",
-        "text-yellow-500": color === "warning",
-        "text-sky-400": color === "info",
+        "text-green-400 dark:text-green-600": color === "success",
+        "text-red-400 dark:text-red-600": color === "error",
+        "text-yellow-500 dark:text-yellow-600": color === "warning",
+        "text-sky-400 dark:text-sky-600": color === "info",
       }),
     })
   }, [icon, color])
@@ -104,19 +103,21 @@ const Alert: React.FC<AlertProps> = ({
     >
       <div className="flex">
         <div className="flex-shrink-0">{styledIcon}</div>
-        <div className="ml-3">
-          <h3
-            className={classNames("text-sm font-semibold", {
-              "text-green-800": color === "success",
-              "text-red-800": color === "error",
-              "text-yellow-800": color === "warning",
-              "text-sky-800": color === "info",
-            })}
-          >
-            {title}
-          </h3>
+        <div className={classNames({ "ml-3": styledIcon })}>
+          {title && (
+            <h3
+              className={classNames("mb-2 text-sm font-semibold", {
+                "text-green-800": color === "success",
+                "text-red-800": color === "error",
+                "text-yellow-800": color === "warning",
+                "text-sky-800": color === "info",
+              })}
+            >
+              {title}
+            </h3>
+          )}
           <div
-            className={classNames("mt-2 text-sm", {
+            className={classNames("text-sm", {
               "text-green-700": color === "success",
               "text-red-700": color === "error",
               "text-yellow-700": color === "warning",
@@ -143,7 +144,7 @@ const Alert: React.FC<AlertProps> = ({
           <div className="ml-4">
             {styleButton(
               <button onClick={onClose}>
-                <XIcon className="h-5 w-5" aria-hidden />
+                <XMarkIcon className="h-5 w-5" aria-hidden />
               </button>
             )}
           </div>

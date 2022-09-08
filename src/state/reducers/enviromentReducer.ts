@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,20 +14,20 @@
  *  limitations under the License.
  */
 
-import { baseKeymap } from "@/keyboard"
-import lang from "@/lang"
 import EthernaGatewayClient from "@/classes/EthernaGatewayClient"
 import EthernaIndexClient from "@/classes/EthernaIndexClient"
 import EthernaSSOClient from "@/classes/EthernaSSOClient"
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type { GatewayBatch } from "@/definitions/api-gateway"
+import type { EnvState, WalletType } from "@/definitions/app-state"
+import type { GatewayExtensionHost } from "@/definitions/extension-host"
+import type { Keymap, KeymapNamespace } from "@/definitions/keyboard"
+import { baseKeymap } from "@/keyboard"
+import lang from "@/lang"
 import autoUpgradeEthernaService from "@/utils/autoUpgradeEthernaService"
 import { checkIsMobile } from "@/utils/browser"
 import { loadColorScheme } from "@/utils/dark-mode"
 import { parseLocalStorage } from "@/utils/local-storage"
-import type { EnvState, WalletType } from "@/definitions/app-state"
-import type { Keymap, KeymapNamespace } from "@/definitions/keyboard"
-import type { GatewayBatch } from "@/definitions/api-gateway"
-import type { GatewayExtensionHost } from "@/definitions/extension-host"
 
 export const EnvActionTypes = {
   SET_IS_MOBILE: "ENV_SET_IS_MOBILE",
@@ -88,18 +88,17 @@ type UpdateBytePriceAction = {
   bytePrice: number
 }
 
-export type EnvActions = (
-  SetIsMobileAction |
-  SetIsStandaloneGatewayAction |
-  UpdateIndexHostAction |
-  UpdateGatewayHostAction |
-  UpdateBeeClientAction |
-  UpdateBeeClientBatchesAction |
-  UpdateKeymapAction |
-  EditShortcutsAction |
-  ToggleDarkModeAction |
-  UpdateBytePriceAction
-)
+export type EnvActions =
+  | SetIsMobileAction
+  | SetIsStandaloneGatewayAction
+  | UpdateIndexHostAction
+  | UpdateGatewayHostAction
+  | UpdateBeeClientAction
+  | UpdateBeeClientBatchesAction
+  | UpdateKeymapAction
+  | EditShortcutsAction
+  | ToggleDarkModeAction
+  | UpdateBytePriceAction
 
 // Upagrade deprecated services urls
 autoUpgradeEthernaService("setting:index-url", import.meta.env.VITE_APP_INDEX_URL)
@@ -107,11 +106,14 @@ autoUpgradeEthernaService("setting:gateway-hosts", import.meta.env.VITE_APP_GATE
 autoUpgradeEthernaService("setting:gateway-url", import.meta.env.VITE_APP_GATEWAY_URL)
 
 // Init reducer
-const indexUrl = parseLocalStorage<string>("setting:index-url") || import.meta.env.VITE_APP_INDEX_URL
-const gatewayUrl = parseLocalStorage<string>("setting:gateway-url") || import.meta.env.VITE_APP_GATEWAY_URL
-const gatewayType = parseLocalStorage<GatewayExtensionHost[]>("setting:gateway-hosts")
-  ?.find(host => host.url === gatewayUrl)
-  ?.type ?? "etherna-gateway"
+const indexUrl =
+  parseLocalStorage<string>("setting:index-url") || import.meta.env.VITE_APP_INDEX_URL
+const gatewayUrl =
+  parseLocalStorage<string>("setting:gateway-url") || import.meta.env.VITE_APP_GATEWAY_URL
+const gatewayType =
+  parseLocalStorage<GatewayExtensionHost[]>("setting:gateway-hosts")?.find(
+    host => host.url === gatewayUrl
+  )?.type ?? "etherna-gateway"
 const creditUrl = import.meta.env.VITE_APP_CREDIT_URL
 const indexClient = new EthernaIndexClient({
   host: EthernaIndexClient.defaultHost,
@@ -164,10 +166,11 @@ const enviromentReducer = (state: EnvState = initialState, action: EnvActions): 
       return {
         ...state,
         gatewayUrl: action.gatewayUrl,
-        gatewayType: parseLocalStorage<GatewayExtensionHost[]>("setting:gateway-hosts")
-          ?.find(host => host.url === gatewayUrl)
-          ?.type ?? "etherna-gateway",
-        beeClient: action.beeClient
+        gatewayType:
+          parseLocalStorage<GatewayExtensionHost[]>("setting:gateway-hosts")?.find(
+            host => host.url === gatewayUrl
+          )?.type ?? "etherna-gateway",
+        beeClient: action.beeClient,
       }
 
     case EnvActionTypes.UPDATE_BEE_CLIENT:
@@ -183,13 +186,13 @@ const enviromentReducer = (state: EnvState = initialState, action: EnvActions): 
         beeClient: new SwarmBeeClient(state.beeClient.url, {
           signer: state.beeClient.signer,
           userBatches: action.batches,
-        })
+        }),
       }
 
     case EnvActionTypes.UPDATE_BYTE_PRICE:
       return {
         ...state,
-        bytePrice: action.bytePrice
+        bytePrice: action.bytePrice,
       }
 
     case EnvActionTypes.UPDATE_KEYMAP:

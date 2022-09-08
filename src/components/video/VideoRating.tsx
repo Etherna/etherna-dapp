@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useState, useEffect, useMemo } from "react"
+
+import React, { useState, useEffect, useMemo, useCallback } from "react"
 import classNames from "classnames"
 
 import { ReactComponent as VoteIcon } from "@/assets/icons/player/upvote.svg"
@@ -50,66 +51,72 @@ const VideoRating: React.FC<VideoRatingProps> = ({ videoId, upvotes, downvotes }
     setCurrentDownvotes(downvotes ?? 0)
   }, [upvotes, downvotes])
 
-  const giveThumbsUp = () => {
+  const udpateCounters = useCallback(
+    (newVote: VoteValue, oldVote: VoteValue) => {
+      let upVotes = currentUpvotes
+      let downVotes = currentDownvotes
+
+      if (oldVote === "Up") upVotes -= 1
+      if (oldVote === "Down") downVotes -= 1
+      if (newVote === "Up") upVotes += 1
+      if (newVote === "Down") downVotes += 1
+
+      setCurrentUpvotes(upVotes)
+      setCurrentDownvotes(downVotes)
+    },
+    [currentDownvotes, currentUpvotes]
+  )
+
+  const sendVote = useCallback(
+    async (vote: VoteValue) => {
+      const oldVote = currentVote
+
+      setIsUpdatingVote(true)
+      setCurrentVote(vote)
+
+      try {
+        await indexClient.videos.vote(videoId, vote)
+
+        udpateCounters(vote, oldVote)
+      } catch {
+        setCurrentVote(oldVote)
+      }
+
+      setIsUpdatingVote(false)
+    },
+    [currentVote, indexClient.videos, udpateCounters, videoId]
+  )
+
+  const giveThumbsUp = useCallback(() => {
     const newVote: VoteValue = currentVote === "Up" ? "Neutral" : "Up"
     sendVote(newVote)
-  }
+  }, [currentVote, sendVote])
 
-  const giveThumbsDown = () => {
+  const giveThumbsDown = useCallback(() => {
     const newVote: VoteValue = currentVote === "Down" ? "Neutral" : "Down"
     sendVote(newVote)
-  }
+  }, [currentVote, sendVote])
 
-  const sendVote = async (vote: VoteValue) => {
-    const oldVote = currentVote
-
-    setIsUpdatingVote(true)
-    setCurrentVote(vote)
-
-    try {
-      await indexClient.videos.vote(videoId, vote)
-
-      udpateCounters(vote, oldVote)
-    } catch {
-      setCurrentVote(oldVote)
-    }
-
-    setIsUpdatingVote(false)
-  }
-
-  const udpateCounters = (newVote: VoteValue, oldVote: VoteValue) => {
-    let upVotes = currentUpvotes
-    let downVotes = currentDownvotes
-
-    if (oldVote === "Up") upVotes -= 1
-    if (oldVote === "Down") downVotes -= 1
-    if (newVote === "Up") upVotes += 1
-    if (newVote === "Down") downVotes += 1
-
-    setCurrentUpvotes(upVotes)
-    setCurrentDownvotes(downVotes)
-  }
-
-  const shortNumber = (n: number | undefined) => {
+  const shortNumber = useCallback((n: number | undefined) => {
     return n
       ? new Intl.NumberFormat(navigator.language, {
           notation: "compact",
           compactDisplay: "short",
         }).format(n)
       : 0
-  }
+  }, [])
 
   return (
     <div
       className={classNames("inline-block min-w-[128px] transition-opacity duration-75", {
-        "opacity-0 pointer-events-none": isUpdatingVote,
+        "pointer-events-none opacity-0": isUpdatingVote,
       })}
     >
       <div className="flex justify-between">
         {["Up", "Down"].map(vote => (
           <button
             className={classNames(
-              "flex items-center px-1.5 py-0.5 appearance-none border-none shadow-none bg-transparent rounded-sm",
+              "flex appearance-none items-center rounded-sm border-none bg-transparent px-1.5 py-0.5 shadow-none",
               "text-gray-500 dark:text-gray-400",
               "hover:bg-gray-200 dark:hover:bg-gray-800",
               "active:bg-gray-200/75  dark:active:bg-gray-800/75",
@@ -123,7 +130,7 @@ const VideoRating: React.FC<VideoRatingProps> = ({ videoId, upvotes, downvotes }
             aria-label={`${vote}vote`}
             key={vote}
           >
-            <span className="inline-block w-5 h-5">
+            <span className="inline-block h-5 w-5">
               <VoteIcon className={classNames({ "rotate-180": vote === "Down" })} aria-hidden />
             </span>
             <span className="ml-2 text-sm font-semibold">
@@ -133,9 +140,9 @@ const VideoRating: React.FC<VideoRatingProps> = ({ videoId, upvotes, downvotes }
         ))}
       </div>
 
-      <div className="relative mt-1 w-full h-1 rounded-full overflow-hidden bg-gray-300 dark:bg-gray-600">
+      <div className="relative mt-1 h-1 w-full overflow-hidden rounded-full bg-gray-300 dark:bg-gray-600">
         <div
-          className="absolute left-0 inset-y-0 transition-all duration-300 bg-gray-700 dark:bg-gray-200"
+          className="absolute inset-y-0 left-0 bg-gray-700 transition-all duration-300 dark:bg-gray-200"
           style={{ width: `${progress}%` }}
         />
       </div>

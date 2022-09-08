@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import classNames from "classnames"
 
@@ -28,8 +29,8 @@ const PlayerWatchOn: React.FC<PlayerWatchOnProps> = ({ hash }) => {
   return (
     <a
       className={classNames(
-        "p-4 inline-flex items-center space-x-3",
-        "font-medium text-base tracking-tight",
+        "inline-flex items-center space-x-3 p-4",
+        "text-base font-medium tracking-tight",
         "bg-gray-800/60 text-white hover:text-white"
       )}
       href={import.meta.env.VITE_APP_PUBLIC_URL + routes.watch(hash)}

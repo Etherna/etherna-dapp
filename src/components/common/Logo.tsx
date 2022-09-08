@@ -14,8 +14,8 @@
  *  limitations under the License.
  *
  */
-import React from "react"
 
+import React from "react"
 import classNames from "classnames"
 import { omit } from "lodash"
 
@@ -33,8 +33,7 @@ const Logo: React.FC<LogoProps> = props => {
       aria-label="Etherna"
       {...omit(props, "compact", "white")}
       className={classNames(
-        "[&>.__symbol]:fill-primary-500 [&>.__symbol]:dark:fill-gray-50",
-        "[&>.__text]:fill-[#7797A3] [&>.__text]:dark:fill-gray-50",
+        "[&>.svg-symbol]:fill-primary-500 [&>.svg-symbol]:dark:fill-gray-50",
         {
           dark: props.forceWhite,
         },
@@ -46,7 +45,8 @@ const Logo: React.FC<LogoProps> = props => {
       aria-label="Etherna"
       {...omit(props, "compact", "white")}
       className={classNames(
-        "[&>.__symbol]:fill-primary-500 [&>.__symbol]:dark:fill-gray-50",
+        "[&>.svg-symbol]:fill-primary-500 [&>.svg-symbol]:dark:fill-gray-50",
+        "[&>.svg-text]:fill-[#7797A3] [&>.svg-text]:dark:fill-gray-50",
         {
           dark: props.forceWhite,
         },

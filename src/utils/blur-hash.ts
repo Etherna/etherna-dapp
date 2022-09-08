@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,11 @@ export const blurHashToDataURL = (hash: string) => {
   return image
 }
 
-export const imageToBlurHash = async (image: ArrayBuffer, imageWidth: number, imageHeight: number) => {
+export const imageToBlurHash = async (
+  image: ArrayBuffer,
+  imageWidth: number,
+  imageHeight: number
+) => {
   const data = await getImageData(image, imageWidth, imageHeight)
   return encode(data, imageWidth, imageHeight, 4, 4)
 }

@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useRef, useState, useEffect, useCallback, useMemo } from "react"
 import Axios from "axios"
 import type { Canceler } from "axios"
@@ -318,17 +319,19 @@ const InnerPlayer: React.FC<PlayerProps> = ({
   return (
     <PlayerShortcuts>
       <div
-        className={classNames("flex flex-col relative overflow-hidden z-0", {
-          "mb-6 lg:mt-6 -mx-4 md:mx-0": !embed,
+        className={classNames("relative z-0 flex flex-col overflow-hidden", {
+          "-mx-4 mb-6 md:mx-0 lg:mt-6": !embed,
           "landscape-touch:fixed landscape-touch:inset-0 landscape-touch:z-10": !embed,
           "landscape-touch:mb-0 landscape-touch:pb-15": !embed,
-          "w-screen h-screen": embed,
+          "h-screen w-screen": embed,
           "cursor-[none]": idle,
         })}
         onMouseEnter={floating ? onMouseEnter : undefined}
         onMouseMove={floating ? onMouseMouse : undefined}
         onMouseLeave={floating ? onMouseLeave : undefined}
         data-player
+        data-playing={`${isPlaying}`}
+        data-mouse-idle={`${idle}`}
       >
         <video
           ref={v => {
@@ -337,10 +340,10 @@ const InnerPlayer: React.FC<PlayerProps> = ({
             }
           }}
           className={classNames(
-            "group max-h-[80vh] w-full object-contain bg-white/50 dark:bg-black/50",
+            "group max-h-[80vh] w-full bg-white/50 object-contain dark:bg-black/50",
             {
               "landscape-touch:bg-gray-900 landscape-touch:dark:bg-gray-900": !embed,
-              "landscape-touch:flex-grow landscape-touch:flex-shrink landscape-touch:max-h-full":
+              "landscape-touch:max-h-full landscape-touch:flex-shrink landscape-touch:flex-grow":
                 !embed,
               "max-h-screen": embed,
             }
@@ -364,13 +367,17 @@ const InnerPlayer: React.FC<PlayerProps> = ({
 
         {showControls && (
           <div
-            className={classNames({
-              "group-hover:opacity-100": true,
-              "opacity-100": !isPlaying,
-              "opacity-0": isPlaying && idle,
-              "landscape-touch:shrink-0": !embed,
-              "absolute bottom-0 inset-x-0 opacity-0 transition duration-100 z-1": floating,
-            })}
+            className={classNames(
+              floating && {
+                "absolute inset-x-0 bottom-0 z-1 transition duration-100": true,
+                "opacity-0": currentTime === 0 || idle,
+                "paused:opacity-100": currentTime > 0,
+                "group-hover:opacity-100 mouse-idle:opacity-0": isPlaying,
+              },
+              {
+                "landscape-touch:shrink-0": !embed,
+              }
+            )}
           >
             <PlayerToolbar floating={floating} focus={focus} />
           </div>
@@ -391,7 +398,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
         {embed && !error && (
           <div
             className={classNames(
-              "absolute left-0 bottom-4 -translate-x-full z-1",
+              "absolute left-0 bottom-4 z-1 -translate-x-full",
               "transition-transform duration-200 ease-out",
               {
                 "bottom-24": floating && currentTime > 0,

@@ -43,7 +43,7 @@ body {
       }
 
       .box_primary {
-        @apply dark:bg-gray-800 dark:border-gray-600;
+        @apply dark:border-gray-600 dark:bg-gray-800;
 
         &.expand {
           .expand-click {

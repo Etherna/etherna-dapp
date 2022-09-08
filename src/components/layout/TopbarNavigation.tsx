@@ -14,10 +14,10 @@
  *  limitations under the License.
  *
  */
-import React from "react"
 
-import { UploadIcon, MenuAlt4Icon } from "@heroicons/react/outline"
-import { PlusIcon } from "@heroicons/react/solid"
+import React, { useCallback } from "react"
+
+import { ArrowUpTrayIcon, Bars2Icon, PlusIcon } from "@heroicons/react/24/outline"
 
 import SearchItem from "./SearchItem"
 import Logo from "@/components/common/Logo"
@@ -37,25 +37,36 @@ const TopbarNavigation: React.FC = () => {
   const [state, dispatch] = useLayoutState()
   const { floatingSidebar, hideSidebar } = state
 
-  const toggleSidebar = () => {
+  const toggleSidebar = useCallback(() => {
     dispatch({
       type: LayoutReducerTypes.SET_SIDEBAR_HIDDEN,
       hideSidebar: !hideSidebar,
     })
-  }
+  }, [dispatch, hideSidebar])
 
   return (
     <Topbar>
-      {floatingSidebar && <Topbar.Item prefix={<MenuAlt4Icon />} onClick={toggleSidebar} />}
+      <Topbar.Group>
+        {floatingSidebar && (
+          <Topbar.Item onClick={toggleSidebar} hideMobile>
+            <Bars2Icon width={22} strokeWidth={2} />
+          </Topbar.Item>
+        )}
+        <Topbar.Logo logo={<Logo />} logoCompact={<Logo compact />} floating={floatingSidebar} />
+      </Topbar.Group>
 
-      <Topbar.Logo logo={<Logo />} logoCompact={<Logo compact />} floating={floatingSidebar} />
+      <Topbar.Group leftCorrection>
+        <Topbar.PopupItem toggle={<PlusIcon strokeWidth={2.5} width={20} aria-hidden />} hideMobile>
+          <Topbar.Item
+            to={routes.studioVideoNew}
+            prefix={<ArrowUpTrayIcon width={20} aria-hidden />}
+          >
+            Upload a video
+          </Topbar.Item>
+        </Topbar.PopupItem>
 
-      <Topbar.PopupItem toggle={<PlusIcon />} hideMobile>
-        <Topbar.Item to={routes.studioVideoNew} prefix={<UploadIcon />}>
-          Upload a video
-        </Topbar.Item>
-      </Topbar.PopupItem>
-      <SearchItem />
+        <SearchItem />
+      </Topbar.Group>
 
       <Topbar.Space flexible />
 
@@ -63,15 +74,17 @@ const TopbarNavigation: React.FC = () => {
 
       <Topbar.Space flexible />
 
-      {isSignedIn === true && !isLoadingProfile && (
-        <Topbar.Item ignoreHoverState>
-          <UserCredit />
-        </Topbar.Item>
-      )}
+      <Topbar.Group>
+        {isSignedIn === true && !isLoadingProfile && (
+          <Topbar.Item ignoreHoverState noPadding>
+            <UserCredit />
+          </Topbar.Item>
+        )}
 
-      <Topbar.Item ignoreHoverState>
-        <UserMenu />
-      </Topbar.Item>
+        <Topbar.Item ignoreHoverState noPadding>
+          <UserMenu />
+        </Topbar.Item>
+      </Topbar.Group>
     </Topbar>
   )
 }

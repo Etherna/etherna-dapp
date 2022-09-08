@@ -14,10 +14,10 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useMemo, useState } from "react"
 
-import classes from "@/styles/components/env/ExtensionHostPanel.module.scss"
-import { TrashIcon, PlusIcon } from "@heroicons/react/solid"
+import { TrashIcon, PlusIcon } from "@heroicons/react/24/solid"
 
 import ExtensionHostForm from "./ExtensionHostForm"
 import ExtensionHostsList from "./ExtensionHostsList"
@@ -48,6 +48,12 @@ export type ExtensionParamConfig = {
   type?: "text" | "gatetype"
   options?: { value: string; label: string; description?: string }[]
 }
+
+const EthernaUrls = [
+  import.meta.env.VITE_APP_GATEWAY_URL,
+  import.meta.env.VITE_APP_INDEX_URL,
+  import.meta.env.VITE_APP_CREDIT_URL,
+]
 
 const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>({
   listStorageKey,
@@ -205,7 +211,7 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
   return (
     <>
       <div className="text-left">
-        <p className="text-sm text-gray-700 dark:text-gray-400 whitespace-pre-line">
+        <p className="whitespace-pre-line text-sm text-gray-700 dark:text-gray-400">
           {description}
         </p>
 
@@ -218,6 +224,7 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
           <ExtensionHostsList
             hosts={hosts ?? []}
             selectedHost={selectedHost}
+            allowDelete={host => !EthernaUrls.includes(host.url)}
             onSelect={selectHost}
             onEdit={editHost}
             onDelete={askToDeleteHost}
@@ -231,17 +238,22 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
         title={selectedHost ? "Edit host" : "Add new host"}
         footerButtons={
           <>
-            <Button onClick={createOrUpdateEditingHost} disabled={cantSaveHost}>
+            <Button
+              className="sm:ml-auto"
+              onClick={createOrUpdateEditingHost}
+              disabled={cantSaveHost}
+            >
               Save
             </Button>
-            {selectedHost && (
+            {selectedHost && !EthernaUrls.includes(selectedHost.url) && (
               <Button
-                className="mr-auto"
+                className="mr-auto w-full sm:w-auto"
                 aspect="text"
                 color="error"
+                prefix={<TrashIcon width={20} aria-hidden />}
                 onClick={() => askToDeleteHost(selectedHost)}
               >
-                <TrashIcon /> Delete
+                Delete
               </Button>
             )}
           </>

@@ -14,16 +14,17 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useState } from "react"
 import classNames from "classnames"
 
-import { LoginIcon } from "@heroicons/react/outline"
+import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline"
 import {
-  BadgeCheckIcon,
-  DotsCircleHorizontalIcon,
+  CheckBadgeIcon,
+  EllipsisHorizontalIcon,
   PencilIcon,
   TrashIcon,
-} from "@heroicons/react/solid"
+} from "@heroicons/react/24/solid"
 
 import EthernaGatewayClient from "@/classes/EthernaGatewayClient"
 import EthernaIndexClient from "@/classes/EthernaIndexClient"
@@ -43,17 +44,12 @@ const GatewayTypeLabel: Record<GatewayType, string> = {
   bee: "bee",
 }
 
-const EthernaUrls = [
-  import.meta.env.VITE_APP_GATEWAY_URL,
-  import.meta.env.VITE_APP_INDEX_URL,
-  import.meta.env.VITE_APP_CREDIT_URL,
-]
-
 type ExtensionHostsListProps = {
   hosts: (IndexExtensionHost | GatewayExtensionHost)[]
   selectedHost: (IndexExtensionHost | GatewayExtensionHost) | undefined
   editing?: boolean
   type: ExtensionType
+  allowDelete?(host: IndexExtensionHost | GatewayExtensionHost): boolean
   onSelect?(host: ExtensionHost): void
   onDelete?(host: ExtensionHost): void
   onEdit?(host: ExtensionHost): void
@@ -64,6 +60,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
   selectedHost,
   editing,
   type,
+  allowDelete,
   onSelect,
   onDelete,
   onEdit,
@@ -135,29 +132,29 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
 
   return (
     <div className="relative w-full">
-      <div className="grid grid-cols-2 auto-rows-fr gap-4 py-6 snap-y snap-mandatory">
+      <div className="grid snap-y snap-mandatory auto-rows-fr grid-cols-1 gap-4 py-6 sm:grid-cols-2">
         {hosts?.map((host, i) => {
           const isActive = host.url === selectedHost?.url
           const isDisabled = editing && host.url !== selectedHost?.url
           return (
             <button
               className={classNames(
-                "snap-start relative flex flex-col  rounded-md px-3 py-3",
-                "text-sm font-medium border-2 border-gray-300 dark:border-gray-500",
+                "relative flex snap-start flex-col  rounded-md px-3 py-3",
+                "border-2 border-gray-300 text-sm font-medium dark:border-gray-500",
                 "transition-colors duration-100 hover:border-gray-300 dark:hover:border-gray-200",
                 {
-                  "border-primary-500 hover:border-primary-500 ring-2 ring-primary-200 dark:ring-primary-700":
+                  "border-primary-500 ring-2 ring-primary-200 hover:border-primary-500 dark:ring-primary-700":
                     isActive,
-                  "opacity-30 pointer-events-none": isDisabled,
+                  "pointer-events-none opacity-30": isDisabled,
                 }
               )}
               onClick={() => onSelect?.(host)}
               key={i}
             >
-              <div className="w-full flex items-center justify-between">
+              <div className="flex w-full items-center justify-between">
                 <span
                   className={classNames(
-                    "text-gray-500 dark:text-gray-400 font-semibold flex items-center whitespace-nowrap",
+                    "flex items-center whitespace-nowrap font-semibold text-gray-500 dark:text-gray-400",
                     {
                       "text-gray-900 dark:text-gray-50": isActive,
                     }
@@ -167,11 +164,11 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
                   {isVerifiedOrigin(host.url) && (
                     <Tooltip text="Verified origin">
                       <span
-                        className={classNames("inline-block ml-0.5", {
+                        className={classNames("ml-0.5 inline-block", {
                           "text-primary-500 dark:text-primary-400": isActive,
                         })}
                       >
-                        <BadgeCheckIcon width={16} aria-hidden />
+                        <CheckBadgeIcon width={16} aria-hidden />
                       </span>
                     </Tooltip>
                   )}
@@ -180,18 +177,18 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
                 <Menu>
                   <Menu.Button
                     as="div"
-                    className="p-0 border-none"
+                    className="border-none p-0"
                     aspect="text"
                     color="inverted"
                     small
                   >
-                    <DotsCircleHorizontalIcon className="h-5 mr-0" aria-hidden />
+                    <EllipsisHorizontalIcon className="mr-0 h-5" aria-hidden />
                   </Menu.Button>
                   <Menu.Items>
                     <Menu.Item prefix={<PencilIcon />} onClick={() => onEdit?.(host)}>
                       Edit
                     </Menu.Item>
-                    {!EthernaUrls.includes(host.url) && (
+                    {allowDelete?.(host) && (
                       <Menu.Item
                         prefix={<TrashIcon />}
                         color="error"
@@ -203,7 +200,10 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
                     {isAuthHost(host) && hostsSignedIn[host.url] === false && (
                       <>
                         <Menu.Separator />
-                        <Menu.Item prefix={<LoginIcon />} onClick={() => signinHost(host)}>
+                        <Menu.Item
+                          prefix={<ArrowLeftOnRectangleIcon />}
+                          onClick={() => signinHost(host)}
+                        >
                           Sign in
                         </Menu.Item>
                       </>
@@ -227,10 +227,10 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
                   <Spinner className="mt-1" type="bouncing-line" size={24} />
                 )}
                 {hostsSignedIn[host.url] === true && (
-                  <small className="block mt-1 text-xs font-medium text-green-500">signed in</small>
+                  <small className="mt-1 block text-xs font-medium text-green-500">signed in</small>
                 )}
                 {hostsSignedIn[host.url] === false && (
-                  <small className="block mt-1 text-xs font-medium text-yellow-500">
+                  <small className="mt-1 block text-xs font-medium text-yellow-500">
                     signed out
                   </small>
                 )}

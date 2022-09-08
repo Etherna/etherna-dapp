@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useState } from "react"
+
+import React, { useCallback, useState } from "react"
 import classNames from "classnames"
 
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
@@ -41,41 +42,44 @@ const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPost
   const { avatar } = useSelector(state => state.profile)
   const { indexClient } = useSelector(state => state.env)
 
-  if (!isSignedIn) return null
+  const blurEditor = useCallback(() => {
+    document.body.focus()
+  }, [])
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const onSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
 
-    setIsPosting(true)
+      setIsPosting(true)
 
-    try {
-      const comment = await indexClient.videos.postComment(indexReference, text)
+      try {
+        const comment = await indexClient.videos.postComment(indexReference, text)
 
-      onCommentPosted?.(comment)
-      setText("")
-      setIsFocused(false)
-      blurEditor()
-    } catch (error: any) {
-      showError("Cannot post the comment", error.message)
-    }
+        onCommentPosted?.(comment)
+        setText("")
+        setIsFocused(false)
+        blurEditor()
+      } catch (error: any) {
+        showError("Cannot post the comment", error.message)
+      }
 
-    setIsPosting(false)
-  }
+      setIsPosting(false)
+    },
+    [blurEditor, indexClient.videos, indexReference, onCommentPosted, text]
+  )
 
-  const onCancel = () => {
+  const onCancel = useCallback(() => {
     setText("")
     setIsFocused(false)
     blurEditor()
-  }
+  }, [blurEditor])
 
-  const blurEditor = () => {
-    document.body.focus()
-  }
+  if (!isSignedIn) return null
 
   return (
-    <form className="flex flex-wrap items-start space-x-2 mt-8" onSubmit={onSubmit}>
-      <div className="w-8 h-8 rounded-full md:w-10 md:h-10 bg-gray-300 dark:bg-gray-700">
-        <Avatar className="w-full h-full" image={avatar} address={address} />
+    <form className="mt-8 flex flex-wrap items-start space-x-2" onSubmit={onSubmit}>
+      <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-700 md:h-10 md:w-10">
+        <Avatar className="h-full w-full" image={avatar} address={address} />
       </div>
 
       <MarkdownEditor
@@ -98,7 +102,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPost
       />
 
       {isFocused && (
-        <div className="w-full flex items-center justify-end mt-2 space-x-2">
+        <div className="mt-2 flex w-full items-center justify-end space-x-2">
           <Button color="transparent" onClick={onCancel} disabled={isPosting}>
             Cancel
           </Button>

@@ -14,7 +14,9 @@
  *  limitations under the License.
  *
  */
-import React, { useEffect, useState } from "react"
+
+import type React from "react"
+import { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
 
 type PortalProps = {

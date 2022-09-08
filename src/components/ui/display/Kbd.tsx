@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React, { useEffect, useMemo, useRef } from "react"
 import classNames from "classnames"
 
-type KbdProps = {
+export type KbdProps = {
   shortcut: string
   className?: string
 }
@@ -84,9 +85,9 @@ const Kbd: React.FC<KbdProps> = ({ shortcut, className }) => {
         <React.Fragment key={i}>
           <kbd
             className={classNames(
-              "inline-block font-bold text-center whitespace-nowrap px-2 rounded",
+              "inline-block whitespace-nowrap rounded px-2 text-center font-bold",
               "border-b-2 border-gray-300 dark:border-gray-700",
-              "text-gray-600 bg-gray-200 dark:text-gray-300 dark:bg-gray-800"
+              "bg-gray-200 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
             )}
           >
             {k}

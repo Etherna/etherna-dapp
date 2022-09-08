@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 type VideoSourcePreviewProps = {
@@ -33,16 +34,16 @@ const VideoSourcePreview: React.FC<VideoSourcePreviewProps> = ({
 }) => {
   return (
     <div className="">
-      <div className="flex items-start flex-wrap">
+      <div className="flex flex-wrap items-start">
         <span className="flex-shrink-0 text-3xl font-bold tracking-tight">{name}</span>
 
-        <div className="flex items-center ml-auto space-x-4">
+        <div className="ml-auto flex items-center space-x-4">
           {actionsRender && <span className="space-x-2">{actionsRender}</span>}
           {/* {error && (
             <span className="text-sm font-medium text-red-500 ml-3">{error}</span>
           )} */}
           {statusText && (
-            <span className="text-sm font-medium text-gray-500 dark:text-gray-400 ml-3">
+            <span className="ml-3 text-sm font-medium text-gray-500 dark:text-gray-400">
               {statusText}
             </span>
           )}

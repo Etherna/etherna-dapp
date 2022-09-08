@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,7 +14,8 @@
  *  limitations under the License.
  */
 
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios"
+import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios"
+import axios from "axios"
 
 interface SkipXHRError extends AxiosError {
   isSkipXHR?: boolean
@@ -52,7 +53,7 @@ const hashCode = (value: string) => {
   if (value.length === 0) return hash.toString()
   for (i = 0; i < value.length; i++) {
     chr = value.charCodeAt(i)
-    hash = ((hash << 5) - hash) + chr
+    hash = (hash << 5) - hash + chr
     hash |= 0 // Convert to 32bit integer
   }
   return hash.toString()
@@ -65,22 +66,21 @@ const hashCode = (value: string) => {
 const configHash = (config: AxiosRequestConfig | null | undefined) => {
   return config
     ? hashCode(
-      JSON.stringify({
-        method: config.method,
-        url: config.url,
-        params: config.params,
-        body: config.data || "",
-      })
-    ) : ""
+        JSON.stringify({
+          method: config.method,
+          url: config.url,
+          params: config.params,
+          body: config.data || "",
+        })
+      )
+    : ""
 }
 
 const AxiosPendingCache: PendingCache = {
   pendingRequests: [],
 
   findPendingRequest: config => {
-    return AxiosPendingCache.pendingRequests.find(
-      preq => preq.hash === configHash(config)
-    )
+    return AxiosPendingCache.pendingRequests.find(preq => preq.hash === configHash(config))
   },
 
   shouldThrottle: config => {

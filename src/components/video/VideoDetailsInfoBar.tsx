@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import classNames from "classnames"
 
@@ -42,7 +43,7 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
   return (
     <div className="flex flex-col">
       <div className="flex flex-wrap">
-        <div className="w-full flex flex-wrap items-start space-x-4 py-1 mb-4">
+        <div className="mb-4 flex w-full flex-wrap items-start space-x-4 py-1">
           <VideoStatusBadge status={video.isVideoOnIndex ? "available" : "unindexed"} />
           {!isStandaloneGateway && (
             <VideoOffersBadge video={video} offersStatus={videoOffersStatus?.offersStatus} />
@@ -52,20 +53,20 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
 
       <div
         className={classNames(
-          "flex flex-wrap -mx-container px-container py-container md:mx-0 md:rounded-md",
+          "-mx-container flex max-w-[100vw] flex-wrap px-container py-container md:mx-0 md:rounded-md",
           "bg-gray-400/10 dark:bg-gray-700/50"
         )}
       >
-        <div className="flex items-center w-full md:w-auto py-2">
+        <div className="flex w-full items-center py-2 md:w-auto">
           {video.createdAt && (
-            <span className="text-gray-700 dark:text-gray-200 font-medium;">
+            <span className="font-medium; text-gray-700 dark:text-gray-200">
               {dayjs(video.createdAt).format("LLL")}
             </span>
           )}
         </div>
 
-        <div className="w-full md:w-auto md:ml-auto overflow-x-auto md:overflow-x-hidden py-2 scrollbar-none">
-          <div className="flex items-center space-x-5 md:space-x-8 md:flex-row-reverse md:space-x-reverse">
+        <div className="w-full overflow-x-auto py-2 scrollbar-none md:ml-auto md:w-auto md:overflow-x-hidden">
+          <div className="flex items-center space-x-5 md:flex-row-reverse md:space-x-8 md:space-x-reverse">
             {video.indexReference && (
               <VideoRating
                 videoId={video.indexReference}

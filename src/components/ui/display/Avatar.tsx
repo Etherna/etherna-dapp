@@ -14,19 +14,18 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import classNames from "classnames"
-
-import classes from "@/styles/components/user/Avatar.module.scss"
 
 import Image from "@/components/common/Image"
 import type { SwarmImage } from "@/definitions/swarm-image"
 import makeBlockies from "@/utils/makeBlockies"
 
-type AvatarProps = {
+export type AvatarProps = {
   image?: string | SwarmImage | null
   address?: string | null
-  size?: number
+  size?: number | "fill"
   showBadge?: boolean
   className?: string
 }
@@ -37,15 +36,21 @@ const Avatar: React.FC<AvatarProps> = ({ image, address, size = 40, showBadge, c
 
   return (
     <div
-      className={classNames("flex shrink-0 relative", className)}
+      className={classNames(
+        "relative flex shrink-0",
+        {
+          "h-full w-full": size === "fill",
+        },
+        className
+      )}
       style={{
-        width: size ? `${size}px` : undefined,
-        height: size ? `${size}px` : undefined,
+        width: size && size !== "fill" ? `${size}px` : undefined,
+        height: size && size !== "fill" ? `${size}px` : undefined,
       }}
       data-component="avatar"
     >
       <Image
-        className="w-full h-full overflow-hidden rounded-full flex-grow"
+        className="h-full w-full flex-grow overflow-hidden rounded-full"
         imgClassName="object-cover"
         placeholderClassName="rounded-full overflow-hidden"
         src={src}
@@ -60,7 +65,7 @@ const Avatar: React.FC<AvatarProps> = ({ image, address, size = 40, showBadge, c
       {showBadge && (
         <span
           className={classNames(
-            "absolute right-0 top-0 w-3 h-3 rounded-full",
+            "absolute right-0 top-0 h-3 w-3 rounded-full",
             "border border-white bg-blue-600 dark:border-gray-900"
           )}
         />

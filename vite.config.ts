@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import react from "@vitejs/plugin-react"
 import fs from "fs"
 import { resolve } from "path"
@@ -23,8 +24,8 @@ import eslintPlugin from "vite-plugin-eslint"
 import svgr from "vite-plugin-svgr"
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
-  base: mode === "production" ? "/__dynamic_base__/" : "/",
+export default defineConfig(({ mode, command }) => ({
+  base: mode === "production" && command === "build" ? "/__dynamic_base__/" : "/",
   build: {
     manifest: true,
     outDir: "build",

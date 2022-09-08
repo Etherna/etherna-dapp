@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
-import React from "react"
+
+import React, { useCallback } from "react"
 
 // import { ReactComponent as IndexIcon } from "@/assets/icons/navigation/index.svg"
-import { MoonIcon, ShieldCheckIcon } from "@heroicons/react/solid"
+import { MoonIcon, ShieldCheckIcon } from "@heroicons/react/24/solid"
 import { ReactComponent as GatewayIcon } from "@/assets/icons/navigation/gateway.svg"
 import { ReactComponent as ShortcutsIcon } from "@/assets/icons/shortcuts.svg"
 
@@ -35,38 +36,44 @@ const SharedMenuItems: React.FC<SharedMenuItemsProps> = () => {
   const isSignedIn = useSelector(state => state.user.isSignedIn)
   const { darkMode, toggleDarkMode } = useDarkMode()
 
-  const handleDarkModeChange = () => {
+  const handleDarkModeChange = useCallback(() => {
     toggleDarkMode(!darkMode)
-  }
+  }, [darkMode, toggleDarkMode])
 
   return (
     <>
       {!isSignedIn && (
         <>
-          <Dropdown.Item href={routes.alphaPasss} icon={<ShieldCheckIcon />}>
-            Request Alpha Pass
-          </Dropdown.Item>
-          <hr />
+          <Dropdown.Group>
+            <Dropdown.Item href={routes.alphaPasss} icon={<ShieldCheckIcon />}>
+              Request Alpha Pass
+            </Dropdown.Item>
+          </Dropdown.Group>
+          <Dropdown.Separator />
         </>
       )}
 
-      {/* <Dropdown.Item
+      <Dropdown.Group>
+        {/* <Dropdown.Item
         icon={<IndexIcon />}
       >
         <IndexExtension noIcon />
       </Dropdown.Item> */}
-      <Dropdown.Item icon={<GatewayIcon />}>
-        <GatewayExtension noIcon />
-      </Dropdown.Item>
+        <Dropdown.Item icon={<GatewayIcon />}>
+          <GatewayExtension noIcon />
+        </Dropdown.Item>
+      </Dropdown.Group>
 
-      <hr />
+      <Dropdown.Separator />
 
-      <Dropdown.Item btnAs="div" icon={<MoonIcon />} inactive>
-        <DarkModeToggle enabled={darkMode} onChange={handleDarkModeChange} />
-      </Dropdown.Item>
-      <Dropdown.Item href={routes.shortcuts} icon={<ShortcutsIcon />}>
-        Shortcuts
-      </Dropdown.Item>
+      <Dropdown.Group>
+        <Dropdown.Item btnAs="div" icon={<MoonIcon />} inactive>
+          <DarkModeToggle enabled={darkMode} onChange={handleDarkModeChange} />
+        </Dropdown.Item>
+        <Dropdown.Item href={routes.shortcuts} icon={<ShortcutsIcon />}>
+          Shortcuts
+        </Dropdown.Item>
+      </Dropdown.Group>
     </>
   )
 }

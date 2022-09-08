@@ -14,11 +14,12 @@
  *  limitations under the License.
  *
  */
-import React, { useEffect, useState } from "react"
+
+import React, { useCallback, useEffect, useState } from "react"
 import classNames from "classnames"
 
-import { ExclamationCircleIcon } from "@heroicons/react/outline"
-import { LockClosedIcon } from "@heroicons/react/solid"
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline"
+import { LockClosedIcon } from "@heroicons/react/24/solid"
 import { ReactComponent as CreditErrorIcon } from "@/assets/icons/credit-error.svg"
 
 import { usePlayerState } from "@/context/player-context/hooks"
@@ -51,7 +52,7 @@ const PlayerErrorBanner: React.FC = () => {
     }
   }, [error])
 
-  const ErrorIcon = () => {
+  const ErrorIcon = useCallback(() => {
     switch (error!.code) {
       case 401:
         return <LockClosedIcon />
@@ -62,22 +63,22 @@ const PlayerErrorBanner: React.FC = () => {
       default:
         return <ExclamationCircleIcon />
     }
-  }
+  }, [error])
 
   return (
     <div
-      className="absolute inset-0 p-3 flex flex-col justify-center bg-gray-900/80"
+      className="absolute inset-0 flex flex-col justify-center bg-gray-900/80 p-3"
       data-component="player-error-banner"
     >
       <div
-        className={classNames("mx-auto w-8 md:w-12 lg:w-16 text-gray-50", {
+        className={classNames("mx-auto w-8 text-gray-50 md:w-12 lg:w-16", {
           "text-red-500": error?.code === 500,
           "text-orange-400": error?.code === 402,
         })}
       >
         <ErrorIcon aria-hidden />
       </div>
-      <div className="text-white font-semibold text-center text-lg md:text-xl lg:text-3xl py-6">
+      <div className="py-6 text-center text-lg font-semibold text-white md:text-xl lg:text-3xl">
         {description}
       </div>
     </div>

@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 
 import UserCreditBadge from "./UserCreditBadge"
@@ -42,14 +43,14 @@ const UserCredit: React.FC = () => {
   return (
     <div>
       <Popup toggle={<UserCreditBadge credit={credit} />} placement="bottom">
-        <div className="min-w-xs p-4 text-center cursor-default">
-          <p className="text-xs mb-4">You current balance is:</p>
-          <p className="text-2xl font-bold break-all">
+        <div className="cursor-default p-4 text-center">
+          <p className="mb-4 text-xs">You current balance is:</p>
+          <p className="break-all text-2xl font-bold">
             {readableCredit}
-            <span className="text-sm text-gray-600 dark:text-gray-400 tracking-tighter">CHF</span>
+            <span className="text-sm tracking-tighter text-gray-600 dark:text-gray-400">CHF</span>
           </p>
           {bytePrice && (
-            <p className="my-3 text-gray-600 dark:text-gray-400 text-sm">
+            <p className="my-3 text-sm text-gray-600 dark:text-gray-400">
               This is equivalent to <strong className="text-md">{gbReproduction}</strong> GB of
               videos reprodution.
             </p>
@@ -57,7 +58,7 @@ const UserCredit: React.FC = () => {
           <div className="mt-8 mb-4">
             <Button
               as="a"
-              href={urlOrigin(creditUrl)! + "/manage/deposit"}
+              to={urlOrigin(creditUrl)! + "/manage/deposit"}
               rel="noreferrer noopener"
               target="_blank"
               color="muted"

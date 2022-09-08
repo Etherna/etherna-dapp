@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import classNames from "classnames"
 
@@ -43,7 +44,7 @@ const Skeleton: React.FC<SkeletonProps> = ({
   return (
     <span
       className={classNames(
-        "inline-flex bg-gray-200 dark:bg-gray-600 animate-pulse",
+        "inline-flex animate-pulse bg-gray-200 dark:bg-gray-600",
         "[&>*]:invisible",
         {
           "rounded-sm": roundedThin,

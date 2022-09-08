@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import classNames from "classnames"
 
@@ -29,10 +30,11 @@ const PlayerPlayLayer: React.FC<PlayerPlayLayerProps> = ({ thumbnailUrl, floatin
   return (
     <div
       className={classNames(
-        "group absolute inset-0 bottom-15 flex",
-        "after:block after:absolute after:inset-0 after:bg-black/5",
+        "group absolute inset-0 flex",
+        "after:absolute after:inset-0 after:block after:bg-black/5",
         "after:transition-colors after:duration-200 after:ease-out hover:after:bg-black/0",
         {
+          "bottom-15": !floating,
           "bottom-0": floating,
         }
       )}
@@ -43,18 +45,18 @@ const PlayerPlayLayer: React.FC<PlayerPlayLayerProps> = ({ thumbnailUrl, floatin
     >
       {thumbnailUrl && (
         <div
-          className="absolute inset-0 bg-center bg-cover bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${thumbnailUrl})` }}
         />
       )}
       <div
         className={classNames(
-          "m-auto p-3 sm:p-4 bg-white text-gray-700 rounded rotate-45 shadow-lg",
+          "m-auto rotate-45 rounded bg-white p-3 text-gray-700 shadow-lg sm:p-4",
           "transition-colors duration-200 ease-out",
           "group-hover:text-primary-500"
         )}
       >
-        <PlayIcon className="w-4 h-4 sm:w-6 sm:h-6 md:w-8 md:h-8 -rotate-45" aria-hidden />
+        <PlayIcon className="h-4 w-4 -rotate-45 sm:h-6 sm:w-6 md:h-8 md:w-8" aria-hidden />
       </div>
     </div>
   )

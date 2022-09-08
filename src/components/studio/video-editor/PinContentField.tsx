@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useEffect, useState } from "react"
+
+import React, { useCallback, useEffect, useState } from "react"
 
 import FieldDescription from "@/components/common/FieldDescription"
 import { Alert, FormGroup, Label, Spinner } from "@/components/ui/display"
@@ -39,7 +40,17 @@ const PinContentField = ({ pinningEnabled, onChange }: PinContentFieldProps) => 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const checkPinningAvailability = async () => {
+  const handlePinChange = useCallback(
+    (checked: boolean) => {
+      setPinContent(checked)
+      if (onChange) {
+        onChange(checked)
+      }
+    },
+    [onChange]
+  )
+
+  const checkPinningAvailability = useCallback(async () => {
     try {
       const available = await beeClient.pinEnabled()
       setPinningAvailable(available)
@@ -49,14 +60,7 @@ const PinContentField = ({ pinningEnabled, onChange }: PinContentFieldProps) => 
       setPinningAvailable(null)
       setErrorMessage(error.message)
     }
-  }
-
-  const handlePinChange = (checked: boolean) => {
-    setPinContent(checked)
-    if (onChange) {
-      onChange(checked)
-    }
-  }
+  }, [beeClient, pinContent, handlePinChange])
 
   return (
     <FormGroup>

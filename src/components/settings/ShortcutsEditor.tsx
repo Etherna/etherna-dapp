@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
-import { BackspaceIcon } from "@heroicons/react/outline"
-import { PencilIcon } from "@heroicons/react/solid"
+import { BackspaceIcon } from "@heroicons/react/24/outline"
+import { PencilIcon } from "@heroicons/react/24/solid"
 
 import { Button } from "@/components/ui/actions"
 import { Kbd } from "@/components/ui/display"
@@ -45,20 +46,19 @@ const ShortcutsEditor: React.FC<ShortcutsEditorProps> = ({ namespace }) => {
         <table className="w-full md:w-1/2" key={i}>
           <tbody>
             {shortcutNames.map(shortcut => (
-              <tr className="w-full py-1" key={shortcut}>
+              <tr className="w-full [&>td]:py-1" key={shortcut}>
                 <td>{lang.get(`player.${shortcut}`)}</td>
                 <td>{shortcuts[shortcut] && <Kbd shortcut={shortcuts[shortcut]!} />}</td>
                 <td>
                   <div className="flex">
                     <Button
                       color="transparent"
+                      aspect="text"
                       onClick={() => editShortcut(namespace, shortcut)}
                       small
                       rounded
                     >
-                      <div className="m-auto">
-                        <PencilIcon />
-                      </div>
+                      <PencilIcon width={16} />
                     </Button>
                   </div>
                 </td>
@@ -66,14 +66,13 @@ const ShortcutsEditor: React.FC<ShortcutsEditorProps> = ({ namespace }) => {
                   <div className="flex">
                     <Button
                       color="transparent"
+                      aspect="text"
                       disabled={!hasCustomShortcut(namespace, shortcut)}
                       onClick={() => resetShortcut(namespace, shortcut)}
                       small
                       rounded
                     >
-                      <div className="m-auto">
-                        <BackspaceIcon />
-                      </div>
+                      <BackspaceIcon width={18} />
                     </Button>
                   </div>
                 </td>

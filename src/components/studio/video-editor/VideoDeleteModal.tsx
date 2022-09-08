@@ -14,10 +14,10 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useMemo, useState } from "react"
 import classNames from "classnames"
 
-import classes from "@/styles/components/studio/video-editor/VideoDeleteModal.module.scss"
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 
 import Image from "@/components/common/Image"
@@ -83,16 +83,16 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
       large
     >
       <div className="flex flex-col sm:flex-row">
-        <div className="relative w-full sm:w-1/3 sm:min-h-24">
+        <div className="relative w-full sm:min-h-24 sm:w-1/3">
           {videos.slice(0, 3).map((video, i) => (
             <div
-              className={classNames("absolute w-[91%] h-[80%] top-0 left-0 z-[2]", {
-                "ml-[3%] mt-[3%] z-[1]": i === 1,
-                "ml-[6%] mt-[6%] z-[0]": i === 2,
+              className={classNames("absolute top-0 left-0 z-[2] h-[80%] w-[91%]", {
+                "z-[1] ml-[3%] mt-[3%]": i === 1,
+                "z-[0] ml-[6%] mt-[6%]": i === 2,
               })}
               key={i}
             >
-              <div className="relative w-full h-full bg-gray-300 dark:bg-gray-600" key={i}>
+              <div className="relative h-full w-full bg-gray-300 dark:bg-gray-600" key={i}>
                 <Image
                   src={encodedSvg(<ThumbPlaceholder />)}
                   sources={video.thumbnail?.sources}
@@ -104,7 +104,7 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
             </div>
           ))}
         </div>
-        <div className="flex-grow max-h-40 overflow-y-auto sm:pl-4">
+        <div className="max-h-40 flex-grow overflow-y-auto sm:pl-4">
           {videos.map((video, i) => (
             <h4 className="text-base font-semibold" key={i}>
               {video.title || "Untitled"}
@@ -113,7 +113,7 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
         </div>
       </div>
 
-      <p className="block leading-tight mt-2">
+      <p className="mt-2 block leading-tight">
         Do you confirm to remove this {videos.length > 1 ? "videos" : "video"}? <br />
         This operation cannot be undone.
       </p>

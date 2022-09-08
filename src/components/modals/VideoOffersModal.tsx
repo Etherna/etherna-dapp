@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useState } from "react"
+
+import React, { useCallback, useState } from "react"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
 
@@ -48,7 +49,7 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
   const [isRemovingOffers, setIsRemovingOffers] = useState(false)
   const [offersTab, setOffersTab] = useState("user")
 
-  const offerAllResources = async () => {
+  const offerAllResources = useCallback(async () => {
     setIsAddingOffers(true)
     try {
       await offerResources()
@@ -56,9 +57,9 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
       showError("Cannot offer resources", error.message)
     }
     setIsAddingOffers(false)
-  }
+  }, [offerResources])
 
-  const unofferAllResources = async () => {
+  const unofferAllResources = useCallback(async () => {
     setIsRemovingOffers(true)
     try {
       await unofferResources()
@@ -66,7 +67,16 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
       showError("Cannot cancel offers", error.message)
     }
     setIsRemovingOffers(false)
-  }
+  }, [unofferResources])
+
+  const isActiveResource = useCallback(
+    (resourceStatus: VideoOffersStatus["globalOffers"][number]) => {
+      return offersTab === "user"
+        ? address && resourceStatus.offeredBy.includes(address)
+        : offersTab === "global" && resourceStatus.offeredBy.length > 0
+    },
+    [address, offersTab]
+  )
 
   return (
     <Modal
@@ -76,11 +86,11 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
       title="Video offers"
       footerButtons={
         <>
-          <Button color="muted" onClick={onClose}>
+          <Button className="sm:ml-auto" color="muted" onClick={onClose}>
             OK
           </Button>
           {offersStatus && (
-            <div className="sm:mr-auto sm:space-x-2">
+            <>
               {offersStatus.userOfferedResourses.length > 0 && (
                 <Button color="error" onClick={unofferAllResources} loading={isRemovingOffers}>
                   Remove your offers
@@ -93,7 +103,7 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
                     : "Offer resources"}
                 </Button>
               )}
-            </div>
+            </>
           )}
         </>
       }
@@ -118,7 +128,7 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
       />
 
       {video && offersStatus && (
-        <table className="w-full mt-4">
+        <table className="mt-4 w-full">
           <thead>
             <tr>
               <th></th>
@@ -141,18 +151,23 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
                   >
                     <span
                       className={classNames(
-                        "px-1 w-4 h-4 inline-flex rounded-full text-xs font-semibold",
-                        "bg-gray-200 dark:bg-gray-400 text-gray-600 dark:text-gray-800",
+                        "relative inline-flex h-4 min-w-[1rem] rounded-full text-xs font-semibold",
                         {
-                          "bg-emerald-500 dark:bg-emerald-500 text-white dark:text-white":
-                            offersTab === "user"
-                              ? address && resourceStatus.offeredBy.includes(address)
-                              : offersTab === "global" && resourceStatus.offeredBy.length > 0,
-                          "px-2 w-auto": offersTab === "global",
+                          "bg-gray-200 text-gray-600 dark:bg-gray-400 dark:text-gray-800":
+                            !isActiveResource(resourceStatus),
+                          "bg-emerald-500 text-white dark:bg-emerald-500 dark:text-white":
+                            isActiveResource(resourceStatus),
+                          "w-4": offersTab === "user",
+                          "px-1": offersTab === "global",
                         }
                       )}
                     >
-                      {offersTab === "global" ? resourceStatus.offeredBy.length : ""}
+                      {offersTab === "global" && (
+                        <>
+                          <span className="sr-only">{resourceStatus.offeredBy.length}</span>
+                          <span className="absolute-center">{resourceStatus.offeredBy.length}</span>
+                        </>
+                      )}
                     </span>
                   </Tippy>
                 </td>

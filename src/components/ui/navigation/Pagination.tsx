@@ -14,12 +14,16 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback, useState } from "react"
 
+import React, { useCallback, useState } from "react"
 import { Listbox } from "@headlessui/react"
 import classNames from "classnames"
 
-import { ChevronDoubleLeftIcon, ChevronLeftIcon, SelectorIcon } from "@heroicons/react/solid"
+import {
+  ChevronDoubleLeftIcon,
+  ChevronLeftIcon,
+  ChevronUpDownIcon,
+} from "@heroicons/react/24/outline"
 
 import { Button } from "../actions"
 import { clamp } from "@/utils/math"
@@ -71,7 +75,7 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <div
       className={classNames(
-        "flex flex-col items-center space-y-4 sm:space-y-0 sm:flex-row sm:items-center",
+        "flex flex-col items-center space-y-4 sm:flex-row sm:items-center sm:space-y-0",
         className
       )}
       data-component="pagination"
@@ -99,33 +103,33 @@ const Pagination: React.FC<PaginationProps> = ({
           disabled={currentPage === "1"}
           onClick={() => changeCurrentPage("1")}
         >
-          <ChevronDoubleLeftIcon />
+          <ChevronDoubleLeftIcon width={14} strokeWidth={2} aria-hidden />
         </Button>
         <Button
           color="transparent"
           disabled={currentPage === "1"}
           onClick={() => changeCurrentPage(`${+currentPage - 1}`)}
         >
-          <ChevronLeftIcon />
+          <ChevronLeftIcon width={14} strokeWidth={2} aria-hidden />
         </Button>
         <Button
           color="transparent"
           disabled={currentPage === `${pagesCount}`}
           onClick={() => changeCurrentPage(`${+currentPage + 1}`)}
         >
-          <ChevronLeftIcon className="rotate-180" />
+          <ChevronLeftIcon width={14} strokeWidth={2} aria-hidden className="rotate-180" />
         </Button>
         <Button
           color="transparent"
           disabled={currentPage === `${pagesCount}`}
           onClick={() => changeCurrentPage(`${pagesCount}`)}
         >
-          <ChevronDoubleLeftIcon className="rotate-180" />
+          <ChevronDoubleLeftIcon width={14} strokeWidth={2} aria-hidden className="rotate-180" />
         </Button>
       </div>
 
       {totalItems > 0 && (
-        <span className="sm:ml-auto text-sm text-gray-400 dark:text-gray-500">
+        <span className="text-sm text-gray-400 dark:text-gray-500 sm:ml-auto">
           <span>{(+currentPage - 1) * +itemsPerPage + 1}</span>
           <span> - </span>
           <span>{Math.min(totalItems, (+currentPage - 1) * +itemsPerPage + +itemsPerPage)}</span>
@@ -146,15 +150,15 @@ const PaginationSetting: React.FC<PaginationSettingProps> = ({
   <div className="flex items-center space-x-3 text-sm text-gray-400 dark:text-gray-500">
     <span>{label}:</span>
     <Listbox as="div" className="relative" value={value} onChange={onChange}>
-      <Listbox.Button className="flex items-center font-semibold px-1 py-px text-gray-700 dark:text-gray-300">
+      <Listbox.Button className="flex items-center px-1 py-px font-semibold text-gray-700 dark:text-gray-300">
         {value}
-        <SelectorIcon className="h-[1.2em] ml-2" aria-hidden />
+        <ChevronUpDownIcon className="ml-2 h-[1.2em]" aria-hidden />
       </Listbox.Button>
       <Listbox.Options
         className={classNames(
-          "absolute top-0 left-1/2 -translate-y-full -translate-x-1/2 min-w-[4rem] max-h-[60vh] overflow-y-auto",
-          "px-3 py-2 -mt-2 rounded flex flex-col items-center space-y-1",
-          "bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300",
+          "absolute top-0 left-1/2 max-h-[60vh] min-w-[4rem] -translate-y-full -translate-x-1/2 overflow-y-auto",
+          "-mt-2 flex flex-col items-center space-y-1 rounded px-3 py-2",
+          "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
           "shadow-md shadow-gray-100/20 dark:shadow-gray-800/20"
         )}
       >
@@ -162,7 +166,7 @@ const PaginationSetting: React.FC<PaginationSettingProps> = ({
           <Listbox.Option className="w-full cursor-pointer" value={val} key={val}>
             {({ active, selected }) => (
               <span
-                className={classNames("font-semibold text-center block w-full px-2 py-1 rounded", {
+                className={classNames("block w-full rounded px-2 py-1 text-center font-semibold", {
                   "text-primary-600 dark:text-primary-400": selected,
                   "bg-gray-400/20 dark:bg-gray-500/20": active,
                 })}

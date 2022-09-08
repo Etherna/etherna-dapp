@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useRef, useState } from "react"
 import type { Crop } from "react-image-crop"
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop"
@@ -42,32 +43,6 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
   const [translateY, setTranslateY] = useState(0)
   const image = useRef<HTMLImageElement>()
   const dragStart = useRef<[x: number, y: number]>()
-
-  const imageLoaded = useCallback(
-    (e: React.SyntheticEvent<HTMLImageElement>) => {
-      image.current = e.currentTarget
-
-      const { width, height } = e.currentTarget
-
-      const crop = centerCrop(
-        makeAspectCrop(
-          {
-            unit: "px",
-            width: width * (circular ? 0.75 : 1),
-            height: height * (circular ? 0.75 : 1),
-          },
-          aspectRatio,
-          width,
-          height
-        ),
-        width,
-        height
-      )
-
-      setCrop(crop)
-    },
-    [aspectRatio, circular]
-  )
 
   const applyCropScreenScale = useCallback((crop: Crop) => {
     const scaleX = image.current!.naturalWidth / image.current!.width
@@ -122,6 +97,33 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     [crop, scale, onChange, applyCropTransform]
   )
 
+  const imageLoaded = useCallback(
+    (e: React.SyntheticEvent<HTMLImageElement>) => {
+      image.current = e.currentTarget
+
+      const { width, height } = e.currentTarget
+
+      const crop = centerCrop(
+        makeAspectCrop(
+          {
+            unit: "px",
+            width: width * (circular ? 0.75 : 1),
+            height: height * (circular ? 0.75 : 1),
+          },
+          aspectRatio,
+          width,
+          height
+        ),
+        width,
+        height
+      )
+
+      setCrop(crop)
+      onCropChange(crop, scale)
+    },
+    [aspectRatio, circular, onCropChange, scale]
+  )
+
   const onMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -159,7 +161,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     <div
       className={classNames("flex flex-col justify-center overflow-hidden", className, {
         // prettier-ignore
-        "[&_.ReactCrop\_\_crop-selection]:pointer-events-none": circular,
+        "[&_.ReactCrop\\_\\_crop-selection]:pointer-events-none": circular,
       })}
     >
       <ReactCrop

@@ -14,9 +14,10 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
-import { InformationCircleIcon } from "@heroicons/react/solid"
+import { InformationCircleIcon } from "@heroicons/react/24/solid"
 
 import PostageBatchList from "./postages/PostageBatchList"
 import { Alert, Spinner } from "@/components/ui/display"
@@ -29,10 +30,14 @@ const Postages: React.FC = () => {
   const { updateBatch } = useBatches()
 
   return (
-    <div className="flex flex-col max-w-screen-lg">
-      <Alert color="info" className="mb-4 self-start" small>
+    <div className="flex max-w-screen-lg flex-col">
+      <Alert
+        color="info"
+        className="mb-4 self-start"
+        icon={<InformationCircleIcon width={18} />}
+        small
+      >
         <div className="flex items-start space-x-2">
-          <InformationCircleIcon width={18} />
           <span>
             Postages are required to upload data on the network. <br />
             They might expire in the future or run out of space, so keep an eye on them!
@@ -50,7 +55,7 @@ const Postages: React.FC = () => {
         </Alert>
       )}
       {!batches?.length && gatewayType === "etherna-gateway" && (
-        <p className="flex items-center mx-auto text-gray-500 dark:text-gray-400 font-medium">
+        <p className="mx-auto flex items-center font-medium text-gray-500 dark:text-gray-400">
           <Spinner size={20} className="mr-2" /> We are creating your first storage on Etherna.
           Refresh this page in a few seconds.
         </p>

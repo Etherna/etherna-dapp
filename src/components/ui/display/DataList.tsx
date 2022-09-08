@@ -14,9 +14,10 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
-type DataListProps = {
+export type DataListProps = {
   data: Array<{ title: string; value: string | number }>
 }
 

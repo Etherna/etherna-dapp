@@ -14,13 +14,15 @@
  *  limitations under the License.
  *
  */
+
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import { Transition } from "@headlessui/react"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
 
-import { ArrowUpIcon, ExternalLinkIcon } from "@heroicons/react/solid"
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid"
+import { PlayIcon } from "@heroicons/react/20/solid"
 
 import { Popup } from "../display"
 
@@ -114,12 +116,12 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       <As
         className={classNames(
           "flex items-center justify-items-center lg:justify-items-stretch",
-          "rounded w-full space-x-3",
+          "w-full space-x-3 rounded",
           "text-sm text-gray-800 dark:text-gray-200",
           className,
           {
             "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100": isCurrentPage,
-            "cursor-pointer transition-colors duration-300": !isStatic,
+            "cursor-pointer transition-colors duration-100": !isStatic,
             "hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-gray-100":
               !isStatic,
             "px-4 py-3": !compact,
@@ -142,8 +144,8 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       {iconSvg && (
         <div
           className={classNames(
-            "w-6 h-6 lg:w-5 lg:h-5",
-            "floating-sidebar:mx-0 floating-sidebar:w-5 floating-sidebar:h-5",
+            "h-6 w-6 lg:h-5 lg:w-5",
+            "floating-sidebar:mx-0 floating-sidebar:h-5 floating-sidebar:w-5",
             {
               "mx-auto lg:mx-0": isResponsive,
             },
@@ -157,7 +159,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
         <span
           className={classNames(
             "inline text-sm lg:font-semibold",
-            "floating-sidebar:font-semibold floating-sidebar:inline",
+            "floating-sidebar:inline floating-sidebar:font-semibold",
             {
               "hidden lg:inline": isResponsive,
             },
@@ -178,10 +180,10 @@ const SidebarLinksToggle: React.FC = () => {
       <SidebarItem
         className="lg:pointer-events-none lg:hover:bg-transparent"
         iconClassName="lg:hidden"
-        iconSvg={<ExternalLinkIcon aria-hidden />}
+        iconSvg={<ArrowTopRightOnSquareIcon aria-hidden />}
       />
-      <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-2.5 h-2.5 lg:hidden">
-        <ArrowUpIcon aria-hidden />
+      <div className="absolute right-0 top-1/2 h-2.5 w-2.5 -translate-y-1/2 transform lg:hidden">
+        <PlayIcon aria-hidden />
       </div>
     </div>
   )
@@ -190,7 +192,7 @@ const SidebarLinksToggle: React.FC = () => {
 const SidebarLinksList: React.FC<SidebarLinksListProps> = ({ children, className }) => {
   return (
     <div
-      className={classNames("flex flex-wrap flex-col lg:flex-row pointer-events-auto", className)}
+      className={classNames("pointer-events-auto flex flex-col flex-wrap lg:flex-row", className)}
       data-component="sidebar-links-list"
     >
       {children}
@@ -226,16 +228,16 @@ const SidebarLinksItem: React.FC<SidebarLinksItemProps> = ({
       <As
         className={classNames(
           "block px-0 py-1.5",
-          "text-gray-600 dark:text-gray-400 text-left",
-          "lg:inline-block lg:w-auto lg:px-0 py-0",
-          "after:text-gray-600 after:dark:text-gray-400 after:inline-block after:px-2",
+          "text-left text-gray-600 dark:text-gray-400",
+          "py-0 lg:inline-block lg:w-auto lg:px-0",
+          "after:inline-block after:px-2 after:text-gray-600 after:dark:text-gray-400",
           "after:pointer-events-none after:transition-none",
-          "after:content-none lg:after:content-['–']",
+          "after:content-none last:after:content-none lg:after:content-['-']",
           {
             "text-gray-800 dark:text-gray-100": isCurrentPage,
-            "lg:hover:bg-transparent hover:text-gray-800 hover:dark:text-gray-100": !disabled,
+            "hover:text-gray-800 hover:dark:text-gray-100 lg:hover:bg-transparent": !disabled,
             "hover:after:text-gray-600 hover:after:dark:text-gray-400": !disabled,
-            "opacity-50 cursor-default": disabled,
+            "cursor-default opacity-50": disabled,
           },
           className
         )}
@@ -275,7 +277,7 @@ const SidebarLinks: React.FC<SidebarLinksProps> = ({ children }) => {
   return (
     <div data-component="sidebar-links">
       <div className="lg:hidden">
-        <Popup toggle={<SidebarLinksToggle />} placement="right">
+        <Popup toggle={<SidebarLinksToggle />} placement="right" arrowSize={12}>
           <SidebarLinksList>{children}</SidebarLinksList>
         </Popup>
       </div>
@@ -298,22 +300,22 @@ const SidebarLogo: React.FC<SidebarLogoProps> = ({ className, logo, logoCompact 
   }
 
   return (
-    <SidebarItem className={className} to="/" isStatic>
+    <SidebarItem className={className} to="/" isStatic compact>
       <figure
-        className="h-[26px] text-gray-900 dark:text-gray-100 hover:text-gray-900 dark:hover:text-gray-100 lg:mr-4"
+        className="mx-auto text-gray-900 floating-sidebar:ml-4 dark:text-gray-100 lg:ml-0 lg:px-4"
         onClick={dispatchRefresh}
         data-component="sidebar-logo"
       >
         {logoCompact && (
           <div
-            className="h-full lg:hidden"
-            data-component="sidebar-logo-mobile floating-sidebar:hidden"
+            className="mx-auto h-[26px] floating-sidebar:hidden lg:hidden [&_svg]:h-full"
+            data-component="sidebar-logo-mobile"
           >
             {logoCompact}
           </div>
         )}
         <div
-          className="hidden h-full lg:block floating-sidebar:block"
+          className="hidden h-[27px] floating-sidebar:block lg:block [&_svg]:h-full"
           data-component="sidebar-logo-desktop"
         >
           {logo}
@@ -370,16 +372,16 @@ const Sidebar: React.FC<SidebarProps> & {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-gray-900/50 z-20" onClick={onClose}></div>
+          <div className="fixed inset-0 z-10 bg-gray-900/50" onClick={onClose}></div>
         </Transition>
       )}
       <aside
         className={classNames(
-          "hidden px-2.5 py-3 bg-gray-100 dark:bg-gray-800",
-          "md:flex md:w-20 md:fixed md:left-0 md:inset-y-0 lg:w-52 xl:w-64",
+          "hidden bg-gray-100 px-2.5 py-3 dark:bg-gray-800",
+          "md:fixed md:inset-y-0 md:left-0 md:flex md:w-20 lg:w-52 xl:w-64",
           {
-            "flex w-52 md:w-52 fixed left-0 inset-y-0 transform -translate-x-full z-20": floating,
-            "[&+*]:md:pl-20 [&+*]:lg:pl-52 [&+*]:xl:pl-64": !floating,
+            "fixed inset-y-0 left-0 z-20 flex w-52 -translate-x-full transform md:w-52": floating,
+            "z-1 [&+*]:md:pl-20 [&+*]:lg:pl-52 [&+*]:xl:pl-64": !floating,
             "translate-x-0": showSidebar,
             "transition-transform duration-300": animateSlide,
           }
@@ -388,7 +390,7 @@ const Sidebar: React.FC<SidebarProps> & {
         data-sidebar
         data-sidebar-floating={`${floating}`}
       >
-        <div className="flex flex-col w-full space-y-3 overflow-y-auto">{children}</div>
+        <div className="flex w-full flex-col space-y-3 overflow-y-auto">{children}</div>
       </aside>
     </>
   )

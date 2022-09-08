@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import { Skeleton } from "../ui/display"
@@ -21,23 +22,23 @@ import { Skeleton } from "../ui/display"
 const PlayerPlaceholder = () => {
   return (
     <>
-      <Skeleton className="mt-12 mb-8">
-        <div className="w-full aspect-video" />
+      <Skeleton className="mt-12 mb-8 w-full">
+        <div className="h-32 pb-[62%]" />
       </Skeleton>
       <div className="flex flex-col">
         <Skeleton roundedThin>
-          <div className="w-3/5 h-6" />
+          <div className="h-6 w-3/5" />
         </Skeleton>
         <Skeleton className="mt-6">
-          <div className="w-full h-20" />
+          <div className="h-20 w-full" />
         </Skeleton>
 
-        <div className="flex items-center mt-6">
+        <div className="mt-6 flex items-center">
           <Skeleton roundedFull>
-            <div className="w-10 h-10" />
+            <div className="h-10 w-10" />
           </Skeleton>
           <Skeleton className="ml-2" roundedThin>
-            <div className="w-24 h-4" />
+            <div className="h-4 w-24" />
           </Skeleton>
         </div>
       </div>

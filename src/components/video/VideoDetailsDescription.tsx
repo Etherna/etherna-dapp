@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React, { useEffect, useState } from "react"
 import classNames from "classnames"
 
-import { ChevronDownIcon } from "@heroicons/react/solid"
+import { ChevronDownIcon } from "@heroicons/react/24/solid"
 
 import MarkdownPreview from "@/components/common/MarkdownPreview"
 import { Button } from "@/components/ui/actions"
@@ -56,14 +57,15 @@ const VideoDetailsDescription: React.FC<VideoDetailsDescriptionProps> = ({ descr
       <div
         className={classNames(
           "relative mt-4 text-gray-800 dark:text-gray-200",
-          "after:block after:absolute after:bottom-0 after:h-20 after:inset-x-0",
-          "after:bg-gradient-to-t after:from-gray-50 after:to-gray-50/0",
-          "after:dark:from-gray-900 after:dark:to-gray-800/0",
-          "after:transition-opacity after:duration-200",
+          shouldCompress && {
+            "after:absolute after:inset-x-0 after:bottom-0 after:block after:h-20": true,
+            "after:bg-gradient-to-t after:from-gray-50 after:to-gray-50/0": true,
+            "after:dark:from-gray-900 after:dark:to-gray-800/0": true,
+            "after:transition-opacity after:duration-200": true,
+            "max-h-[7.5rem] overflow-hidden transition-[max-height] duration-500 ease-out": true,
+          },
           {
-            "max-h-[7.5rem] overflow-hidden transition-[max-height] duration-500 ease-out":
-              shouldCompress,
-            "after:opacity-0 after:pointer-events-none": showMore,
+            "after:pointer-events-none after:opacity-0": showMore,
           }
         )}
         style={{
@@ -81,14 +83,20 @@ const VideoDetailsDescription: React.FC<VideoDetailsDescriptionProps> = ({ descr
       </div>
 
       {shouldCompress && (
-        <Button color="transparent" onClick={() => setShowMore(!showMore)}>
+        <Button
+          aspect="text"
+          prefix={
+            <ChevronDownIcon
+              width={20}
+              className={classNames({
+                "rotate-180": showMore,
+              })}
+              aria-hidden
+            />
+          }
+          onClick={() => setShowMore(!showMore)}
+        >
           {showMore ? "Show less" : "Show more"}
-          <ChevronDownIcon
-            className={classNames({
-              "rotate-180": showMore,
-            })}
-            aria-hidden
-          />
         </Button>
       )}
     </div>

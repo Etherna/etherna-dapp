@@ -14,13 +14,13 @@
  *  limitations under the License.
  *
  */
-import React, { useState } from "react"
 
+import React, { useCallback, useState } from "react"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
 
-import classes from "@/styles/components/common/CopyText.module.scss"
-import { CheckIcon, ClipboardIcon } from "@heroicons/react/solid"
+import { CheckIcon } from "@heroicons/react/24/outline"
+import { ClipboardIcon } from "@heroicons/react/24/solid"
 
 type CopyTextProps = {
   children?: string
@@ -31,7 +31,7 @@ type CopyTextProps = {
 const CopyText: React.FC<CopyTextProps> = ({ children, label, onCopy }) => {
   const [copied, setCopied] = useState(false)
 
-  const copy = () => {
+  const copy = useCallback(() => {
     // Create the text field
     const field = document.createElement("input")
     field.value = children as string
@@ -49,30 +49,31 @@ const CopyText: React.FC<CopyTextProps> = ({ children, label, onCopy }) => {
     setTimeout(() => {
       setCopied(false)
     }, 2000)
-  }
+  }, [children, onCopy])
 
   return (
     <div>
       {label && <label className="mb-1.5 block text-sm font-semibold">{label}</label>}
 
-      <div className="flex items-start p-2 rounded bg-gray-100 dark:bg-gray-600 font-mono text-gray-800 dark:text-gray-300">
-        <span className="flex-1 my-auto break-words break-all leading-tight">{children}</span>
+      <div className="flex items-start rounded bg-gray-100 p-2 font-mono text-gray-800 dark:bg-gray-600 dark:text-gray-300">
+        <span className="my-auto flex-1 break-words break-all leading-tight">{children}</span>
 
         <Tippy content="Copy" delay={100}>
           <button
             className={classNames(
-              "relative inline-flex items-center rounded bg-transparent border-none p-1 ml-3",
-              "text-gray-500 dark:text-gray-300 bg-gray-300 dark:bg-gray-500 active:bg-gray-700/40 dark:active:bg-gray-700/20",
-              {
-                [classes.copied]: copied,
-              }
+              "relative ml-3 inline-flex items-center rounded border-none bg-transparent p-1",
+              "bg-gray-300 text-gray-500 active:bg-gray-700/40 dark:bg-gray-500 dark:text-gray-300 dark:active:bg-gray-700/20"
             )}
             onClick={copy}
           >
             <ClipboardIcon className={classNames({ "opacity-0": copied })} width={20} aria-hidden />
             <CheckIcon
-              className={classNames("hidden absolute-center text-green-500", { block: copied })}
-              width={20}
+              className={classNames("text-green-500 absolute-center", {
+                hidden: !copied,
+                block: copied,
+              })}
+              strokeWidth={4}
+              width={16}
               aria-hidden
             />
           </button>

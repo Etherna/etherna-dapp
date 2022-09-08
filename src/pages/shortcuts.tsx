@@ -14,11 +14,13 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
 import SEO from "@/components/layout/SEO"
 import ShortcutsEditor from "@/components/settings/ShortcutsEditor"
+import { Text } from "@/components/ui/display"
 import { Container } from "@/components/ui/layout"
 
 const Shortcuts = () => (
@@ -26,9 +28,9 @@ const Shortcuts = () => (
     <SEO title="Shortcuts" />
 
     <Container className="my-8">
-      <h1>Shortcuts</h1>
+      <Text as="h1">Shortcuts</Text>
 
-      <h2>Player</h2>
+      <Text as="h2">Player</Text>
       <ShortcutsEditor namespace="PLAYER" />
     </Container>
   </AppLayoutWrapper>

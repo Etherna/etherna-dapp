@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import classNames from "classnames"
 
@@ -51,7 +52,7 @@ const VideoGrid: React.FC<VideoGridProps> = ({
         </div>
       )}
       <div
-        className={classNames("pb-24 grid grid-flow-row-dense gap-4", {
+        className={classNames("grid grid-flow-row-dense gap-4", {
           "grid-cols-[repeat(auto-fill,minmax(200px,1fr))]": !mini,
           "lg:grid-cols-[repeat(auto-fill,minmax(240px,1fr))]": !mini,
           "xl:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]": !mini,

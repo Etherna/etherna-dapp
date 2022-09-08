@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useImperativeHandle, useRef, useState } from "react"
+
+import React, { useCallback, useImperativeHandle, useRef, useState } from "react"
 import type { Canceler } from "axios"
 
 import type { FileUploadFlowHandlers } from "@/components/media/FileUploadFlow"
@@ -66,51 +67,60 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
       },
     }))
 
-    const handleFileSelected = (file: File) => {
-      setContentType(file.type)
-      addToQueue(THUMBNAIL_QUEUE_NAME)
-    }
+    const handleFileSelected = useCallback(
+      (file: File) => {
+        setContentType(file.type)
+        addToQueue(THUMBNAIL_QUEUE_NAME)
+      },
+      [addToQueue]
+    )
 
-    const canSelectFile = async (file: File) => {
-      if (!file) {
-        showError("Error", "The selected file is not supported")
-        return false
-      }
+    const canSelectFile = useCallback(
+      async (file: File) => {
+        if (!file) {
+          showError("Error", "The selected file is not supported")
+          return false
+        }
 
-      if (!isMimeWebCompatible(file.type)) {
-        showError("Error", "The selected file is not supported")
-        return false
-      }
+        if (!isMimeWebCompatible(file.type)) {
+          showError("Error", "The selected file is not supported")
+          return false
+        }
 
-      return true
-    }
+        return true
+      },
+      [showError]
+    )
 
-    const uploadThumbnail = async (buffer: ArrayBuffer) => {
-      if (isAnimatedImage(new Uint8Array(buffer))) {
-        throw new Error("Animated images are not allowed")
-      }
+    const uploadThumbnail = useCallback(
+      async (buffer: ArrayBuffer) => {
+        if (isAnimatedImage(new Uint8Array(buffer))) {
+          throw new Error("Animated images are not allowed")
+        }
 
-      // show loading start while processing responsive images
-      updateQueueCompletion(THUMBNAIL_QUEUE_NAME, 1)
+        // show loading start while processing responsive images
+        updateQueueCompletion(THUMBNAIL_QUEUE_NAME, 1)
 
-      const reference = await videoWriter.addThumbnail(buffer, contentType, {
-        onCancelToken: c => {
-          canceler.current = c
-        },
-        onUploadProgress: p => {
-          updateQueueCompletion(THUMBNAIL_QUEUE_NAME, p)
-        },
-      })
+        const reference = await videoWriter.addThumbnail(buffer, contentType, {
+          onCancelToken: c => {
+            canceler.current = c
+          },
+          onUploadProgress: p => {
+            updateQueueCompletion(THUMBNAIL_QUEUE_NAME, p)
+          },
+        })
 
-      updateQueueCompletion(THUMBNAIL_QUEUE_NAME, 100, reference)
+        updateQueueCompletion(THUMBNAIL_QUEUE_NAME, 100, reference)
 
-      // Completion
-      onComplete?.()
+        // Completion
+        onComplete?.()
 
-      return reference
-    }
+        return reference
+      },
+      [contentType, onComplete, updateQueueCompletion, videoWriter]
+    )
 
-    const handleReset = async () => {
+    const handleReset = useCallback(async () => {
       removeFromQueue(THUMBNAIL_QUEUE_NAME)
 
       canceler.current?.("Upload canceled by the user")
@@ -118,11 +128,14 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
       videoWriter.removeThumbnail()
 
       onCancel?.()
-    }
+    }, [onCancel, removeFromQueue, videoWriter])
 
-    const handleUploadError = (errorMessage: string) => {
-      setQueueError(THUMBNAIL_QUEUE_NAME, errorMessage)
-    }
+    const handleUploadError = useCallback(
+      (errorMessage: string) => {
+        setQueueError(THUMBNAIL_QUEUE_NAME, errorMessage)
+      },
+      [setQueueError]
+    )
 
     return (
       <>

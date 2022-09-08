@@ -14,11 +14,12 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import { RadioGroup } from "@headlessui/react"
 import classNames from "classnames"
 
-import { CheckCircleIcon } from "@heroicons/react/solid"
+import { CheckCircleIcon } from "@heroicons/react/24/solid"
 
 import type { ExtensionParamConfig } from "./ExtensionHostPanel"
 import { TextInput } from "@/components/ui/inputs"
@@ -57,24 +58,24 @@ const ExtensionHostPanelParam: React.FC<ExtensionHostPanelParamProps> = ({
                   className={classNames(
                     "flex items-start justify-between",
                     "border border-gray-400 dark:border-gray-400",
-                    "px-2.5 py-2 rounded-md cursor-pointer",
+                    "cursor-pointer rounded-md px-2.5 py-2",
                     {
                       "border-gray-900 dark:border-gray-100": active,
-                      "ring-2 ring-primary-500 border-primary-500 hover:border-primary-500":
+                      "border-primary-500 ring-2 ring-primary-500 hover:border-primary-500":
                         checked,
                     }
                   )}
                 >
                   <div className="flex flex-col">
-                    <RadioGroup.Label className="text-sm text-gray-700 dark:text-gray-200 font-semibold mb-0 cursor-pointer">
+                    <RadioGroup.Label className="mb-0 cursor-pointer text-sm font-semibold text-gray-700 dark:text-gray-200">
                       {config.label}
                     </RadioGroup.Label>
-                    <RadioGroup.Description className="text-xs leading-tight text-gray-600 dark:text-gray-400 whitespace-pre-line">
+                    <RadioGroup.Description className="whitespace-pre-line text-xs leading-tight text-gray-600 dark:text-gray-400">
                       {config.description}
                     </RadioGroup.Description>
                   </div>
                   {checked && (
-                    <CheckCircleIcon className="w-5 h-5 shrink-0 text-3xl text-primary-500" />
+                    <CheckCircleIcon className="h-5 w-5 shrink-0 text-3xl text-primary-500" />
                   )}
                 </div>
               )}

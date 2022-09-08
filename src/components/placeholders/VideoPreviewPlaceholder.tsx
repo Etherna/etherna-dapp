@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import classNames from "classnames"
 
@@ -27,24 +28,24 @@ const VideoPreviewPlaceholder: React.FC<VideoPreviewPlaceholderProps> = ({ mini 
   return (
     <div className="flex flex-col">
       <Skeleton squared>
-        <div className="w-full aspect-video" />
+        <div className="w-full pb-[62%]" />
       </Skeleton>
-      <div className="flex items-top mt-2">
+      <div className="items-top mt-2 flex">
         {!mini && (
-          <Skeleton roundedFull>
-            <div className="w-8 h-8" />
+          <Skeleton className="h-8 w-8 shrink-0" roundedFull>
+            <div className="h-8 w-8" />
           </Skeleton>
         )}
         <div
-          className={classNames("flex flex-col flex-1 mt-1", {
+          className={classNames("mt-1 flex flex-grow flex-col", {
             "ml-2": !mini,
           })}
         >
-          <Skeleton roundedThin>
-            <div className="w-full h-4" />
+          <Skeleton className="h-4 w-full" roundedThin>
+            <div className="h-4 w-full" />
           </Skeleton>
-          <Skeleton className="mt-1.5" roundedThin>
-            <div className="w-2/5 h-3" />
+          <Skeleton className="mt-1.5 h-3 w-2/5" roundedThin>
+            <div className="h-3 w-2/5" />
           </Skeleton>
         </div>
       </div>

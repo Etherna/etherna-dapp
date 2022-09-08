@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import type { UploadResult } from "@ethersphere/bee-js"
 import Axios from "axios"
 import imageResize from "image-resizer-js"

@@ -14,16 +14,17 @@
  *  limitations under the License.
  *
  */
-import React from "react"
 
-import { BookmarkIcon, HomeIcon, UserIcon } from "@heroicons/react/solid"
+import React, { useCallback } from "react"
+
+import { BookmarkIcon, HomeIcon, UserIcon } from "@heroicons/react/24/solid"
 import { ReactComponent as FramesIcon } from "@/assets/icons/navigation/frames.svg"
 import { ReactComponent as PlaylistIcon } from "@/assets/icons/navigation/playlists.svg"
 
 import FeedbackLink from "./FeedbackLink"
 import Logo from "@/components/common/Logo"
-// import IndexExtension from "@/components/env/IndexExtension"
 import GatewayExtension from "@/components/env/GatewayExtension"
+// import IndexExtension from "@/components/env/IndexExtension"
 import { Sidebar } from "@/components/ui/navigation"
 import { LayoutReducerTypes } from "@/context/layout-context"
 import { useLayoutState } from "@/context/layout-context/hooks"
@@ -34,23 +35,23 @@ const SidebarNavigation: React.FC = () => {
   const [state, dispatch] = useLayoutState()
   const { hideSidebar, floatingSidebar } = state
 
-  const hodeSidebar = () => {
+  const hodeSidebar = useCallback(() => {
     dispatch({
       type: LayoutReducerTypes.SET_SIDEBAR_HIDDEN,
       hideSidebar: true,
     })
-  }
+  }, [dispatch])
 
   return (
     <Sidebar floating={floatingSidebar} show={!hideSidebar} onClose={hodeSidebar}>
-      <Sidebar.Logo logo={<Logo />} logoCompact={<Logo compact />} />
+      <Sidebar.Logo className="mt-1.5" logo={<Logo />} logoCompact={<Logo compact />} />
 
       <Sidebar.Space customHeight="1rem" />
 
-      {/* <Sidebar.Item isStatic compact>
+      {/* <Sidebar.Item isStatic>
         <IndexExtension compactMobile />
       </Sidebar.Item> */}
-      <Sidebar.Item isStatic compact>
+      <Sidebar.Item isStatic>
         <GatewayExtension compactMobile />
       </Sidebar.Item>
 

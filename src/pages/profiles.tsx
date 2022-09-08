@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
@@ -26,7 +27,7 @@ const ProfilesPage = () => (
     <SEO title="Profiles" />
     <Container>
       <h1 className="mb-1">Profiles</h1>
-      <p className="text-gray-700 dark:text-gray-300 mt-4">
+      <p className="mt-4 text-gray-700 dark:text-gray-300">
         <span>Explore all the </span>
         <strong>Ethernauts</strong>
         <span>...</span>

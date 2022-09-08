@@ -13,8 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import { useEffect } from "react"
 import { useDispatch } from "react-redux"
+import type { EthAddress } from "@ethersphere/bee-js/dist/src/utils/eth"
+import type { AxiosError } from "axios"
+import type { Dispatch } from "redux"
 
 import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import SwarmProfileIO from "@/classes/SwarmProfile"
@@ -30,9 +34,6 @@ import type { UserActions } from "@/state/reducers/userReducer"
 import { UserActionTypes } from "@/state/reducers/userReducer"
 import useSelector from "@/state/useSelector"
 import { addressBytes, signMessage } from "@/utils/ethereum"
-import type { EthAddress } from "@ethersphere/bee-js/dist/src/utils/eth"
-import type { AxiosError } from "axios"
-import type { Dispatch } from "redux"
 
 type AutoSigninOpts = {
   forceSignin?: boolean

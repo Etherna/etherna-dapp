@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 type LabelProps = {
@@ -25,7 +26,7 @@ type LabelProps = {
 const Label: React.FC<LabelProps> = ({ children, htmlFor, title }) => {
   return (
     <label
-      className="block tracking-wide text-sm font-semibold mb-2 text-gray-700 dark:text-gray-400"
+      className="mb-2 block text-sm font-semibold tracking-wide text-gray-700 dark:text-gray-400"
       htmlFor={htmlFor}
       title={title}
     >

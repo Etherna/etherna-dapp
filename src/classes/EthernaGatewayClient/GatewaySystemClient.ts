@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import http from "@/utils/request"
 import type { GatewayChainState } from "@/definitions/api-gateway"
+import http from "@/utils/request"
 
 export default class GatewaySystemClient {
   url: string
@@ -23,7 +23,7 @@ export default class GatewaySystemClient {
 
   /**
    * Init an gateway settings client
-   * 
+   *
    * @param url Api host + api url
    */
   constructor(url: string, abortController?: AbortController) {
@@ -33,7 +33,7 @@ export default class GatewaySystemClient {
 
   /**
    * Get the current byte price
-   * 
+   *
    * @returns Dollar price per single byte
    */
   async fetchCurrentBytePrice() {
@@ -53,7 +53,7 @@ export default class GatewaySystemClient {
 
   /**
    * Get the current chain state
-   * 
+   *
    * @returns chain state object
    */
   async fetchChainstate() {
@@ -73,7 +73,7 @@ export default class GatewaySystemClient {
 
   /**
    * Fetch creation batch id
-   * 
+   *
    * @param referenceId Reference id of the batch
    * @returns The created batch id if completed
    */

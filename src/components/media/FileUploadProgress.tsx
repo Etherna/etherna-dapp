@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import { ProgressBar } from "@/components/ui/display"
@@ -26,12 +27,12 @@ const FileUploadProgress: React.FC<FileUploadProgressProps> = ({ progress }) => 
   if (progress === 0) return null
 
   return (
-    <div className="flex flex-wrap items-center w-full max-w-sm">
+    <div className="flex w-full max-w-sm flex-wrap items-center">
       <div className="w-auto flex-grow">
         <ProgressBar progress={progress} indeterminate={progress === 100} />
       </div>
-      {progress < 100 && <span className="text-sm font-semibold ml-2">{progress}%</span>}
-      <span className="text-sm w-full mt-1.5">
+      {progress < 100 && <span className="ml-2 text-sm font-semibold">{progress}%</span>}
+      <span className="mt-1.5 w-full text-sm">
         {progress < 100 ? (
           <p>Uploading...</p>
         ) : (

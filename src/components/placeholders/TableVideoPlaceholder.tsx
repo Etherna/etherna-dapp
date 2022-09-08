@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import { Skeleton } from "../ui/display"
@@ -28,36 +29,36 @@ const TableVideoPlaceholder: React.FC<TableVideoPlaceholderProps> = ({ count = 4
       {Array(count)
         .fill(0)
         .map((_, i) => (
-          <tr key={i}>
+          <tr className="" key={i}>
             <td></td>
-            <td>
-              <div className="flex items-center">
-                <Skeleton>
-                  <div className="w-20 h-14" />
+            <td className="py-1">
+              <div className="flex items-center space-x-2">
+                <Skeleton squared>
+                  <div className="h-12 w-20" />
                 </Skeleton>
                 <Skeleton>
-                  <div className="w-28 h-5 ml-3" />
+                  <div className="ml-3 h-5 w-28" />
                 </Skeleton>
               </div>
             </td>
             <td>
               <Skeleton>
-                <div className="w-10 h-5" />
+                <div className="h-5 w-16" />
               </Skeleton>
             </td>
             <td>
               <Skeleton>
-                <div className="w-14 h-5" />
+                <div className="h-5 w-14" />
               </Skeleton>
             </td>
             <td>
               <Skeleton>
-                <div className="w-28 h-5" />
+                <div className="h-5 w-28" />
               </Skeleton>
             </td>
             <td>
               <Skeleton>
-                <div className="w-28 h-5" />
+                <div className="h-5 w-28" />
               </Skeleton>
             </td>
           </tr>

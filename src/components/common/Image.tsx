@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import classNames from "classnames"
 import { filterXSS } from "xss"
@@ -134,8 +135,8 @@ const Image: React.FC<ImageProps> = ({
   return (
     <div
       className={classNames(
-        "relative",
         {
+          relative: layout !== "fill",
           "absolute inset-0": layout === "fill",
           "w-full": layout === "responsive",
         },
@@ -151,7 +152,7 @@ const Image: React.FC<ImageProps> = ({
       {src && (
         <picture onError={onError} onLoad={onLoadImage}>
           <img
-            className={classNames("absolute inset-0 w-full h-full", imgClassName)}
+            className={classNames("absolute inset-0 h-full w-full", imgClassName)}
             src={filterXSS(src)}
             alt={alt}
             style={{
@@ -165,7 +166,7 @@ const Image: React.FC<ImageProps> = ({
       <div
         className={classNames(
           "absolute inset-0 transition-opacity duration-300",
-          "bg-no-repeat bg-cover bg-gray-400 dark:bg-gray-600",
+          "bg-gray-400 bg-cover bg-no-repeat dark:bg-gray-600",
           {
             "opacity-0": imgLoaded,
           },

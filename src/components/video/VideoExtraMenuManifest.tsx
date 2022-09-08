@@ -14,9 +14,10 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 
-import { FilmIcon, PhotographIcon } from "@heroicons/react/solid"
+import { FilmIcon, PhotoIcon } from "@heroicons/react/20/solid"
 import { ReactComponent as ManifestIcon } from "@/assets/icons/manifest.svg"
 
 import { Button, Modal } from "../ui/actions"
@@ -72,18 +73,16 @@ const VideoExtraMenuManifest: React.FC<VideoExtraMenuManifestProps> = ({
       </p>
       <ul className="mt-4 flex flex-col">
         {sources.map(source => (
-          <li className="flex flex-col text-sm font-medium mt-3" key={source.reference}>
+          <li className="mt-3 flex flex-col text-sm font-medium" key={source.reference}>
             <div className="flex items-center text-base font-semibold">
               {source.type === "metadata" && (
                 <ManifestIcon width={16} className="mr-1" aria-hidden />
               )}
               {source.type === "video" && <FilmIcon width={16} className="mr-1" aria-hidden />}
-              {source.type === "thumb" && (
-                <PhotographIcon width={16} className="mr-1" aria-hidden />
-              )}
+              {source.type === "thumb" && <PhotoIcon width={16} className="mr-1" aria-hidden />}
               {source.label}
             </div>
-            <span className="w-full block text-xs break-words text-gray-400 dark:text-gray-400">
+            <span className="block w-full break-words text-xs text-gray-400 dark:text-gray-400">
               <a href={beeClient.getBzzUrl(source.reference)} target="_blank" rel="noreferrer">
                 {source.reference}
               </a>

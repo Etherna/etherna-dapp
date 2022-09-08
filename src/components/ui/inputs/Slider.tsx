@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import ReactSliderLib from "react-slider"
 import type { ReactSliderProps } from "react-slider"
@@ -25,20 +26,25 @@ const SimpleSlider: React.FC<ReactSliderProps> = props => {
   return (
     <ReactSlider
       {...props}
-      className={classNames("w-full h-5", props.className)}
-      renderTrack={(_, { index, value }) => (
-        <div
-          className={classNames("bg-gray-300 dark:bg-gray-600 h-1 rounded-full mt-2", {
-            "bg-gray-800 dark:bg-gray-50": index === 0,
-          })}
-          style={{
-            position: "absolute",
-            left: index === 0 ? 0 : `${value}%`,
-            right: index === 1 ? 0 : `${100 - value}%`,
-          }}
-          key={index}
-        />
-      )}
+      className={classNames("h-5 w-full", props.className)}
+      renderTrack={(_, { index, value }) => {
+        const minFix = props.min ? +props.min : 0
+        const maxFix = props.max ? +props.max : 100
+        const valuePercent = ((value - minFix) / (maxFix - minFix)) * 100
+        return (
+          <div
+            className={classNames("mt-2 h-1 rounded-full bg-gray-300 dark:bg-gray-600", {
+              "bg-gray-800 dark:bg-gray-50": index === 0,
+            })}
+            style={{
+              position: "absolute",
+              left: index === 0 ? 0 : `${valuePercent}%`,
+              right: index === 0 ? `${100 - valuePercent}%` : 0,
+            }}
+            key={index}
+          />
+        )
+      }}
       thumbClassName="w-2 h-full rounded-full bg-gray-800 dark:bg-gray-200"
     />
   )

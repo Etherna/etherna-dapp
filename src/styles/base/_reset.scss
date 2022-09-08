@@ -19,42 +19,6 @@ body {
   @apply dark:bg-gray-900 dark:text-light;
 }
 
-a {
-  transition: color 0.25s;
-  @apply cursor-pointer text-primary-500 no-underline;
-
-  &:hover {
-    transition: color 0.25s;
-    @apply text-primary-600 no-underline;
-  }
-}
-
-button {
-  @apply focus:outline-none;
-  &:disabled {
-    @apply cursor-not-allowed opacity-50;
-  }
-}
-
-[role="button"] {
-  @apply focus:outline-none;
-}
-
 hr {
   @apply border-gray-300 dark:border-gray-600;
-}
-
-kbd {
-  @apply inline-block rounded border-b-2 px-2 text-center font-bold;
-  @apply border-gray-300 bg-gray-200 text-gray-600;
-  @apply dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300;
-}
-
-input[type="checkbox"] {
-  @apply p-0.5;
-  @apply rounded text-primary-600;
-  @apply bg-gray-200 dark:bg-gray-700;
-  @apply border-gray-300 dark:border-gray-600;
-  @apply checked:bg-primary-600 checked:dark:bg-primary-600;
-  @apply checked:border-primary-600 checked:dark:border-primary-600;
 }

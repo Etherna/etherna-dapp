@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useState } from "react"
 import classNames from "classnames"
 
@@ -70,10 +71,10 @@ const PlayerVolume: React.FC = () => {
         step={0.01}
         invert={true}
         orientation="vertical"
-        className="w-2 h-32 my-4 mx-auto rounded-full bg-white bg-opacity-50 touch-none"
+        className="my-4 mx-auto h-32 w-2 touch-none rounded-full bg-white bg-opacity-50"
         renderTrack={(_, { index, value }) => (
           <div
-            className={classNames("w-full bottom-0 rounded-full", {
+            className={classNames("bottom-0 w-full rounded-full", {
               "bg-white": index === 0,
             })}
             style={{
@@ -86,7 +87,7 @@ const PlayerVolume: React.FC = () => {
         )}
         renderThumb={(props, { valueNow }) => (
           <div
-            className="-ml-1.5 -mb-1.5 w-5 h-5 bg-white rounded-full"
+            className="-ml-1.5 -mb-1.5 h-5 w-5 rounded-full bg-white"
             style={{
               ...props.style,
               bottom: `${valueNow * 100}%`,

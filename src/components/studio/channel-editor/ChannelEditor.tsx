@@ -14,10 +14,19 @@
  *  limitations under the License.
  *
  */
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
+
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
 import classNames from "classnames"
 
-import { TrashIcon } from "@heroicons/react/outline"
+import { TrashIcon } from "@heroicons/react/24/outline"
 
 import WalletState from "../other/WalletState"
 import SwarmImageIO from "@/classes/SwarmImage"
@@ -85,26 +94,28 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
       setProfileCover(profile.cover)
     }, [profile])
 
-    const imagesUtils: ImagesUtils = {
-      avatar: {
-        setLoading: setUploadingAvatar,
-        updateImage: setProfileAvatar,
-        setPreview: setAvatarPreview,
-        responsiveSizes: SwarmProfileIO.Reader.avatarResponsiveSizes,
-      },
-      cover: {
-        setLoading: setUploadingCover,
-        updateImage: setProfileCover,
-        setPreview: setCoverPreview,
-        responsiveSizes: SwarmProfileIO.Reader.coverResponsiveSizes,
-      },
-    }
+    const imagesUtils: ImagesUtils = useMemo(() => {
+      return {
+        avatar: {
+          setLoading: setUploadingAvatar,
+          updateImage: setProfileAvatar,
+          setPreview: setAvatarPreview,
+          responsiveSizes: SwarmProfileIO.Reader.avatarResponsiveSizes,
+        },
+        cover: {
+          setLoading: setUploadingCover,
+          updateImage: setProfileCover,
+          setPreview: setCoverPreview,
+          responsiveSizes: SwarmProfileIO.Reader.coverResponsiveSizes,
+        },
+      }
+    }, [])
 
     useImperativeHandle(ref, () => ({
       handleSubmit,
     }))
 
-    const handleSubmit = async () => {
+    const handleSubmit = useCallback(async () => {
       if (!defaultBatch) {
         return showError("Cannot upload", "You don't have any storage yet.")
       }
@@ -145,70 +156,94 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
         console.error(error)
         showError("Cannot save profile", error.message)
       }
-    }
+    }, [
+      defaultBatch,
+      hasExceededLimit,
+      isLocked,
+      profileAddress,
+      profileAvatar,
+      profileCover,
+      profileDescription,
+      profileName,
+      showError,
+      updateProfile,
+      updateSwarmProfile,
+    ])
 
-    const handleRemoveImage = (e: React.SyntheticEvent, type: ImageType) => {
-      e.preventDefault()
-      e.stopPropagation()
+    const handleUploadImage = useCallback(
+      async (file: File, type: ImageType) => {
+        imagesUtils[type].setLoading(true)
 
-      imagesUtils[type].updateImage(undefined)
-    }
+        try {
+          const imageWriter = new SwarmImageIO.Writer(file, {
+            beeClient,
+            isResponsive: true,
+            responsiveSizes: imagesUtils[type].responsiveSizes,
+          })
+          imagesUtils[type].setPreview(await imageWriter.getFilePreview())
+          const rawImage = await imageWriter.upload()
+          const imageReader = new SwarmImageIO.Reader(rawImage, { beeClient })
+          imagesUtils[type].setPreview(undefined)
 
-    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>, type: ImageType) => {
-      const file = e.currentTarget.files![0]
-      if (!file) return
+          imagesUtils[type].updateImage(imageReader.image)
+        } catch (error: any) {
+          console.error(error)
+          showError("Cannot upload the image", error.message)
+        }
 
-      if (isAnimatedImage(new Uint8Array(await file.arrayBuffer()))) {
-        return showError("Wrong image format", "Animated images are not allowed")
-      }
+        // reset inputs
+        avatarRef.current!.value = ""
+        coverRef.current!.value = ""
 
-      // reset input
-      e.target.value = ""
+        imagesUtils[type].setLoading(false)
+      },
+      [beeClient, imagesUtils, showError]
+    )
 
-      const img = await cropImage(file, type)
+    const handleRemoveImage = useCallback(
+      (e: React.SyntheticEvent, type: ImageType) => {
+        e.preventDefault()
+        e.stopPropagation()
 
-      if (img) {
-        handleUploadImage(img as File, type)
-      }
-    }
+        imagesUtils[type].updateImage(undefined)
+      },
+      [imagesUtils]
+    )
 
-    const swarmImageUrl = (image: SwarmImageRaw | null | undefined) => {
-      const reference = SwarmImageIO.Reader.getOriginalSourceReference(image)
-      return reference ? beeClient.getBzzUrl(reference) : undefined
-    }
+    const handleImageChange = useCallback(
+      async (e: React.ChangeEvent<HTMLInputElement>, type: ImageType) => {
+        const file = e.currentTarget.files![0]
+        if (!file) return
 
-    const handleUploadImage = async (file: File, type: ImageType) => {
-      imagesUtils[type].setLoading(true)
+        if (isAnimatedImage(new Uint8Array(await file.arrayBuffer()))) {
+          return showError("Wrong image format", "Animated images are not allowed")
+        }
 
-      try {
-        const imageWriter = new SwarmImageIO.Writer(file, {
-          beeClient,
-          isResponsive: true,
-          responsiveSizes: imagesUtils[type].responsiveSizes,
-        })
-        imagesUtils[type].setPreview(await imageWriter.getFilePreview())
-        const rawImage = await imageWriter.upload()
-        const imageReader = new SwarmImageIO.Reader(rawImage, { beeClient })
-        imagesUtils[type].setPreview(undefined)
+        const img = await cropImage(file, type)
 
-        imagesUtils[type].updateImage(imageReader.image)
-      } catch (error: any) {
-        console.error(error)
-        showError("Cannot upload the image", error.message)
-      }
+        // reset input
+        e.target.value = ""
 
-      // reset inputs
-      avatarRef.current!.value = ""
-      coverRef.current!.value = ""
+        if (img) {
+          handleUploadImage(img as File, type)
+        }
+      },
+      [cropImage, handleUploadImage, showError]
+    )
 
-      imagesUtils[type].setLoading(false)
-    }
+    const swarmImageUrl = useCallback(
+      (image: SwarmImageRaw | null | undefined) => {
+        const reference = SwarmImageIO.Reader.getOriginalSourceReference(image)
+        return reference ? beeClient.getBzzUrl(reference) : undefined
+      },
+      [beeClient]
+    )
 
     return (
       <div className="flex flex-col flex-wrap space-y-6">
         <WalletState />
 
-        <div className="relative w-full min-h-44 bg-gray-200/90 dark:bg-gray-800/50 rounded-md overflow-hidden">
+        <div className="relative min-h-44 w-full overflow-hidden rounded-md bg-gray-200/90 dark:bg-gray-800/50">
           <label
             className={classNames("absolute inset-0 m-0 overflow-hidden", {
               "h-auto": !!profileCover,
@@ -219,7 +254,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
               <img
                 src={coverPreview || swarmImageUrl(profileCover)}
                 alt={profileName}
-                className="w-full h-full object-cover rounded-md overflow-hidden"
+                className="h-full w-full overflow-hidden rounded-md object-cover"
               />
             )}
             {isUploadingCover && (
@@ -236,26 +271,26 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
             />
             <div
               className={classNames(
-                "mb-3 mr-3 space-x-2 absolute bottom-0 right-0 flex items-center justify-center"
+                "absolute bottom-0 right-0 mb-3 mr-3 flex items-center justify-center space-x-2"
               )}
             >
               {profileCover && (
                 <Button
                   className={classNames(
-                    "h-8 rounded-full normal-case cursor-pointer",
-                    "w-8 p-0 justify-center"
+                    "h-8 cursor-pointer rounded-full normal-case",
+                    "w-8 justify-center p-0"
                   )}
                   type="button"
                   color="muted"
                   onClick={e => handleRemoveImage(e, "cover")}
                 >
-                  <TrashIcon className="h-4 m-auto" aria-aria-hidden />
+                  <TrashIcon className="m-auto h-4" aria-hidden />
                 </Button>
               )}
               <Button
                 as="div"
                 color="muted"
-                className={classNames("h-8 py-1 rounded-full normal-case cursor-pointer")}
+                className={classNames("h-8 cursor-pointer rounded-full py-1 normal-case")}
               >
                 Change cover
               </Button>
@@ -267,16 +302,16 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
           <label className="inline-block w-auto" htmlFor="avatar-input">
             <div
               className={classNames(
-                "group relative w-40 h-40 border-4 rounded-full overflow-hidden cursor-pointer",
+                "group relative h-40 w-40 cursor-pointer overflow-hidden rounded-full border-4",
                 "border-white bg-gray-200 dark:border-gray-900 dark:bg-gray-700"
               )}
             >
               <img
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
                 src={avatarPreview || swarmImageUrl(profileAvatar) || makeBlockies(profileAddress)}
                 alt={profileName}
               />
-              {isUploadingAvatar && <div className="absolute-center text-center">Uploading...</div>}
+              {isUploadingAvatar && <div className="text-center absolute-center">Uploading...</div>}
               <input
                 className="hidden"
                 ref={avatarRef}
@@ -288,8 +323,9 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
               />
               <span
                 className={classNames(
-                  "absolute-center",
-                  "opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                  "z-10 text-center leading-none absolute-center",
+                  "shadow-black text-shadow",
+                  "hidden transition-opacity duration-200 group-hover:block"
                 )}
               >
                 Change avatar

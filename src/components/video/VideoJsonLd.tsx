@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 import { JsonLd } from "react-schemaorg"
 import type { VideoObject } from "schema-dts"

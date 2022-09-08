@@ -14,15 +14,22 @@
  *  limitations under the License.
  *
  */
-import React, { useEffect, useState } from "react"
+
+import React, { useCallback, useEffect, useState } from "react"
 
 import type { Sidebar, Tabbar } from "@/components/ui/navigation"
+import type { SidebarLinksItemProps } from "@/components/ui/navigation/Sidebar"
+import type { TabbarItemProps } from "@/components/ui/navigation/Tabbar"
 
-type FeedbackLinkProps = {
-  wrapper: typeof Sidebar.LinksItem | typeof Tabbar.Item
-}
+type FeedbackLinkProps =
+  | ({
+      wrapper: typeof Sidebar.LinksItem
+    } & SidebarLinksItemProps)
+  | ({
+      wrapper: typeof Tabbar.Item
+    } & TabbarItemProps)
 
-const FeedbackLink: React.FC<FeedbackLinkProps> = ({ wrapper: Wrapper }) => {
+const FeedbackLink: React.FC<FeedbackLinkProps> = ({ wrapper: Wrapper, ...props }) => {
   const [blocked, setBlocked] = useState(false)
 
   useEffect(() => {
@@ -47,9 +54,9 @@ const FeedbackLink: React.FC<FeedbackLinkProps> = ({ wrapper: Wrapper }) => {
     }
   }, [])
 
-  const handleFeedback = () => {
+  const handleFeedback = useCallback(() => {
     window.ATL_JQ_PAGE_PROPS?.showCollectorDialog?.()
-  }
+  }, [])
 
   return (
     <Wrapper
@@ -58,6 +65,7 @@ const FeedbackLink: React.FC<FeedbackLinkProps> = ({ wrapper: Wrapper }) => {
       tooltip={blocked ? "The feedback script has been blocked by your AdBlocker" : undefined}
       disabled={blocked}
       onClick={handleFeedback}
+      {...props}
     />
   )
 }

@@ -14,11 +14,12 @@
  *  limitations under the License.
  *
  */
-import React, { useState } from "react"
+
+import React, { useCallback, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import classNames from "classnames"
 
-import { ArrowNarrowLeftIcon } from "@heroicons/react/solid"
+import { ArrowSmallLeftIcon } from "@heroicons/react/24/solid"
 
 import { Button } from "@/components/ui/actions"
 import useMounted from "@/hooks/useMounted"
@@ -48,41 +49,44 @@ const StudioEditView: React.FC<StudioEditViewProps> = ({
   const navigate = useNavigate()
   const mounted = useMounted()
 
-  const handleBack = async (e: React.MouseEvent) => {
-    if (backPrompt) {
-      e.preventDefault()
-      const ok = await backPrompt()
-      ok && navigate(backTo!)
-    }
-  }
+  const handleBack = useCallback(
+    async (e: React.MouseEvent) => {
+      if (backPrompt) {
+        e.preventDefault()
+        const ok = await backPrompt()
+        ok && navigate(backTo!)
+      }
+    },
+    [backPrompt, navigate, backTo]
+  )
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     setSaving(true)
     if (onSave) {
       await onSave()
     }
     mounted.current && setSaving(false)
-  }
+  }, [mounted, onSave])
 
   return (
     <div className="max-w-screen-lg">
-      <div className="flex items-center mb-4 flex-wrap md:flex-nowrap">
+      <div className="mb-4 flex flex-wrap items-center md:flex-nowrap">
         {backTo && (
           <Link
             to={backTo}
             className={classNames(
-              "flex p-1 w-8 h-8 rounded-full mr-3",
-              "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-100 hover:text-inherit"
+              "mr-3 flex h-8 w-8 rounded-full p-1",
+              "bg-gray-200 text-gray-700 hover:text-inherit dark:bg-gray-700 dark:text-gray-100"
             )}
             onClick={handleBack}
           >
-            <ArrowNarrowLeftIcon className="h-5 m-auto" aria-hidden />
+            <ArrowSmallLeftIcon className="m-auto h-5" aria-hidden />
           </Link>
         )}
 
         <h2 className="text-lg lg:text-xl">{title}</h2>
 
-        <div className="my-1 ml-auto flex items-center flex-wrap md:flex-nowrap space-x-4">
+        <div className="my-1 ml-auto flex flex-wrap items-center space-x-4 md:flex-nowrap">
           {actions}
           <Button
             loading={saving}

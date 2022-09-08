@@ -14,13 +14,14 @@
  *  limitations under the License.
  *
  */
-import React, { useState } from "react"
+
+import React, { useCallback, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useMatomo } from "@datapunt/matomo-tracker-react"
 import classNames from "classnames"
 
-import { SearchIcon } from "@heroicons/react/outline"
-import { XIcon } from "@heroicons/react/solid"
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { XMarkIcon } from "@heroicons/react/24/solid"
 
 import { TextInput } from "@/components/ui/inputs"
 import { Topbar } from "@/components/ui/navigation"
@@ -32,22 +33,25 @@ const SearchItem: React.FC = () => {
   const [showInput, setShowInput] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.code === "Enter" && searchQuery) {
-      navigate(routes.search(searchQuery))
-      trackSiteSearch({
-        keyword: searchQuery.toLowerCase(),
-      })
-    }
-  }
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.code === "Enter" && searchQuery) {
+        navigate(routes.search(searchQuery))
+        trackSiteSearch({
+          keyword: searchQuery.toLowerCase(),
+        })
+      }
+    },
+    [navigate, searchQuery, trackSiteSearch]
+  )
 
   return (
     <Topbar.Item
       className={classNames({
-        "absolute left-1 top-1 right-1 md:relative md:top-0 z-1": showInput,
+        "absolute left-1 top-1 right-1 z-20 py-1.5 md:relative md:top-0": showInput,
         "bg-gray-200 dark:bg-gray-800": showInput,
       })}
-      prefix={<SearchIcon aria-hidden />}
+      prefix={<MagnifyingGlassIcon width={22} strokeWidth={3} aria-hidden />}
       onClick={() => setShowInput(true)}
     >
       {showInput && (
@@ -55,9 +59,9 @@ const SearchItem: React.FC = () => {
           <TextInput
             className="w-full md:w-auto"
             inputClassName={classNames(
-              "px-0 py-1 pr-8 md:pr-0",
-              "bg-transparent dark:bg-transparent border-transparent dark:border-transparent",
-              "focus:border-transparent dark:focus:border-transparent"
+              "pr-0 pl-2 pt-2 pb-2 pr-8 md:pr-0",
+              "bg-transparent dark:bg-transparent",
+              "focus:ring-0 focus:border-none"
             )}
             value={searchQuery}
             onChange={setSearchQuery}
@@ -66,7 +70,7 @@ const SearchItem: React.FC = () => {
             autoFocus
           />
           <button className="absolute right-2" onClick={() => setShowInput(false)}>
-            <XIcon width={20} aria-hidden />
+            <XMarkIcon width={20} aria-hidden />
           </button>
         </>
       )}

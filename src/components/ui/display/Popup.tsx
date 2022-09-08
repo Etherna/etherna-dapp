@@ -14,9 +14,9 @@
  *  limitations under the License.
  *
  */
-import React, { forwardRef, useImperativeHandle, useRef, useState } from "react"
-import { usePopper } from "react-popper"
 
+import React, { forwardRef, useState } from "react"
+import { usePopper } from "react-popper"
 import { Popover } from "@headlessui/react"
 import type { Placement } from "@popperjs/core"
 import classNames from "classnames"
@@ -31,6 +31,7 @@ export type PopupProps = {
   arrowClassName?: string
   contentClassName?: string
   toggleClassName?: string
+  arrowSize?: number
   adjustSidebar?: boolean
   disabled?: boolean
 }
@@ -42,41 +43,6 @@ export type PopupArrowProps = {
   placement?: Placement
 }
 
-const PopupArrow = forwardRef<HTMLSpanElement, PopupArrowProps>(
-  ({ className, size = 16, style, placement }, ref) => {
-    return (
-      <span
-        className={classNames(
-          "absolute",
-          "before:absolute before:visible before:rotate-45",
-          "before:border before:border-gray-200 before:dark:border-gray-700",
-          "after:absolute after:visible",
-          "before:bg-white before:dark:bg-gray-800 after:bg-white after:dark:bg-gray-800",
-          placement && {
-            "bottom-0 mb-0.5": placement.startsWith("top"),
-            "top-0 mt-0.5": placement.startsWith("bottom"),
-            "right-0 mr-0.5": placement.startsWith("left"),
-            "top-0 ml-0.5": placement.startsWith("right"),
-            "after:-mt-[0.5px] after:rotate-45 after:scale-150":
-              placement.startsWith("bottom") || placement.startsWith("right"),
-            "after:origin-top after:translate-y-[7px] after:translate-x-1/2":
-              placement.startsWith("bottom"),
-            "after:origin-left after:translate-x-[7px] after:-translate-y-1/2":
-              placement.startsWith("right"),
-          },
-          className
-        )}
-        style={{
-          ...style,
-          width: size,
-          height: size,
-        }}
-        ref={ref}
-      />
-    )
-  }
-)
-
 const Popup: React.FC<PopupProps> = ({
   children,
   toggle,
@@ -85,6 +51,7 @@ const Popup: React.FC<PopupProps> = ({
   arrowClassName,
   contentClassName,
   toggleClassName,
+  arrowSize = 14,
   adjustSidebar,
   disabled,
 }) => {
@@ -96,6 +63,7 @@ const Popup: React.FC<PopupProps> = ({
     placement,
     modifiers: [
       { name: "arrow", options: { element: arrowElement } },
+      { name: "offset", options: { offset: [16, 16] } },
       {
         name: "preventOverflow",
         options: { altAxis: true, padding: 4 + (adjustSidebar ? sidebarWidth ?? 0 : 0) },
@@ -108,7 +76,7 @@ const Popup: React.FC<PopupProps> = ({
   }
 
   return (
-    <Popover as="nav" className={classNames("block", className)}>
+    <Popover as="div" className={className} data-component="popup">
       {({ open }) => (
         <>
           <Popover.Button
@@ -120,32 +88,18 @@ const Popup: React.FC<PopupProps> = ({
           </Popover.Button>
 
           <Popover.Panel
-            className={classNames(
-              "absolute opacity-0 pointer-events-none transition-opacity duration-75 z-20",
-              state?.placement && {
-                "mb-4": state.placement.startsWith("top"),
-                "mt-4": state.placement.startsWith("bottom"),
-                "mr-4": state.placement.startsWith("left"),
-                "ml-4": state.placement.startsWith("right"),
-              },
-              {
-                "visible pointer-events-auto opacity-100": open,
-              }
-            )}
+            className={classNames("absolute z-20", {
+              hidden: !open,
+              flex: open,
+            })}
             ref={setPopperElement}
             style={styles.popper}
             {...attributes.popper}
           >
             <div
               className={classNames(
-                "px-6 py-4 rounded-md min-w-[240px] max-w-sm shadow-xl",
-                "bg-white before:dark:bg-gray-800",
-                state?.placement && {
-                  "mb-2.5 py-6": state.placement.startsWith("top"),
-                  "mt-2.5 py-6": state.placement.startsWith("bottom"),
-                  "mr-2.5": state.placement.startsWith("left"),
-                  "ml-2.5": state.placement.startsWith("right"),
-                },
+                "min-w-[240px] rounded-md px-6 py-4 shadow-xl sm:max-w-[98vw]",
+                "bg-white dark:bg-gray-800",
                 contentClassName
               )}
             >
@@ -155,6 +109,7 @@ const Popup: React.FC<PopupProps> = ({
               className={arrowClassName}
               style={styles.arrow}
               placement={state?.placement}
+              size={arrowSize}
               ref={setArrowElement}
             />
           </Popover.Panel>
@@ -165,5 +120,51 @@ const Popup: React.FC<PopupProps> = ({
     </Popover>
   )
 }
+
+const PopupArrow = forwardRef<HTMLSpanElement, PopupArrowProps>(
+  ({ className, size = 16, style, placement }, ref) => {
+    if (!placement) return null
+    return (
+      <span
+        className={classNames("block origin-center", className)}
+        style={{
+          ...style,
+          width: size,
+          height: size,
+          bottom: placement.startsWith("top") ? -size : undefined,
+          top: placement.startsWith("bottom") ? -size : undefined,
+          right: placement.startsWith("left") ? -size : undefined,
+          left: placement.startsWith("right") ? -size : undefined,
+        }}
+        ref={ref}
+      >
+        <span
+          className={classNames(
+            "absolute -left-0.5 bottom-0 block h-0 w-0 origin-center",
+            "border border-transparent border-t-transparent",
+            "border-b-white dark:border-b-gray-800",
+            {
+              "rotate-90": placement === "right",
+            }
+          )}
+          style={{ borderWidth: size / 2 + 2 }}
+        />
+        <span
+          className={classNames(
+            "absolute block h-0 w-0",
+            "border border-transparent",
+            "border-b-white dark:border-b-gray-800",
+            {
+              "-rotate-90": placement === "right",
+              "rotate-90": placement === "left",
+              "rotate-180": placement === "top",
+            }
+          )}
+          style={{ borderWidth: size / 2 }}
+        />
+      </span>
+    )
+  }
+)
 
 export default Popup

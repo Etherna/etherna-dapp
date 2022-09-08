@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,19 +14,19 @@
  *  limitations under the License.
  */
 
-import Axios from "axios"
 import type { BatchId } from "@ethersphere/bee-js"
+import Axios from "axios"
 
 import SwarmVideoIO from "."
-import SwarmImageIO from "@/classes/SwarmImage"
-import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
-import { BatchUpdateType } from "@/stores/batches"
-import { getVideoDuration, getVideoResolution } from "@/utils/media"
-import type { SwarmVideoUploadOptions, SwarmVideoWriterOptions } from "./types"
 import type { AnyBatch } from "../SwarmBatchesManager/types"
-import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@/definitions/swarm-video"
+import type { SwarmVideoUploadOptions, SwarmVideoWriterOptions } from "./types"
+import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
+import SwarmImageIO from "@/classes/SwarmImage"
 import type { SwarmImageRaw } from "@/definitions/swarm-image"
 import type { Profile } from "@/definitions/swarm-profile"
+import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@/definitions/swarm-video"
+import { BatchUpdateType } from "@/stores/batches"
+import { getVideoDuration, getVideoResolution } from "@/utils/media"
 
 /**
  * Load/Update video info over swarm
@@ -112,7 +112,7 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
   set videoRaw(value: SwarmVideoRaw) {
     this._videoRaw = {
       ...this._videoRaw,
-      ...value
+      ...value,
     }
   }
 
@@ -125,9 +125,9 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
 
   /**
    * Update video meta on swarm & reference on index.
-   * 
+   *
    * @param ownerProfile Profile data of the owner (assigned to `this.video` object) - optional when updating
-   * @returns The reference hash of the video  
+   * @returns The reference hash of the video
    */
   async update(ownerProfile?: Profile): Promise<string> {
     if (!this._videoRaw.sources.length) throw new Error("Please add at least 1 video source")
@@ -168,11 +168,12 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
     try {
       await Promise.allSettled([
         this.beeClient.unpin(this.reference),
-        ...Object.entries(this._videoRaw.thumbnail?.sources ?? {})
-          .map(([_, reference]) => this.beeClient.unpin(reference)),
+        ...Object.entries(this._videoRaw.thumbnail?.sources ?? {}).map(([_, reference]) =>
+          this.beeClient.unpin(reference)
+        ),
         ...this._videoRaw.sources.map(source => this.beeClient.unpin(source.reference)),
       ])
-    } catch { }
+    } catch {}
   }
 
   async addVideoSource(video: ArrayBuffer, contentType: string, opts?: SwarmVideoUploadOptions) {
@@ -222,15 +223,12 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
       }),
     })
 
-    const reference = (await this.beeClient.uploadFile(
-      this.getBatchId(batch),
-      new Uint8Array(video),
-      undefined,
-      {
+    const reference = (
+      await this.beeClient.uploadFile(this.getBatchId(batch), new Uint8Array(video), undefined, {
         contentType,
         fetch,
-      }
-    )).reference
+      })
+    ).reference
 
     // update available space
     await this.refreshBatch(batch)
@@ -242,7 +240,10 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
       bitrate,
     })
 
-    if (SwarmVideoIO.getSourceQuality(quality) > SwarmVideoIO.getSourceQuality(this._videoRaw.originalQuality)) {
+    if (
+      SwarmVideoIO.getSourceQuality(quality) >
+      SwarmVideoIO.getSourceQuality(this._videoRaw.originalQuality)
+    ) {
       this._videoRaw.originalQuality = quality
     }
 
@@ -337,10 +338,14 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
       duration: video.duration,
       originalQuality: video.originalQuality ?? `${NaN}p`,
       ownerAddress: video.ownerAddress ?? "0x0",
-      createdAt: video.creationDateTime ? +new Date(video.creationDateTime) : video.createdAt ?? +new Date(),
-      thumbnail: video.thumbnail ? new SwarmImageIO.Reader(video.thumbnail, {
-        beeClient: this.beeClient
-      }).imageRaw : null,
+      createdAt: video.creationDateTime
+        ? +new Date(video.creationDateTime)
+        : video.createdAt ?? +new Date(),
+      thumbnail: video.thumbnail
+        ? new SwarmImageIO.Reader(video.thumbnail, {
+            beeClient: this.beeClient,
+          }).imageRaw
+        : null,
       sources: video.sources.map(source => ({
         reference: source.reference,
         quality: source.quality,

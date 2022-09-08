@@ -116,6 +116,11 @@ module.exports = {
           },
         },
       },
+      textShadow: {
+        sm: "0 1px 2px var(--tw-shadow-color)",
+        DEFAULT: "0 2px 4px var(--tw-shadow-color)",
+        lg: "0 8px 16px var(--tw-shadow-color)",
+      },
       zIndex: {
         "-1": "-1",
         1: "1",
@@ -130,7 +135,7 @@ module.exports = {
     require("@tailwindcss/line-clamp"),
     require("tailwind-scrollbar"),
     require("tailwindcss-safe-area"),
-    plugin(({ addUtilities, addVariant, addComponents, e }) => {
+    plugin(({ addUtilities, addVariant, addComponents, e, matchUtilities, theme }) => {
       const utils = {
         ".absolute-center": {
           position: "absolute",
@@ -143,6 +148,15 @@ module.exports = {
       }
 
       addUtilities(utils, ["responsive"])
+
+      matchUtilities(
+        {
+          "text-shadow": value => ({
+            textShadow: value,
+          }),
+        },
+        { values: theme("textShadow") }
+      )
 
       const components = {}
 
@@ -169,6 +183,24 @@ module.exports = {
       addVariant("fixed-sidebar", ({ modifySelectors, separator }) => {
         modifySelectors(({ className }) => {
           return `[data-sidebar-floating="false"] .${e(`fixed-sidebar${separator}${className}`)}`
+        })
+      })
+
+      addVariant("playing", ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `[data-playing="true"] .${e(`playing${separator}${className}`)}`
+        })
+      })
+
+      addVariant("paused", ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `[data-playing="false"] .${e(`paused${separator}${className}`)}`
+        })
+      })
+
+      addVariant("mouse-idle", ({ modifySelectors, separator }) => {
+        modifySelectors(({ className }) => {
+          return `[data-mouse-idle="true"] .${e(`mouse-idle${separator}${className}`)}`
         })
       })
     }),

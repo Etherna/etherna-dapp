@@ -14,8 +14,8 @@
  *  limitations under the License.
  *
  */
-import React from "react"
 
+import React from "react"
 import type { Placement } from "@popperjs/core"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
@@ -50,24 +50,24 @@ const Tooltip: React.FC<TooltipProps> = ({
   return (
     <Tippy
       className={classNames(
-        "w-auto max-w-xxs normal-case font-normal leading-normal px-3 py-2 rounded-md",
+        "w-auto max-w-xxs rounded-md px-3 py-2 font-normal normal-case leading-normal",
         "shadow-2xl shadow-gray-500/20 dark:shadow-white/40",
         {
-          "bg-white dark:bg-black text-black dark:text-white": !invert && !color,
+          "bg-white text-black dark:bg-black dark:text-white": !invert && !color,
           "[&_.tippy-arrow]:text-white [&_.tippy-arrow]:dark:text-black": !invert && !color,
-          "bg-black dark:bg-white text-white dark:text-black": invert && !color,
+          "bg-black text-white dark:bg-white dark:text-black": invert && !color,
           "[&_.tippy-arrow]:text-black [&_.tippy-arrow]:dark:text-white": invert && !color,
-          "bg-gray-400 dark:bg-gray-400 text-white dark:text-white": color === "secondary",
+          "bg-gray-400 text-white dark:bg-gray-400 dark:text-white": color === "secondary",
           "[&_.tippy-arrow]:text-gray-400 [&_.tippy-arrow]:dark:text-gray-400":
             color === "secondary",
-          "bg-blue-500 dark:bg-blue-500 text-white dark:text-white": color === "success",
+          "bg-blue-500 text-white dark:bg-blue-500 dark:text-white": color === "success",
           "[&_.tippy-arrow]:text-blue-500 [&_.tippy-arrow]:dark:text-blue-500": color === "success",
-          "bg-yellow-500 dark:bg-yellow-500 text-white dark:text-white": color === "warning",
+          "bg-yellow-500 text-white dark:bg-yellow-500 dark:text-white": color === "warning",
           "[&_.tippy-arrow]:text-yellow-500 [&_.tippy-arrow]:dark:text-yellow-500":
             color === "warning",
-          "bg-red-500 dark:bg-red-500 text-white dark:text-white": color === "error",
+          "bg-red-500 text-white dark:bg-red-500 dark:text-white": color === "error",
           "[&_.tippy-arrow]:text-red-500 [&_.tippy-arrow]:dark:text-red-500": color === "error",
-          "bg-pink-500 dark:bg-pink-500 text-white dark:text-white": color === "alert",
+          "bg-pink-500 text-white dark:bg-pink-500 dark:text-white": color === "alert",
           "[&_.tippy-arrow]:text-pink-500 [&_.tippy-arrow]:dark:text-pink-500": color === "alert",
           "text-center": center,
         },

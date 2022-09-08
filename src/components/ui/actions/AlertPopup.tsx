@@ -14,12 +14,12 @@
  *  limitations under the License.
  *
  */
-import React, { Fragment, useCallback, useEffect, useMemo } from "react"
 
+import React, { Fragment, useCallback, useEffect, useMemo } from "react"
 import { Dialog, Transition } from "@headlessui/react"
 import classNames from "classnames"
 
-import { CheckCircleIcon, ExclamationIcon } from "@heroicons/react/solid"
+import { CheckCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/24/solid"
 
 import { isBotUserAgent } from "@/utils/browser"
 
@@ -55,7 +55,7 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
         return <CheckCircleIcon {...props} />
       }
       if (icon === "error") {
-        return <ExclamationIcon {...props} />
+        return <ExclamationTriangleIcon {...props} />
       }
       if (typeof icon === "string") {
         return <img src={icon} alt="" {...props} />
@@ -101,13 +101,14 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
   if (isBotUserAgent()) return null
 
   return (
-    <Transition.Root show={show} as={Fragment}>
+    <Transition show={show} as={Fragment} appear>
       <Dialog
         as="div"
         className={classNames(
-          "invisible fixed inset-0 bg-gray-900/0 flex items-center justify-center",
-          "transition duration-300 z-200",
+          "fixed inset-0 flex items-center justify-center bg-gray-900/0",
+          "z-200 transition duration-300",
           {
+            invisible: !show,
             "visible bg-gray-900/60": show,
           }
         )}
@@ -128,27 +129,27 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
         >
           <Dialog.Panel
             className={classNames(
-              "flex flex-col flex-shrink flex-grow-0 basis-72 shadow-2xl max-w-full p-5 -m-2 rounded-lg",
-              "bg-gray-100 border border-gray-400 dark:bg-gray-800 dark:border-gray-600"
+              "-m-2 flex max-w-full flex-shrink flex-grow-0 basis-72 flex-col rounded-lg p-5 shadow-2xl",
+              "border border-gray-400 bg-gray-100 dark:border-gray-600 dark:bg-gray-800"
             )}
           >
             <div className="m-2">
               {icon && (
                 <figure
                   className={classNames(
-                    "flex items-center justify-center w-16 h-16 mx-auto",
-                    "text-gray-500 dark:text-gray-400;"
+                    "mx-auto mb-3 flex h-16 w-16 items-center justify-center",
+                    "text-gray-600 dark:text-gray-300"
                   )}
                 >
-                  <Icon className="w-full h-full object-contain object-center" />
+                  <Icon className="h-full w-full object-contain object-center" />
                 </figure>
               )}
 
               {title && (
                 <Dialog.Title
                   className={classNames(
-                    "text-lg font-bold text-center leading-tight",
-                    "text-gray-900 dark:text-gray-100;"
+                    "text-center text-lg font-bold leading-tight",
+                    "text-gray-900 dark:text-gray-100"
                   )}
                 >
                   {title}
@@ -158,15 +159,15 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
               {message && (
                 <Dialog.Description
                   className={classNames(
-                    "font-semibold text-center leading-tight",
-                    "text-gray-700 dark:text-gray-300;"
+                    "mt-2 text-center font-semibold leading-tight",
+                    "text-gray-700 dark:text-gray-400"
                   )}
                 >
                   {message}
                 </Dialog.Description>
               )}
 
-              <div className="flex flex-col space-y-4 -mx-1">
+              <div className="-mx-1 mt-4 flex flex-col space-y-2">
                 {(!actions || actions.length === 0) && (
                   <AlertPopupAction
                     title="OK"
@@ -189,16 +190,16 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
           </Dialog.Panel>
         </Transition.Child>
       </Dialog>
-    </Transition.Root>
+    </Transition>
   )
 }
 
 const AlertPopupAction: React.FC<AlertAction> = ({ title, type, action }) => (
   <button
     className={classNames(
-      "flex-1 rounded-md p-1.5 m-1 font-semibold text-sm",
+      "m-1 flex-1 rounded-md p-1.5 text-sm font-semibold",
       "bg-gray-500 text-gray-100 active:bg-gray-700",
-      "focus:ring-0 focus:outline-none transition-colors duration-200",
+      "transition-colors duration-200 focus:outline-none focus:ring-0",
       {
         "bg-blue-500 active:bg-blue-700": type === "default",
         "bg-red-500 active:bg-red-500": type === "destructive",

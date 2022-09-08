@@ -14,15 +14,13 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
-
 import classNames from "classnames"
-
-import classes from "@/styles/components/common/Capacity.module.scss"
 
 import { clamp } from "@/utils/math"
 
-type CapacityProps = {
+export type CapacityProps = {
   className?: string
   value: number
   limit: number
@@ -46,7 +44,7 @@ const Capacity: React.FC<CapacityProps> = ({
   return (
     <div
       className={classNames(
-        "relative w-14 h-2.5 rounded overflow-hidden bg-gray-200 dark:bg-gray-700",
+        "relative h-2.5 w-14 overflow-hidden rounded bg-gray-200 dark:bg-gray-700",
         className
       )}
       aria-valuemin={0}
@@ -56,10 +54,11 @@ const Capacity: React.FC<CapacityProps> = ({
       style={{
         width: typeof width === "number" ? `${width}px` : width,
       }}
+      data-component="capacity"
     >
       <span
         className={classNames("absolute bg-primary-400", {
-          "left-0 inset-y-0": !isLoading,
+          "inset-y-0 left-0": !isLoading,
           "inset-0 w-full": isLoading,
           "bg-yellow-400 dark:bg-yellow-400": color === undefined && percent > 40,
           "bg-red-500 dark:bg-red-500": color === "error" || (color === undefined && percent > 65),

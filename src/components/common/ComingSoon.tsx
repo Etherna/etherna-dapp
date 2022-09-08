@@ -14,9 +14,10 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
-import { ClockIcon } from "@heroicons/react/outline"
+import { ClockIcon } from "@heroicons/react/24/outline"
 
 type ComingSoonProps = {
   title?: string
@@ -25,10 +26,10 @@ type ComingSoonProps = {
 
 const ComingSoon: React.FC<ComingSoonProps> = ({ title = "Coming Soon!", description }) => {
   return (
-    <div className="w-full h-full">
-      <div className="w-full max-w-lg m-auto flex flex-col">
-        <h2 className="flex items-center text-lg lg:text-2xl font-bold">
-          <ClockIcon className="h-[1.2em] mr-2" aria-hidden />
+    <div className="h-full w-full">
+      <div className="m-auto flex w-full max-w-lg flex-col">
+        <h2 className="flex items-center text-lg font-bold lg:text-2xl">
+          <ClockIcon className="mr-2 h-[1.2em]" aria-hidden />
           {title}
         </h2>
         <a href="https://info.etherna.io/#roadmap" target="_blank" rel="noreferrer">

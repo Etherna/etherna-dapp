@@ -14,13 +14,13 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback, useMemo, useRef } from "react"
+
+import React, { useCallback, useMemo } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { Listbox } from "@headlessui/react"
 import classNames from "classnames"
 
-import classes from "@/styles/components/navigation/DropdownSidebar.module.scss"
-import { SelectorIcon } from "@heroicons/react/solid"
+import { ChevronUpDownIcon } from "@heroicons/react/24/solid"
 
 type DropdownSidebarProps = {
   children?: React.ReactNode
@@ -76,24 +76,25 @@ const DropdownSidebar: React.FC<DropdownSidebarProps> = ({ className, defaultTit
         <>
           <Listbox.Button
             className={classNames(
-              "flex items-center w-full px-4 py-3 rounded lg:hidden",
+              "flex w-full items-center rounded px-4 py-3 lg:hidden",
               "border border-gray-600 dark:border-gray-400",
               "transition-colors duration-75 active:bg-gray-500/10"
             )}
           >
             {activeItem?.props.iconSvg}
             {activeItem?.props.title ?? defaultTitle}
-            <SelectorIcon className="h-[1.25em] ml-auto mr-0" />
+            <ChevronUpDownIcon className="ml-auto mr-0 h-[1.25em]" />
           </Listbox.Button>
 
           <Listbox.Options
             className={classNames(
-              "hidden flex-col absolute top-full inset-x-0 mt-2 p-4 space-y-2 z-10 rounded",
+              "absolute inset-x-0 top-full z-10 mt-2 flex-col space-y-2 rounded p-4",
               "bg-gray-50 dark:bg-gray-800",
-              "border border-gray-100 dark:border-gray-700 shadow-lg",
+              "border border-gray-100 shadow-lg dark:border-gray-700",
               "shadow-gray-800/20 focus:outline-none",
-              "lg:static lg:flex lg:mt-0 lg:p-0 lg:border-none lg:bg-transparent lg:dark:bg-transparent lg:shadow-none",
+              "lg:static lg:mt-0 lg:flex lg:border-none lg:bg-transparent lg:p-0 lg:shadow-none lg:dark:bg-transparent",
               {
+                hidden: !open,
                 flex: open,
               }
             )}

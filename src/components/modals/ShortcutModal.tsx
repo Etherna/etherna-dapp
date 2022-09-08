@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React, { useEffect, useState, useRef, useCallback } from "react"
 import classNames from "classnames"
 
-import { ExclamationIcon } from "@heroicons/react/solid"
+import { ExclamationTriangleIcon } from "@heroicons/react/24/solid"
 
 import { Button, Modal } from "@/components/ui/actions"
 import { Kbd } from "@/components/ui/display"
@@ -95,7 +96,7 @@ const ShortcutModal: React.FC<ShortcutModalProsp> = ({ show = false }) => {
       <div
         ref={editorRef}
         className={classNames(
-          "my-5 p-12 flex relative w-full rounded-lg",
+          "relative my-5 flex w-full rounded-lg p-12",
           "bg-gray-200 dark:bg-gray-800",
           "focus:outline-none focus:ring",
           {
@@ -109,8 +110,8 @@ const ShortcutModal: React.FC<ShortcutModalProsp> = ({ show = false }) => {
         {shortcut && (
           <Kbd
             className={classNames(
-              "absolute-center text-6xl w-full text-center text-gray-500 pointer-events-none",
-              "[&>*]:leading-none [&>*]:align-baseline",
+              "pointer-events-none w-full text-center text-6xl text-gray-500 absolute-center",
+              "[&>*]:align-baseline [&>*]:leading-none",
               "[&_kbd]:border-b-0"
             )}
             shortcut={shortcut}
@@ -118,8 +119,8 @@ const ShortcutModal: React.FC<ShortcutModalProsp> = ({ show = false }) => {
         )}
       </div>
       {existingShortcut && (
-        <div className="flex items-center my-4">
-          <ExclamationIcon className="mr-2" width="16" />
+        <div className="my-4 flex items-center">
+          <ExclamationTriangleIcon className="mr-2" width="16" />
           <span>
             Shortcut already set for: <strong>{lang.get(`player.${existingShortcut}`)}</strong>
           </span>

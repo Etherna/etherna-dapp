@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,7 @@
 
 /**
  * Check if current browser doesn't support some features used within the app
- * 
+ *
  * @returns True if legacy browser
  */
 export const checkIsLegacyBrowser = () => {
@@ -32,11 +32,14 @@ export const checkIsLegacyBrowser = () => {
   if (typeof URL.revokeObjectURL === "undefined") return true
   if (typeof fetch === "undefined") return true
   if (
-    typeof (window.requestAnimationFrame ||
+    typeof (
+      window.requestAnimationFrame ||
       window.webkitRequestAnimationFrame ||
       window.mozRequestAnimationFrame ||
-      window.msRequestAnimationFrame) === "undefined"
-  ) return true
+      window.msRequestAnimationFrame
+    ) === "undefined"
+  )
+    return true
   if (!supportCssGrid()) return true
   if (!supportCssVariables()) return true
   return false
@@ -56,7 +59,11 @@ const supportCssVariables = () => {
 
   s.innerHTML = ":root { --tmp-var: bold; }"
   document.head.appendChild(s)
-  support = !!(window.CSS && window.CSS.supports && window.CSS.supports("font-weight", "var(--tmp-var)"))
+  support = !!(
+    window.CSS &&
+    window.CSS.supports &&
+    window.CSS.supports("font-weight", "var(--tmp-var)")
+  )
   s.parentNode!.removeChild(s)
   return support
 }
@@ -101,9 +108,11 @@ export const checkIsMobileDevice = () => {
  * Check if current device is touch
  */
 export const isTouchDevice = () => {
-  return (("ontouchstart" in window) ||
-    (navigator.maxTouchPoints > 0) ||
-    ((navigator.msMaxTouchPoints ?? 0) > 0))
+  return (
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0 ||
+    (navigator.msMaxTouchPoints ?? 0) > 0
+  )
 }
 
 /**

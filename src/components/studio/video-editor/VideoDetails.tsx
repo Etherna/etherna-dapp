@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useRef } from "react"
 
 import type { ThumbnailUploadHandlers } from "./ThumbnailUpload"

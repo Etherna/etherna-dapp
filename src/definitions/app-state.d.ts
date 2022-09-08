@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,17 +14,17 @@
  *  limitations under the License.
  */
 
-import type Lang from "lang.js"
 import type { Crop } from "react-image-crop"
+import type Lang from "lang.js"
 
+import type { GatewayBatch } from "./api-gateway"
+import type { GatewayType } from "./extension-host"
+import type { Keymap, KeymapNamespace } from "./keyboard"
+import type { SwarmImage } from "./swarm-image"
 import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
 import type EthernaIndexClient from "@/classes/EthernaIndexClient"
 import type EthernaSSOClient from "@/classes/EthernaSSOClient"
 import type SwarmBeeClient from "@/classes/SwarmBeeClient"
-import type { SwarmImage } from "./swarm-image"
-import type { Keymap, KeymapNamespace } from "./keyboard"
-import type { GatewayBatch } from "./api-gateway"
-import type { GatewayType } from "./extension-host"
 
 export type AppState = {
   env: EnvState

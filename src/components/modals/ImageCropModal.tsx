@@ -14,10 +14,9 @@
  *  limitations under the License.
  *
  */
-import React, { useState, useMemo, useCallback, useEffect } from "react"
-import type { Crop } from "react-image-crop"
 
-import "@/styles/overrides/react-slider.scss"
+import React, { useState, useMemo, useCallback } from "react"
+import type { Crop } from "react-image-crop"
 
 import ImageCropper from "@/components/media/ImageCropper"
 import { Button, Modal } from "@/components/ui/actions"

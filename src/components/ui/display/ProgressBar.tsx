@@ -14,13 +14,13 @@
  *  limitations under the License.
  *
  */
-import React from "react"
 
+import React from "react"
 import classNames from "classnames"
 
-const clamp = (value: number, min: number, max: number) => Math.min(Math.max(min, value), max)
+import { clamp } from "@/utils/math"
 
-type ProgressBarProps = {
+export type ProgressBarProps = {
   className?: string
   progress?: number
   indeterminate?: boolean
@@ -33,6 +33,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ className, progress = 0, inde
         "relative block h-1 w-full overflow-hidden rounded-full bg-gray-300/50 dark:bg-gray-700/50",
         className
       )}
+      data-component="progress-bar"
     >
       <div
         className={classNames("h-full rounded-full bg-primary-500 text-primary-500", {

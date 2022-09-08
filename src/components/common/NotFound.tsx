@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import { Link } from "react-router-dom"
 
@@ -29,10 +30,10 @@ const NotFound: React.FC<NotFoundProps> = ({
   showBackLink,
 }) => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
-      <h1 className="text-2xl flex items-center -mt-16">
-        <span className="py-3 pr-6 mr-6 border-r border-gray-300 dark:border-gray-600">404</span>
-        <span className="font-normal text-base">{message}</span>
+    <div className="flex min-h-screen flex-col items-center justify-center">
+      <h1 className="-mt-16 flex items-center text-2xl">
+        <span className="mr-6 border-r border-gray-300 py-3 pr-6 dark:border-gray-600">404</span>
+        <span className="text-base font-normal">{message}</span>
       </h1>
       {showBackLink && <Link to={routes.home}>← Back to Etherna</Link>}
     </div>

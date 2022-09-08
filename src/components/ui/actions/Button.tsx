@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
 import classNames from "classnames"
@@ -50,18 +51,7 @@ export type ButtonProps = {
   loading?: boolean
   disabled?: boolean
   onClick?(e: React.MouseEvent): void
-} & (
-  | {
-      as?: "button" | "a" | "span" | "div"
-    }
-  | {
-      as: "a"
-      href: string
-      rel?: string
-      target?: "_blank"
-      routeState?: any
-    }
-)
+}
 
 const Button: React.FC<ButtonProps> = ({
   as = "button",
@@ -116,12 +106,16 @@ const Button: React.FC<ButtonProps> = ({
   return (
     <As
       className={classNames(
-        "inline-flex items-center whitespace-nowrap  font-medium leading-4",
+        "inline-flex items-center justify-center whitespace-nowrap leading-4",
         "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2",
         {
-          "text-sm px-3 py-2": !small && !large,
-          "py-1 px-3": small,
-          "text-base py-3 px-8": large,
+          "font-medium": small,
+          "font-semibold": !small,
+          "text-sm": !small && !large,
+          "px-3 py-2": !small && !large && aspect !== "text",
+          "py-1 px-3": small && aspect !== "text",
+          "text-base": large,
+          "py-3 px-8": large && aspect !== "text",
           border: aspect === "outline",
         },
         isRoundable && {
@@ -152,15 +146,35 @@ const Button: React.FC<ButtonProps> = ({
           "border-sky-500 text-sky-500 active:border-sky-600 active:bg-primary-500/10":
             color === "info" && aspect === "outline",
           "text-sky-500 active:text-sky-600": color === "info" && aspect === "text",
+          "bg-gray-500 text-white active:bg-gray-600": color === "muted" && aspect === "fill",
+          "border-gray-500 text-gray-500 active:bg-gray-600/10 dark:active:bg-gray-500/10":
+            color === "muted" && aspect === "outline",
+          "text-gray-500 active:text-gray-600 dark:text-gray-400 dark:active:text-gray-500":
+            color === "muted" && aspect === "text",
+          "bg-indigo-500 text-white active:bg-indigo-600":
+            color === "secondary" && aspect === "fill",
+          "border-indigo-500 text-indigo-500 active:border-indigo-600 active:bg-primary-500/10":
+            color === "secondary" && aspect === "outline",
+          "text-indigo-500 active:text-indigo-600": color === "secondary" && aspect === "text",
+          "bg-gray-900 text-white active:bg-black": color === "inverted" && aspect === "fill",
+          "dark:bg-gray-100 dark:text-black dark:active:bg-white":
+            color === "inverted" && aspect === "fill",
+          "border-gray-900 text-gray-900 active:border-black active:bg-black/10":
+            color === "inverted" && aspect === "outline",
+          "dark:border-gray-100 dark:text-gray-100 dark:active:border-white dark:active:bg-white/10":
+            color === "inverted" && aspect === "outline",
+          "text-gray-900 active:text-black": color === "inverted" && aspect === "text",
+          "dark:text-gray-100 dark:active:text-white": color === "inverted" && aspect === "text",
+          "active:bg-gray-500/10 dark:active:bg-gray-400/10": color === "transparent",
           "bg-opacity-50 active:bg-opacity-70": lighter,
         },
         disabled && {
           "cursor-not-allowed": true,
-          "bg-gray-300/50 text-gray-600/50 dark:bg-gray-700/50 dark:text-gray-300/50":
-            aspect === "fill",
+          "bg-gray-300/50 dark:bg-gray-700/50": aspect === "fill" && color !== "transparent",
+          "text-gray-600/50 dark:text-gray-300/50": aspect === "fill",
           "bg-gray-300/50 text-gray-300/50 dark:bg-gray-700/50 dark:text-gray-700/50":
             aspect === "outline",
-          "text-gray-300/50 dark:text-gray-700/50": aspect === "text",
+          "text-gray-700/50 dark:text-gray-200/50": aspect === "text",
         },
         className
       )}

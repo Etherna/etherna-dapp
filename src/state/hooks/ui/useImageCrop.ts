@@ -13,11 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import type { Crop } from "react-image-crop"
-import { useDispatch, useStore } from "react-redux"
+import { useDispatch } from "react-redux"
 import type { Dispatch } from "redux"
 
-import type { AppState } from "@/definitions/app-state"
 import type { UIActions } from "@/state/reducers/uiReducer"
 import { UIActionTypes } from "@/state/reducers/uiReducer"
 import { fileToDataURL } from "@/utils/buffer"
@@ -25,7 +25,6 @@ import { fileToDataURL } from "@/utils/buffer"
 let resolveCropData: ((crop: Partial<Crop> | undefined) => void) | undefined
 
 export default function useImageCrop() {
-  const getState = useStore<AppState>().getState
   const dispatch = useDispatch<Dispatch<UIActions>>()
 
   const cropImage = async (file: File, type: "avatar" | "cover") => {
@@ -64,9 +63,7 @@ export default function useImageCrop() {
       })
     }
 
-    if (cropData) {
-      resolveCropData?.(cropData)
-    }
+    resolveCropData?.(cropData)
   }
 
   return {

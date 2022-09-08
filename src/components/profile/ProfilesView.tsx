@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useState, useEffect } from "react"
+
+import React, { useState, useEffect, useCallback } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
 import ProfilePreview from "./ProfilePreview"
@@ -24,7 +25,7 @@ import useSelector from "@/state/useSelector"
 
 const FETCH_COUNT = 10
 
-const ProfilesView = () => {
+const ProfilesView: React.FC = () => {
   const { indexClient } = useSelector(state => state.env)
   const [profiles, setProfiles] = useState<IndexUser[]>()
   const [page, setPage] = useState(0)
@@ -35,7 +36,7 @@ const ProfilesView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const fetchProfiles = async () => {
+  const fetchProfiles = useCallback(async () => {
     // increment page to avoid requests at the same page
     setPage(page + 1)
 
@@ -52,7 +53,7 @@ const ProfilesView = () => {
       setProfiles(profiles || [])
       setHasMore(false)
     }
-  }
+  }, [indexClient, page, profiles])
 
   return (
     <div className="mt-6">

@@ -14,11 +14,23 @@
  *  limitations under the License.
  *
  */
-import React, { startTransition, useEffect, useImperativeHandle, useMemo, useState } from "react"
+
+import React, {
+  startTransition,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from "react"
 import { useNavigate } from "react-router"
 
-import { ClipboardListIcon } from "@heroicons/react/outline"
-import { EyeIcon, FilmIcon } from "@heroicons/react/solid"
+import {
+  ClipboardDocumentIcon,
+  ExclamationCircleIcon,
+  EyeIcon,
+  FilmIcon,
+} from "@heroicons/react/24/solid"
 
 import VideoDetails from "./VideoDetails"
 import VideoExtra from "./VideoExtra"
@@ -118,7 +130,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
   useEffect(() => {
     setBatchStatus(undefined)
 
-    if (reference && !videoWriter.videoRaw.batchId) {
+    if ((hasChanges || reference) && !videoWriter.videoRaw.batchId) {
       setRequiresMigration(true)
     }
 
@@ -145,16 +157,17 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videoWriter])
 
-  const resetAll = () => {
+  const resetAll = useCallback(() => {
     resetState()
     resetSaveState()
+    setRequiresMigration(false)
 
     if (videoWriter.videoRaw.batchId) {
       removeBatchUpdate(videoWriter.videoRaw.batchId)
     }
-  }
+  }, [resetSaveState, resetState, removeBatchUpdate, videoWriter.videoRaw.batchId])
 
-  const askToClearState = async () => {
+  const askToClearState = useCallback(async () => {
     const clear = await waitConfirmation(
       "Clear all",
       "Are you sure you want to clear the upload data? This action cannot be reversed.",
@@ -162,9 +175,9 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
       "destructive"
     )
     clear && resetAll()
-  }
+  }, [resetAll, waitConfirmation])
 
-  const createBatch = async () => {
+  const createBatch = useCallback(async () => {
     setBatchLoadErrored(false)
 
     const totalSize =
@@ -178,13 +191,13 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
     } catch (error: any) {
       showError("Cannot create batch", getResponseErrorMessage(error))
     }
-  }
+  }, [showError, videoWriter])
 
-  const migrate = async () => {
+  const migrate = useCallback(async () => {
     setIsMigrating(true)
     await createBatch()
     setIsMigrating(false)
-  }
+  }, [createBatch])
 
   if (saveRedirect) {
     resetAll()
@@ -199,9 +212,15 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
         <WalletState />
 
         {requiresMigration && !isMigrating && (
-          <Alert color="warning">
-            <p>This video requires a migration.</p>
-            <Button onClick={migrate}>Start migration</Button>
+          <Alert
+            title="Missing postage batch"
+            icon={<ExclamationCircleIcon aria-hidden />}
+            color="warning"
+          >
+            <p>Start a video migration to create a postage batch for this video.</p>
+            <Button className="mt-2" color="warning" onClick={migrate}>
+              Start migration
+            </Button>
           </Alert>
         )}
 
@@ -218,7 +237,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
                 batchStatus === "creating" ? "create" : "load"
               } your postage batch.` +
               `\n` +
-              `Postage bastches are used to distribute your video to the network.`
+              `Postage batches are used to distribute your video to the swarm network.`
             }
             error={
               batchLoadErrored
@@ -286,7 +305,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
                 <ProgressTab.Link
                   tabKey="details"
                   title="Details"
-                  iconSvg={<ClipboardListIcon />}
+                  iconSvg={<ClipboardDocumentIcon />}
                   text="Title, description, ..."
                 />
                 <ProgressTab.Link

@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 
-import GatewayUsersClient from "./GatewayUsersClient"
-import GatewaySystemClient from "./GatewaySystemClient"
-import GatewayResourcesClient from "./GatewayResourcesClient"
 import GatewayPostageClient from "./GatewayPostageClient"
-import { isSafeURL, safeURL, urlOrigin } from "@/utils/urls"
-import { parseLocalStorage } from "@/utils/local-storage"
+import GatewayResourcesClient from "./GatewayResourcesClient"
+import GatewaySystemClient from "./GatewaySystemClient"
+import GatewayUsersClient from "./GatewayUsersClient"
 import type { GatewayClientOptions } from "@/definitions/api-gateway"
+import { parseLocalStorage } from "@/utils/local-storage"
+import { isSafeURL, safeURL, urlOrigin } from "@/utils/urls"
 
 export default class EthernaGatewayClient {
   url: string
@@ -35,7 +35,7 @@ export default class EthernaGatewayClient {
 
   /**
    * Init an gateway client
-   * 
+   *
    * @param options Client options
    */
   constructor(options: GatewayClientOptions) {
@@ -61,7 +61,7 @@ export default class EthernaGatewayClient {
 
   /**
    * Redirect to login page
-   * 
+   *
    * @param returnUrl Redirect url after login (default = null)
    */
   loginRedirect(returnUrl: string | null = null) {
@@ -71,7 +71,7 @@ export default class EthernaGatewayClient {
 
   /**
    * Redirect to logout page
-   * 
+   *
    * @param returnUrl Redirect url after logout (default = null)
    */
   logoutRedirect(returnUrl: string | null = null) {

@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,7 @@ export default class GatewayResourcesClient {
 
   /**
    * Init an gateway settings client
-   * 
+   *
    * @param url Api host + api url
    */
   constructor(url: string, abortController?: AbortController) {
@@ -32,7 +32,7 @@ export default class GatewayResourcesClient {
 
   /**
    * Check if a resource is offered
-   * 
+   *
    * @param reference Hash of the resource
    * @returns True if has offers
    */
@@ -53,7 +53,7 @@ export default class GatewayResourcesClient {
 
   /**
    * Get all resource offers
-   * 
+   *
    * @param reference Hash of the resource
    * @returns Addresses of users that are offering the resource
    */
@@ -74,7 +74,7 @@ export default class GatewayResourcesClient {
 
   /**
    * Offer a resource
-   * 
+   *
    * @param reference Hash of the resource
    * @returns True if successfull
    */
@@ -91,7 +91,7 @@ export default class GatewayResourcesClient {
 
   /**
    * Cancel a resource offer
-   * 
+   *
    * @param reference Hash of the resource
    * @returns True if successfull
    */

@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useRef } from "react"
 import classNames from "classnames"
 
@@ -45,7 +46,7 @@ const PlayerToolbarButton: React.FC<PlayerToolbarButtonProps> = ({
   return (
     <div
       className={classNames(
-        "group relative w-7 h-7 z-1 p-1.5 md:w-8 md:h-8 md:p-[0.425rem] rounded-full",
+        "group relative z-1 h-7 w-7 rounded-full p-1.5 md:h-8 md:w-8 md:p-[0.425rem]",
         "bg-gray-500/50 text-gray-200 backdrop-blur"
       )}
       onClick={handleClick}
@@ -56,15 +57,15 @@ const PlayerToolbarButton: React.FC<PlayerToolbarButtonProps> = ({
       {hasMenu ? (
         <div
           className={classNames(
-            "invisible opacity-0 absolute left-1/2 bottom-0",
-            "transform -translate-x-1/2 pb-10 z-20",
+            "invisible absolute left-1/2 bottom-0 opacity-0",
+            "z-20 -translate-x-1/2 transform pb-10",
             "hover:visible hover:opacity-100 hover:transition-opacity hover:duration-200",
             "group-hover:visible group-hover:opacity-100 group-hover:transition-opacity group-hover:duration-200"
           )}
         >
           <div
             className={classNames(
-              "flex flex-col px-4 py-4 space-y-2 rounded-full",
+              "flex flex-col space-y-2 rounded-full px-4 py-4",
               "bg-gray-800/75 text-gray-200 backdrop-blur"
             )}
             ref={menuEl}

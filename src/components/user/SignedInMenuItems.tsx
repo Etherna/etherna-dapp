@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
-import { UserCircleIcon, UploadIcon } from "@heroicons/react/outline"
-import { PencilIcon, SparklesIcon } from "@heroicons/react/solid"
+import { ArrowUpTrayIcon } from "@heroicons/react/24/outline"
+import { UserCircleIcon, PencilIcon, SparklesIcon } from "@heroicons/react/24/solid"
 
 import { Dropdown } from "@/components/ui/actions"
 import { Avatar } from "@/components/ui/display"
@@ -31,33 +32,37 @@ const SignedInMenuItems: React.FC = () => {
 
   return (
     <>
-      <Dropdown.Item disabled>
-        <Avatar image={avatar} address={address} />
-        <div className="flex flex-col flex-1 items-start ml-2 overflow-hidden">
-          <span className="w-full text-ellipsis overflow-hidden text-left">
-            {checkIsEthAddress(name) ? shortenEthAddr(name) : name || shortenEthAddr(address)}
-          </span>
-          {name && <small className="text-gray-500">{shortenEthAddr(address)}</small>}
-        </div>
-      </Dropdown.Item>
+      <Dropdown.Group>
+        <Dropdown.Item disabled>
+          <Avatar image={avatar} address={address} />
+          <div className="ml-2 flex flex-1 flex-col items-start overflow-hidden">
+            <span className="w-full overflow-hidden text-ellipsis text-left">
+              {checkIsEthAddress(name) ? shortenEthAddr(name) : name || shortenEthAddr(address)}
+            </span>
+            {name && <small className="text-gray-500">{shortenEthAddr(address)}</small>}
+          </div>
+        </Dropdown.Item>
 
-      <Dropdown.Item href={routes.channel(address!)} icon={<UserCircleIcon />}>
-        View channel
-      </Dropdown.Item>
+        <Dropdown.Item href={routes.channel(address!)} icon={<UserCircleIcon />}>
+          View channel
+        </Dropdown.Item>
+      </Dropdown.Group>
 
-      <hr />
+      <Dropdown.Separator />
 
-      <Dropdown.Item href={routes.studio} icon={<SparklesIcon />}>
-        Creator Studio
-      </Dropdown.Item>
-      <Dropdown.Item href={routes.studioChannel} icon={<PencilIcon />}>
-        Customize channel
-      </Dropdown.Item>
-      <Dropdown.Item href={routes.studioVideoNew} icon={<UploadIcon />}>
-        Upload a video
-      </Dropdown.Item>
+      <Dropdown.Group>
+        <Dropdown.Item href={routes.studio} icon={<SparklesIcon />}>
+          Creator Studio
+        </Dropdown.Item>
+        <Dropdown.Item href={routes.studioChannel} icon={<PencilIcon />}>
+          Customize channel
+        </Dropdown.Item>
+        <Dropdown.Item href={routes.studioVideoNew} icon={<ArrowUpTrayIcon strokeWidth={2} />}>
+          Upload a video
+        </Dropdown.Item>
+      </Dropdown.Group>
 
-      <hr />
+      <Dropdown.Separator />
     </>
   )
 }

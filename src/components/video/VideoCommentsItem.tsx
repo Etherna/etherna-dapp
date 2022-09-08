@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 import classNames from "classnames"
@@ -47,18 +48,18 @@ const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({ comment, videoAut
   if (isLoading) return <VideoCommentPlaceholder />
 
   return (
-    <div className="flex items-start mb-3">
-      <div className="w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-700">
-        <Avatar className="w-full h-full" image={profile?.avatar} address={ownerAddress} />
+    <div className="mb-3 flex items-start">
+      <div className="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-700">
+        <Avatar className="h-full w-full" image={profile?.avatar} address={ownerAddress} />
       </div>
-      <div className="flex-1 ml-2">
+      <div className="ml-2 flex-1">
         <Link
           to={routes.channel(ownerAddress)}
           className={classNames(
             "text-sm font-semibold",
             "text-gray-800 hover:text-black dark:text-gray-300 dark:hover:text-gray-100",
             {
-              "px-2 py-0.5 rounded-full": videoAuthorAddress === ownerAddress,
+              "rounded-full px-2 py-0.5": videoAuthorAddress === ownerAddress,
               "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200":
                 videoAuthorAddress === ownerAddress,
             }
@@ -66,10 +67,10 @@ const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({ comment, videoAut
         >
           {profile?.name || shortenEthAddr(ownerAddress)}
         </Link>
-        <span className="text-xs text-gray-400 dark:text-gray-500 ml-2">
+        <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">
           {dayjs.duration(dayjs(creationDateTime).diff(dayjs())).humanize(true)}
         </span>
-        <MarkdownPreview className="mt-1" value={text} />
+        <MarkdownPreview className="mt-1 break-all" value={text} />
       </div>
     </div>
   )

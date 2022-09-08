@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useState } from "react"
+
+import React, { useCallback, useState } from "react"
 import classNames from "classnames"
 
 import { AlertPopup, Button, Modal } from "../ui/actions"
@@ -52,7 +53,7 @@ const VideoExtraMenuReport: React.FC<VideoExtraMenuReportProps> = ({
   const [isReporting, setIsReporting] = useState(false)
   const [reportCode, setReportCode] = useState("")
 
-  const sendReport = async () => {
+  const sendReport = useCallback(async () => {
     setIsReporting(true)
     try {
       await indexClient.videos.reportVideo(videoId, videoReference, reportCode)
@@ -63,7 +64,7 @@ const VideoExtraMenuReport: React.FC<VideoExtraMenuReportProps> = ({
       showError("Cannot report video", error.message)
     }
     setIsReporting(false)
-  }
+  }, [indexClient.videos, reportCode, setShow, showError, videoId, videoReference])
 
   return (
     <>
@@ -83,7 +84,7 @@ const VideoExtraMenuReport: React.FC<VideoExtraMenuReportProps> = ({
             <label className="flex items-center" htmlFor={key} key={key}>
               <input
                 className={classNames(
-                  "mr-3 bg-gray-200 dark:bg-gray-800 border-gray-400 dark:border-gray-600",
+                  "mr-3 border-gray-400 bg-gray-200 dark:border-gray-600 dark:bg-gray-800",
                   "checked:bg-primary-500 checked:dark:bg-primary-600",
                   "checked:hover:bg-primary-500 checked:dark:hover:bg-primary-600",
                   "checked:border-primary-600 checked:dark:border-primary-700"

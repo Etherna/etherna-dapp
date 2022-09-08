@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import Time from "@/components/media/Time"
@@ -24,7 +25,7 @@ const PlayerTimeProgress: React.FC = () => {
   const { currentTime, duration } = state
 
   return (
-    <div className="font-medium tracking-tighter text-xs sm:text-sm text-gray-200">
+    <div className="text-xs font-medium tracking-tighter text-gray-200 sm:text-sm">
       <Time duration={currentTime * duration} />
       <span> / </span>
       <Time duration={duration} />

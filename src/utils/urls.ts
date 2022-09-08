@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,14 +17,14 @@
 /**
  * Convert unsafe url string to a safe version
  * to be used in URL class
- * 
+ *
  * @param url Url to convert
  * @param path Path to append (optional)
  * @returns The safe URL object
  */
 export const safeURL = (url: string | null | undefined, path?: string) => {
   try {
-    let baseUrl = (url ?? "")
+    let baseUrl = url ?? ""
     if (!/https?:\/\//.test(baseUrl)) {
       baseUrl = `https://${baseUrl}`
     }
@@ -36,14 +36,14 @@ export const safeURL = (url: string | null | undefined, path?: string) => {
 
 /**
  * Check if url is safe to use in URL class
- * 
+ *
  * @param url Url to check
  * @param path Path to append
  * @returns True if safe
  */
 export const isSafeURL = (url: string | null | undefined, path?: string) => {
   try {
-    let baseUrl = (url ?? "")
+    let baseUrl = url ?? ""
     if (!/https?:\/\//.test(baseUrl)) {
       baseUrl = `https://${baseUrl}`
     }
@@ -56,7 +56,7 @@ export const isSafeURL = (url: string | null | undefined, path?: string) => {
 
 /**
  * Get the url origin
- * 
+ *
  * @param baseUrl Reference url
  * @returns The url origin
  */
@@ -66,7 +66,7 @@ export const urlOrigin = (baseUrl: string) => {
 
 /**
  * Get the url hostname
- * 
+ *
  * @param baseUrl Reference url
  * @returns The url hostname
  */
@@ -76,7 +76,7 @@ export const urlHostname = (baseUrl: string) => {
 
 /**
  * Get the url href
- * 
+ *
  * @param baseUrl Reference url
  * @param path Path to append (optional)
  * @returns The url href

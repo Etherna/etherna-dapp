@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import BeeAuthModal from "./BeeAuthModal"
@@ -22,7 +23,7 @@ import ImageCropModal from "./ImageCropModal"
 import ShortcutModal from "./ShortcutModal"
 import useSelector from "@/state/useSelector"
 
-const ModalsSection = () => {
+const ModalsSection: React.FC = () => {
   const { isEditingShortcut, isCroppingImage, showBeeAuthentication } = useSelector(
     state => state.ui
   )

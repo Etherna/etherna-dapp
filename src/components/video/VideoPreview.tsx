@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
 import classNames from "classnames"
@@ -81,20 +82,21 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
         )}
         state={{ video, videoOffers }}
       >
-        <div className="w-full relative flex before:pb-[62%]">
+        <div className="relative flex w-full before:pb-[62%]">
           <Image
-            className="absolute inset-0 bg-gray-200 dark:bg-gray-700"
+            className="bg-gray-200 dark:bg-gray-700"
             sources={videoThumbnail?.sources}
             placeholder="blur"
             blurredDataURL={videoThumbnail?.blurredBase64}
+            layout="fill"
             fallbackSrc={thumbnailPreview}
           />
           {video.duration && video.duration > 0 && (
             <div
               className={classNames(
-                "m-2 px-1.5 py-1 absolute right-0 bottom-0 left-auto top-auto",
-                "rounded-sm leading-none text-2xs font-semibold",
-                "bg-gray-900 text-gray-100 sm:text-xs sm:py-0.5"
+                "absolute right-0 bottom-0 left-auto top-auto m-2 px-1.5 py-1",
+                "rounded-sm text-2xs font-semibold leading-none",
+                "bg-gray-900 text-gray-100 sm:py-0.5 sm:text-xs"
               )}
             >
               <Time duration={video.duration} />
@@ -102,15 +104,15 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
           )}
         </div>
       </Link>
-      <div className="flex space-x-2 mt-2">
+      <div className="mt-2 flex space-x-2">
         {!hideProfile && profileLink && (
           <Link to={profileLink}>
             <Skeleton show={isLoadingProfile} roundedFull>
-              <Avatar className="w-8 h-8" image={profileAvatar} address={ownerAddress} />
+              <Avatar size={32} image={profileAvatar} address={ownerAddress} />
             </Skeleton>
           </Link>
         )}
-        <div className="flex flex-col flex-grow overflow-hidden">
+        <div className="flex flex-grow flex-col overflow-hidden">
           <Link
             to={routes.watch(
               decentralizedLink ? video.reference : video.indexReference ?? video.reference
@@ -119,9 +121,9 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
           >
             <h4
               className={classNames(
-                "flex-grow font-semibold leading-tight text-base",
+                "flex-grow text-base font-semibold leading-tight",
                 "text-gray-900 dark:text-gray-100",
-                "line-clamp-2 max-w-full overflow-hidden text-ellipsis"
+                "max-w-full overflow-hidden text-ellipsis line-clamp-2"
               )}
             >
               {video.title || "???"}
@@ -132,8 +134,8 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
               <Skeleton show={isLoadingProfile}>
                 <h5
                   className={classNames(
-                    "font-semibold text-sm max-w-full flex-grow overflow-hidden text-ellipsis",
-                    "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300",
+                    "max-w-full flex-grow overflow-hidden text-ellipsis text-sm font-semibold",
+                    "text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300",
                     "transition-colors duration-200"
                   )}
                 >
@@ -147,10 +149,9 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
               {dayjs.duration(dayjs(video.creationDateTime).diff(dayjs())).humanize(true)}
             </div>
           )}
-          <div className="grid grid-flow-col auto-cols-max gap-3 mt-2 empty:mt-0">
+          <div className="mt-2 grid auto-cols-max grid-flow-col gap-3 empty:mt-0">
             {isVideoOffered && (
-              <Badge color="primary">
-                <CreditIcon width={20} className="mr-1" aria-hidden />
+              <Badge prefix={<CreditIcon width={16} aria-hidden />} color="primary" small>
                 Free to watch
               </Badge>
             )}

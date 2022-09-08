@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 
@@ -60,18 +61,18 @@ const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress }) => {
 
   return (
     <div className="border-t-4 border-gray-200 py-4 dark:border-gray-800" key={profileAddress}>
-      <div className="flex items-center mb-3">
+      <div className="mb-3 flex items-center">
         <Link to={routes.channel(profileAddress)}>
           <Avatar className="mr-2" image={profile?.avatar} address={profileAddress} />
         </Link>
         <Link className="text-gray-900 dark:text-gray-100" to={routes.channel(profileAddress)}>
-          <h3 className="text-lg mb-0">{profile.name || shortenEthAddr(profileAddress)}</h3>
+          <h3 className="mb-0 text-lg">{profile.name || shortenEthAddr(profileAddress)}</h3>
         </Link>
       </div>
       {videos && (
         <VideoGrid videos={videos} mini={true} isFetching={isFetching} fetchingPreviewCount={5} />
       )}
-      {videos && !videos.length && <p className="text-gray-600 italic">No videos uploaded yet</p>}
+      {videos && !videos.length && <p className="italic text-gray-600">No videos uploaded yet</p>}
     </div>
   )
 }

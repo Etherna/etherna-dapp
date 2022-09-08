@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useRef, useState } from "react"
+
+import React, { useCallback, useRef, useState } from "react"
 import { Listbox } from "@headlessui/react"
 import classNames from "classnames"
 
@@ -36,19 +37,19 @@ const PlayerToolbarSelect: React.FC<PlayerToolbarSelectProps> = ({
   const [isTouch] = useState(isTouchDevice())
   const toggleEl = useRef<HTMLDivElement>(null)
 
-  const toggleOpen = () => {
+  const toggleOpen = useCallback(() => {
     const toggle = toggleEl.current
     const isOpen = toggle?.ariaExpanded === "true"
 
     !isOpen && toggleEl.current?.click()
-  }
+  }, [])
 
-  const toggleExit = () => {
+  const toggleExit = useCallback(() => {
     const toggle = toggleEl.current
     const isOpen = toggle?.ariaExpanded === "true"
 
     isOpen && toggleEl.current?.click()
-  }
+  }, [])
 
   return (
     <div
@@ -63,8 +64,8 @@ const PlayerToolbarSelect: React.FC<PlayerToolbarSelectProps> = ({
               as="div"
               role="button"
               className={classNames(
-                "h-5 px-1.5 md:h-7 md:px-3 rounded flex items-center",
-                "text-gray-200 text-xs font-semibold text-center",
+                "flex h-5 items-center rounded px-1.5 md:h-7 md:px-3",
+                "text-center text-xs font-semibold text-gray-200",
                 "bg-gray-500/50 backdrop-blur"
               )}
               ref={toggleEl}
@@ -74,8 +75,8 @@ const PlayerToolbarSelect: React.FC<PlayerToolbarSelectProps> = ({
 
             <div
               className={classNames(
-                "ml-0 invisible opacity-0 absolute left-1/2 bottom-0",
-                "transform -translate-x-1/2 pb-10  z-20",
+                "invisible absolute left-1/2 bottom-0 ml-0 opacity-0",
+                "z-20 -translate-x-1/2 transform  pb-10",
                 {
                   "visible opacity-100 transition-opacity duration-200": open,
                 }
@@ -83,7 +84,7 @@ const PlayerToolbarSelect: React.FC<PlayerToolbarSelectProps> = ({
             >
               <Listbox.Options
                 className={classNames(
-                  "flex flex-col px-2 py-4 space-y-2 rounded",
+                  "flex flex-col space-y-2 rounded px-2 py-4",
                   "bg-gray-800/75 text-gray-200 backdrop-blur"
                 )}
                 static
@@ -91,7 +92,7 @@ const PlayerToolbarSelect: React.FC<PlayerToolbarSelectProps> = ({
                 {options.map(option => (
                   <Listbox.Option
                     className={classNames(
-                      "cursor-pointer px-2 text-sm text-center font-semibold focus:outline-none",
+                      "cursor-pointer px-2 text-center text-sm font-semibold focus:outline-none",
                       {
                         "text-primary-500": option.value === value,
                       }

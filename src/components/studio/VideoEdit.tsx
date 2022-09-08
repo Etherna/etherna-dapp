@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
-import React, { useEffect, useRef, useState } from "react"
+
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { Navigate } from "react-router-dom"
 
-import { TrashIcon } from "@heroicons/react/outline"
+import { TrashIcon } from "@heroicons/react/24/outline"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
 import StudioEditView from "./StudioEditView"
@@ -63,7 +64,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reference])
 
-  const backPrompt = async () => {
+  const backPrompt = useCallback(async () => {
     if (isEmpty || reference) return true
     const continueEditing = await waitConfirmation(
       "Cancel upload",
@@ -72,18 +73,18 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
     )
     !continueEditing && resetState.current?.()
     return !continueEditing
-  }
+  }, [isEmpty, reference, waitConfirmation])
+
+  const handleSave = useCallback(async () => {
+    await saveCallback.current?.()
+  }, [])
+
+  const askToClearState = useCallback(async () => {
+    await clearCallback.current?.()
+  }, [])
 
   if (video && video.ownerAddress !== address) {
     return <Navigate to={routes.studioVideos} />
-  }
-
-  const handleSave = async () => {
-    await saveCallback.current?.()
-  }
-
-  const askToClearState = async () => {
-    await clearCallback.current?.()
   }
 
   return (
@@ -94,8 +95,13 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
       actions={
         <>
           {!reference && (
-            <Button aspect="text" color="muted" onClick={askToClearState}>
-              <TrashIcon /> Clear all
+            <Button
+              aspect="text"
+              color="muted"
+              prefix={<TrashIcon width={16} />}
+              onClick={askToClearState}
+            >
+              Clear all
             </Button>
           )}
         </>
@@ -105,7 +111,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
       onSave={handleSave}
     >
       {isLoading || (reference && !video) ? (
-        <Spinner className="mt-10 mx-auto w-10 text-primary-500" />
+        <Spinner className="mx-auto mt-10 w-10 text-primary-500" />
       ) : (
         <OnlyUsableBatch>
           <VideoEditorContextProvider reference={reference} videoData={video!}>

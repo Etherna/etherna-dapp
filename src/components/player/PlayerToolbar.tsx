@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import classNames from "classnames"
 
@@ -34,16 +35,16 @@ type PlayerToolbarProps = {
 const PlayerToolbar: React.FC<PlayerToolbarProps> = ({ floating, focus }) => {
   return (
     <div
-      className={classNames("flex flex-col bg-slate-700 dark:bg-slate-800", {
-        "pt-12 px-3 bg-transparent dark:bg-transparent bg-gradient-to-t from-black to-black/0":
-          floating,
+      className={classNames("flex flex-col", {
+        "bg-slate-700 dark:bg-slate-800": !floating,
+        "bg-gradient-to-t from-black to-black/0 px-3 pt-12": floating,
       })}
       data-component="player-toolbar"
     >
       <PlayerToolbarProgress focus={focus} />
 
       <div
-        className={classNames("flex items-center space-x-3 py-1 sm:space-x-4 md:space-x-8 sm:p-3", {
+        className={classNames("flex items-center space-x-3 py-1 sm:space-x-4 sm:p-3 md:space-x-8", {
           "px-1.5 xs:px-container": !floating,
           "px-0 xs:px-0": floating,
         })}

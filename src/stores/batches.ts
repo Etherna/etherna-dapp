@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
+import type { BatchId, PostageBatch } from "@ethersphere/bee-js"
 import create from "zustand"
 import { persist, devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import type { GatewayBatch } from "@/definitions/api-gateway"
-import type { BatchId, PostageBatch } from "@ethersphere/bee-js"
 
 export enum BatchUpdateType {
   Create = 1,
@@ -49,7 +49,11 @@ const useBatchesStore = create<BatchesState>()(
           set(state => {
             const id = "id" in batch ? batch.id : batch.batchID
             const index = state.updatingBatches.findIndex(
-              b => b.id === id && b.depth === batch.depth && b.amount === batch.amount && b.flag === type
+              b =>
+                b.id === id &&
+                b.depth === batch.depth &&
+                b.amount === batch.amount &&
+                b.flag === type
             )
 
             if (index === -1) {
@@ -64,7 +68,10 @@ const useBatchesStore = create<BatchesState>()(
         },
         removeBatchUpdate(batchId) {
           set(state => {
-            state.updatingBatches.splice(state.updatingBatches.findIndex(b => b.id === batchId), 1)
+            state.updatingBatches.splice(
+              state.updatingBatches.findIndex(b => b.id === batchId),
+              1
+            )
           })
         },
       })),
@@ -72,8 +79,8 @@ const useBatchesStore = create<BatchesState>()(
         name: "etherna:batches",
         getStorage: () => localStorage,
       }
-    ),
-  ),
+    )
+  )
 )
 
 export default useBatchesStore

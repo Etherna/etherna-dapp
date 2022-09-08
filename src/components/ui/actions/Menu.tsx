@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useContext, useMemo, useState } from "react"
+
+import React, { forwardRef, useContext, useState } from "react"
 import { usePopper } from "react-popper"
 import { Menu as HLMenu } from "@headlessui/react"
 import type { Placement } from "@popperjs/core"
@@ -25,12 +26,12 @@ import { Breakpoint } from "../layout"
 import UIButton from "./Button"
 import type { ButtonProps } from "./Button"
 
-type MenuProps = {
+export type MenuProps = {
   children: React.ReactNode
   className?: string
 }
 
-type MenuItemsProps = {
+export type MenuItemsProps = {
   children: React.ReactNode
   className?: string
   width?: string | number
@@ -38,7 +39,7 @@ type MenuItemsProps = {
   placement?: Placement
 }
 
-type MenuItemProps = {
+export type MenuItemProps = {
   children: React.ReactNode
   className?: string
   href?: string
@@ -51,13 +52,20 @@ type MenuItemProps = {
   onClick?(): void
 }
 
+export type MenuArrowProps = {
+  className?: string
+  size?: number
+  style?: React.CSSProperties
+  placement?: Placement
+}
+
 const MenuButton: React.FC<ButtonProps> = props => {
   const { setButtonEl } = useContext(MenuContext)!
 
   return (
     <HLMenu.Button
       as="div"
-      className="inline-flex relative"
+      className="relative inline-flex"
       ref={(el: HTMLDivElement) => {
         el && setButtonEl(el)
       }}
@@ -95,19 +103,9 @@ const MenuItems: React.FC<MenuItemsProps> = ({ children, width, height, placemen
     ],
     placement,
   })
-  const arrowRotation = useMemo(() => {
-    const rotation = state?.placement?.startsWith("top")
-      ? 180
-      : state?.placement?.startsWith("right")
-      ? -90
-      : state?.placement?.startsWith("left")
-      ? 90
-      : 0
-    return rotation
-  }, [state?.placement])
 
   return (
-    <HLMenu.Items as="span" className="outline-hidden" static data-component="menu-items">
+    <HLMenu.Items as="span" className="focus:outline-0" static data-component="menu-items">
       {({ open }) => (
         <Breakpoint>
           <Breakpoint.Zero>
@@ -116,12 +114,13 @@ const MenuItems: React.FC<MenuItemsProps> = ({ children, width, height, placemen
           <Breakpoint.Sm>
             <div
               className={classNames(
-                "p-2 rounded-md min-w-[8rem] z-10 outline-hidden pointer-events-none",
-                "bg-gray-50 dark:bg-gray-900 shadow-lg",
+                "z-100 min-w-[8rem] rounded-md p-2 outline-hidden",
+                "bg-gray-50 shadow-lg dark:bg-gray-900",
                 "border border-gray-100 dark:border-gray-700",
-                "opacity-0 scale-95 transition duration-75 ease-in-out",
+                "transition duration-75 ease-in-out",
                 {
-                  "opacity-100 scale-100 pointer-events-auto": open,
+                  "pointer-events-none scale-95 opacity-0": !open,
+                  "pointer-events-auto scale-100 opacity-100": open,
                 }
               )}
               style={{ ...styles.popper, width, height }}
@@ -129,18 +128,13 @@ const MenuItems: React.FC<MenuItemsProps> = ({ children, width, height, placemen
               {...attributes.popper}
             >
               {buttonEl && (
-                <span
-                  className="popper-arrow"
-                  style={{
-                    ...styles.arrow,
-                    transform: styles.arrow
-                      ? `${styles.arrow.transform} rotate(${arrowRotation}deg)`
-                      : undefined,
-                  }}
+                <MenuArrow
+                  placement={state?.placement}
+                  style={styles.arrow}
                   ref={el => el && setArrowEl(el)}
                 />
               )}
-              <div className="w-full h-full overflow-y-auto">{children}</div>
+              <div className="h-full w-full overflow-y-auto">{children}</div>
             </div>
           </Breakpoint.Sm>
         </Breakpoint>
@@ -148,6 +142,36 @@ const MenuItems: React.FC<MenuItemsProps> = ({ children, width, height, placemen
     </HLMenu.Items>
   )
 }
+
+const MenuArrow = forwardRef<HTMLSpanElement, MenuArrowProps>(
+  ({ className, style, placement }, ref) => {
+    if (!placement) return null
+    return (
+      <span
+        className={classNames(
+          "block h-3 w-3",
+          "before:absolute before:-left-0.5 before:bottom-0 before:block before:h-0 before:w-0",
+          "before:border-[8px] before:border-transparent before:border-t-transparent",
+          "before:border-b-gray-100 before:dark:border-b-gray-700",
+          "after:absolute after:block after:h-0 after:w-0",
+          "after:border-[6px] after:border-transparent",
+          "after:border-b-gray-50 after:dark:border-b-gray-900",
+          placement && {
+            "-bottom-3": placement.startsWith("top"),
+            "-top-3": placement.startsWith("bottom"),
+            "-right-3": placement.startsWith("left"),
+            "-left-3": placement.startsWith("right"),
+          },
+          className
+        )}
+        style={{
+          ...style,
+        }}
+        ref={ref}
+      />
+    )
+  }
+)
 
 const MenuItem: React.FC<MenuItemProps> = ({
   children,
@@ -167,11 +191,11 @@ const MenuItem: React.FC<MenuItemProps> = ({
       {({ active }) => (
         <As
           className={classNames(
-            "flex items-center text-center text-sm sm:text-left rounded px-2.5 py-2 cursor-pointer",
+            "flex cursor-pointer items-center rounded px-2.5 py-2 text-center text-sm sm:text-left",
             "text-gray-500 dark:text-gray-300",
             {
-              "text-gray-900 dark:text-gray-50 bg-gray-100 dark:bg-gray-700": active && !disabled,
-              "text-gray-300 dark:text-gray-600 cursor-default": disabled,
+              "bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-50": active && !disabled,
+              "cursor-default text-gray-300 dark:text-gray-600": disabled,
               "text-gray-400 dark:text-gray-600": color === "secondary",
               "text-gray-600 dark:text-gray-200": color === "secondary" && active && !disabled,
               "text-blue-500 dark:text-blue-500": color === "success",
@@ -201,7 +225,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
 }
 
 const MenuSeparator: React.FC = () => (
-  <hr className="block bg-gray-400 dark:bg-gray-600 my-2 -mx-2" />
+  <hr className="my-2 -mx-2 block bg-gray-400 dark:bg-gray-600" />
 )
 
 const MenuContext = React.createContext<
@@ -226,7 +250,7 @@ const Menu: React.FC<MenuProps> & {
   return (
     <HLMenu
       as="div"
-      className={classNames("inline-flex relative", className)}
+      className={classNames("relative inline-flex", className)}
       data-component="menu"
     >
       <MenuContext.Provider

@@ -14,15 +14,17 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Link, Navigate } from "react-router-dom"
 import classNames from "classnames"
 
-import { TrashIcon, PencilIcon, InformationCircleIcon } from "@heroicons/react/solid"
+import { TrashIcon, PencilIcon, InformationCircleIcon } from "@heroicons/react/24/solid"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
 
+import TableVideoPlaceholder from "../placeholders/TableVideoPlaceholder"
 import VideoDeleteModal from "./video-editor/VideoDeleteModal"
 import SwarmVideoIO from "@/classes/SwarmVideo"
 import Image from "@/components/common/Image"
@@ -96,6 +98,11 @@ const Videos: React.FC = () => {
   }, [source])
 
   useEffect(() => {
+    fetchPage(page)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page])
+
+  useEffect(() => {
     if (videosOffersStatus && selectedVideoOffers) {
       const video = selectedVideoOffers.video
       const offersStatus = videosOffersStatus[video.reference]
@@ -112,7 +119,7 @@ const Videos: React.FC = () => {
   const renderVideoStatus = useCallback(
     (video: Video) => {
       if (videosIndexStatus === undefined) {
-        return <Spinner className="w-5 h-5" />
+        return <Spinner className="h-5 w-5" />
       }
 
       const status = videosIndexStatus[video.reference] ?? "unindexed"
@@ -136,7 +143,7 @@ const Videos: React.FC = () => {
       }
 
       if (videosOffersStatus === undefined || videosOffersStatus[video.reference] === undefined) {
-        return <Spinner className="w-5 h-5" />
+        return <Spinner className="h-5 w-5" />
       }
 
       const videoResourcesStatus = videosOffersStatus[video.reference]
@@ -178,7 +185,7 @@ const Videos: React.FC = () => {
 
   return (
     <>
-      <div className="flex flex-wrap items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <Select
           label="Source:"
           value={source}
@@ -190,7 +197,7 @@ const Videos: React.FC = () => {
           }))}
           onChange={setSource}
         />
-        <Button as="a" href={routes.studioVideoNew}>
+        <Button as="a" to={routes.studioVideoNew}>
           Create new video
         </Button>
       </div>
@@ -202,6 +209,7 @@ const Videos: React.FC = () => {
         total={total}
         itemsPerPage={perPage}
         items={videos ?? []}
+        loadingSkeleton={<TableVideoPlaceholder />}
         columns={[
           {
             title: "Title",
@@ -209,8 +217,8 @@ const Videos: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <div
                   className={classNames(
-                    "relative overflow-hidden w-14 md:w-20",
-                    "after:block after:pb-[62%] bg-gray-300 dark:bg-gray-600"
+                    "relative w-14 shrink-0 overflow-hidden md:w-20",
+                    "bg-gray-300 after:block after:pb-[62%] dark:bg-gray-600"
                   )}
                 >
                   <Image
@@ -221,11 +229,11 @@ const Videos: React.FC = () => {
                     layout="fill"
                   />
                 </div>
-                <div className="flex flex-col flex-grow items-start space-y-2">
+                <div className="flex flex-grow flex-col items-start space-y-2">
                   <Link className="" to={routes.watch(item.indexReference || item.reference)}>
                     <h3 className="text-base font-bold leading-tight">{item.title}</h3>
                   </Link>
-                  <div className="grid gap-2 grid-flow-col auto-cols-max xl:hidden">
+                  <div className="grid auto-cols-max grid-flow-col gap-2 lg:hidden">
                     {renderVideoStatus(item)}
                     {renderOffersStatus(item)}
                   </div>
@@ -236,7 +244,7 @@ const Videos: React.FC = () => {
           {
             title: "Duration",
             hideOnMobile: true,
-            render: item => convertTime(item.duration).readable,
+            render: item => <span className="text-sm">{convertTime(item.duration).digital}</span>,
           },
           {
             title: "Index Status",
@@ -253,7 +261,12 @@ const Videos: React.FC = () => {
           {
             title: "Date",
             hideOnMobile: true,
-            render: item => (item.createdAt ? dayjs(item.createdAt).format("LLL") : ""),
+            render: item =>
+              item.createdAt ? (
+                <span className="text-sm leading-none">{dayjs(item.createdAt).format("LLL")}</span>
+              ) : (
+                ""
+              ),
           },
           {
             title: "",
@@ -270,7 +283,7 @@ const Videos: React.FC = () => {
                   </Tooltip>
                 )}
                 <Button
-                  href={routes.studioVideoEdit(item.reference)}
+                  to={routes.studioVideoEdit(item.reference)}
                   routeState={{
                     video: item,
                     hasOffers: videosOffersStatus
@@ -279,7 +292,7 @@ const Videos: React.FC = () => {
                   }}
                   color="transparent"
                 >
-                  <PencilIcon aria-hidden />
+                  <PencilIcon width={16} aria-hidden />
                 </Button>
               </div>
             ),
@@ -287,8 +300,8 @@ const Videos: React.FC = () => {
         ]}
         selectionActions={
           <>
-            <Button color="transparent" large onClick={() => setShowDeleteModal(true)}>
-              <TrashIcon aria-hidden />
+            <Button color="inverted" aspect="text" large onClick={() => setShowDeleteModal(true)}>
+              <TrashIcon width={20} aria-hidden />
             </Button>
           </>
         }

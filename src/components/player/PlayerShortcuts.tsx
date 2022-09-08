@@ -14,9 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback } from "react"
 
-import classes from "@/styles/components/player/PlayerShortcuts.module.scss"
+import React, { useCallback } from "react"
 
 import { PlayerReducerTypes } from "@/context/player-context"
 import { usePlayerState } from "@/context/player-context/hooks"

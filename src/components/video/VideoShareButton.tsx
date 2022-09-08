@@ -14,9 +14,10 @@
  *  limitations under the License.
  *
  */
-import React, { useState } from "react"
 
-import { ShareIcon } from "@heroicons/react/solid"
+import React, { useCallback, useState } from "react"
+
+import { ShareIcon } from "@heroicons/react/24/solid"
 
 import VideoDetailsButton from "./VideoDetailsButton"
 import CopyText from "@/components/common/CopyText"
@@ -33,18 +34,21 @@ const VideoShareButton: React.FC<VideoShareButtonProps> = ({ reference, indexRef
   const [showModal, setShowModal] = useState(false)
   const [sharePage, setSharePage] = useState<"link" | "embed">("link")
 
-  const getIFrame = (src: string) => {
+  const getIFrame = useCallback((src: string) => {
     return (
       "<iframe " +
       `src=\"${src}\" ` +
       'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" ' +
       "allowfullscreen></iframe>"
     )
-  }
+  }, [])
 
   return (
     <>
-      <VideoDetailsButton icon={<ShareIcon aria-hidden />} onClick={() => setShowModal(true)}>
+      <VideoDetailsButton
+        icon={<ShareIcon width={20} aria-hidden />}
+        onClick={() => setShowModal(true)}
+      >
         Share
       </VideoDetailsButton>
 
@@ -76,7 +80,7 @@ const VideoShareButton: React.FC<VideoShareButtonProps> = ({ reference, indexRef
           onChange={val => setSharePage(val as any)}
         />
 
-        <div className="space-y-4 mt-6">
+        <div className="mt-6 space-y-4">
           {sharePage === "link" && indexReference && (
             <CopyText label="Index">
               {import.meta.env.VITE_APP_PUBLIC_URL + routes.watch(indexReference)}

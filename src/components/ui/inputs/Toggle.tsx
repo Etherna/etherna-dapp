@@ -14,8 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback, useMemo } from "react"
 
+import React, { useCallback, useMemo } from "react"
 import { Switch } from "@headlessui/react"
 import classNames from "classnames"
 
@@ -37,9 +37,11 @@ const Toggle: React.FC<ToggleProps> = ({
   onChange,
 }) => {
   const styledIcon = useCallback((icon: React.ReactElement) => {
-    return React.cloneElement(icon, {
-      className: "w-4 h-4 m-0",
-    })
+    return icon
+      ? React.cloneElement(icon, {
+          className: classNames("w-3.5 h-3.5 m-0", icon.props.className),
+        })
+      : undefined
   }, [])
 
   const styledCheckedIcon = useMemo(() => {
@@ -58,20 +60,20 @@ const Toggle: React.FC<ToggleProps> = ({
           checked={checked}
           onChange={onChange}
           className={classNames(
-            "relative inline-flex items-center h-4 w-11 rounded-full transition-colors",
-            "bg-gray-200 dark:bg-gray-700",
-            "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500",
+            "relative inline-flex h-4 w-11 items-center rounded-full transition-colors",
+            "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2",
             {
-              "bg-green-500": checked,
+              "bg-gray-200 dark:bg-gray-700": !checked,
+              "bg-primary-500": checked,
             }
           )}
         >
           <span
             className={classNames(
-              "flex items-center justify-center w-6 h-6",
-              "bg-white rounded-full text-gray-400",
+              "flex h-6 w-6 items-center justify-center",
+              "rounded-full bg-white text-gray-600",
               "border border-gray-200 dark:border-gray-700",
-              "transform translate-x-0 transition-transform ease-in-out duration-200",
+              "translate-x-0 transform transition-transform duration-200 ease-in-out",
               {
                 "translate-x-5": checked,
               }

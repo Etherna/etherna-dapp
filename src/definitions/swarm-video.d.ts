@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 
+import type { BatchId } from "@ethersphere/bee-js"
 import type { Canceler } from "axios"
 
-import type { IndexEncryptionType } from "@/classes/EthernaIndexClient/types"
+import type { SchemaVersion } from "./schema"
 import type { SwarmImage, SwarmImageRaw } from "./swarm-image"
 import type { Profile } from "./swarm-profile"
-import type { SchemaVersion } from "./schema"
-import type { BatchId } from "@ethersphere/bee-js"
+import type { IndexEncryptionType } from "@/classes/EthernaIndexClient/types"
 
 export type SwarmVideoRaw = {
   /**  Title of the video */
@@ -107,21 +107,22 @@ export type VideoIndexed = {
   totUpvotes?: number
 }
 
-export type Video = SwarmVideo & VideoIndexed & {
-  /** Whether the video is indexed */
-  isVideoOnIndex: boolean
-  /** Whether the video has been correctly validated on the index */
-  isValidatedOnIndex: boolean
-  /** Owner info */
-  owner?: Profile
-}
+export type Video = SwarmVideo &
+  VideoIndexed & {
+    /** Whether the video is indexed */
+    isVideoOnIndex: boolean
+    /** Whether the video has been correctly validated on the index */
+    isValidatedOnIndex: boolean
+    /** Owner info */
+    owner?: Profile
+  }
 
 export type VideoOffersStatus = {
   offersStatus: "full" | "partial" | "sources" | "none"
   userOffersStatus: "full" | "partial" | "sources" | "none"
   userOfferedResourses: string[]
   userUnOfferedResourses: string[]
-  globalOffers: { reference: string, offeredBy: string[] }[]
+  globalOffers: { reference: string; offeredBy: string[] }[]
 }
 
 export type VideoIndexStatus = "public" | "processing" | "unindexed" | "error"

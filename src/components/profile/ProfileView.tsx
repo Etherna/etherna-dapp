@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import ProfileAbout from "./ProfileAbout"
@@ -86,7 +87,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
         actions={
           <div className="flex flex-grow items-center justify-between">
             {address === profileAddress && (
-              <Button as="a" href={routes.studioChannel}>
+              <Button as="a" to={routes.studioChannel}>
                 Customize
               </Button>
             )}

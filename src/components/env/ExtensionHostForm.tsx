@@ -14,9 +14,10 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useMemo } from "react"
 
-import { ExclamationIcon } from "@heroicons/react/solid"
+import { ExclamationTriangleIcon } from "@heroicons/react/24/solid"
 
 import type { ExtensionParamConfig } from "./ExtensionHostPanel"
 import ExtensionHostPanelParam from "./ExtensionHostPanelParam"
@@ -78,8 +79,7 @@ const ExtensionHostForm = <T extends IndexExtensionHost | GatewayExtensionHost>(
       {params
         .filter(param => !param.hidden)
         .map(param => (
-          <FormGroup key={param.key as string}>
-            <Label htmlFor={param.key as string}>{param.label}</Label>
+          <FormGroup label={param.label} labelFor={param.key as string} key={param.key as string}>
             <ExtensionHostPanelParam
               value={paramsValues[param.key as keyof T]}
               paramConfig={param}
@@ -90,7 +90,7 @@ const ExtensionHostForm = <T extends IndexExtensionHost | GatewayExtensionHost>(
               paramsValues.url?.startsWith("http://") &&
               isBeeInstanceGatewayType && (
                 <Alert color="warning" className="mt-3 px-2 py-1.5 text-xs font-medium">
-                  <ExclamationIcon className="h-[1.1em] mr-1 inline-block" aria-hidden />
+                  <ExclamationTriangleIcon className="mr-1 inline-block h-[1.1em]" aria-hidden />
                   <span>
                     To use an insecure connection, you should install the <wbr />
                     <strong>

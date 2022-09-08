@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useRef, useState } from "react"
 import classNames from "classnames"
 
-import { PauseIcon, PlayIcon } from "@heroicons/react/solid"
+import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid"
 
 type PlayerTouchOverlayProps = {
   floating?: boolean
@@ -101,9 +102,9 @@ const PlayerTouchOverlay: React.FC<PlayerTouchOverlayProps> = ({
     >
       <div
         className={classNames(
-          "flex items-center px-2 py-1 space-x-2",
+          "flex items-center space-x-2 px-2 py-1",
           "absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full rounded-full",
-          "bg-white border border-gray-900/20 shadow-lg shadow-gray-900/10",
+          "border border-gray-900/20 bg-white shadow-lg shadow-gray-900/10",
           "text-xs font-medium text-gray-800",
           "transition-transform duration-200 ease-out",
           {
@@ -111,7 +112,7 @@ const PlayerTouchOverlay: React.FC<PlayerTouchOverlayProps> = ({
           }
         )}
       >
-        <span className="flex items-center rotate-180">
+        <span className="flex rotate-180 items-center">
           <PlayIcon
             className={classNames("text-gray-800 opacity-20", {
               "animate-skip": skippedTo === "prev",
@@ -168,7 +169,7 @@ const PlayerTouchOverlay: React.FC<PlayerTouchOverlayProps> = ({
 
       {focus && (
         <button
-          className="p-2 rounded-full bg-white text-black absolute-center"
+          className="rounded-full bg-white p-2 text-black absolute-center"
           onClick={onPlayPause}
         >
           {isPlaying ? <PauseIcon width={32} /> : <PlayIcon width={32} />}

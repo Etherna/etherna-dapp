@@ -14,11 +14,12 @@
  *  limitations under the License.
  *
  */
-import React, { useImperativeHandle, useState, createRef, useEffect } from "react"
+
+import React, { useImperativeHandle, useState, createRef, useEffect, useCallback } from "react"
 import type { Canceler } from "axios"
 import classNames from "classnames"
 
-import { PlusIcon } from "@heroicons/react/solid"
+import { PlusIcon } from "@heroicons/react/24/solid"
 
 import SwarmVideoIO from "@/classes/SwarmVideo"
 import type { FileUploadFlowHandlers } from "@/components/media/FileUploadFlow"
@@ -107,7 +108,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
       },
     }))
 
-    const addSource = () => {
+    const addSource = useCallback(() => {
       const newSources = [...sources]
       newSources.push({
         key: sourceKey(),
@@ -116,147 +117,181 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
         ref: createRef(),
       })
       setSources(newSources)
-    }
+    }, [sources])
 
-    const uploadSource = async (buffer: ArrayBuffer, index: number) => {
-      const source = sources[index]
-      const queueName = SwarmVideoIO.getSourceName(source.quality)
+    const uploadSource = useCallback(
+      async (buffer: ArrayBuffer, index: number) => {
+        const source = sources[index]
+        const queueName = SwarmVideoIO.getSourceName(source.quality)
 
-      const reference = await videoWriter.addVideoSource(buffer, source.contentType!, {
-        onCancelToken: c => {
-          setSources(sources => {
-            const newSources = [...sources]
-            newSources[index].canceler = c
+        const reference = await videoWriter.addVideoSource(buffer, source.contentType!, {
+          onCancelToken: c => {
+            setSources(sources => {
+              const newSources = [...sources]
+              newSources[index].canceler = c
 
-            return newSources
-          })
-        },
-        onUploadProgress: p => {
-          updateQueueCompletion(queueName, p)
-        },
-      })
-
-      updateQueueCompletion(queueName, 100, reference)
-      onComplete?.()
-
-      // Sort sources
-      setSources(sources => {
-        const sortedSources = sources.sort((a, b) => {
-          return SwarmVideoIO.getSourceQuality(b.quality) - SwarmVideoIO.getSourceQuality(a.quality)
+              return newSources
+            })
+          },
+          onUploadProgress: p => {
+            updateQueueCompletion(queueName, p)
+          },
         })
-        return [...sortedSources]
-      })
 
-      return reference
-    }
+        updateQueueCompletion(queueName, 100, reference)
+        onComplete?.()
 
-    const removeSource = async (index: number) => {
-      try {
-        const queueName = SwarmVideoIO.getSourceName(sources[index].quality)
+        // Sort sources
+        setSources(sources => {
+          const sortedSources = sources.sort((a, b) => {
+            return (
+              SwarmVideoIO.getSourceQuality(b.quality) - SwarmVideoIO.getSourceQuality(a.quality)
+            )
+          })
+          return [...sortedSources]
+        })
 
-        await videoWriter.removeVideoSource(sources[index].quality!)
+        return reference
+      },
+      [onComplete, sources, updateQueueCompletion, videoWriter]
+    )
+
+    const removeSource = useCallback(
+      async (index: number) => {
+        try {
+          const queueName = SwarmVideoIO.getSourceName(sources[index].quality)
+
+          await videoWriter.removeVideoSource(sources[index].quality!)
+
+          const newSources = [...sources]
+          newSources.splice(index, 1)
+          setSources(newSources)
+
+          removeFromQueue(queueName)
+        } catch (error: any) {
+          showError("Error", error.message)
+        }
+      },
+      [removeFromQueue, sources, showError, videoWriter]
+    )
+
+    const handleFileSelected = useCallback(
+      async (file: File, index: number) => {
+        let duration = 0
+        let quality = 0
+
+        if (isMimeWebCompatible(file.type)) {
+          duration = await getVideoDuration(file)
+          quality = await getVideoResolution(file)
+        }
+
+        const queueName = SwarmVideoIO.getSourceName(quality)
+        const sourceQueue = queue.find(q => q.name === queueName)
+        const hasQuality =
+          typeof sourceQueue?.completion === "number" && sourceQueue.completion >= 0
+        const currentOriginalQuality = SwarmVideoIO.getSourceQuality(
+          videoWriter.videoRaw.originalQuality
+        )
+
+        if (hasQuality) {
+          return showError(
+            "Cannot add source",
+            `There is already a source with the quality ${quality}p`
+          )
+        }
+
+        if (sourceQueue) {
+          removeFromQueue(sourceQueue.name)
+        }
+
+        if (isNaN(currentOriginalQuality) || quality > currentOriginalQuality) {
+          updateVideoDuration(duration)
+          updateOriginalQuality(SwarmVideoIO.getSourceName(quality))
+        }
 
         const newSources = [...sources]
-        newSources.splice(index, 1)
+        newSources[index].quality = queueName
+        newSources[index].contentType = file.type
         setSources(newSources)
 
-        removeFromQueue(queueName)
-      } catch (error: any) {
-        showError("Error", error.message)
-      }
-    }
+        addToQueue(queueName)
+      },
+      [
+        queue,
+        sources,
+        videoWriter.videoRaw.originalQuality,
+        addToQueue,
+        removeFromQueue,
+        showError,
+        updateOriginalQuality,
+        updateVideoDuration,
+      ]
+    )
 
-    const handleFileSelected = async (file: File, index: number) => {
-      let duration = 0
-      let quality = 0
+    const canSelectFile = useCallback(
+      async (file: File) => {
+        if (!file) {
+          showError("Error", "The selected file is not supported")
+          return false
+        }
 
-      if (isMimeWebCompatible(file.type)) {
-        duration = await getVideoDuration(file)
-        quality = await getVideoResolution(file)
-      }
+        if (!isMimeWebCompatible(file.type)) {
+          showError("Error", "The selected file is not supported")
+          return false
+        }
 
-      const queueName = SwarmVideoIO.getSourceName(quality)
-      const sourceQueue = queue.find(q => q.name === queueName)
-      const hasQuality = typeof sourceQueue?.completion === "number" && sourceQueue.completion >= 0
-      const currentOriginalQuality = SwarmVideoIO.getSourceQuality(
-        videoWriter.videoRaw.originalQuality
-      )
+        const quality = await getVideoResolution(file)
+        const queueName = SwarmVideoIO.getSourceName(quality)
+        const sourceQueue = queue.find(q => q.name === queueName)
+        const hasQuality =
+          typeof sourceQueue?.completion === "number" && sourceQueue.completion >= 0
 
-      if (hasQuality) {
-        return showError(
-          "Cannot add source",
-          `There is already a source with the quality ${quality}p`
-        )
-      }
+        if (hasQuality) {
+          showError("Cannot add source", `There is already a source with the quality ${quality}p`)
+          return false
+        }
 
-      if (sourceQueue) {
-        removeFromQueue(sourceQueue.name)
-      }
+        return true
+      },
+      [showError, queue]
+    )
 
-      if (isNaN(currentOriginalQuality) || quality > currentOriginalQuality) {
-        updateVideoDuration(duration)
-        updateOriginalQuality(SwarmVideoIO.getSourceName(quality))
-      }
+    const handleCancelUpload = useCallback(
+      (index: number) => {
+        const { quality, canceler, ref } = sources[index]
 
-      const newSources = [...sources]
-      newSources[index].quality = queueName
-      newSources[index].contentType = file.type
-      setSources(newSources)
+        if (canceler) {
+          canceler("User canceled the upload.")
+        }
 
-      addToQueue(queueName)
-    }
+        ref.current?.clear()
 
-    const canSelectFile = async (file: File) => {
-      if (!file) {
-        showError("Error", "The selected file is not supported")
-        return false
-      }
+        const newSources = [...sources]
+        newSources[index].quality = null
+        newSources[index].contentType = null
 
-      if (!isMimeWebCompatible(file.type)) {
-        showError("Error", "The selected file is not supported")
-        return false
-      }
+        setSources(newSources)
 
-      const quality = await getVideoResolution(file)
-      const queueName = SwarmVideoIO.getSourceName(quality)
-      const sourceQueue = queue.find(q => q.name === queueName)
-      const hasQuality = typeof sourceQueue?.completion === "number" && sourceQueue.completion >= 0
+        const sourceName = SwarmVideoIO.getSourceName(quality)
+        removeFromQueue(sourceName)
+      },
+      [removeFromQueue, sources]
+    )
 
-      if (hasQuality) {
-        showError("Cannot add source", `There is already a source with the quality ${quality}p`)
-        return false
-      }
+    const handleUploadError = useCallback(
+      (name: SwarmVideoQuality, errorMessage: string) => {
+        setQueueError(name, errorMessage)
+      },
+      [setQueueError]
+    )
 
-      return true
-    }
-
-    const handleCancelUpload = (index: number) => {
-      const { quality, canceler, ref } = sources[index]
-
-      if (canceler) {
-        canceler("User canceled the upload.")
-      }
-
-      ref.current?.clear()
-
-      const newSources = [...sources]
-      newSources[index].quality = null
-      newSources[index].contentType = null
-
-      setSources(newSources)
-
-      const sourceName = SwarmVideoIO.getSourceName(quality)
-      removeFromQueue(sourceName)
-    }
-
-    const handleUploadError = (name: SwarmVideoQuality, errorMessage: string) => {
-      setQueueError(name, errorMessage)
-    }
-
-    const handleSourceReset = (name: SwarmVideoQuality) => {
-      removeFromQueue(name)
-      onCancel?.(name)
-    }
+    const handleSourceReset = useCallback(
+      (name: SwarmVideoQuality) => {
+        removeFromQueue(name)
+        onCancel?.(name)
+      },
+      [onCancel, removeFromQueue]
+    )
 
     return (
       <div className="space-y-3">
@@ -326,9 +361,9 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
         {sources[0].quality && (
           <button
             className={classNames(
-              "w-full flex items-center space-x-2 px-2 py-4 rounded",
+              "flex w-full items-center space-x-2 rounded px-2 py-4",
               "text-sm font-medium text-gray-700 dark:text-gray-300",
-              "bg-gray-900/5 dark:bg-gray-100/5 active:bg-gray-200 dark:active:bg-gray-800",
+              "bg-gray-900/5 active:bg-gray-200 dark:bg-gray-100/5 dark:active:bg-gray-800",
               "transition-colors duration-200"
             )}
             onClick={addSource}

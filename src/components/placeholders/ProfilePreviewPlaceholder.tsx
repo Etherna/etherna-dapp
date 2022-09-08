@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import { Skeleton } from "../ui/display"
@@ -31,20 +32,20 @@ const ProfilePreviewPlaceholder = () => {
         <div className="border-t-4 border-gray-200 py-4 dark:border-gray-800" key={i}>
           <div className="flex items-center py-2">
             <Skeleton roundedFull>
-              <div className="w-8 h-8" />
+              <div className="h-8 w-8" />
             </Skeleton>
             <Skeleton className="ml-2" squared>
-              <div className="w-40 h-4" />
+              <div className="h-4 w-40" />
             </Skeleton>
           </div>
           <div className="flex">
             {videosMap.map(i => (
-              <div className="flex flex-col mr-2" key={i}>
+              <div className="mr-2 flex flex-col" key={i}>
                 <Skeleton squared>
-                  <div className="w-64 h-32" />
+                  <div className="h-32 w-64" />
                 </Skeleton>
                 <Skeleton squared>
-                  <div className="w-full h-4" />
+                  <div className="h-4 w-full" />
                 </Skeleton>
               </div>
             ))}

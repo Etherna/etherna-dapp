@@ -14,11 +14,12 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
-import { MoonIcon, SunIcon } from "@heroicons/react/outline"
+import { MoonIcon, SunIcon } from "@heroicons/react/24/solid"
 
-import { Toggle } from "../ui/inputs"
+import { Toggle } from "@/components/ui/inputs"
 
 type DarkModeToggleProps = {
   enabled: boolean

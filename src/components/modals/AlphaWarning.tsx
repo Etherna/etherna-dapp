@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { Fragment, useEffect, useRef, useState } from "react"
+
+import React, { Fragment, useCallback, useEffect, useRef, useState } from "react"
 import { Dialog, Transition } from "@headlessui/react"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
@@ -58,7 +59,7 @@ const AlphaWarning: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, toggleButton, dialogEl])
 
-  const dialogTransition = () => {
+  const dialogTransition = useCallback(() => {
     const dialogBounds = dialogEl!.getBoundingClientRect()
     const targetBounds = toggleButton!.getBoundingClientRect()
 
@@ -118,17 +119,17 @@ const AlphaWarning: React.FC = () => {
     }
 
     requestAnimationFrame(step)
-  }
+  }, [open, toggleButton, dialogEl])
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     initialState.current = null
     setOpen(false)
     setHide(true)
-  }
+  }, [setHide])
 
-  const handleFeedback = () => {
+  const handleFeedback = useCallback(() => {
     window.ATL_JQ_PAGE_PROPS?.showCollectorDialog?.()
-  }
+  }, [])
 
   if (isBotUserAgent()) return null
 
@@ -136,20 +137,22 @@ const AlphaWarning: React.FC = () => {
     <>
       <button
         className={classNames(
-          "md:absolute-center flex items-center text-sm font-semibold tracking-tight px-2.5 py-0.5 rounded-full",
-          "bg-orange-400 border border-orange-500 text-orange-800"
+          "flex items-center rounded-full px-2.5 py-0.5 md:absolute-center",
+          "text-sm font-semibold tracking-tight",
+          "border border-orange-500 bg-orange-400 text-orange-800",
+          "transition"
         )}
         onClick={() => setOpen(true)}
         style={{ visibility: open || !hide ? "hidden" : undefined }}
         ref={el => el && setToggleButton(el)}
       >
         <BugIcon className="h-[1.2em]" aria-hidden />
-        <span className="hidden sm:inline sm:ml-1.5">Alpha</span>
+        <span className="hidden sm:ml-1.5 sm:inline">Alpha</span>
       </button>
 
       <Dialog
         as="div"
-        className="fixed inset-0 flex p-6 z-50 isolate items-start md:items-stretch overflow-auto transition-all"
+        className="fixed inset-0 isolate z-50 flex items-start overflow-auto p-6 transition-all md:items-stretch"
         initialFocus={cancelButton}
         open={open && !!toggleButton}
         onClose={() => setOpen(false)}
@@ -177,7 +180,7 @@ const AlphaWarning: React.FC = () => {
 
         <div
           className={classNames(
-            "mx-auto mt-0 md:my-auto w-full max-w-xs rounded-lg z-1 p-4",
+            "z-1 mx-auto mt-0 w-full max-w-xs rounded-lg p-4 md:my-auto",
             "bg-orange-500 shadow-lg shadow-orange-500/20 transition-[width,height,opacity]"
           )}
           ref={el => el && setDialogEl(el)}
@@ -185,10 +188,10 @@ const AlphaWarning: React.FC = () => {
         >
           <div className="transition-opacity duration-200">
             <div className="flex flex-col items-center">
-              <Dialog.Title className="text-xl text-center text-orange-900">
+              <Dialog.Title className="text-center text-xl text-orange-900">
                 Alpha Realease
               </Dialog.Title>
-              <Dialog.Description className="leading-[1.1] text-center font-medium text-orange-800">
+              <Dialog.Description className="text-center font-medium leading-[1.1] text-orange-800">
                 The current version of this application is in alpha, meaning it might have bugs as
                 well as downtime moments and data loss.
                 <br />
@@ -197,7 +200,7 @@ const AlphaWarning: React.FC = () => {
               </Dialog.Description>
             </div>
 
-            <div className="flex flex-col mt-10 space-y-2">
+            <div className="mt-10 flex flex-col space-y-2">
               <AlphaWarningAction as="button" onClick={handleFeedback} disabled={feedbackBlocked}>
                 <Tippy
                   content={
@@ -238,12 +241,12 @@ const AlphaWarningAction: React.FC<AlphaWarningActionProps> = ({
   return (
     <As
       className={classNames(
-        "flex items-center justify-center text-sm font-semibold px-3 py-3 rounded",
-        "[&_svg]:w-[1.25em] [&_svg]:h-[1.25em] [&_svg]:mr-2",
+        "flex items-center justify-center rounded px-3 py-3 text-sm font-semibold",
+        "[&_svg]:mr-2 [&_svg]:h-[1.25em] [&_svg]:w-[1.25em]",
         {
           "border border-orange-800 text-orange-800 hover:text-orange-800 active:bg-orange-700/20":
             !alt,
-          "bg-orange-600 text-orange-900 active:bg-orange-700 transition-colors duration-75 mt-8":
+          "mt-8 bg-orange-600 text-orange-900 transition-colors duration-75 active:bg-orange-700":
             alt,
         }
       )}

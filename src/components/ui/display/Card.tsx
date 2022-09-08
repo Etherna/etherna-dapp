@@ -14,11 +14,10 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
-import classes from "@/styles/components/common/Card.module.scss"
-
-type CardProps = {
+export type CardProps = {
   children: React.ReactNode
   actions?: React.ReactNode
   title?: string
@@ -26,7 +25,10 @@ type CardProps = {
 
 const Card: React.FC<CardProps> = ({ children, actions, title }) => {
   return (
-    <div className="flex flex-col rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
+    <div
+      className="flex flex-col rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900"
+      data-component="card"
+    >
       {(title || actions) && (
         <header className="mb-4 flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-700">
           <h2 className="break-words text-base font-semibold">{title}</h2>

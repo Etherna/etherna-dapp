@@ -14,13 +14,11 @@
  *  limitations under the License.
  *
  */
-import React, { useMemo } from "react"
 
+import React, { useMemo } from "react"
 import classNames from "classnames"
 import { parse } from "micro-down"
 import { filterXSS } from "xss"
-
-import classes from "@/styles/components/common/MarkdownPreview.module.scss"
 
 type MarkdownPreviewProps = {
   value: string
@@ -58,7 +56,7 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({
     <As
       className={classNames(
         "prose max-w-none dark:prose-invert",
-        "prose-a:no-underline prose-a:text-primary-500 hover:prose-a:text-primary-400 ",
+        "prose-a:text-primary-500 prose-a:no-underline hover:prose-a:text-primary-400",
         {
           "prose-h1:text-base": disableHeading,
           "prose-h2:text-base": disableHeading,

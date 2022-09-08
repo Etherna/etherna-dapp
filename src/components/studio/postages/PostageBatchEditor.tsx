@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useState, startTransition, useMemo } from "react"
 
 import EthernaGatewayClient from "@/classes/EthernaGatewayClient"

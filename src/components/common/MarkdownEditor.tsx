@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useEffect, useMemo, useRef, useState } from "react"
+
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import classNames from "classnames"
 import { Editor, EditorState, RichUtils, convertFromRaw, convertToRaw } from "draft-js"
 import type { DraftEditorCommand, DraftHandleValue, EditorProps } from "draft-js"
@@ -113,18 +114,21 @@ const MarkdownEditorButton: React.FC<MarkdownEditorButtonProps> = ({
     (config.type === "block" && blockType === config.style) ||
     (config.type === "inline" && inlineStyle!.has(config.style))
 
-  const toggleStyle = (e: React.MouseEvent) => {
-    e.preventDefault()
+  const toggleStyle = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault()
 
-    if (config.type === "inline") {
-      onEditorStateChange?.(RichUtils.toggleInlineStyle(editorState, config.style))
-    }
-    if (config.type === "block") {
-      onEditorStateChange?.(RichUtils.toggleBlockType(editorState, config.style))
-    }
-  }
+      if (config.type === "inline") {
+        onEditorStateChange?.(RichUtils.toggleInlineStyle(editorState, config.style))
+      }
+      if (config.type === "block") {
+        onEditorStateChange?.(RichUtils.toggleBlockType(editorState, config.style))
+      }
+    },
+    [config.style, config.type, editorState, onEditorStateChange]
+  )
 
-  const getIcon = () => {
+  const getIcon = useCallback(() => {
     switch (config.style) {
       case "BOLD":
         return <BoldIcon width={20} />
@@ -143,16 +147,16 @@ const MarkdownEditorButton: React.FC<MarkdownEditorButtonProps> = ({
       case "ordered-list-item":
         return <OrderedListIconIcon width={20} />
     }
-  }
+  }, [config.style])
 
   return (
     <div
       className={classNames(
-        "appearance-none w-8 h-8 flex items-center justify-center cursor-pointer",
+        "flex h-8 w-8 cursor-pointer appearance-none items-center justify-center",
         "text-gray-700 dark:text-gray-400",
         {
           "hover:bg-gray-100 dark:hover:bg-gray-800": !active,
-          "bg-gray-100 dark:bg-gray-800 text-blue-400": active,
+          "bg-gray-100 text-blue-400 dark:bg-gray-800": active,
         }
       )}
       title={config.label}
@@ -219,65 +223,71 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasExceededLimit])
 
-  const handleBeforeInput = (chars: string, editorState: EditorState, eventTimeStamp: number) => {
-    const currentContent = editorState.getCurrentContent()
-    const currentContentLength = currentContent.getPlainText("").length
+  const handleBeforeInput = useCallback(
+    (chars: string, editorState: EditorState, eventTimeStamp: number) => {
+      const currentContent = editorState.getCurrentContent()
+      const currentContentLength = currentContent.getPlainText("").length
 
-    if (charactersLimit && currentContentLength > charactersLimit - 1) {
-      return "handled"
-    }
+      if (charactersLimit && currentContentLength > charactersLimit - 1) {
+        return "handled"
+      }
 
-    return "not-handled"
-  }
+      return "not-handled"
+    },
+    [charactersLimit]
+  )
 
-  const handleKeyCommand = (
-    command: DraftEditorCommand,
-    editorState: EditorState
-  ): DraftHandleValue => {
-    const newState = RichUtils.handleKeyCommand(editorState, command)
+  const handleKeyCommand = useCallback(
+    (command: DraftEditorCommand, editorState: EditorState): DraftHandleValue => {
+      const newState = RichUtils.handleKeyCommand(editorState, command)
 
-    if (newState) {
-      setState(newState)
-      return "handled"
-    }
+      if (newState) {
+        setState(newState)
+        return "handled"
+      }
 
-    return "not-handled"
-  }
+      return "not-handled"
+    },
+    []
+  )
 
-  const handleChange = (editorState: EditorState) => {
-    setState(editorState)
+  const handleChange = useCallback(
+    (editorState: EditorState) => {
+      setState(editorState)
 
-    const content = editorState.getCurrentContent()
-    const rawObject = convertToRaw(content)
-    const markdownString = draftToMarkdown(rawObject)
+      const content = editorState.getCurrentContent()
+      const rawObject = convertToRaw(content)
+      const markdownString = draftToMarkdown(rawObject)
 
-    if (markdownString !== markdown) {
-      setMarkdown(markdownString)
-      onChange?.(markdownString)
-    }
-  }
+      if (markdownString !== markdown) {
+        setMarkdown(markdownString)
+        onChange?.(markdownString)
+      }
+    },
+    [markdown, onChange]
+  )
 
-  const handleFocus = () => {
+  const handleFocus = useCallback(() => {
     setHasFocus(true)
     onFocus?.()
-  }
+  }, [onFocus])
 
-  const handleBlur = () => {
+  const handleBlur = useCallback(() => {
     setHasFocus(false)
     onBlur?.()
-  }
+  }, [onBlur])
 
   return (
     <>
       {label && <Label htmlFor={id}>{label}</Label>}
       <div
         className={classNames(
-          "relative appearance-none block w-full border leading-tight rounded",
-          "text-gray-700 bg-gray-900/5 border-gray-200",
-          "dark:text-gray-200 dark:bg-gray-100/5 dark:border-gray-800",
+          "relative block w-full appearance-none rounded border leading-tight",
+          "border-gray-200 bg-gray-900/5 text-gray-700",
+          "dark:border-gray-800 dark:bg-gray-100/5 dark:text-gray-200",
           {
-            "outline-none bg-transparent border-green-500": hasFocus,
-            "dark:bg-transparent dark:border-green-500 dark:text-gray-200": hasFocus,
+            "border-green-500 bg-transparent outline-none": hasFocus,
+            "dark:border-green-500 dark:bg-transparent dark:text-gray-200": hasFocus,
             "pb-8": !!charactersLimit,
           },
           className
@@ -286,7 +296,8 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       >
         <div
           className={classNames(
-            "flex items-center px-3 py-1.5 overflow-x-auto pointer-events-none scrollbar-none",
+            "flex items-center space-x-4 overflow-x-auto px-3 py-1.5",
+            "pointer-events-none scrollbar-none",
             toolbarClassName,
             {
               "pointer-events-auto": hasFocus,
@@ -297,7 +308,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           {Object.keys(toolbarConfig).map(key => (
             <div
               className={classNames(
-                "flex items-center rounded overflow-hidden",
+                "flex items-center overflow-hidden rounded",
                 "border border-gray-200 dark:border-gray-700",
                 "divide-x divide-gray-200 dark:divide-gray-700"
               )}

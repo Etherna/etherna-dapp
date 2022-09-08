@@ -14,8 +14,8 @@
  *  limitations under the License.
  *
  */
-import React from "react"
 
+import React from "react"
 import classNames from "classnames"
 
 export type FormGroupProps = {
@@ -28,10 +28,13 @@ export type FormGroupProps = {
 
 const FormGroup: React.FC<FormGroupProps> = ({ children, className, label, labelFor, error }) => {
   return (
-    <div className={classNames("mb-6 first-of-type:mb-0", className)} data-component="form-group">
+    <div
+      className={classNames("mb-6 flex flex-col last-of-type:mb-0", className)}
+      data-component="form-group"
+    >
       {label && (
         <label
-          className="mb-1.5 text-sm font-semibold text-gray-700 dark:text-gray-400"
+          className="mb-1.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-400"
           htmlFor={labelFor}
         >
           {label}

@@ -14,9 +14,10 @@
  *  limitations under the License.
  *
  */
-import React from "react"
 
-import { CurrencyDollarIcon } from "@heroicons/react/outline"
+import React, { useCallback } from "react"
+
+import { CurrencyDollarIcon } from "@heroicons/react/24/outline"
 
 import { Badge } from "../ui/display"
 import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
@@ -27,10 +28,7 @@ type VideoOffersBadgeProps = {
 }
 
 const VideoOffersBadge: React.FC<VideoOffersBadgeProps> = ({ video, offersStatus }) => {
-  if (!video) return null
-  if (offersStatus === "none") return null
-
-  const getLabel = () => {
+  const getLabel = useCallback(() => {
     switch (offersStatus) {
       case "full":
       case "sources":
@@ -40,11 +38,15 @@ const VideoOffersBadge: React.FC<VideoOffersBadgeProps> = ({ video, offersStatus
       default:
         return "Pay to watch"
     }
-  }
+  }, [offersStatus])
+
+  if (!video) return null
+  if (offersStatus === "none") return null
 
   return (
     <Badge
       variant="outline"
+      prefix={<CurrencyDollarIcon width={20} aria-hidden />}
       color={
         offersStatus === "full"
           ? "primary"
@@ -55,7 +57,6 @@ const VideoOffersBadge: React.FC<VideoOffersBadgeProps> = ({ video, offersStatus
           : "muted"
       }
     >
-      <CurrencyDollarIcon width={20} className="mr-1" aria-hidden />
       {getLabel()}
     </Badge>
   )

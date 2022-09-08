@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useState, useImperativeHandle, useEffect, useCallback } from "react"
 
 import FileDrag from "./FileDrag"
@@ -136,7 +137,7 @@ const FileUploadFlow = React.forwardRef<FileUploadFlowHandlers, FileUploadFlowPr
       <>
         {label && <Label>{label}</Label>}
 
-        <div className="p-4 rounded bg-gray-900/5 dark:bg-gray-100/5">
+        <div className="rounded bg-gray-900/5 p-4 dark:bg-gray-100/5">
           {status === "select" && (
             <FileDrag
               id={`${label || "new"}-input`}

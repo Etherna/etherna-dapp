@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import { Avatar } from "@/components/ui/display"
@@ -36,11 +37,11 @@ const PlayerVideoInfo: React.FC<PlayerVideoInfoProps> = ({ hash, title, owner })
       rel="noreferrer"
     >
       {owner && (
-        <div className="relative mr-3 w-8 h-8 md:w-12 md:h-12 rounded-full shadow-sm shadow-black/25">
-          <Avatar className="w-full h-full" image={owner.avatar} address={owner.address} />
+        <div className="relative mr-3 h-8 w-8 rounded-full shadow-sm shadow-black/25 md:h-12 md:w-12">
+          <Avatar size="fill" image={owner.avatar} address={owner.address} />
         </div>
       )}
-      <div className="inline-flex items-baseline space-x-2 text-white drop-shadow shadow-black/75">
+      <div className="inline-flex items-baseline space-x-2 text-white shadow-black/75 drop-shadow">
         <span>{title}</span>
         {owner && (
           <>

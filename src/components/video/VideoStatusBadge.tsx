@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React from "react"
+
+import React, { useCallback } from "react"
 
 import { ReactComponent as UnindexedIcon } from "@/assets/icons/unindexed.svg"
 
@@ -25,9 +26,7 @@ type VideoStatusBadgeProps = {
 }
 
 const VideoStatusBadge: React.FC<VideoStatusBadgeProps> = ({ status }) => {
-  if (status === "available") return null
-
-  const getLabel = () => {
+  const getLabel = useCallback(() => {
     switch (status) {
       case "unindexed":
         return "Unindexed"
@@ -36,11 +35,16 @@ const VideoStatusBadge: React.FC<VideoStatusBadgeProps> = ({ status }) => {
       default:
         return "nd"
     }
-  }
+  }, [status])
+
+  if (status === "available") return null
 
   return (
-    <Badge color="warning">
-      <UnindexedIcon className="fill-orange-800" />
+    <Badge
+      className="text-orange-800"
+      color="warning"
+      prefix={<UnindexedIcon width={16} className="fill-orange-800" />}
+    >
       {getLabel()}
     </Badge>
   )

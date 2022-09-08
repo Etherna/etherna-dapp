@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React from "react"
+
+import React, { useCallback } from "react"
 
 import PlayerToolbarSelect from "./PlayerToolbarSelect"
 import { PlayerReducerTypes } from "@/context/player-context"
@@ -25,14 +26,17 @@ const PlayerPlaybackSpeed: React.FC = () => {
   const { playbackRate } = state
   const playbackTicks = [0.25, 0.5, 1, 1.25, 1.5, 1.75, 2]
 
-  const updatePlaybackRate = (option: { value: string }) => {
-    dispatch({
-      type: PlayerReducerTypes.UPDATE_PLAYBACK_RATE,
-      playbackRate: +option.value,
-    })
-  }
+  const updatePlaybackRate = useCallback(
+    (option: { value: string }) => {
+      dispatch({
+        type: PlayerReducerTypes.UPDATE_PLAYBACK_RATE,
+        playbackRate: +option.value,
+      })
+    },
+    [dispatch]
+  )
 
-  const optionLabel = (val: number) => `${val}`
+  const optionLabel = useCallback((val: number) => `${val}`, [])
 
   return (
     <PlayerToolbarSelect

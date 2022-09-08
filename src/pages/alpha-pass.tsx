@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
@@ -27,7 +28,7 @@ const AlphaPassPage = () => {
       <SEO title="Request Alpha Pass" />
 
       <Container fluid>
-        <div className="max-w-xl mx-auto">
+        <div className="mx-auto w-full max-w-xl">
           <h1>Request Alpha Pass</h1>
           <AlphaPassForm />
         </div>

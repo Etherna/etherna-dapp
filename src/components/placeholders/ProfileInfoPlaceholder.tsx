@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import { Skeleton } from "../ui/display"
@@ -22,26 +23,26 @@ const ProfileInfoPlaceholder: React.FC<{ children: React.ReactNode }> = ({ child
   return (
     <>
       <div className="row items-center">
-        <div className="col md:max-w-xxs px-4">
+        <div className="col px-4 md:max-w-xxs">
           <Skeleton roundedFull>
-            <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40" />
+            <div className="h-24 w-24 sm:h-32 sm:w-32 md:h-40 md:w-40" />
           </Skeleton>
         </div>
-        <div className="col flex-1 px-4 mt-4">
+        <div className="col mt-4 flex-1 px-4">
           <div className="flex items-center space-y-2">
             <Skeleton className="w-1/2 sm:mx-auto md:ml-0">
-              <div className="w-full h-7" />
+              <div className="h-7 w-full" />
             </Skeleton>
           </div>
         </div>
       </div>
       <div className="row">
-        <div className="col md:max-w-xxs p-4">
+        <div className="col p-4 md:max-w-xxs">
           <Skeleton className="mt-2" roundedFull>
-            <div className="w-full h-9" />
+            <div className="h-9 w-full" />
           </Skeleton>
           <Skeleton className="mt-2" roundedFull>
-            <div className="w-full h-9" />
+            <div className="h-9 w-full" />
           </Skeleton>
         </div>
         <div className="col flex-1 p-4">{children}</div>

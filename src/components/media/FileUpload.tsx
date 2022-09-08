@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useState, useEffect } from "react"
+
+import React, { useState, useEffect, useCallback } from "react"
 import axios from "axios"
 
 import { Button } from "@/components/ui/actions"
@@ -54,7 +55,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canUpload])
 
-  const handleStartUpload = async () => {
+  const handleStartUpload = useCallback(async () => {
     setIsUploading(true)
 
     onUploadStart?.()
@@ -82,13 +83,13 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
       onUploadError(errorMessage)
     }
-  }
+  }, [buffer, onUploadFinished, onUploadStart, onUploadError, uploadHandler])
 
-  const handleRemoveFile = () => {
+  const handleRemoveFile = useCallback(() => {
     setIsUploading(false)
     setErrorMessage(undefined)
     onCancel()
-  }
+  }, [onCancel])
 
   return (
     <div className="space-y-2">

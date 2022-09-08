@@ -14,8 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback, useId, useState } from "react"
 
+import React, { useCallback } from "react"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
 
@@ -34,8 +34,6 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
   name,
   onChange,
 }) => {
-  const id = useId()
-
   const isChcked = useCallback(
     (entryValue: string) => {
       return value ? entryValue === value : entryValue === defaultValue
@@ -46,8 +44,8 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
   return (
     <div
       className={classNames(
-        "flex w-full relative select-none rounded-lg text-sm font-semibold",
-        "text-white bg-gray-700/10 dark:bg-gray-100/10"
+        "relative flex w-full select-none rounded-lg font-semibold",
+        "bg-gray-700/10 text-white dark:bg-gray-100/10"
       )}
       data-component="segmented-control"
     >
@@ -58,7 +56,7 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
             type="radio"
             name={name}
             value={entry.value}
-            id={`entry-${id}`}
+            id={`entry-${entry.value}`}
             checked={isChcked(entry.value)}
             onChange={() => onChange?.(entry.value)}
           />
@@ -71,10 +69,14 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
             visible={entry.tip ? undefined : false}
           >
             <label
-              className={classNames("m-1 rounded-md text-sm text-gray-600 dark:text-gray-300", {
-                "text-white bg-primary-500": isChcked(entry.value),
-              })}
-              htmlFor={`entry-${id}`}
+              className={classNames(
+                "m-1 flex-1 rounded-md px-2 py-1 text-center",
+                "text-gray-600 dark:text-gray-300",
+                {
+                  "bg-primary-500 text-white": isChcked(entry.value),
+                }
+              )}
+              htmlFor={`entry-${entry.value}`}
             >
               {entry.label}
             </label>

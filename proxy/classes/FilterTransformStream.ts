@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,19 +14,21 @@
  *  limitations under the License.
  */
 
-import { Transform, TransformOptions } from "stream"
+import type { TransformOptions } from "stream"
+import { Transform } from "stream"
 
 export default class FilterTransformStream extends Transform {
   streamedBytes: number
 
-  constructor(
-    public maxBodySize: number,
-    public options?: TransformOptions
-  ) {
+  constructor(public maxBodySize: number, public options?: TransformOptions) {
     super(options)
   }
 
-  _transform(chunk: ArrayBuffer, encoding: string, callback: (error: Error | null, chunk: ArrayBuffer) => void) {
+  _transform(
+    chunk: ArrayBuffer,
+    encoding: string,
+    callback: (error: Error | null, chunk: ArrayBuffer) => void
+  ) {
     // Verify if stream has to be truncated.
     const streamableBytes = this.maxBodySize - this.streamedBytes
 

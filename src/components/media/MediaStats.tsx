@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React, { useRef, useState } from "react"
 import classNames from "classnames"
 
-import { ChevronDownIcon } from "@heroicons/react/solid"
+import { ChevronDownIcon } from "@heroicons/react/24/solid"
 
 type MediaStatsProps = {
   stats: Array<{ label: string; value: string | JSX.Element }>
@@ -37,8 +38,8 @@ const MediaStats: React.FC<MediaStatsProps> = ({
     <div>
       <button
         className={classNames(
-          "flex items-center bg-transparent border-none px-0 py-3 space-x-2",
-          "text-sm font-medium text-gray-500 dark:text-gray-300 active:text-gray-600 dark:active:text-gray-200",
+          "flex items-center space-x-2 border-none bg-transparent px-0 py-3",
+          "text-sm font-medium text-gray-500 active:text-gray-600 dark:text-gray-300 dark:active:text-gray-200",
           "transition-colors duration-200",
           {
             "text-gray-800 dark:text-gray-100": expanded,
@@ -58,25 +59,17 @@ const MediaStats: React.FC<MediaStatsProps> = ({
       </button>
 
       <div
-        className="overflow-hidden max-h-0 transition-[max-height] duration-300"
+        className="max-h-0 overflow-hidden transition-[max-height] duration-300"
         style={{ maxHeight: expanded ? `${tableRef.current.clientHeight}px` : undefined }}
       >
-        <table
-          className={classNames(
-            "table-fixed w-full transform -translate-y-full opacity-0 transition duration-300",
-            {
-              "translate-y-0 opacity-100": expanded,
-            }
-          )}
-          ref={tableRef}
-        >
+        <table className={classNames("w-full table-fixed  transition")} ref={tableRef}>
           <tbody>
             {stats.map((stat, i) => (
-              <tr className="text-xs text-left truncate" key={i}>
-                <th className="w-[80px] font-semibold text-gray-500 dark:text-gray-400 truncate">
+              <tr className="truncate text-left text-xs" key={i}>
+                <th className="w-[80px] truncate font-semibold text-gray-500 dark:text-gray-400">
                   {stat.label}
                 </th>
-                <td className="font-medium text-gray-900 dark:text-gray-200 pl-5 truncate">
+                <td className="truncate pl-5 font-medium text-gray-900 dark:text-gray-200">
                   {stat.value}
                 </td>
               </tr>

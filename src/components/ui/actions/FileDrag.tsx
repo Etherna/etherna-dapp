@@ -14,13 +14,13 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback, useState } from "react"
 
+import React, { useCallback, useState } from "react"
 import classNames from "classnames"
 
-import { FilmIcon, PlusIcon } from "@heroicons/react/outline"
+import { FilmIcon, PlusIcon } from "@heroicons/react/24/outline"
 
-type FileDragProps = {
+export type FileDragProps = {
   label?: string
   onFileSelected(file: File): void
 }

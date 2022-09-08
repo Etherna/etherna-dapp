@@ -14,9 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React, { useState } from "react"
 
-import { FlagIcon, DotsVerticalIcon } from "@heroicons/react/solid"
+import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline"
+import { FlagIcon } from "@heroicons/react/24/solid"
 import { ReactComponent as ManifestIcon } from "@/assets/icons/manifest.svg"
 
 import VideoExtraMenuManifest from "./VideoExtraMenuManifest"
@@ -36,7 +38,7 @@ const VideoExtraMenu: React.FC<VideoExtraMenuProps> = ({ video }) => {
     <>
       <Dropdown>
         <Dropdown.Toggle>
-          <DotsVerticalIcon className="w-5 h-5 rotate-90" aria-hidden />
+          <EllipsisHorizontalIcon width={26} strokeWidth={2} fill="currentColor" aria-hidden />
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <Dropdown.Item

@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import classNames from "classnames"
 
@@ -24,11 +25,11 @@ type VideoDetailsTitleBarProps = {
 
 const VideoDetailsTitleBar: React.FC<VideoDetailsTitleBarProps> = ({ title, children }) => {
   return (
-    <div className="flex sm:flex-row mb-5">
+    <div className="mb-5 flex sm:flex-row">
       <h1
         className={classNames(
-          "flex-1 mb-0 max-w-full flex-grow overflow-hidden",
-          "font-semibold text-2xl text-ellipsis line-clamp-4",
+          "mb-0 max-w-full flex-1 flex-grow overflow-hidden",
+          "text-ellipsis text-2xl font-semibold line-clamp-4",
           {
             "opacity-50": !title,
           }

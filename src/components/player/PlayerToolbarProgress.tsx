@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useMemo, useRef, useState } from "react"
 import classNames from "classnames"
 
@@ -58,15 +59,15 @@ const PlayerToolbarProgress: React.FC<PlayerToolbarProgressProps> = ({ focus }) 
       ref={progressContainer}
     >
       <Slider
-        className="w-full h-1 transition duration-200;"
+        className="duration-200; h-1 w-full transition"
         value={currentTime * 100}
         min={0}
         max={100}
         step={0.001}
         renderTrack={(_, { index, value }) => (
           <div
-            className={classNames("bg-gray-600 cursor-pointer h-full", {
-              "bg-primary-500 z-1": index === 0,
+            className={classNames("h-full cursor-pointer bg-gray-600", {
+              "z-1 bg-primary-500": index === 0,
             })}
             style={{
               position: "absolute",
@@ -79,7 +80,7 @@ const PlayerToolbarProgress: React.FC<PlayerToolbarProgressProps> = ({ focus }) 
         renderThumb={(props, { valueNow }) => (
           <div
             className={classNames(
-              "mt-0.5 w-5 h-5 rounded-full",
+              "mt-0.5 h-5 w-5 rounded-full",
               "-translate-x-1/2 -translate-y-1/2  bg-primary-500",
               "opacity-0 transition-opacity duration-200",
               {
@@ -110,14 +111,14 @@ const PlayerToolbarProgress: React.FC<PlayerToolbarProgressProps> = ({ focus }) 
         onAfterChange={updateCurrentTime}
       />
       <div
-        className="absolute left-0 top-0 h-full bg-primary-300/20 pointer-events-none"
+        className="pointer-events-none absolute left-0 top-0 h-full bg-primary-300/20"
         style={{ width: `${buffering * 100}%` }}
       />
       <span
         className={classNames(
-          "mb-5 px-1 py-0.5 absolute left-0 bottom-0 -translate-x-1/2 rounded-sm",
-          "scale-0 origin-center transition-transform duration-200",
-          "text-xs font-medium bg-gray-900",
+          "absolute left-0 bottom-0 mb-5 -translate-x-1/2 rounded-sm px-1 py-0.5",
+          "origin-center scale-0 transition-transform duration-200",
+          "bg-gray-900 text-xs font-medium",
           {
             "scale-100": showTime,
           }

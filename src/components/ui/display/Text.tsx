@@ -14,14 +14,15 @@
  *  limitations under the License.
  *
  */
-import React, { useMemo } from "react"
 
+import React, { useMemo } from "react"
 import classNames from "classnames"
 
-type TextSize =
+export type TextSize =
   | "xs"
   | "sm"
   | "base"
+  | "md"
   | "lg"
   | "xl"
   | "2xl"
@@ -33,11 +34,11 @@ type TextSize =
   | "8xl"
   | "9xl"
 
-type TextHeadings = "h1" | "h2" | "h3" | "h4" | "h5" | "h6"
+export type TextHeadings = "h1" | "h2" | "h3" | "h4" | "h5" | "h6"
 
-type TextWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900
+export type TextWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900
 
-type TextProps = {
+export type TextProps = {
   children?: React.ReactNode
   as?: "div" | TextHeadings | "label" | "legend" | "p" | "small" | "span" | "strong"
   h1?: boolean
@@ -69,28 +70,28 @@ const defaultConfig: Record<
   }
 > = {
   h1: {
-    size: "2xl",
-    sizeMd: "4xl",
-    weight: 700,
-  },
-  h2: {
-    size: "2xl",
+    size: "xl",
     sizeMd: "3xl",
     weight: 700,
   },
-  h3: {
+  h2: {
     size: "xl",
     sizeMd: "2xl",
     weight: 700,
   },
-  h4: {
+  h3: {
     size: "lg",
     sizeMd: "xl",
+    weight: 700,
+  },
+  h4: {
+    size: "base",
+    sizeMd: "lg",
     weight: 500,
   },
   h5: {
     size: "base",
-    sizeMd: "lg",
+    sizeMd: "md",
     weight: 500,
   },
   h6: {

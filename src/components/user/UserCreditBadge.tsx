@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useEffect, useState } from "react"
 import classNames from "classnames"
 
@@ -45,10 +46,10 @@ const UserCreditBadge: React.FC<UserCreditBadgeProps> = ({ credit }) => {
   return (
     <div
       className={classNames(
-        "relative flex items-baseline h-9 px-4 py-1.5 overflow-hidden rounded-full cursor-pointer",
-        "bg-gray-200/70 dark:bg-gray-800/70 backdrop-blur",
+        "relative flex h-9 cursor-pointer items-baseline overflow-hidden rounded-full px-4 py-1.5",
+        "bg-gray-200/70 backdrop-blur dark:bg-gray-800/70",
         {
-          "after:absolute after:right-0 after:inset-y-0 after:w-12 after:hover:opacity-0 after:md:content-none":
+          "after:absolute after:inset-y-0 after:right-0 after:w-12 after:hover:opacity-0 after:md:content-none":
             expandable,
           "after:bg-gradient-to-r after:from-gray-100/10 after:via-gray-100/80 after:to-gray-100 ":
             expandable,
@@ -62,7 +63,7 @@ const UserCreditBadge: React.FC<UserCreditBadgeProps> = ({ credit }) => {
       {/* <span className="hidden xs:inline text-xs tracking-tighter text-gray-600 dark:text-gray-400 mr-1">CHF</span> */}
       <div
         className={classNames(
-          "flex items-baseline relative overflow-hidden",
+          "relative flex items-baseline overflow-hidden",
           "text-gray-900 dark:text-gray-200"
         )}
       >

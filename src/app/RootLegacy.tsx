@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useState } from "react"
+
+import React, { useCallback, useState } from "react"
 
 import { Button, Modal } from "@/components/ui/actions"
 import useLocalStorage from "@/hooks/useLocalStorage"
@@ -23,14 +24,14 @@ const RootLegacy: React.FC = () => {
   const [hideUnsupported, setHideUnsupported] = useLocalStorage("setting:hide-unsupported", false)
   const [open, setOpen] = useState(!hideUnsupported)
 
-  const closeAndDontShowAgain = () => {
+  const close = useCallback(() => {
+    setOpen(false)
+  }, [])
+
+  const closeAndDontShowAgain = useCallback(() => {
     setHideUnsupported(true)
     close()
-  }
-
-  const close = () => {
-    setOpen(false)
-  }
+  }, [close, setHideUnsupported])
 
   return (
     <Modal

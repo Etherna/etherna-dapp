@@ -14,11 +14,12 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import classNames from "classnames"
 
-import { CogIcon } from "@heroicons/react/outline"
-import { CheckCircleIcon, InformationCircleIcon } from "@heroicons/react/solid"
+import { CogIcon } from "@heroicons/react/24/outline"
+import { CheckCircleIcon, InformationCircleIcon } from "@heroicons/react/24/solid"
 
 import PostageBatchEditor from "./PostageBatchEditor"
 import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
@@ -220,8 +221,8 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
                 <p className="leading-none">{getBatchName(batch, batches.indexOf(batch))}</p>
                 <small
                   className={classNames(
-                    "mt-1 inline-block overflow-hidden w-40 xl:w-auto",
-                    "text-xs text-gray-600 dark:text-gray-400 leading-none truncate"
+                    "mt-1 inline-block w-40 overflow-hidden xl:w-auto",
+                    "truncate text-xs leading-none text-gray-600 dark:text-gray-400"
                   )}
                 >
                   {batch.id}
@@ -255,7 +256,7 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
                     isLoading={!!updatingBatches.find(b => b.id === batch.id)}
                   />
 
-                  <p className="ml-2 shrink-0 text-xs font-medium font-mono">
+                  <p className="ml-2 shrink-0 font-mono text-xs font-medium">
                     <span>{convertBytes(used).readable}</span>
                     <span> / </span>
                     <span>{convertBytes(total).readable}</span>
@@ -271,7 +272,7 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
               <>
                 {!updatingBatches.find(b => b.id === batch.id) && !isBatchExpired(batch) && (
                   <Button color="transparent" onClick={() => openSettings(batch)}>
-                    <CogIcon aria-hidden />
+                    <CogIcon width={18} aria-hidden />
                   </Button>
                 )}
               </>
@@ -318,7 +319,7 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
               <div className="mt-3">
                 <small
                   className={classNames(
-                    "flex items-center text-sm text-gray-900 dark:text-gray-100 leading-none"
+                    "flex items-center text-sm leading-none text-gray-900 dark:text-gray-100"
                   )}
                 >
                   <InformationCircleIcon width={16} className="mr-2" aria-hidden />

@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useState } from "react"
 
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
@@ -62,7 +63,7 @@ const VideoComments: React.FC<VideoCommentsProps> = ({ indexReference, videoAuth
         </div>
       )}
       {comments.length === 0 && !isFetchingComments && (
-        <p className="text-gray-500 dark:text-gray-500 text-sm">
+        <p className="text-sm text-gray-500 dark:text-gray-500">
           No comments published yet. Be the first!
         </p>
       )}

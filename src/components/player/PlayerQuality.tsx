@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React from "react"
+
+import React, { useCallback } from "react"
 
 import PlayerToolbarSelect from "./PlayerToolbarSelect"
 import { PlayerReducerTypes } from "@/context/player-context"
@@ -24,18 +25,21 @@ const PlayerQuality: React.FC = () => {
   const [state, dispatch] = usePlayerState()
   const { currentQuality, sourceQualities, videoEl } = state
 
-  const updateQuality = (option: { value: string }) => {
-    // Fix video element height jump
-    videoEl!.style.height = `${videoEl!.clientHeight}px`
-    setTimeout(() => {
-      videoEl!.style.height = ""
-    }, 500)
+  const updateQuality = useCallback(
+    (option: { value: string }) => {
+      // Fix video element height jump
+      videoEl!.style.height = `${videoEl!.clientHeight}px`
+      setTimeout(() => {
+        videoEl!.style.height = ""
+      }, 500)
 
-    dispatch({
-      type: PlayerReducerTypes.SET_CURRENT_QUALITY,
-      currentQuality: option.value,
-    })
-  }
+      dispatch({
+        type: PlayerReducerTypes.SET_CURRENT_QUALITY,
+        currentQuality: option.value,
+      })
+    },
+    [dispatch, videoEl]
+  )
 
   return (
     <PlayerToolbarSelect

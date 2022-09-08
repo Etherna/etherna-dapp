@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 
 import { Button } from "@/components/ui/actions"
@@ -42,8 +43,8 @@ const OnlyUsableBatch: React.FC<OnlyUsableBatchProps> = ({ children }) => {
     <Alert className="my-6" color="warning" title={title}>
       You might not be able to upload yet. <br />
       Come back when your postage batch is ready.
-      <span className="block mt-3">
-        <Button as="a" href={routes.studioPostages}>
+      <span className="mt-3 block">
+        <Button as="a" to={routes.studioPostages}>
           Check your postages
         </Button>
       </span>

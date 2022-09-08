@@ -14,9 +14,9 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback } from "react"
 import { Fragment, useEffect, useState } from "react"
-
 import { Dialog, Transition } from "@headlessui/react"
 import classNames from "classnames"
 
@@ -52,7 +52,7 @@ const Drawer: React.FC<DrawerProps> = ({
     <Transition.Root show={isShown} as={Fragment} afterLeave={onAnimationDone}>
       <Dialog
         as="div"
-        className={classNames("fixed inset-0 z-10", className)}
+        className={classNames("fixed inset-0 z-50", className)}
         onClose={handleClose}
         data-component="drawer"
       >
@@ -78,7 +78,7 @@ const Drawer: React.FC<DrawerProps> = ({
           leaveTo="opacity-0 translate-y-20"
         >
           <div
-            className="absolute inset-x-0 bottom-0 p-6 rounded-t-xl bg-white dark:bg-black"
+            className="absolute inset-x-0 bottom-0 rounded-t-xl bg-white p-6 dark:bg-black"
             style={{ height }}
           >
             {children}

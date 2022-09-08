@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useState } from "react"
+
+import React, { useCallback, useState } from "react"
 import { useMatomo } from "@datapunt/matomo-tracker-react"
 import axios from "axios"
 import classNames from "classnames"
@@ -52,7 +53,7 @@ const AlphaPassForm: React.FC = () => {
   const [error, setError] = useState<string>()
   const [errorFields, setErrorFields] = useState<Record<string, string>>()
 
-  const sendFormRequest = async () => {
+  const sendFormRequest = useCallback(async () => {
     setIsSubmitting(true)
 
     try {
@@ -104,13 +105,13 @@ const AlphaPassForm: React.FC = () => {
       setError("There was a problem sending your request. Try again later or contact the support.")
       setIsSubmitting(false)
     }
-  }
+  }, [email, name, why, what, social1, social2, trackEvent])
 
   return success ? (
     <div
       className={classNames(
         "max-w-screen-md text-lg",
-        "prose text-gray-900 dark:text-gray-100 prose-a:text-primary-500"
+        "prose text-gray-900 prose-a:text-primary-500 dark:text-gray-100"
       )}
     >
       <p className="text-xl font-semibold">Thank you for your request 🙏</p>
@@ -163,10 +164,10 @@ const AlphaPassForm: React.FC = () => {
       </FormGroup>
 
       <FormGroup label="What kind of user are you?" error={errorFields?.["what"]}>
-        <div className="flex flex-col items-start mt-2">
+        <div className="mt-2 flex flex-col items-start">
           {whatChoices.map(choice => (
             <label
-              className="flex items-center cursor-pointer text-base mb-2"
+              className="mb-2 flex cursor-pointer items-center text-base"
               htmlFor={choice.id}
               key={choice.id}
             >

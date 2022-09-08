@@ -14,8 +14,8 @@
  *  limitations under the License.
  *
  */
-import React from "react"
 
+import React from "react"
 import classNames from "classnames"
 
 import Text from "@/components/ui/display/Text"
@@ -29,7 +29,7 @@ const FieldDescription: React.FC<FieldDescriptionProps> = ({ children, smaller }
   return (
     <Text
       size="xs"
-      className={classNames("text-gray-500 dark:text-gray-400 mt-1.5", {
+      className={classNames("mt-1.5 text-gray-500 dark:text-gray-400", {
         "max-w-md": !smaller,
         "max-w-xs": smaller,
       })}

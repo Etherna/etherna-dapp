@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React from "react"
+
+import React, { useCallback } from "react"
 import classNames from "classnames"
 
 import { ReactComponent as PauseIcon } from "@/assets/icons/player/pause.svg"
@@ -27,18 +28,18 @@ const PlayerPlayButton: React.FC = () => {
   const [state, dispatch] = usePlayerState()
   const { isPlaying } = state
 
-  const togglePlay = () => {
+  const togglePlay = useCallback(() => {
     dispatch({
       type: PlayerReducerTypes.TOGGLE_PLAY,
       isPlaying: !isPlaying,
     })
-  }
+  }, [dispatch, isPlaying])
 
   return (
     <div
       className={classNames(
-        "w-6 h-6 rounded-full p-1.5 z-0 bg-gray-100 text-gray-900",
-        "md:w-8 md:h-8 md:p-2"
+        "z-0 h-6 w-6 rounded-full bg-gray-100 p-1.5 text-gray-900",
+        "md:h-8 md:w-8 md:p-2"
       )}
       onClick={togglePlay}
       role="button"

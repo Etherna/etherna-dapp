@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,8 +14,13 @@
  *  limitations under the License.
  */
 
+import type {
+  GatewayBatch,
+  GatewayBatchPreview,
+  GatewayCredit,
+  GatewayCurrentUser,
+} from "@/definitions/api-gateway"
 import http from "@/utils/request"
-import type { GatewayBatch, GatewayBatchPreview, GatewayCredit, GatewayCurrentUser } from "@/definitions/api-gateway"
 
 export default class GatewayUsersClient {
   url: string
@@ -23,7 +28,7 @@ export default class GatewayUsersClient {
 
   /**
    * Init an gateway user client
-   * 
+   *
    * @param {string} url Api host + api url
    */
   constructor(url: string, abortController?: AbortController) {
@@ -52,7 +57,7 @@ export default class GatewayUsersClient {
 
   /**
    * Get current user's credit
-   * 
+   *
    * @returns User's credit amount
    */
   async fetchCredit() {
@@ -72,7 +77,7 @@ export default class GatewayUsersClient {
 
   /**
    * Get current user's batches
-   * 
+   *
    * @returns User's list of batches
    */
   async fetchBatches() {
@@ -92,7 +97,7 @@ export default class GatewayUsersClient {
 
   /**
    * Create a new batch
-   * 
+   *
    * @param depth Depth of the batch (size)
    * @param amount Amount of the batch (TTL)
    * @returns The newly created batch
@@ -128,7 +133,7 @@ export default class GatewayUsersClient {
             const batch = await this.fetchBatch(newBatchId)
             return resolver(batch)
           }
-        } catch { }
+        } catch {}
 
         fetchBatch()
       }, 5000)
@@ -142,7 +147,7 @@ export default class GatewayUsersClient {
 
   /**
    * Get current user's batches
-   * 
+   *
    * @param batchId Id of the swarm batch
    * @returns User's list of batches
    */
@@ -163,7 +168,7 @@ export default class GatewayUsersClient {
 
   /**
    * Dilute batch (increase size)
-   * 
+   *
    * @param batchId Id of the swarm batch
    * @param depth New batch depth
    */
@@ -180,7 +185,7 @@ export default class GatewayUsersClient {
 
   /**
    * Get current user's offered resources
-   * 
+   *
    * @returns Reference list of offered resources
    */
   async fetchOfferedResources() {
@@ -198,12 +203,11 @@ export default class GatewayUsersClient {
     return resp.data
   }
 
-
   // SYSTEM
 
   /**
    * Fetch creation batch id
-   * 
+   *
    * @param referenceId Reference id of the batch
    * @returns The created batch id if completed
    */

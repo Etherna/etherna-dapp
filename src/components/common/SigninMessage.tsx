@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import SigninButton from "@/components/user/SigninButton"
@@ -21,7 +22,7 @@ import SigninButton from "@/components/user/SigninButton"
 const SigninMessage: React.FC = () => {
   return (
     <div className="px-4 py-6">
-      <div className="text-xl font-medium mb-4">You must sign in to visit this page.</div>
+      <div className="mb-4 text-xl font-medium">You must sign in to visit this page.</div>
 
       <div>
         <SigninButton>Sign in</SigninButton>

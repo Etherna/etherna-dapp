@@ -14,13 +14,14 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useState } from "react"
 import classNames from "classnames"
 
-import TableVideoPlaceholder from "@/components/placeholders/TableVideoPlaceholder"
-import { Pagination } from "@/components/ui/navigation"
+import { Checkbox } from "../inputs"
+import { Pagination } from "../navigation"
 
-type TableProps<T = any> = {
+export type TableProps<T = any> = {
   className?: string
   title?: string
   page?: number
@@ -36,6 +37,7 @@ type TableProps<T = any> = {
   } | null>
   showSelection?: boolean
   selectionActions?: React.ReactNode
+  loadingSkeleton?: React.ReactNode
   onPageChange?(page: number, perPage?: number): void
   onSelectionChange?(selectedItems: T[]): void
 }
@@ -51,6 +53,7 @@ const Table = <T, A>({
   isLoading,
   showSelection,
   selectionActions,
+  loadingSkeleton,
   onPageChange,
   onSelectionChange,
 }: TableProps<T>) => {
@@ -91,12 +94,13 @@ const Table = <T, A>({
   return (
     <div className={classNames("w-full", className)} data-component="table">
       {(title || selectionActions) && (
-        <div className="flex items-center flex-wrap py-1">
+        <div className="flex flex-wrap items-center py-1">
           {(title || selectionActions) && <h2 className="text-lg lg:text-xl">{title}</h2>}
           {selectionActions && (
             <div
-              className={classNames("hidden lg:flex lg:invisible items-center ml-auto space-x-3", {
-                "flex visible": selectedItems.length > 0,
+              className={classNames("ml-auto items-center space-x-3", {
+                "hidden lg:invisible lg:flex": selectedItems.length === 0,
+                "visible flex": selectedItems.length > 0,
               })}
             >
               {selectionActions}
@@ -108,15 +112,20 @@ const Table = <T, A>({
       <div className="w-full overflow-x-auto">
         <table
           className={classNames("min-w-full transition-opacity duration-200 ease-out", {
-            "opacity-30 pointer-events-none": isLoading,
+            "pointer-events-none opacity-30": isLoading,
           })}
         >
           <thead className="pb-4">
             <tr>
               {showSelection && (
-                <th className="py-2" style={{ width: "32px" }}>
-                  <input
-                    type="checkbox"
+                <th
+                  className={classNames(
+                    "py-2 text-left font-medium leading-none text-gray-600 dark:text-gray-300",
+                    "border-b border-gray-300 dark:border-gray-700"
+                  )}
+                  style={{ width: "32px" }}
+                >
+                  <Checkbox
                     checked={selectedItems.length == items?.length && selectedItems.length > 0}
                     onChange={() => toggleSelection()}
                   />
@@ -127,10 +136,10 @@ const Table = <T, A>({
                 return (
                   <th
                     className={classNames(
-                      "py-2 font-medium text-left text-gray-600 dark:text-gray-300",
+                      "py-2 text-left font-medium leading-none text-gray-600 dark:text-gray-300",
                       "border-b border-gray-300 dark:border-gray-700",
                       {
-                        "hidden xl:table-cell": col.hideOnMobile,
+                        "hidden lg:table-cell": col.hideOnMobile,
                       }
                     )}
                     style={{ width: col.width }}
@@ -146,11 +155,10 @@ const Table = <T, A>({
             {items?.map((item, i) => (
               <tr className="group" key={i}>
                 {showSelection && (
-                  <td className="py-2 border-t border-gray-200 dark:border-gray-800 group-first:border-t-0">
-                    <input
-                      type="checkbox"
+                  <td className="border-t border-gray-200 py-2 group-first:border-t-0 dark:border-gray-800">
+                    <Checkbox
                       checked={selectedItems.indexOf(item) >= 0}
-                      onChange={e => toggleSelection(item, e.target.checked)}
+                      onChange={val => toggleSelection(item, val)}
                     />
                   </td>
                 )}
@@ -159,9 +167,9 @@ const Table = <T, A>({
                   return (
                     <td
                       className={classNames(
-                        "py-2 border-t border-gray-200 dark:border-gray-800 group-first:border-t-0",
+                        "border-t border-gray-200 py-2 group-first:border-t-0 dark:border-gray-800",
                         {
-                          "hidden xl:table-cell": col.hideOnMobile,
+                          "hidden lg:table-cell": col.hideOnMobile,
                         }
                       )}
                       key={i}
@@ -173,7 +181,7 @@ const Table = <T, A>({
               </tr>
             ))}
 
-            {isLoading && !items?.length && <TableVideoPlaceholder />}
+            {isLoading && !items?.length && loadingSkeleton}
           </tbody>
         </table>
       </div>

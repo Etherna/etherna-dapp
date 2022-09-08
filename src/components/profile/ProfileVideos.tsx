@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
@@ -36,7 +37,7 @@ const ProfileVideos: React.FC<ProfileVideosProps> = ({
   return (
     <>
       {!isFetching && videos?.length === 0 && (
-        <p className="text-gray-500 text-center my-16">This profile has yet to upload a video</p>
+        <p className="my-16 text-center text-gray-500">This profile has yet to upload a video</p>
       )}
 
       <InfiniteScroller

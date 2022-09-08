@@ -14,8 +14,8 @@
  *  limitations under the License.
  *
  */
-import React from "react"
 
+import React from "react"
 import classNames from "classnames"
 
 import { ReactComponent as DividerPattern } from "@/assets/backgrounds/divider.svg"
@@ -35,7 +35,7 @@ const Divider: React.FC<DividerProps> = ({ children, className, top, bottom }) =
       data-component="divider"
     >
       {top && (
-        <span className="w-full h-12 text-gray-400 dark:text-gray-700">
+        <span className="h-12 w-full text-gray-400 dark:text-gray-700">
           <DividerPattern height={48} />
         </span>
       )}
@@ -43,7 +43,7 @@ const Divider: React.FC<DividerProps> = ({ children, className, top, bottom }) =
       {children}
 
       {bottom && (
-        <span className="w-full h-12 text-gray-400 dark:text-gray-700">
+        <span className="h-12 w-full text-gray-400 dark:text-gray-700">
           <DividerPattern height={48} />
         </span>
       )}

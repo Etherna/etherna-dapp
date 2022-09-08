@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import classNames from "classnames"
 
@@ -45,8 +46,7 @@ const Container: React.FC<ContainerProps> = ({
   return (
     <As
       className={classNames(
-        "w-full",
-        "relative flex flex-col w-full",
+        "relative flex flex-grow flex-col",
         {
           "max-w-screen-xl": !fluid,
           "flex-row": row,

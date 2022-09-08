@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import classNames from "classnames"
 
@@ -34,13 +35,13 @@ const VideoDetailsButton: React.FC<VideoDetailsButtonProps> = ({
     <button
       className={classNames(
         "inline-flex items-center whitespace-nowrap bg-transparent",
-        "border-none font-medium px-2 py-1 rounded",
-        "text-gray-800 dark:text-gray-200 active:bg-gray-300 dark:active:bg-gray-700",
+        "rounded border-none px-2 py-1 font-medium",
+        "text-gray-800 active:bg-gray-300 dark:text-gray-200 dark:active:bg-gray-700",
         className
       )}
       onClick={onClick}
     >
-      {icon && <span className="h-[1.2em] mr-2">{icon}</span>}
+      {icon && <span className="mr-2 h-[1.2em]">{icon}</span>}
       {children}
     </button>
   )

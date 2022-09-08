@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useMemo } from "react"
 import classNames from "classnames"
 
@@ -146,15 +147,15 @@ const TextInput: React.FC<TextInputProps> & { CharactersLimit: typeof TextInputC
         <Field
           id={id}
           className={classNames(
-            "appearance-none block w-full border py-3 px-3 leading-tight rounded-md",
-            "bg-gray-900/5 border-gray-200 placeholder-gray-400",
-            "dark:bg-gray-100/5  dark:border-gray-800 dark:placeholder-gray-500",
-            "dark:focus:bg-transparent dark:focus:border-green-500",
-            "focus:outline-none focus:bg-transparent focus:border-green-500 focus:ring-0",
-            "transition-colors duration-200",
+            "block w-full appearance-none rounded-md border py-3 px-3 leading-tight",
+            "border-gray-200 bg-gray-900/5 placeholder-gray-400",
+            "dark:border-gray-800  dark:bg-gray-100/5 dark:placeholder-gray-500",
+            "dark:focus:border-green-500 dark:focus:bg-transparent",
+            "focus:border-green-500 focus:bg-transparent focus:outline-none focus:ring-0",
+            "transition-colors duration-100",
             {
               "text-gray-700 dark:text-gray-200 dark:focus:text-gray-200": !disabled,
-              "text-gray-500 cursor-not-allowed": disabled,
+              "cursor-not-allowed text-gray-500": disabled,
               "text-base": !small,
               "text-sm": small,
               "pb-8": !!charactersLimit,

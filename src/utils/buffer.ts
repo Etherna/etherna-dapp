@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,7 @@
 
 /**
  * Get the array buffer of a file
- * 
+ *
  * @param file File to convert
  * @returns The array buffer data
  */
@@ -33,7 +33,7 @@ export const fileToBuffer = (file: File) => {
 }
 /**
  * Get the array buffer of a file
- * 
+ *
  * @param file File to convert
  * @returns The array buffer data
  */
@@ -44,7 +44,7 @@ export const fileToUint8Array = async (file: File) => {
 
 /**
  * Convert a file to a data URL string
- * 
+ *
  * @param file File to convert
  * @returns The base64 data URL
  */
@@ -62,7 +62,7 @@ export const fileToDataURL = (file: File) => {
 
 /**
  * Convert a buffer to a File object
- * 
+ *
  * @param buffer Buffer to convert
  * @param contentType Mime type of the array buffer
  * @returns The file object
@@ -73,9 +73,8 @@ export const bufferToFile = (buffer: ArrayBuffer, contentType?: string) => {
 
 /**
  * Convert a buffer to a data URL string
- * 
+ *
  * @param buffer Buffer to convert
  * @returns The base64 data URL
  */
-export const bufferToDataURL = (buffer: ArrayBuffer) =>
-  fileToDataURL(bufferToFile(buffer))
+export const bufferToDataURL = (buffer: ArrayBuffer) => fileToDataURL(bufferToFile(buffer))

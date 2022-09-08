@@ -1,12 +1,12 @@
-/* 
+/*
  *  Copyright 2021-present Etherna Sagl
- *  
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- *  
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,19 +40,22 @@ export type SwarmPlaylistRaw = {
   updatedAt: number
   /** Schema version */
   v?: SchemaVersion
-} & ({
-  /** Playlist visibility: public (show in channel), unlisted (not in channel), private (encrypted) */
-  type: "private"
-  /** Reference to the encrypted data of the playlist (only for private playlists) */
-  encryptedReference: string
-} | {
-  /** Playlist visibility: public (show in channel), unlisted (not in channel), private (encrypted) */
-  type: "public" | "unlisted"
-  /** List of the playlist videos */
-  videos: SwarmPlaylistVideoRaw[]
-  /** Playlist description */
-  description?: string | null
-})
+} & (
+  | {
+      /** Playlist visibility: public (show in channel), unlisted (not in channel), private (encrypted) */
+      type: "private"
+      /** Reference to the encrypted data of the playlist (only for private playlists) */
+      encryptedReference: string
+    }
+  | {
+      /** Playlist visibility: public (show in channel), unlisted (not in channel), private (encrypted) */
+      type: "public" | "unlisted"
+      /** List of the playlist videos */
+      videos: SwarmPlaylistVideoRaw[]
+      /** Playlist description */
+      description?: string | null
+    }
+)
 
 export type EncryptedSwarmPlaylistData = {
   /** List of the playlist videos */

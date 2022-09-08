@@ -14,9 +14,10 @@
  *  limitations under the License.
  *
  */
+
 import React, { useState } from "react"
 
-import { CurrencyDollarIcon } from "@heroicons/react/outline"
+import { CurrencyDollarIcon } from "@heroicons/react/24/outline"
 
 import VideoDetailsButton from "./VideoDetailsButton"
 import VideoOffersModal from "@/components/modals/VideoOffersModal"
@@ -44,7 +45,7 @@ const VideoOffersButton: React.FC<VideoOffersButtonProps> = ({
   return (
     <>
       <VideoDetailsButton
-        icon={<CurrencyDollarIcon aria-hidden />}
+        icon={<CurrencyDollarIcon width={20} aria-hidden />}
         onClick={() => setShowOffersModal(true)}
       >
         Offer content

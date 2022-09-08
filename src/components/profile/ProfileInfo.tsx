@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useEffect } from "react"
+
+import React, { useCallback, useEffect } from "react"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
 
@@ -56,21 +57,21 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile])
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       await loadProfile()
     } catch (error: any) {
       console.error(error)
       showError("Error", getResponseErrorMessage(error))
     }
-  }
+  }, [loadProfile, showError])
 
   return (
     <div className="flex flex-wrap" data-component="profile-info">
-      <div className="flex items-center w-full min-h-24 bg-gray-200 dark:bg-gray-800 overflow-hidden">
+      <div className="flex min-h-24 w-full items-center overflow-hidden bg-gray-200 dark:bg-gray-800">
         {profile?.cover && (
           <Image
-            className="w-full h-auto"
+            className="h-auto w-full"
             sources={profile.cover.sources}
             placeholder="blur"
             blurredDataURL={profile.cover.blurredBase64}
@@ -81,18 +82,18 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
         )}
       </div>
 
-      <header className="p-4 flex items-start w-full">
+      <header className="flex w-full items-start p-4">
         <div className={classNames("-mt-8 shrink-0 md:w-56 md:pr-4")}>
           <span
             className={classNames(
-              "relative flex border-4 rounded-full overflow-hidden",
-              "w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40",
-              "border-white bg-gray-200 dark:border-gray-900 dark:bg-gray-700"
+              "relative mx-auto flex overflow-hidden rounded-full border-4",
+              "h-24 w-24 sm:h-32 sm:w-32 md:h-40 md:w-40",
+              "border-white bg-gray-200 dark:border-gray-700/30 dark:bg-gray-700"
             )}
           >
             <Skeleton show={isLoading}>
               <Image
-                className="object-cover"
+                className="mx-auto object-cover"
                 sources={profile?.avatar?.sources}
                 placeholder="blur"
                 blurredDataURL={profile?.avatar?.blurredBase64}
@@ -105,8 +106,8 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
         </div>
         <div
           className={classNames(
-            "flex flex-col w-full ml-4 md:ml-0 space-y-4",
-            "md:space-y-0 md:space-x-4 md:flex-row md:items-start md:justify-between"
+            "ml-4 flex w-full flex-col space-y-4 md:ml-0",
+            "md:flex-row md:items-start md:justify-between md:space-y-0 md:space-x-4"
           )}
         >
           <Skeleton show={isLoading}>
@@ -114,7 +115,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
               <h1
                 className={classNames(
                   "mb-0 flex-grow overflow-hidden break-all",
-                  "leading-[2.25rem] text-2xl font-semibold text-left",
+                  "text-left text-2xl font-semibold leading-[2.25rem]",
                   "text-gray-900 dark:text-gray-100"
                 )}
               >
@@ -122,14 +123,14 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
               </h1>
             </Tippy>
           </Skeleton>
-          <div className="shrink-0 grid auto-cols-min gap-3">
+          <div className="grid shrink-0 auto-cols-min gap-3">
             <div className="flex">{actions}</div>
           </div>
         </div>
       </header>
 
-      <div className="flex flex-col w-full md:flex-row">
-        <div className="shrink-0 w-full md:max-w-xxs p-4">{nav}</div>
+      <div className="flex w-full flex-col md:flex-row">
+        <div className="w-full shrink-0 p-4 md:max-w-xxs">{nav}</div>
         <div className="flex-1 p-4">
           {/* Main content */}
           {children}

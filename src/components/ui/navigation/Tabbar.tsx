@@ -14,14 +14,15 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useMemo, useRef, useState } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import { Transition } from "@headlessui/react"
 import classNames from "classnames"
 import omit from "lodash/omit"
 
-import { MenuAlt4Icon } from "@heroicons/react/outline"
-import { ChevronDownIcon } from "@heroicons/react/solid"
+import { Bars2Icon } from "@heroicons/react/24/outline"
+import { ChevronDownIcon } from "@heroicons/react/24/solid"
 
 export type TabbarProps = {
   children?: React.ReactNode
@@ -96,17 +97,18 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
     return ({ children }) => (
       <As
         className={classNames(
-          "h-14 flex-1 w-full min-w-[15%] max-w-[96px]",
-          "flex items-center justify-items-center rounded space-y-0.5 px-4 py-1",
+          "w-full flex-shrink-0 flex-grow",
+          "flex items-center rounded px-4",
           "cursor-pointer transition-colors duration-300",
           "text-gray-800 dark:text-gray-200",
           "active:bg-gray-200 active:text-gray-800 dark:active:bg-gray-800 dark:active:text-gray-100",
           {
-            "flex-col": !isSubmenu,
-            "flex-row max-w-none": isSubmenu,
-            "text-green-500 active:text-green-500": isCurrentPage,
+            "h-12 max-w-[96px] basis-[15%] flex-col justify-center": !isSubmenu && !isAccordionItem,
+            "space-y-0.5 py-1": !isSubmenu && !isAccordionItem,
+            "flex-grow basis-full flex-row justify-start": isSubmenu,
             "flex-grow flex-wrap": isAccordion,
-            "flex-row items-center grow-0 py-1.5": isAccordionItem,
+            "grow-0 flex-row items-center py-1.5": isAccordionItem,
+            "text-green-500 active:text-green-500": isCurrentPage,
           },
           className
         )}
@@ -118,7 +120,7 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
         data-component="tabbar-item"
       >
         {children}
-        <span className="ml-1">↗</span>
+        {isAccordionItem && to?.startsWith("http") && <span className="ml-1">↗</span>}
       </As>
     )
   }, [
@@ -138,7 +140,7 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
     <Wrapper>
       {iconSvg && (
         <div
-          className={classNames("w-5 h-5 shrink-0", {
+          className={classNames("h-5 w-5 shrink-0", {
             "mt-0 mr-5": isSubmenu,
           })}
         >
@@ -148,7 +150,7 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
 
       {title && (
         <span
-          className={classNames("font-semibold whitespace-nowrap", {
+          className={classNames("whitespace-nowrap font-semibold", {
             "text-2xs": !isSubmenu,
             "text-sm": isSubmenu,
           })}
@@ -156,7 +158,7 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
           {title}
           {isAccordion && (
             <ChevronDownIcon
-              className={classNames("inline ml-2", { "rotate-180": accordionOpen })}
+              className={classNames("ml-2 inline", { "rotate-180": accordionOpen })}
               height={16}
             />
           )}
@@ -165,8 +167,8 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
 
       {children && (
         <div
-          className={classNames("w-full flex items-center", {
-            "flex flex-col items-stretch w-full pl-6 max-h-0 overflow-hidden": isAccordion,
+          className={classNames("flex w-full items-center", {
+            "flex max-h-0 w-full flex-col items-stretch overflow-hidden pl-6": isAccordion,
             "transition-[max-height] duration-300 ease-in-out": isAccordion,
           })}
           ref={accordionContent}
@@ -191,12 +193,8 @@ const TabbarMenuItem: React.FC<TabbarMenuItemProps> = props => {
   }
 
   return (
-    <div className="flex-grow min-w-[15%] max-w-[96px]" data-component="tabbar-menu-item">
-      <TabbarItem
-        {...omit(props, "children")}
-        iconSvg={<MenuAlt4Icon />}
-        onClick={toggleShowMenu}
-      />
+    <div className="min-w-[15%] max-w-[96px] flex-grow" data-component="tabbar-menu-item">
+      <TabbarItem {...omit(props, "children")} iconSvg={<Bars2Icon />} onClick={toggleShowMenu} />
 
       <Transition
         show={showMenu}
@@ -211,10 +209,10 @@ const TabbarMenuItem: React.FC<TabbarMenuItemProps> = props => {
       >
         <div
           className={classNames(
-            "fixed bottom-16 mb-safe inset-x-0 flex flex-col-reverse p-4 space-y-4 space-y-reverse z-10",
+            "fixed inset-x-0 bottom-16 z-10 flex flex-col-reverse space-y-4 space-y-reverse p-4 mb-safe",
             "bg-gray-50 bg-opacity-80 dark:bg-gray-900 dark:bg-opacity-80",
-            "border-t border-b border-gray-800/75",
-            "backdrop-filter backdrop-blur-lg"
+            "border-t border-b border-gray-700/20 dark:border-gray-400/20",
+            "backdrop-blur-lg backdrop-filter"
           )}
         >
           {props.children}
@@ -231,16 +229,18 @@ const Tabbar: React.FC<TabbarProps> & {
   return (
     <nav
       className={classNames(
-        "fixed flex md:hidden bottom-0 inset-x-0",
+        "fixed inset-x-0 bottom-0 flex md:hidden",
         "bg-gray-50/80 dark:bg-gray-900/80",
-        "backdrop-filter backdrop-blur-lg z-10",
+        "z-10 backdrop-blur-lg backdrop-filter",
         "pb-safe",
         "[&~main]:mb-20 lg:[&~main]:mb-0",
         className
       )}
       data-tabbar
     >
-      <div className="flex items-center justify-center px-1 py-2">{children}</div>
+      <div className="flex flex-grow items-center justify-center px-1 py-2 sm:mx-auto sm:flex-grow-0">
+        {children}
+      </div>
     </nav>
   )
 }

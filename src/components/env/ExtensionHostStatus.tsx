@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import classNames from "classnames"
 
@@ -37,8 +38,22 @@ const ExtensionHostStatus: React.FC<ExtensionHostStatusProps> = ({
   onClick,
 }) => {
   return (
-    <div className={classNames("flex-grow flex items-center")} onClick={onClick}>
-      {iconSvg && <span className="block w-5 h-5 mr-3">{iconSvg}</span>}
+    <div
+      className={classNames(
+        "flex flex-grow items-center justify-items-center lg:justify-items-stretch"
+      )}
+      onClick={onClick}
+    >
+      {iconSvg && (
+        <span
+          className={classNames("block h-6 w-6 lg:h-5 lg:w-5", {
+            "mr-2.5 lg:mr-4": compactMobile,
+            "mr-5": !compactMobile,
+          })}
+        >
+          {iconSvg}
+        </span>
+      )}
 
       <div
         className={classNames("flex flex-col items-start leading-none", {
@@ -46,14 +61,16 @@ const ExtensionHostStatus: React.FC<ExtensionHostStatusProps> = ({
           "floating-sidebar:flex": compactMobile,
         })}
       >
-        <span className="text-sm font-semibold">{title}</span>
-        <span className="text-xs font-medium text-gray-500 dark:text-gray-300">
+        <span className="text-sm font-semibold leading-none">{title}</span>
+        <span className="mt-0.5 text-xs font-medium leading-none text-gray-500 dark:text-gray-300">
           {urlHostname(host)}
         </span>
       </div>
 
       <span
-        className={classNames("w-1.5 h-1.5 rounded-full ml-auto bg-gray-300", {
+        className={classNames("h-1.5 w-1.5 rounded-full bg-gray-300", {
+          "ml-auto": !compactMobile,
+          "floating-sidebar:ml-auto lg:ml-auto": compactMobile,
           "bg-green-500 dark:bg-green-400": isConnected,
         })}
       />

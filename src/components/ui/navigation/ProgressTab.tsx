@@ -14,8 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useState } from "react"
 
+import React, { useState } from "react"
 import classNames from "classnames"
 
 export type ProgressTabProps = {
@@ -61,8 +61,8 @@ const ProgressTabLink: React.FC<ProgressTabLinkProps> = ({
   return (
     <button
       className={classNames(
-        "flex flex-col justify-center h-16 rounded text-sm font-medium p-4 md:w-44",
-        "bg-gray-200/50 dark:bg-gray-700/50 text-gray-800 dark:text-gray-300",
+        "flex h-16 flex-col justify-center rounded p-4 text-sm font-medium md:w-44",
+        "bg-gray-200/50 text-gray-800 dark:bg-gray-700/50 dark:text-gray-300",
         {
           "bg-blue-400 text-gray-50": active,
         }
@@ -70,13 +70,13 @@ const ProgressTabLink: React.FC<ProgressTabLinkProps> = ({
       onClick={() => onSelect?.(tabKey)}
       data-component="progresstab-link"
     >
-      <span className="flex items-center flex-wrap">
+      <span className="flex flex-wrap items-center">
         {iconSvg && <div className="mr-1.5 [&_svg]:h-[1.25em]">{iconSvg}</div>}
         <span className="inline-block">{children ?? title}</span>
         {text && (
           <p
             className={classNames(
-              "text-xs italic font-normal text-left w-full text-gray-500/75 mt-1.5",
+              "mt-1.5 w-full text-left text-xs font-normal italic text-gray-500/75",
               {
                 "text-gray-50/75": active,
               }
@@ -87,14 +87,15 @@ const ProgressTabLink: React.FC<ProgressTabLinkProps> = ({
         )}
       </span>
       {progressList && progressList.length > 0 && (
-        <span className="flex items-center space-x-1 w-full mt-2">
+        <span className="mt-2 flex w-full items-center space-x-1">
           {progressList.map(({ progress, completed }, i) => (
             <div
               className={classNames(
-                "relative flex-shrink w-4 h-1.5 rounded-sm overflow-hidden bg-gray-500/25",
+                "relative h-1.5 w-4 flex-shrink overflow-hidden rounded-sm",
                 "transition-[width,flex-grow] duration-300",
                 {
                   "flex-grow": typeof progress === "number" && !completed,
+                  "bg-gray-500/25": !completed,
                   "bg-blue-400": completed,
                   "bg-gray-50": active && !completed,
                 }
@@ -104,9 +105,10 @@ const ProgressTabLink: React.FC<ProgressTabLinkProps> = ({
               {typeof progress === "number" && !completed && (
                 <span
                   className={classNames(
-                    "absolute left-0 inset-y-0 rounded-sm bg-blue-400",
+                    "absolute inset-y-0 left-0 rounded-sm",
                     "transition-[width] duration-100 motion-safe:animate-pulse",
                     {
+                      "bg-blue-400": !active,
                       "bg-gray-50": active,
                     }
                   )}
@@ -161,8 +163,8 @@ const ProgressTab: React.FC<ProgressTabProps> & {
     >
       <nav
         className={classNames(
-          "flex-1 flex space-x-3 overflow-x-auto scrollbar-none",
-          "md:flex-col md:flex-initial md:space-x-0 md:space-y-3 md:overflow-x-visible"
+          "flex flex-1 space-x-3 overflow-x-auto scrollbar-none",
+          "md:flex-initial md:flex-col md:space-x-0 md:space-y-3 md:overflow-x-visible"
         )}
       >
         {links.map(child => (

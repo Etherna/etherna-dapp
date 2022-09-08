@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
-import { LogoutIcon } from "@heroicons/react/outline"
-import { DotsVerticalIcon } from "@heroicons/react/solid"
+import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline"
+import { EllipsisVerticalIcon } from "@heroicons/react/24/solid"
 
 import SharedMenuItems from "./SharedMenuItems"
 import SignedInMenuItems from "./SignedInMenuItems"
@@ -39,7 +40,7 @@ const UserMenu: React.FC = () => {
   if (isSigningIn) {
     return (
       <Skeleton roundedFull>
-        <div className="w-9 h-9" />
+        <div className="h-9 w-9" />
       </Skeleton>
     )
   }
@@ -48,11 +49,11 @@ const UserMenu: React.FC = () => {
     <>
       <Dropdown>
         <Dropdown.Toggle>
-          <Button as="div" color="transparent" rounded>
+          <Button as="div" color="inverted" aspect="text" rounded>
             {isFullySignedIn ? (
               <Avatar image={avatar} address={address} size={36} />
             ) : (
-              <DotsVerticalIcon aria-hidden />
+              <EllipsisVerticalIcon width={20} aria-hidden />
             )}
           </Button>
         </Dropdown.Toggle>
@@ -66,9 +67,14 @@ const UserMenu: React.FC = () => {
             {isFullySignedIn && (
               <>
                 <Dropdown.Separator />
-                <Dropdown.Item action={signout} icon={<LogoutIcon />}>
-                  Sign out
-                </Dropdown.Item>
+                <Dropdown.Group>
+                  <Dropdown.Item
+                    action={signout}
+                    icon={<ArrowRightOnRectangleIcon strokeWidth={2} />}
+                  >
+                    Sign out
+                  </Dropdown.Item>
+                </Dropdown.Group>
               </>
             )}
           </>

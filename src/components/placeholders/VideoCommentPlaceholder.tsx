@@ -14,22 +14,23 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import { Skeleton } from "../ui/display"
 
 const VideoCommentPlaceholder = () => {
   return (
-    <div className="flex">
+    <div className="mb-3 flex">
       <Skeleton roundedFull>
-        <div className="w-10 h-10" />
+        <div className="h-10 w-10" />
       </Skeleton>
-      <div className="flex flex-col flex-1 ml-2 mt-1">
-        <Skeleton roundedThin>
-          <div className="w-full h-4" />
+      <div className="ml-2 mt-1 flex flex-1 flex-col">
+        <Skeleton className="w-32" roundedThin>
+          <div className="h-4 w-full" />
         </Skeleton>
-        <Skeleton className="mt-1.5" roundedThin>
-          <div className="w-3/5 h-3" />
+        <Skeleton className="mt-1.5 w-full max-w-xs" roundedThin>
+          <div className="h-3" />
         </Skeleton>
       </div>
     </div>
