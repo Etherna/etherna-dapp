@@ -87,11 +87,29 @@ module.exports = {
         ...theme("spacing"),
       }),
       animation: {
+        "tick-fade": "tick-fade 1.2s infinite",
+        "tick-bounce": "tick-bounce 1.25s infinite alternate linear",
         spinSlow: "spinSlow 2s linear infinite",
         slide: "slide 2s cubic-bezier(0.2, 0.7, 0.7, 0.4) infinite",
         skip: "skip 1s cubic-bezier(0.2, 0.7, 0.7, 0.4) 0s 2 forwards",
       },
       keyframes: {
+        "tick-bounce": {
+          "0%": {
+            transform: "translateX(-180%)",
+          },
+          "100%": {
+            transform: "translateX(180%)",
+          },
+        },
+        "tick-fade": {
+          "0%": {
+            opacity: 1,
+          },
+          "100%": {
+            opacity: 0.1,
+          },
+        },
         spinSlow: {
           from: { transform: "rotate(360deg)" },
           to: { transform: "rotate(0deg)" },
