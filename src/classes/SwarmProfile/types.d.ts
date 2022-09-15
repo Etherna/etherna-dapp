@@ -17,10 +17,10 @@
 import type { Profile } from "@/definitions/swarm-profile"
 
 export type SwarmProfileReaderOptions = {
-  beeClient: SwarmBeeClient
+  beeClient: BeeClient
   fetchFromCache?: boolean
 }
 
 export type SwarmProfileWriterOptions = {
-  beeClient: SwarmBeeClient
+  beeClient: BeeClient
 }

@@ -42,10 +42,7 @@ export default defineConfig(({ mode, command }) => ({
     global: "window",
   },
   resolve: {
-    alias: [
-      { find: "@", replacement: resolve(__dirname, "src") },
-      { find: "stream", replacement: "stream-browserify" },
-    ],
+    alias: [{ find: "@", replacement: resolve(__dirname, "src") }],
   },
   plugins: [
     react(),

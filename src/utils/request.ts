@@ -134,8 +134,8 @@ const AxiosPendingCache: PendingCache = {
   },
 }
 
-export const createRequest = () => {
-  const request = axios.create()
+export const createRequest = (config?: AxiosRequestConfig) => {
+  const request = axios.create(config)
 
   request.interceptors.request.use(
     async config => {

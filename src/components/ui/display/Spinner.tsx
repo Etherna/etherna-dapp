@@ -45,7 +45,7 @@ const Spinner: React.FC<SpinnerProps> = ({ className, size, height, type = "spin
               return (
                 <div
                   className={classNames(
-                    "animate-tick-fade absolute right-1/2 h-1/2 origin-bottom scale-95 transform",
+                    "absolute right-1/2 h-1/2 origin-bottom scale-95 transform animate-tick-fade",
                     "after:absolute after:inset-x-0 after:top-0 after:h-1/2 after:rounded-full after:bg-current"
                   )}
                   style={
@@ -72,7 +72,7 @@ const Spinner: React.FC<SpinnerProps> = ({ className, size, height, type = "spin
           )}
           style={{ width: size, height }}
         >
-          <span className="animate-tick-bounce mx-auto w-1/2 rounded-sm bg-current" />
+          <span className="mx-auto w-1/2 animate-tick-bounce rounded-sm bg-current" />
         </div>
       )
   }

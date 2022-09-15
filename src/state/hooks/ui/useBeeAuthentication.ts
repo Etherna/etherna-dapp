@@ -44,9 +44,9 @@ export default function useBeeAuthentication() {
   }
 
   async function waitAuth() {
-    if (beeClient.isAuthenticated) return true
-    if (beeClient.authToken) {
-      if (await beeClient.refreshToken(beeClient.authToken)) {
+    if (beeClient.auth.isAuthenticated) return true
+    if (beeClient.auth.token) {
+      if (await beeClient.auth.refreshToken(beeClient.auth.token)) {
         return true
       }
     }

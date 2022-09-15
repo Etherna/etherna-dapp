@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-import type { PostageBatch } from "@ethersphere/bee-js"
 import type { Dayjs } from "dayjs"
 
+import type { PostageBatch } from "@/classes/BeeClient/types"
 import type { GatewayBatch } from "@/definitions/api-gateway"
 import dayjs from "@/utils/dayjs"
 
@@ -77,20 +77,38 @@ export const getBatchExpiration = (batch: PostageBatch | GatewayBatch): Dayjs =>
 }
 
 /**
- * Prase a default postage batch to a gateway batch
+ * Parse a default postage batch to a gateway batch
  *
  * @param batch Postage batch
  * @returns Gateway batch
  */
-export const parsePostageBatch = (
-  batch: PostageBatch,
-  owner: string | null | undefined
-): GatewayBatch => {
+export const parsePostageBatch = (batch: PostageBatch): GatewayBatch => {
   return {
     id: batch.batchID,
     amountPaid: 0,
     normalisedBalance: 0,
-    ownerAddress: owner ?? null,
+    amount: batch.amount,
+    batchTTL: batch.batchTTL,
+    blockNumber: batch.blockNumber,
+    bucketDepth: batch.bucketDepth,
+    depth: batch.depth,
+    exists: batch.exists,
+    immutableFlag: batch.immutableFlag,
+    label: batch.label,
+    usable: batch.usable,
+    utilization: batch.utilization,
+  }
+}
+
+/**
+ * Parse a gateway batch to a standard postage batch
+ *
+ * @param batch Gateway batch
+ * @returns Postage batch
+ */
+export const parseGatewayBatch = (batch: GatewayBatch): PostageBatch => {
+  return {
+    batchID: batch.id,
     amount: batch.amount,
     batchTTL: batch.batchTTL,
     blockNumber: batch.blockNumber,

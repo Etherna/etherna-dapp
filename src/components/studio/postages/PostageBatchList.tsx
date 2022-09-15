@@ -106,10 +106,10 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
       selectedBatch,
       selectedBatch.flag
     )
-    const gatewayBatch = "batchID" in batch ? parsePostageBatch(batch, address) : batch
+    const gatewayBatch = "batchID" in batch ? parsePostageBatch(batch) : batch
 
     onBatchUpdate?.(gatewayBatch)
-  }, [address, updatingBatches, isUpdatingBatch, onBatchUpdate])
+  }, [updatingBatches, isUpdatingBatch, onBatchUpdate])
 
   const openSettings = useCallback((batch: GatewayBatch) => {
     setEditorDepth(batch.depth)
@@ -253,7 +253,8 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
                   <Capacity
                     value={getBatchPercentUtilization(batch)}
                     limit={1}
-                    isLoading={!!updatingBatches.find(b => b.id === batch.id)}
+                    // isLoading={!!updatingBatches.find(b => b.id === batch.id)}
+                    isLoading
                   />
 
                   <p className="ml-2 shrink-0 font-mono text-xs font-medium">

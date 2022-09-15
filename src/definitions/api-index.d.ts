@@ -14,9 +14,8 @@
  *  limitations under the License.
  */
 
-import type { BatchId } from "@ethersphere/bee-js"
-
 import type { SwarmVideoRaw } from "./swarm-video"
+import type { EthAddress } from "@/classes/BeeClient/types"
 
 export type PaginatedResult<T> = {
   elements: T[]
@@ -34,15 +33,15 @@ export type IndexClientOptions = {
 }
 
 export type IndexUser = {
-  address: string
+  address: EthAddress
   creationDateTime: string
   identityManifest: string
 }
 
 export type IndexCurrentUser = {
-  address: string
+  address: EthAddress
   identityManifest: string
-  prevAddresses: string[]
+  prevAddresses: EthAddress[]
 }
 
 export type IndexUserVideos = IndexUser & {
@@ -54,7 +53,7 @@ export type IndexVideo = {
   creationDateTime: string
   encryptionKey: string | null
   encryptionType: IndexEncryptionType
-  ownerAddress: string
+  ownerAddress: EthAddress
   ownerIdentityManifest: string
   lastValidManifest: IndexVideoManifest | null
   totDownvotes: number
@@ -82,7 +81,7 @@ export type IndexVideoValidation = {
 
 export type IndexVideoComment = {
   creationDateTime: string
-  ownerAddress: string
+  ownerAddress: EthAddress
   ownerIdentityManifest?: string
   text: string
   videoManifestHash: string

@@ -15,9 +15,10 @@
  */
 
 import SwarmVideoIO from "."
+import type { EthAddress } from "../BeeClient/types"
 import type { SwarmVideoReaderOptions } from "./types"
+import type BeeClient from "@/classes/BeeClient"
 import type EthernaIndexClient from "@/classes/EthernaIndexClient"
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 import SwarmImageIO from "@/classes/SwarmImage"
 import SwarmProfileIO from "@/classes/SwarmProfile"
 import type { IndexVideo } from "@/definitions/api-index"
@@ -30,7 +31,7 @@ import type { SwarmVideoRaw, Video } from "@/definitions/swarm-video"
 export default class SwarmVideoReader {
   reference: string
   indexReference?: string
-  ownerAddress?: string
+  ownerAddress?: EthAddress
   video: Video
   videoRaw: SwarmVideoRaw
   loadedFromPrefetch: boolean = false
@@ -38,14 +39,20 @@ export default class SwarmVideoReader {
   fetchFromCache: boolean
   updateCache: boolean
 
-  private beeClient: SwarmBeeClient
+  private beeClient: BeeClient
   private indexClient?: EthernaIndexClient
   private indexData?: IndexVideo
   private profileData?: Profile
-  private isDefaultVideo: boolean
+  private hasRawVideo: boolean
 
-  constructor(reference: string, ownerAddress: string | undefined, opts: SwarmVideoReaderOptions) {
-    this.reference = SwarmVideoIO.isSwarmReference(reference) ? reference : ""
+  constructor(
+    reference: string,
+    ownerAddress: EthAddress | undefined,
+    opts: SwarmVideoReaderOptions
+  ) {
+    this.reference = SwarmVideoIO.isSwarmReference(reference)
+      ? reference
+      : opts.indexData?.lastValidManifest?.hash ?? ""
     this.indexReference = !SwarmVideoIO.isSwarmReference(reference) ? reference : undefined
     this.ownerAddress = ownerAddress
     this.beeClient = opts.beeClient
@@ -57,7 +64,9 @@ export default class SwarmVideoReader {
     this.updateCache = opts.updateCache ?? true
     this.video = this.doubleParseVideo(opts.videoData, opts.indexData, opts.profileData)
     this.videoRaw = this.parseVideo(this.video)
-    this.isDefaultVideo = !opts.videoData || !opts.indexData
+    this.hasRawVideo =
+      !!opts.videoData ||
+      (!!opts.indexData?.lastValidManifest && opts.indexData?.lastValidManifest?.title !== null)
 
     if (this.hasPrefetch) {
       this.loadVideoFromPrefetch()
@@ -98,10 +107,11 @@ export default class SwarmVideoReader {
     this.video = this.doubleParseVideo(rawVideo, indexVideo, ownerProfile)
     this.videoRaw = this.parseVideo(this.video)
     this.indexReference = this.indexReference ?? indexVideo?.id
+    this.hasRawVideo = true
 
     let owner = ownerProfile
     if (!owner && this.videoRaw.ownerAddress) {
-      this.ownerAddress = this.videoRaw.ownerAddress
+      this.ownerAddress = this.videoRaw.ownerAddress as EthAddress
       owner = await this.fetchOwnerProfile(this.ownerAddress)
     }
 
@@ -164,7 +174,7 @@ export default class SwarmVideoReader {
           : null,
       sources: (sources ?? []).map(rawSource => ({
         ...rawSource,
-        source: this.beeClient.getBzzUrl(rawSource.reference),
+        source: this.beeClient.bzz.url(rawSource.reference),
       })),
       ownerAddress: indexVideoData?.ownerAddress || videoData?.ownerAddress || owner?.address || "",
       owner: videoData && "owner" in videoData ? videoData.owner : owner ?? undefined,
@@ -228,10 +238,14 @@ export default class SwarmVideoReader {
   }
 
   private async fetchRawVideo(): Promise<SwarmVideoRaw | null> {
-    if (!this.isDefaultVideo) return this.videoRaw
+    if (this.hasRawVideo) return this.videoRaw
 
     try {
-      const resp = await this.beeClient.downloadFile(this.reference)
+      const resp = await this.beeClient.bzz.download(this.reference, {
+        headers: {
+          "x-etherna-reason": "video-meta",
+        },
+      })
       const meta = resp.data.json() as SwarmVideoRaw
       return this.parseVideo(meta)
     } catch (error) {
@@ -240,7 +254,7 @@ export default class SwarmVideoReader {
     return this.parseVideo(null)
   }
 
-  private async fetchOwnerProfile(address: string): Promise<Profile | null> {
+  private async fetchOwnerProfile(address: EthAddress): Promise<Profile | null> {
     if (this.profileData) return this.profileData
     if (!this.fetchProfile) return null
     try {

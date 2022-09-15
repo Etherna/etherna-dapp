@@ -14,10 +14,8 @@
  *  limitations under the License.
  */
 
-import type { BatchId } from "@ethersphere/bee-js"
-import Axios from "axios"
-
 import SwarmVideoIO from "."
+import type { BatchId, EthAddress } from "../BeeClient/types"
 import type { AnyBatch } from "../SwarmBatchesManager/types"
 import type { SwarmVideoUploadOptions, SwarmVideoWriterOptions } from "./types"
 import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
@@ -32,7 +30,7 @@ import { getVideoDuration, getVideoResolution } from "@/utils/media"
  * Load/Update video info over swarm
  */
 export default class SwarmVideoWriter extends SwarmBatchesManager {
-  ownerAddress: string
+  ownerAddress: EthAddress
   reference?: string
   indexReference?: string
   video?: Video
@@ -43,7 +41,7 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
 
   static thumbnailResponsiveSizes = [480, 960, 1440, 2400]
 
-  constructor(video: Video | undefined, ownerAddress: string, opts: SwarmVideoWriterOptions) {
+  constructor(video: Video | undefined, ownerAddress: EthAddress, opts: SwarmVideoWriterOptions) {
     super({
       address: ownerAddress,
       beeClient: opts.beeClient,
@@ -147,7 +145,15 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
     const rawVideo = this.videoRaw
     const manifestData = JSON.stringify(rawVideo)
 
-    const videoReference = (await this.beeClient.uploadFile(batchId, manifestData)).reference
+    const videoReference = (
+      await this.beeClient.bzz.upload(manifestData, {
+        batchId,
+        headers: {
+          "content-type": "application/json",
+          "x-etherna-reason": "video-meta-upload",
+        },
+      })
+    ).reference
 
     // update local instances
     this.reference = videoReference
@@ -167,11 +173,11 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
 
     try {
       await Promise.allSettled([
-        this.beeClient.unpin(this.reference),
+        this.beeClient.pins.unpin(this.reference),
         ...Object.entries(this._videoRaw.thumbnail?.sources ?? {}).map(([_, reference]) =>
-          this.beeClient.unpin(reference)
+          this.beeClient.pins.unpin(reference)
         ),
-        ...this._videoRaw.sources.map(source => this.beeClient.unpin(source.reference)),
+        ...this._videoRaw.sources.map(source => this.beeClient.pins.unpin(source.reference)),
       ])
     } catch {}
   }
@@ -209,24 +215,19 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
       await this.waitBatchPropagation(batch, BatchUpdateType.Topup | BatchUpdateType.Dilute)
     }
 
-    const fetch = this.beeClient.getFetch({
-      onUploadProgress: e => {
-        if (opts?.onUploadProgress) {
-          const progress = Math.round((e.loaded * 100) / e.total)
-          opts.onUploadProgress(progress)
-        }
-      },
-      cancelToken: new Axios.CancelToken(function executor(c) {
-        if (opts?.onCancelToken) {
-          opts.onCancelToken(c)
-        }
-      }),
-    })
-
     const reference = (
-      await this.beeClient.uploadFile(this.getBatchId(batch), new Uint8Array(video), undefined, {
+      await this.beeClient.bzz.upload(new Uint8Array(video), {
+        batchId: this.getBatchId(batch),
         contentType,
-        fetch,
+        signal: opts?.signal,
+        onUploadProgress: completion => {
+          if (opts?.onUploadProgress) {
+            opts.onUploadProgress(completion * 100)
+          }
+        },
+        headers: {
+          "x-etherna-reason": "video-source-upload",
+        },
       })
     ).reference
 
@@ -280,7 +281,7 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
 
     this._videoRaw.thumbnail = await imageWriter.upload({
       batchId: this.getBatchId(batch),
-      onCancelToken: opts?.onCancelToken,
+      signal: opts?.signal,
       onUploadProgress: opts?.onUploadProgress,
     })
 
@@ -298,7 +299,7 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
   getSourceUrl(quality: SwarmVideoQuality): string | undefined {
     const source = this.videoRaw.sources.find(source => source.quality === quality)
     if (source) {
-      return this.beeClient.getBzzUrl(source.reference)
+      return this.beeClient.bzz.url(source.reference)
     }
     return undefined
   }

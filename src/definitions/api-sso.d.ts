@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import type { EthAddress } from "@/classes/BeeClient/types"
+
 export type AuthClientOptions = {
   host: string
   loginPath?: string
@@ -23,7 +25,7 @@ export type AuthClientOptions = {
 export type AuthIdentity = {
   accountType: "web2" | "web3"
   email: string | null
-  etherAddress: string
+  etherAddress: EthAddress
   etherManagedPrivateKey: string | null
   etherPreviousAddresses: string[]
   etherLoginAddress: string | null

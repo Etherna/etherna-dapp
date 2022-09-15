@@ -42,7 +42,7 @@ const BeeAuthModal: React.FC<BeeAuthModalProps> = ({ show = false }) => {
   const handleAuth = useCallback(async () => {
     setIsAuthenticating(true)
     try {
-      await beeClient.authenticate(username, password)
+      await beeClient.auth.authenticate(username, password)
       hideAuth(true)
     } catch (error: any) {
       console.error(error)

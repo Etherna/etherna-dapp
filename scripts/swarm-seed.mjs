@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 
-import BeeJS from "@ethersphere/bee-js"
 import chalk from "chalk"
 import DotEnv from "dotenv"
 import fs from "fs"
@@ -25,40 +24,6 @@ DotEnv.config({
 })
 
 const SeedDataFolder = path.resolve("seed")
-const bee = new BeeJS.Bee(new URL(process.env.VITE_APP_GATEWAY_URL).origin)
-
-export async function testSeed() {
-  const batchId = "b84f43bd8f1e1f53a2c777546a03872df6537e4e9f1aff4a43bc983b93628fc7"
-
-  try {
-    const resp = await bee.uploadFile(batchId, JSON.stringify({ test: "Ciao" }))
-    console.log("reference", resp.reference)
-    const topic = bee.makeFeedTopic("Test")
-    const feed = bee.makeFeedWriter(
-      "sequence",
-      topic,
-      "f7622a4bd4375046bbc9712e00ecebdf9460a1212b72c585c4096c3bc80f7634"
-    )
-    const updateReference = await feed.upload(batchId, resp.reference)
-    const feedManifest = await bee.createFeedManifest(
-      batchId,
-      "sequence",
-      topic,
-      "0xa6Ac1c7b69Ae39Ba85e803F6A3639c90D774B414"
-    )
-
-    console.log("feed update", updateReference)
-    console.log("feed manifest", feedManifest)
-
-    const video = fs.readFileSync(path.resolve("/Users/mattia/Public/webm-h264 (480p).mp4"))
-    const videoResp = await bee.uploadFile(batchId, new Uint8Array(video), undefined, {
-      contentType: "video/mp4",
-    })
-    console.log("video reference", videoResp.reference)
-  } catch (error) {
-    console.log(chalk.red(`Error: ${error.message}`))
-  }
-}
 
 export async function loadSeed(batchId) {
   if (process.env.BEE_SEED_ENABLED !== "true") return
@@ -97,8 +62,4 @@ export async function loadSeed(batchId) {
   if (unloadedItems > 0) {
     console.log(chalk.redBright(`${unloadedItems} items were not loaded correctly.`))
   }
-}
-
-if (process.argv[1].endsWith(path.basename(import.meta.url))) {
-  testSeed()
 }

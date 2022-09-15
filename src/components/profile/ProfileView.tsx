@@ -19,6 +19,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import ProfileAbout from "./ProfileAbout"
 import ProfileVideos from "./ProfileVideos"
+import type { EthAddress } from "@/classes/BeeClient/types"
 import SEO from "@/components/layout/SEO"
 import ProfileInfo from "@/components/profile/ProfileInfo"
 import { Button } from "@/components/ui/actions"
@@ -29,7 +30,7 @@ import routes from "@/routes"
 import useSelector from "@/state/useSelector"
 
 type ProfileViewProps = {
-  profileAddress: string
+  profileAddress: EthAddress
 }
 
 const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {

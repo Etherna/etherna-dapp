@@ -16,9 +16,9 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
-import type { PostageBatch } from "@ethersphere/bee-js"
 import type { Dispatch } from "redux"
 
+import type { PostageBatch } from "@/classes/BeeClient/types"
 import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
 import type { GatewayBatch } from "@/definitions/api-gateway"
 import { useBeeAuthentication } from "@/state/hooks/ui"
@@ -28,7 +28,7 @@ import type { UserActions } from "@/state/reducers/userReducer"
 import { UserActionTypes } from "@/state/reducers/userReducer"
 import useSelector from "@/state/useSelector"
 import { BatchUpdateType } from "@/stores/batches"
-import { getBatchSpace, parsePostageBatch } from "@/utils/batches"
+import { getBatchSpace, parseGatewayBatch, parsePostageBatch } from "@/utils/batches"
 import dayjs from "@/utils/dayjs"
 
 type UseBatchesOpts = {
@@ -79,7 +79,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     if (batch) {
       dispatch({
         type: EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES,
-        batches: [batch],
+        batches: [parseGatewayBatch(batch)],
       })
 
       dispatch({
@@ -102,8 +102,8 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
       } else {
         await waitAuth()
 
-        const batch = await beeClient.getBatch(defaultBatchId)
-        return parsePostageBatch(batch, address)
+        const batch = await beeClient.stamps.download(defaultBatchId)
+        return parsePostageBatch(batch)
       }
     } catch {
       return null
@@ -126,7 +126,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
       } else {
         await waitAuth()
 
-        const batches = await beeClient.getAllPostageBatches()
+        const batches = await beeClient.stamps.downloadAll()
         const bestBatch = batches
           .filter(batch => batch.usable)
           .sort((a, b) => {
@@ -138,7 +138,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
           })[0]
 
         if (!bestBatch) return null
-        else return parsePostageBatch(bestBatch, address)
+        else return parsePostageBatch(bestBatch)
       }
     } catch (error) {
       return null
@@ -168,14 +168,14 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
       } else {
         await waitAuth()
 
-        const batchId = await beeClient.createBatch(depth, amount)
-        let batch = await beeClient.getBatch(batchId)
+        const batchId = await beeClient.stamps.create(depth, amount)
+        let batch = await beeClient.stamps.download(batchId)
         batch = (await batchesManager.waitBatchPropagation(
           batch,
           BatchUpdateType.Create
         )) as PostageBatch
 
-        return parsePostageBatch(batch, address)
+        return parsePostageBatch(batch)
       }
     } catch (error: any) {
       setError(error.message)

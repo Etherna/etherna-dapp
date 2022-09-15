@@ -16,6 +16,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 
+import type { EthAddress } from "@/classes/BeeClient/types"
 import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
 import SwarmUserPlaylistsIO from "@/classes/SwarmUserPlaylists"
 import type { SwarmUserPlaylistsDownloadOptions } from "@/classes/SwarmUserPlaylists/types"
@@ -30,7 +31,10 @@ import useSelector from "@/state/useSelector"
 import { deepCloneArray } from "@/utils/array"
 import { deepCloneObject } from "@/utils/object"
 
-export default function useUserPlaylists(owner: string, opts?: SwarmUserPlaylistsDownloadOptions) {
+export default function useUserPlaylists(
+  owner: EthAddress,
+  opts?: SwarmUserPlaylistsDownloadOptions
+) {
   const beeClient = useSelector(state => state.env.beeClient)
   const [isFetchingPlaylists, setIsFetchingPlaylists] = useState(false)
   const [rawPlaylists, setRawPlaylists] = useState<SwarmUserPlaylistsRaw>()

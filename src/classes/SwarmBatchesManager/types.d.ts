@@ -14,10 +14,9 @@
  *  limitations under the License.
  */
 
-import type { PostageBatch } from "@ethersphere/bee-js"
-
+import type { PostageBatch } from "../BeeClient/types"
+import type BeeClient from "@/classes/BeeClient"
 import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type { GatewayBatch } from "@/definitions/api-gateway"
 import type { GatewayType } from "@/definitions/extension-host"
 
@@ -26,6 +25,6 @@ export type AnyBatch = PostageBatch | GatewayBatch
 export type SwarmBatchesManagerOptions = {
   address: string
   gatewayType: GatewayType
-  beeClient: SwarmBeeClient
+  beeClient: BeeClient
   gatewayClient: EthernaGatewayClient
 }

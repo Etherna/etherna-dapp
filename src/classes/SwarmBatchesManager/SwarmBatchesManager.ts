@@ -14,12 +14,11 @@
  *  limitations under the License.
  */
 
-import type { BatchId, PostageBatch } from "@ethersphere/bee-js"
-
+import type { BatchId, PostageBatch } from "../BeeClient/types"
 import type { AnyBatch, SwarmBatchesManagerOptions } from "./types"
+import type BeeClient from "@/classes/BeeClient"
 import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
 import FlagEnumManager from "@/classes/FlagEnumManager"
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type { GatewayType } from "@/definitions/extension-host"
 import batchesStore, { BatchUpdateType } from "@/stores/batches"
 import type { UpdatingBatch } from "@/stores/batches"
@@ -45,7 +44,7 @@ export default class SwarmBatchesManager {
   onBatchUpdating?(batchId: BatchId): void
   onBatchUpdated?(batch: AnyBatch): void
 
-  protected beeClient: SwarmBeeClient
+  protected beeClient: BeeClient
   protected gatewayClient: EthernaGatewayClient
   protected gatewayType: GatewayType
   protected address: string
@@ -119,7 +118,7 @@ export default class SwarmBatchesManager {
     if (this.gatewayType === "etherna-gateway") {
       batch = await this.gatewayClient.users.fetchBatch(batchId)
     } else {
-      batch = await this.beeClient.getBatch(batchId)
+      batch = await this.beeClient.stamps.download(batchId)
     }
 
     const isCreating = !batch.usable
@@ -146,7 +145,7 @@ export default class SwarmBatchesManager {
     if (this.gatewayType === "etherna-gateway") {
       await this.gatewayClient.postage.topupBatch(batchId, byAmount)
     } else {
-      await this.beeClient.topupBatch(batchId, byAmount)
+      await this.beeClient.stamps.topup(batchId, byAmount.toString())
     }
   }
 
@@ -165,7 +164,7 @@ export default class SwarmBatchesManager {
     if (this.gatewayType === "etherna-gateway") {
       await this.gatewayClient.users.diluteBatch(batchId, depth)
     } else {
-      await this.beeClient.diluteBatch(batchId, depth)
+      await this.beeClient.stamps.dilute(batchId, depth)
     }
   }
 
@@ -227,7 +226,7 @@ export default class SwarmBatchesManager {
     if (this.gatewayType === "etherna-gateway") {
       batch = await this.gatewayClient.users.createBatch(depth, amount)
     } else {
-      const batchId = await this.beeClient.createBatch(depth, amount)
+      const batchId = await this.beeClient.stamps.create(depth, amount)
       batch = await this.fetchBatch(batchId)
     }
 
@@ -374,7 +373,7 @@ export default class SwarmBatchesManager {
     if (this.gatewayType === "etherna-gateway") {
       updatedBatch = await this.gatewayClient.users.fetchBatch(batchId)
     } else {
-      updatedBatch = await this.beeClient.getBatch(batchId)
+      updatedBatch = await this.beeClient.stamps.download(batchId)
     }
 
     this.batches[index] = updatedBatch
@@ -432,7 +431,7 @@ export default class SwarmBatchesManager {
       } else {
         this.cachedPrice = {
           url,
-          price: await this.beeClient.getCurrentPrice(),
+          price: await this.beeClient.chainstate.getCurrentPrice(),
         }
       }
     } catch (error) {

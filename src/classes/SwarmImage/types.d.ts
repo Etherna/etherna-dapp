@@ -14,17 +14,17 @@
  *  limitations under the License.
  */
 
-import type { BatchId } from "@ethersphere/bee-js"
 import type { Canceler } from "axios"
 
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type { BatchId } from "../BeeClient/types"
+import type BeeClient from "@/classes/BeeClient"
 
 export type SwarmImageReaderOptions = {
-  beeClient: SwarmBeeClient
+  beeClient: BeeClient
 }
 
 export type SwarmImageWriterOptions = {
-  beeClient: SwarmBeeClient
+  beeClient: BeeClient
   isResponsive?: boolean
   responsiveSizes?: number[]
 }
@@ -32,5 +32,5 @@ export type SwarmImageWriterOptions = {
 export type SwarmImageUploadOptions = {
   batchId?: BatchId
   onUploadProgress?: (progress: number) => void
-  onCancelToken?: (canceler: Canceler) => void
+  signal?: AbortSignal
 }

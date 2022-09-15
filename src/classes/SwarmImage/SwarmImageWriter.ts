@@ -14,13 +14,12 @@
  *  limitations under the License.
  */
 
-import type { UploadResult } from "@ethersphere/bee-js"
-import Axios from "axios"
 import imageResize from "image-resizer-js"
 
 import SwarmImageIO from "."
+import type { Reference } from "../BeeClient/types"
 import type { SwarmImageUploadOptions, SwarmImageWriterOptions } from "./types"
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type BeeClient from "@/classes/BeeClient"
 import type { SwarmImageRaw } from "@/definitions/swarm-image"
 import { imageToBlurHash } from "@/utils/blur-hash"
 import { bufferToDataURL, fileToBuffer } from "@/utils/buffer"
@@ -31,7 +30,7 @@ import { bufferToDataURL, fileToBuffer } from "@/utils/buffer"
 export default class SwarmImageWriter {
   imageRaw?: SwarmImageRaw
 
-  private beeClient: SwarmBeeClient
+  private beeClient: BeeClient
   private isResponsive: boolean
   private responsiveSizes: number[]
   private file: File
@@ -84,36 +83,35 @@ export default class SwarmImageWriter {
       v: SwarmImageIO.lastVersion,
     }
 
-    const batchId = options?.batchId ?? (await this.beeClient.getBatchId())
-    const fetch = this.beeClient.getFetch({
-      onUploadProgress: e => {
-        if (options?.onUploadProgress) {
-          const progress = Math.round((e.loaded * 100) / e.total)
-          options.onUploadProgress(progress)
-        }
-      },
-      cancelToken: new Axios.CancelToken(function executor(c) {
-        if (options?.onCancelToken) {
-          options.onCancelToken(c)
-        }
-      }),
-    })
+    const batchId = options?.batchId ?? (await this.beeClient.stamps.fetchBestBatchId())
 
     // upload files and retrieve the new reference
-    let results: UploadResult[] = []
-    for (const data of Object.values(responsiveSourcesData)) {
-      const result = await this.beeClient.uploadFile(batchId, data, undefined, {
-        fetch,
+    let results: Reference[] = []
+    let multipleCompletion = 0
+    const responsiveSources = Object.entries(responsiveSourcesData)
+    for (const [size, data] of responsiveSources) {
+      const result = await this.beeClient.bzz.upload(data, {
+        batchId,
+        onUploadProgress: completion => {
+          if (options?.onUploadProgress) {
+            multipleCompletion += completion * 100
+            options.onUploadProgress(multipleCompletion / responsiveSources.length)
+          }
+        },
+        signal: options?.signal,
         contentType: this.file.type,
+        headers: {
+          "x-etherna-reason": `image-source-${size}-upload`,
+        },
       })
-      results.push(result)
+      results.push(result.reference)
     }
 
     // update raw image object
     imageRaw.sources = Object.keys(responsiveSourcesData).reduce(
       (obj, size, i) => ({
         ...obj,
-        [size]: results[i].reference,
+        [size]: results[i],
       }),
       imageRaw.sources
     )

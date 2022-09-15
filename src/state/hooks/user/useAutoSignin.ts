@@ -16,11 +16,11 @@
 
 import { useEffect } from "react"
 import { useDispatch } from "react-redux"
-import type { EthAddress } from "@ethersphere/bee-js/dist/src/utils/eth"
 import type { AxiosError } from "axios"
 import type { Dispatch } from "redux"
 
-import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import BeeClient from "@/classes/BeeClient"
+import type { BatchId, EthAddress } from "@/classes/BeeClient/types"
 import SwarmProfileIO from "@/classes/SwarmProfile"
 import type { AuthIdentity } from "@/definitions/api-sso"
 import loginRedirect from "@/state/actions/user/login-redirect"
@@ -78,7 +78,7 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
     })
 
     if (currentUser && identity) {
-      const address = identity.etherAddress
+      const address = identity.etherAddress as EthAddress
       fetchProfile(address, identity)
     }
   }
@@ -154,7 +154,7 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
     }
   }
 
-  const fetchProfile = async (address: string, identity?: AuthIdentity) => {
+  const fetchProfile = async (address: EthAddress, identity?: AuthIdentity) => {
     dispatch({
       type: UIActionTypes.TOGGLE_LOADING_PROFILE,
       isLoadingProfile: true,
@@ -162,7 +162,7 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
 
     // update bee client with signer for feed update
     if (identity?.accountType === "web2") {
-      const beeClientSigner = new SwarmBeeClient(beeClient.url, {
+      const beeClientSigner = new BeeClient(beeClient.url, {
         signer: identity.etherManagedPrivateKey!,
       })
 
@@ -172,15 +172,15 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
         signerWallet: "etherna",
       })
     } else if (identity?.accountType === "web3") {
-      const beeClientSigner = new SwarmBeeClient(beeClient.url, {
+      const beeClientSigner = new BeeClient(beeClient.url, {
         signer: {
-          address: addressBytes(address) as EthAddress,
+          address: address as EthAddress,
           sign: async digest => {
             try {
-              return await signMessage(digest.hex().toString(), address)
+              return await signMessage(digest, address)
             } catch (error: any) {
               if (error.code === -32602) {
-                return await signMessage(digest.hex().toString(), address)
+                return await signMessage(digest, address)
               } else {
                 throw error
               }
@@ -216,7 +216,7 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
 
       dispatch({
         type: UserActionTypes.USER_SET_DEFAULT_BATCH_ID,
-        batchId: profile.batchId,
+        batchId: profile.batchId as BatchId,
       })
     } catch (error: any) {
       console.error(error)

@@ -18,6 +18,7 @@
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
 
+import type { EthAddress } from "@/classes/BeeClient/types"
 import { Avatar } from "@/components/ui/display"
 import VideoGrid from "@/components/video/VideoGrid"
 import usePlaylistVideos from "@/hooks/usePlaylistVideos"
@@ -27,7 +28,7 @@ import routes from "@/routes"
 import { shortenEthAddr } from "@/utils/ethereum"
 
 type ProfilePreviewProps = {
-  profileAddress: string
+  profileAddress: EthAddress
 }
 
 const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress }) => {

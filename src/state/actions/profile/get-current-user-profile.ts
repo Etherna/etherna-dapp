@@ -26,7 +26,7 @@ const getCurrentUserProfile = (): Profile => {
   const { name, description, avatar, cover } = store.getState().profile
   const { address } = store.getState().user
   return {
-    address: address ?? "",
+    address: address ?? "0x",
     name: name ?? "",
     description: description ?? "",
     avatar: avatar ?? null,

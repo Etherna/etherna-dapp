@@ -14,11 +14,11 @@
  *  limitations under the License.
  */
 
-import type { BatchId, PostageBatch } from "@ethersphere/bee-js"
 import create from "zustand"
 import { persist, devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
+import type { BatchId, PostageBatch } from "@/classes/BeeClient/types"
 import type { GatewayBatch } from "@/definitions/api-gateway"
 
 export enum BatchUpdateType {

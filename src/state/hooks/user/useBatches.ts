@@ -75,9 +75,7 @@ export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) 
       } else {
         await waitAuth()
 
-        batches = (await beeClient.getAllPostageBatches()).map(batch =>
-          parsePostageBatch(batch, address)
-        )
+        batches = (await beeClient.stamps.downloadAll()).map(batch => parsePostageBatch(batch))
       }
 
       dispatch({

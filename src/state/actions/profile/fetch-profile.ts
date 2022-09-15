@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+import type { EthAddress } from "@/classes/BeeClient/types"
 import SwarmProfileIO from "@/classes/SwarmProfile"
 import { ProfileActionTypes } from "@/state/reducers/profileReducer"
 import { UIActionTypes } from "@/state/reducers/uiReducer"
@@ -25,7 +26,7 @@ import { store } from "@/state/store"
  * @param hash Manifest hash with profile data
  * @param address Profile address
  */
-const fetchProfile = async (hash: string, address: string) => {
+const fetchProfile = async (hash: string, address: EthAddress) => {
   store.dispatch({
     type: UIActionTypes.TOGGLE_LOADING_PROFILE,
     isLoadingProfile: true,

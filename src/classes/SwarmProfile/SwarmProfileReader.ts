@@ -17,8 +17,9 @@
 import pick from "lodash/pick"
 
 import SwarmProfileIO from "."
+import type { EthAddress } from "../BeeClient/types"
 import type { SwarmProfileReaderOptions } from "./types"
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type BeeClient from "@/classes/BeeClient"
 import SwarmImageIO from "@/classes/SwarmImage"
 import type { SwarmImageRaw } from "@/definitions/swarm-image"
 import type { Profile, ProfileRaw } from "@/definitions/swarm-profile"
@@ -40,16 +41,16 @@ const ProfileCache = new Map<string, Profile>()
  * Load a profile from swarm hash or feed
  */
 export default class SwarmProfileReader {
-  address: string
+  address: EthAddress
   profile?: Profile
 
-  private beeClient: SwarmBeeClient
+  private beeClient: BeeClient
   private fetchFromCache: boolean
 
   static avatarResponsiveSizes = [128, 256, 512]
   static coverResponsiveSizes = SwarmImageIO.Writer.defaultResponsiveSizes
 
-  constructor(address: string, opts: SwarmProfileReaderOptions) {
+  constructor(address: EthAddress, opts: SwarmProfileReaderOptions) {
     this.beeClient = opts.beeClient
     this.address = address
     this.fetchFromCache = opts.fetchFromCache ?? true
@@ -88,10 +89,22 @@ export default class SwarmProfileReader {
 
     // Fetch profile from feed
     try {
-      const topic = this.beeClient.makeFeedTopic(SwarmProfileIO.getFeedTopicName())
-      const reader = this.beeClient.makeFeedReader("sequence", topic, this.address)
-      const feed = await reader.download()
-      const profileResp = await this.beeClient.downloadFile(feed.reference)
+      const feed = this.beeClient.feed.makeFeed(
+        SwarmProfileIO.getFeedTopicName(),
+        this.address,
+        "sequence"
+      )
+      const reader = this.beeClient.feed.makeReader(feed)
+      const { reference } = await reader.download({
+        headers: {
+          "x-etherna-reason": "profile-feed",
+        },
+      })
+      const profileResp = await this.beeClient.bzz.download(reference, {
+        headers: {
+          "x-etherna-reason": "profile",
+        },
+      })
       profile = profileResp.data.json() as Profile
     } catch {}
 

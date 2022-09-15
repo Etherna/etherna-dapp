@@ -16,7 +16,7 @@
 
 import SwarmVideoReader from "./SwarmVideoReader"
 import SwarmVideoWriter from "./SwarmVideoWriter"
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type BeeClient from "@/classes/BeeClient"
 import type { IndexVideo, IndexVideoManifest } from "@/definitions/api-index"
 import type { SchemaVersion } from "@/definitions/schema"
 import type { SwarmVideoQuality, SwarmVideoRaw, Video } from "@/definitions/swarm-video"
@@ -37,7 +37,7 @@ const SwarmVideoIO = {
   getDefaultVideo(
     reference: string,
     indexData: IndexVideo | null | undefined,
-    bee: SwarmBeeClient
+    bee: BeeClient
   ): Video {
     return {
       reference: reference || indexData?.lastValidManifest?.hash || "",
@@ -57,7 +57,7 @@ const SwarmVideoIO = {
           reference,
           bitrate: NaN,
           size: NaN,
-          source: bee.getBzzUrl(reference),
+          source: bee.bzz.url(reference),
           quality: `${NaN}p`,
         },
       ],

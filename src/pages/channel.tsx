@@ -18,6 +18,7 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 
+import type { EthAddress } from "@/classes/BeeClient/types"
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
 import SEO from "@/components/layout/SEO"
 import ProfileView from "@/components/profile/ProfileView"
@@ -31,7 +32,7 @@ const ChannelPage = () => {
       <SEO title="Channel" />
 
       <Container noPaddingX noPaddingY fluid>
-        <ProfileView profileAddress={id!} />
+        <ProfileView profileAddress={id! as EthAddress} />
       </Container>
     </AppLayoutWrapper>
   )

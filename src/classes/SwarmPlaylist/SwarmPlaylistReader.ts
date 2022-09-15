@@ -17,8 +17,9 @@
 import { AES, enc } from "crypto-ts"
 
 import SwarmPlaylistIO from "."
+import type { EthAddress } from "../BeeClient/types"
 import type { SwarmPlaylistReaderOptions } from "./types"
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type BeeClient from "@/classes/BeeClient"
 import type {
   SwarmPlaylistRaw,
   SwarmPlaylist,
@@ -35,8 +36,8 @@ export default class SwarmPlaylistReader {
 
   private reference?: string
   private id?: string
-  private owner?: string
-  private beeClient: SwarmBeeClient
+  private owner?: EthAddress
+  private beeClient: BeeClient
 
   constructor(
     reference: string | undefined,
@@ -62,12 +63,22 @@ export default class SwarmPlaylistReader {
 
     if (!this.reference) {
       const topicName = SwarmPlaylistIO.getFeedTopicName(this.id!)
-      const topic = this.beeClient.makeFeedTopic(topicName)
-      const reader = this.beeClient.makeFeedReader("sequence", topic, this.owner!)
-      this.reference = (await reader.download()).reference
+      const feed = this.beeClient.feed.makeFeed(topicName, this.owner!, "sequence")
+      const reader = this.beeClient.feed.makeReader(feed)
+      this.reference = (
+        await reader.download({
+          headers: {
+            "x-etherna-reason": "playlist-feed",
+          },
+        })
+      ).reference
     }
 
-    const playlistData = await this.beeClient.downloadFile(this.reference)
+    const playlistData = await this.beeClient.bzz.download(this.reference, {
+      headers: {
+        "x-etherna-reason": "playlist",
+      },
+    })
     const rawPlaylist = playlistData.data.json() as SwarmPlaylistRaw
     const playlist: SwarmPlaylist = {
       id: rawPlaylist.id,
@@ -91,7 +102,7 @@ export default class SwarmPlaylistReader {
     }
 
     if (rawPlaylist.type === "private") {
-      const encryptedData = await this.beeClient.downloadFile(rawPlaylist.encryptedReference)
+      const encryptedData = await this.beeClient.bzz.download(rawPlaylist.encryptedReference)
       playlist.encryptedData = encryptedData.data.text()
     }
 
