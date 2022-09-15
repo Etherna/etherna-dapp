@@ -170,9 +170,6 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
     if (!isSafeURL(editorTempExtension!.url)) {
       return showError("URL Error", "Please insert a valid URL")
     }
-    if (!editorTempExtension!.url.startsWith("https")) {
-      return showError("URL Error", "The URL must be over https")
-    }
 
     const newHosts = [...hosts!]
     const selectedHostIndex = newHosts.findIndex(host => host.url === editorTempExtension!.url)

@@ -86,11 +86,14 @@ const ExtensionHostForm = <T extends IndexExtensionHost | GatewayExtensionHost>(
               onChange={val => onParamChange(param.key as keyof T, val)}
             />
 
-            {param.key === "type" &&
+            {param.key === "url" &&
               paramsValues.url?.startsWith("http://") &&
               isBeeInstanceGatewayType && (
-                <Alert color="warning" className="mt-3 px-2 py-1.5 text-xs font-medium">
-                  <ExclamationTriangleIcon className="mr-1 inline-block h-[1.1em]" aria-hidden />
+                <Alert
+                  color="warning"
+                  icon={<ExclamationTriangleIcon width={16} aria-hidden />}
+                  className="mt-3 px-2 py-1.5 text-xs font-medium"
+                >
                   <span>
                     To use an insecure connection, you should install the <wbr />
                     <strong>

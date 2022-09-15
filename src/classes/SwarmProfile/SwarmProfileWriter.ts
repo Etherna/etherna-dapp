@@ -71,8 +71,7 @@ export default class SwarmProfileWriter {
     baseProfile.batchId = batchId
 
     // Upload json
-    const serializedJson = new TextEncoder().encode(JSON.stringify(baseProfile))
-    const { reference } = await this.beeClient.bzz.upload(serializedJson, {
+    const { reference } = await this.beeClient.bzz.upload(JSON.stringify(baseProfile), {
       batchId,
       headers: {
         "content-type": "application/json",

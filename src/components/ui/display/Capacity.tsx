@@ -59,7 +59,7 @@ const Capacity: React.FC<CapacityProps> = ({
       <span
         className={classNames("absolute bg-primary-400", {
           "inset-y-0 left-0": !isLoading,
-          "inset-0 w-full": isLoading,
+          "inset-0 w-full animate-slide": isLoading,
           "bg-yellow-400 dark:bg-yellow-400": color === undefined && percent > 40,
           "bg-red-500 dark:bg-red-500": color === "error" || (color === undefined && percent > 65),
           "bg-black dark:bg-white": color === "primary",
@@ -68,9 +68,16 @@ const Capacity: React.FC<CapacityProps> = ({
           "bg-yellow-500 dark:bg-yellow-500": color === "warning",
           "bg-pink-500 dark:bg-pink-500": color === "alert",
         })}
-        style={{ width: !isLoading ? `${percent}%` : undefined }}
+        style={{
+          width: !isLoading ? `${percent}%` : undefined,
+          background: `linear-gradient(
+            to right,
+            transparent 0%,
+            #00AABE 50%,
+            transparent 100%
+          )`,
+        }}
         aria-hidden
-        data-component="capacity"
       />
     </div>
   )

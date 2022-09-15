@@ -74,12 +74,14 @@ const Alert: React.FC<AlertProps> = ({
   const styledIcon = useMemo(() => {
     if (!icon) return undefined
     return React.cloneElement(icon, {
-      className: classNames("h-5 w-5", {
+      className: classNames({
         "text-green-400 dark:text-green-600": color === "success",
         "text-red-400 dark:text-red-600": color === "error",
         "text-yellow-500 dark:text-yellow-600": color === "warning",
         "text-sky-400 dark:text-sky-600": color === "info",
       }),
+      width: icon.props.width ?? 20,
+      height: icon.props.height ?? 20,
     })
   }, [icon, color])
 
