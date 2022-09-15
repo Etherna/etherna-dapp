@@ -21,6 +21,8 @@ import type { GatewayBatch } from "./api-gateway"
 import type { GatewayType } from "./extension-host"
 import type { Keymap, KeymapNamespace } from "./keyboard"
 import type { SwarmImage } from "./swarm-image"
+import type BeeClient from "@/classes/BeeClient"
+import type { BatchId, EthAddress } from "@/classes/BeeClient/types"
 import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
 import type EthernaIndexClient from "@/classes/EthernaIndexClient"
 import type EthernaSSOClient from "@/classes/EthernaSSOClient"
@@ -41,7 +43,7 @@ export type EnvState = {
   indexClient: EthernaIndexClient
   gatewayClient: EthernaGatewayClient
   authClient: EthernaSSOClient
-  beeClient: SwarmBeeClient
+  beeClient: BeeClient
   bytePrice?: number
   isStandaloneGateway?: boolean
 
@@ -94,14 +96,14 @@ export type UIState = {
 }
 
 export type UserState = {
-  address?: string
+  address?: EthAddress
   prevAddresses?: string[]
   ens?: string | null
   credit?: number | null
   creditUnlimited?: boolean
   isSignedIn?: boolean
   isSignedInGateway?: boolean
-  defaultBatchId?: string
+  defaultBatchId?: BatchId
   defaultBatch?: GatewayBatch
   batches?: GatewayBatch[]
 }

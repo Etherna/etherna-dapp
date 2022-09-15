@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
-import type { BatchId } from "@ethersphere/bee-js"
 import type { Canceler } from "axios"
 
 import type { SchemaVersion } from "./schema"
 import type { SwarmImage, SwarmImageRaw } from "./swarm-image"
 import type { Profile } from "./swarm-profile"
+import type { BatchId } from "@/classes/BeeClient/types"
 import type { IndexEncryptionType } from "@/classes/EthernaIndexClient/types"
 
 export type SwarmVideoRaw = {

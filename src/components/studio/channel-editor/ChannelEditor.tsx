@@ -29,6 +29,7 @@ import classNames from "classnames"
 import { TrashIcon } from "@heroicons/react/24/outline"
 
 import WalletState from "../other/WalletState"
+import type { EthAddress } from "@/classes/BeeClient/types"
 import SwarmImageIO from "@/classes/SwarmImage"
 import SwarmProfileIO from "@/classes/SwarmProfile"
 import MarkdownEditor from "@/components/common/MarkdownEditor"
@@ -51,7 +52,7 @@ export type ChannelEditorHandler = {
 }
 
 type ChannelEditorProps = {
-  profileAddress: string
+  profileAddress: EthAddress
 }
 
 type ImagesUtils = {
@@ -234,7 +235,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
     const swarmImageUrl = useCallback(
       (image: SwarmImageRaw | null | undefined) => {
         const reference = SwarmImageIO.Reader.getOriginalSourceReference(image)
-        return reference ? beeClient.getBzzUrl(reference) : undefined
+        return reference ? beeClient.bzz.url(reference) : undefined
       },
       [beeClient]
     )

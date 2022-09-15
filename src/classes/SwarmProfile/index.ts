@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+import type { EthAddress } from "../BeeClient/types"
 import SwarmProfileReader from "./SwarmProfileReader"
 import SwarmProfileWriter from "./SwarmProfileWriter"
 import type { SchemaVersion } from "@/definitions/schema"
@@ -26,7 +27,7 @@ const SwarmProfileIO = {
   Writer: SwarmProfileWriter,
   lastVersion,
   getFeedTopicName: () => `EthernaUserProfile`,
-  getDefaultProfile(address: string): Profile {
+  getDefaultProfile(address: EthAddress): Profile {
     return {
       address,
       name: "",

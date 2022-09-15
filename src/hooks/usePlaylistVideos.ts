@@ -16,7 +16,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import SwarmBeeClient from "@/classes/SwarmBeeClient"
+import BeeClient from "@/classes/BeeClient"
+import type { EthAddress } from "@/classes/BeeClient/types"
 import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
 import SwarmVideoIO from "@/classes/SwarmVideo"
 import type { SwarmPlaylist } from "@/definitions/swarm-playlist"
@@ -74,7 +75,7 @@ export default function usePlaylistVideos(
 
     setIsLoadingPlaylist(true)
 
-    const isReference = SwarmBeeClient.isValidHash(playlistReference)
+    const isReference = BeeClient.isValidHash(playlistReference)
     const reference = isReference ? playlistReference : undefined
     const id = isReference ? undefined : playlistReference
 
@@ -110,7 +111,7 @@ export default function usePlaylistVideos(
         const references = playlist.videos.slice(from, to)
         const newVideos = await Promise.all(
           references.map(video => {
-            const reader = new SwarmVideoIO.Reader(video.reference, playlist.owner, {
+            const reader = new SwarmVideoIO.Reader(video.reference, playlist.owner as EthAddress, {
               beeClient,
               indexClient,
               fetchProfile: !opts.owner,

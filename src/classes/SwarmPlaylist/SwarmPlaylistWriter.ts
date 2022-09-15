@@ -18,7 +18,7 @@ import { AES } from "crypto-ts"
 
 import SwarmPlaylistIO from "."
 import type { SwarmPlaylistWriterOptions } from "./types"
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type BeeClient from "@/classes/BeeClient"
 import type {
   SwarmPlaylistRaw,
   SwarmPlaylist,
@@ -34,7 +34,7 @@ export default class SwarmImageWriter {
   playlist: SwarmPlaylist
   playlistRaw: SwarmPlaylistRaw
 
-  private beeClient: SwarmBeeClient
+  private beeClient: BeeClient
 
   constructor(playlist: SwarmPlaylist, opts: SwarmPlaylistWriterOptions) {
     this.playlist = playlist
@@ -52,7 +52,7 @@ export default class SwarmImageWriter {
       throw new Error("Please insert a password for a private playlist")
     }
 
-    const batchId = await this.beeClient.getBatchId()
+    const batchId = await this.beeClient.stamps.fetchBestBatchId()
 
     let encryptedReference: string | undefined
     if (this.playlist.type === "private") {
@@ -64,27 +64,47 @@ export default class SwarmImageWriter {
         JSON.stringify(playlistData),
         this.playlist.encryptionPassword!
       )
-      encryptedReference = (await this.beeClient.uploadFile(batchId, encryptedData.toString()))
-        .reference
+      encryptedReference = (
+        await this.beeClient.bzz.upload(encryptedData.toString(), {
+          batchId,
+          headers: {
+            "x-etherna-reason": "swarm-playlist-encrypted-data-upload",
+          },
+        })
+      ).reference
     }
 
     this.playlistRaw = this.parsePlaylistToRaw(this.playlist, encryptedReference)
     this.playlistRaw.updatedAt = +new Date()
 
-    let { reference } = await this.beeClient.uploadFile(batchId, JSON.stringify(this.playlistRaw))
+    let { reference } = await this.beeClient.bzz.upload(JSON.stringify(this.playlistRaw), {
+      batchId,
+      headers: {
+        "x-etherna-reason": "swarm-playlist-upload",
+      },
+    })
 
     if (this.playlist.type === "public") {
       // create public feed for playlist subscription
       const topicName = SwarmPlaylistIO.getFeedTopicName(this.playlist.id)
-      const topic = this.beeClient.makeFeedTopic(topicName)
-      const writer = this.beeClient.makeFeedWriter("sequence", topic)
-      await writer.upload(batchId, reference)
-      const feedManifest = await this.beeClient.createFeedManifest(
-        batchId,
-        "sequence",
-        topic,
-        this.playlist.owner
+      const feed = this.beeClient.feed.makeFeed(
+        topicName,
+        this.beeClient.signer!.address,
+        "sequence"
       )
+      const writer = this.beeClient.feed.makeWriter(feed)
+      await writer.upload(reference, {
+        batchId,
+        headers: {
+          "x-etherna-reason": "swarm-playlist-feed-upload",
+        },
+      })
+      const feedManifest = await this.beeClient.feed.createRootManifest(feed, {
+        batchId,
+        headers: {
+          "x-etherna-reason": "swarm-playlist-feed-root-manifest",
+        },
+      })
       reference = feedManifest
     }
 

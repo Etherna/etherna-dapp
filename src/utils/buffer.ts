@@ -78,3 +78,17 @@ export const bufferToFile = (buffer: ArrayBuffer, contentType?: string) => {
  * @returns The base64 data URL
  */
 export const bufferToDataURL = (buffer: ArrayBuffer) => fileToDataURL(bufferToFile(buffer))
+
+/**
+ * Convert a string to bae64
+ *
+ * @param str String to convert
+ * @returns
+ */
+export const stringToBase64 = (str: string): string => {
+  if (typeof window === "undefined") {
+    return Buffer.from(str).toString("base64")
+  } else {
+    return window.btoa(str)
+  }
+}

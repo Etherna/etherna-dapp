@@ -17,6 +17,7 @@
 import type { Dispatch } from "react"
 
 import type { SwarmVideoQuality } from "./swarm-video"
+import type { EthAddress } from "@/classes/BeeClient/types"
 import type SwarmVideoWriter from "@/classes/SwarmVideo/SwarmVideoWriter"
 import type { THUMBNAIL_QUEUE_NAME } from "@/components/studio/video-editor/ThumbnailUpload"
 import type { AnyVideoEditorAction } from "@/context/video-editor-context"
@@ -32,7 +33,7 @@ export type VideoEditorContextState = {
   /** Video instance */
   videoWriter: SwarmVideoWriter
   /** Address of the video owner */
-  ownerAddress: string
+  ownerAddress: EthAddress
   /** Upload queue */
   queue: VideoEditorQueue[]
   /** Pin content on Swarm */

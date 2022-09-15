@@ -2,7 +2,7 @@
   "name": "etherna-web-app",
   "private": true,
   "description": "Etherna video platform web app.",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "author": "Mattia Dalzocchio",
   "license": "Apache-2.0",
   "scripts": {
@@ -18,15 +18,15 @@
   },
   "dependencies": {
     "@datapunt/matomo-tracker-react": "0.5.1",
-    "@ethersphere/bee-js": "3.2.0",
     "@headlessui/react": "1.6.6",
     "@heroicons/react": "2.0.10",
+    "@noble/secp256k1": "1.7.0",
     "@popperjs/core": "2.11.5",
     "@tippyjs/react": "4.2.6",
     "axios": "0.27.2",
     "blurhash": "1.1.5",
     "classnames": "2.3.1",
-    "cookiejs": "2.1.1",
+    "cookiejs": "2.1.2",
     "crypto-ts": "1.0.2",
     "dayjs": "1.11.4",
     "draft-js": "0.11.7",
@@ -108,6 +108,7 @@
     "vite-plugin-svgr": "2.2.1"
   },
   "optionalDependencies": {
+    "@ethersphere/bee-js": "5.0.0",
     "@types/prompt": "1.1.2",
     "bcryptjs": "2.4.3",
     "chalk": "4.x",

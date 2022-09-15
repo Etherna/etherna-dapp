@@ -42,7 +42,7 @@ type QueueSource = {
   quality: SwarmVideoQuality | null
   contentType: string | null
   key: string
-  canceler?: Canceler
+  abortController: AbortController
   ref: React.MutableRefObject<FileUploadFlowHandlers | null>
 }
 
@@ -65,6 +65,7 @@ const defaultSource = (): QueueSource => ({
   quality: null,
   contentType: null,
   ref: createRef(),
+  abortController: new AbortController(),
 })
 
 const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSourcesUploadProps>(
@@ -87,6 +88,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
               quality: source.quality,
               contentType: null,
               ref: createRef(),
+              abortController: new AbortController(),
             }))
       )
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,6 +117,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
         quality: null,
         contentType: null,
         ref: createRef(),
+        abortController: new AbortController(),
       })
       setSources(newSources)
     }, [sources])
@@ -125,14 +128,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
         const queueName = SwarmVideoIO.getSourceName(source.quality)
 
         const reference = await videoWriter.addVideoSource(buffer, source.contentType!, {
-          onCancelToken: c => {
-            setSources(sources => {
-              const newSources = [...sources]
-              newSources[index].canceler = c
-
-              return newSources
-            })
-          },
+          signal: sources[index].abortController.signal,
           onUploadProgress: p => {
             updateQueueCompletion(queueName, p)
           },
@@ -258,11 +254,9 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
 
     const handleCancelUpload = useCallback(
       (index: number) => {
-        const { quality, canceler, ref } = sources[index]
+        const { quality, abortController, ref } = sources[index]
 
-        if (canceler) {
-          canceler("User canceled the upload.")
-        }
+        abortController.abort("User canceled the upload.")
 
         ref.current?.clear()
 

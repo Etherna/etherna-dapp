@@ -18,7 +18,7 @@ import pick from "lodash/pick"
 
 import SwarmProfileIO from "."
 import type { SwarmProfileWriterOptions } from "./types"
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type BeeClient from "@/classes/BeeClient"
 import SwarmImageIO from "@/classes/SwarmImage"
 import type { SwarmImage } from "@/definitions/swarm-image"
 import type { Profile, ProfileRaw } from "@/definitions/swarm-profile"
@@ -43,7 +43,7 @@ export default class SwarmProfileWriter {
   address: string
   loadedFromPrefetch: boolean = false
 
-  private beeClient: SwarmBeeClient
+  private beeClient: BeeClient
 
   static avatarResponsiveSizes = [128, 256, 512]
   static coverResponsiveSizes = SwarmImageIO.Writer.defaultResponsiveSizes
@@ -64,22 +64,34 @@ export default class SwarmProfileWriter {
    */
   async update(profile: Profile) {
     if (!this.beeClient.signer) throw new Error("Enable your wallet to update your profile")
-    const fetch = this.beeClient.getFetch()
 
     // Get validated profiles
     const baseProfile = pick(this.validatedProfile(profile), ProfileProperties)
+    const batchId = await this.beeClient.stamps.fetchBestBatchId()
+    baseProfile.batchId = batchId
 
     // Upload json
     const serializedJson = new TextEncoder().encode(JSON.stringify(baseProfile))
-    const batchId = await this.beeClient.getBatchId()
-    const reference = (
-      await this.beeClient.uploadFile(batchId, serializedJson, undefined, { fetch })
-    ).reference
+    const { reference } = await this.beeClient.bzz.upload(serializedJson, {
+      batchId,
+      headers: {
+        "x-etherna-reason": "profile-upload",
+      },
+    })
 
     // update feed
-    const topic = this.beeClient.makeFeedTopic(SwarmProfileIO.getFeedTopicName())
-    const writer = this.beeClient.makeFeedWriter("sequence", topic)
-    await writer.upload(batchId, reference)
+    const feed = this.beeClient.feed.makeFeed(
+      SwarmProfileIO.getFeedTopicName(),
+      this.beeClient.signer.address,
+      "sequence"
+    )
+    const writer = this.beeClient.feed.makeWriter(feed)
+    await writer.upload(reference, {
+      batchId,
+      headers: {
+        "x-etherna-reason": "profile-feed-update",
+      },
+    })
 
     return reference
   }
@@ -134,7 +146,6 @@ export default class SwarmProfileWriter {
     }
     validatedProfile.avatar = this.parseImage(profile.avatar)
     validatedProfile.cover = this.parseImage(profile.cover)
-    validatedProfile.batchId = this.beeClient.userBatches[0].id ?? profile.batchId
     validatedProfile.v = SwarmProfileIO.lastVersion
 
     return validatedProfile

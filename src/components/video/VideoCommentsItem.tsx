@@ -20,6 +20,7 @@ import { Link } from "react-router-dom"
 import classNames from "classnames"
 
 import { Avatar } from "../ui/display"
+import type { EthAddress } from "@/classes/BeeClient/types"
 import MarkdownPreview from "@/components/common/MarkdownPreview"
 import VideoCommentPlaceholder from "@/components/placeholders/VideoCommentPlaceholder"
 import type { IndexVideoComment } from "@/definitions/api-index"
@@ -36,7 +37,7 @@ type VideoCommentsItemProps = {
 const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({ comment, videoAuthorAddress }) => {
   const { creationDateTime, text, ownerAddress } = comment
   const { profile, isLoading, loadProfile } = useSwarmProfile({
-    address: ownerAddress,
+    address: ownerAddress as EthAddress,
     fetchFromCache: true,
   })
 

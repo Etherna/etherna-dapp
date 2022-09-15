@@ -21,7 +21,7 @@ import type { SwarmPlaylist, SwarmPlaylistType } from "@/definitions/swarm-playl
 
 export type SwarmPlaylistReaderOptions = {
   beeClient: SwarmBeeClient
-  owner?: string
+  owner?: EthAddress
   id?: string | "__channel" | "__saved"
 }
 

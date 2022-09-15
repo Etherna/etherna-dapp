@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-import type { BatchId } from "@ethersphere/bee-js"
 import type { Canceler } from "axios"
 
+import type { BatchId } from "../BeeClient/types"
 import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 
 export type SwarmImageReaderOptions = {
@@ -32,5 +32,5 @@ export type SwarmImageWriterOptions = {
 export type SwarmImageUploadOptions = {
   batchId?: BatchId
   onUploadProgress?: (progress: number) => void
-  onCancelToken?: (canceler: Canceler) => void
+  signal?: AbortSignal
 }

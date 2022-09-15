@@ -14,10 +14,11 @@
  *  limitations under the License.
  */
 
+import BeeClient from "@/classes/BeeClient"
+import type { PostageBatch } from "@/classes/BeeClient/types"
 import EthernaGatewayClient from "@/classes/EthernaGatewayClient"
 import EthernaIndexClient from "@/classes/EthernaIndexClient"
 import EthernaSSOClient from "@/classes/EthernaSSOClient"
-import SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type { GatewayBatch } from "@/definitions/api-gateway"
 import type { EnvState, WalletType } from "@/definitions/app-state"
 import type { GatewayExtensionHost } from "@/definitions/extension-host"
@@ -55,7 +56,7 @@ type UpdateIndexHostAction = {
 type UpdateGatewayHostAction = {
   type: typeof EnvActionTypes.UPDATE_GATEWAY_HOST
   gatewayUrl: string
-  beeClient: SwarmBeeClient
+  beeClient: BeeClient
 }
 type SetIsStandaloneGatewayAction = {
   type: typeof EnvActionTypes.SET_IS_STANDALONE_GATEWAY
@@ -63,12 +64,12 @@ type SetIsStandaloneGatewayAction = {
 }
 type UpdateBeeClientAction = {
   type: typeof EnvActionTypes.UPDATE_BEE_CLIENT
-  beeClient: SwarmBeeClient
+  beeClient: BeeClient
   signerWallet: WalletType | null
 }
 type UpdateBeeClientBatchesAction = {
   type: typeof EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES
-  batches: GatewayBatch[]
+  batches: PostageBatch[]
 }
 type UpdateKeymapAction = {
   type: typeof EnvActionTypes.UPDATE_KEYMAP
@@ -124,7 +125,7 @@ const gatewayClient = new EthernaGatewayClient({
 const authClient = new EthernaSSOClient({
   host: EthernaSSOClient.defaultHost,
 })
-const beeClient = new SwarmBeeClient(EthernaGatewayClient.defaultHost)
+const beeClient = new BeeClient(EthernaGatewayClient.defaultHost)
 
 const initialState: EnvState = {
   indexUrl,
@@ -183,9 +184,9 @@ const enviromentReducer = (state: EnvState = initialState, action: EnvActions): 
     case EnvActionTypes.UPDATE_BEE_CLIENT_BATCHES:
       return {
         ...state,
-        beeClient: new SwarmBeeClient(state.beeClient.url, {
+        beeClient: new BeeClient(state.beeClient.url, {
           signer: state.beeClient.signer,
-          userBatches: action.batches,
+          postageBatches: action.batches,
         }),
       }
 

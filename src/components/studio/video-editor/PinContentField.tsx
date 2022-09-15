@@ -52,7 +52,7 @@ const PinContentField = ({ pinningEnabled, onChange }: PinContentFieldProps) => 
 
   const checkPinningAvailability = useCallback(async () => {
     try {
-      const available = await beeClient.pinEnabled()
+      const available = await beeClient.pins.pinEnabled()
       setPinningAvailable(available)
       pinContent === undefined && handlePinChange(available === true)
     } catch (error: any) {

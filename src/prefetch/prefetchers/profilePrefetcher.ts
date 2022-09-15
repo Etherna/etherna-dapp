@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+import type { EthAddress } from "@/classes/BeeClient/types"
 import SwarmProfileIO from "@/classes/SwarmProfile"
 import SwarmUserPlaylistsIO from "@/classes/SwarmUserPlaylists"
 import SwarmVideoIO from "@/classes/SwarmVideo"
@@ -25,11 +26,11 @@ import { fullfilledPromisesResult } from "@/utils/promise"
 const match = /\/profile\/([^/]+)/
 
 const fetch = async () => {
-  const { beeClient, indexClient, indexUrl } = store.getState().env
+  const { beeClient, indexClient } = store.getState().env
 
   const matches = window.location.pathname.match(match)
   if (matches && matches.length >= 2) {
-    const address = matches[1]
+    const address = matches[1] as EthAddress
 
     // Fetch user's playlists & profile
     const playlistsReader = new SwarmUserPlaylistsIO.Reader(address, {

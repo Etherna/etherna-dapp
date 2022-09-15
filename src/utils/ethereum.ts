@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import { utils } from "@noble/secp256k1"
+
 /**
  * Sign a message with the user wallet
  *
@@ -21,7 +23,10 @@
  * @param address Signing address
  * @returns Signed hash
  */
-export const signMessage = async (digest: string, address: string): Promise<string> => {
+export const signMessage = async (
+  digest: string | Uint8Array,
+  address: string
+): Promise<string> => {
   if (!window.ethereum) throw new Error("No wallet installed. Try installing MetaMask extension.")
   if (!window.ethereum.request)
     throw new Error("You have an old version of your wallet. Try to update MetaMask.")
@@ -30,9 +35,11 @@ export const signMessage = async (digest: string, address: string): Promise<stri
 
   if (!accounts || !accounts.length) throw new Error("Unlock your wallet.")
 
+  const hexDigest = digest instanceof Uint8Array ? utils.bytesToHex(digest) : digest
+
   const data = await window.ethereum.request({
     method: "personal_sign",
-    params: [address, digest],
+    params: [address, hexDigest],
   })
   return data
 }

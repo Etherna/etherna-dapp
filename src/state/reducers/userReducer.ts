@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 
+import type { BatchId, EthAddress } from "@/classes/BeeClient/types"
 import type { GatewayBatch } from "@/definitions/api-gateway"
 import type { UserState } from "@/definitions/app-state"
 
@@ -38,7 +39,7 @@ type UserSignoutAction = {
 }
 type UpdateIdentityAction = {
   type: typeof UserActionTypes.USER_UPDATE_IDENTITY
-  address?: string
+  address?: EthAddress
   prevAddresses?: string[]
 }
 type UpdateCreditAction = {
@@ -53,7 +54,7 @@ type UpdateSignedInAction = {
 }
 type SetDefaultBatchIdAction = {
   type: typeof UserActionTypes.USER_SET_DEFAULT_BATCH_ID
-  batchId: string | undefined
+  batchId: BatchId | undefined
 }
 type SetDefaultBatcheAction = {
   type: typeof UserActionTypes.USER_SET_DEFAULT_BATCH

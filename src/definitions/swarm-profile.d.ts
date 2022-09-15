@@ -16,6 +16,7 @@
 
 import type { SchemaVersion } from "./schema"
 import type { SwarmImage, SwarmImageRaw } from "./swarm-image"
+import type { EthAddress } from "@/classes/BeeClient/types"
 
 export type ProfileRaw = {
   /**  Profile address */
@@ -42,7 +43,7 @@ export type ProfileRaw = {
 
 export type Profile = {
   /**  Profile address */
-  address: string
+  address: EthAddress
   /**  Name of the Profile */
   name: string | null
   /**  Description of the Profile */

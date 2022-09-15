@@ -17,6 +17,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import type { AxiosError } from "axios"
 
+import type { EthAddress } from "@/classes/BeeClient/types"
 import EthernaIndexClient from "@/classes/EthernaIndexClient"
 import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
 import SwarmVideoIO from "@/classes/SwarmVideo"
@@ -99,11 +100,15 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
       const references = playlist.videos?.slice(from, to) ?? []
       return await Promise.all(
         references.map(async playlistVid => {
-          const reader = new SwarmVideoIO.Reader(playlistVid.reference, playlist.owner, {
-            beeClient,
-            fetchProfile: false,
-            profileData: opts.profile,
-          })
+          const reader = new SwarmVideoIO.Reader(
+            playlistVid.reference,
+            playlist.owner as EthAddress,
+            {
+              beeClient,
+              fetchProfile: false,
+              profileData: opts.profile,
+            }
+          )
           const video = await reader.download(true)
           return video
         })

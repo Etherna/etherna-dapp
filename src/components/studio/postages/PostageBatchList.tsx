@@ -106,10 +106,10 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
       selectedBatch,
       selectedBatch.flag
     )
-    const gatewayBatch = "batchID" in batch ? parsePostageBatch(batch, address) : batch
+    const gatewayBatch = "batchID" in batch ? parsePostageBatch(batch) : batch
 
     onBatchUpdate?.(gatewayBatch)
-  }, [address, updatingBatches, isUpdatingBatch, onBatchUpdate])
+  }, [updatingBatches, isUpdatingBatch, onBatchUpdate])
 
   const openSettings = useCallback((batch: GatewayBatch) => {
     setEditorDepth(batch.depth)

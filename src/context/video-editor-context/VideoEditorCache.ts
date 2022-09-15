@@ -16,8 +16,8 @@
 
 import type { VideoEditorContextState } from "."
 import { getAllSources } from "."
+import type BeeClient from "@/classes/BeeClient"
 import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 import SwarmVideoIO from "@/classes/SwarmVideo"
 import type { GatewayType } from "@/definitions/extension-host"
 import type { SwarmVideoRaw } from "@/definitions/swarm-video"
@@ -66,7 +66,7 @@ export default class VideoEditorCache {
   }
 
   static loadState(
-    beeClient: SwarmBeeClient,
+    beeClient: BeeClient,
     gatewayClient: EthernaGatewayClient,
     gatewayType: GatewayType
   ) {

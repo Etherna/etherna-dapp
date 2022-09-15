@@ -16,13 +16,14 @@
 
 import { useCallback, useState } from "react"
 
+import type { EthAddress } from "@/classes/BeeClient/types"
 import SwarmProfileIO from "@/classes/SwarmProfile"
 import type { Profile } from "@/definitions/swarm-profile"
 import useSelector from "@/state/useSelector"
 import { wait } from "@/utils/promise"
 
 type SwarmProfileOptions = {
-  address: string
+  address: EthAddress
   fetchFromCache?: boolean
 }
 

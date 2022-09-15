@@ -50,7 +50,7 @@ const SwarmUserPlaylistsIO = {
   getDefaultCustomPlaylist: (owner: string): SwarmPlaylist => ({
     id: uuidv4(),
     reference: null,
-    name: "Untitle",
+    name: "Untitled",
     owner,
     type: "unlisted",
     videos: [],

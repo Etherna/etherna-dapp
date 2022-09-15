@@ -83,7 +83,7 @@ const VideoExtraMenuManifest: React.FC<VideoExtraMenuManifestProps> = ({
               {source.label}
             </div>
             <span className="block w-full break-words text-xs text-gray-400 dark:text-gray-400">
-              <a href={beeClient.getBzzUrl(source.reference)} target="_blank" rel="noreferrer">
+              <a href={beeClient.bzz.url(source.reference)} target="_blank" rel="noreferrer">
                 {source.reference}
               </a>
             </span>

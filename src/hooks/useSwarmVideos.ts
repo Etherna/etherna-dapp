@@ -16,6 +16,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 
+import type { EthAddress } from "@/classes/BeeClient/types"
 import SwarmProfileIO from "@/classes/SwarmProfile"
 import SwarmVideoIO from "@/classes/SwarmVideo"
 import type { IndexVideo } from "@/definitions/api-index"
@@ -54,7 +55,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
 
       const profiles = await Promise.all(
         addresses.map(async address => {
-          const profileReader = new SwarmProfileIO.Reader(address, {
+          const profileReader = new SwarmProfileIO.Reader(address as EthAddress, {
             beeClient,
             fetchFromCache: true,
           })
@@ -70,7 +71,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
           if (!video.owner) {
             const profile =
               profiles.find(profile => profile?.address === video.ownerAddress) ??
-              SwarmProfileIO.getDefaultProfile(video.ownerAddress ?? "0x0")
+              SwarmProfileIO.getDefaultProfile((video.ownerAddress as EthAddress) ?? "0x0")
             video.owner = profile
           }
         }

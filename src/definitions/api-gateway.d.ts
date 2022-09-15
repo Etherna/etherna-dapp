@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import type { PostageBatch, BatchId } from "@ethersphere/bee-js"
+import type { BatchId, PostageBatch } from "@/classes/BeeClient/types"
 
 export type GatewayClientOptions = {
   host: string
@@ -43,7 +43,6 @@ export type GatewayBatch = Omit<PostageBatch, "batchID"> & {
   id: BatchId
   amountPaid: number
   normalisedBalance: number
-  ownerAddress: string | null
 }
 
 export type GatewayChainState = {

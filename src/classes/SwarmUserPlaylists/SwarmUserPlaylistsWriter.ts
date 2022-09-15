@@ -16,7 +16,7 @@
 
 import SwarmUserPlaylistsIO from "."
 import type { SwarmUserPlaylistsWriterOptions } from "./types"
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type BeeClient from "@/classes/BeeClient"
 import type { SwarmUserPlaylistsRaw } from "@/definitions/swarm-playlist"
 
 /**
@@ -25,7 +25,7 @@ import type { SwarmUserPlaylistsRaw } from "@/definitions/swarm-playlist"
 export default class SwarmUserPlaylistsWriter {
   playlistsRaw: SwarmUserPlaylistsRaw
 
-  private beeClient: SwarmBeeClient
+  private beeClient: BeeClient
 
   constructor(playlistsRaw: SwarmUserPlaylistsRaw, opts: SwarmUserPlaylistsWriterOptions) {
     this.playlistsRaw = playlistsRaw
@@ -36,17 +36,28 @@ export default class SwarmUserPlaylistsWriter {
    * Upload playlists data
    */
   async upload() {
-    const batchId = await this.beeClient.getBatchId()
+    const batchId = await this.beeClient.stamps.fetchBestBatchId()
 
     this.playlistsRaw.v = SwarmUserPlaylistsIO.lastVersion
 
-    const { reference } = await this.beeClient.uploadFile(
+    const { reference } = await this.beeClient.bzz.upload(JSON.stringify(this.playlistsRaw), {
       batchId,
-      JSON.stringify(this.playlistsRaw)
-    )
+      headers: {
+        "x-etherna-reason": "user-playlists-upload",
+      },
+    })
 
-    const topic = this.beeClient.makeFeedTopic(SwarmUserPlaylistsIO.getFeedTopicName())
-    const writer = this.beeClient.makeFeedWriter("sequence", topic)
-    await writer.upload(batchId, reference)
+    const feed = this.beeClient.feed.makeFeed(
+      SwarmUserPlaylistsIO.getFeedTopicName(),
+      this.beeClient.signer!.address,
+      "sequence"
+    )
+    const writer = this.beeClient.feed.makeWriter(feed)
+    await writer.upload(reference, {
+      batchId,
+      headers: {
+        "x-etherna-reason": "user-playlists-feed-update",
+      },
+    })
   }
 }

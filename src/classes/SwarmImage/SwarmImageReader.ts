@@ -47,12 +47,12 @@ export default class SwarmImageReader {
       this.image = {
         ...image,
         blurredBase64: blurHashToDataURL(image.blurhash),
-        src: opts.beeClient.getBzzUrl(sources[0].reference),
+        src: opts.beeClient.bzz.url(sources[0].reference),
         srcset:
           sources.length > 1
             ? sources.reduce(
                 (srcset, source) =>
-                  `${srcset ? srcset + "," : ""} ${source.size} ${opts.beeClient.getBzzUrl(
+                  `${srcset ? srcset + "," : ""} ${source.size} ${opts.beeClient.bzz.url(
                     source.reference
                   )}`,
                 ""

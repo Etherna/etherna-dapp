@@ -15,8 +15,9 @@
  */
 
 import SwarmUserPlaylistsIO from "."
+import type { EthAddress } from "../BeeClient/types"
 import type { SwarmUserPlaylistsDownloadOptions, SwarmUserPlaylistsReaderOptions } from "./types"
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type BeeClient from "@/classes/BeeClient"
 import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
 import type { SwarmPlaylist, SwarmUserPlaylistsRaw } from "@/definitions/swarm-playlist"
 
@@ -29,10 +30,10 @@ export default class SwarmUserPlaylistsReader {
   savedPlaylist?: SwarmPlaylist
   customPlaylists?: SwarmPlaylist[]
 
-  private owner: string
-  private beeClient: SwarmBeeClient
+  private owner: EthAddress
+  private beeClient: BeeClient
 
-  constructor(owner: string, opts: SwarmUserPlaylistsReaderOptions) {
+  constructor(owner: EthAddress, opts: SwarmUserPlaylistsReaderOptions) {
     this.owner = owner
     this.beeClient = opts.beeClient
   }
@@ -114,10 +115,22 @@ export default class SwarmUserPlaylistsReader {
 
   private async fetchFeedOrDefault(): Promise<SwarmUserPlaylistsRaw | null> {
     try {
-      const topic = this.beeClient.makeFeedTopic(SwarmUserPlaylistsIO.getFeedTopicName())
-      const reader = this.beeClient.makeFeedReader("sequence", topic, this.owner)
-      const { reference } = await reader.download()
-      const data = await this.beeClient.downloadFile(reference)
+      const feed = this.beeClient.feed.makeFeed(
+        SwarmUserPlaylistsIO.getFeedTopicName(),
+        this.owner,
+        "sequence"
+      )
+      const reader = this.beeClient.feed.makeReader(feed)
+      const { reference } = await reader.download({
+        headers: {
+          "x-etherna-reason": "users-playlists-feed",
+        },
+      })
+      const data = await this.beeClient.bzz.download(reference, {
+        headers: {
+          "x-etherna-reason": "users-playlists",
+        },
+      })
       const usersPlaylists = data.data.json() as SwarmUserPlaylistsRaw
       usersPlaylists.v = SwarmUserPlaylistsIO.lastVersion
       return usersPlaylists

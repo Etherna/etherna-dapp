@@ -49,7 +49,7 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
     const flowRef = useRef<FileUploadFlowHandlers>(null)
     const [{ queue, videoWriter }] = useVideoEditorState()
     const [contentType, setContentType] = useState<string>("image/*")
-    const canceler = useRef<Canceler>()
+    const abortController = useRef<AbortController>()
 
     const { addToQueue, removeFromQueue, updateQueueCompletion, setQueueError } =
       useVideoEditorQueueActions()
@@ -101,10 +101,10 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
         // show loading start while processing responsive images
         updateQueueCompletion(THUMBNAIL_QUEUE_NAME, 1)
 
+        abortController.current = new AbortController()
+
         const reference = await videoWriter.addThumbnail(buffer, contentType, {
-          onCancelToken: c => {
-            canceler.current = c
-          },
+          signal: abortController.current.signal,
           onUploadProgress: p => {
             updateQueueCompletion(THUMBNAIL_QUEUE_NAME, p)
           },
@@ -123,7 +123,7 @@ const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploa
     const handleReset = useCallback(async () => {
       removeFromQueue(THUMBNAIL_QUEUE_NAME)
 
-      canceler.current?.("Upload canceled by the user")
+      abortController.current?.abort("Upload canceled by the user")
 
       videoWriter.removeThumbnail()
 

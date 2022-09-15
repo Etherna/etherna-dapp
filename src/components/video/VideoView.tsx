@@ -52,7 +52,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
   const posterUrl = useMemo(() => {
     const thumbReference = SwarmImageIO.Reader.getOriginalSourceReference(video?.thumbnail)
     if (thumbReference) {
-      return beeClient.getBzzUrl(thumbReference)
+      return beeClient.bzz.url(thumbReference)
     }
     return null
   }, [video, beeClient])

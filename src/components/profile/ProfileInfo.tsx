@@ -19,6 +19,7 @@ import React, { useCallback, useEffect } from "react"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
 
+import type { EthAddress } from "@/classes/BeeClient/types"
 import Image from "@/components/common/Image"
 import { Skeleton } from "@/components/ui/display"
 import type { Profile } from "@/definitions/swarm-profile"
@@ -30,7 +31,7 @@ import { getResponseErrorMessage } from "@/utils/request"
 
 type ProfileInfoProps = {
   children: React.ReactNode
-  profileAddress: string
+  profileAddress: EthAddress
   nav?: React.ReactNode
   actions?: React.ReactNode
   onFetchedProfile: (profile: Profile | null) => void

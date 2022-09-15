@@ -88,11 +88,11 @@ const Image: React.FC<ImageProps> = ({
         .sort()
       const largest = sizes[sizes.length - 1]
 
-      if (size > largest) return beeClient.getBzzUrl(sources[`${largest}w`])
+      if (size > largest) return beeClient.bzz.url(sources[`${largest}w`])
 
       const optimized = sizes.find(size => size > screenSize)
       const optimizedReference = optimized ? sources[`${optimized}w`] : sources[`${largest}w`]
-      return optimizedReference ? beeClient.getBzzUrl(optimizedReference) : ""
+      return optimizedReference ? beeClient.bzz.url(optimizedReference) : ""
     },
     [beeClient]
   )

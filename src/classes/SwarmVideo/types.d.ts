@@ -16,16 +16,16 @@
 
 import type { Canceler } from "axios"
 
+import type BeeClient from "@/classes/BeeClient"
 import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
 import type EthernaIndexClient from "@/classes/EthernaIndexClient"
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
 import type { IndexVideo } from "@/definitions/api-index"
 import type { GatewayType } from "@/definitions/extension-host"
 import type { Profile } from "@/definitions/swarm-profile"
 import type { SwarmVideoRaw, Video } from "@/definitions/swarm-video"
 
 export type SwarmVideoReaderOptions = {
-  beeClient: SwarmBeeClient
+  beeClient: BeeClient
   indexClient?: EthernaIndexClient
   videoData?: Video | SwarmVideoRaw
   indexData?: IndexVideo | null
@@ -36,12 +36,12 @@ export type SwarmVideoReaderOptions = {
 }
 
 export type SwarmVideoWriterOptions = {
-  beeClient: SwarmBeeClient
+  beeClient: BeeClient
   gatewayClient: EthernaGatewayClient
   gatewayType: GatewayType
 }
 
 export type SwarmVideoUploadOptions = {
   onUploadProgress?: (progress: number) => void
-  onCancelToken?: (canceler: Canceler) => void
+  signal?: AbortSignal
 }

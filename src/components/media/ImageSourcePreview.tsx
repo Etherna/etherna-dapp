@@ -31,7 +31,7 @@ const ImageSourcePreview: React.FC<ImageSourcePreviewProps> = ({ image }) => {
 
   const [reference, srcUrl] = useMemo(() => {
     const reference = SwarmImageIO.Reader.getOriginalSourceReference(image)
-    const url = reference ? beeClient.getBzzUrl(reference) : undefined
+    const url = reference ? beeClient.bzz.url(reference) : undefined
     return [reference, url]
   }, [image, beeClient])
 

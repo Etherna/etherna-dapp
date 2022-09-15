@@ -17,7 +17,6 @@
 
 import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
-import { SPAN_SIZE } from "@ethersphere/bee-js"
 import classNames from "classnames"
 
 import { Spinner } from "../display"
