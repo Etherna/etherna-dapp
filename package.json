@@ -66,6 +66,7 @@
     "@types/draft-js": "0.11.9",
     "@types/lodash": "4.14.185",
     "@types/markdown-draft-js": "2.2.4",
+    "@types/node": "18.7.18",
     "@types/nprogress": "0.2.0",
     "@types/react": "18.0.20",
     "@types/react-dom": "18.0.6",
