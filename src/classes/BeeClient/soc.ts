@@ -83,7 +83,7 @@ export default class Soc {
     const chunkAddress = chunk.address()
 
     const digest = keccak256Hash(identifier, chunkAddress)
-    const signature = utils.hexToBytes(await this.instance.signer.sign(digest))
+    const signature = utils.hexToBytes(makeHexString(await this.instance.signer.sign(digest)))
     const data = serializeBytes(identifier, signature, chunk.span(), chunk.payload())
     const signerAddress = utils.hexToBytes(makeHexString(this.instance.signer!.address))
     const address = this.makeSOCAddress(identifier, signerAddress)

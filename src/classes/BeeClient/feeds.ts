@@ -10,6 +10,7 @@ import type {
   FeedUpdateOptions,
   FeedUploadOptions,
   Index,
+  Reference,
   ReferenceResponse,
 } from "./types"
 import { makeBytes, serializeBytes } from "./utils/bytes"
@@ -76,7 +77,7 @@ export default class Feed {
       throw new Error("Signer address does not match feed owner")
     }
 
-    const upload = async (reference: string, options: FeedUploadOptions) => {
+    const upload = async (reference: Reference, options: FeedUploadOptions) => {
       const canonicalReference = makeBytesReference(reference)
 
       const nextIndex =
