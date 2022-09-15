@@ -1,8 +1,5 @@
 import axios from "axios"
 import chalk from "chalk"
-import DotEnv from "dotenv"
-import fs from "fs"
-import path from "path"
 import prompt from "prompt"
 import { fileURLToPath } from "url"
 

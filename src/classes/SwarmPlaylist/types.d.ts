@@ -16,15 +16,15 @@
 
 import type { Canceler } from "axios"
 
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type BeeClient from "@/classes/BeeClient"
 import type { SwarmPlaylist, SwarmPlaylistType } from "@/definitions/swarm-playlist"
 
 export type SwarmPlaylistReaderOptions = {
-  beeClient: SwarmBeeClient
+  beeClient: BeeClient
   owner?: EthAddress
   id?: string | "__channel" | "__saved"
 }
 
 export type SwarmPlaylistWriterOptions = {
-  beeClient: SwarmBeeClient
+  beeClient: BeeClient
 }

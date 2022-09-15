@@ -40,6 +40,7 @@ export default class BeeClient {
       typeof opts?.signer === "string" ? makePrivateKeySigner(opts.signer) : opts?.signer
     this.request = createRequest({
       baseURL: url,
+      withCredentials: true,
     })
     this.auth = new Auth(this)
     this.bytes = new Bytes(this)

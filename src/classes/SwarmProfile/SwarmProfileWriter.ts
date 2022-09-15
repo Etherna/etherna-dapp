@@ -75,6 +75,7 @@ export default class SwarmProfileWriter {
     const { reference } = await this.beeClient.bzz.upload(serializedJson, {
       batchId,
       headers: {
+        "content-type": "application/json",
         "x-etherna-reason": "profile-upload",
       },
     })

@@ -15,7 +15,7 @@ export default class Bzz {
   url(reference: string, path = "") {
     const safeReference = reference.replace(/(^\/|\/$)/g, "")
     const safePath = path.replace(/(^\/|\/$)/g, "")
-    return `${this.url}${bzzEndpoint}/${safeReference}/${safePath}`.replace(/\/$/, "/")
+    return `${this.instance.url}${bzzEndpoint}/${safeReference}/${safePath}`.replace(/\/$/, "/")
   }
 
   async download(hash: string, options?: FileDownloadOptions): Promise<File> {

@@ -43,6 +43,7 @@ export default class SwarmUserPlaylistsWriter {
     const { reference } = await this.beeClient.bzz.upload(JSON.stringify(this.playlistsRaw), {
       batchId,
       headers: {
+        "content-type": "application/json",
         "x-etherna-reason": "user-playlists-upload",
       },
     })

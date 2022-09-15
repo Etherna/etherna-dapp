@@ -26,7 +26,7 @@ import type { BatchId, EthAddress } from "@/classes/BeeClient/types"
 import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
 import type EthernaIndexClient from "@/classes/EthernaIndexClient"
 import type EthernaSSOClient from "@/classes/EthernaSSOClient"
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type BeeClient from "@/classes/BeeClient"
 
 export type AppState = {
   env: EnvState

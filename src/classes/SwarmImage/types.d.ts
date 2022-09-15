@@ -17,14 +17,14 @@
 import type { Canceler } from "axios"
 
 import type { BatchId } from "../BeeClient/types"
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type BeeClient from "@/classes/BeeClient"
 
 export type SwarmImageReaderOptions = {
-  beeClient: SwarmBeeClient
+  beeClient: BeeClient
 }
 
 export type SwarmImageWriterOptions = {
-  beeClient: SwarmBeeClient
+  beeClient: BeeClient
   isResponsive?: boolean
   responsiveSizes?: number[]
 }

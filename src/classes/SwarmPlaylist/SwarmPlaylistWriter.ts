@@ -80,6 +80,7 @@ export default class SwarmImageWriter {
     let { reference } = await this.beeClient.bzz.upload(JSON.stringify(this.playlistRaw), {
       batchId,
       headers: {
+        "content-type": "application/json",
         "x-etherna-reason": "swarm-playlist-upload",
       },
     })

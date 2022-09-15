@@ -16,11 +16,11 @@
 
 import type { Canceler } from "axios"
 
-import type SwarmBeeClient from "@/classes/SwarmBeeClient"
+import type BeeClient from "@/classes/BeeClient"
 import type { SwarmPlaylist } from "@/definitions/swarm-playlist"
 
 export type SwarmUserPlaylistsReaderOptions = {
-  beeClient: SwarmBeeClient
+  beeClient: BeeClient
 }
 
 export type SwarmUserPlaylistsDownloadOptions = {
@@ -33,5 +33,5 @@ export type SwarmUserPlaylistsDownloadOptions = {
 }
 
 export type SwarmUserPlaylistsWriterOptions = {
-  beeClient: SwarmBeeClient
+  beeClient: BeeClient
 }

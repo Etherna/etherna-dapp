@@ -149,6 +149,7 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
       await this.beeClient.bzz.upload(manifestData, {
         batchId,
         headers: {
+          "content-type": "application/json",
           "x-etherna-reason": "video-meta-upload",
         },
       })

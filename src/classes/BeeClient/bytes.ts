@@ -9,7 +9,7 @@ export default class Bytes {
   constructor(private instance: BeeClient) {}
 
   url(reference: string) {
-    return `${this.url}${bytesEndpoint}/${reference}`
+    return `${this.instance.url}${bytesEndpoint}/${reference}`
   }
 
   async download(hash: string, options?: RequestOptions) {

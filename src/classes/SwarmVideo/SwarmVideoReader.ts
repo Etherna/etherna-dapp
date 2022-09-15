@@ -43,14 +43,16 @@ export default class SwarmVideoReader {
   private indexClient?: EthernaIndexClient
   private indexData?: IndexVideo
   private profileData?: Profile
-  private isDefaultVideo: boolean
+  private hasRawVideo: boolean
 
   constructor(
     reference: string,
     ownerAddress: EthAddress | undefined,
     opts: SwarmVideoReaderOptions
   ) {
-    this.reference = SwarmVideoIO.isSwarmReference(reference) ? reference : ""
+    this.reference = SwarmVideoIO.isSwarmReference(reference)
+      ? reference
+      : opts.indexData?.lastValidManifest?.hash ?? ""
     this.indexReference = !SwarmVideoIO.isSwarmReference(reference) ? reference : undefined
     this.ownerAddress = ownerAddress
     this.beeClient = opts.beeClient
@@ -62,7 +64,9 @@ export default class SwarmVideoReader {
     this.updateCache = opts.updateCache ?? true
     this.video = this.doubleParseVideo(opts.videoData, opts.indexData, opts.profileData)
     this.videoRaw = this.parseVideo(this.video)
-    this.isDefaultVideo = !opts.videoData || !opts.indexData
+    this.hasRawVideo =
+      !!opts.videoData ||
+      (!!opts.indexData?.lastValidManifest && opts.indexData?.lastValidManifest?.title !== null)
 
     if (this.hasPrefetch) {
       this.loadVideoFromPrefetch()
@@ -103,6 +107,7 @@ export default class SwarmVideoReader {
     this.video = this.doubleParseVideo(rawVideo, indexVideo, ownerProfile)
     this.videoRaw = this.parseVideo(this.video)
     this.indexReference = this.indexReference ?? indexVideo?.id
+    this.hasRawVideo = true
 
     let owner = ownerProfile
     if (!owner && this.videoRaw.ownerAddress) {
@@ -233,7 +238,7 @@ export default class SwarmVideoReader {
   }
 
   private async fetchRawVideo(): Promise<SwarmVideoRaw | null> {
-    if (!this.isDefaultVideo) return this.videoRaw
+    if (this.hasRawVideo) return this.videoRaw
 
     try {
       const resp = await this.beeClient.bzz.download(this.reference, {
