@@ -147,8 +147,6 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
     fetchVideos()
   }, [fetchVideos])
 
-  console.log(videos)
-
   return {
     videos,
     hasMore,
