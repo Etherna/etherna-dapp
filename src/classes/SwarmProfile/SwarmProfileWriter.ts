@@ -75,7 +75,7 @@ export default class SwarmProfileWriter {
       batchId,
       headers: {
         "content-type": "application/json",
-        "x-etherna-reason": "profile-upload",
+        // "x-etherna-reason": "profile-upload",
       },
     })
 
@@ -89,7 +89,7 @@ export default class SwarmProfileWriter {
     await writer.upload(reference, {
       batchId,
       headers: {
-        "x-etherna-reason": "profile-feed-update",
+        // "x-etherna-reason": "profile-feed-update",
       },
     })
 

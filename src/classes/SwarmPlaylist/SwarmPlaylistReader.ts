@@ -68,7 +68,7 @@ export default class SwarmPlaylistReader {
       this.reference = (
         await reader.download({
           headers: {
-            "x-etherna-reason": "playlist-feed",
+            // "x-etherna-reason": "playlist-feed",
           },
         })
       ).reference
@@ -76,7 +76,7 @@ export default class SwarmPlaylistReader {
 
     const playlistData = await this.beeClient.bzz.download(this.reference, {
       headers: {
-        "x-etherna-reason": "playlist",
+        // "x-etherna-reason": "playlist",
       },
     })
     const rawPlaylist = playlistData.data.json() as SwarmPlaylistRaw

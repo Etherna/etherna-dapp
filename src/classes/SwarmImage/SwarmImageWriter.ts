@@ -101,7 +101,7 @@ export default class SwarmImageWriter {
         signal: options?.signal,
         contentType: this.file.type,
         headers: {
-          "x-etherna-reason": `image-source-${size}-upload`,
+          // "x-etherna-reason": `image-source-${size}-upload`,
         },
       })
       results.push(result.reference)

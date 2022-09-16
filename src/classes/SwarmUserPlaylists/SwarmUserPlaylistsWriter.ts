@@ -44,7 +44,7 @@ export default class SwarmUserPlaylistsWriter {
       batchId,
       headers: {
         "content-type": "application/json",
-        "x-etherna-reason": "user-playlists-upload",
+        // "x-etherna-reason": "user-playlists-upload",
       },
     })
 
@@ -57,7 +57,7 @@ export default class SwarmUserPlaylistsWriter {
     await writer.upload(reference, {
       batchId,
       headers: {
-        "x-etherna-reason": "user-playlists-feed-update",
+        // "x-etherna-reason": "user-playlists-feed-update",
       },
     })
   }

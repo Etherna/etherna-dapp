@@ -150,7 +150,7 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
         batchId,
         headers: {
           "content-type": "application/json",
-          "x-etherna-reason": "video-meta-upload",
+          // "x-etherna-reason": "video-meta-upload",
         },
       })
     ).reference
@@ -226,7 +226,7 @@ export default class SwarmVideoWriter extends SwarmBatchesManager {
           }
         },
         headers: {
-          "x-etherna-reason": "video-source-upload",
+          // "x-etherna-reason": "video-source-upload",
         },
       })
     ).reference

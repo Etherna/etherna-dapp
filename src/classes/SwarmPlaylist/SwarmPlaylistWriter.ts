@@ -68,7 +68,7 @@ export default class SwarmImageWriter {
         await this.beeClient.bzz.upload(encryptedData.toString(), {
           batchId,
           headers: {
-            "x-etherna-reason": "swarm-playlist-encrypted-data-upload",
+            // "x-etherna-reason": "swarm-playlist-encrypted-data-upload",
           },
         })
       ).reference
@@ -81,7 +81,7 @@ export default class SwarmImageWriter {
       batchId,
       headers: {
         "content-type": "application/json",
-        "x-etherna-reason": "swarm-playlist-upload",
+        // "x-etherna-reason": "swarm-playlist-upload",
       },
     })
 
@@ -97,13 +97,13 @@ export default class SwarmImageWriter {
       await writer.upload(reference, {
         batchId,
         headers: {
-          "x-etherna-reason": "swarm-playlist-feed-upload",
+          // "x-etherna-reason": "swarm-playlist-feed-upload",
         },
       })
       const feedManifest = await this.beeClient.feed.createRootManifest(feed, {
         batchId,
         headers: {
-          "x-etherna-reason": "swarm-playlist-feed-root-manifest",
+          // "x-etherna-reason": "swarm-playlist-feed-root-manifest",
         },
       })
       reference = feedManifest
