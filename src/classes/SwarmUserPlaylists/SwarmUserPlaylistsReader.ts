@@ -123,12 +123,12 @@ export default class SwarmUserPlaylistsReader {
       const reader = this.beeClient.feed.makeReader(feed)
       const { reference } = await reader.download({
         headers: {
-          "x-etherna-reason": "users-playlists-feed",
+          // "x-etherna-reason": "users-playlists-feed",
         },
       })
       const data = await this.beeClient.bzz.download(reference, {
         headers: {
-          "x-etherna-reason": "users-playlists",
+          // "x-etherna-reason": "users-playlists",
         },
       })
       const usersPlaylists = data.data.json() as SwarmUserPlaylistsRaw

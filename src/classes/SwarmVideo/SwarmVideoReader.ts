@@ -243,7 +243,7 @@ export default class SwarmVideoReader {
     try {
       const resp = await this.beeClient.bzz.download(this.reference, {
         headers: {
-          "x-etherna-reason": "video-meta",
+          // "x-etherna-reason": "video-meta",
         },
       })
       const meta = resp.data.json() as SwarmVideoRaw
