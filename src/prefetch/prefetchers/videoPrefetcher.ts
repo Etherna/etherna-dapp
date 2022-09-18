@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import SwarmVideoIO from "@/classes/SwarmVideo"
+import SwarmVideo from "@/classes/SwarmVideo"
 import type { Video } from "@/definitions/swarm-video"
 import { store } from "@/state/store"
 
@@ -28,7 +28,7 @@ const fetch = async () => {
     const reference = searchParams.get("v")!
 
     try {
-      const swarmVideoReader = new SwarmVideoIO.Reader(reference, undefined, {
+      const swarmVideoReader = new SwarmVideo.Reader(reference, undefined, {
         beeClient,
         indexClient,
         fetchProfile: true,

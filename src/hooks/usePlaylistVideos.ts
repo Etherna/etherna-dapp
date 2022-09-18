@@ -15,14 +15,11 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import type { Playlist, Profile, Video } from "@etherna/api-js"
 
 import BeeClient from "@/classes/BeeClient"
-import type { EthAddress } from "@/classes/BeeClient/types"
-import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
-import SwarmVideoIO from "@/classes/SwarmVideo"
-import type { SwarmPlaylist } from "@/definitions/swarm-playlist"
-import type { Profile } from "@/definitions/swarm-profile"
-import type { Video } from "@/definitions/swarm-video"
+import SwarmPlaylist from "@/classes/SwarmPlaylist"
+import SwarmVideo from "@/classes/SwarmVideo"
 import { useErrorMessage } from "@/state/hooks/ui"
 import useSelector from "@/state/useSelector"
 import { getResponseErrorMessage } from "@/utils/request"
@@ -33,12 +30,12 @@ type PlaylistVideosOptions = {
 }
 
 export default function usePlaylistVideos(
-  playlistReference: SwarmPlaylist | string | undefined,
+  playlistReference: Playlist | string | undefined,
   opts: PlaylistVideosOptions = { limit: -1 }
 ) {
   const beeClient = useSelector(state => state.env.beeClient)
   const indexClient = useSelector(state => state.env.indexClient)
-  const [playlist, setPlaylist] = useState<SwarmPlaylist | undefined>(
+  const [playlist, setPlaylist] = useState<Playlist | undefined>(
     typeof playlistReference === "string" ? undefined : playlistReference
   )
   const [videos, setVideos] = useState<Video[]>()
@@ -80,10 +77,10 @@ export default function usePlaylistVideos(
     const id = isReference ? undefined : playlistReference
 
     try {
-      const reader = new SwarmPlaylistIO.Reader(reference, undefined, {
+      const reader = new SwarmPlaylist.Reader(reference, {
         beeClient,
-        id,
-        owner: opts.owner?.address,
+        playlistId: id,
+        playlistOwner: opts.owner?.address,
       })
 
       const playlist = await reader.download()
@@ -111,11 +108,9 @@ export default function usePlaylistVideos(
         const references = playlist.videos.slice(from, to)
         const newVideos = await Promise.all(
           references.map(video => {
-            const reader = new SwarmVideoIO.Reader(video.reference, playlist.owner as EthAddress, {
+            const reader = new SwarmVideo.Reader(video.reference, {
               beeClient,
               indexClient,
-              fetchProfile: !opts.owner,
-              profileData: opts.owner ?? undefined,
             })
             return reader.download()
           })
@@ -131,7 +126,7 @@ export default function usePlaylistVideos(
         setIsFetching(false)
       }
     },
-    [beeClient, indexClient, opts.owner, playlist, showError]
+    [beeClient, indexClient, playlist, showError]
   )
 
   const fetchPage = useCallback(

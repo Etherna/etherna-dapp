@@ -15,9 +15,9 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
+import type { Video } from "@etherna/api-js"
 
-import SwarmVideoIO from "@/classes/SwarmVideo"
-import type { Video } from "@/definitions/swarm-video"
+import SwarmVideo from "@/classes/SwarmVideo"
 import useSelector from "@/state/useSelector"
 
 type SwarmVideoOptions = {
@@ -45,22 +45,25 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
   const loadVideo = useCallback(async (): Promise<void> => {
     setIsloading(true)
 
-    const videoReader = new SwarmVideoIO.Reader(reference, undefined, {
-      beeClient,
-      indexClient,
-      fetchProfile: opts.fetchProfile,
-      fetchFromCache: opts.fetchFromCache,
-    })
-    const video = await videoReader.download()
+    try {
+      const videoReader = new SwarmVideo.Reader(reference, {
+        beeClient,
+        indexClient,
+      })
+      const video = await videoReader.download()
 
-    if (video.indexReference && !video.isVideoOnIndex) {
-      setNotFound(true)
-    } else {
+      if (!video) {
+        throw new Error("Video not found")
+      }
+
       setVideo(video)
+    } catch (error) {
+      console.error(error)
+      setNotFound(true)
+    } finally {
+      setIsloading(false)
     }
-
-    setIsloading(false)
-  }, [beeClient, indexClient, opts.fetchProfile, opts.fetchFromCache, reference])
+  }, [beeClient, indexClient, reference])
 
   return {
     video,

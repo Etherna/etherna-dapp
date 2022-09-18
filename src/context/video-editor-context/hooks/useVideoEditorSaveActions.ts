@@ -19,7 +19,7 @@ import type { AxiosError } from "axios"
 
 import VideoEditorCache from "../VideoEditorCache"
 import useVideoEditorState from "./useVideoEditorState"
-import EthernaIndexClient from "@/classes/EthernaIndexClient"
+import IndexClient from "@/classes/IndexClient"
 import SwarmResourcesIO from "@/classes/SwarmResources"
 import type { Profile } from "@/definitions/swarm-profile"
 import type { PublishSource, PublishSourceSave } from "@/definitions/video-editor-context"
@@ -236,7 +236,7 @@ export default function useVideoEditorSaveActions() {
     try {
       const indexReference = getVideoIndexId(url)
 
-      const indexClient = new EthernaIndexClient({
+      const indexClient = new IndexClient({
         host: url,
       })
       if (indexReference) {
@@ -261,7 +261,7 @@ export default function useVideoEditorSaveActions() {
     if (!indexReference) return true
 
     try {
-      const indexClient = new EthernaIndexClient({
+      const indexClient = new IndexClient({
         host: url,
       })
       await indexClient.videos.deleteVideo(indexReference)

@@ -20,7 +20,7 @@ import classNames from "classnames"
 
 import Image from "@/components/common/Image"
 import type { SwarmImage } from "@/definitions/swarm-image"
-import makeBlockies from "@/utils/makeBlockies"
+import makeBlockies from "@/utils/make-blockies"
 
 export type AvatarProps = {
   image?: string | SwarmImage | null

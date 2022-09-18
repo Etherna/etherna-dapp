@@ -15,16 +15,15 @@
  */
 
 import { useCallback, useState } from "react"
+import type { Profile } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
 
-import type { EthAddress } from "@/classes/BeeClient/types"
-import SwarmProfileIO from "@/classes/SwarmProfile"
-import type { Profile } from "@/definitions/swarm-profile"
+import SwarmProfile from "@/classes/SwarmProfile"
 import useSelector from "@/state/useSelector"
 import { wait } from "@/utils/promise"
 
 type SwarmProfileOptions = {
   address: EthAddress
-  fetchFromCache?: boolean
 }
 
 export default function useSwarmProfile(opts: SwarmProfileOptions) {
@@ -36,15 +35,14 @@ export default function useSwarmProfile(opts: SwarmProfileOptions) {
   const loadProfile = useCallback(async () => {
     setIsloading(true)
 
-    const profileReader = new SwarmProfileIO.Reader(opts.address, {
+    const profileReader = new SwarmProfile.Reader(opts.address, {
       beeClient,
-      fetchFromCache: opts.fetchFromCache,
     })
 
-    let profile = SwarmProfileIO.getDefaultProfile(opts.address)
+    let profile: Profile = profileReader.emptyProfile()
 
     try {
-      const profileInfo = await profileReader.download(true)
+      const profileInfo = await profileReader.download()
       import.meta.env.DEV && (await wait(1000))
 
       if (profileInfo) {
@@ -58,22 +56,25 @@ export default function useSwarmProfile(opts: SwarmProfileOptions) {
     setIsloading(false)
 
     return profile
-  }, [beeClient, opts.address, opts.fetchFromCache])
+  }, [beeClient, opts.address])
 
   const updateProfile = useCallback(
     async (profile: Profile) => {
       setIsloading(true)
 
-      const profileWriter = new SwarmProfileIO.Writer(opts.address, { beeClient })
-
       // save profile data on swarm
-      const newReference = await profileWriter.update(profile)
-
-      setIsloading(false)
-
-      return newReference
+      try {
+        const profileWriter = new SwarmProfile.Writer(profile, { beeClient })
+        const newReference = await profileWriter.upload()
+        return newReference
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setIsloading(false)
+      }
+      return null
     },
-    [beeClient, opts.address]
+    [beeClient]
   )
 
   return {

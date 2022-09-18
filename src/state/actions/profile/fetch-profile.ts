@@ -15,7 +15,7 @@
  */
 
 import type { EthAddress } from "@/classes/BeeClient/types"
-import SwarmProfileIO from "@/classes/SwarmProfile"
+import SwarmProfile from "@/classes/SwarmProfile"
 import { ProfileActionTypes } from "@/state/reducers/profileReducer"
 import { UIActionTypes } from "@/state/reducers/uiReducer"
 import { store } from "@/state/store"
@@ -34,7 +34,7 @@ const fetchProfile = async (hash: string, address: EthAddress) => {
 
   try {
     const { beeClient } = store.getState().env
-    const profileReader = new SwarmProfileIO.Reader(address, { beeClient })
+    const profileReader = new SwarmProfile.Reader(address, { beeClient })
     const profile = await profileReader.download()
 
     if (!profile) throw new Error("Cannot fetch profile")

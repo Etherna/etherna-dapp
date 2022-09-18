@@ -21,7 +21,7 @@ import type { Dispatch } from "redux"
 
 import BeeClient from "@/classes/BeeClient"
 import type { BatchId, EthAddress } from "@/classes/BeeClient/types"
-import SwarmProfileIO from "@/classes/SwarmProfile"
+import SwarmProfile from "@/classes/SwarmProfile"
 import type { AuthIdentity } from "@/definitions/api-sso"
 import loginRedirect from "@/state/actions/user/login-redirect"
 import type { EnvActions } from "@/state/reducers/enviromentReducer"
@@ -197,7 +197,7 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
     }
 
     try {
-      const profileReader = new SwarmProfileIO.Reader(address, { beeClient })
+      const profileReader = new SwarmProfile.Reader(address, { beeClient })
       const profile = await profileReader.download()
 
       if (!profile) throw new Error("Cannot fetch profile")

@@ -30,8 +30,8 @@ import { TrashIcon } from "@heroicons/react/24/outline"
 
 import WalletState from "../other/WalletState"
 import type { EthAddress } from "@/classes/BeeClient/types"
-import SwarmImageIO from "@/classes/SwarmImage"
-import SwarmProfileIO from "@/classes/SwarmProfile"
+import SwarmImage from "@/classes/SwarmImage"
+import SwarmProfile from "@/classes/SwarmProfile"
 import MarkdownEditor from "@/components/common/MarkdownEditor"
 import { Button } from "@/components/ui/actions"
 import { TextInput } from "@/components/ui/inputs"
@@ -42,7 +42,7 @@ import { useWallet } from "@/state/hooks/env"
 import { useProfileUpdate } from "@/state/hooks/profile"
 import { useErrorMessage, useImageCrop } from "@/state/hooks/ui"
 import useSelector from "@/state/useSelector"
-import makeBlockies from "@/utils/makeBlockies"
+import makeBlockies from "@/utils/make-blockies"
 import { isAnimatedImage } from "@/utils/media"
 
 type ImageType = "avatar" | "cover"
@@ -101,13 +101,13 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
           setLoading: setUploadingAvatar,
           updateImage: setProfileAvatar,
           setPreview: setAvatarPreview,
-          responsiveSizes: SwarmProfileIO.Reader.avatarResponsiveSizes,
+          responsiveSizes: SwarmProfile.Reader.avatarResponsiveSizes,
         },
         cover: {
           setLoading: setUploadingCover,
           updateImage: setProfileCover,
           setPreview: setCoverPreview,
-          responsiveSizes: SwarmProfileIO.Reader.coverResponsiveSizes,
+          responsiveSizes: SwarmProfile.Reader.coverResponsiveSizes,
         },
       }
     }, [])
@@ -176,14 +176,14 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
         imagesUtils[type].setLoading(true)
 
         try {
-          const imageWriter = new SwarmImageIO.Writer(file, {
+          const imageWriter = new SwarmImage.Writer(file, {
             beeClient,
             isResponsive: true,
             responsiveSizes: imagesUtils[type].responsiveSizes,
           })
           imagesUtils[type].setPreview(await imageWriter.getFilePreview())
           const rawImage = await imageWriter.upload()
-          const imageReader = new SwarmImageIO.Reader(rawImage, { beeClient })
+          const imageReader = new SwarmImage.Reader(rawImage, { beeClient })
           imagesUtils[type].setPreview(undefined)
 
           imagesUtils[type].updateImage(imageReader.image)
@@ -234,7 +234,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
 
     const swarmImageUrl = useCallback(
       (image: SwarmImageRaw | null | undefined) => {
-        const reference = SwarmImageIO.Reader.getOriginalSourceReference(image)
+        const reference = SwarmImage.Reader.getOriginalSourceReference(image)
         return reference ? beeClient.bzz.url(reference) : undefined
       },
       [beeClient]

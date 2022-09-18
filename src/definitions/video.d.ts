@@ -12,36 +12,17 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
  */
 
-import type { AuthIdentity } from "@/definitions/api-sso"
-import http from "@/utils/request"
+import type { Profile, Video } from "@etherna/api-js"
 
-export default class EthernaSSOIdentityClient {
-  url: string
+export type VideoWithOwner = Video & { owner: Profile | undefined }
 
-  /**
-   * Init an sso identity client
-   * @param url Api host + api url
-   */
-  constructor(url: string) {
-    this.url = url
-  }
+export type VideoWithIndexes = Video & { indexesStatus: IndexesStatus }
 
-  /**
-   * Get current SSO user
-   */
-  async fetchCurrentIdentity() {
-    const endpoint = `${this.url}/identity`
-
-    const resp = await http.get<AuthIdentity>(endpoint, {
-      withCredentials: true,
-    })
-
-    if (typeof resp.data !== "object") {
-      throw new Error("Cannot fetch identity")
-    }
-
-    return resp.data
+export type IndexesStatus = {
+  [url: string]: {
+    indexReference: string
   }
 }

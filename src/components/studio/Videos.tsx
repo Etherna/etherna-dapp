@@ -26,7 +26,7 @@ import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
 
 import TableVideoPlaceholder from "../placeholders/TableVideoPlaceholder"
 import VideoDeleteModal from "./video-editor/VideoDeleteModal"
-import SwarmVideoIO from "@/classes/SwarmVideo"
+import SwarmVideo from "@/classes/SwarmVideo"
 import Image from "@/components/common/Image"
 import VideoOffersModal from "@/components/modals/VideoOffersModal"
 import { Button } from "@/components/ui/actions"
@@ -273,7 +273,7 @@ const Videos: React.FC = () => {
             width: "1%",
             render: item => (
               <div className="flex items-center">
-                {(!item.v || +item.v < +SwarmVideoIO.lastVersion || !item.batchId) && (
+                {(!item.v || +item.v < +SwarmVideo.lastVersion || !item.batchId) && (
                   <Tooltip text="Migration required">
                     <div>
                       <Badge color="warning" rounded>

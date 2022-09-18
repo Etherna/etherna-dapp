@@ -23,9 +23,9 @@ import type { Keymap, KeymapNamespace } from "./keyboard"
 import type { SwarmImage } from "./swarm-image"
 import type BeeClient from "@/classes/BeeClient"
 import type { BatchId, EthAddress } from "@/classes/BeeClient/types"
-import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
-import type EthernaIndexClient from "@/classes/EthernaIndexClient"
-import type EthernaSSOClient from "@/classes/EthernaSSOClient"
+import type GatewayClient from "@/classes/GatewayClient"
+import type IndexClient from "@/classes/IndexClient"
+import type SSOClient from "@/classes/SSOClient"
 import type BeeClient from "@/classes/BeeClient"
 
 export type AppState = {
@@ -40,9 +40,9 @@ export type EnvState = {
   gatewayUrl: string
   gatewayType: GatewayType
   creditUrl: string
-  indexClient: EthernaIndexClient
-  gatewayClient: EthernaGatewayClient
-  authClient: EthernaSSOClient
+  indexClient: IndexClient
+  gatewayClient: GatewayClient
+  authClient: SSOClient
   beeClient: BeeClient
   bytePrice?: number
   isStandaloneGateway?: boolean

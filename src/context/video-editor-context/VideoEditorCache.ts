@@ -17,8 +17,8 @@
 import type { VideoEditorContextState } from "."
 import { getAllSources } from "."
 import type BeeClient from "@/classes/BeeClient"
-import type EthernaGatewayClient from "@/classes/EthernaGatewayClient"
-import SwarmVideoIO from "@/classes/SwarmVideo"
+import type GatewayClient from "@/classes/GatewayClient"
+import SwarmVideo from "@/classes/SwarmVideo"
 import type { GatewayType } from "@/definitions/extension-host"
 import type { SwarmVideoRaw } from "@/definitions/swarm-video"
 
@@ -65,11 +65,7 @@ export default class VideoEditorCache {
     return true
   }
 
-  static loadState(
-    beeClient: BeeClient,
-    gatewayClient: EthernaGatewayClient,
-    gatewayType: GatewayType
-  ) {
+  static loadState(beeClient: BeeClient, gatewayClient: GatewayClient, gatewayType: GatewayType) {
     const value = window.localStorage.getItem(STORAGE_KEY)!
     const {
       reference,
@@ -81,7 +77,7 @@ export default class VideoEditorCache {
       offerResources,
       saveTo,
     } = JSON.parse(value) as CacheState
-    const videoWriter = new SwarmVideoIO.Writer(undefined, ownerAddress, {
+    const videoWriter = new SwarmVideo.Writer(undefined, ownerAddress, {
       beeClient,
       gatewayClient,
       gatewayType,

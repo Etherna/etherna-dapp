@@ -15,11 +15,12 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import type { Video } from "@etherna/api-js"
+import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 
 import useMounted from "./useMounted"
+import type { VideoOffersStatus } from "./useVideoOffers"
 import { parseReaderStatus } from "./useVideoOffers"
-import SwarmResourcesIO from "@/classes/SwarmResources"
-import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 import useSelector from "@/state/useSelector"
 
 export default function useVideosResources(videos: Video[] | undefined) {
@@ -50,17 +51,17 @@ export default function useVideosResources(videos: Video[] | undefined) {
 
       videosQueue.current = [...videosQueue.current, ...videosToFetch.map(video => video.reference)]
 
-      const readers = videosToFetch.map(
-        video => new SwarmResourcesIO.Reader(video, { gatewayClient })
+      const handlers = videosToFetch.map(
+        video => new EthernaResourcesHandler(video, { gatewayClient })
       )
-      await Promise.allSettled(readers.map(reader => reader.download()))
+      await Promise.allSettled(handlers.map(handler => handler.fetchOffers()))
 
       const statuses: Record<string, VideoOffersStatus> = {
         ...videosOffersStatus,
       }
 
-      for (const reader of readers) {
-        statuses[reader.video.reference] = parseReaderStatus(reader, address)
+      for (const handler of handlers) {
+        statuses[handler.video.reference] = parseReaderStatus(handler, address)
       }
 
       videosQueue.current = []
@@ -72,12 +73,11 @@ export default function useVideosResources(videos: Video[] | undefined) {
 
   const offerVideoResources = useCallback(
     async (video: Video) => {
-      const writer = new SwarmResourcesIO.Writer(video, { gatewayClient })
-      await writer.offerResources()
-      const reader = new SwarmResourcesIO.Reader(video, { gatewayClient })
-      await reader.download()
+      const handler = new EthernaResourcesHandler(video, { gatewayClient })
+      await handler.offerResources()
+      await handler.fetchOffers()
       const statuses = { ...videosOffersStatus }
-      statuses[reader.video.reference] = parseReaderStatus(reader, address)
+      statuses[handler.video.reference] = parseReaderStatus(handler, address)
       setVideosOffersStatus(statuses)
     },
     [videosOffersStatus, address, gatewayClient]
@@ -85,12 +85,11 @@ export default function useVideosResources(videos: Video[] | undefined) {
 
   const unofferVideoResources = useCallback(
     async (video: Video) => {
-      const writer = new SwarmResourcesIO.Writer(video, { gatewayClient })
-      await writer.unofferResources()
-      const reader = new SwarmResourcesIO.Reader(video, { gatewayClient })
-      await reader.download()
+      const handler = new EthernaResourcesHandler(video, { gatewayClient })
+      await handler.unofferResources()
+      await handler.fetchOffers()
       const statuses = { ...videosOffersStatus }
-      statuses[reader.video.reference] = parseReaderStatus(reader, address)
+      statuses[handler.video.reference] = parseReaderStatus(handler, address)
       setVideosOffersStatus(statuses)
     },
     [videosOffersStatus, address, gatewayClient]

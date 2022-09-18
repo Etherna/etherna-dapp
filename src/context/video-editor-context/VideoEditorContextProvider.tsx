@@ -20,8 +20,8 @@ import React, { useReducer } from "react"
 import { getAllSources, getDefaultAddTo, VideoEditorContext } from "."
 import VideoEditorCache from "./VideoEditorCache"
 import videoEditorReducer from "./reducer"
-import SwarmImageIO from "@/classes/SwarmImage"
-import SwarmVideoIO from "@/classes/SwarmVideo"
+import SwarmImage from "@/classes/SwarmImage"
+import SwarmVideo from "@/classes/SwarmVideo"
 import { THUMBNAIL_QUEUE_NAME } from "@/components/studio/video-editor/ThumbnailUpload"
 import type { Video } from "@/definitions/swarm-video"
 import type { VideoEditorQueue } from "@/definitions/video-editor-context"
@@ -51,7 +51,7 @@ const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
   }
 
   if (!initialState) {
-    const videoWriter = new SwarmVideoIO.Writer(videoData, address!, {
+    const videoWriter = new SwarmVideo.Writer(videoData, address!, {
       beeClient,
       gatewayClient,
       gatewayType,
@@ -68,14 +68,14 @@ const VideoEditorContextProvider: React.FC<VideoEditorContextProviderProps> = ({
             ({
               reference: source.reference,
               completion: 100,
-              name: SwarmVideoIO.getSourceName(source.quality),
+              name: SwarmVideo.getSourceName(source.quality),
             } as VideoEditorQueue)
         )
         .concat(
           videoWriter.thumbnail
             ? [
                 {
-                  reference: SwarmImageIO.Reader.getOriginalSourceReference(videoWriter.thumbnail),
+                  reference: SwarmImage.Reader.getOriginalSourceReference(videoWriter.thumbnail),
                   completion: 100,
                   name: THUMBNAIL_QUEUE_NAME,
                 },

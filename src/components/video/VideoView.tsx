@@ -19,7 +19,7 @@ import React, { useEffect, useMemo, useCallback } from "react"
 
 import { Container } from "../ui/layout"
 import VideoJsonLd from "./VideoJsonLd"
-import SwarmImageIO from "@/classes/SwarmImage"
+import SwarmImage from "@/classes/SwarmImage"
 import NotFound from "@/components/common/NotFound"
 import SEO from "@/components/layout/SEO"
 import Player from "@/components/player/Player"
@@ -50,7 +50,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
   const { showError } = useErrorMessage()
 
   const posterUrl = useMemo(() => {
-    const thumbReference = SwarmImageIO.Reader.getOriginalSourceReference(video?.thumbnail)
+    const thumbReference = SwarmImage.Reader.getOriginalSourceReference(video?.thumbnail)
     if (thumbReference) {
       return beeClient.bzz.url(thumbReference)
     }

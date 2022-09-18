@@ -21,7 +21,7 @@ import classNames from "classnames"
 
 import { PlusIcon } from "@heroicons/react/24/solid"
 
-import SwarmVideoIO from "@/classes/SwarmVideo"
+import SwarmVideo from "@/classes/SwarmVideo"
 import type { FileUploadFlowHandlers } from "@/components/media/FileUploadFlow"
 import FileUploadFlow from "@/components/media/FileUploadFlow"
 import FileUploadProgress from "@/components/media/FileUploadProgress"
@@ -125,7 +125,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
     const uploadSource = useCallback(
       async (buffer: ArrayBuffer, index: number) => {
         const source = sources[index]
-        const queueName = SwarmVideoIO.getSourceName(source.quality)
+        const queueName = SwarmVideo.getSourceName(source.quality)
 
         const reference = await videoWriter.addVideoSource(buffer, source.contentType!, {
           signal: sources[index].abortController.signal,
@@ -140,9 +140,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
         // Sort sources
         setSources(sources => {
           const sortedSources = sources.sort((a, b) => {
-            return (
-              SwarmVideoIO.getSourceQuality(b.quality) - SwarmVideoIO.getSourceQuality(a.quality)
-            )
+            return SwarmVideo.getSourceQuality(b.quality) - SwarmVideo.getSourceQuality(a.quality)
           })
           return [...sortedSources]
         })
@@ -155,7 +153,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
     const removeSource = useCallback(
       async (index: number) => {
         try {
-          const queueName = SwarmVideoIO.getSourceName(sources[index].quality)
+          const queueName = SwarmVideo.getSourceName(sources[index].quality)
 
           await videoWriter.removeVideoSource(sources[index].quality!)
 
@@ -181,11 +179,11 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
           quality = await getVideoResolution(file)
         }
 
-        const queueName = SwarmVideoIO.getSourceName(quality)
+        const queueName = SwarmVideo.getSourceName(quality)
         const sourceQueue = queue.find(q => q.name === queueName)
         const hasQuality =
           typeof sourceQueue?.completion === "number" && sourceQueue.completion >= 0
-        const currentOriginalQuality = SwarmVideoIO.getSourceQuality(
+        const currentOriginalQuality = SwarmVideo.getSourceQuality(
           videoWriter.videoRaw.originalQuality
         )
 
@@ -202,7 +200,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
 
         if (isNaN(currentOriginalQuality) || quality > currentOriginalQuality) {
           updateVideoDuration(duration)
-          updateOriginalQuality(SwarmVideoIO.getSourceName(quality))
+          updateOriginalQuality(SwarmVideo.getSourceName(quality))
         }
 
         const newSources = [...sources]
@@ -237,7 +235,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
         }
 
         const quality = await getVideoResolution(file)
-        const queueName = SwarmVideoIO.getSourceName(quality)
+        const queueName = SwarmVideo.getSourceName(quality)
         const sourceQueue = queue.find(q => q.name === queueName)
         const hasQuality =
           typeof sourceQueue?.completion === "number" && sourceQueue.completion >= 0
@@ -266,7 +264,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
 
         setSources(newSources)
 
-        const sourceName = SwarmVideoIO.getSourceName(quality)
+        const sourceName = SwarmVideo.getSourceName(quality)
         removeFromQueue(sourceName)
       },
       [removeFromQueue, sources]
@@ -290,7 +288,7 @@ const VideoSourcesUpload = React.forwardRef<VideoSourcesUploadHandlers, VideoSou
     return (
       <div className="space-y-3">
         {sources.map((source, i) => {
-          const queueName = SwarmVideoIO.getSourceName(source.quality)
+          const queueName = SwarmVideo.getSourceName(source.quality)
           const thisQueue = queue.find(q => q.name === queueName)
           const finished = !!thisQueue?.reference
           const videoSource = videoWriter.sources.find(source => source.quality === queueName)

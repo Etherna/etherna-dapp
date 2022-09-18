@@ -15,9 +15,9 @@
  */
 
 import type { EthAddress } from "@/classes/BeeClient/types"
-import SwarmProfileIO from "@/classes/SwarmProfile"
-import SwarmUserPlaylistsIO from "@/classes/SwarmUserPlaylists"
-import SwarmVideoIO from "@/classes/SwarmVideo"
+import SwarmProfile from "@/classes/SwarmProfile"
+import SwarmUserPlaylists from "@/classes/SwarmUserPlaylists"
+import SwarmVideo from "@/classes/SwarmVideo"
 import type { Profile } from "@/definitions/swarm-profile"
 import type { Video } from "@/definitions/swarm-video"
 import { store } from "@/state/store"
@@ -33,10 +33,10 @@ const fetch = async () => {
     const address = matches[1] as EthAddress
 
     // Fetch user's playlists & profile
-    const playlistsReader = new SwarmUserPlaylistsIO.Reader(address, {
+    const playlistsReader = new SwarmUserPlaylists.Reader(address, {
       beeClient,
     })
-    const swarmProfileReader = new SwarmProfileIO.Reader(address, { beeClient })
+    const swarmProfileReader = new SwarmProfile.Reader(address, { beeClient })
 
     const [profilePromise] = await Promise.allSettled([
       swarmProfileReader.download(true),
@@ -57,7 +57,7 @@ const fetch = async () => {
     const references = playlistsReader.channelPlaylist?.videos?.slice(0, 50) ?? []
     const videosPromises = await Promise.allSettled(
       references.map(video => {
-        const reader = new SwarmVideoIO.Reader(video.reference, address, {
+        const reader = new SwarmVideo.Reader(video.reference, address, {
           beeClient,
           indexClient,
           fetchProfile: false,

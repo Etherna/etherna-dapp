@@ -26,7 +26,7 @@ import type { Profile } from "@/definitions/swarm-profile"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
 import useErrorMessage from "@/state/hooks/ui/useErrorMessage"
 import { shortenEthAddr } from "@/utils/ethereum"
-import makeBlockies from "@/utils/makeBlockies"
+import makeBlockies from "@/utils/make-blockies"
 import { getResponseErrorMessage } from "@/utils/request"
 
 type ProfileInfoProps = {

@@ -35,7 +35,7 @@ import {
 import VideoDetails from "./VideoDetails"
 import VideoExtra from "./VideoExtra"
 import VideoSources from "./VideoSources"
-import SwarmVideoIO from "@/classes/SwarmVideo"
+import SwarmVideo from "@/classes/SwarmVideo"
 import BatchLoading from "@/components/common/BatchLoading"
 import WalletState from "@/components/studio/other/WalletState"
 import { Button } from "@/components/ui/actions"
@@ -313,7 +313,7 @@ const VideoEditor = React.forwardRef<VideoEditorHandle, any>((_, ref) => {
                   title="Sources"
                   iconSvg={<FilmIcon />}
                   progressList={queue
-                    .filter(q => SwarmVideoIO.getSourceQuality(q.name) > 0)
+                    .filter(q => SwarmVideo.getSourceQuality(q.name) > 0)
                     .map(q => ({
                       progress: q.completion ? q.completion / 100 : null,
                       completed: !!q.reference,

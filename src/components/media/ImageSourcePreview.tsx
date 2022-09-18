@@ -17,7 +17,7 @@
 
 import React, { useMemo } from "react"
 
-import SwarmImageIO from "@/classes/SwarmImage"
+import SwarmImage from "@/classes/SwarmImage"
 import MediaStats from "@/components/media/MediaStats"
 import type { SwarmImageRaw } from "@/definitions/swarm-image"
 import useSelector from "@/state/useSelector"
@@ -30,7 +30,7 @@ const ImageSourcePreview: React.FC<ImageSourcePreviewProps> = ({ image }) => {
   const beeClient = useSelector(state => state.env.beeClient)
 
   const [reference, srcUrl] = useMemo(() => {
-    const reference = SwarmImageIO.Reader.getOriginalSourceReference(image)
+    const reference = SwarmImage.Reader.getOriginalSourceReference(image)
     const url = reference ? beeClient.bzz.url(reference) : undefined
     return [reference, url]
   }, [image, beeClient])

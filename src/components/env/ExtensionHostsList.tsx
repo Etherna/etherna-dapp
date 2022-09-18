@@ -26,8 +26,8 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/solid"
 
-import EthernaGatewayClient from "@/classes/EthernaGatewayClient"
-import EthernaIndexClient from "@/classes/EthernaIndexClient"
+import GatewayClient from "@/classes/GatewayClient"
+import IndexClient from "@/classes/IndexClient"
 import { Menu } from "@/components/ui/actions"
 import { Spinner, Tooltip } from "@/components/ui/display"
 import type { ExtensionType } from "@/definitions/app-state"
@@ -82,8 +82,8 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
 
       const client =
         type === "index"
-          ? new EthernaIndexClient({ host: host.url, abortController: controller })
-          : new EthernaGatewayClient({ host: host.url, abortController: controller })
+          ? new IndexClient({ host: host.url, abortController: controller })
+          : new GatewayClient({ host: host.url, abortController: controller })
 
       client.users
         .fetchCurrentUser()
@@ -123,8 +123,8 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
     (host: IndexExtensionHost | GatewayExtensionHost) => {
       const client =
         type === "index"
-          ? new EthernaIndexClient({ host: host.url })
-          : new EthernaGatewayClient({ host: host.url })
+          ? new IndexClient({ host: host.url })
+          : new GatewayClient({ host: host.url })
       client.loginRedirect(window.location.href)
     },
     [type]

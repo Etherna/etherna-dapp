@@ -14,8 +14,9 @@
  *  limitations under the License.
  */
 
+import { urlOrigin } from "@etherna/api-js/utils"
+
 import { parseLocalStorage } from "./local-storage"
-import { urlOrigin } from "./urls"
 import type { IndexExtensionHost } from "@/definitions/extension-host"
 
 /**

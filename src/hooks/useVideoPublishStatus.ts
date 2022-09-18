@@ -15,17 +15,18 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import type { EthAddress } from "@etherna/api-js/clients"
 
 import useMounted from "./useMounted"
-import EthernaIndexClient from "@/classes/EthernaIndexClient"
-import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
+import IndexClient from "@/classes/IndexClient"
+import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import useSelector from "@/state/useSelector"
 
 export type UseVideoPublishStatusOptions = {
   reference?: string | undefined
   indexesUrls: string[]
   playlistIds: string[]
-  ownerAddress: string
+  ownerAddress: EthAddress
 }
 
 type PublishStatus = {
@@ -76,10 +77,10 @@ export default function useVideoPublishStatus(opts: UseVideoPublishStatusOptions
     const videoPlaylistsStatus: Record<string, PublishStatus> = {}
 
     for (const playlistId of opts.playlistIds) {
-      const reader = new SwarmPlaylistIO.Reader(undefined, undefined, {
+      const reader = new SwarmPlaylist.Reader(undefined, {
         beeClient,
-        id: playlistId,
-        owner: opts.ownerAddress,
+        playlistId: playlistId,
+        playlistOwner: opts.ownerAddress,
       })
 
       const publishStatus: PublishStatus = {
@@ -113,8 +114,9 @@ export default function useVideoPublishStatus(opts: UseVideoPublishStatusOptions
     const videoIndexesStatus: Record<string, PublishStatus> = {}
 
     for (const indexUrl of opts.indexesUrls) {
-      const indexClient = new EthernaIndexClient({
-        host: indexUrl,
+      const indexClient = new IndexClient({
+        url: indexUrl,
+        apiPath: `/api/v${import.meta.env.VITE_APP_API_VERSION}`,
       })
 
       const publishStatus: PublishStatus = {

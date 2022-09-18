@@ -15,21 +15,28 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
+import type { Video, VideoRaw } from "@etherna/api-js"
+import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
+import { VideoDeserializer } from "@etherna/api-js/serializers"
 
-import SwarmResourcesIO from "@/classes/SwarmResources"
-import type SwarmResourcesReader from "@/classes/SwarmResources/SwarmResourcesReader"
-import SwarmVideoIO from "@/classes/SwarmVideo"
-import type { SwarmVideoRaw, Video, VideoOffersStatus } from "@/definitions/swarm-video"
 import useSelector from "@/state/useSelector"
 
-type UseVideoOffersOpts = {
+export type VideoOffersStatus = {
+  offersStatus: "full" | "partial" | "sources" | "none"
+  userOffersStatus: "full" | "partial" | "sources" | "none"
+  userOfferedResourses: string[]
+  userUnOfferedResourses: string[]
+  globalOffers: { reference: string; offeredBy: string[] }[]
+}
+
+interface UseVideoOffersOpts {
   routeState?: VideoOffersStatus
   disable?: boolean
   reference?: string
 }
 
 export default function useVideoOffers(
-  video: Video | SwarmVideoRaw | null | undefined,
+  video: Video | VideoRaw | null | undefined,
   opts?: UseVideoOffersOpts
 ) {
   const beeClient = useSelector(state => state.env.beeClient)
@@ -50,35 +57,35 @@ export default function useVideoOffers(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [video, opts])
 
-  const getParsedVideo = useCallback(() => {
+  const getParsedVideo = useCallback((): Video => {
     if (!video) {
       throw new Error("No video provided")
     }
 
-    const isFullVideo = "reference" in video
+    const isRawVideo = !("reference" in video)
 
-    if (!isFullVideo && !opts?.reference) {
+    if (isRawVideo && !opts?.reference) {
       throw new Error("Missing reference. Reference is required when using a raw video.")
     }
-    const parsedVideo = isFullVideo
-      ? video
-      : new SwarmVideoIO.Reader(opts!.reference!, address, {
-          beeClient,
-          videoData: video,
-        }).video
 
-    return parsedVideo
-  }, [address, beeClient, opts, video])
+    if (isRawVideo) {
+      return new VideoDeserializer(beeClient.url).deserialize(JSON.stringify(video), {
+        reference: opts!.reference!,
+      })
+    }
+
+    return video
+  }, [beeClient.url, opts, video])
 
   const fetchVideoStatus = useCallback(async () => {
     if (!video) return
 
     try {
-      const parsedVideos = getParsedVideo()
-      const reader = new SwarmResourcesIO.Reader(parsedVideos, { gatewayClient })
-      await reader.download()
+      const parsedVideo = getParsedVideo()
+      const resourcesHandler = new EthernaResourcesHandler(parsedVideo, { gatewayClient })
+      await resourcesHandler.fetchOffers()
 
-      setVideoOffersStatus(parseReaderStatus(reader, address))
+      setVideoOffersStatus(parseReaderStatus(resourcesHandler, address))
     } catch (error) {
       console.error(error)
     }
@@ -87,23 +94,21 @@ export default function useVideoOffers(
   const offerResources = useCallback(async () => {
     if (!video) throw new Error("Video not loaded")
 
-    const parsedVideos = getParsedVideo()
-    const writer = new SwarmResourcesIO.Writer(parsedVideos, { gatewayClient })
-    await writer.offerResources()
-    const reader = new SwarmResourcesIO.Reader(parsedVideos, { gatewayClient })
-    await reader.download()
-    setVideoOffersStatus(parseReaderStatus(reader, address))
+    const parsedVideo = getParsedVideo()
+    const resourcesHandler = new EthernaResourcesHandler(parsedVideo, { gatewayClient })
+    await resourcesHandler.offerResources()
+    await resourcesHandler.fetchOffers()
+    setVideoOffersStatus(parseReaderStatus(resourcesHandler, address))
   }, [video, getParsedVideo, gatewayClient, address])
 
   const unofferResources = useCallback(async () => {
     if (!video) throw new Error("Video not loaded")
 
-    const parsedVideos = getParsedVideo()
-    const writer = new SwarmResourcesIO.Writer(parsedVideos, { gatewayClient })
-    await writer.unofferResources()
-    const reader = new SwarmResourcesIO.Reader(parsedVideos, { gatewayClient })
-    await reader.download()
-    setVideoOffersStatus(parseReaderStatus(reader, address))
+    const parsedVideo = getParsedVideo()
+    const resourcesHandler = new EthernaResourcesHandler(parsedVideo, { gatewayClient })
+    await resourcesHandler.unofferResources()
+    await resourcesHandler.fetchOffers()
+    setVideoOffersStatus(parseReaderStatus(resourcesHandler, address))
   }, [video, getParsedVideo, gatewayClient, address])
 
   return {
@@ -114,36 +119,36 @@ export default function useVideoOffers(
 }
 
 export const parseReaderStatus = (
-  reader: SwarmResourcesReader,
+  handler: EthernaResourcesHandler,
   userAddress: string | undefined
 ): VideoOffersStatus => {
   return {
-    offersStatus: getStatus(reader),
-    userOffersStatus: getStatus(reader, userAddress),
-    globalOffers: reader.resourcesStatus ?? [],
+    offersStatus: getStatus(handler),
+    userOffersStatus: getStatus(handler, userAddress),
+    globalOffers: handler.resourcesStatus ?? [],
     userOfferedResourses: userAddress
-      ? (reader.resourcesStatus?.map(status => status.reference) ?? []).filter(reference =>
-          reader.getReferenceStatus(reference)?.offeredBy.includes(userAddress)
+      ? (handler.resourcesStatus?.map(status => status.reference) ?? []).filter(reference =>
+          handler.getReferenceStatus(reference)?.offeredBy.includes(userAddress)
         )
       : [],
     userUnOfferedResourses: userAddress
-      ? (reader.resourcesStatus?.map(status => status.reference) ?? []).filter(
-          reference => !reader.getReferenceStatus(reference)?.offeredBy.includes(userAddress)
+      ? (handler.resourcesStatus?.map(status => status.reference) ?? []).filter(
+          reference => !handler.getReferenceStatus(reference)?.offeredBy.includes(userAddress)
         )
       : [],
   }
 }
 
-function getStatus(reader: SwarmResourcesReader, byAddress?: string) {
-  const resourcesStatus = (reader.resourcesStatus ?? []).filter(
+function getStatus(handler: EthernaResourcesHandler, byAddress?: string) {
+  const resourcesStatus = (handler.resourcesStatus ?? []).filter(
     r => !byAddress || r.offeredBy.includes(byAddress)
   )
   const resourcesCount = resourcesStatus.length
   const offeredResourcesCount = resourcesStatus.filter(status => status.isOffered).length
   const allSourcesOffered =
-    reader.video.sources.length > 0 &&
-    reader.video.sources
-      .map(source => reader.getReferenceStatus(source.reference))
+    handler.video.sources.length > 0 &&
+    handler.video.sources
+      .map(source => handler.getReferenceStatus(source.reference))
       .every(status => status?.isOffered && (!byAddress || status.offeredBy.includes(byAddress)))
   const fullyOffered = offeredResourcesCount === resourcesCount
 

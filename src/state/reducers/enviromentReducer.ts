@@ -16,9 +16,9 @@
 
 import BeeClient from "@/classes/BeeClient"
 import type { PostageBatch } from "@/classes/BeeClient/types"
-import EthernaGatewayClient from "@/classes/EthernaGatewayClient"
-import EthernaIndexClient from "@/classes/EthernaIndexClient"
-import EthernaSSOClient from "@/classes/EthernaSSOClient"
+import GatewayClient from "@/classes/GatewayClient"
+import IndexClient from "@/classes/IndexClient"
+import SSOClient from "@/classes/SSOClient"
 import type { GatewayBatch } from "@/definitions/api-gateway"
 import type { EnvState, WalletType } from "@/definitions/app-state"
 import type { GatewayExtensionHost } from "@/definitions/extension-host"
@@ -51,7 +51,7 @@ type SetIsMobileAction = {
 type UpdateIndexHostAction = {
   type: typeof EnvActionTypes.UPDATE_INDEXHOST
   indexUrl: string
-  indexClient: EthernaIndexClient
+  indexClient: IndexClient
 }
 type UpdateGatewayHostAction = {
   type: typeof EnvActionTypes.UPDATE_GATEWAY_HOST
@@ -116,16 +116,16 @@ const gatewayType =
     host => host.url === gatewayUrl
   )?.type ?? "etherna-gateway"
 const creditUrl = import.meta.env.VITE_APP_CREDIT_URL
-const indexClient = new EthernaIndexClient({
-  host: EthernaIndexClient.defaultHost,
+const indexClient = new IndexClient({
+  host: IndexClient.defaultHost,
 })
-const gatewayClient = new EthernaGatewayClient({
-  host: EthernaGatewayClient.defaultHost,
+const gatewayClient = new GatewayClient({
+  host: GatewayClient.defaultHost,
 })
-const authClient = new EthernaSSOClient({
-  host: EthernaSSOClient.defaultHost,
+const authClient = new SSOClient({
+  host: SSOClient.defaultHost,
 })
-const beeClient = new BeeClient(EthernaGatewayClient.defaultHost)
+const beeClient = new BeeClient(GatewayClient.defaultHost)
 
 const initialState: EnvState = {
   indexUrl,

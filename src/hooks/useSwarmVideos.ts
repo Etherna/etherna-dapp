@@ -15,12 +15,12 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
+import type { EthAddress } from "@etherna/api-js/clients"
+import { VideoDeserializer } from "@etherna/api-js/serializers"
 
-import type { EthAddress } from "@/classes/BeeClient/types"
-import SwarmProfileIO from "@/classes/SwarmProfile"
-import SwarmVideoIO from "@/classes/SwarmVideo"
-import type { IndexVideo } from "@/definitions/api-index"
-import type { Video } from "@/definitions/swarm-video"
+import SwarmProfile from "@/classes/SwarmProfile"
+import SwarmVideo from "@/classes/SwarmVideo"
+import type { VideoWithOwner } from "@/definitions/video"
 import { showError } from "@/state/actions/modals"
 import useSelector from "@/state/useSelector"
 import { wait } from "@/utils/promise"
@@ -36,7 +36,7 @@ const DEFAULT_FETCH_LIMIT = 20
 
 export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
   const { beeClient, indexClient } = useSelector(state => state.env)
-  const [videos, setVideos] = useState<Video[]>()
+  const [videos, setVideos] = useState<VideoWithOwner[]>()
   const [page, setPage] = useState(0)
   const [isFetching, setIsFetching] = useState(false)
   const [hasMore, setHasMore] = useState(true)
@@ -47,7 +47,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
   }, [page])
 
   const loadVideoProfiles = useCallback(
-    async (videos: Video[]) => {
+    async (videos: VideoWithOwner[]) => {
       const addresses = videos
         .filter(video => !video.owner)
         .map(video => video.ownerAddress)
@@ -55,12 +55,11 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
 
       const profiles = await Promise.all(
         addresses.map(async address => {
-          const profileReader = new SwarmProfileIO.Reader(address as EthAddress, {
+          const profileReader = new SwarmProfile.Reader(address as EthAddress, {
             beeClient,
-            fetchFromCache: true,
           })
           const profile = await profileReader.download()
-          return profile
+          return profile ?? profileReader.emptyProfile()
         })
       )
       import.meta.env.DEV && (await wait(1000))
@@ -71,7 +70,9 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
           if (!video.owner) {
             const profile =
               profiles.find(profile => profile?.address === video.ownerAddress) ??
-              SwarmProfileIO.getDefaultProfile((video.ownerAddress as EthAddress) ?? "0x0")
+              new SwarmProfile.Reader(video.ownerAddress as EthAddress, {
+                beeClient,
+              }).emptyProfile()
             video.owner = profile
           }
         }
@@ -79,19 +80,6 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
       })
     },
     [beeClient]
-  )
-
-  const videoLoadPromise = useCallback(
-    (indexData: IndexVideo) => {
-      const swarmVideoReader = new SwarmVideoIO.Reader(indexData.id, indexData.ownerAddress, {
-        beeClient,
-        indexClient,
-        indexData,
-        fetchProfile: false,
-      })
-      return swarmVideoReader.download()
-    },
-    [beeClient, indexClient]
   )
 
   const fetchVideos = useCallback(async () => {
@@ -106,7 +94,21 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
 
     try {
       const indexVideos = await indexClient.videos.fetchLatestVideos(page, take)
-      const newVideos = await Promise.all(indexVideos.map(videoLoadPromise))
+      const newVideos = indexVideos.map(indexVideo => {
+        const swarmVideoReader = new SwarmVideo.Reader(indexVideo.id, {
+          beeClient,
+          indexClient,
+        })
+        const videoRaw = JSON.stringify(swarmVideoReader.indexVideoToRaw(indexVideo))
+        const video = new VideoDeserializer(beeClient.url).deserialize(videoRaw, {
+          reference: indexVideo.lastValidManifest?.hash ?? "",
+        })
+        const videoOwner: VideoWithOwner = {
+          ...video,
+          owner: undefined,
+        }
+        return videoOwner
+      })
       import.meta.env.DEV && (await wait(1000))
 
       if (newVideos.length < take) {
@@ -123,15 +125,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
     }
 
     setIsFetching(false)
-  }, [
-    hasMore,
-    page,
-    indexClient,
-    opts.seedLimit,
-    opts.fetchLimit,
-    videoLoadPromise,
-    loadVideoProfiles,
-  ])
+  }, [hasMore, page, opts.seedLimit, opts.fetchLimit, indexClient, loadVideoProfiles, beeClient])
 
   // Returns
   const loadMore = useCallback(() => {

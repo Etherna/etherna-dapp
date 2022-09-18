@@ -17,7 +17,7 @@
 
 import React, { useCallback, useEffect, useState, startTransition, useMemo } from "react"
 
-import EthernaGatewayClient from "@/classes/EthernaGatewayClient"
+import GatewayClient from "@/classes/GatewayClient"
 import type SwarmBatchesManager from "@/classes/SwarmBatchesManager"
 import { FormGroup, Spinner } from "@/components/ui/display"
 import { Slider } from "@/components/ui/inputs"
@@ -49,7 +49,7 @@ const PostageBatchEditor: React.FC<PostageBatchEditorProps> = ({
   const [currentPrice, setcurrentPrice] = useState<number>()
 
   const maxDepth = useMemo(() => {
-    return gatewayType === "etherna-gateway" ? EthernaGatewayClient.maxBatchDepth : 50
+    return gatewayType === "etherna-gateway" ? GatewayClient.maxBatchDepth : 50
   }, [gatewayType])
 
   const ttlReadable = useMemo(() => {
