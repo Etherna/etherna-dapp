@@ -15,10 +15,10 @@
  */
 
 import type { Dispatch } from "react"
+import type { EthAddress } from "@etherna/api-js/clients"
+import type { VideoQuality } from "@etherna/api-js/schemas/video"
+import type { VideoWriter } from "@etherna/api-js/swarm"
 
-import type { SwarmVideoQuality } from "./swarm-video"
-import type { EthAddress } from "@/classes/BeeClient/types"
-import type SwarmVideoWriter from "@/classes/SwarmVideo/SwarmVideoWriter"
 import type { THUMBNAIL_QUEUE_NAME } from "@/components/studio/video-editor/ThumbnailUpload"
 import type { AnyVideoEditorAction } from "@/context/video-editor-context"
 
@@ -31,7 +31,7 @@ export type VideoEditorContextState = {
   /** Initial video reference (if editing a video) */
   reference: string | undefined
   /** Video instance */
-  videoWriter: SwarmVideoWriter
+  videoWriter: VideoWriter
   /** Address of the video owner */
   ownerAddress: EthAddress
   /** Upload queue */
@@ -72,7 +72,7 @@ export type PublishSourceSave = Omit<PublishSource, "name" | "description" | "vi
   add: boolean
 }
 
-export type VideoEditorQueueName = SwarmVideoQuality | typeof THUMBNAIL_QUEUE_NAME
+export type VideoEditorQueueName = VideoQuality | typeof THUMBNAIL_QUEUE_NAME
 
 export type VideoEditorQueue = {
   name: VideoEditorQueueName

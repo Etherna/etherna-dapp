@@ -20,8 +20,8 @@ import InfiniteScroller from "react-infinite-scroll-component"
 
 import ProfilePreview from "./ProfilePreview"
 import ProfilePreviewPlaceholder from "@/components/placeholders/ProfilePreviewPlaceholder"
-import type { IndexUser } from "@/definitions/api-index"
 import useSelector from "@/state/useSelector"
+import type { IndexUser } from "@/types/api-index"
 
 const FETCH_COUNT = 10
 

@@ -16,7 +16,7 @@
 
 import { VideoEditorActionTypes } from "../reducer"
 import useVideoEditorState from "./useVideoEditorState"
-import type { VideoEditorQueueName } from "@/definitions/video-editor-context"
+import type { VideoEditorQueueName } from "@/types/video-editor-context"
 import { clamp } from "@/utils/math"
 
 const useVideoEditorQueueActions = () => {

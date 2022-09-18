@@ -24,10 +24,10 @@ import SEO from "@/components/layout/SEO"
 import ProfileInfo from "@/components/profile/ProfileInfo"
 import { Button } from "@/components/ui/actions"
 import { NavPills } from "@/components/ui/navigation"
-import type { Profile } from "@/definitions/swarm-profile"
 import usePlaylistVideos from "@/hooks/usePlaylistVideos"
 import routes from "@/routes"
 import useSelector from "@/state/useSelector"
+import type { Profile } from "@/types/swarm-profile"
 
 type ProfileViewProps = {
   profileAddress: EthAddress

@@ -22,13 +22,13 @@ import { PencilIcon } from "@heroicons/react/24/solid"
 
 import { Button } from "@/components/ui/actions"
 import { Kbd } from "@/components/ui/display"
-import type { KeymapNamespace } from "@/definitions/keyboard"
 import {
   editShortcut,
   resetShortcut,
   hasCustomShortcut,
 } from "@/state/actions/enviroment/shortcuts"
 import useSelector from "@/state/useSelector"
+import type { KeymapNamespace } from "@/types/keyboard"
 import { splitArray } from "@/utils/array"
 
 type ShortcutsEditorProps = {

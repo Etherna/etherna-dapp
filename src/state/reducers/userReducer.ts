@@ -15,8 +15,8 @@
  */
 
 import type { BatchId, EthAddress } from "@/classes/BeeClient/types"
-import type { GatewayBatch } from "@/definitions/api-gateway"
-import type { UserState } from "@/definitions/app-state"
+import type { GatewayBatch } from "@/types/api-gateway"
+import type { UserState } from "@/types/app-state"
 
 export const UserActionTypes = {
   USER_ENS_UPDATE: "USER_ENS_UPDATE",

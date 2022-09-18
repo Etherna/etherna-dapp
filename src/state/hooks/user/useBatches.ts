@@ -18,11 +18,11 @@ import { useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
 import type { Dispatch } from "redux"
 
-import type { GatewayBatch } from "@/definitions/api-gateway"
 import { useBeeAuthentication } from "@/state/hooks/ui"
 import type { UserActions } from "@/state/reducers/userReducer"
 import { UserActionTypes } from "@/state/reducers/userReducer"
 import useSelector from "@/state/useSelector"
+import type { GatewayBatch } from "@/types/api-gateway"
 import { parsePostageBatch } from "@/utils/batches"
 
 type UseBatchesOpts = {

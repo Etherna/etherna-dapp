@@ -19,8 +19,8 @@ import React, { useMemo } from "react"
 
 import SwarmImage from "@/classes/SwarmImage"
 import MediaStats from "@/components/media/MediaStats"
-import type { SwarmImageRaw } from "@/definitions/swarm-image"
 import useSelector from "@/state/useSelector"
+import type { SwarmImageRaw } from "@/types/swarm-image"
 
 type ImageSourcePreviewProps = {
   image?: SwarmImageRaw | null

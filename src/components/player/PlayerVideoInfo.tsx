@@ -18,8 +18,8 @@
 import React from "react"
 
 import { Avatar } from "@/components/ui/display"
-import type { Profile } from "@/definitions/swarm-profile"
 import routes from "@/routes"
+import type { Profile } from "@/types/swarm-profile"
 import { shortenEthAddr } from "@/utils/ethereum"
 
 type PlayerVideoInfoProps = {

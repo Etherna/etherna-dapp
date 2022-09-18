@@ -14,19 +14,16 @@
  *  limitations under the License.
  */
 
-import type { Crop } from "react-image-crop"
+import type { Image } from "@etherna/api-js"
+import type { BatchId, EthAddress, GatewayBatch } from "@etherna/api-js/clients"
 import type Lang from "lang.js"
 
-import type { GatewayBatch } from "./api-gateway"
 import type { GatewayType } from "./extension-host"
 import type { Keymap, KeymapNamespace } from "./keyboard"
-import type { SwarmImage } from "./swarm-image"
 import type BeeClient from "@/classes/BeeClient"
-import type { BatchId, EthAddress } from "@/classes/BeeClient/types"
 import type GatewayClient from "@/classes/GatewayClient"
 import type IndexClient from "@/classes/IndexClient"
 import type SSOClient from "@/classes/SSOClient"
-import type BeeClient from "@/classes/BeeClient"
 
 export type AppState = {
   env: EnvState
@@ -63,8 +60,8 @@ export type EnvState = {
 export type ProfileState = {
   name?: string
   description?: string
-  avatar?: SwarmImage | null
-  cover?: SwarmImage | null
+  avatar?: Image | null
+  cover?: Image | null
   location?: string
   website?: string
   birthday?: string

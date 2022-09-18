@@ -19,7 +19,7 @@ import React from "react"
 import classNames from "classnames"
 
 import Image from "@/components/common/Image"
-import type { SwarmImage } from "@/definitions/swarm-image"
+import type { SwarmImage } from "@/types/swarm-image"
 import makeBlockies from "@/utils/make-blockies"
 
 export type AvatarProps = {

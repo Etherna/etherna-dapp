@@ -17,12 +17,12 @@
 import type { VideoEditorContextState, VideoEditorQueue } from "."
 import { getAllSources, getDefaultAddTo } from "."
 import VideoEditorCache from "./VideoEditorCache"
-import type { SwarmVideoQuality } from "@/definitions/swarm-video"
+import type { SwarmVideoQuality } from "@/types/swarm-video"
 import type {
   PublishSource,
   PublishSourceSave,
   VideoEditorQueueName,
-} from "@/definitions/video-editor-context"
+} from "@/types/video-editor-context"
 import { deepCloneArray } from "@/utils/array"
 
 // Actions

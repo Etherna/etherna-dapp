@@ -24,9 +24,9 @@ import {
   useVideoEditorExtrasActions,
   useVideoEditorState,
 } from "@/context/video-editor-context/hooks"
-import type { PublishSourceType } from "@/definitions/video-editor-context"
 import useVideoPublishStatus from "@/hooks/useVideoPublishStatus"
 import useSelector from "@/state/useSelector"
+import type { PublishSourceType } from "@/types/video-editor-context"
 
 const SaveToSelector: React.FC = () => {
   const address = useSelector(state => state.user.address)

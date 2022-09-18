@@ -22,7 +22,7 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/solid"
 import type { ExtensionParamConfig } from "./ExtensionHostPanel"
 import ExtensionHostPanelParam from "./ExtensionHostPanelParam"
 import { Alert, FormGroup, Label } from "@/components/ui/display"
-import type { GatewayExtensionHost, IndexExtensionHost } from "@/definitions/extension-host"
+import type { GatewayExtensionHost, IndexExtensionHost } from "@/types/extension-host"
 
 const swarmExtensionUrl =
   "https://chrome.google.com/webstore/detail/ethereum-swarm-extension/afpgelfcknfbbfnipnomfdbbnbbemnia"

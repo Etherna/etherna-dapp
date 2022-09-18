@@ -24,7 +24,7 @@ import { ReactComponent as ManifestIcon } from "@/assets/icons/manifest.svg"
 import VideoExtraMenuManifest from "./VideoExtraMenuManifest"
 import VideoExtraMenuReport from "./VideoExtraMenuReport"
 import { Dropdown } from "@/components/ui/actions"
-import type { Video } from "@/definitions/swarm-video"
+import type { Video } from "@/types/swarm-video"
 
 type VideoExtraMenuProps = {
   video: Video

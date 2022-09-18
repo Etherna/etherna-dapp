@@ -18,9 +18,9 @@ import type { EthAddress } from "@/classes/BeeClient/types"
 import SwarmProfile from "@/classes/SwarmProfile"
 import SwarmUserPlaylists from "@/classes/SwarmUserPlaylists"
 import SwarmVideo from "@/classes/SwarmVideo"
-import type { Profile } from "@/definitions/swarm-profile"
-import type { Video } from "@/definitions/swarm-video"
 import { store } from "@/state/store"
+import type { Profile } from "@/types/swarm-profile"
+import type { Video } from "@/types/swarm-video"
 import { fullfilledPromisesResult } from "@/utils/promise"
 
 const match = /\/profile\/([^/]+)/

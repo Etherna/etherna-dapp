@@ -21,8 +21,8 @@ import { useParams } from "react-router-dom"
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
 import VideoEdit from "@/components/studio/VideoEdit"
 import { Container } from "@/components/ui/layout"
-import type { Video } from "@/definitions/swarm-video"
 import useRouteState from "@/hooks/useRouteState"
+import type { Video } from "@/types/swarm-video"
 
 const StudioVideoEdit = () => {
   const params = useParams<{ id: string }>()

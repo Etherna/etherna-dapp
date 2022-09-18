@@ -16,7 +16,7 @@
 
 import { useCallback, useEffect, useMemo } from "react"
 
-import type { Shortcuts } from "@/definitions/keyboard"
+import type { Shortcuts } from "@/types/keyboard"
 import { keyEventToString } from "@/utils/keyboard"
 
 export default function useShortcut(keymap: Shortcuts, handler: (action: string) => void) {

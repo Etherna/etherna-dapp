@@ -20,8 +20,8 @@ import classNames from "classnames"
 
 import VideoPreviewPlaceholder from "@/components/placeholders/VideoPreviewPlaceholder"
 import VideoPreview from "@/components/video/VideoPreview"
-import type { VideoWithOwner } from "@/definitions/video"
 import useVideosResources from "@/hooks/useVideosResources"
+import type { VideoWithOwner } from "@/types/video"
 
 type VideoGridProps = {
   label?: string

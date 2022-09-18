@@ -26,11 +26,11 @@ import OnlyUsableBatch from "./other/OnlyUsableBatch"
 import VideoEditor from "./video-editor/VideoEditor"
 import { Button } from "@/components/ui/actions"
 import { VideoEditorContextProvider } from "@/context/video-editor-context"
-import type { Video } from "@/definitions/swarm-video"
 import useSwarmVideo from "@/hooks/useSwarmVideo"
 import routes from "@/routes"
 import { useConfirmation } from "@/state/hooks/ui"
 import useSelector from "@/state/useSelector"
+import type { Video } from "@/types/swarm-video"
 
 type VideoEditProps = {
   reference: string | undefined

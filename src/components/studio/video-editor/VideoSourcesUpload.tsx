@@ -33,8 +33,8 @@ import {
   useVideoEditorQueueActions,
   useVideoEditorState,
 } from "@/context/video-editor-context/hooks"
-import type { SwarmVideoQuality, VideoSource } from "@/definitions/swarm-video"
 import { useErrorMessage } from "@/state/hooks/ui"
+import type { SwarmVideoQuality, VideoSource } from "@/types/swarm-video"
 import { getVideoDuration, getVideoResolution } from "@/utils/media"
 import { isMimeWebCompatible } from "@/utils/mime-types"
 

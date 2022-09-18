@@ -20,7 +20,7 @@ import React, { useCallback } from "react"
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline"
 
 import { Badge } from "../ui/display"
-import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
+import type { Video, VideoOffersStatus } from "@/types/swarm-video"
 
 type VideoOffersBadgeProps = {
   video: Video | null | undefined

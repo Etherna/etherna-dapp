@@ -15,8 +15,8 @@
  */
 
 import SwarmVideo from "@/classes/SwarmVideo"
-import type { Video } from "@/definitions/swarm-video"
 import { store } from "@/state/store"
+import type { Video } from "@/types/swarm-video"
 
 const match = /\/watch/
 

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import type { LayoutContextState } from "@/definitions/layout-context"
+import type { LayoutContextState } from "@/types/layout-context"
 
 // Actions
 export const LayoutReducerTypes = {

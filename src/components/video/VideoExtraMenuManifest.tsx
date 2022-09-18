@@ -22,8 +22,8 @@ import { ReactComponent as ManifestIcon } from "@/assets/icons/manifest.svg"
 
 import { Button, Modal } from "../ui/actions"
 import SwarmResourcesIO from "@/classes/SwarmResources"
-import type { Video } from "@/definitions/swarm-video"
 import useSelector from "@/state/useSelector"
+import type { Video } from "@/types/swarm-video"
 
 type VideoExtraMenuManifestProps = {
   video: Video

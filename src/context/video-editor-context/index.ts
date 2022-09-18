@@ -16,12 +16,12 @@
 
 import { createContext } from "react"
 
-import type { IndexExtensionHost } from "@/definitions/extension-host"
+import type { IndexExtensionHost } from "@/types/extension-host"
 import type {
   VideoEditorContextStore,
   PublishSource,
   PublishSourceSave,
-} from "@/definitions/video-editor-context"
+} from "@/types/video-editor-context"
 import { parseLocalStorage } from "@/utils/local-storage"
 import { urlHostname } from "@/utils/urls"
 
@@ -74,4 +74,4 @@ export type {
   VideoEditorContextStore,
   VideoEditorContextState,
   VideoEditorQueue,
-} from "@/definitions/video-editor-context"
+} from "@/types/video-editor-context"

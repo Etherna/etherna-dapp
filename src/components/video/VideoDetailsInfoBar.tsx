@@ -23,9 +23,9 @@ import VideoOffersButton from "./VideoOffersButton"
 import VideoRating from "./VideoRating"
 import VideoShareButton from "./VideoShareButton"
 import VideoStatusBadge from "./VideoStatusBadge"
-import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 import useVideoOffers from "@/hooks/useVideoOffers"
 import useSelector from "@/state/useSelector"
+import type { Video, VideoOffersStatus } from "@/types/swarm-video"
 import dayjs from "@/utils/dayjs"
 
 type VideoDetailsInfoBarProps = {

@@ -22,10 +22,10 @@ import { TrashIcon, PlusIcon } from "@heroicons/react/24/solid"
 import ExtensionHostForm from "./ExtensionHostForm"
 import ExtensionHostsList from "./ExtensionHostsList"
 import { Button, Modal } from "@/components/ui/actions"
-import type { ExtensionType } from "@/definitions/app-state"
-import type { GatewayExtensionHost, IndexExtensionHost } from "@/definitions/extension-host"
 import useLocalStorage from "@/hooks/useLocalStorage"
 import { useConfirmation, useErrorMessage } from "@/state/hooks/ui"
+import type { ExtensionType } from "@/types/app-state"
+import type { GatewayExtensionHost, IndexExtensionHost } from "@/types/extension-host"
 import { isSafeURL } from "@/utils/urls"
 
 type ExtensionHostPanelProps<T extends IndexExtensionHost | GatewayExtensionHost> = {

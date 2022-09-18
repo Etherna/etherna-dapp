@@ -18,7 +18,7 @@ import { useCallback } from "react"
 
 import { VideoEditorActionTypes } from "../reducer"
 import useVideoEditorState from "./useVideoEditorState"
-import type { PublishSource, PublishSourceSave } from "@/definitions/video-editor-context"
+import type { PublishSource, PublishSourceSave } from "@/types/video-editor-context"
 
 export default function useVideoEditorExtrasActions() {
   const [{ saveTo, isOffered, offerResources }, dispatch] = useVideoEditorState()

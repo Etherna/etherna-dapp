@@ -19,7 +19,7 @@ import { persist, devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import type { BatchId, PostageBatch } from "@/classes/BeeClient/types"
-import type { GatewayBatch } from "@/definitions/api-gateway"
+import type { GatewayBatch } from "@/types/api-gateway"
 
 export enum BatchUpdateType {
   Create = 1,

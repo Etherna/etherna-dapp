@@ -23,7 +23,7 @@ import VideoDetailsInfoBar from "./VideoDetailsInfoBar"
 import VideoDetailsProfile from "./VideoDetailsProfile"
 import VideoDetailsTitleBar from "./VideoDetailsTitleBar"
 import VideoExtraMenu from "./VideoExtraMenu"
-import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
+import type { Video, VideoOffersStatus } from "@/types/swarm-video"
 
 type VideoDetailsProps = {
   video: Video

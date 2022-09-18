@@ -22,9 +22,9 @@ import classNames from "classnames"
 import SwarmResourcesIO from "@/classes/SwarmResources"
 import { Button, Modal } from "@/components/ui/actions"
 import { SegmentedControl } from "@/components/ui/inputs"
-import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 import { showError } from "@/state/actions/modals"
 import useSelector from "@/state/useSelector"
+import type { Video, VideoOffersStatus } from "@/types/swarm-video"
 
 type VideoOffersModalProps = {
   show: boolean

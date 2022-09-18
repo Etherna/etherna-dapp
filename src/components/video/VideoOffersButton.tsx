@@ -21,9 +21,9 @@ import { CurrencyDollarIcon } from "@heroicons/react/24/outline"
 
 import VideoDetailsButton from "./VideoDetailsButton"
 import VideoOffersModal from "@/components/modals/VideoOffersModal"
-import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 import useVideoOffers from "@/hooks/useVideoOffers"
 import useSelector from "@/state/useSelector"
+import type { Video, VideoOffersStatus } from "@/types/swarm-video"
 
 type VideoOffersButtonProps = {
   video: Video | null | undefined

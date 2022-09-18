@@ -24,12 +24,12 @@ import NotFound from "@/components/common/NotFound"
 import SEO from "@/components/layout/SEO"
 import Player from "@/components/player/Player"
 import VideoDetails from "@/components/video/VideoDetails"
-import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 import useResetRouteState from "@/hooks/useResetRouteState"
 import useSwarmVideo from "@/hooks/useSwarmVideo"
 import routes from "@/routes"
 import { useErrorMessage } from "@/state/hooks/ui"
 import useSelector from "@/state/useSelector"
+import type { Video, VideoOffersStatus } from "@/types/swarm-video"
 
 type VideoViewProps = {
   reference: string

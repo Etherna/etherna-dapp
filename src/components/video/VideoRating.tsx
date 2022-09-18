@@ -20,8 +20,8 @@ import classNames from "classnames"
 
 import { ReactComponent as VoteIcon } from "@/assets/icons/player/upvote.svg"
 
-import type { VoteValue } from "@/definitions/api-index"
 import useSelector from "@/state/useSelector"
+import type { VoteValue } from "@/types/api-index"
 
 type VideoRatingProps = {
   videoId: string

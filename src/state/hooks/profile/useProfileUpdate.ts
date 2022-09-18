@@ -18,12 +18,12 @@ import { useDispatch } from "react-redux"
 import type { Dispatch } from "redux"
 
 import type { EthAddress } from "@/classes/BeeClient/types"
-import type { Profile } from "@/definitions/swarm-profile"
 import type { ProfileActions } from "@/state/reducers/profileReducer"
 import { ProfileActionTypes } from "@/state/reducers/profileReducer"
 import type { UserActions } from "@/state/reducers/userReducer"
 import { UserActionTypes } from "@/state/reducers/userReducer"
 import useSelector from "@/state/useSelector"
+import type { Profile } from "@/types/swarm-profile"
 
 export default function useProfileUpdate(address: EthAddress) {
   const dispatch = useDispatch<Dispatch<ProfileActions | UserActions>>()

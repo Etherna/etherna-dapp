@@ -23,9 +23,9 @@ import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 import { Button } from "../ui/actions"
 import { Avatar } from "../ui/display"
 import MarkdownEditor from "@/components/common/MarkdownEditor"
-import type { IndexVideoComment } from "@/definitions/api-index"
 import { showError } from "@/state/actions/modals"
 import useSelector from "@/state/useSelector"
+import type { IndexVideoComment } from "@/types/api-index"
 
 type CommentFormProps = {
   indexReference: string

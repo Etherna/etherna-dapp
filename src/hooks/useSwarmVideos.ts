@@ -19,8 +19,8 @@ import type { EthAddress } from "@etherna/api-js/clients"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
 
 import SwarmProfile from "@/classes/SwarmProfile"
-import SwarmVideo from "@/classes/SwarmVideo"
-import type { VideoWithOwner } from "@/definitions/video"
+import SwarmVideo from "@/classes@/types/api-index
+import type { VideoWithOwner } from "@/types/video"
 import { showError } from "@/state/actions/modals"
 import useSelector from "@/state/useSelector"
 import { wait } from "@/utils/promise"

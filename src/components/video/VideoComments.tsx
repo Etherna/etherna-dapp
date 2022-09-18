@@ -21,8 +21,8 @@ import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
 import VideoCommentsItem from "./VideoCommentsItem"
 import CommentForm from "@/components/video/CommentForm"
-import type { IndexVideoComment } from "@/definitions/api-index"
 import useSelector from "@/state/useSelector"
+import type { IndexVideoComment } from "@/types/api-index"
 
 type VideoCommentsProps = {
   indexReference: string

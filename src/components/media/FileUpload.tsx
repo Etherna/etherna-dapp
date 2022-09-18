@@ -20,7 +20,7 @@ import axios from "axios"
 
 import { Button } from "@/components/ui/actions"
 import { Alert } from "@/components/ui/display"
-import type { FilePreviewRenderProps } from "@/definitions/file-preview"
+import type { FilePreviewRenderProps } from "@/types/file-preview"
 
 type FileUploadProps = {
   children?: React.ReactNode | ((props: FilePreviewRenderProps) => React.ReactNode)

@@ -23,9 +23,9 @@ import videoEditorReducer from "./reducer"
 import SwarmImage from "@/classes/SwarmImage"
 import SwarmVideo from "@/classes/SwarmVideo"
 import { THUMBNAIL_QUEUE_NAME } from "@/components/studio/video-editor/ThumbnailUpload"
-import type { Video } from "@/definitions/swarm-video"
-import type { VideoEditorQueue } from "@/definitions/video-editor-context"
 import useSelector from "@/state/useSelector"
+import type { Video } from "@/types/swarm-video"
+import type { VideoEditorQueue } from "@/types/video-editor-context"
 import logger from "@/utils/context-logger"
 
 type VideoEditorContextProviderProps = {

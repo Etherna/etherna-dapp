@@ -19,8 +19,8 @@ import { getAllSources } from "."
 import type BeeClient from "@/classes/BeeClient"
 import type GatewayClient from "@/classes/GatewayClient"
 import SwarmVideo from "@/classes/SwarmVideo"
-import type { GatewayType } from "@/definitions/extension-host"
-import type { SwarmVideoRaw } from "@/definitions/swarm-video"
+import type { GatewayType } from "@/types/extension-host"
+import type { SwarmVideoRaw } from "@/types/swarm-video"
 
 const STORAGE_KEY = "videoEditorState"
 

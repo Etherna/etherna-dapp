@@ -16,8 +16,8 @@
 
 import { urlOrigin } from "@etherna/api-js/utils"
 
-import { parseLocalStorage } from "./local-storage"
-import type { IndexExtensionHost } from "@/definitions/extension-host"
+import { parseLocalStorage } from "./loca@/types/extension-host
+import type { IndexExtensionHost } from "@/types/extension-host"
 
 /**
  * Update the local storage with the

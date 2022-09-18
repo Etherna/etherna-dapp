@@ -30,13 +30,13 @@ import GatewayClient from "@/classes/GatewayClient"
 import IndexClient from "@/classes/IndexClient"
 import { Menu } from "@/components/ui/actions"
 import { Spinner, Tooltip } from "@/components/ui/display"
-import type { ExtensionType } from "@/definitions/app-state"
+import type { ExtensionType } from "@/types/app-state"
 import type {
   ExtensionHost,
   GatewayExtensionHost,
   GatewayType,
   IndexExtensionHost,
-} from "@/definitions/extension-host"
+} from "@/types/extension-host"
 import { urlHostname } from "@/utils/urls"
 
 const GatewayTypeLabel: Record<GatewayType, string> = {

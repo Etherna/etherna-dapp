@@ -23,9 +23,9 @@ import { ReactComponent as IndexIcon } from "@/assets/icons/navigation/index.svg
 import ExtensionHostPanel from "@/components/env/ExtensionHostPanel"
 import type { ExtensionParamConfig } from "@/components/env/ExtensionHostPanel"
 import { Button, Modal } from "@/components/ui/actions"
-import type { GatewayExtensionHost, IndexExtensionHost } from "@/definitions/extension-host"
 import useExtensionEditor from "@/state/hooks/ui/useExtensionEditor"
 import useSelector from "@/state/useSelector"
+import type { GatewayExtensionHost, IndexExtensionHost } from "@/types/extension-host"
 
 const ExtensionEditorModal = <T extends IndexExtensionHost | GatewayExtensionHost>() => {
   const extensionName = useSelector(state => state.ui.extensionName)

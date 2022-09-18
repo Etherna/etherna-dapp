@@ -22,8 +22,8 @@ import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
 import SEO from "@/components/layout/SEO"
 import { Container } from "@/components/ui/layout"
 import VideoView from "@/components/video/VideoView"
-import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
 import useRouteState from "@/hooks/useRouteState"
+import type { Video, VideoOffersStatus } from "@/types/swarm-video"
 
 const WatchPage = () => {
   const { hash } = useParams()

@@ -17,7 +17,7 @@
 import { useSelector as useReduxSelector } from "react-redux"
 import type { EqualityFn } from "react-redux"
 
-import type { AppState } from "@/definitions/app-state"
+import type { AppState } from "@/types/app-state"
 
 const useSelector = useReduxSelector as <Selected = unknown>(
   selector: (state: AppState) => Selected,

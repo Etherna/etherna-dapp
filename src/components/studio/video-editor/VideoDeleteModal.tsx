@@ -22,9 +22,9 @@ import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-p
 
 import Image from "@/components/common/Image"
 import { Button, Modal } from "@/components/ui/actions"
-import type { Video } from "@/definitions/swarm-video"
 import type { VideosSource } from "@/hooks/useUserVideos"
 import { useErrorMessage } from "@/state/hooks/ui"
+import type { Video } from "@/types/swarm-video"
 import { encodedSvg } from "@/utils/svg"
 
 type VideoDeleteModalProps = {

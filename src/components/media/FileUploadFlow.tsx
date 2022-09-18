@@ -20,7 +20,7 @@ import React, { useState, useImperativeHandle, useEffect, useCallback } from "re
 import FileDrag from "./FileDrag"
 import FileUpload from "./FileUpload"
 import { Label } from "@/components/ui/display"
-import type { FilePreviewRenderProps } from "@/definitions/file-preview"
+import type { FilePreviewRenderProps } from "@/types/file-preview"
 import { fileToBuffer } from "@/utils/buffer"
 
 type FileUploadFlowProps = {

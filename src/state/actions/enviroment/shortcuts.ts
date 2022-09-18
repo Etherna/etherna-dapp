@@ -14,11 +14,11 @@
  *  limitations under the License.
  */
 
-import type { Keymap, KeymapNamespace } from "@/definitions/keyboard"
 import { defaultKeymap, KEYMAP_OVERRIDE_NAME } from "@/keyboard"
 import { EnvActionTypes } from "@/state/reducers/enviromentReducer"
 import { UIActionTypes } from "@/state/reducers/uiReducer"
 import { store } from "@/state/store"
+import type { Keymap, KeymapNamespace } from "@/types/keyboard"
 
 export const editShortcut = (namespace: KeymapNamespace, key: string) => {
   store.dispatch({
