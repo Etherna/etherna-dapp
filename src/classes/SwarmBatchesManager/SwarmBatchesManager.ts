@@ -301,7 +301,7 @@ export default class SwarmBatchesManager {
         const fetchedBatch = await this.fetchBatch(this.getBatchId(batch))
 
         // creation
-        const hasCreated = batch.depth === 0 && fetchedBatch.depth > 0
+        const hasCreated = fetchedBatch.depth > 0
         // dilute
         const increasedDepth = fetchedBatch.depth > batch.depth
         // topup

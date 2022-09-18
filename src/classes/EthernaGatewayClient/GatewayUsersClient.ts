@@ -122,13 +122,16 @@ export default class GatewayUsersClient {
 
     let resolver: (batch: GatewayBatch) => void
     let timeout: number
+    let newBatchId: string
 
     const fetchBatch = async () => {
       clearTimeout(timeout)
 
       timeout = window.setTimeout(async () => {
         try {
-          const newBatchId = await this.fetchPostageBatchRef(referenceId)
+          if (!newBatchId) {
+            newBatchId = await this.fetchPostageBatchRef(referenceId)
+          }
           if (newBatchId) {
             const batch = await this.fetchBatch(newBatchId)
             return resolver(batch)
