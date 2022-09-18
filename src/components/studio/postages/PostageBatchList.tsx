@@ -253,8 +253,7 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
                   <Capacity
                     value={getBatchPercentUtilization(batch)}
                     limit={1}
-                    // isLoading={!!updatingBatches.find(b => b.id === batch.id)}
-                    isLoading
+                    isLoading={!!updatingBatches.find(b => b.id === batch.id)}
                   />
 
                   <p className="ml-2 shrink-0 font-mono text-xs font-medium">
