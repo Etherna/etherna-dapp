@@ -16,6 +16,7 @@
  */
 
 import React, { useCallback, useMemo, useState } from "react"
+import { isSafeURL } from "@etherna/api-js/utils"
 
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/solid"
 
@@ -26,7 +27,6 @@ import useLocalStorage from "@/hooks/useLocalStorage"
 import { useConfirmation, useErrorMessage } from "@/state/hooks/ui"
 import type { ExtensionType } from "@/types/app-state"
 import type { GatewayExtensionHost, IndexExtensionHost } from "@/types/extension-host"
-import { isSafeURL } from "@/utils/urls"
 
 type ExtensionHostPanelProps<T extends IndexExtensionHost | GatewayExtensionHost> = {
   listStorageKey: string

@@ -17,17 +17,23 @@
 
 import React from "react"
 import { useParams } from "react-router-dom"
+import type { Profile } from "@etherna/api-js"
 
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
 import SEO from "@/components/layout/SEO"
 import { Container } from "@/components/ui/layout"
 import VideoView from "@/components/video/VideoView"
 import useRouteState from "@/hooks/useRouteState"
-import type { Video, VideoOffersStatus } from "@/types/swarm-video"
+import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
+import type { VideoWithIndexes } from "@/types/video"
 
 const WatchPage = () => {
   const { hash } = useParams()
-  const routeState = useRouteState<{ video: Video; videoOffers: VideoOffersStatus }>()
+  const routeState = useRouteState<{
+    video: VideoWithIndexes
+    ownerProfile?: Profile
+    videoOffers: VideoOffersStatus
+  }>()
 
   if (!hash) return null
 

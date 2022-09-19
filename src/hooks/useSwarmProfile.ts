@@ -24,11 +24,12 @@ import { wait } from "@/utils/promise"
 
 type SwarmProfileOptions = {
   address: EthAddress
+  prefetchedProfile?: Profile
 }
 
 export default function useSwarmProfile(opts: SwarmProfileOptions) {
   const { beeClient } = useSelector(state => state.env)
-  const [profile, setProfile] = useState<Profile | null>(null)
+  const [profile, setProfile] = useState<Profile | null>(opts.prefetchedProfile ?? null)
   const [isLoading, setIsloading] = useState(false)
 
   // Returns

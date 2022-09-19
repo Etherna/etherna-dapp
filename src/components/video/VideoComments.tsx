@@ -16,13 +16,13 @@
  */
 
 import React, { useCallback, useEffect, useState } from "react"
+import type { IndexVideoComment } from "@etherna/api-js/clients"
 
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
 import VideoCommentsItem from "./VideoCommentsItem"
 import CommentForm from "@/components/video/CommentForm"
 import useSelector from "@/state/useSelector"
-import type { IndexVideoComment } from "@/types/api-index"
 
 type VideoCommentsProps = {
   indexReference: string

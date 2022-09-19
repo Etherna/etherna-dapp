@@ -16,6 +16,7 @@
  */
 
 import React, { useCallback, useEffect, useState } from "react"
+import { urlHostname } from "@etherna/api-js/utils"
 import classNames from "classnames"
 
 import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline"
@@ -37,7 +38,6 @@ import type {
   GatewayType,
   IndexExtensionHost,
 } from "@/types/extension-host"
-import { urlHostname } from "@/utils/urls"
 
 const GatewayTypeLabel: Record<GatewayType, string> = {
   "etherna-gateway": "etherna",
@@ -80,13 +80,10 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
       const controller = new AbortController()
       controllers.push(controller)
 
-      const client =
-        type === "index"
-          ? new IndexClient({ host: host.url, abortController: controller })
-          : new GatewayClient({ host: host.url, abortController: controller })
+      const client = type === "index" ? new IndexClient(host.url) : new GatewayClient(host.url)
 
       client.users
-        .fetchCurrentUser()
+        .fetchCurrentUser({ signal: controller.signal })
         .then(() => {
           sethostsSignedIn(hostsSignedIn => ({
             ...hostsSignedIn,
@@ -121,10 +118,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
 
   const signinHost = useCallback(
     (host: IndexExtensionHost | GatewayExtensionHost) => {
-      const client =
-        type === "index"
-          ? new IndexClient({ host: host.url })
-          : new GatewayClient({ host: host.url })
+      const client = type === "index" ? new IndexClient(host.url) : new GatewayClient(host.url)
       client.loginRedirect(window.location.href)
     },
     [type]

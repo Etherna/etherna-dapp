@@ -14,18 +14,18 @@
  *  limitations under the License.
  */
 
+import type { PostageBatch } from "@etherna/api-js/clients"
+
 import BeeClient from "@/classes/BeeClient"
-import type { PostageBatch } from "@/classes/BeeClient/types"
 import GatewayClient from "@/classes/GatewayClient"
 import IndexClient from "@/classes/IndexClient"
 import SSOClient from "@/classes/SSOClient"
 import { baseKeymap } from "@/keyboard"
 import lang from "@/lang"
-import type { GatewayBatch } from "@/types/api-gateway"
 import type { EnvState, WalletType } from "@/types/app-state"
 import type { GatewayExtensionHost } from "@/types/extension-host"
 import type { Keymap, KeymapNamespace } from "@/types/keyboard"
-import autoUpgradeEthernaService from "@/utils/autoUpgradeEthernaService"
+import { autoUpgradeEthernaService } from "@/utils/automations"
 import { checkIsMobile } from "@/utils/browser"
 import { loadColorScheme } from "@/utils/dark-mode"
 import { parseLocalStorage } from "@/utils/local-storage"
@@ -117,13 +117,16 @@ const gatewayType =
   )?.type ?? "etherna-gateway"
 const creditUrl = import.meta.env.VITE_APP_CREDIT_URL
 const indexClient = new IndexClient({
-  host: IndexClient.defaultHost,
+  url: IndexClient.defaultHost,
+  apiPath: IndexClient.apiPath,
 })
 const gatewayClient = new GatewayClient({
-  host: GatewayClient.defaultHost,
+  url: GatewayClient.defaultHost,
+  apiPath: GatewayClient.apiPath,
 })
 const authClient = new SSOClient({
-  host: SSOClient.defaultHost,
+  url: SSOClient.defaultHost,
+  apiPath: SSOClient.apiPath,
 })
 const beeClient = new BeeClient(GatewayClient.defaultHost)
 

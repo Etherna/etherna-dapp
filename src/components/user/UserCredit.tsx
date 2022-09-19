@@ -16,13 +16,13 @@
  */
 
 import React, { useMemo } from "react"
+import { urlOrigin } from "@etherna/api-js/utils"
 
 import UserCreditBadge from "./UserCreditBadge"
 import { Button } from "@/components/ui/actions"
 import { Popup } from "@/components/ui/display"
 import useSelector from "@/state/useSelector"
 import { getDecimalParts } from "@/utils/math"
-import { urlOrigin } from "@/utils/urls"
 
 const UserCredit: React.FC = () => {
   const { creditUrl, bytePrice } = useSelector(state => state.env)

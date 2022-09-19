@@ -14,29 +14,60 @@
  *  limitations under the License.
  */
 
+import type { Profile, Video } from "@etherna/api-js"
+import type { EthAddress, IndexVideo } from "@etherna/api-js/clients"
+import { BeeClient } from "@etherna/api-js/clients"
+
+import SwarmProfile from "@/classes/SwarmProfile"
 import SwarmVideo from "@/classes/SwarmVideo"
 import { store } from "@/state/store"
-import type { Video } from "@/types/swarm-video"
+import type { VideoWithIndexes } from "@/types/video"
+import { nullablePromise } from "@/utils/promise"
 
 const match = /\/watch/
 
 const fetch = async () => {
-  const { beeClient, indexClient } = store.getState().env
+  const { beeClient, indexClient, indexUrl } = store.getState().env
 
   const searchParams = new URLSearchParams(window.location.search)
   if (searchParams && searchParams.has("v")) {
     const reference = searchParams.get("v")!
 
     try {
-      const swarmVideoReader = new SwarmVideo.Reader(reference, undefined, {
+      const isSwarmReference = BeeClient.isValidHash(reference)
+      const videoReader = new SwarmVideo.Reader(reference, {
         beeClient,
         indexClient,
-        fetchProfile: true,
       })
-      const video = await swarmVideoReader.download(true)
+
+      let [video, indexVideo] = await Promise.all([
+        videoReader.download() as Promise<VideoWithIndexes>,
+        isSwarmReference
+          ? nullablePromise(indexClient.videos.fetchVideoFromHash(reference))
+          : Promise.resolve(null),
+      ])
+      video.indexesStatus = {}
+
+      indexVideo =
+        indexVideo ?? "lastValidManifest" in (videoReader.rawResponse ?? {})
+          ? (videoReader.rawResponse as IndexVideo)
+          : null
+
+      if (indexVideo) {
+        video.indexesStatus[indexUrl] = {
+          indexReference: indexVideo.id,
+          totDownvotes: indexVideo.totDownvotes,
+          totUpvotes: indexVideo.totUpvotes,
+        }
+      }
+
+      const owner = video!.ownerAddress as EthAddress
+      const profileReader = new SwarmProfile.Reader(owner, { beeClient })
+      const profile = await profileReader.download()
 
       // set prefetch data
       window.prefetchData = {}
+      window.prefetchData.ownerProfile = profile
       window.prefetchData.video = video
     } catch (error: any) {
       console.error(error)
@@ -50,7 +81,8 @@ const videoPrefetcher = {
 }
 
 export type VideoPrefetch = {
-  video?: Video
+  ownerProfile?: Profile | null
+  video?: VideoWithIndexes | null
 }
 
 export default videoPrefetcher

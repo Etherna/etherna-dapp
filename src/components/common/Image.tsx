@@ -26,7 +26,7 @@ type ImageProps = {
   imgClassName?: string
   placeholderClassName?: string
   src?: string
-  sources?: Record<`${number}w`, string>
+  sources?: Partial<Record<`${number}w`, string>>
   fallbackSrc?: string
   blurredDataURL?: string
   aspectRatio?: number
@@ -81,14 +81,15 @@ const Image: React.FC<ImageProps> = ({
   }, [staticSrc, sources, rootEl.current])
 
   const getOptimizedSrc = useCallback(
-    (sources: Record<`${number}w`, string>, size: number): string => {
+    (sources: ImageProps["sources"], size: number): string => {
+      if (!sources) throw new Error("Missing sources")
       const screenSize = size * (window.devicePixelRatio ?? 1)
       const sizes = Object.keys(sources)
         .map(size => parseInt(size))
         .sort()
       const largest = sizes[sizes.length - 1]
 
-      if (size > largest) return beeClient.bzz.url(sources[`${largest}w`])
+      if (size > largest) return beeClient.bzz.url(sources[`${largest}w`]!)
 
       const optimized = sizes.find(size => size > screenSize)
       const optimizedReference = optimized ? sources[`${optimized}w`] : sources[`${largest}w`]

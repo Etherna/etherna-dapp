@@ -16,14 +16,14 @@
  */
 
 import React, { useMemo } from "react"
+import type { Video } from "@etherna/api-js"
+import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 
 import { FilmIcon, PhotoIcon } from "@heroicons/react/20/solid"
 import { ReactComponent as ManifestIcon } from "@/assets/icons/manifest.svg"
 
 import { Button, Modal } from "../ui/actions"
-import SwarmResourcesIO from "@/classes/SwarmResources"
 import useSelector from "@/state/useSelector"
-import type { Video } from "@/types/swarm-video"
 
 type VideoExtraMenuManifestProps = {
   video: Video
@@ -39,11 +39,11 @@ const VideoExtraMenuManifest: React.FC<VideoExtraMenuManifestProps> = ({
   const beeClient = useSelector(state => state.env.beeClient)
 
   const sources = useMemo(() => {
-    const references = SwarmResourcesIO.getVideoReferences(video)
+    const references = EthernaResourcesHandler.videoReferences(video)
     return references.map(reference => ({
       reference,
-      type: SwarmResourcesIO.getVideoReferenceType(video, reference),
-      label: SwarmResourcesIO.getVideoReferenceLabel(video, reference),
+      type: EthernaResourcesHandler.videoReferenceType(video, reference),
+      label: EthernaResourcesHandler.videoReferenceLabel(video, reference),
     }))
   }, [video])
 

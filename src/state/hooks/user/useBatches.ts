@@ -16,14 +16,14 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
+import type { GatewayBatch } from "@etherna/api-js/clients"
+import { parsePostageBatch } from "@etherna/api-js/utils"
 import type { Dispatch } from "redux"
 
 import { useBeeAuthentication } from "@/state/hooks/ui"
 import type { UserActions } from "@/state/reducers/userReducer"
 import { UserActionTypes } from "@/state/reducers/userReducer"
 import useSelector from "@/state/useSelector"
-import type { GatewayBatch } from "@/types/api-gateway"
-import { parsePostageBatch } from "@/utils/batches"
 
 type UseBatchesOpts = {
   autofetch?: boolean

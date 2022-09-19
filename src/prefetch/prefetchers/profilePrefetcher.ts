@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 
-import type { EthAddress } from "@/classes/BeeClient/types"
+import type { Profile, Video } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
+
+import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmProfile from "@/classes/SwarmProfile"
-import SwarmUserPlaylists from "@/classes/SwarmUserPlaylists"
 import SwarmVideo from "@/classes/SwarmVideo"
 import { store } from "@/state/store"
-import type { Profile } from "@/types/swarm-profile"
-import type { Video } from "@/types/swarm-video"
 import { fullfilledPromisesResult } from "@/utils/promise"
 
 const match = /\/profile\/([^/]+)/
@@ -32,42 +32,44 @@ const fetch = async () => {
   if (matches && matches.length >= 2) {
     const address = matches[1] as EthAddress
 
-    // Fetch user's playlists & profile
-    const playlistsReader = new SwarmUserPlaylists.Reader(address, {
+    // Fetch channel playlist & profile
+    const playlistReader = new SwarmPlaylist.Reader(undefined, {
       beeClient,
+      playlistId: SwarmPlaylist.Reader.channelPlaylistId,
+      playlistOwner: address,
     })
-    const swarmProfileReader = new SwarmProfile.Reader(address, { beeClient })
+    const profileReader = new SwarmProfile.Reader(address, { beeClient })
 
-    const [profilePromise] = await Promise.allSettled([
-      swarmProfileReader.download(true),
-      playlistsReader.download({ resolveChannel: true }),
+    const [profileResult, channelResult] = await Promise.allSettled([
+      profileReader.download(),
+      playlistReader.download(),
     ])
     const profile =
-      profilePromise.status === "fulfilled"
-        ? profilePromise.value
-        : {
+      profileResult.status === "fulfilled"
+        ? profileResult.value
+        : ({
             address,
+            name: "",
+            batchId: null,
             avatar: null,
             cover: null,
             description: null,
-            name: null,
-          }
+          } as Profile)
 
     // Fetch channel playlists videos
-    const references = playlistsReader.channelPlaylist?.videos?.slice(0, 50) ?? []
+    const playlistVideos = channelResult.status === "fulfilled" ? channelResult.value.videos : []
+    const references = playlistVideos?.slice(0, 10) ?? []
     const videosPromises = await Promise.allSettled(
       references.map(video => {
-        const reader = new SwarmVideo.Reader(video.reference, address, {
+        const reader = new SwarmVideo.Reader(video.reference, {
           beeClient,
           indexClient,
-          fetchProfile: false,
-          profileData: profile,
         })
         return reader.download()
       })
     )
 
-    const videos = fullfilledPromisesResult(videosPromises)
+    const videos = fullfilledPromisesResult(videosPromises).filter(Boolean) as Video[]
 
     // set prefetch data
     window.prefetchData = {}

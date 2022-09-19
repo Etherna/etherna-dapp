@@ -16,6 +16,7 @@
  */
 
 import React, { useCallback, useState } from "react"
+import type { IndexVideoComment } from "@etherna/api-js/clients"
 import classNames from "classnames"
 
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
@@ -25,7 +26,6 @@ import { Avatar } from "../ui/display"
 import MarkdownEditor from "@/components/common/MarkdownEditor"
 import { showError } from "@/state/actions/modals"
 import useSelector from "@/state/useSelector"
-import type { IndexVideoComment } from "@/types/api-index"
 
 type CommentFormProps = {
   indexReference: string

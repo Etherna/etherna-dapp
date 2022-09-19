@@ -28,10 +28,7 @@ export default function useVideosIndexStatus(videos: Video[] | undefined, indexU
   const mounted = useMounted()
 
   useEffect(() => {
-    indexClient.current = new IndexClient({
-      url: indexUrl,
-      apiPath: `/api/v${import.meta.env.VITE_APP_API_VERSION}`,
-    })
+    indexClient.current = new IndexClient(indexUrl)
 
     setVideosIndexStatus(undefined)
 

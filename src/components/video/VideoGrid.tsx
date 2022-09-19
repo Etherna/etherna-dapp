@@ -21,11 +21,11 @@ import classNames from "classnames"
 import VideoPreviewPlaceholder from "@/components/placeholders/VideoPreviewPlaceholder"
 import VideoPreview from "@/components/video/VideoPreview"
 import useVideosResources from "@/hooks/useVideosResources"
-import type { VideoWithOwner } from "@/types/video"
+import type { VideoWithIndexes, VideoWithOwner } from "@/types/video"
 
 type VideoGridProps = {
   label?: string
-  videos?: VideoWithOwner[]
+  videos?: (VideoWithIndexes & VideoWithOwner)[]
   isFetching?: boolean
   fetchingPreviewCount?: number
   mini?: boolean

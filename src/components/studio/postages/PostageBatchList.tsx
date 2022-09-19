@@ -16,21 +16,21 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import type { GatewayBatch } from "@etherna/api-js/clients"
+import { BatchesHandler } from "@etherna/api-js/handlers"
+import { BatchUpdateType, useBatchesStore } from "@etherna/api-js/stores"
+import { getBatchPercentUtilization, getBatchSpace, parsePostageBatch } from "@etherna/api-js/utils"
 import classNames from "classnames"
 
 import { CogIcon } from "@heroicons/react/24/outline"
 import { CheckCircleIcon, InformationCircleIcon } from "@heroicons/react/24/solid"
 
 import PostageBatchEditor from "./PostageBatchEditor"
-import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
 import { AlertPopup, Button, Modal } from "@/components/ui/actions"
 import { Capacity, FormGroup, Table } from "@/components/ui/display"
 import { Select } from "@/components/ui/inputs"
 import { useErrorMessage } from "@/state/hooks/ui"
 import useSelector from "@/state/useSelector"
-import useBatchesStore, { BatchUpdateType } from "@/stores/batches"
-import type { GatewayBatch } from "@/types/api-gateway"
-import { getBatchPercentUtilization, getBatchSpace, parsePostageBatch } from "@/utils/batches"
 import { convertBytes } from "@/utils/converters"
 import dayjs from "@/utils/dayjs"
 
@@ -60,11 +60,12 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
   const [showUpdateSuccess, setShowUpdateSuccess] = useState(false)
   const { showError } = useErrorMessage()
   const batchesManager = useRef(
-    new SwarmBatchesManager({
+    new BatchesHandler({
       address: address!,
       beeClient,
       gatewayClient,
       gatewayType,
+      network: import.meta.env.DEV ? "testnet" : "mainnet",
     })
   )
 

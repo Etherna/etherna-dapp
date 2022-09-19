@@ -17,22 +17,22 @@
 
 import React from "react"
 import { useParams } from "react-router-dom"
+import type { EthAddress } from "@etherna/api-js/clients"
 
-import type { EthAddress } from "@/classes/BeeClient/types"
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
 import SEO from "@/components/layout/SEO"
 import ProfileView from "@/components/profile/ProfileView"
 import { Container } from "@/components/ui/layout"
 
 const ChannelPage = () => {
-  const { id } = useParams<{ id: string }>()
+  const { id } = useParams<{ id: EthAddress }>()
 
   return (
     <AppLayoutWrapper>
       <SEO title="Channel" />
 
       <Container noPaddingX noPaddingY fluid>
-        <ProfileView profileAddress={id! as EthAddress} />
+        <ProfileView profileAddress={id!} />
       </Container>
     </AppLayoutWrapper>
   )

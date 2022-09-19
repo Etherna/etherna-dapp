@@ -16,21 +16,26 @@
  */
 
 import React, { useCallback, useEffect, useState, startTransition, useMemo } from "react"
+import type { GatewayBatch } from "@etherna/api-js/clients"
+import type { BatchesHandler } from "@etherna/api-js/handlers"
+import {
+  calcBatchPrice,
+  calcDilutedTTL,
+  getBatchCapacity,
+  ttlToAmount,
+} from "@etherna/api-js/utils"
 
 import GatewayClient from "@/classes/GatewayClient"
-import type SwarmBatchesManager from "@/classes/SwarmBatchesManager"
 import { FormGroup, Spinner } from "@/components/ui/display"
 import { Slider } from "@/components/ui/inputs"
-import type { GatewayBatch } from "@/types/api-gateway"
 import type { GatewayType } from "@/types/extension-host"
-import { calcDilutedTTL, getBatchCapacity, calcBatchPrice, ttlToAmount } from "@/utils/batches"
 import { convertBytes } from "@/utils/converters"
 import dayjs from "@/utils/dayjs"
 import { clamp } from "@/utils/math"
 
 type PostageBatchEditorProps = {
   batch: GatewayBatch
-  batchesManager: SwarmBatchesManager
+  batchesManager: BatchesHandler
   gatewayType?: GatewayType
   disabled?: boolean
   onChange(depth: number, amount: string | undefined): void

@@ -16,16 +16,16 @@
  */
 
 import React from "react"
+import type { Profile } from "@etherna/api-js"
 
 import { Avatar } from "@/components/ui/display"
 import routes from "@/routes"
-import type { Profile } from "@/types/swarm-profile"
 import { shortenEthAddr } from "@/utils/ethereum"
 
 type PlayerVideoInfoProps = {
   hash: string
   title: string
-  owner: Profile | undefined
+  owner: Profile | undefined | null
 }
 
 const PlayerVideoInfo: React.FC<PlayerVideoInfoProps> = ({ hash, title, owner }) => {

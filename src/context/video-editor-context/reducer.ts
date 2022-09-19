@@ -14,10 +14,11 @@
  *  limitations under the License.
  */
 
+import type { VideoQuality } from "@etherna/api-js/schemas/video"
+
 import type { VideoEditorContextState, VideoEditorQueue } from "."
 import { getAllSources, getDefaultAddTo } from "."
 import VideoEditorCache from "./VideoEditorCache"
-import type { SwarmVideoQuality } from "@/types/swarm-video"
 import type {
   PublishSource,
   PublishSourceSave,
@@ -73,7 +74,7 @@ type RemoveQueueAction = {
 }
 type UpdateOriginalQualityAction = {
   type: typeof VideoEditorActionTypes.UPDATE_ORIGINAL_QUALITY
-  quality: SwarmVideoQuality
+  quality: VideoQuality
 }
 type UpdateDurationAction = {
   type: typeof VideoEditorActionTypes.UPDATE_DURATION

@@ -16,6 +16,7 @@
  */
 
 import React, { useCallback } from "react"
+import { urlOrigin, urlPath } from "@etherna/api-js/utils"
 
 import { BookmarkIcon, HomeIcon, UserIcon } from "@heroicons/react/24/solid"
 import { ReactComponent as FramesIcon } from "@/assets/icons/navigation/frames.svg"
@@ -29,7 +30,6 @@ import { Sidebar } from "@/components/ui/navigation"
 import { LayoutReducerTypes } from "@/context/layout-context"
 import { useLayoutState } from "@/context/layout-context/hooks"
 import routes from "@/routes"
-import { urlOrigin, urlPath } from "@/utils/urls"
 
 const SidebarNavigation: React.FC = () => {
   const [state, dispatch] = useLayoutState()

@@ -16,10 +16,12 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from "react"
+import type { Profile } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
 
 import ProfileAbout from "./ProfileAbout"
 import ProfileVideos from "./ProfileVideos"
-import type { EthAddress } from "@/classes/BeeClient/types"
+import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SEO from "@/components/layout/SEO"
 import ProfileInfo from "@/components/profile/ProfileInfo"
 import { Button } from "@/components/ui/actions"
@@ -27,7 +29,6 @@ import { NavPills } from "@/components/ui/navigation"
 import usePlaylistVideos from "@/hooks/usePlaylistVideos"
 import routes from "@/routes"
 import useSelector from "@/state/useSelector"
-import type { Profile } from "@/types/swarm-profile"
 
 type ProfileViewProps = {
   profileAddress: EthAddress
@@ -40,7 +41,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
   const { isMobile } = useSelector(state => state.env)
   // const { channelPlaylist, loadPlaylists } = useUserPlaylists(profileAddress, { resolveChannel: true })
   const { playlist, videos, hasMore, isFetching, isLoadingPlaylist, loadMore, loadPlaylist } =
-    usePlaylistVideos("__channel", {
+    usePlaylistVideos(SwarmPlaylist.Reader.channelPlaylistId, {
       owner: profile,
       limit: 20,
     })

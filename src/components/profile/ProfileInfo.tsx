@@ -16,15 +16,15 @@
  */
 
 import React, { useCallback, useEffect } from "react"
+import type { Profile } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
 
-import type { EthAddress } from "@/classes/BeeClient/types"
 import Image from "@/components/common/Image"
 import { Skeleton } from "@/components/ui/display"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
 import useErrorMessage from "@/state/hooks/ui/useErrorMessage"
-import type { Profile } from "@/types/swarm-profile"
 import { shortenEthAddr } from "@/utils/ethereum"
 import makeBlockies from "@/utils/make-blockies"
 import { getResponseErrorMessage } from "@/utils/request"

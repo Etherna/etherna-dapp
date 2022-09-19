@@ -17,11 +17,11 @@
 
 import React, { useState, useEffect, useCallback } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
+import type { IndexUser } from "@etherna/api-js/clients"
 
 import ProfilePreview from "./ProfilePreview"
 import ProfilePreviewPlaceholder from "@/components/placeholders/ProfilePreviewPlaceholder"
 import useSelector from "@/state/useSelector"
-import type { IndexUser } from "@/types/api-index"
 
 const FETCH_COUNT = 10
 

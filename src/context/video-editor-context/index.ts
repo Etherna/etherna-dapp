@@ -15,6 +15,7 @@
  */
 
 import { createContext } from "react"
+import { urlHostname } from "@etherna/api-js/utils"
 
 import type { IndexExtensionHost } from "@/types/extension-host"
 import type {
@@ -23,7 +24,6 @@ import type {
   PublishSourceSave,
 } from "@/types/video-editor-context"
 import { parseLocalStorage } from "@/utils/local-storage"
-import { urlHostname } from "@/utils/urls"
 
 export const VideoEditorContext = createContext<VideoEditorContextStore | undefined>(undefined)
 

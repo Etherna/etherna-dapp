@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { utils } from "@noble/secp256k1"
+import { bytesToHex } from "./string"
 
 /**
  * Sign a message with the user wallet
@@ -35,7 +35,7 @@ export const signMessage = async (
 
   if (!accounts || !accounts.length) throw new Error("Unlock your wallet.")
 
-  const hexDigest = digest instanceof Uint8Array ? utils.bytesToHex(digest) : digest
+  const hexDigest = digest instanceof Uint8Array ? bytesToHex(digest) : digest
 
   const data = await window.ethereum.request({
     method: "personal_sign",

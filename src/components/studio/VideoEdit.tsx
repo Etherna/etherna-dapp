@@ -15,8 +15,9 @@
  *
  */
 
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Navigate } from "react-router-dom"
+import type { Video } from "@etherna/api-js"
 
 import { TrashIcon } from "@heroicons/react/24/outline"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
@@ -30,7 +31,7 @@ import useSwarmVideo from "@/hooks/useSwarmVideo"
 import routes from "@/routes"
 import { useConfirmation } from "@/state/hooks/ui"
 import useSelector from "@/state/useSelector"
-import type { Video } from "@/types/swarm-video"
+import type { VideoWithIndexes } from "@/types/video"
 
 type VideoEditProps = {
   reference: string | undefined
@@ -47,13 +48,19 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   const resetState = useRef<() => void>()
   const { address } = useSelector(state => state.user)
 
-  const stateVideo = routeState?.video
+  const stateVideo = useMemo(() => {
+    const videoIndexes: VideoWithIndexes | undefined = routeState?.video
+      ? {
+          ...routeState?.video,
+          indexesStatus: {},
+        }
+      : undefined
+    return videoIndexes
+  }, [routeState])
 
   const { waitConfirmation } = useConfirmation()
   const { video, isLoading, loadVideo } = useSwarmVideo({
     reference: reference || "",
-    fetchProfile: false,
-    fetchFromCache: false,
     routeState: stateVideo,
   })
 

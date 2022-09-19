@@ -19,10 +19,10 @@ import React from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
 import VideoGrid from "@/components/video/VideoGrid"
-import type { Video } from "@/types/swarm-video"
+import type { VideoWithOwner } from "@/types/video"
 
 type ProfileVideosProps = {
-  videos: Video[] | null | undefined
+  videos: VideoWithOwner[] | null | undefined
   isFetching: boolean
   hasMoreVideos: boolean
   onLoadMore(): void

@@ -17,8 +17,8 @@
 
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
+import type { EthAddress } from "@etherna/api-js/clients"
 
-import type { EthAddress } from "@/classes/BeeClient/types"
 import { Avatar } from "@/components/ui/display"
 import VideoGrid from "@/components/video/VideoGrid"
 import usePlaylistVideos from "@/hooks/usePlaylistVideos"
@@ -34,7 +34,7 @@ type ProfilePreviewProps = {
 const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress }) => {
   const { profile, loadProfile } = useSwarmProfile({ address: profileAddress })
   const { channelPlaylist, loadPlaylists } = useUserPlaylists(profileAddress, {
-    resolveChannel: true,
+    fetchChannel: true,
   })
   const { videos, isFetching, loadMore } = usePlaylistVideos(channelPlaylist, {
     owner: profile ? profile : undefined,

@@ -14,8 +14,9 @@
  *  limitations under the License.
  */
 
+import type { Image } from "@etherna/api-js"
+
 import type { ProfileState } from "@/types/app-state"
-import type { SwarmImage } from "@/types/swarm-image"
 
 export const ProfileActionTypes = {
   PROFILE_UPDATE: "PROFILE_UPDATE",
@@ -28,8 +29,8 @@ type UpdateProfileAction = {
   type: typeof ProfileActionTypes.PROFILE_UPDATE
   name: string
   description: string
-  avatar: SwarmImage | null
-  cover: SwarmImage | null
+  avatar: Image | null
+  cover: Image | null
   location?: string
   website?: string
   birthday?: string
@@ -39,8 +40,8 @@ type SaveProfileAction = {
   type: typeof ProfileActionTypes.PROFILE_SAVE
   name: string
   description: string
-  avatar?: SwarmImage | null
-  cover?: SwarmImage | null
+  avatar?: Image | null
+  cover?: Image | null
 }
 type SignoutAction = {
   type: typeof ProfileActionTypes.PROFILE_SIGNOUT

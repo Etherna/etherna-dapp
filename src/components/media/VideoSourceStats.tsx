@@ -16,13 +16,13 @@
  */
 
 import React from "react"
+import type { VideoSource } from "@etherna/api-js"
 
 import MediaStats from "@/components/media/MediaStats"
-import type { SwarmVideoSourceRaw } from "@/types/swarm-video"
 import { convertBirate, convertBytes } from "@/utils/converters"
 
 type VideoSourceStatsProps = {
-  source: SwarmVideoSourceRaw | undefined
+  source: VideoSource | undefined
   srcUrl: string | undefined
 }
 

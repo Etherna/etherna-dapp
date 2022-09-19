@@ -16,14 +16,13 @@
  */
 
 import React, { useState } from "react"
+import type { Video } from "@etherna/api-js"
 
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline"
 
 import VideoDetailsButton from "./VideoDetailsButton"
 import VideoOffersModal from "@/components/modals/VideoOffersModal"
-import useVideoOffers from "@/hooks/useVideoOffers"
-import useSelector from "@/state/useSelector"
-import type { Video, VideoOffersStatus } from "@/types/swarm-video"
+import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 
 type VideoOffersButtonProps = {
   video: Video | null | undefined

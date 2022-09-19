@@ -16,11 +16,11 @@
 
 import { useEffect } from "react"
 import { useDispatch } from "react-redux"
+import type { BatchId, EthAddress, SSOIdentity } from "@etherna/api-js/clients"
 import type { AxiosError } from "axios"
 import type { Dispatch } from "redux"
 
 import BeeClient from "@/classes/BeeClient"
-import type { BatchId, EthAddress } from "@/classes/BeeClient/types"
 import SwarmProfile from "@/classes/SwarmProfile"
 import loginRedirect from "@/state/actions/user/login-redirect"
 import type { EnvActions } from "@/state/reducers/enviromentReducer"
@@ -32,7 +32,6 @@ import { UIActionTypes } from "@/state/reducers/uiReducer"
 import type { UserActions } from "@/state/reducers/userReducer"
 import { UserActionTypes } from "@/state/reducers/userReducer"
 import useSelector from "@/state/useSelector"
-import type { AuthIdentity } from "@/types/api-sso"
 import { addressBytes, signMessage } from "@/utils/ethereum"
 
 type AutoSigninOpts = {
@@ -154,7 +153,7 @@ export default function useAutoSignin(opts: AutoSigninOpts = {}) {
     }
   }
 
-  const fetchProfile = async (address: EthAddress, identity?: AuthIdentity) => {
+  const fetchProfile = async (address: EthAddress, identity?: SSOIdentity) => {
     dispatch({
       type: UIActionTypes.TOGGLE_LOADING_PROFILE,
       isLoadingProfile: true,

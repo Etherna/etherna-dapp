@@ -19,10 +19,10 @@ import type { EthAddress } from "@etherna/api-js/clients"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
 
 import SwarmProfile from "@/classes/SwarmProfile"
-import SwarmVideo from "@/classes@/types/api-index
-import type { VideoWithOwner } from "@/types/video"
+import SwarmVideo from "@/classes/SwarmVideo"
 import { showError } from "@/state/actions/modals"
 import useSelector from "@/state/useSelector"
+import type { VideoWithIndexes, VideoWithOwner } from "@/types/video"
 import { wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
 
@@ -35,8 +35,10 @@ const DEFAULT_SEED_LIMIT = 50
 const DEFAULT_FETCH_LIMIT = 20
 
 export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
-  const { beeClient, indexClient } = useSelector(state => state.env)
-  const [videos, setVideos] = useState<VideoWithOwner[]>()
+  const indexClient = useSelector(state => state.env.indexClient)
+  const beeClient = useSelector(state => state.env.beeClient)
+  const indexUrl = useSelector(state => state.env.indexUrl)
+  const [videos, setVideos] = useState<(VideoWithOwner & VideoWithIndexes)[]>()
   const [page, setPage] = useState(0)
   const [isFetching, setIsFetching] = useState(false)
   const [hasMore, setHasMore] = useState(true)
@@ -47,7 +49,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
   }, [page])
 
   const loadVideoProfiles = useCallback(
-    async (videos: VideoWithOwner[]) => {
+    async (videos: (VideoWithOwner & VideoWithIndexes)[]) => {
       const addresses = videos
         .filter(video => !video.owner)
         .map(video => video.ownerAddress)
@@ -103,9 +105,16 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
         const video = new VideoDeserializer(beeClient.url).deserialize(videoRaw, {
           reference: indexVideo.lastValidManifest?.hash ?? "",
         })
-        const videoOwner: VideoWithOwner = {
+        const videoOwner: VideoWithOwner & VideoWithIndexes = {
           ...video,
           owner: undefined,
+          indexesStatus: {
+            [indexUrl]: {
+              indexReference: indexVideo.id,
+              totDownvotes: indexVideo.totDownvotes,
+              totUpvotes: indexVideo.totUpvotes,
+            },
+          },
         }
         return videoOwner
       })
@@ -125,7 +134,16 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
     }
 
     setIsFetching(false)
-  }, [hasMore, page, opts.seedLimit, opts.fetchLimit, indexClient, loadVideoProfiles, beeClient])
+  }, [
+    hasMore,
+    page,
+    opts.seedLimit,
+    opts.fetchLimit,
+    indexClient,
+    loadVideoProfiles,
+    beeClient,
+    indexUrl,
+  ])
 
   // Returns
   const loadMore = useCallback(() => {

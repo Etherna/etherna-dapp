@@ -16,19 +16,18 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
+import type { GatewayBatch, PostageBatch } from "@etherna/api-js/clients"
+import { BatchesHandler } from "@etherna/api-js/handlers"
+import { BatchUpdateType } from "@etherna/api-js/stores"
+import { getBatchSpace, parseGatewayBatch, parsePostageBatch } from "@etherna/api-js/utils"
 import type { Dispatch } from "redux"
 
-import type { PostageBatch } from "@/classes/BeeClient/types"
-import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
 import { useBeeAuthentication } from "@/state/hooks/ui"
 import type { EnvActions } from "@/state/reducers/enviromentReducer"
 import { EnvActionTypes } from "@/state/reducers/enviromentReducer"
 import type { UserActions } from "@/state/reducers/userReducer"
 import { UserActionTypes } from "@/state/reducers/userReducer"
 import useSelector from "@/state/useSelector"
-import { BatchUpdateType } from "@/stores/batches"
-import type { GatewayBatch } from "@/types/api-gateway"
-import { getBatchSpace, parseGatewayBatch, parsePostageBatch } from "@/utils/batches"
 import dayjs from "@/utils/dayjs"
 
 type UseBatchesOpts = {
@@ -149,11 +148,12 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     setIsCreatingBatch(true)
     setError(undefined)
 
-    const batchesManager = new SwarmBatchesManager({
+    const batchesManager = new BatchesHandler({
       address: address!,
       beeClient,
       gatewayClient,
       gatewayType,
+      network: import.meta.env.DEV ? "testnet" : "mainnet",
     })
     const depth = 20
     const { amount } = await batchesManager.calcDepthAmount(

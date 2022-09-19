@@ -16,14 +16,14 @@
  */
 
 import React, { useMemo } from "react"
+import type { ImageRaw } from "@etherna/api-js"
 
 import SwarmImage from "@/classes/SwarmImage"
 import MediaStats from "@/components/media/MediaStats"
 import useSelector from "@/state/useSelector"
-import type { SwarmImageRaw } from "@/types/swarm-image"
 
 type ImageSourcePreviewProps = {
-  image?: SwarmImageRaw | null
+  image?: ImageRaw | null
 }
 
 const ImageSourcePreview: React.FC<ImageSourcePreviewProps> = ({ image }) => {

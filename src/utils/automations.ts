@@ -16,8 +16,34 @@
 
 import { urlOrigin } from "@etherna/api-js/utils"
 
-import { parseLocalStorage } from "./loca@/types/extension-host
+import { parseLocalStorage } from "./local-storage"
+import loginRedirect from "@/state/actions/user/login-redirect"
+import logoutRedirect from "@/state/actions/user/logout-redirect"
 import type { IndexExtensionHost } from "@/types/extension-host"
+
+export const autoRedirect = () => {
+  if (window.location.host.startsWith("www")) {
+    const location = new URL(window.location.href)
+    location.host = location.host.replace("www.", "")
+    window.location.href = location.href
+  }
+}
+
+export const autoSigninSignout = () => {
+  const searchParams = new URLSearchParams(window.location.search)
+
+  // login redirect
+  let service = searchParams.get("signin")
+  if (service) {
+    loginRedirect(service)
+  }
+
+  // logout redirect
+  service = searchParams.get("signout")
+  if (service) {
+    logoutRedirect(service)
+  }
+}
 
 /**
  * Update the local storage with the
@@ -26,7 +52,7 @@ import type { IndexExtensionHost } from "@/types/extension-host"
  * @param localSettingKey Local storage key of the current service url
  * @param newUrl New url of the service
  */
-export default function autoUpgradeEthernaService(localSettingKey: string, newUrl: string) {
+export const autoUpgradeEthernaService = (localSettingKey: string, newUrl: string) => {
   const localUrls = parseLocalStorage<string | IndexExtensionHost[]>(localSettingKey)
 
   if (!localUrls) return
@@ -43,7 +69,7 @@ export default function autoUpgradeEthernaService(localSettingKey: string, newUr
   }
 }
 
-function upgradeUrl(url: string, upgradeUrl: string) {
+const upgradeUrl = (url: string, upgradeUrl: string) => {
   if (urlOrigin(url) !== urlOrigin(upgradeUrl)) return url
 
   return upgradeUrl

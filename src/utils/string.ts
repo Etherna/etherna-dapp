@@ -27,3 +27,14 @@ export const stringPadLeft = (value: number | null) => {
   const pad = "0"
   return (new Array(length + 1).join(pad) + value).slice(-length)
 }
+
+const hexes = Array.from({ length: 256 }, (v, i) => i.toString(16).padStart(2, "0"))
+
+export const bytesToHex = (bytes: Uint8Array) => {
+  if (!(bytes instanceof Uint8Array)) throw new Error("Expected Uint8Array")
+  let hex = ""
+  for (let i = 0; i < bytes.length; i++) {
+    hex += hexes[bytes[i]]
+  }
+  return hex
+}

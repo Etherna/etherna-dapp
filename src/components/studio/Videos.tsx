@@ -17,6 +17,8 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Link, Navigate } from "react-router-dom"
+import type { Profile, Video } from "@etherna/api-js"
+import { urlHostname } from "@etherna/api-js/utils"
 import classNames from "classnames"
 
 import { TrashIcon, PencilIcon, InformationCircleIcon } from "@heroicons/react/24/solid"
@@ -26,7 +28,6 @@ import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
 
 import TableVideoPlaceholder from "../placeholders/TableVideoPlaceholder"
 import VideoDeleteModal from "./video-editor/VideoDeleteModal"
-import SwarmVideo from "@/classes/SwarmVideo"
 import Image from "@/components/common/Image"
 import VideoOffersModal from "@/components/modals/VideoOffersModal"
 import { Button } from "@/components/ui/actions"
@@ -34,19 +35,19 @@ import { Badge, Table, Tooltip } from "@/components/ui/display"
 import { Select } from "@/components/ui/inputs"
 import useUserVideos from "@/hooks/useUserVideos"
 import type { VideosSource } from "@/hooks/useUserVideos"
+import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import useVideosIndexStatus from "@/hooks/useVideosIndexStatus"
 import useVideosResources from "@/hooks/useVideosResources"
 import routes from "@/routes"
 import useSelector from "@/state/useSelector"
-import type { Profile } from "@/types/swarm-profile"
-import type { Video, VideoOffersStatus } from "@/types/swarm-video"
+import type { VideoWithIndexes } from "@/types/video"
 import { convertTime } from "@/utils/converters"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
 import { encodedSvg } from "@/utils/svg"
-import { urlHostname } from "@/utils/urls"
 
 const Videos: React.FC = () => {
+  const defaultBatchId = useSelector(state => state.user.defaultBatchId)
   const profileInfo = useSelector(state => state.profile)
   const address = useSelector(state => state.user.address)
   const indexUrl = useSelector(state => state.env.indexUrl)
@@ -61,7 +62,7 @@ const Videos: React.FC = () => {
   const [source, setSource] = useState(sources[0].id)
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
-  const [selectedVideos, setSelectedVideos] = useState<Video[]>([])
+  const [selectedVideos, setSelectedVideos] = useState<VideoWithIndexes[]>([])
   const [selectedVideoOffers, setSelectedVideoOffers] = useState<{
     video: Video
     offersStatus: VideoOffersStatus
@@ -74,13 +75,14 @@ const Videos: React.FC = () => {
 
   const profile: Profile = useMemo(() => {
     return {
+      batchId: defaultBatchId!,
       address: address!,
       avatar: profileInfo.avatar ?? null,
       cover: profileInfo.cover ?? null,
       name: profileInfo.name ?? shortenEthAddr(address),
       description: profileInfo.description ?? null,
     }
-  }, [address, profileInfo])
+  }, [address, profileInfo, defaultBatchId])
 
   const { isFetching, videos, total, fetchPage, deleteVideosFromSource } = useUserVideos({
     source: currentSource,
@@ -230,7 +232,14 @@ const Videos: React.FC = () => {
                   />
                 </div>
                 <div className="flex flex-grow flex-col items-start space-y-2">
-                  <Link className="" to={routes.watch(item.indexReference || item.reference)}>
+                  <Link
+                    className=""
+                    to={routes.watch(
+                      item.indexesStatus[
+                        currentSource.type === "index" ? currentSource.indexUrl : ""
+                      ].indexReference || item.reference
+                    )}
+                  >
                     <h3 className="text-base font-bold leading-tight">{item.title}</h3>
                   </Link>
                   <div className="grid auto-cols-max grid-flow-col gap-2 lg:hidden">
@@ -273,7 +282,7 @@ const Videos: React.FC = () => {
             width: "1%",
             render: item => (
               <div className="flex items-center">
-                {(!item.v || +item.v < +SwarmVideo.lastVersion || !item.batchId) && (
+                {!item.batchId && (
                   <Tooltip text="Migration required">
                     <div>
                       <Badge color="warning" rounded>

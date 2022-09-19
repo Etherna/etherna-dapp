@@ -16,6 +16,7 @@
  */
 
 import React from "react"
+import { urlOrigin, urlPath } from "@etherna/api-js/utils"
 
 import {
   BookmarkIcon,
@@ -31,7 +32,6 @@ import FeedbackLink from "./FeedbackLink"
 import GatewayExtension from "@/components/env/GatewayExtension"
 import { Tabbar } from "@/components/ui/navigation"
 import routes from "@/routes"
-import { urlOrigin, urlPath } from "@/utils/urls"
 
 const TabbarNavigation: React.FC = () => {
   return (

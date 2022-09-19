@@ -15,14 +15,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react"
-import type {
-  Playlist,
-  PlaylistType,
-  PlaylistVideo,
-  UserPlaylists,
-  UserPlaylistsRaw,
-  Video,
-} from "@etherna/api-js"
+import type { Playlist, PlaylistVideo, UserPlaylists, Video } from "@etherna/api-js"
 import type { EthAddress, Reference } from "@etherna/api-js/clients"
 
 import SwarmPlaylist from "@/classes/SwarmPlaylist"

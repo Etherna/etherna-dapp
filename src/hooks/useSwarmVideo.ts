@@ -16,21 +16,25 @@
 
 import { useCallback, useEffect, useState } from "react"
 import type { Video } from "@etherna/api-js"
+import type { IndexVideo } from "@etherna/api-js/clients"
 
 import SwarmVideo from "@/classes/SwarmVideo"
 import useSelector from "@/state/useSelector"
+import type { VideoWithIndexes } from "@/types/video"
+import { nullablePromise } from "@/utils/promise"
 
 type SwarmVideoOptions = {
   reference: string
-  routeState?: Video
-  fetchProfile?: boolean
-  fetchFromCache?: boolean
+  routeState?: VideoWithIndexes | null
+  fetchIndexStatus?: boolean
 }
 
 export default function useSwarmVideo(opts: SwarmVideoOptions) {
-  const { beeClient, indexClient } = useSelector(state => state.env)
+  const beeClient = useSelector(state => state.env.beeClient)
+  const indexClient = useSelector(state => state.env.indexClient)
+  const indexUrl = useSelector(state => state.env.indexUrl)
   const [reference, setReference] = useState(opts.reference)
-  const [video, setVideo] = useState<Video | null>(opts.routeState ?? null)
+  const [video, setVideo] = useState<VideoWithIndexes | null>(opts.routeState ?? null)
   const [isLoading, setIsloading] = useState(false)
   const [notFound, setNotFound] = useState(false)
 
@@ -46,14 +50,35 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
     setIsloading(true)
 
     try {
+      const isSwarmReference = beeClient.isValidHash(reference)
       const videoReader = new SwarmVideo.Reader(reference, {
         beeClient,
         indexClient,
       })
-      const video = await videoReader.download()
+
+      let [video, indexVideo] = await Promise.all([
+        videoReader.download() as Promise<VideoWithIndexes>,
+        isSwarmReference
+          ? nullablePromise(indexClient.videos.fetchVideoFromHash(reference))
+          : Promise.resolve(null),
+      ])
+      video.indexesStatus = {}
 
       if (!video) {
         throw new Error("Video not found")
+      }
+
+      indexVideo =
+        indexVideo ?? "lastValidManifest" in (videoReader.rawResponse ?? {})
+          ? (videoReader.rawResponse as IndexVideo)
+          : null
+
+      if (indexVideo) {
+        video.indexesStatus[indexUrl] = {
+          indexReference: indexVideo.id,
+          totDownvotes: indexVideo.totDownvotes,
+          totUpvotes: indexVideo.totUpvotes,
+        }
       }
 
       setVideo(video)
@@ -63,7 +88,7 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
     } finally {
       setIsloading(false)
     }
-  }, [beeClient, indexClient, reference])
+  }, [beeClient, indexClient, indexUrl, reference])
 
   return {
     video,

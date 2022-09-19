@@ -16,15 +16,16 @@
  */
 
 import React, { useCallback, useState } from "react"
+import type { Video } from "@etherna/api-js"
+import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
 
-import SwarmResourcesIO from "@/classes/SwarmResources"
 import { Button, Modal } from "@/components/ui/actions"
 import { SegmentedControl } from "@/components/ui/inputs"
+import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import { showError } from "@/state/actions/modals"
 import useSelector from "@/state/useSelector"
-import type { Video, VideoOffersStatus } from "@/types/swarm-video"
 
 type VideoOffersModalProps = {
   show: boolean
@@ -138,7 +139,9 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
           <tbody>
             {offersStatus.globalOffers.map(resourceStatus => (
               <tr key={resourceStatus.reference}>
-                <th>{SwarmResourcesIO.getVideoReferenceLabel(video, resourceStatus.reference)}</th>
+                <th>
+                  {EthernaResourcesHandler.videoReferenceLabel(video, resourceStatus.reference)}
+                </th>
                 <td>
                   <Tippy
                     content={

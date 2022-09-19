@@ -16,11 +16,12 @@
  */
 
 import React, { useCallback } from "react"
+import type { Video } from "@etherna/api-js"
 
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline"
 
 import { Badge } from "../ui/display"
-import type { Video, VideoOffersStatus } from "@/types/swarm-video"
+import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 
 type VideoOffersBadgeProps = {
   video: Video | null | undefined

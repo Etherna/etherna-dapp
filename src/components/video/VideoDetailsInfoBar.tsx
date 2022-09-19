@@ -15,7 +15,7 @@
  *
  */
 
-import React from "react"
+import React, { useMemo } from "react"
 import classNames from "classnames"
 
 import VideoOffersBadge from "./VideoOffersBadge"
@@ -23,28 +23,33 @@ import VideoOffersButton from "./VideoOffersButton"
 import VideoRating from "./VideoRating"
 import VideoShareButton from "./VideoShareButton"
 import VideoStatusBadge from "./VideoStatusBadge"
+import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import useVideoOffers from "@/hooks/useVideoOffers"
 import useSelector from "@/state/useSelector"
-import type { Video, VideoOffersStatus } from "@/types/swarm-video"
+import type { VideoWithIndexes } from "@/types/video"
 import dayjs from "@/utils/dayjs"
 
 type VideoDetailsInfoBarProps = {
-  video: Video
+  video: VideoWithIndexes
   videoOffers?: VideoOffersStatus
 }
 
 const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoOffers }) => {
+  const indexUrl = useSelector(state => state.env.indexUrl)
   const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
   const { videoOffersStatus, offerResources, unofferResources } = useVideoOffers(video, {
     routeState: videoOffers,
     disable: isStandaloneGateway,
   })
+  const indexStatus = useMemo(() => {
+    return video.indexesStatus[indexUrl]
+  }, [indexUrl, video.indexesStatus])
 
   return (
     <div className="flex flex-col">
       <div className="flex flex-wrap">
         <div className="mb-4 flex w-full flex-wrap items-start space-x-4 py-1">
-          <VideoStatusBadge status={video.isVideoOnIndex ? "available" : "unindexed"} />
+          <VideoStatusBadge status={indexStatus?.indexReference ? "available" : "unindexed"} />
           {!isStandaloneGateway && (
             <VideoOffersBadge video={video} offersStatus={videoOffersStatus?.offersStatus} />
           )}
@@ -67,14 +72,17 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
 
         <div className="w-full overflow-x-auto py-2 scrollbar-none md:ml-auto md:w-auto md:overflow-x-hidden">
           <div className="flex items-center space-x-5 md:flex-row-reverse md:space-x-8 md:space-x-reverse">
-            {video.indexReference && (
+            {indexStatus && (
               <VideoRating
-                videoId={video.indexReference}
-                upvotes={video.totUpvotes}
-                downvotes={video.totDownvotes}
+                videoId={indexStatus.indexReference}
+                upvotes={indexStatus.totUpvotes}
+                downvotes={indexStatus.totDownvotes}
               />
             )}
-            <VideoShareButton reference={video.reference} indexReference={video.indexReference} />
+            <VideoShareButton
+              reference={video.reference}
+              indexReference={indexStatus.indexReference}
+            />
             {!isStandaloneGateway && (
               <VideoOffersButton
                 video={video}

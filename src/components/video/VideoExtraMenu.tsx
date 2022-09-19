@@ -15,7 +15,7 @@
  *
  */
 
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline"
 import { FlagIcon } from "@heroicons/react/24/solid"
@@ -24,15 +24,20 @@ import { ReactComponent as ManifestIcon } from "@/assets/icons/manifest.svg"
 import VideoExtraMenuManifest from "./VideoExtraMenuManifest"
 import VideoExtraMenuReport from "./VideoExtraMenuReport"
 import { Dropdown } from "@/components/ui/actions"
-import type { Video } from "@/types/swarm-video"
+import useSelector from "@/state/useSelector"
+import type { VideoWithIndexes } from "@/types/video"
 
 type VideoExtraMenuProps = {
-  video: Video
+  video: VideoWithIndexes
 }
 
 const VideoExtraMenu: React.FC<VideoExtraMenuProps> = ({ video }) => {
+  const indexUrl = useSelector(state => state.env.indexUrl)
   const [showReportModal, setShowReportModal] = useState(false)
   const [showManifestModal, setShowManifestModal] = useState(false)
+  const indexReference = useMemo(() => {
+    return video.indexesStatus[indexUrl]?.indexReference
+  }, [indexUrl, video.indexesStatus])
 
   return (
     <>
@@ -47,7 +52,7 @@ const VideoExtraMenu: React.FC<VideoExtraMenuProps> = ({ video }) => {
           >
             Manifest information
           </Dropdown.Item>
-          {video.indexReference && (
+          {indexReference && (
             <Dropdown.Item icon={<FlagIcon aria-hidden />} action={() => setShowReportModal(true)}>
               Report video
             </Dropdown.Item>
@@ -55,10 +60,10 @@ const VideoExtraMenu: React.FC<VideoExtraMenuProps> = ({ video }) => {
         </Dropdown.Menu>
       </Dropdown>
 
-      {video.indexReference && (
+      {indexReference && (
         <VideoExtraMenuReport
           show={showReportModal}
-          videoId={video.indexReference}
+          videoId={indexReference}
           videoReference={video.reference}
           setShow={setShowReportModal}
         />

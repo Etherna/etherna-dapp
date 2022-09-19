@@ -14,8 +14,6 @@
  *  limitations under the License.
  */
 
-import { Crop } from "react-image-crop"
-
 import type { UIState } from "@/types/app-state"
 
 export const UIActionTypes = {

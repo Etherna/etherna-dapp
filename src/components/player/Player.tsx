@@ -16,6 +16,7 @@
  */
 
 import React, { useRef, useState, useEffect, useCallback, useMemo } from "react"
+import type { Profile, VideoSource } from "@etherna/api-js"
 import Axios from "axios"
 import type { Canceler } from "axios"
 import classNames from "classnames"
@@ -33,8 +34,6 @@ import PlayerPlaceholder from "@/components/placeholders/PlayerPlaceholder"
 import { PlayerContextProvider, PlayerReducerTypes } from "@/context/player-context"
 import { usePlayerState } from "@/context/player-context/hooks"
 import useVideoTracking from "@/hooks/useVideoTracking"
-import type { Profile } from "@/types/swarm-profile"
-import type { VideoSource } from "@/types/swarm-video"
 import { isTouchDevice } from "@/utils/browser"
 import http from "@/utils/request"
 
@@ -43,7 +42,7 @@ const DEFAULT_SKIP = 5
 type PlayerProps = {
   hash: string
   title: string | undefined
-  owner: Profile | undefined
+  owner: Profile | undefined | null
   sources: VideoSource[]
   originalQuality?: string | null
   thumbnailUrl?: string | null

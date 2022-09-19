@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import type { BatchId, EthAddress } from "@/classes/BeeClient/types"
-import type { GatewayBatch } from "@/types/api-gateway"
+import type { BatchId, EthAddress, GatewayBatch } from "@etherna/api-js/clients"
+
 import type { UserState } from "@/types/app-state"
 
 export const UserActionTypes = {

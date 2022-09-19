@@ -24,5 +24,7 @@ export type VideoWithIndexes = Video & { indexesStatus: IndexesStatus }
 export type IndexesStatus = {
   [url: string]: {
     indexReference: string
+    totUpvotes: number
+    totDownvotes: number
   }
 }
