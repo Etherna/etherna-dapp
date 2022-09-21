@@ -17,12 +17,13 @@
 
 import React, { useEffect } from "react"
 
-const AlphaPassRedirect = () => {
+const PartyRedirect = () => {
   useEffect(() => {
-    window.location.href = "https://sso.etherna.io/AlphaPass"
+    window.location.href =
+      "https://www.eventbrite.it/e/ethernas-community-party-tickets-413257784157"
   }, [])
 
   return <></>
 }
 
-export default AlphaPassRedirect
+export default PartyRedirect

@@ -27,9 +27,10 @@ import StateProviderRoute from "./route-wrappers/StateProviderRoute"
 import StudioLayoutRoute from "./route-wrappers/StudioLayoutRoute"
 import VideoRoute from "./route-wrappers/VideoRoute"
 import { PageLoader } from "@/components/ui/layout"
+import AlphaPassRedirect from "@/pages/alpha-pass"
+import PartyRedirectPage from "@/pages/devcon-party"
 
 const AsyncHome = lazy(() => import("@/pages/home"))
-const AsyncAlphaPass = lazy(() => import("@/pages/alpha-pass"))
 const AsyncFrames = lazy(() => import("@/pages/frames"))
 const AsyncFollowing = lazy(() => import("@/pages/following"))
 const AsyncPlaylists = lazy(() => import("@/pages/playlists"))
@@ -55,11 +56,6 @@ const Home = () => (
 const Frames = () => (
   <Suspense fallback={<PageLoader />}>
     <AsyncFrames />
-  </Suspense>
-)
-const AlphaPass = () => (
-  <Suspense fallback={<PageLoader />}>
-    <AsyncAlphaPass />
   </Suspense>
 )
 const Following = () => (
@@ -149,7 +145,7 @@ const Router = () => {
           <Route path="" element={<AuthenticateRoute />}>
             <Route path="" element={<AppLayoutRoute />}>
               <Route path="/" element={<Home />} />
-              <Route path="/request-alpha-pass" element={<AlphaPass />} />
+              <Route path="/request-alpha-pass" element={<AlphaPassRedirect />} />
               <Route path="/frames" element={<Frames />} />
               <Route path="/following" element={<Following />} />
               <Route path="/playlists" element={<Playlists />} />
@@ -183,6 +179,8 @@ const Router = () => {
           <Route path="/embed" element={<VideoRoute />}>
             <Route path=":hash" element={<Embed />} />
           </Route>
+
+          <Route path="/devconvi-party" element={<PartyRedirectPage />} />
 
           <Route path="*" element={<NotFound />} />
         </Route>
