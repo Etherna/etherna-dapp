@@ -15,26 +15,14 @@
  *
  */
 
-import React from "react"
+import React, { useEffect } from "react"
 
-import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
-import SEO from "@/components/layout/SEO"
-import { Container } from "@/components/ui/layout"
-import AlphaPassForm from "@/components/user/AlphaPassForm"
+const AlphaPassRedirect = () => {
+  useEffect(() => {
+    window.location.href = "https://sso.etherna.io/AlphaPass"
+  }, [])
 
-const AlphaPassPage = () => {
-  return (
-    <AppLayoutWrapper>
-      <SEO title="Request Alpha Pass" />
-
-      <Container fluid>
-        <div className="mx-auto w-full max-w-xl">
-          <h1>Request Alpha Pass</h1>
-          <AlphaPassForm />
-        </div>
-      </Container>
-    </AppLayoutWrapper>
-  )
+  return <></>
 }
 
-export default AlphaPassPage
+export default AlphaPassRedirect
