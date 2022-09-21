@@ -27,6 +27,7 @@ import StateProviderRoute from "./route-wrappers/StateProviderRoute"
 import StudioLayoutRoute from "./route-wrappers/StudioLayoutRoute"
 import VideoRoute from "./route-wrappers/VideoRoute"
 import { PageLoader } from "@/components/ui/layout"
+import PartyRedirectPage from "@/pages/devcon-party"
 
 const AsyncHome = lazy(() => import("@/pages/home"))
 const AsyncAlphaPass = lazy(() => import("@/pages/alpha-pass"))
@@ -183,6 +184,8 @@ const Router = () => {
           <Route path="/embed" element={<VideoRoute />}>
             <Route path=":hash" element={<Embed />} />
           </Route>
+
+          <Route path="/devconvi-party" element={<PartyRedirectPage />} />
 
           <Route path="*" element={<NotFound />} />
         </Route>
