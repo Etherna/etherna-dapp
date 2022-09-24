@@ -25,13 +25,15 @@ import SignedInMenuItems from "./SignedInMenuItems"
 import SigninButton from "./SigninButton"
 import { Button, Dropdown } from "@/components/ui/actions"
 import { Avatar, Skeleton } from "@/components/ui/display"
-import useSignout from "@/state/hooks/user/useSignout"
-import useSelector from "@/state/useSelector"
+import useSignout from "@/hooks/useSignout"
+import useUIStore from "@/stores/ui"
+import useUserStore from "@/stores/user"
 
 const UserMenu: React.FC = () => {
-  const { avatar } = useSelector(state => state.profile)
-  const { isSignedIn, address } = useSelector(state => state.user)
-  const { isLoadingProfile } = useSelector(state => state.ui)
+  const avatar = useUserStore(state => state.profile?.avatar)
+  const isSignedIn = useUserStore(state => state.isSignedIn)
+  const address = useUserStore(state => state.address)
+  const isLoadingProfile = useUIStore(state => state.isLoadingProfile)
   const { signout } = useSignout()
 
   const isSigningIn = isSignedIn === undefined || isLoadingProfile

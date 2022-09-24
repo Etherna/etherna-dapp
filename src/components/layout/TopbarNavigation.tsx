@@ -25,30 +25,21 @@ import AlphaWarning from "@/components/modals/AlphaWarning"
 import { Topbar } from "@/components/ui/navigation"
 import UserCredit from "@/components/user/UserCredit"
 import UserMenu from "@/components/user/UserMenu"
-import { LayoutReducerTypes } from "@/context/layout-context"
-import { useLayoutState } from "@/context/layout-context/hooks"
 import routes from "@/routes"
-import useSelector from "@/state/useSelector"
+import useUIStore from "@/stores/ui"
+import useUserStore from "@/stores/user"
 
 const TopbarNavigation: React.FC = () => {
-  const { isSignedIn } = useSelector(state => state.user)
-  const { isLoadingProfile } = useSelector(state => state.ui)
-
-  const [state, dispatch] = useLayoutState()
-  const { floatingSidebar, hideSidebar } = state
-
-  const toggleSidebar = useCallback(() => {
-    dispatch({
-      type: LayoutReducerTypes.SET_SIDEBAR_HIDDEN,
-      hideSidebar: !hideSidebar,
-    })
-  }, [dispatch, hideSidebar])
+  const isSignedIn = useUserStore(state => state.isSignedIn)
+  const isLoadingProfile = useUIStore(state => state.isLoadingProfile)
+  const floatingSidebar = useUIStore(state => state.floatingSidebar)
+  const toggleSidebar = useUIStore(state => state.toggleSidebar)
 
   return (
     <Topbar>
       <Topbar.Group>
         {floatingSidebar && (
-          <Topbar.Item onClick={toggleSidebar} hideMobile>
+          <Topbar.Item onClick={() => toggleSidebar(true)} hideMobile>
             <Bars2Icon width={22} strokeWidth={2} />
           </Topbar.Item>
         )}

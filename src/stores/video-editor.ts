@@ -12,6 +12,12 @@ export type VideoEditorQueueSource = "source" | "thumbnail" | "caption"
 
 export type VideoEditorQueueType = "upload" | "encoding"
 
+export type PublishStatus = {
+  source: VideoEditorPublishSource
+  ok: boolean
+  type: "add" | "remove"
+}
+
 export type VideoEditorPublishSource = {
   source: VideoEditorPublishSourceType
   /** the id for playlists or the url for the index */
@@ -27,6 +33,7 @@ export type VideoEditorQueue = {
   source: VideoEditorQueueSource
   identifier: string
   completion: number | null
+  size?: number
   error?: string
 }
 
@@ -35,6 +42,8 @@ export type VideoEditorState = {
   reference: string | undefined
   /** Current editor status */
   status: "creating" | "editing" | "saved" | "error"
+  /** Current batch status */
+  batchStatus?: "creating" | "fetching" | "updating" | "saturated"
   /** Video metadata */
   video: Video
   /** Whether the user made come changes */
@@ -54,10 +63,12 @@ export type VideoEditorState = {
   }[]
   /** Sources where to publish the video to */
   saveTo: VideoEditorPublishSource[]
+  /** Result status of every sources */
+  publishingResults?: PublishStatus[]
 }
 
 export type VideoEditorActions = {
-  addToqueue(type: VideoEditorQueueType, source: VideoEditorQueueSource, identifier: string): void
+  addToQueue(type: VideoEditorQueueType, source: VideoEditorQueueSource, identifier: string): void
   addVideoSource(
     quality: VideoQuality,
     reference: string,
@@ -66,22 +77,29 @@ export type VideoEditorActions = {
     src: string
   ): void
   removeFromQueue(identifier: string): void
-  removeThumbnail(): void
   removeVideoSource(quality: VideoQuality): void
   reset(): void
+  setBatchId(batchId: string): void
   setEditingVideo(video: Video): void
+  setQueueError(identifier: string, error: string): void
   setIsOffered(offered: boolean): void
   setPublishingSources(sources: VideoEditorPublishSource[]): void
-  setThumbnail(thumbnail: Image): void
+  setPublishingResults(results: PublishStatus[] | undefined): void
+  setThumbnail(thumbnail: Image | null): void
   togglePinContent(enabled: boolean): void
   togglePublishTo(source: VideoEditorPublishSourceType, identifier: string, enabled: boolean): void
   toggleOfferResources(enabled: boolean): void
+  updateBatchStatus(status: VideoEditorState["batchStatus"]): void
   updateEditorStatus(status: "saved" | "error"): void
   updateTitle(title: string): void
   updateDescription(description: string): void
-  updateQueue(identifier: string, completion: number): void
+  updateQueueIdentifier(oldIdentifier: string, newIdentifier: string): void
+  updateQueueType(identifier: string, type: VideoEditorQueueType): void
+  updateQueueCompletion(identifier: string, completion: number): void
+  updateQueueSize(identifier: string, size: number): void
   updateMetadata(quality: VideoQuality, duration: number): void
   updateVideoReference(reference: string): void
+  updateSaveTo(list: VideoEditorPublishSource[]): void
 }
 
 const getInitialState = (): VideoEditorState => ({
@@ -115,7 +133,7 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
       persist(
         immer(set => ({
           ...getInitialState(),
-          addToqueue(type, source, identifier) {
+          addToQueue(type, source, identifier) {
             set(state => {
               state.queue.push({
                 type,
@@ -144,12 +162,6 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
               state.hasChanges = true
             })
           },
-          removeThumbnail() {
-            set(state => {
-              state.video.thumbnail = null
-              state.hasChanges = true
-            })
-          },
           removeVideoSource(quality) {
             set(state => {
               state.video.sources = state.video.sources.filter(s => s.quality !== quality)
@@ -159,9 +171,25 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
           reset() {
             set(getInitialState())
           },
+          setBatchId(batchId) {
+            set(state => {
+              state.video.batchId = batchId
+              state.hasChanges = true
+            })
+          },
           setEditingVideo(video) {
             set(state => {
               state.video = video
+              state.reference = video.reference
+              state.status = "editing"
+            })
+          },
+          setQueueError(identifier, error) {
+            set(state => {
+              const queueItem = state.queue.find(q => q.identifier === identifier)
+              if (queueItem) {
+                queueItem.error = error
+              }
             })
           },
           setIsOffered(offered) {
@@ -172,6 +200,11 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
           setPublishingSources(sources) {
             set(state => {
               state.saveTo = sources
+            })
+          },
+          setPublishingResults(results) {
+            set(state => {
+              state.publishingResults = results
             })
           },
           setThumbnail(thumbnail) {
@@ -203,6 +236,11 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
               state.hasChanges = true
             })
           },
+          updateBatchStatus(status) {
+            set(state => {
+              state.batchStatus = status
+            })
+          },
           updateEditorStatus(status) {
             set(state => {
               state.status = status
@@ -221,7 +259,23 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
               state.hasChanges = true
             })
           },
-          updateQueue(identifier, completion) {
+          updateQueueIdentifier(oldIdentifier, newIdentifier) {
+            set(state => {
+              const queueItem = state.queue.find(q => q.identifier === oldIdentifier)
+              if (queueItem) {
+                queueItem.identifier = newIdentifier
+              }
+            })
+          },
+          updateQueueType(identifier, type) {
+            set(state => {
+              const queueItem = state.queue.find(q => q.identifier === identifier)
+              if (queueItem) {
+                queueItem.type = type
+              }
+            })
+          },
+          updateQueueCompletion(identifier, completion) {
             set(state => {
               const index = state.queue.findIndex(q => q.identifier === identifier)
               if (index >= 0) {
@@ -230,10 +284,25 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
               state.hasChanges = true
             })
           },
+          updateQueueSize(identifier, size) {
+            set(state => {
+              const index = state.queue.findIndex(q => q.identifier === identifier)
+              if (index >= 0) {
+                state.queue[index].size = size
+              }
+              state.hasChanges = true
+            })
+          },
           updateMetadata(quality, duration) {
             set(state => {
               state.video.originalQuality = quality
               state.video.duration = duration
+              state.hasChanges = true
+            })
+          },
+          updateSaveTo(list) {
+            set(state => {
+              state.saveTo = list
               state.hasChanges = true
             })
           },
@@ -247,6 +316,12 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
         {
           name: "etherna:video-editor",
           getStorage: () => sessionStorage,
+          serialize(state) {
+            if (state.state.batchStatus === "creating" && !state.state.video.batchId) {
+              state.state.batchStatus = undefined
+            }
+            return JSON.stringify(state)
+          },
         }
       )
     )

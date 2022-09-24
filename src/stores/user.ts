@@ -1,5 +1,5 @@
 import type { Profile } from "@etherna/api-js"
-import type { BatchId, EthAddress } from "@etherna/api-js/clients"
+import type { BatchId, EthAddress, GatewayBatch } from "@etherna/api-js/clients"
 import create from "zustand"
 import { persist, devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
@@ -17,6 +17,7 @@ export type UserState = {
   credit?: number | null
   creditUnlimited?: boolean
   defaultBatchId?: BatchId
+  batches: GatewayBatch[]
   isSignedIn?: boolean
   isSignedInGateway?: boolean
 }
@@ -25,18 +26,15 @@ export type UserActions = {
   setProfile(profile: Profile): void
   setCredit(credit: number | null, unlimited?: boolean): void
   setDefaultBatchId(batchId: BatchId): void
-  updateIdentity(
-    address: EthAddress,
-    prevAddresses: EthAddress[],
-    wallet: WalletType,
-    isSignedIn: boolean,
-    isSignedInGateway: boolean
-  ): void
+  setBatches(batches: GatewayBatch[]): void
+  updateIdentity(address: EthAddress, prevAddresses: EthAddress[], wallet: WalletType): void
+  updateSignedIn(isSignedIn: boolean, isSignedInGateway: boolean): void
 }
 
 const getInitialState = (): UserState => ({
   address: undefined,
   profile: undefined,
+  batches: [],
 })
 
 const useUserStore = create<UserState & UserActions>()(
@@ -51,6 +49,11 @@ const useUserStore = create<UserState & UserActions>()(
               state.creditUnlimited = unlimited
             })
           },
+          setBatches(batches) {
+            set(state => {
+              state.batches = batches
+            })
+          },
           setDefaultBatchId(batchId) {
             set(state => {
               state.defaultBatchId = batchId
@@ -61,11 +64,15 @@ const useUserStore = create<UserState & UserActions>()(
               state.profile = profile
             })
           },
-          updateIdentity(address, prevAddresses, wallet, isSignedIn, isSignedInGateway) {
+          updateIdentity(address, prevAddresses, wallet) {
             set(state => {
               state.address = address
               state.prevAddresses = prevAddresses
               state.currentWallet = wallet
+            })
+          },
+          updateSignedIn(isSignedIn, isSignedInGateway) {
+            set(state => {
               state.isSignedIn = isSignedIn
               state.isSignedInGateway = isSignedInGateway
             })

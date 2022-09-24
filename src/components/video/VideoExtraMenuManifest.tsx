@@ -23,7 +23,7 @@ import { FilmIcon, PhotoIcon } from "@heroicons/react/20/solid"
 import { ReactComponent as ManifestIcon } from "@/assets/icons/manifest.svg"
 
 import { Button, Modal } from "../ui/actions"
-import useSelector from "@/state/useSelector"
+import useClientsStore from "@/stores/clients"
 
 type VideoExtraMenuManifestProps = {
   video: Video
@@ -36,7 +36,7 @@ const VideoExtraMenuManifest: React.FC<VideoExtraMenuManifestProps> = ({
   show,
   setShow,
 }) => {
-  const beeClient = useSelector(state => state.env.beeClient)
+  const beeClient = useClientsStore(state => state.beeClient)
 
   const sources = useMemo(() => {
     const references = EthernaResourcesHandler.videoReferences(video)

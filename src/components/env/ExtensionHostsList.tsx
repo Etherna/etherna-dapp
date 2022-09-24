@@ -31,7 +31,7 @@ import GatewayClient from "@/classes/GatewayClient"
 import IndexClient from "@/classes/IndexClient"
 import { Menu } from "@/components/ui/actions"
 import { Spinner, Tooltip } from "@/components/ui/display"
-import type { ExtensionType } from "@/types/app-state"
+import type { ExtensionType } from "@/stores/ui"
 import type {
   ExtensionHost,
   GatewayExtensionHost,
@@ -46,7 +46,7 @@ const GatewayTypeLabel: Record<GatewayType, string> = {
 
 type ExtensionHostsListProps = {
   hosts: (IndexExtensionHost | GatewayExtensionHost)[]
-  selectedHost: (IndexExtensionHost | GatewayExtensionHost) | undefined
+  selectedExtensionUrl: string
   editing?: boolean
   type: ExtensionType
   allowDelete?(host: IndexExtensionHost | GatewayExtensionHost): boolean
@@ -57,7 +57,7 @@ type ExtensionHostsListProps = {
 
 const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
   hosts,
-  selectedHost,
+  selectedExtensionUrl,
   editing,
   type,
   allowDelete,
@@ -128,8 +128,8 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
     <div className="relative w-full">
       <div className="grid snap-y snap-mandatory auto-rows-fr grid-cols-1 gap-4 py-6 sm:grid-cols-2">
         {hosts?.map((host, i) => {
-          const isActive = host.url === selectedHost?.url
-          const isDisabled = editing && host.url !== selectedHost?.url
+          const isActive = host.url === selectedExtensionUrl
+          const isDisabled = editing && host.url !== selectedExtensionUrl
           return (
             <button
               className={classNames(

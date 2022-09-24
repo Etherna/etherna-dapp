@@ -10,7 +10,7 @@ export type ExtensionsState = {
   indexesList: IndexExtensionHost[]
   currentIndexUrl: string
   currentGatewayUrl: string
-  currentGatewayType?: GatewayType
+  currentGatewayType: GatewayType
   currentCreditUrl: string
 }
 
@@ -85,9 +85,9 @@ const useExtensionsStore = create<ExtensionsState & ExtensionsActions>()(
           setCurrentGatewayUrl(gatewayUrl) {
             set(state => {
               state.currentGatewayUrl = gatewayUrl
-              state.currentGatewayType = state.gatewaysList.find(
-                gateway => gateway.url === gatewayUrl
-              )?.type
+              state.currentGatewayType =
+                state.gatewaysList.find(gateway => gateway.url === gatewayUrl)?.type ??
+                "etherna-gateway"
             })
           },
           setCurrentIndexUrl(indexUrl) {

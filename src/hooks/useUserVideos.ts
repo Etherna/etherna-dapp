@@ -19,11 +19,12 @@ import type { Playlist, Profile, Video } from "@etherna/api-js"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
 import type { AxiosError } from "axios"
 
+import useErrorMessage from "./useErrorMessage"
 import IndexClient from "@/classes/IndexClient"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmVideo from "@/classes/SwarmVideo"
-import { useErrorMessage } from "@/state/hooks/ui"
-import useSelector from "@/state/useSelector"
+import useClientsStore from "@/stores/clients"
+import useUserStore from "@/stores/user"
 import type { VideoWithIndexes } from "@/types/video"
 import { wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
@@ -46,16 +47,14 @@ export type UseUserVideosOptions = {
 let playlistResover: (() => Promise<Playlist>) | undefined
 
 export default function useUserVideos(opts: UseUserVideosOptions) {
-  const beeClient = useSelector(state => state.env.beeClient)
-  const address = useSelector(state => state.user.address)
-
+  const beeClient = useClientsStore(state => state.beeClient)
+  const address = useUserStore(state => state.address)
   const channelPlaylist = useRef<Playlist>()
   const indexClient = useRef<IndexClient>()
   const [isFetching, setIsFetching] = useState(false)
   const [currentPage, setCurrentPage] = useState(-1)
   const [total, setTotal] = useState(0)
   const [videos, setVideos] = useState<VideoWithIndexes[]>()
-
   const { showError } = useErrorMessage()
 
   useEffect(() => {
@@ -73,10 +72,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
 
       playlistResover = () => reader.download()
     } else if (opts.source.type === "index") {
-      indexClient.current = new IndexClient({
-        url: opts.source.indexUrl,
-        apiPath: `/api/v${import.meta.env.VITE_APP_API_VERSION}`,
-      })
+      indexClient.current = new IndexClient(opts.source.indexUrl)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [opts.source.type, address])
@@ -136,6 +132,8 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
           indexesStatus: {
             [indexClient.current!.url]: {
               indexReference: indexVideo.id,
+              totDownvotes: indexVideo.totDownvotes,
+              totUpvotes: indexVideo.totUpvotes,
             },
           },
         }

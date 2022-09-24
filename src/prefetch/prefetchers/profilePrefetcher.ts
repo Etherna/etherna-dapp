@@ -20,13 +20,13 @@ import type { EthAddress } from "@etherna/api-js/clients"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmProfile from "@/classes/SwarmProfile"
 import SwarmVideo from "@/classes/SwarmVideo"
-import { store } from "@/state/store"
+import clientsStore from "@/stores/clients"
 import { fullfilledPromisesResult } from "@/utils/promise"
 
 const match = /\/profile\/([^/]+)/
 
 const fetch = async () => {
-  const { beeClient, indexClient } = store.getState().env
+  const { beeClient, indexClient } = clientsStore.getState()
 
   const matches = window.location.pathname.match(match)
   if (matches && matches.length >= 2) {

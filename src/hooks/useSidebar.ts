@@ -16,10 +16,10 @@
 
 import { useEffect, useState } from "react"
 
-import { useLayoutState } from "@/context/layout-context/hooks"
+import useUIStore from "@/stores/ui"
 
 export default function useSidebar() {
-  const [{ floatingSidebar }] = useLayoutState()
+  const floatingSidebar = useUIStore(state => state.floatingSidebar)
   const [sidebarWidth, setSidebarWidth] = useState<number>()
 
   useEffect(() => {

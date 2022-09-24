@@ -24,7 +24,7 @@ import { ReactComponent as ManifestIcon } from "@/assets/icons/manifest.svg"
 import VideoExtraMenuManifest from "./VideoExtraMenuManifest"
 import VideoExtraMenuReport from "./VideoExtraMenuReport"
 import { Dropdown } from "@/components/ui/actions"
-import useSelector from "@/state/useSelector"
+import useExtensionsStore from "@/stores/extensions"
 import type { VideoWithIndexes } from "@/types/video"
 
 type VideoExtraMenuProps = {
@@ -32,7 +32,7 @@ type VideoExtraMenuProps = {
 }
 
 const VideoExtraMenu: React.FC<VideoExtraMenuProps> = ({ video }) => {
-  const indexUrl = useSelector(state => state.env.indexUrl)
+  const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
   const [showReportModal, setShowReportModal] = useState(false)
   const [showManifestModal, setShowManifestModal] = useState(false)
   const indexReference = useMemo(() => {

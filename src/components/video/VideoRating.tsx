@@ -16,12 +16,12 @@
  */
 
 import React, { useState, useEffect, useMemo, useCallback } from "react"
+import type { VoteValue } from "@etherna/api-js/clients"
 import classNames from "classnames"
 
 import { ReactComponent as VoteIcon } from "@/assets/icons/player/upvote.svg"
 
-import useSelector from "@/state/useSelector"
-import type { VoteValue } from "@/types/api-index"
+import useClientsStore from "@/stores/clients"
 
 type VideoRatingProps = {
   videoId: string
@@ -34,8 +34,7 @@ const VideoRating: React.FC<VideoRatingProps> = ({ videoId, upvotes, downvotes }
   const [currentDownvotes, setCurrentDownvotes] = useState(downvotes ?? 0)
   const [isUpdatingVote, setIsUpdatingVote] = useState(false)
   const [currentVote, setCurrentVote] = useState<VoteValue>("Neutral")
-
-  const { indexClient } = useSelector(state => state.env)
+  const indexClient = useClientsStore(state => state.indexClient)
 
   const progress = useMemo(() => {
     const totalVotes = currentUpvotes + currentDownvotes

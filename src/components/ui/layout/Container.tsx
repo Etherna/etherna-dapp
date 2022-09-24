@@ -46,10 +46,11 @@ const Container: React.FC<ContainerProps> = ({
   return (
     <As
       className={classNames(
-        "relative flex flex-grow flex-col",
+        "relative flex flex-grow",
         {
           "max-w-screen-xl": !fluid,
-          "flex-row": row,
+          "flex-row flex-wrap": row,
+          "flex-col": !row,
           "px-container": !noPaddingX,
           "py-container": !noPaddingY,
           "items-start": align === "start",

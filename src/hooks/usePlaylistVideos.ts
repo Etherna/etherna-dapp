@@ -16,13 +16,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import type { Playlist, Profile, Video } from "@etherna/api-js"
-import type { EthAddress, Reference } from "@etherna/api-js/clients"
+import type { EthAddress } from "@etherna/api-js/clients"
 
+import useErrorMessage from "./useErrorMessage"
 import BeeClient from "@/classes/BeeClient"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmVideo from "@/classes/SwarmVideo"
-import { useErrorMessage } from "@/state/hooks/ui"
-import useSelector from "@/state/useSelector"
+import useClientsStore from "@/stores/clients"
 import type { VideoWithOwner } from "@/types/video"
 import { getResponseErrorMessage } from "@/utils/request"
 
@@ -35,8 +35,8 @@ export default function usePlaylistVideos(
   playlistReference: Playlist | string | undefined,
   opts: PlaylistVideosOptions = { limit: -1 }
 ) {
-  const beeClient = useSelector(state => state.env.beeClient)
-  const indexClient = useSelector(state => state.env.indexClient)
+  const beeClient = useClientsStore(state => state.beeClient)
+  const indexClient = useClientsStore(state => state.indexClient)
   const [playlist, setPlaylist] = useState<Playlist | undefined>(
     typeof playlistReference === "string" ? undefined : playlistReference
   )
@@ -47,7 +47,6 @@ export default function usePlaylistVideos(
   const [total, setTotal] = useState(0)
   const [isEncrypted, setIsEncrypted] = useState(playlist?.type === "private" && !playlist.videos)
   const fetchingPage = useRef<number>()
-
   const { showError } = useErrorMessage()
 
   useEffect(() => {

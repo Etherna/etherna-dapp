@@ -3,7 +3,7 @@ import { devtools, persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
-import { baseKeymap } from "@/keyboard"
+import { defaultKeymap } from "@/keyboard"
 import type { Keymap } from "@/types/keyboard"
 import { loadColorScheme, prefersDarkColorScheme } from "@/utils/dark-mode"
 
@@ -22,7 +22,7 @@ export type SettingsActions = {
 }
 
 const getInitialState = (): SettingsState => ({
-  keymap: baseKeymap,
+  keymap: defaultKeymap,
   locale: "en",
   darkMode: prefersDarkColorScheme(),
   zenMode: false,
@@ -60,7 +60,7 @@ const useSettingsStore = create<SettingsState & SettingsActions>()(
           name: "etherna:settings",
           getStorage: () => localStorage,
           onRehydrateStorage(state) {
-            loadColorScheme(state.darkMode)
+            loadColorScheme(state?.darkMode ?? prefersDarkColorScheme())
           },
         }
       )

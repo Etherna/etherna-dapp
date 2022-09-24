@@ -23,7 +23,7 @@ import { Container } from "@/components/ui/layout"
 
 const StudioVideoEdit = () => {
   return (
-    <AppLayoutWrapper floatingSidebar hideSidebar>
+    <AppLayoutWrapper floatingSidebar>
       <Container noPaddingX noPaddingY>
         <Videos />
       </Container>

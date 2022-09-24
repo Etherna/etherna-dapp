@@ -16,10 +16,10 @@
  */
 
 import React from "react"
+import type { Image as SwarmImage } from "@etherna/api-js"
 import classNames from "classnames"
 
 import Image from "@/components/common/Image"
-import type { SwarmImage } from "@/types/swarm-image"
 import makeBlockies from "@/utils/make-blockies"
 
 export type AvatarProps = {

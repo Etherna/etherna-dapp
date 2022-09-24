@@ -18,7 +18,7 @@
 import React from "react"
 
 import { Button } from "@/components/ui/actions"
-import loginRedirect from "@/state/actions/user/login-redirect"
+import { loginRedirect } from "@/utils/automations"
 
 type SigninButtonProps = {
   children?: React.ReactNode

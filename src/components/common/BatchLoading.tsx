@@ -25,16 +25,17 @@ import { ProgressBar } from "@/components/ui/display"
 
 type BatchLoadingProps = {
   className?: string
-  type: "fetching" | "creating" | "updating" | "error"
+  type: "fetching" | "creating" | "updating" | "saturated"
   title?: string
   message?: string
-  error?: string
+  error?: boolean | Error
   onCreate?(): void
 }
 
 const BatchLoading: React.FC<BatchLoadingProps> = ({
   className,
   type,
+  title,
   message = "This process might take several seconds",
   error,
   onCreate,
@@ -49,21 +50,25 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
     >
       {!error && <ProgressBar className="mb-3" indeterminate />}
       <div className="flex items-center">
-        <span
-          className={classNames("mr-2 h-5 w-5", {
-            "animate-pulse": type === "creating",
-            "text-red-500": !!error,
-          })}
-        >
-          {error ? (
-            <ExclamationCircleIcon className="h-full w-full" aria-hidden />
-          ) : type === "creating" ? (
-            <SparklesIcon className="h-full w-full" aria-hidden />
-          ) : null}
-        </span>
+        {(error || type === "creating") && (
+          <span
+            className={classNames("mr-2 h-5 w-5 shrink-0", {
+              "animate-pulse": type === "creating",
+              "text-red-500": !!error,
+            })}
+          >
+            {error ? (
+              <ExclamationCircleIcon className="h-full w-full" aria-hidden />
+            ) : type === "creating" ? (
+              <SparklesIcon className="h-full w-full" aria-hidden />
+            ) : null}
+          </span>
+        )}
 
-        <h4 className="mb-0 font-semibold">
-          {error
+        <h4 className="mb-0 font-semibold leading-none">
+          {title
+            ? title
+            : error
             ? `Couldn't ${
                 type === "fetching" ? "fetch" : type === "updating" ? "update" : "create"
               } the postage batch`
@@ -76,7 +81,7 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
       </div>
 
       <p className="mt-2 text-sm opacity-50">
-        {typeof error === "object" ? JSON.stringify(error) : error || message}
+        {message ? message : typeof error === "object" ? JSON.stringify(error) : ""}
       </p>
 
       {type === "fetching" && error && (

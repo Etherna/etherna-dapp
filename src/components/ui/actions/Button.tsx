@@ -19,7 +19,7 @@ import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
 import classNames from "classnames"
 
-import { Spinner } from "../display"
+import { Spinner } from "@/components/ui/display"
 
 export type ButtonProps = {
   children?: React.ReactNode
@@ -112,7 +112,7 @@ const Button: React.FC<ButtonProps> = ({
           "text-sm font-medium": small,
           "font-semibold": !small,
           "text-sm": !small && !large,
-          "px-3 py-2": !small && !large && aspect !== "text",
+          "px-3.5 py-2.5": !small && !large && aspect !== "text",
           "py-1 px-3": small && aspect !== "text",
           "text-base": large,
           "py-3 px-8": large && aspect !== "text",

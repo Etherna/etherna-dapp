@@ -26,11 +26,11 @@ import StudioEditView from "./StudioEditView"
 import OnlyUsableBatch from "./other/OnlyUsableBatch"
 import VideoEditor from "./video-editor/VideoEditor"
 import { Button } from "@/components/ui/actions"
-import { VideoEditorContextProvider } from "@/context/video-editor-context"
+import useConfirmation from "@/hooks/useConfirmation"
 import useSwarmVideo from "@/hooks/useSwarmVideo"
 import routes from "@/routes"
-import { useConfirmation } from "@/state/hooks/ui"
-import useSelector from "@/state/useSelector"
+import useUserStore from "@/stores/user"
+import useVideoEditorStore from "@/stores/video-editor"
 import type { VideoWithIndexes } from "@/types/video"
 
 type VideoEditProps = {
@@ -46,17 +46,20 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   const saveCallback = useRef<() => Promise<void>>()
   const clearCallback = useRef<() => Promise<void>>()
   const resetState = useRef<() => void>()
-  const { address } = useSelector(state => state.user)
+  const address = useUserStore(state => state.address)
+  const storeReference = useVideoEditorStore(state => state.reference)
+  const storeVideo = useVideoEditorStore(state => state.video)
 
   const stateVideo = useMemo(() => {
-    const videoIndexes: VideoWithIndexes | undefined = routeState?.video
+    const baseVideo = reference === storeReference ? storeVideo : routeState?.video
+    const videoIndexes: VideoWithIndexes | undefined = baseVideo
       ? {
-          ...routeState?.video,
+          ...baseVideo,
           indexesStatus: {},
         }
       : undefined
     return videoIndexes
-  }, [routeState])
+  }, [reference, routeState?.video, storeReference, storeVideo])
 
   const { waitConfirmation } = useConfirmation()
   const { video, isLoading, loadVideo } = useSwarmVideo({
@@ -87,8 +90,16 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   }, [])
 
   const askToClearState = useCallback(async () => {
-    await clearCallback.current?.()
-  }, [])
+    if (!resetState.current) return
+
+    const clear = await waitConfirmation(
+      "Clear all",
+      "Are you sure you want to clear the upload data? This action cannot be reversed.",
+      "Yes, clear",
+      "destructive"
+    )
+    clear && resetState.current()
+  }, [waitConfirmation])
 
   if (video && video.ownerAddress !== address) {
     return <Navigate to={routes.studioVideos} />
@@ -121,19 +132,17 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
         <Spinner className="mx-auto mt-10 w-10 text-primary-500" />
       ) : (
         <OnlyUsableBatch>
-          <VideoEditorContextProvider reference={reference} videoData={video!}>
-            <VideoEditor
-              ref={ref => {
-                if (!ref) return
+          <VideoEditor
+            video={video}
+            ref={ref => {
+              if (!ref) return
 
-                saveCallback.current = ref.submitVideo
-                clearCallback.current = ref.askToClearState
-                resetState.current = ref.resetState
-                ref.isEmpty !== isEmpty && setIsEmpty(ref.isEmpty)
-                ref.canSubmitVideo !== canSave && setCanSave(ref.canSubmitVideo)
-              }}
-            />
-          </VideoEditorContextProvider>
+              saveCallback.current = ref.submitVideo
+              resetState.current = ref.resetState
+              ref.isEmpty !== isEmpty && setIsEmpty(ref.isEmpty)
+              ref.canSubmitVideo !== canSave && setCanSave(ref.canSubmitVideo)
+            }}
+          />
         </OnlyUsableBatch>
       )}
     </StudioEditView>

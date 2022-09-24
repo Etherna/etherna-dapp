@@ -18,10 +18,10 @@
 import React from "react"
 import { Outlet } from "react-router-dom"
 
-import useAutoSignin from "@/state/hooks/user/useAutoSignin"
+import useFetchIdentity from "@/hooks/useFetchIdentity"
 
 const AuthenticateRoute: React.FC = () => {
-  useAutoSignin()
+  useFetchIdentity()
 
   return <Outlet />
 }

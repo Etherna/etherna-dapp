@@ -29,8 +29,10 @@ import PostageBatchEditor from "./PostageBatchEditor"
 import { AlertPopup, Button, Modal } from "@/components/ui/actions"
 import { Capacity, FormGroup, Table } from "@/components/ui/display"
 import { Select } from "@/components/ui/inputs"
-import { useErrorMessage } from "@/state/hooks/ui"
-import useSelector from "@/state/useSelector"
+import useErrorMessage from "@/hooks/useErrorMessage"
+import useClientsStore from "@/stores/clients"
+import useExtensionsStore from "@/stores/extensions"
+import useUserStore from "@/stores/user"
 import { convertBytes } from "@/utils/converters"
 import dayjs from "@/utils/dayjs"
 
@@ -43,11 +45,11 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
   const updatingBatches = useBatchesStore(state => state.updatingBatches)
   const addBatchUpdate = useBatchesStore(state => state.addBatchUpdate)
   const removeBatchUpdate = useBatchesStore(state => state.removeBatchUpdate)
-  const defaultBatchId = useSelector(state => state.user.defaultBatchId)
-  const address = useSelector(state => state.user.address)
-  const gatewayClient = useSelector(state => state.env.gatewayClient)
-  const beeClient = useSelector(state => state.env.beeClient)
-  const gatewayType = useSelector(state => state.env.gatewayType)
+  const defaultBatchId = useUserStore(state => state.defaultBatchId)
+  const address = useUserStore(state => state.address)
+  const gatewayClient = useClientsStore(state => state.gatewayClient)
+  const beeClient = useClientsStore(state => state.beeClient)
+  const gatewayType = useExtensionsStore(state => state.currentGatewayType)
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(25)
   const [editingBatch, setEditingBatch] = useState<GatewayBatch>()

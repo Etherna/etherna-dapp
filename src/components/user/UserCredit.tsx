@@ -21,12 +21,16 @@ import { urlOrigin } from "@etherna/api-js/utils"
 import UserCreditBadge from "./UserCreditBadge"
 import { Button } from "@/components/ui/actions"
 import { Popup } from "@/components/ui/display"
-import useSelector from "@/state/useSelector"
+import useExtensionsStore from "@/stores/extensions"
+import useSessionStore from "@/stores/session"
+import useUserStore from "@/stores/user"
 import { getDecimalParts } from "@/utils/math"
 
 const UserCredit: React.FC = () => {
-  const { creditUrl, bytePrice } = useSelector(state => state.env)
-  const { credit, isSignedInGateway } = useSelector(state => state.user)
+  const creditUrl = useExtensionsStore(state => state.currentCreditUrl)
+  const bytePrice = useSessionStore(state => state.bytesPrice)
+  const credit = useUserStore(state => state.credit)
+  const isSignedInGateway = useUserStore(state => state.isSignedInGateway)
 
   const gbReproduction = useMemo(() => {
     if (credit == null || !bytePrice) return "0.000"

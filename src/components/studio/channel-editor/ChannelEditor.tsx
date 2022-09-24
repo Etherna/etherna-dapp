@@ -24,24 +24,23 @@ import React, {
   useRef,
   useState,
 } from "react"
+import type { Image, Profile } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
 import classNames from "classnames"
 
 import { TrashIcon } from "@heroicons/react/24/outline"
 
 import WalletState from "../other/WalletState"
-import type { EthAddress } from "@/classes/BeeClient/types"
 import SwarmImage from "@/classes/SwarmImage"
-import SwarmProfile from "@/classes/SwarmProfile"
 import MarkdownEditor from "@/components/common/MarkdownEditor"
 import { Button } from "@/components/ui/actions"
 import { TextInput } from "@/components/ui/inputs"
-import type { SwarmImage, SwarmImageRaw } from "@/types/swarm-image"
-import type { Profile } from "@/types/swarm-profile"
+import useErrorMessage from "@/hooks/useErrorMessage"
+import useImageCrop from "@/hooks/useImageCrop"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
-import { useWallet } from "@/state/hooks/env"
-import { useProfileUpdate } from "@/state/hooks/profile"
-import { useErrorMessage, useImageCrop } from "@/state/hooks/ui"
-import useSelector from "@/state/useSelector"
+import useWallet from "@/hooks/useWallet"
+import useClientsStore from "@/stores/clients"
+import useUserStore from "@/stores/user"
 import makeBlockies from "@/utils/make-blockies"
 import { isAnimatedImage } from "@/utils/media"
 
@@ -59,29 +58,32 @@ type ImagesUtils = {
   [key in ImageType]: {
     setLoading: (loading: boolean) => void
     setPreview: (dataURL: string | undefined) => void
-    updateImage: (image: SwarmImage | undefined) => void
+    updateImage: (image: Image | undefined) => void
     responsiveSizes: number[]
   }
 }
 
 const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
   ({ profileAddress }, ref) => {
-    const beeClient = useSelector(state => state.env.beeClient)
-    const defaultBatch = useSelector(state => state.user.defaultBatch)
-    const profile = useSelector(state => state.profile)
+    const beeClient = useClientsStore(state => state.beeClient)
+    const defaultBatchId = useUserStore(state => state.defaultBatchId)
+    const defaultBatch = useUserStore(
+      state => state.batches.find(b => b.id === defaultBatchId) ?? state.batches[0]
+    )
+    const profile = useUserStore(state => state.profile)
+    const updateProfile = useUserStore(state => state.setProfile)
     const { cropImage } = useImageCrop()
     const { showError } = useErrorMessage()
-    const updateProfile = useProfileUpdate(profileAddress)
     const { updateProfile: updateSwarmProfile } = useSwarmProfile({ address: profileAddress })
 
     const { isLocked } = useWallet()
 
     const avatarRef = useRef<HTMLInputElement>(null)
     const coverRef = useRef<HTMLInputElement>(null)
-    const [profileName, setProfileName] = useState(profile.name)
-    const [profileDescription, setProfileDescription] = useState(profile.description)
-    const [profileAvatar, setProfileAvatar] = useState(profile.avatar)
-    const [profileCover, setProfileCover] = useState(profile.cover)
+    const [profileName, setProfileName] = useState(profile?.name ?? "")
+    const [profileDescription, setProfileDescription] = useState(profile?.description ?? "")
+    const [profileAvatar, setProfileAvatar] = useState(profile?.avatar)
+    const [profileCover, setProfileCover] = useState(profile?.cover)
     const [avatarPreview, setAvatarPreview] = useState<string>()
     const [coverPreview, setCoverPreview] = useState<string>()
     const [isUploadingCover, setUploadingCover] = useState(false)
@@ -89,10 +91,10 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
     const [hasExceededLimit, setHasExceededLimit] = useState(false)
 
     useEffect(() => {
-      setProfileName(profile.name)
-      setProfileDescription(profile.description)
-      setProfileAvatar(profile.avatar)
-      setProfileCover(profile.cover)
+      setProfileName(profile?.name ?? "")
+      setProfileDescription(profile?.description ?? "")
+      setProfileAvatar(profile?.avatar)
+      setProfileCover(profile?.cover)
     }, [profile])
 
     const imagesUtils: ImagesUtils = useMemo(() => {
@@ -101,13 +103,13 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
           setLoading: setUploadingAvatar,
           updateImage: setProfileAvatar,
           setPreview: setAvatarPreview,
-          responsiveSizes: SwarmProfile.Reader.avatarResponsiveSizes,
+          responsiveSizes: SwarmImage.Writer.avatarResponsiveSizes,
         },
         cover: {
           setLoading: setUploadingCover,
           updateImage: setProfileCover,
           setPreview: setCoverPreview,
-          responsiveSizes: SwarmProfile.Reader.coverResponsiveSizes,
+          responsiveSizes: SwarmImage.Writer.defaultResponsiveSizes,
         },
       }
     }, [])
@@ -142,14 +144,15 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
       try {
         const profileInfo: Profile = {
           address: profileAddress,
+          batchId: defaultBatchId!,
           name: profileName || "",
           description: profileDescription ?? null,
           avatar: profileAvatar ?? null,
           cover: profileCover ?? null,
         }
-        const newReference = await updateSwarmProfile(profileInfo)
 
-        updateProfile(newReference, profileInfo)
+        await updateSwarmProfile(profileInfo)
+        updateProfile(profileInfo)
 
         // clear prefetch
         window.prefetchData = undefined
@@ -158,10 +161,11 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
         showError("Cannot save profile", error.message)
       }
     }, [
+      profileAddress,
       defaultBatch,
+      defaultBatchId,
       hasExceededLimit,
       isLocked,
-      profileAddress,
       profileAvatar,
       profileCover,
       profileDescription,
@@ -178,7 +182,6 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
         try {
           const imageWriter = new SwarmImage.Writer(file, {
             beeClient,
-            isResponsive: true,
             responsiveSizes: imagesUtils[type].responsiveSizes,
           })
           imagesUtils[type].setPreview(await imageWriter.getFilePreview())
@@ -233,7 +236,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
     )
 
     const swarmImageUrl = useCallback(
-      (image: SwarmImageRaw | null | undefined) => {
+      (image: Image | null | undefined) => {
         const reference = SwarmImage.Reader.getOriginalSourceReference(image)
         return reference ? beeClient.bzz.url(reference) : undefined
       },

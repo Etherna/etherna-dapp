@@ -21,23 +21,26 @@ import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 import useMounted from "./useMounted"
 import type { VideoOffersStatus } from "./useVideoOffers"
 import { parseReaderStatus } from "./useVideoOffers"
-import useSelector from "@/state/useSelector"
+import useClientsStore from "@/stores/clients"
+import useExtensionsStore from "@/stores/extensions"
+import useUserStore from "@/stores/user"
 
 export default function useVideosResources(videos: Video[] | undefined) {
-  const { gatewayClient, isStandaloneGateway } = useSelector(state => state.env)
-  const { address } = useSelector(state => state.user)
+  const gatewayClient = useClientsStore(state => state.gatewayClient)
+  const gatewayType = useExtensionsStore(state => state.currentGatewayType)
+  const address = useUserStore(state => state.address)
   const [videosOffersStatus, setVideosOffersStatus] = useState<Record<string, VideoOffersStatus>>()
   const videosQueue = useRef<string[]>([])
   const mounted = useMounted()
 
   useEffect(() => {
-    if (isStandaloneGateway) return
+    if (gatewayType === "bee") return
 
     if (videos) {
       fetchVideosStatus()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [videos, isStandaloneGateway])
+  }, [videos, gatewayType])
 
   const fetchVideosStatus = useCallback(async () => {
     if (!videos) return

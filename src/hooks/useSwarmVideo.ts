@@ -15,11 +15,11 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import type { Video } from "@etherna/api-js"
 import type { IndexVideo } from "@etherna/api-js/clients"
 
 import SwarmVideo from "@/classes/SwarmVideo"
-import useSelector from "@/state/useSelector"
+import useClientsStore from "@/stores/clients"
+import useExtensionsStore from "@/stores/extensions"
 import type { VideoWithIndexes } from "@/types/video"
 import { nullablePromise } from "@/utils/promise"
 
@@ -30,9 +30,9 @@ type SwarmVideoOptions = {
 }
 
 export default function useSwarmVideo(opts: SwarmVideoOptions) {
-  const beeClient = useSelector(state => state.env.beeClient)
-  const indexClient = useSelector(state => state.env.indexClient)
-  const indexUrl = useSelector(state => state.env.indexUrl)
+  const beeClient = useClientsStore(state => state.beeClient)
+  const indexClient = useClientsStore(state => state.indexClient)
+  const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
   const [reference, setReference] = useState(opts.reference)
   const [video, setVideo] = useState<VideoWithIndexes | null>(opts.routeState ?? null)
   const [isLoading, setIsloading] = useState(false)

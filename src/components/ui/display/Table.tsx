@@ -18,8 +18,8 @@
 import React, { useCallback, useEffect, useState } from "react"
 import classNames from "classnames"
 
-import { Checkbox } from "../inputs"
-import { Pagination } from "../navigation"
+import { Checkbox } from "@/components/ui/inputs"
+import { Pagination } from "@/components/ui/navigation"
 
 export type TableProps<T = any> = {
   className?: string

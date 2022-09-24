@@ -20,7 +20,7 @@ import type { EthAddress, Reference } from "@etherna/api-js/clients"
 
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmUserPlaylists from "@/classes/SwarmUserPlaylists"
-import useSelector from "@/state/useSelector"
+import useClientsStore from "@/stores/clients"
 import { deepCloneArray } from "@/utils/array"
 import { deepCloneObject } from "@/utils/object"
 
@@ -31,7 +31,7 @@ interface UseUserPlaylistsOptions {
 }
 
 export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlaylistsOptions) {
-  const beeClient = useSelector(state => state.env.beeClient)
+  const beeClient = useClientsStore(state => state.beeClient)
   const [isFetchingPlaylists, setIsFetchingPlaylists] = useState(false)
   const [userPlaylists, setUserPlaylists] = useState<UserPlaylists>()
   const [channelPlaylist, setChannelPlaylist] = useState<Playlist>()

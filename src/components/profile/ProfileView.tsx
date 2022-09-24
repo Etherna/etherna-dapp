@@ -28,7 +28,8 @@ import { Button } from "@/components/ui/actions"
 import { NavPills } from "@/components/ui/navigation"
 import usePlaylistVideos from "@/hooks/usePlaylistVideos"
 import routes from "@/routes"
-import useSelector from "@/state/useSelector"
+import useEnvironmentStore from "@/stores/env"
+import useUserStore from "@/stores/user"
 
 type ProfileViewProps = {
   profileAddress: EthAddress
@@ -37,8 +38,8 @@ type ProfileViewProps = {
 const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [activeTab, setActiveTab] = useState("videos")
-  const { address } = useSelector(state => state.user)
-  const { isMobile } = useSelector(state => state.env)
+  const address = useUserStore(state => state.address)
+  const isMobile = useEnvironmentStore(state => state.isMobile)
   // const { channelPlaylist, loadPlaylists } = useUserPlaylists(profileAddress, { resolveChannel: true })
   const { playlist, videos, hasMore, isFetching, isLoadingPlaylist, loadMore, loadPlaylist } =
     usePlaylistVideos(SwarmPlaylist.Reader.channelPlaylistId, {

@@ -38,7 +38,7 @@ const WatchPage = () => {
   if (!hash) return null
 
   return (
-    <AppLayoutWrapper hideSidebar floatingSidebar>
+    <AppLayoutWrapper floatingSidebar>
       <SEO title="Watch" />
 
       <Container className="mx-auto" noPaddingY>

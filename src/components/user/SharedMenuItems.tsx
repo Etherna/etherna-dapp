@@ -26,14 +26,14 @@ import DarkModeToggle from "./DarkModeToggle"
 // import IndexExtension from "@/components/env/IndexExtension"
 import GatewayExtension from "@/components/env/GatewayExtension"
 import { Dropdown } from "@/components/ui/actions"
+import useDarkMode from "@/hooks/useDarkMode"
 import routes from "@/routes"
-import { useDarkMode } from "@/state/hooks/env"
-import useSelector from "@/state/useSelector"
+import useUserStore from "@/stores/user"
 
 type SharedMenuItemsProps = {}
 
 const SharedMenuItems: React.FC<SharedMenuItemsProps> = () => {
-  const isSignedIn = useSelector(state => state.user.isSignedIn)
+  const isSignedIn = useUserStore(state => state.isSignedIn)
   const { darkMode, toggleDarkMode } = useDarkMode()
 
   const handleDarkModeChange = useCallback(() => {

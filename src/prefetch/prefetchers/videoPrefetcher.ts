@@ -14,20 +14,21 @@
  *  limitations under the License.
  */
 
-import type { Profile, Video } from "@etherna/api-js"
+import type { Profile } from "@etherna/api-js"
 import type { EthAddress, IndexVideo } from "@etherna/api-js/clients"
 import { BeeClient } from "@etherna/api-js/clients"
+import { urlOrigin } from "@etherna/api-js/utils"
 
 import SwarmProfile from "@/classes/SwarmProfile"
 import SwarmVideo from "@/classes/SwarmVideo"
-import { store } from "@/state/store"
+import clientsStore from "@/stores/clients"
 import type { VideoWithIndexes } from "@/types/video"
 import { nullablePromise } from "@/utils/promise"
 
 const match = /\/watch/
 
 const fetch = async () => {
-  const { beeClient, indexClient, indexUrl } = store.getState().env
+  const { beeClient, indexClient } = clientsStore.getState()
 
   const searchParams = new URLSearchParams(window.location.search)
   if (searchParams && searchParams.has("v")) {
@@ -54,7 +55,7 @@ const fetch = async () => {
           : null
 
       if (indexVideo) {
-        video.indexesStatus[indexUrl] = {
+        video.indexesStatus[urlOrigin(indexClient.url)!] = {
           indexReference: indexVideo.id,
           totDownvotes: indexVideo.totDownvotes,
           totUpvotes: indexVideo.totUpvotes,

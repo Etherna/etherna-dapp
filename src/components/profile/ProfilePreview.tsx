@@ -15,7 +15,7 @@
  *
  */
 
-import React, { useEffect } from "react"
+import React, { useEffect, useMemo } from "react"
 import { Link } from "react-router-dom"
 import type { EthAddress } from "@etherna/api-js/clients"
 
@@ -25,6 +25,7 @@ import usePlaylistVideos from "@/hooks/usePlaylistVideos"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
 import useUserPlaylists from "@/hooks/useUserPlaylists"
 import routes from "@/routes"
+import type { VideoWithIndexes, VideoWithOwner } from "@/types/video"
 import { shortenEthAddr } from "@/utils/ethereum"
 
 type ProfilePreviewProps = {
@@ -40,6 +41,15 @@ const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress }) => {
     owner: profile ? profile : undefined,
     limit: 5,
   })
+  const videosIndexes = useMemo(() => {
+    return videos?.map(
+      (video, index) =>
+        ({
+          ...video,
+          indexesStatus: {},
+        } as VideoWithOwner & VideoWithIndexes)
+    )
+  }, [videos])
 
   useEffect(() => {
     loadProfile()
@@ -71,7 +81,12 @@ const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress }) => {
         </Link>
       </div>
       {videos && (
-        <VideoGrid videos={videos} mini={true} isFetching={isFetching} fetchingPreviewCount={5} />
+        <VideoGrid
+          videos={videosIndexes}
+          mini={true}
+          isFetching={isFetching}
+          fetchingPreviewCount={5}
+        />
       )}
       {videos && !videos.length && <p className="italic text-gray-600">No videos uploaded yet</p>}
     </div>

@@ -22,7 +22,7 @@ import omit from "lodash/omit"
 
 import { ChevronDownIcon } from "@heroicons/react/24/outline"
 
-import { Popup } from "../display"
+import { Popup } from "@/components/ui/display"
 
 export type TopbarProps = {
   children?: React.ReactNode

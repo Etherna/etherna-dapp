@@ -23,9 +23,9 @@ import classNames from "classnames"
 
 import { Button, Modal } from "@/components/ui/actions"
 import { SegmentedControl } from "@/components/ui/inputs"
+import useErrorMessage from "@/hooks/useErrorMessage"
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
-import { showError } from "@/state/actions/modals"
-import useSelector from "@/state/useSelector"
+import useUserStore from "@/stores/user"
 
 type VideoOffersModalProps = {
   show: boolean
@@ -44,11 +44,11 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
   unofferResources,
   onClose,
 }) => {
-  const { address } = useSelector(state => state.user)
-
+  const address = useUserStore(state => state.address)
   const [isAddingOffers, setIsAddingOffers] = useState(false)
   const [isRemovingOffers, setIsRemovingOffers] = useState(false)
   const [offersTab, setOffersTab] = useState("user")
+  const { showError } = useErrorMessage()
 
   const offerAllResources = useCallback(async () => {
     setIsAddingOffers(true)
@@ -58,7 +58,7 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
       showError("Cannot offer resources", error.message)
     }
     setIsAddingOffers(false)
-  }, [offerResources])
+  }, [offerResources, showError])
 
   const unofferAllResources = useCallback(async () => {
     setIsRemovingOffers(true)
@@ -68,7 +68,7 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
       showError("Cannot cancel offers", error.message)
     }
     setIsRemovingOffers(false)
-  }, [unofferResources])
+  }, [showError, unofferResources])
 
   const isActiveResource = useCallback(
     (resourceStatus: VideoOffersStatus["globalOffers"][number]) => {

@@ -39,7 +39,8 @@ import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import useVideosIndexStatus from "@/hooks/useVideosIndexStatus"
 import useVideosResources from "@/hooks/useVideosResources"
 import routes from "@/routes"
-import useSelector from "@/state/useSelector"
+import useExtensionsStore from "@/stores/extensions"
+import useUserStore from "@/stores/user"
 import type { VideoWithIndexes } from "@/types/video"
 import { convertTime } from "@/utils/converters"
 import dayjs from "@/utils/dayjs"
@@ -47,11 +48,11 @@ import { shortenEthAddr } from "@/utils/ethereum"
 import { encodedSvg } from "@/utils/svg"
 
 const Videos: React.FC = () => {
-  const defaultBatchId = useSelector(state => state.user.defaultBatchId)
-  const profileInfo = useSelector(state => state.profile)
-  const address = useSelector(state => state.user.address)
-  const indexUrl = useSelector(state => state.env.indexUrl)
-  const gatewayType = useSelector(state => state.env.gatewayType)
+  const defaultBatchId = useUserStore(state => state.defaultBatchId)
+  const profileInfo = useUserStore(state => state.profile)
+  const address = useUserStore(state => state.address)
+  const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
+  const gatewayType = useExtensionsStore(state => state.currentGatewayType)
 
   const sources = useMemo(() => {
     return [
@@ -77,10 +78,10 @@ const Videos: React.FC = () => {
     return {
       batchId: defaultBatchId!,
       address: address!,
-      avatar: profileInfo.avatar ?? null,
-      cover: profileInfo.cover ?? null,
-      name: profileInfo.name ?? shortenEthAddr(address),
-      description: profileInfo.description ?? null,
+      avatar: profileInfo?.avatar ?? null,
+      cover: profileInfo?.cover ?? null,
+      name: profileInfo?.name ?? shortenEthAddr(address),
+      description: profileInfo?.description ?? null,
     }
   }, [address, profileInfo, defaultBatchId])
 
@@ -237,7 +238,7 @@ const Videos: React.FC = () => {
                     to={routes.watch(
                       item.indexesStatus[
                         currentSource.type === "index" ? currentSource.indexUrl : ""
-                      ].indexReference || item.reference
+                      ]?.indexReference || item.reference
                     )}
                   >
                     <h3 className="text-base font-bold leading-tight">{item.title}</h3>
@@ -283,7 +284,7 @@ const Videos: React.FC = () => {
             render: item => (
               <div className="flex items-center">
                 {!item.batchId && (
-                  <Tooltip text="Migration required">
+                  <Tooltip text="Missing postage batch">
                     <div>
                       <Badge color="warning" rounded>
                         <InformationCircleIcon width={12} />

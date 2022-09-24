@@ -21,12 +21,12 @@ import type { IndexUser } from "@etherna/api-js/clients"
 
 import ProfilePreview from "./ProfilePreview"
 import ProfilePreviewPlaceholder from "@/components/placeholders/ProfilePreviewPlaceholder"
-import useSelector from "@/state/useSelector"
+import useClientsStore from "@/stores/clients"
 
 const FETCH_COUNT = 10
 
 const ProfilesView: React.FC = () => {
-  const { indexClient } = useSelector(state => state.env)
+  const indexClient = useClientsStore(state => state.indexClient)
   const [profiles, setProfiles] = useState<IndexUser[]>()
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)

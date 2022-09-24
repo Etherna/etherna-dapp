@@ -22,9 +22,8 @@ import SidebarNavigation from "@/components/layout/SidebarNavigation"
 import TabbarNavigation from "@/components/layout/TabbarNavigation"
 import TopbarNavigation from "@/components/layout/TopbarNavigation"
 import Modals from "@/components/modals/ModalsSection"
-import { LayoutContextProvider } from "@/context/layout-context"
-import { useLayoutState } from "@/context/layout-context/hooks"
 import usePageTracking from "@/hooks/usePageTracking"
+import useUIStore from "@/stores/ui"
 
 type AppLayoutProps = {
   children?: React.ReactNode
@@ -32,20 +31,7 @@ type AppLayoutProps = {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   usePageTracking()
-
-  return (
-    <LayoutContextProvider>
-      <AppLayoutContent>{children}</AppLayoutContent>
-    </LayoutContextProvider>
-  )
-}
-
-const AppLayoutContent: React.FC<AppLayoutProps> = ({ children }) => {
-  const [{ emptyLayout, floatingSidebar }] = useLayoutState()
-
-  if (emptyLayout) {
-    return <main>{children}</main>
-  }
+  const floatingSidebar = useUIStore(state => state.floatingSidebar)
 
   return (
     <>

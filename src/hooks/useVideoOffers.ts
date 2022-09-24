@@ -19,7 +19,8 @@ import type { Video, VideoRaw } from "@etherna/api-js"
 import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
 
-import useSelector from "@/state/useSelector"
+import useClientsStore from "@/stores/clients"
+import useUserStore from "@/stores/user"
 
 export type VideoOffersStatus = {
   offersStatus: "full" | "partial" | "sources" | "none"
@@ -39,9 +40,9 @@ export default function useVideoOffers(
   video: Video | VideoRaw | null | undefined,
   opts?: UseVideoOffersOpts
 ) {
-  const beeClient = useSelector(state => state.env.beeClient)
-  const gatewayClient = useSelector(state => state.env.gatewayClient)
-  const address = useSelector(state => state.user.address)
+  const beeClient = useClientsStore(state => state.beeClient)
+  const gatewayClient = useClientsStore(state => state.gatewayClient)
+  const address = useUserStore(state => state.address)
   const [videoOffersStatus, setVideoOffersStatus] = useState<VideoOffersStatus>()
 
   useEffect(() => {

@@ -14,7 +14,14 @@
  *  limitations under the License.
  */
 
-import { KEYMAP_OVERRIDE_NAME, baseKeymap, defaultKeymap } from "./defaultKeymap"
-import { PlayerActions } from "./keymaps/player"
+import { PlayerActions, PlayerKeymap } from "./keymaps/player"
+import type { Keymap } from "@/types/keyboard"
 
-export { KEYMAP_OVERRIDE_NAME, baseKeymap, defaultKeymap, PlayerActions }
+const defaultKeymap: Keymap = {
+  APP: {},
+  PLAYER: {
+    ...PlayerKeymap,
+  },
+}
+
+export { defaultKeymap, PlayerActions }

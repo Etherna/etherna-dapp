@@ -25,7 +25,7 @@ import VideoShareButton from "./VideoShareButton"
 import VideoStatusBadge from "./VideoStatusBadge"
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import useVideoOffers from "@/hooks/useVideoOffers"
-import useSelector from "@/state/useSelector"
+import useExtensionsStore from "@/stores/extensions"
 import type { VideoWithIndexes } from "@/types/video"
 import dayjs from "@/utils/dayjs"
 
@@ -35,11 +35,11 @@ type VideoDetailsInfoBarProps = {
 }
 
 const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoOffers }) => {
-  const indexUrl = useSelector(state => state.env.indexUrl)
-  const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
+  const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
+  const gatewayType = useExtensionsStore(state => state.currentGatewayType)
   const { videoOffersStatus, offerResources, unofferResources } = useVideoOffers(video, {
     routeState: videoOffers,
-    disable: isStandaloneGateway,
+    disable: gatewayType === "bee",
   })
   const indexStatus = useMemo(() => {
     return video.indexesStatus[indexUrl]
@@ -50,7 +50,7 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
       <div className="flex flex-wrap">
         <div className="mb-4 flex w-full flex-wrap items-start space-x-4 py-1">
           <VideoStatusBadge status={indexStatus?.indexReference ? "available" : "unindexed"} />
-          {!isStandaloneGateway && (
+          {gatewayType === "etherna-gateway" && (
             <VideoOffersBadge video={video} offersStatus={videoOffersStatus?.offersStatus} />
           )}
         </div>
@@ -83,7 +83,7 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
               reference={video.reference}
               indexReference={indexStatus.indexReference}
             />
-            {!isStandaloneGateway && (
+            {gatewayType === "etherna-gateway" && (
               <VideoOffersButton
                 video={video}
                 videoOffersStatus={videoOffersStatus}

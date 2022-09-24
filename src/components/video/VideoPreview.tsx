@@ -27,7 +27,7 @@ import Image from "@/components/common/Image"
 import Time from "@/components/media/Time"
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import routes from "@/routes"
-import useSelector from "@/state/useSelector"
+import useExtensionsStore from "@/stores/extensions"
 import type { VideoWithIndexes, VideoWithOwner } from "@/types/video"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
@@ -48,7 +48,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   hideProfile,
   decentralizedLink,
 }) => {
-  const indexUrl = useSelector(state => state.env.indexUrl)
+  const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
 
   const [ownerAddress, profileName] = useMemo(() => {
     const ownerAddress = video.ownerAddress

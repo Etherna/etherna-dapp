@@ -19,12 +19,16 @@ import React from "react"
 import { Outlet } from "react-router-dom"
 
 import BatchLoading from "@/components/common/BatchLoading"
-import useBatches from "@/state/hooks/user/useBatches"
+import useBatches from "@/hooks/useBatches"
 
 const DefaultBatchRoute: React.FC = () => {
   const { isFetchingBatches, error } = useBatches({ autofetch: true })
 
-  return isFetchingBatches || error ? <BatchLoading type="fetching" error={error} /> : <Outlet />
+  return isFetchingBatches || error ? (
+    <BatchLoading type="fetching" message={error} error={!!error} />
+  ) : (
+    <Outlet />
+  )
 }
 
 export default DefaultBatchRoute

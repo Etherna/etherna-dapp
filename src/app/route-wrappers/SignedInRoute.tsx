@@ -19,10 +19,10 @@ import React from "react"
 import { Outlet } from "react-router-dom"
 
 import SigninMessage from "@/components/common/SigninMessage"
-import useSelector from "@/state/useSelector"
+import useUserStore from "@/stores/user"
 
 const SignedInRoute: React.FC = () => {
-  const { isSignedIn } = useSelector(state => state.user)
+  const isSignedIn = useUserStore(state => state.isSignedIn)
   const isSigningIn = isSignedIn === undefined
   const isFullySignedIn = isSignedIn === true
 

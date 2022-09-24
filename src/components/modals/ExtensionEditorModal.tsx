@@ -23,39 +23,18 @@ import { ReactComponent as IndexIcon } from "@/assets/icons/navigation/index.svg
 import ExtensionHostPanel from "@/components/env/ExtensionHostPanel"
 import type { ExtensionParamConfig } from "@/components/env/ExtensionHostPanel"
 import { Button, Modal } from "@/components/ui/actions"
-import useExtensionEditor from "@/state/hooks/ui/useExtensionEditor"
-import useSelector from "@/state/useSelector"
+import useExtensionEditor from "@/hooks/useExtensionEditor"
+import sessionStore from "@/stores/session"
+import type { ExtensionType } from "@/stores/ui"
+import useUIStore from "@/stores/ui"
+import userStore from "@/stores/user"
 import type { GatewayExtensionHost, IndexExtensionHost } from "@/types/extension-host"
 
 const ExtensionEditorModal = <T extends IndexExtensionHost | GatewayExtensionHost>() => {
-  const extensionName = useSelector(state => state.ui.extensionName)
-
-  const STORAGE_LIST_KEY = `setting:${extensionName}-hosts`
-  const STORAGE_SELECTED_KEY = `setting:${extensionName}-url`
+  const extension = useUIStore(state => state.extension)
 
   const { hideEditor } = useExtensionEditor()
-  const [openModal, setOpenModal] = useState(false)
-  const [editingExtension, setEditingExtension] = useState<string>()
-
-  const defaultUrl = useMemo(() => {
-    switch (editingExtension) {
-      case "index":
-        return import.meta.env.VITE_APP_INDEX_URL
-      case "gateway":
-        return import.meta.env.VITE_APP_GATEWAY_URL
-      default:
-        return ""
-    }
-  }, [editingExtension])
-
-  const initialValue: T | undefined = useMemo(() => {
-    switch (editingExtension) {
-      case "index":
-        return { name: `Etherna ${editingExtension}`, url: defaultUrl } as unknown as T
-      case "gateway":
-        return { name: `Etherna ${editingExtension}`, url: defaultUrl } as unknown as T
-    }
-  }, [editingExtension, defaultUrl])
+  const [editingExtension, setEditingExtension] = useState<ExtensionType>()
 
   const hostParams: ExtensionParamConfig[] = useMemo(() => {
     const defaultParams: ExtensionParamConfig[] = [
@@ -117,22 +96,20 @@ const ExtensionEditorModal = <T extends IndexExtensionHost | GatewayExtensionHos
     }
   }, [editingExtension])
 
-  useEffect(() => {
-    extensionName && setEditingExtension(extensionName)
-    setOpenModal(!!extensionName)
-  }, [extensionName])
-
   const closeModal = useCallback(() => {
     hideEditor()
   }, [hideEditor])
 
   const applyChanges = useCallback(() => {
+    // clear storages and reload
+    sessionStore.persist.clearStorage()
+    userStore.persist.clearStorage()
     window.location.reload()
   }, [])
 
   return (
     <Modal
-      show={openModal}
+      show={!!extension}
       showCloseButton={false}
       showCancelButton={false}
       title={`Edit current ${editingExtension}`}
@@ -156,13 +133,9 @@ const ExtensionEditorModal = <T extends IndexExtensionHost | GatewayExtensionHos
       large
     >
       <ExtensionHostPanel<T>
-        listStorageKey={STORAGE_LIST_KEY}
-        currentStorageKey={STORAGE_SELECTED_KEY}
         hostParams={hostParams}
-        defaultUrl={defaultUrl}
-        initialValue={initialValue}
         description={description}
-        type={extensionName ?? "index"}
+        type={extension?.type ?? "index"}
       />
     </Modal>
   )

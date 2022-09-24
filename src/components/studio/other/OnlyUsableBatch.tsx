@@ -20,21 +20,23 @@ import React, { useMemo } from "react"
 import { Button } from "@/components/ui/actions"
 import { Alert } from "@/components/ui/display"
 import routes from "@/routes"
-import useSelector from "@/state/useSelector"
+import useExtensionsStore from "@/stores/extensions"
+import useUIStore from "@/stores/ui"
+import useUserStore from "@/stores/user"
 
 type OnlyUsableBatchProps = {
   children: React.ReactNode
 }
 
 const OnlyUsableBatch: React.FC<OnlyUsableBatchProps> = ({ children }) => {
-  const isStandaloneGateway = useSelector(state => state.env.isStandaloneGateway)
-  const defaultBatch = useSelector(state => state.user.defaultBatch)
-  const isLoadingProfile = useSelector(state => state.ui.isLoadingProfile)
+  const gatewayType = useExtensionsStore(state => state.currentGatewayType)
+  const defaultBatch = useUserStore(state => state.defaultBatchId)
+  const isLoadingProfile = useUIStore(state => state.isLoadingProfile)
 
   const title = useMemo(() => {
-    if (isStandaloneGateway) return "No postage batch found. You need to create one."
+    if (gatewayType === "bee") return "No postage batch found. You need to create one."
     return "No postage batch found"
-  }, [isStandaloneGateway])
+  }, [gatewayType])
 
   if (isLoadingProfile) return null
   if (defaultBatch) return <>{children}</>

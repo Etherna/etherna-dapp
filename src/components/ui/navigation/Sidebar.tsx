@@ -24,7 +24,7 @@ import classNames from "classnames"
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid"
 import { PlayIcon } from "@heroicons/react/20/solid"
 
-import { Popup } from "../display"
+import { Popup } from "@/components/ui/display"
 
 export type SidebarProps = {
   children?: React.ReactNode
@@ -372,7 +372,7 @@ const Sidebar: React.FC<SidebarProps> & {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 z-10 bg-gray-900/50" onClick={onClose}></div>
+          <div className="fixed inset-0 z-10 bg-gray-900/50" onClick={onClose} />
         </Transition>
       )}
       <aside

@@ -20,7 +20,7 @@ import type { EthAddress } from "@etherna/api-js/clients"
 import useMounted from "./useMounted"
 import IndexClient from "@/classes/IndexClient"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
-import useSelector from "@/state/useSelector"
+import useClientsStore from "@/stores/clients"
 
 export type UseVideoPublishStatusOptions = {
   reference?: string | undefined
@@ -35,7 +35,7 @@ type PublishStatus = {
 }
 
 export default function useVideoPublishStatus(opts: UseVideoPublishStatusOptions) {
-  const beeClient = useSelector(state => state.env.beeClient)
+  const beeClient = useClientsStore(state => state.beeClient)
   const [isFetchingIndexes, setIsFetchingIndexes] = useState(false)
   const [isFetchingPlaylists, setIsFetchingPlaylists] = useState(false)
   const [videoIndexesStatus, setVideoIndexesStatus] = useState<Record<string, PublishStatus>>()
@@ -114,10 +114,7 @@ export default function useVideoPublishStatus(opts: UseVideoPublishStatusOptions
     const videoIndexesStatus: Record<string, PublishStatus> = {}
 
     for (const indexUrl of opts.indexesUrls) {
-      const indexClient = new IndexClient({
-        url: indexUrl,
-        apiPath: `/api/v${import.meta.env.VITE_APP_API_VERSION}`,
-      })
+      const indexClient = new IndexClient(indexUrl)
 
       const publishStatus: PublishStatus = {
         status: "unindexed",

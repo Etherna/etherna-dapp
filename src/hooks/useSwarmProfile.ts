@@ -19,7 +19,7 @@ import type { Profile } from "@etherna/api-js"
 import type { EthAddress } from "@etherna/api-js/clients"
 
 import SwarmProfile from "@/classes/SwarmProfile"
-import useSelector from "@/state/useSelector"
+import useClientsStore from "@/stores/clients"
 import { wait } from "@/utils/promise"
 
 type SwarmProfileOptions = {
@@ -28,7 +28,7 @@ type SwarmProfileOptions = {
 }
 
 export default function useSwarmProfile(opts: SwarmProfileOptions) {
-  const { beeClient } = useSelector(state => state.env)
+  const beeClient = useClientsStore(state => state.beeClient)
   const [profile, setProfile] = useState<Profile | null>(opts.prefetchedProfile ?? null)
   const [isLoading, setIsloading] = useState(false)
 

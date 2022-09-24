@@ -19,13 +19,13 @@ import React, { useMemo } from "react"
 
 import { Button } from "@/components/ui/actions"
 import { Alert } from "@/components/ui/display"
-import { useWallet } from "@/state/hooks/env"
-import useSelector from "@/state/useSelector"
+import useWallet from "@/hooks/useWallet"
+import useUserStore from "@/stores/user"
 
 type WalletStateProps = {}
 
 const WalletState: React.FC<WalletStateProps> = () => {
-  const address = useSelector(state => state.user.address)
+  const address = useUserStore(state => state.address)
   const { isLocked, selectedAddress, unlockWallet, switchAccount } = useWallet()
 
   const sameAddress = useMemo(() => {

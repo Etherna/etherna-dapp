@@ -18,10 +18,11 @@ import { useCallback, useEffect, useState } from "react"
 import type { EthAddress } from "@etherna/api-js/clients"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
 
+import useErrorMessage from "./useErrorMessage"
 import SwarmProfile from "@/classes/SwarmProfile"
 import SwarmVideo from "@/classes/SwarmVideo"
-import { showError } from "@/state/actions/modals"
-import useSelector from "@/state/useSelector"
+import useClientsStore from "@/stores/clients"
+import useExtensionsStore from "@/stores/extensions"
 import type { VideoWithIndexes, VideoWithOwner } from "@/types/video"
 import { wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
@@ -35,13 +36,14 @@ const DEFAULT_SEED_LIMIT = 50
 const DEFAULT_FETCH_LIMIT = 20
 
 export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
-  const indexClient = useSelector(state => state.env.indexClient)
-  const beeClient = useSelector(state => state.env.beeClient)
-  const indexUrl = useSelector(state => state.env.indexUrl)
+  const indexClient = useClientsStore(state => state.indexClient)
+  const beeClient = useClientsStore(state => state.beeClient)
+  const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
   const [videos, setVideos] = useState<(VideoWithOwner & VideoWithIndexes)[]>()
   const [page, setPage] = useState(0)
   const [isFetching, setIsFetching] = useState(false)
   const [hasMore, setHasMore] = useState(true)
+  const { showError } = useErrorMessage()
 
   useEffect(() => {
     fetchVideos()
@@ -143,6 +145,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
     loadVideoProfiles,
     beeClient,
     indexUrl,
+    showError,
   ])
 
   // Returns

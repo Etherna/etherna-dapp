@@ -12,31 +12,16 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
  */
 
-import React from "react"
+import useUIStore from "@/stores/ui"
 
-import OfferResourcesToggle from "./OfferResourcesToggle"
-import SaveToSelector from "./SaveToSelector"
-import { FormGroup } from "@/components/ui/display"
+export default function useExtensionEditor() {
+  const showEditor = useUIStore(state => state.showExtension)
+  const hideEditor = useUIStore(state => state.hideExtension)
 
-type VideoExtraProps = {
-  isSubmitting: boolean
+  return {
+    showEditor,
+    hideEditor,
+  }
 }
-
-const VideoExtra: React.FC<VideoExtraProps> = ({}) => {
-  return (
-    <>
-      <FormGroup>
-        <OfferResourcesToggle />
-      </FormGroup>
-
-      <FormGroup>
-        <SaveToSelector />
-      </FormGroup>
-    </>
-  )
-}
-
-export default VideoExtra

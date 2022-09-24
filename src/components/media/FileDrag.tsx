@@ -23,7 +23,7 @@ import { ReactComponent as DragIcon } from "@/assets/icons/drag.svg"
 
 import FieldDescription from "@/components/common/FieldDescription"
 import { Button } from "@/components/ui/actions"
-import { useErrorMessage } from "@/state/hooks/ui"
+import useErrorMessage from "@/hooks/useErrorMessage"
 import { isMimeCompatible } from "@/utils/mime-types"
 
 type FileDragProps = {

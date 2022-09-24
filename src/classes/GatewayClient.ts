@@ -2,7 +2,7 @@ import type { GatewayClientOptions } from "@etherna/api-js/clients"
 import { EthernaGatewayClient } from "@etherna/api-js/clients"
 import { isSafeURL, urlOrigin } from "@etherna/api-js/utils"
 
-import { parseLocalStorage } from "@/utils/local-storage"
+import extensionsStore from "@/stores/extensions"
 
 export default class GatewayClient extends EthernaGatewayClient {
   constructor(host: string, opts?: Omit<GatewayClientOptions, "url">) {
@@ -14,15 +14,18 @@ export default class GatewayClient extends EthernaGatewayClient {
     })
   }
 
-  static get apiPath(): string {
-    return `/api/v${import.meta.env.VITE_APP_API_VERSION}`
+  static fromExtensions(): GatewayClient {
+    return new GatewayClient(GatewayClient.defaultUrl())
   }
 
-  static get defaultHost(): string {
-    const localUrl = parseLocalStorage<string>("setting:index-url")
-    if (isSafeURL(localUrl)) {
-      return urlOrigin(localUrl!)!
-    }
-    return urlOrigin(import.meta.env.VITE_APP_GATEWAY_URL)!
+  static defaultUrl(): string {
+    const currentGatewayUrl = extensionsStore.getState().currentGatewayUrl
+    return urlOrigin(
+      isSafeURL(currentGatewayUrl) ? currentGatewayUrl : import.meta.env.VITE_APP_INDEX_URL
+    )!
+  }
+
+  static get apiPath(): string {
+    return `/api/v${import.meta.env.VITE_APP_API_VERSION}`
   }
 }

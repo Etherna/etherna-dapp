@@ -23,10 +23,9 @@ import { convertBirate, convertBytes } from "@/utils/converters"
 
 type VideoSourceStatsProps = {
   source: VideoSource | undefined
-  srcUrl: string | undefined
 }
 
-const VideoSourceStats: React.FC<VideoSourceStatsProps> = ({ source, srcUrl }) => {
+const VideoSourceStats: React.FC<VideoSourceStatsProps> = ({ source }) => {
   if (!source) return null
 
   const stats = [
@@ -36,8 +35,8 @@ const VideoSourceStats: React.FC<VideoSourceStatsProps> = ({ source, srcUrl }) =
     {
       label: "Preview",
       value: (
-        <a href={srcUrl} target="_blank" rel="noreferrer">
-          {srcUrl}
+        <a href={source.source} target="_blank" rel="noreferrer">
+          {source.source}
         </a>
       ),
     },

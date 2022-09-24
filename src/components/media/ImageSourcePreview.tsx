@@ -16,18 +16,18 @@
  */
 
 import React, { useMemo } from "react"
-import type { ImageRaw } from "@etherna/api-js"
+import type { Image, ImageRaw } from "@etherna/api-js"
 
 import SwarmImage from "@/classes/SwarmImage"
 import MediaStats from "@/components/media/MediaStats"
-import useSelector from "@/state/useSelector"
+import useClientsStore from "@/stores/clients"
 
 type ImageSourcePreviewProps = {
-  image?: ImageRaw | null
+  image?: Image | ImageRaw | null
 }
 
 const ImageSourcePreview: React.FC<ImageSourcePreviewProps> = ({ image }) => {
-  const beeClient = useSelector(state => state.env.beeClient)
+  const beeClient = useClientsStore(state => state.beeClient)
 
   const [reference, srcUrl] = useMemo(() => {
     const reference = SwarmImage.Reader.getOriginalSourceReference(image)

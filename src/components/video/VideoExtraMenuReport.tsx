@@ -19,8 +19,8 @@ import React, { useCallback, useState } from "react"
 import classNames from "classnames"
 
 import { AlertPopup, Button, Modal } from "../ui/actions"
-import { useErrorMessage } from "@/state/hooks/ui"
-import useSelector from "@/state/useSelector"
+import useErrorMessage from "@/hooks/useErrorMessage"
+import useClientsStore from "@/stores/clients"
 
 type VideoExtraMenuReportProps = {
   videoId: string
@@ -46,7 +46,7 @@ const VideoExtraMenuReport: React.FC<VideoExtraMenuReportProps> = ({
   show,
   setShow,
 }) => {
-  const { indexClient } = useSelector(state => state.env)
+  const indexClient = useClientsStore(state => state.indexClient)
   const { showError } = useErrorMessage()
 
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)

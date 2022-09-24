@@ -18,7 +18,7 @@
 import React from "react"
 import classNames from "classnames"
 
-import { Label } from "../display"
+import { Label } from "@/components/ui/display"
 
 export type CheckboxProps = {
   id?: string

@@ -26,13 +26,13 @@ import NotFound from "@/components/common/NotFound"
 import SEO from "@/components/layout/SEO"
 import Player from "@/components/player/Player"
 import VideoDetails from "@/components/video/VideoDetails"
+import useErrorMessage from "@/hooks/useErrorMessage"
 import useResetRouteState from "@/hooks/useResetRouteState"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
 import useSwarmVideo from "@/hooks/useSwarmVideo"
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import routes from "@/routes"
-import { useErrorMessage } from "@/state/hooks/ui"
-import useSelector from "@/state/useSelector"
+import useClientsStore from "@/stores/clients"
 import type { VideoWithIndexes } from "@/types/video"
 
 type VideoViewProps = {
@@ -53,7 +53,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
     address: video?.ownerAddress as EthAddress,
     prefetchedProfile: routeState?.ownerProfile,
   })
-  const beeClient = useSelector(state => state.env.beeClient)
+  const beeClient = useClientsStore(state => state.beeClient)
   const { showError } = useErrorMessage()
 
   const posterUrl = useMemo(() => {

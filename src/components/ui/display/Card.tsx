@@ -16,17 +16,23 @@
  */
 
 import React from "react"
+import classNames from "classnames"
 
 export type CardProps = {
   children: React.ReactNode
+  className?: string
   actions?: React.ReactNode
   title?: string
 }
 
-const Card: React.FC<CardProps> = ({ children, actions, title }) => {
+const Card: React.FC<CardProps> = ({ children, className, actions, title }) => {
   return (
     <div
-      className="flex flex-col rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900"
+      className={classNames(
+        "flex flex-col rounded-lg border border-gray-200",
+        "bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900",
+        className
+      )}
       data-component="card"
     >
       {(title || actions) && (
