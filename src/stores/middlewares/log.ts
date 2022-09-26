@@ -18,7 +18,7 @@ type Logger = <
 
 declare module "zustand" {
   interface StoreMutators<S, A> {
-    logger: Write<Cast<S, object>, { dispatch: (a: A) => A }>
+    logger: Write<Cast<S, object>, {}>
   }
 }
 
@@ -31,19 +31,13 @@ const logger: LoggerImpl = f => (set, get, _store) => {
 
   const store = _store as Mutate<StoreApi<T>, [["logger", ISyncAction]]>
 
-  const initialState = f(set, get, _store)
-  const originalDispatch = store.dispatch
-
-  store.dispatch = action => {
-    try {
-      console.log("  applying", action)
-      return originalDispatch(action)
-    } finally {
-      console.log("  new state", get())
-    }
+  if (import.meta.env.DEV) {
+    store.subscribe((newState, oldState) => {
+      console.debug("state changed", newState)
+    })
   }
 
-  return initialState
+  return f(set, get, _store)
 }
 
 type PopArgument<T extends (...a: never[]) => unknown> = T extends (

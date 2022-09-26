@@ -44,13 +44,21 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   const [isEmpty, setIsEmpty] = useState<boolean>()
   const [canSave, setCanSave] = useState<boolean>()
   const saveCallback = useRef<() => Promise<void>>()
-  const clearCallback = useRef<() => Promise<void>>()
-  const resetState = useRef<() => void>()
   const address = useUserStore(state => state.address)
+  const editorStatus = useVideoEditorStore(state => state.status)
   const storeReference = useVideoEditorStore(state => state.reference)
   const storeVideo = useVideoEditorStore(state => state.video)
+  const reset = useVideoEditorStore(state => state.reset)
+
+  const isResultView = useMemo(() => {
+    return editorStatus === "saved" || editorStatus === "error"
+  }, [editorStatus])
 
   const stateVideo = useMemo(() => {
+    if (!reference) {
+      return undefined
+    }
+
     const baseVideo = reference === storeReference ? storeVideo : routeState?.video
     const videoIndexes: VideoWithIndexes | undefined = baseVideo
       ? {
@@ -81,25 +89,23 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
       "Are you sure you want to cancel this upload. The progress will be lost.",
       "Continue editing"
     )
-    !continueEditing && resetState.current?.()
+    !continueEditing && reset()
     return !continueEditing
-  }, [isEmpty, reference, waitConfirmation])
+  }, [isEmpty, reference, reset, waitConfirmation])
 
   const handleSave = useCallback(async () => {
     await saveCallback.current?.()
   }, [])
 
   const askToClearState = useCallback(async () => {
-    if (!resetState.current) return
-
     const clear = await waitConfirmation(
       "Clear all",
       "Are you sure you want to clear the upload data? This action cannot be reversed.",
       "Yes, clear",
       "destructive"
     )
-    clear && resetState.current()
-  }, [waitConfirmation])
+    clear && reset()
+  }, [reset, waitConfirmation])
 
   if (video && video.ownerAddress !== address) {
     return <Navigate to={routes.studioVideos} />
@@ -107,9 +113,10 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
 
   return (
     <StudioEditView
-      title={reference ? "Edit video" : "Publish new video"}
+      title={isResultView ? "" : reference ? "Edit video" : "Publish new video"}
       saveLabel={reference ? "Update" : "Publish"}
       canSave={canSave}
+      hideSaveButton={isResultView}
       actions={
         <>
           {!reference && (
@@ -138,7 +145,6 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
               if (!ref) return
 
               saveCallback.current = ref.submitVideo
-              resetState.current = ref.resetState
               ref.isEmpty !== isEmpty && setIsEmpty(ref.isEmpty)
               ref.canSubmitVideo !== canSave && setCanSave(ref.canSubmitVideo)
             }}

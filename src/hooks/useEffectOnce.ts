@@ -3,11 +3,13 @@ import { useEffect, useRef } from "react"
 
 export default function useEffectOnce(effect: EffectCallback) {
   const didRun = useRef(false)
+  const cleanup = useRef<ReturnType<EffectCallback> | undefined>()
 
   useEffect(() => {
     if (!didRun.current) {
       didRun.current = true
-      return effect()
+      cleanup.current = effect()
     }
+    return cleanup.current
   }, [effect])
 }

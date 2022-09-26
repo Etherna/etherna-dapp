@@ -5,6 +5,7 @@ import { persist, devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
+import { uuidv4Short } from "@/utils/uuid"
 
 export type VideoEditorPublishSourceType = "playlist" | "index"
 
@@ -29,9 +30,10 @@ export type VideoEditorPublishSource = {
 }
 
 export type VideoEditorQueue = {
+  id: string
   type: VideoEditorQueueType
   source: VideoEditorQueueSource
-  identifier: string
+  name: string
   completion: number | null
   size?: number
   error?: string
@@ -43,7 +45,7 @@ export type VideoEditorState = {
   /** Current editor status */
   status: "creating" | "editing" | "saved" | "error"
   /** Current batch status */
-  batchStatus?: "creating" | "fetching" | "updating" | "saturated"
+  batchStatus?: "creating" | "fetching" | "updating" | "saturated" | "not-found"
   /** Video metadata */
   video: Video
   /** Whether the user made come changes */
@@ -76,12 +78,12 @@ export type VideoEditorActions = {
     bitrate: number,
     src: string
   ): void
-  removeFromQueue(identifier: string): void
+  removeFromQueue(id: string): void
   removeVideoSource(quality: VideoQuality): void
   reset(): void
   setBatchId(batchId: string): void
   setEditingVideo(video: Video): void
-  setQueueError(identifier: string, error: string): void
+  setQueueError(id: string, error: string): void
   setIsOffered(offered: boolean): void
   setPublishingSources(sources: VideoEditorPublishSource[]): void
   setPublishingResults(results: PublishStatus[] | undefined): void
@@ -93,10 +95,10 @@ export type VideoEditorActions = {
   updateEditorStatus(status: "saved" | "error"): void
   updateTitle(title: string): void
   updateDescription(description: string): void
-  updateQueueIdentifier(oldIdentifier: string, newIdentifier: string): void
-  updateQueueType(identifier: string, type: VideoEditorQueueType): void
-  updateQueueCompletion(identifier: string, completion: number): void
-  updateQueueSize(identifier: string, size: number): void
+  updateQueueName(id: string, newName: string): void
+  updateQueueType(id: string, type: VideoEditorQueueType): void
+  updateQueueCompletion(id: string, completion: number): void
+  updateQueueSize(id: string, size: number): void
   updateMetadata(quality: VideoQuality, duration: number): void
   updateVideoReference(reference: string): void
   updateSaveTo(list: VideoEditorPublishSource[]): void
@@ -133,12 +135,13 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
       persist(
         immer(set => ({
           ...getInitialState(),
-          addToQueue(type, source, identifier) {
+          addToQueue(type, source, name) {
             set(state => {
               state.queue.push({
+                id: uuidv4Short(),
                 type,
                 source,
-                identifier,
+                name,
                 completion: null,
               })
               state.hasChanges = true
@@ -153,12 +156,13 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
                 bitrate,
                 source: src,
               })
+              state.queue = state.queue.filter(q => q.name !== quality)
               state.hasChanges = true
             })
           },
-          removeFromQueue(identifier) {
+          removeFromQueue(id) {
             set(state => {
-              state.queue = state.queue.filter(q => q.identifier !== identifier)
+              state.queue = state.queue.filter(q => q.id !== id)
               state.hasChanges = true
             })
           },
@@ -184,9 +188,9 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
               state.status = "editing"
             })
           },
-          setQueueError(identifier, error) {
+          setQueueError(id, error) {
             set(state => {
-              const queueItem = state.queue.find(q => q.identifier === identifier)
+              const queueItem = state.queue.find(q => q.id === id)
               if (queueItem) {
                 queueItem.error = error
               }
@@ -210,6 +214,7 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
           setThumbnail(thumbnail) {
             set(state => {
               state.video.thumbnail = thumbnail
+              state.queue = state.queue.filter(q => q.source === "thumbnail")
               state.hasChanges = true
             })
           },
@@ -259,34 +264,34 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
               state.hasChanges = true
             })
           },
-          updateQueueIdentifier(oldIdentifier, newIdentifier) {
+          updateQueueName(id, newName) {
             set(state => {
-              const queueItem = state.queue.find(q => q.identifier === oldIdentifier)
+              const queueItem = state.queue.find(q => q.id === id)
               if (queueItem) {
-                queueItem.identifier = newIdentifier
+                queueItem.name = newName
               }
             })
           },
-          updateQueueType(identifier, type) {
+          updateQueueType(id, type) {
             set(state => {
-              const queueItem = state.queue.find(q => q.identifier === identifier)
+              const queueItem = state.queue.find(q => q.id === id)
               if (queueItem) {
                 queueItem.type = type
               }
             })
           },
-          updateQueueCompletion(identifier, completion) {
+          updateQueueCompletion(id, completion) {
             set(state => {
-              const index = state.queue.findIndex(q => q.identifier === identifier)
+              const index = state.queue.findIndex(q => q.id === id)
               if (index >= 0) {
                 state.queue[index].completion = completion
               }
               state.hasChanges = true
             })
           },
-          updateQueueSize(identifier, size) {
+          updateQueueSize(id, size) {
             set(state => {
-              const index = state.queue.findIndex(q => q.identifier === identifier)
+              const index = state.queue.findIndex(q => q.id === id)
               if (index >= 0) {
                 state.queue[index].size = size
               }
@@ -320,6 +325,7 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
             if (state.state.batchStatus === "creating" && !state.state.video.batchId) {
               state.state.batchStatus = undefined
             }
+            state.state.queue = []
             return JSON.stringify(state)
           },
         }

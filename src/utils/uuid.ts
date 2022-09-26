@@ -24,3 +24,7 @@ import { v4 } from "uuid"
 export default function uuidv4() {
   return v4()
 }
+
+export const uuidv4Short = () => {
+  return uuidv4().split("-")[0]
+}

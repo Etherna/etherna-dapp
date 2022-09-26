@@ -15,14 +15,13 @@
  *
  */
 
-import React, { useCallback, useMemo, useRef, useState } from "react"
-import { createPortal } from "react-dom"
+import React, { useCallback, useRef, useState } from "react"
 import classNames from "classnames"
 
 import { ReactComponent as DragIcon } from "@/assets/icons/drag.svg"
 
-import FieldDescription from "@/components/common/FieldDescription"
 import { Button } from "@/components/ui/actions"
+import { Portal } from "@/components/ui/layout"
 import useErrorMessage from "@/hooks/useErrorMessage"
 import { isMimeCompatible } from "@/utils/mime-types"
 
@@ -33,27 +32,21 @@ type FileDragProps = {
   mimeTypes?: string
   disabled?: boolean
   uploadLimit?: number
+  canSelectFile?(file: File): Promise<boolean>
   onSelectFile(file: File): void
 }
 
-const FileDrag: React.FC<FileDragProps> = props => {
-  const { portal } = props
-  const portalEl = portal ? document.querySelector(portal) : null
-
-  const children = useMemo(() => {
-    return <FileDragContent {...props} />
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  if (portalEl) {
-    return createPortal(
-      <div className="max-w-2xl rounded bg-gray-900/5 px-4 py-8 dark:bg-gray-100/5">
-        {children}
-      </div>,
-      portalEl
+const FileDrag: React.FC<FileDragProps> = ({ portal, ...props }) => {
+  if (portal) {
+    return (
+      <Portal selector={portal}>
+        <div className="max-w-2xl rounded bg-gray-900/5 px-4 py-8 dark:bg-gray-100/5">
+          <FileDragContent {...props} />
+        </div>
+      </Portal>
     )
   } else {
-    return children
+    return <FileDragContent {...props} />
   }
 }
 
@@ -63,10 +56,12 @@ const FileDragContent: React.FC<FileDragProps> = ({
   mimeTypes = "*",
   disabled,
   uploadLimit,
+  canSelectFile,
   onSelectFile,
 }) => {
   const [file, setFile] = useState<File>()
   const [isDragOver, setIsDragOver] = useState(false)
+  const [isVerifing, setIsVerifing] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const { showError } = useErrorMessage()
@@ -95,10 +90,7 @@ const FileDragContent: React.FC<FileDragProps> = ({
         const file = files[0]
         if (!checkFileMimeType(file.type)) {
           showError("Invalid File", "File type of the selected element is not valid.")
-          return
-        }
-
-        if (!uploadLimit || file.size <= uploadLimit * 1024 * 1024) {
+        } else if (!uploadLimit || file.size <= uploadLimit * 1024 * 1024) {
           setFile(file)
         } else {
           showError(
@@ -163,13 +155,16 @@ const FileDragContent: React.FC<FileDragProps> = ({
     [handleFileSelect, updateDragOver]
   )
 
-  const handleFileProcessing = useCallback(() => {
+  const handleFileProcessing = useCallback(async () => {
     if (file) {
-      onSelectFile(file)
+      setIsVerifing(true)
+      const canProcede = (await canSelectFile?.(file)) ?? true
+      setIsVerifing(false)
+      canProcede && onSelectFile(file)
     } else {
       console.error("No file selected. Cannot continue.")
     }
-  }, [file, onSelectFile])
+  }, [file, onSelectFile, canSelectFile])
 
   return (
     <>
@@ -194,13 +189,13 @@ const FileDragContent: React.FC<FileDragProps> = ({
           </div>
           <div className="mt-4 space-y-5">
             <div>
-              <Button onClick={() => handleFileProcessing()} disabled={disabled}>
+              <Button
+                loading={isVerifing}
+                onClick={() => handleFileProcessing()}
+                disabled={disabled}
+              >
                 Upload
               </Button>
-              <FieldDescription>
-                Upload this source as is without any encoding (make sure is optimized for the
-                browser).
-              </FieldDescription>
             </div>
           </div>
         </div>

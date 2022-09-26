@@ -17,27 +17,40 @@
 
 import React from "react"
 
-import { ProgressBar } from "@/components/ui/display"
+import { ProgressBar, Spinner } from "@/components/ui/display"
 
 type FileUploadProgressProps = {
   progress: number
+  color?: "primary" | "rainbow"
+  isPreloading?: boolean
+  uploadText?: string
+  processingText?: string
+  preloadingText?: string
 }
 
-const FileUploadProgress: React.FC<FileUploadProgressProps> = ({ progress }) => {
-  if (progress === 0) return null
+const FileUploadProgress: React.FC<FileUploadProgressProps> = ({
+  progress,
+  color,
+  isPreloading,
+  uploadText,
+  processingText = "Processing data (it might take several seconds)",
+  preloadingText = "Processing data",
+}) => {
+  const isProcessing = progress >= 100
+  const isUploading = !isPreloading && progress < 100
 
   return (
-    <div className="flex w-full max-w-sm flex-wrap items-center">
-      <div className="w-auto flex-grow">
-        <ProgressBar progress={progress} indeterminate={progress === 100} />
-      </div>
-      {progress < 100 && <span className="ml-2 text-sm font-semibold">{progress}%</span>}
-      <span className="mt-1.5 w-full text-sm">
-        {progress < 100 ? (
-          <p>Uploading...</p>
-        ) : (
-          <p>Processing data (it might take several seconds)</p>
-        )}
+    <div className="flex w-full flex-wrap items-center">
+      {!isProcessing && (
+        <div className="w-full flex-grow">
+          <ProgressBar color={color} progress={progress} indeterminate={isPreloading} />
+        </div>
+      )}
+      <span className="mt-1.5 flex w-full items-center space-x-3 text-sm">
+        {isProcessing && <Spinner size={26} height={4} type="bouncing-line" />}
+        {isProcessing && <p>{processingText}</p>}
+        {isUploading && <p>{uploadText || `Uploading (${progress}%)`}</p>}
+        {isPreloading && <p>{preloadingText}</p>}
       </span>
     </div>
   )

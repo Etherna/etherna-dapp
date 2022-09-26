@@ -236,13 +236,14 @@ export default function useVideoEditor() {
 
   const unofferVideoResources = useCallback(async () => {
     try {
-      const handler = new EthernaResourcesHandler(newVideo.current!, { gatewayClient })
+      // using 'old' video reference to unoffer resources
+      const handler = new EthernaResourcesHandler(video, { gatewayClient })
       await handler.unofferResources()
     } catch (error) {
       console.error(error)
       return false
     }
-  }, [gatewayClient])
+  }, [gatewayClient, video])
 
   const saveVideoTo = useCallback(
     async (saveToSources: VideoEditorPublishSource[], opts: SaveOpts) => {
@@ -272,7 +273,7 @@ export default function useVideoEditor() {
       updateVideoReference(newReference)
 
       // Add/remove to sources
-      const newPublishResults: PublishStatus[] = [...(publishingResults ?? [])]
+      const newPublishResults: PublishStatus[] = JSON.parse(JSON.stringify(publishingResults ?? []))
       for (const source of saveToSources) {
         let statusIndex = newPublishResults.findIndex(
           ps => ps.source.source === source.source && ps.source.identifier === source.identifier

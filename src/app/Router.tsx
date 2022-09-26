@@ -23,6 +23,7 @@ import AuthenticateRoute from "./route-wrappers/AuthenticateRoute"
 import BatchesRoute from "./route-wrappers/BatchesRoute"
 import DefaultBatchRoute from "./route-wrappers/DefaultBatchRoute"
 import SignedInRoute from "./route-wrappers/SignedInRoute"
+import StoreCleanupRoute from "./route-wrappers/StoreCleanupRoute"
 import StudioLayoutRoute from "./route-wrappers/StudioLayoutRoute"
 import VideoRoute from "./route-wrappers/VideoRoute"
 import { PageLoader } from "@/components/ui/layout"
@@ -144,34 +145,36 @@ const Router = () => {
   return (
     <>
       <Routes location={backgroundLocation || location}>
-        <Route path="" element={<AuthenticateRoute />}>
-          <Route path="" element={<AppLayoutRoute />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/request-alpha-pass" element={<AlphaPass />} />
-            <Route path="/frames" element={<Frames />} />
-            <Route path="/following" element={<Following />} />
-            <Route path="/playlists" element={<Playlists />} />
-            <Route path="/saved" element={<Saved />} />
-            <Route path="/profiles" element={<Profiles />} />
-            <Route path="/channel/:id" element={<Channel />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/shortcuts" element={<Shortcuts />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="" element={<StoreCleanupRoute />}>
+          <Route path="" element={<AuthenticateRoute />}>
+            <Route path="" element={<AppLayoutRoute />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/request-alpha-pass" element={<AlphaPass />} />
+              <Route path="/frames" element={<Frames />} />
+              <Route path="/following" element={<Following />} />
+              <Route path="/playlists" element={<Playlists />} />
+              <Route path="/saved" element={<Saved />} />
+              <Route path="/profiles" element={<Profiles />} />
+              <Route path="/channel/:id" element={<Channel />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/shortcuts" element={<Shortcuts />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
-            <Route path="/watch" element={<VideoRoute />}>
-              <Route path=":hash" element={<Watch />} />
-            </Route>
+              <Route path="/watch" element={<VideoRoute />}>
+                <Route path=":hash" element={<Watch />} />
+              </Route>
 
-            <Route path="/studio" element={<SignedInRoute />}>
-              <Route path="" element={<StudioLayoutRoute />}>
-                <Route path="" element={<Navigate replace to="/studio/videos" />} />
-                <Route path="" element={<DefaultBatchRoute />}>
-                  <Route path="videos" element={<VideosList />} />
-                  <Route path="videos/:id" element={<VideoEdit />} />
-                  <Route path="channel" element={<ChannelEdit />} />
-                </Route>
-                <Route path="" element={<BatchesRoute />}>
-                  <Route path="postages" element={<Postages />} />
+              <Route path="/studio" element={<SignedInRoute />}>
+                <Route path="" element={<StudioLayoutRoute />}>
+                  <Route path="" element={<Navigate replace to="/studio/videos" />} />
+                  <Route path="" element={<DefaultBatchRoute />}>
+                    <Route path="videos" element={<VideosList />} />
+                    <Route path="videos/:id" element={<VideoEdit />} />
+                    <Route path="channel" element={<ChannelEdit />} />
+                  </Route>
+                  <Route path="" element={<BatchesRoute />}>
+                    <Route path="postages" element={<Postages />} />
+                  </Route>
                 </Route>
               </Route>
             </Route>

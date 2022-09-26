@@ -31,7 +31,7 @@ const Portal: React.FC<PortalProps> = ({ selector, children }) => {
     const container = document.querySelector<HTMLElement>(selector)
     container && setContainer(container)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [selector])
 
   if (!container) return null
 

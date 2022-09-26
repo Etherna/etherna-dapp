@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import { Skeleton } from "../ui/display"
+import { Skeleton } from "@/components/ui/display"
 
 type TableVideoPlaceholderProps = {
   count?: number
@@ -30,7 +30,7 @@ const TableVideoPlaceholder: React.FC<TableVideoPlaceholderProps> = ({ count = 4
         .fill(0)
         .map((_, i) => (
           <tr className="" key={i}>
-            <td></td>
+            <td />
             <td className="py-1">
               <div className="flex items-center space-x-2">
                 <Skeleton squared>

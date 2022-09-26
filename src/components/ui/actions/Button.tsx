@@ -118,12 +118,16 @@ const Button: React.FC<ButtonProps> = ({
           "py-3 px-8": large && aspect !== "text",
           border: aspect === "outline",
         },
-        isRoundable && {
-          "rounded-md": !rounded && !small && !large,
-          rounded: !rounded && small,
-          "rounded-lg": !rounded && large,
-          "rounded-full": rounded,
-        },
+        isRoundable
+          ? {
+              "rounded-md": !rounded && !small && !large,
+              rounded: !rounded && small,
+              "rounded-lg": !rounded && large,
+              "rounded-full": rounded,
+            }
+          : {
+              "rounded-sm": true,
+            },
         !disabled && {
           "bg-primary-500 text-white active:bg-primary-600":
             color === "primary" && aspect === "fill",
@@ -138,7 +142,7 @@ const Button: React.FC<ButtonProps> = ({
           "border-red-500 text-red-500 active:border-red-600 active:bg-primary-500/10":
             color === "error" && aspect === "outline",
           "text-red-500 active:text-red-600": color === "error" && aspect === "text",
-          "bg-yellow-500 text-white active:bg-yellow-600": color === "warning" && aspect === "fill",
+          "bg-yellow-600 text-white active:bg-yellow-700": color === "warning" && aspect === "fill",
           "border-yellow-500 text-yellow-500 active:border-yellow-600 active:bg-primary-500/10":
             color === "warning" && aspect === "outline",
           "text-yellow-500 active:text-yellow-600": color === "warning" && aspect === "text",

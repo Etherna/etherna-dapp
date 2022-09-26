@@ -194,7 +194,11 @@ const TabbarMenuItem: React.FC<TabbarMenuItemProps> = props => {
 
   return (
     <div className="min-w-[15%] max-w-[96px] flex-grow" data-component="tabbar-menu-item">
-      <TabbarItem {...omit(props, "children")} iconSvg={<Bars2Icon />} onClick={toggleShowMenu} />
+      <TabbarItem
+        {...omit(props, "children")}
+        iconSvg={<Bars2Icon strokeWidth={2.5} />}
+        onClick={toggleShowMenu}
+      />
 
       <Transition
         show={showMenu}
@@ -210,9 +214,9 @@ const TabbarMenuItem: React.FC<TabbarMenuItemProps> = props => {
         <div
           className={classNames(
             "fixed inset-x-0 bottom-16 z-10 flex flex-col-reverse space-y-4 space-y-reverse p-4 mb-safe",
-            "bg-gray-50 bg-opacity-80 dark:bg-gray-900 dark:bg-opacity-80",
+            "bg-gray-50/80 dark:bg-gray-900/80",
             "border-t border-b border-gray-700/20 dark:border-gray-400/20",
-            "backdrop-blur-lg backdrop-filter"
+            "backdrop-blur-lg"
           )}
         >
           {props.children}
@@ -229,9 +233,8 @@ const Tabbar: React.FC<TabbarProps> & {
   return (
     <nav
       className={classNames(
-        "fixed inset-x-0 bottom-0 flex md:hidden",
-        "bg-gray-50/80 dark:bg-gray-900/80",
-        "z-10 backdrop-blur-lg backdrop-filter",
+        "fixed inset-x-0 bottom-0 z-10 flex md:hidden",
+        "bg-white/80 backdrop-blur-xl backdrop-filter dark:bg-gray-900/80",
         "pb-safe",
         "[&~main]:mb-20 lg:[&~main]:mb-0",
         className

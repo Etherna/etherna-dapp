@@ -25,7 +25,7 @@ import { ProgressBar } from "@/components/ui/display"
 
 type BatchLoadingProps = {
   className?: string
-  type: "fetching" | "creating" | "updating" | "saturated"
+  type: "fetching" | "creating" | "updating" | "saturated" | "not-found"
   title?: string
   message?: string
   error?: boolean | Error
@@ -84,10 +84,10 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
         {message ? message : typeof error === "object" ? JSON.stringify(error) : ""}
       </p>
 
-      {type === "fetching" && error && (
+      {(type === "fetching" || type === "not-found") && error && (
         <Button className="mt-4" color="inverted" small onClick={onCreate}>
           <PlusIcon aria-hidden />
-          create new batch
+          create new postage
         </Button>
       )}
     </div>

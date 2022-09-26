@@ -132,8 +132,8 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
         <table className="mt-4 w-full">
           <thead>
             <tr>
-              <th></th>
-              <th style={{ width: "100px" }}></th>
+              <th />
+              <th style={{ width: "100px" }} />
             </tr>
           </thead>
           <tbody>
