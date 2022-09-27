@@ -20,7 +20,7 @@ import type { Video } from "@etherna/api-js"
 
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline"
 
-import { Badge } from "../ui/display"
+import { Badge } from "@/components/ui/display"
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 
 type VideoOffersBadgeProps = {

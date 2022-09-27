@@ -22,7 +22,7 @@ import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 import { FilmIcon, PhotoIcon } from "@heroicons/react/20/solid"
 import { ReactComponent as ManifestIcon } from "@/assets/icons/manifest.svg"
 
-import { Button, Modal } from "../ui/actions"
+import { Button, Modal } from "@/components/ui/actions"
 import useClientsStore from "@/stores/clients"
 
 type VideoExtraMenuManifestProps = {

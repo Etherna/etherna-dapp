@@ -21,9 +21,9 @@ import classNames from "classnames"
 
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
-import { Button } from "../ui/actions"
-import { Avatar } from "../ui/display"
 import MarkdownEditor from "@/components/common/MarkdownEditor"
+import { Button } from "@/components/ui/actions"
+import { Avatar } from "@/components/ui/display"
 import useErrorMessage from "@/hooks/useErrorMessage"
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"

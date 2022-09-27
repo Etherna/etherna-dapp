@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import { Skeleton } from "../ui/display"
+import { Skeleton } from "@/components/ui/display"
 
 const ProfileInfoPlaceholder: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (

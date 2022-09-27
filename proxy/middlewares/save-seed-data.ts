@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+/* eslint-disable no-restricted-imports */
+
 import fs from "fs"
 import type { IncomingMessage } from "http"
 import type { Response } from "node-fetch"

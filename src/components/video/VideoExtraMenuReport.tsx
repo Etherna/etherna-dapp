@@ -18,7 +18,7 @@
 import React, { useCallback, useState } from "react"
 import classNames from "classnames"
 
-import { AlertPopup, Button, Modal } from "../ui/actions"
+import { AlertPopup, Button, Modal } from "@/components/ui/actions"
 import useErrorMessage from "@/hooks/useErrorMessage"
 import useClientsStore from "@/stores/clients"
 
