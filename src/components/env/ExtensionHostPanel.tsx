@@ -63,16 +63,16 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
     type === "gateway" ? state.currentGatewayUrl : state.currentIndexUrl
   )
   const addExtension = useExtensionsStore(state =>
-    type === "gateway" ? state.addIndex : state.addGateway
+    type === "gateway" ? state.addGateway : state.addIndex
   ) as (e: T) => void
   const removeExtension = useExtensionsStore(state =>
-    type === "gateway" ? state.removeIndex : state.removeGateway
+    type === "gateway" ? state.removeGateway : state.removeIndex
   )
   const updateExtension = useExtensionsStore(state =>
-    type === "gateway" ? state.updateIndex : state.updateGateway
+    type === "gateway" ? state.updateGateway : state.updateIndex
   )
   const setCurrentUrl = useExtensionsStore(state =>
-    type === "gateway" ? state.setCurrentIndexUrl : state.setCurrentGatewayUrl
+    type === "gateway" ? state.setCurrentGatewayUrl : state.setCurrentIndexUrl
   )
   const [editingUrl, setEditingUrl] = useState<string | null>(null)
   const [showEditorModal, setShowEditorModal] = useState(false)
@@ -244,11 +244,13 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
         showCloseButton
         onClose={cancelEditingHost}
       >
-        <ExtensionHostForm<T>
-          value={editorTempExtension}
-          params={hostParams}
-          onChange={setEditorTempExtension}
-        />
+        <div className="mt-6">
+          <ExtensionHostForm<T>
+            value={editorTempExtension}
+            params={hostParams}
+            onChange={setEditorTempExtension}
+          />
+        </div>
       </Modal>
     </>
   )

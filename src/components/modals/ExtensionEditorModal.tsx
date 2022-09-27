@@ -25,23 +25,20 @@ import type { ExtensionParamConfig } from "@/components/env/ExtensionHostPanel"
 import { Button, Modal } from "@/components/ui/actions"
 import useExtensionEditor from "@/hooks/useExtensionEditor"
 import sessionStore from "@/stores/session"
-import type { ExtensionType } from "@/stores/ui"
 import useUIStore from "@/stores/ui"
 import userStore from "@/stores/user"
 import type { GatewayExtensionHost, IndexExtensionHost } from "@/types/extension-host"
 
 const ExtensionEditorModal = <T extends IndexExtensionHost | GatewayExtensionHost>() => {
   const extension = useUIStore(state => state.extension)
-
   const { hideEditor } = useExtensionEditor()
-  const [editingExtension, setEditingExtension] = useState<ExtensionType>()
 
   const hostParams: ExtensionParamConfig[] = useMemo(() => {
     const defaultParams: ExtensionParamConfig[] = [
       { key: "name", label: "Name", mandatory: true },
       { key: "url", label: "Url", mandatory: true },
     ]
-    switch (editingExtension) {
+    switch (extension?.type) {
       case "index":
         return defaultParams
       case "gateway":
@@ -73,10 +70,10 @@ const ExtensionEditorModal = <T extends IndexExtensionHost | GatewayExtensionHos
       default:
         return defaultParams
     }
-  }, [editingExtension])
+  }, [extension?.type])
 
   const description = useMemo(() => {
-    switch (editingExtension) {
+    switch (extension?.type) {
       case "index":
         return `The index is information provider, or rather the list of videos,
         users and comments of the platform.
@@ -94,7 +91,7 @@ const ExtensionEditorModal = <T extends IndexExtensionHost | GatewayExtensionHos
       default:
         return ""
     }
-  }, [editingExtension])
+  }, [extension?.type])
 
   const closeModal = useCallback(() => {
     hideEditor()
@@ -112,18 +109,18 @@ const ExtensionEditorModal = <T extends IndexExtensionHost | GatewayExtensionHos
       show={!!extension}
       showCloseButton={false}
       showCancelButton={false}
-      title={`Edit current ${editingExtension}`}
+      title={`Edit current ${extension?.type}`}
       icon={
-        editingExtension === "index" ? (
+        extension?.type === "index" ? (
           <IndexIcon />
-        ) : editingExtension === "gateway" ? (
+        ) : extension?.type === "gateway" ? (
           <GatewayIcon />
         ) : null
       }
       footerButtons={
         <>
           <Button onClick={applyChanges} disabled={false}>
-            Switch {editingExtension}
+            Switch {extension?.type}
           </Button>
           <Button color="muted" onClick={closeModal} disabled={false}>
             Done
