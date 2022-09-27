@@ -40,7 +40,6 @@ const AlphaWarning: React.FC = () => {
   const [open, setOpen] = useState(!hide)
   const [feedbackBlocked, setFeedbackBlocked] = useState(false)
   const [toggleButton, setToggleButton] = useState<HTMLButtonElement>()
-  const [dialogEl, setDialogEl] = useState<HTMLDivElement>()
   const cancelButton = useRef<HTMLButtonElement>(null)
   const initialState = useRef<boolean | null>(hide ? false : null)
 
@@ -49,77 +48,6 @@ const AlphaWarning: React.FC = () => {
       setFeedbackBlocked(!window.ATL_JQ_PAGE_PROPS?.showCollectorDialog)
     }, 1000)
   }, [])
-
-  useEffect(() => {
-    if (open === initialState.current) return
-
-    if (toggleButton && dialogEl) {
-      dialogTransition()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, toggleButton, dialogEl])
-
-  const dialogTransition = useCallback(() => {
-    const dialogBounds = dialogEl!.getBoundingClientRect()
-    const targetBounds = toggleButton!.getBoundingClientRect()
-
-    const from = open ? targetBounds : dialogBounds
-    const to = open ? dialogBounds : targetBounds
-
-    dialogEl!.parentElement!.style.zIndex = ""
-    dialogEl!.style.visibility = ""
-    dialogEl!.style.position = "absolute"
-    dialogEl!.style.left = `${from.left}px`
-    dialogEl!.style.top = `${from.top}px`
-    dialogEl!.style.width = `${from.width}px`
-    dialogEl!.style.height = `${from.height}px`
-
-    const innerChild = dialogEl!.children[0] as HTMLElement
-    innerChild.style.opacity = "0"
-
-    const requestAnimationFrame =
-      window.requestAnimationFrame ||
-      window.webkitRequestAnimationFrame ||
-      window.mozRequestAnimationFrame ||
-      window.msRequestAnimationFrame
-
-    let currentFrame = 1
-    const frames = 15
-    const innerFrames = frames * 0.8
-    const xStep = (to.x - from.x) / frames
-    const yStep = (to.y - from.y) / frames
-    const widthStep = (to.width - from.width) / frames
-    const heightStep = (to.height - from.height) / frames
-    const innerOpacityStep = 1 / innerFrames
-
-    const step = () => {
-      dialogEl!.style.left = `${from.left + xStep * currentFrame}px`
-      dialogEl!.style.top = `${from.top + yStep * currentFrame}px`
-      dialogEl!.style.width = `${from.width + widthStep * currentFrame}px`
-      dialogEl!.style.height = `${from.height + heightStep * currentFrame}px`
-
-      currentFrame++
-
-      if (currentFrame >= frames * 0.8) {
-        innerChild.style.opacity = `${innerOpacityStep * (frames - innerFrames)}`
-      }
-
-      if (currentFrame <= frames) {
-        requestAnimationFrame(step)
-      } else {
-        dialogEl!.style.visibility = !open ? "hidden" : ""
-        dialogEl!.style.position = ""
-        dialogEl!.style.left = ""
-        dialogEl!.style.top = ""
-        dialogEl!.style.width = ""
-        dialogEl!.style.height = ""
-        dialogEl!.parentElement!.style.zIndex = open ? "" : "-1"
-        innerChild.style.opacity = open ? "1" : "0"
-      }
-    }
-
-    requestAnimationFrame(step)
-  }, [open, toggleButton, dialogEl])
 
   const handleClose = useCallback(() => {
     initialState.current = null
@@ -150,82 +78,93 @@ const AlphaWarning: React.FC = () => {
         <span className="hidden sm:ml-1.5 sm:inline">Alpha</span>
       </button>
 
-      <Dialog
-        as="div"
-        className="fixed inset-0 isolate z-50 flex items-start overflow-auto p-6 transition-all md:items-stretch"
-        initialFocus={cancelButton}
-        open={open && !!toggleButton}
-        onClose={() => setOpen(false)}
-        style={{ zIndex: open ? undefined : -1, pointerEvents: open ? undefined : "none" }}
-        tabIndex={0}
-        static
-      >
-        <Transition
-          as={Fragment}
-          show={open}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
+      <Transition.Root show={open && !!toggleButton} as={Fragment}>
+        <Dialog
+          as="div"
+          className="fixed inset-0 z-50 flex items-start overflow-auto p-6 transition-all md:items-stretch"
+          initialFocus={cancelButton}
+          onClose={() => {}}
+          tabIndex={0}
+          static
         >
-          <div
-            className={classNames(
-              "fixed inset-0 backdrop-blur-sm transition-opacity",
-              "bg-gray-500/75 dark:bg-gray-800/50"
-            )}
-          />
-        </Transition>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <Dialog.Backdrop
+              className={classNames(
+                "fixed inset-0 backdrop-blur-sm transition-opacity",
+                "bg-gray-500/75 dark:bg-gray-800/50"
+              )}
+            />
+          </Transition.Child>
 
-        <div
-          className={classNames(
-            "z-1 mx-auto mt-0 w-full max-w-xs rounded-lg p-4 md:my-auto",
-            "bg-orange-500 shadow-lg shadow-orange-500/20 transition-[width,height,opacity]"
-          )}
-          ref={el => el && setDialogEl(el)}
-          style={{ visibility: "hidden" }}
-        >
-          <div className="transition-opacity duration-200">
-            <div className="flex flex-col items-center">
-              <Dialog.Title className="text-center text-xl text-orange-900">
-                Alpha Realease
-              </Dialog.Title>
-              <Dialog.Description className="text-center font-medium leading-[1.1] text-orange-800">
-                The current version of this application is in alpha, meaning it might have bugs as
-                well as downtime moments and data loss.
-                <br />
-                <br />
-                We appreciate if you report any possible bug by clicking on the button below.
-              </Dialog.Description>
-            </div>
+          <Transition.Child
+            as={Fragment}
+            enter="transition-all ease-out duration-300"
+            enterFrom="opacity-0 -translate-y-full scale-0"
+            enterTo="opacity-100 translate-y-0 sm:scale-100"
+            leave="transition-all ease-in duration-200"
+            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+            leaveTo="opacity-0 -translate-y-full scale-0"
+          >
+            <Dialog.Panel
+              className={classNames(
+                "z-1 mx-auto mt-0 w-full max-w-xs overflow-hidden rounded-lg p-4 md:my-auto",
+                "bg-orange-500 shadow-lg shadow-orange-500/20"
+              )}
+            >
+              <div className="">
+                <div className="flex flex-col items-center">
+                  <Dialog.Title className="text-center text-xl text-orange-900">
+                    Alpha Realease
+                  </Dialog.Title>
+                  <Dialog.Description className="text-center font-medium leading-[1.1] text-orange-800">
+                    The current version of this application is in alpha, meaning it might have bugs
+                    as well as downtime moments and data loss.
+                    <br />
+                    <br />
+                    We appreciate if you report any possible bug by clicking on the button below.
+                  </Dialog.Description>
+                </div>
 
-            <div className="mt-10 flex flex-col space-y-2">
-              <AlphaWarningAction as="button" onClick={handleFeedback} disabled={feedbackBlocked}>
-                <Tippy
-                  content={
-                    feedbackBlocked
-                      ? "The feedback script has been blocked by your AdBlocker"
-                      : undefined
-                  }
-                  disabled={!feedbackBlocked}
-                >
-                  <span className="flex items-center">
-                    <BugIcon /> Report bug
-                  </span>
-                </Tippy>
-              </AlphaWarningAction>
-              <AlphaWarningAction as="a" href="https://discord.gg/vfHYEXf">
-                <DiscordLogo /> Discord support
-              </AlphaWarningAction>
+                <div className="mt-10 flex flex-col space-y-2">
+                  <AlphaWarningAction
+                    as="button"
+                    onClick={handleFeedback}
+                    disabled={feedbackBlocked}
+                  >
+                    <Tippy
+                      content={
+                        feedbackBlocked
+                          ? "The feedback script has been blocked by your AdBlocker"
+                          : undefined
+                      }
+                      disabled={!feedbackBlocked}
+                    >
+                      <span className="flex items-center">
+                        <BugIcon /> Report bug
+                      </span>
+                    </Tippy>
+                  </AlphaWarningAction>
+                  <AlphaWarningAction as="a" href="https://discord.gg/vfHYEXf">
+                    <DiscordLogo /> Discord support
+                  </AlphaWarningAction>
 
-              <AlphaWarningAction as="button" onClick={handleClose} alt>
-                I understand
-              </AlphaWarningAction>
-            </div>
-          </div>
-        </div>
-      </Dialog>
+                  <AlphaWarningAction as="button" onClick={handleClose} alt>
+                    I understand
+                  </AlphaWarningAction>
+                </div>
+              </div>
+            </Dialog.Panel>
+          </Transition.Child>
+        </Dialog>
+      </Transition.Root>
     </>
   )
 }
