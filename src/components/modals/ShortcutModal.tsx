@@ -94,10 +94,10 @@ const ShortcutModal: React.FC<ShortcutModalProsp> = ({ show = false }) => {
       showCloseButton={true}
       footerButtons={
         <>
-          <Button color="muted" onClick={overrideShortcut} disabled={!!existingShortcut}>
+          <Button color="primary" onClick={overrideShortcut} disabled={!!existingShortcut}>
             Save
           </Button>
-          <Button color="error" onClick={deleteShortcut}>
+          <Button color="warning" aspect="outline" onClick={deleteShortcut}>
             Clear
           </Button>
         </>

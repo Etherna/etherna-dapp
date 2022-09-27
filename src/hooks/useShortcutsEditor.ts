@@ -16,7 +16,7 @@
 
 import { useCallback } from "react"
 
-import { defaultKeymap } from "@/keyboard"
+import { getDefaultKeymap } from "@/keyboard"
 import useSettingsStore from "@/stores/settings"
 import useUIStore from "@/stores/ui"
 import type { KeymapNamespace } from "@/types/keyboard"
@@ -47,6 +47,7 @@ export default function useShortcutsEditor() {
       let newKeymap = {
         ...keymap,
       }
+      const defaultKeymap = getDefaultKeymap()
       newKeymap[namespace][shortcutKey] =
         newShortcut !== undefined ? newShortcut || "" : defaultKeymap[namespace][shortcutKey]
 
