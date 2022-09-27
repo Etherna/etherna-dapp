@@ -59,11 +59,16 @@ const useSettingsStore = create<SettingsState & SettingsActions>()(
         {
           name: "etherna:settings",
           getStorage: () => localStorage,
-          onRehydrateStorage(state) {
-            loadColorScheme(state?.darkMode ?? prefersDarkColorScheme())
+          deserialize(str) {
+            const state = JSON.parse(str)
+            loadColorScheme(state?.state?.darkMode ?? prefersDarkColorScheme())
+            return state
           },
         }
-      )
+      ),
+      {
+        name: "settings",
+      }
     )
   )
 )

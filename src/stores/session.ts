@@ -48,7 +48,10 @@ const useSessionStore = create<SessionState & SessionActions>()(
           name: "etherna:session",
           getStorage: () => sessionStorage,
         }
-      )
+      ),
+      {
+        name: "session",
+      }
     )
   )
 )

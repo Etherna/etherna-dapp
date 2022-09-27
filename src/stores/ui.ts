@@ -150,7 +150,10 @@ const useUIStore = create<UIState & UIActions>()(
             state.showSidebar = show
           })
         },
-      }))
+      })),
+      {
+        name: "ui",
+      }
     )
   )
 )

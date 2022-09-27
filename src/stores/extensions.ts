@@ -100,7 +100,10 @@ const useExtensionsStore = create<ExtensionsState & ExtensionsActions>()(
           name: "etherna:extensions",
           getStorage: () => localStorage,
         }
-      )
+      ),
+      {
+        name: "extensions",
+      }
     )
   )
 )

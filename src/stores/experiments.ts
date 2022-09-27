@@ -21,7 +21,10 @@ const useExperimentsStore = create<ExperimentsState & ExperimentsActions>()(
           name: "etherna:experiments",
           getStorage: () => localStorage,
         }
-      )
+      ),
+      {
+        name: "experiments",
+      }
     )
   )
 )

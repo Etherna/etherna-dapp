@@ -26,7 +26,10 @@ const useEnvironmentStore = create<EnvironmentState & EnvironmentActions>()(
     devtools(
       immer(set => ({
         ...getInitialState(),
-      }))
+      })),
+      {
+        name: "env",
+      }
     )
   )
 )

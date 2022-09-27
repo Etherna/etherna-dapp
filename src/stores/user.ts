@@ -82,7 +82,10 @@ const useUserStore = create<UserState & UserActions>()(
           name: "etherna:user",
           getStorage: () => sessionStorage,
         }
-      )
+      ),
+      {
+        name: "user",
+      }
     )
   )
 )

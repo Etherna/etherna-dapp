@@ -48,7 +48,10 @@ const useClientsStore = create<ClientsState & ClientsActions>()(
             state.beeClient = client
           })
         },
-      }))
+      })),
+      {
+        name: "clients",
+      }
     )
   )
 )
