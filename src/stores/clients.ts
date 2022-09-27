@@ -16,9 +16,9 @@ export type ClientsState = {
 }
 
 export type ClientsActions = {
-  updateIndexClient: (client: IndexClient) => void
-  updateGatewayClient: (client: GatewayClient) => void
-  updateBeeClient: (client: BeeClient) => void
+  updateIndexClient(client: IndexClient): void
+  updateGatewayClient(client: GatewayClient): void
+  updateBeeClient(client: BeeClient): void
 }
 
 const getInitialState = (): ClientsState => ({

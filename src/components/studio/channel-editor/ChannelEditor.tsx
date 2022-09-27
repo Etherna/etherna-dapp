@@ -30,9 +30,9 @@ import classNames from "classnames"
 
 import { TrashIcon } from "@heroicons/react/24/outline"
 
-import WalletState from "../other/WalletState"
 import SwarmImage from "@/classes/SwarmImage"
 import MarkdownEditor from "@/components/common/MarkdownEditor"
+import WalletState from "@/components/studio/other/WalletState"
 import { Button } from "@/components/ui/actions"
 import { TextInput } from "@/components/ui/inputs"
 import useErrorMessage from "@/hooks/useErrorMessage"
@@ -67,9 +67,6 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
   ({ profileAddress }, ref) => {
     const beeClient = useClientsStore(state => state.beeClient)
     const defaultBatchId = useUserStore(state => state.defaultBatchId)
-    const defaultBatch = useUserStore(
-      state => state.batches.find(b => b.id === defaultBatchId) ?? state.batches[0]
-    )
     const profile = useUserStore(state => state.profile)
     const updateProfile = useUserStore(state => state.setProfile)
     const { cropImage } = useImageCrop()
@@ -119,7 +116,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
     }))
 
     const handleSubmit = useCallback(async () => {
-      if (!defaultBatch) {
+      if (!defaultBatchId) {
         return showError("Cannot upload", "You don't have any storage yet.")
       }
 
@@ -162,7 +159,6 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
       }
     }, [
       profileAddress,
-      defaultBatch,
       defaultBatchId,
       hasExceededLimit,
       isLocked,
