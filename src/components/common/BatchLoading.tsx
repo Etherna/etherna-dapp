@@ -18,6 +18,7 @@
 import React from "react"
 import classNames from "classnames"
 
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { ExclamationCircleIcon, PlusIcon, SparklesIcon } from "@heroicons/react/24/solid"
 
 import { Button } from "@/components/ui/actions"
@@ -79,6 +80,13 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
             : "Creating postage batch"}
         </h4>
       </div>
+
+      {(type === "creating" || type === "updating") && (
+        <p className="mt-2 text-sm leading-none">
+          <InformationCircleIcon width={16} className="mr-1 inline" />
+          This process might take several minutes...
+        </p>
+      )}
 
       <p className="mt-2 text-sm opacity-50">
         {message ? message : typeof error === "object" ? JSON.stringify(error) : ""}

@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useMemo } from "react"
+import React, { forwardRef, useEffect, useImperativeHandle, useMemo } from "react"
 import type { Video } from "@etherna/api-js"
 import classNames from "classnames"
 
@@ -11,6 +11,7 @@ import VideoSourcesCard from "./cards/VideoSourcesCard"
 import { Container } from "@/components/ui/layout"
 import useEffectOnce from "@/hooks/useEffectOnce"
 import useVideoEditor from "@/hooks/useVideoEditor"
+import useUserStore from "@/stores/user"
 import useVideoEditorStore from "@/stores/video-editor"
 
 export const PORTAL_ID = "video-drag-portal"
@@ -30,6 +31,7 @@ const MAX_TITLE_LENGTH = 150
 const MAX_DESCRIPTION_LENGTH = 5000
 
 const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref) => {
+  const address = useUserStore(state => state.address!)
   const batchStatus = useVideoEditorStore(state => state.batchStatus)
   const batchId = useVideoEditorStore(state => state.video.batchId)
   const videoTitle = useVideoEditorStore(state => state.video.title)
@@ -40,6 +42,7 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
   const queue = useVideoEditorStore(state => state.queue)
   const saveTo = useVideoEditorStore(state => state.saveTo)
   const setEditingVideo = useVideoEditorStore(state => state.setEditingVideo)
+  const setOwnerAddress = useVideoEditorStore(state => state.setOwnerAddress)
   const resetState = useVideoEditorStore(state => state.reset)
   const { isSaving, saveVideoTo } = useVideoEditor()
 
@@ -70,6 +73,13 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
       setEditingVideo(video)
     }
   })
+
+  useEffect(() => {
+    if (!video) {
+      setOwnerAddress(address)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (video && editorStatus === "creating") return null
 

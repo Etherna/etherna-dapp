@@ -34,16 +34,17 @@ export default function useVideoEditorQueue<S = Image | VideoSource>(
         : (videoSources.find(s => s.quality === name) as S)
     return [queue.find(q => q.name === name), source]
   }, [name, queue, thumbnail, videoSources])
+  const isQueued = useMemo(() => {
+    const firstToUpload = queue.find(q => q.type === "upload")
+    return currentQueue && firstToUpload?.id !== currentQueue.id
+  }, [queue, currentQueue])
 
   const processingStatus: ProcessingStatus = useMemo(() => {
-    return currentSource
-      ? "preview"
-      : currentQueue
-      ? currentQueue.type
-      : !opts.hasSelectedFile
-      ? "select"
-      : "queued"
-  }, [currentQueue, currentSource, opts.hasSelectedFile])
+    if (currentSource) return "preview"
+    if (!opts.hasSelectedFile) return "select"
+    if (isQueued) return "queued"
+    return currentQueue!.type
+  }, [currentQueue, currentSource, isQueued, opts.hasSelectedFile])
 
   const uploadSource = useCallback(async () => {
     if (!currentQueue) {
@@ -65,8 +66,6 @@ export default function useVideoEditorQueue<S = Image | VideoSource>(
     uploadSource()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQueue?.id, processingStatus, batchId, batchStatus])
-
-  name === THUMBNAIL_QUEUE_NAME && console.log(currentQueue, processingStatus, currentSource)
 
   return {
     processingStatus,

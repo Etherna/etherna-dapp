@@ -30,7 +30,9 @@ const VideoSourceStats: React.FC<VideoSourceStatsProps> = ({ source }) => {
 
   const stats = [
     source.size ? { label: "Size", value: convertBytes(source.size).readable } : false,
-    source.bitrate ? { label: "Bitrate", value: convertBirate(source.bitrate).readable } : false,
+    source.bitrate
+      ? { label: "Bitrate", value: convertBirate(source.bitrate).readableBits }
+      : false,
     { label: "Hash", value: source.reference },
     {
       label: "Preview",

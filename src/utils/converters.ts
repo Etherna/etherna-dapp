@@ -71,20 +71,23 @@ export const convertBytes = (fromBytes: number | string, decimals = 2) => {
 /**
  * Convert bitrate
  *
- * @param fromBytesPerSec Bytes per second amount
+ * @param fromBitsPerSec Bits per second amount
  * @returns Object containing converted bitrate values
  */
-export const convertBirate = (fromBytesPerSec: number | string) => {
-  const conversions = convertBytes(fromBytesPerSec)
-  const readableValue = parseFloat(conversions.mbytes.toFixed(2))
-  const readable = `${readableValue} MB/s`
+export const convertBirate = (fromBitsPerSec: number | string) => {
+  const conversions = convertBytes(+fromBitsPerSec / 8)
+  const readableBytesValue = parseFloat(conversions.mbytes.toFixed(2))
+  const readableBitsValue = readableBytesValue * 8
+  const readableBytes = `${readableBytesValue} MB/s`
+  const readableBits = `${readableBitsValue} Mbps`
 
   return {
     bits_s: conversions.bits,
     bytes_s: conversions.bytes,
     kbytes_s: conversions.kbytes,
     mbytes_s: conversions.mbytes,
-    readable,
+    readableBytes,
+    readableBits,
   }
 }
 

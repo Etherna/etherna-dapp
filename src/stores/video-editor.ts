@@ -1,4 +1,5 @@
 import type { Image, Video } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
 import type { VideoQuality } from "@etherna/api-js/schemas/video"
 import create from "zustand"
 import { persist, devtools } from "zustand/middleware"
@@ -85,6 +86,7 @@ export type VideoEditorActions = {
   setEditingVideo(video: Video): void
   setQueueError(id: string, error: string): void
   setIsOffered(offered: boolean): void
+  setOwnerAddress(address: EthAddress): void
   setPublishingSources(sources: VideoEditorPublishSource[]): void
   setPublishingResults(results: PublishStatus[] | undefined): void
   setThumbnail(thumbnail: Image | null): void
@@ -108,7 +110,7 @@ const getInitialState = (): VideoEditorState => ({
   reference: undefined,
   status: "creating",
   video: {
-    reference: "",
+    reference: "0".repeat(64),
     batchId: null,
     title: "",
     description: "",
@@ -133,7 +135,7 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
   logger(
     devtools(
       persist(
-        immer(set => ({
+        immer((set, get) => ({
           ...getInitialState(),
           addToQueue(type, source, name) {
             set(state => {
@@ -173,7 +175,10 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
             })
           },
           reset() {
-            set(getInitialState())
+            const state = get()
+            const newState = getInitialState()
+            newState.saveTo = state.saveTo.map(src => ({ ...src, videoId: undefined, add: true }))
+            set(newState)
           },
           setBatchId(batchId) {
             set(state => {
@@ -201,6 +206,11 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
               state.isOffered = offered
             })
           },
+          setOwnerAddress(address) {
+            set(state => {
+              state.video.ownerAddress = address
+            })
+          },
           setPublishingSources(sources) {
             set(state => {
               state.saveTo = sources
@@ -221,13 +231,11 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
           toggleOfferResources(enabled) {
             set(state => {
               state.offerResources = enabled
-              state.hasChanges = true
             })
           },
           togglePinContent(enabled) {
             set(state => {
               state.pinContent = enabled
-              state.hasChanges = true
             })
           },
           togglePublishTo(source, identifier, enabled) {
@@ -238,7 +246,6 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
               if (index >= 0) {
                 state.saveTo[index].add = enabled
               }
-              state.hasChanges = true
             })
           },
           updateBatchStatus(status) {
@@ -308,7 +315,6 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
           updateSaveTo(list) {
             set(state => {
               state.saveTo = list
-              state.hasChanges = true
             })
           },
           updateVideoReference(reference) {
@@ -329,7 +335,10 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
             return JSON.stringify(state)
           },
         }
-      )
+      ),
+      {
+        name: "video-editor",
+      }
     )
   )
 )

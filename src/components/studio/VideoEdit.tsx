@@ -46,6 +46,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   const saveCallback = useRef<() => Promise<void>>()
   const address = useUserStore(state => state.address)
   const editorStatus = useVideoEditorStore(state => state.status)
+  const hasChanges = useVideoEditorStore(state => state.hasChanges)
   const storeReference = useVideoEditorStore(state => state.reference)
   const storeVideo = useVideoEditorStore(state => state.video)
   const reset = useVideoEditorStore(state => state.reset)
@@ -83,15 +84,20 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   }, [reference])
 
   const backPrompt = useCallback(async () => {
-    if (isEmpty || reference) return true
+    if (editorStatus === "saved") return true
+    if (!hasChanges) return true
+
     const continueEditing = await waitConfirmation(
       "Cancel upload",
       "Are you sure you want to cancel this upload. The progress will be lost.",
       "Continue editing"
     )
-    !continueEditing && reset()
-    return !continueEditing
-  }, [isEmpty, reference, reset, waitConfirmation])
+
+    const navigateBack = !continueEditing
+
+    navigateBack && reset()
+    return navigateBack
+  }, [editorStatus, hasChanges, reset, waitConfirmation])
 
   const handleSave = useCallback(async () => {
     await saveCallback.current?.()

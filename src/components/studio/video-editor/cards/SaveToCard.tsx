@@ -119,7 +119,7 @@ const SaveToCard: React.FC<SaveToCardProps> = ({ disabled }) => {
       toggle && togglePublishTo("playlist", id, !currentValue)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saveTo, videoPlaylistsStatus])
+  }, [videoPlaylistsStatus])
 
   return (
     <Card title="Save to">

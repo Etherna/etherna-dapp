@@ -196,19 +196,21 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
   }, [name, currentQueue, waitConfirmation, handleCancelUpload, removeFromQueue, removeVideoSource])
 
   const canRemove = useMemo(() => {
-    return !!currentQueue || videoSources.length > 1
-  }, [currentQueue, videoSources.length])
+    if (currentQueue) return true
+    if (currentSource) return currentSource.quality !== originalQuality
+    return false
+  }, [currentQueue, currentSource, originalQuality])
 
   return (
-    <Card variant="fill">
-      {processingStatus !== "select" && (
-        <header className="mb-2 flex items-center justify-between">
-          <Text size="xl" sizeMd="2xl" weight={700}>
-            {name}
-          </Text>
+    <Card
+      title={name !== "0p" ? name : ""}
+      variant="fill"
+      actions={
+        <>
           {canRemove && (
             <Button
               color="warning"
+              aspect="outline"
               prefix={<MinusIcon width={18} strokeWidth={2.5} />}
               rounded
               small
@@ -217,9 +219,9 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
               {processingStatus === "preview" ? "Remove" : "Cancel"}
             </Button>
           )}
-        </header>
-      )}
-
+        </>
+      }
+    >
       {processingStatus === "select" && !selectedFile && (
         <FileDrag
           id={name}

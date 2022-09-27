@@ -163,26 +163,31 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
   }, [batchId, batchStatus])
 
   return (
-    <Card variant="fill">
-      {processingStatus !== "select" && (
-        <header className="mb-2 flex items-center justify-end">
-          <Button
-            color="warning"
-            prefix={<MinusIcon width={18} strokeWidth={2.5} />}
-            rounded
-            small
-            onClick={handleRemove}
-          >
-            {processingStatus === "preview" ? "Remove" : "Cancel"}
-          </Button>
-        </header>
-      )}
-
+    <Card
+      title="Thumbnail"
+      variant="fill"
+      actions={
+        <>
+          {processingStatus !== "select" && (
+            <Button
+              color="warning"
+              aspect="outline"
+              prefix={<MinusIcon width={18} strokeWidth={2.5} />}
+              rounded
+              small
+              onClick={handleRemove}
+            >
+              {processingStatus === "preview" ? "Remove" : "Cancel"}
+            </Button>
+          )}
+        </>
+      }
+    >
       {processingStatus === "select" && !selectedFile && (
         <FileDrag
           id={THUMBNAIL_QUEUE_NAME}
           label="Drag the thumbnail here"
-          mimeTypes={"image/png, image/jpeg"}
+          mimeTypes={"image/png,image/jpeg"}
           uploadLimit={1}
           canSelectFile={canSelectFile}
           onSelectFile={handleFileSelected}

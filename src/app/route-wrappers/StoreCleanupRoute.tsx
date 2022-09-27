@@ -29,6 +29,7 @@ const StoreCleanupRoute: React.FC = () => {
     const editVideoRegex = new RegExp(routes.studioVideoEdit(":id").replace(":id", "(.*)"))
     if (![newVideoRegex, editVideoRegex].some(regex => regex.test(location.pathname))) {
       import.meta.env.DEV && console.info("cleaning video editor store")
+      videoEditorStore.getState().reset()
       videoEditorStore.persist.clearStorage()
     }
   }, [location])

@@ -166,6 +166,7 @@ export default function useVideoEditor() {
         initialReference && (await removeVideosFromPlaylist(id, [initialReference]))
         return true
       } catch (error) {
+        console.error(error)
         return false
       }
     },
@@ -275,6 +276,9 @@ export default function useVideoEditor() {
       // Add/remove to sources
       const newPublishResults: PublishStatus[] = JSON.parse(JSON.stringify(publishingResults ?? []))
       for (const source of saveToSources) {
+        // don't remove on creation
+        if (!source.add && !initialReference) continue
+
         let statusIndex = newPublishResults.findIndex(
           ps => ps.source.source === source.source && ps.source.identifier === source.identifier
         )
