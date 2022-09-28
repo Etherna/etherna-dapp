@@ -15,7 +15,7 @@
  *
  */
 
-import React from "react"
+import React, { useMemo } from "react"
 import classNames from "classnames"
 
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
@@ -24,9 +24,17 @@ import { ExclamationCircleIcon, PlusIcon, SparklesIcon } from "@heroicons/react/
 import { Button } from "@/components/ui/actions"
 import { ProgressBar } from "@/components/ui/display"
 
+export type BatchLoadingType =
+  | "fetching"
+  | "creating"
+  | "updating"
+  | "propagation"
+  | "saturated"
+  | "not-found"
+
 type BatchLoadingProps = {
   className?: string
-  type: "fetching" | "creating" | "updating" | "saturated" | "not-found"
+  type: BatchLoadingType
   title?: string
   message?: string
   error?: boolean | Error
@@ -41,6 +49,23 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
   error,
   onCreate,
 }) => {
+  const defaultTitle = useMemo(() => {
+    switch (type) {
+      case "fetching":
+        return error ? "Coudn't load the postage batch" : "Loading postage batch"
+      case "creating":
+        return error ? "Coudn't create the postage batch" : "Creating postage batch"
+      case "updating":
+        return error ? "Coudn't update the postage batch" : "Updating postage batch"
+      case "propagation":
+        return error ? "Coudn't update the postage batch" : "Waiting for batch propagation"
+      case "saturated":
+        return "Postage batch is saturated"
+      case "not-found":
+        return "Coudn't find postage batch"
+    }
+  }, [type, error])
+
   return (
     <div
       className={classNames(
@@ -66,22 +91,10 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
           </span>
         )}
 
-        <h4 className="mb-0 font-semibold leading-none">
-          {title
-            ? title
-            : error
-            ? `Couldn't ${
-                type === "fetching" ? "fetch" : type === "updating" ? "update" : "create"
-              } the postage batch`
-            : type === "fetching"
-            ? "Loading postage batch"
-            : type === "updating"
-            ? "Updating postage batch"
-            : "Creating postage batch"}
-        </h4>
+        <h4 className="mb-0 font-semibold leading-none">{defaultTitle}</h4>
       </div>
 
-      {(type === "creating" || type === "updating") && (
+      {type === "propagation" && (
         <p className="mt-2 text-sm leading-none">
           <InformationCircleIcon width={16} className="mr-1 inline" />
           This process might take several minutes...

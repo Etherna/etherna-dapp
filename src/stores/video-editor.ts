@@ -6,6 +6,7 @@ import { persist, devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
+import type { BatchLoadingType } from "@/components/common/BatchLoading"
 import { uuidv4Short } from "@/utils/uuid"
 
 export type VideoEditorPublishSourceType = "playlist" | "index"
@@ -46,7 +47,7 @@ export type VideoEditorState = {
   /** Current editor status */
   status: "creating" | "editing" | "saved" | "error"
   /** Current batch status */
-  batchStatus?: "creating" | "fetching" | "updating" | "saturated" | "not-found"
+  batchStatus?: BatchLoadingType
   /** Video metadata */
   video: Video
   /** Whether the user made come changes */

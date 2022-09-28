@@ -23,7 +23,6 @@ import { Transition } from "@headlessui/react"
 
 import BatchLoading from "@/components/common/BatchLoading"
 import { Card } from "@/components/ui/display"
-import useEffectOnce from "@/hooks/useEffectOnce"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
@@ -47,6 +46,7 @@ const PostageBatchCard: React.FC<PostageBatchCardProps> = ({ disabled }) => {
   const setBatchId = useVideoEditorStore(state => state.setBatchId)
   const [batch, setBatch] = useState<PostageBatch>()
   const [missing, setMissing] = useState<boolean>(false)
+  const [errored, setErrored] = useState<boolean>(false)
   const batchesHandler = useRef(
     new BatchesHandler({
       address: address!,
@@ -70,6 +70,28 @@ const PostageBatchCard: React.FC<PostageBatchCardProps> = ({ disabled }) => {
     return null
   }, [queue, videoSources])
 
+  const title = useMemo(() => {
+    if (missing) return "Missing postage batch"
+    if (batchStatus === "creating") return "Creating a postage batch for your video"
+    if (batchStatus === "fetching") return "Loading your video postage batch"
+    // fallback to default
+    return undefined
+  }, [batchStatus, missing])
+
+  const message = useMemo(() => {
+    if (missing) return "This video doesn't have a postage batch. Create a new one."
+    if (batchStatus === "creating")
+      return (
+        "Please wait while we create your postage batch." +
+        `\n` +
+        `Postage batches are used to distribute your video to the swarm network.`
+      )
+    if (batchStatus === "fetching") return "Please wait while we load your postage batch."
+    if (batchStatus === "not-found") return ""
+    // fallback to default
+    return undefined
+  }, [batchStatus, missing])
+
   const createNewBatch = useCallback(async () => {
     if (editorStatus === "creating" && !initialVideoQueue) return
 
@@ -82,19 +104,28 @@ const PostageBatchCard: React.FC<PostageBatchCardProps> = ({ disabled }) => {
         : videoSources.reduce((sum, s) => sum + s.size, 0) + 2 ** 20 * 100 // 100mb extra
 
     setMissing(false)
+    setErrored(false)
     setBatchStatus("creating")
 
     let batch = await batchesHandler.current.createBatchForSize(batchSize)
     setBatchId(batchesHandler.current.getBatchId(batch))
-    setBatchStatus("fetching")
-    batch = await batchesHandler.current.waitBatchPropagation(batch, BatchUpdateType.Create)
+    setBatchStatus("propagation")
 
-    setBatch(batchesHandler.current.parseBatch(batch))
-    setBatchStatus(undefined)
+    try {
+      batch = await batchesHandler.current.waitBatchPropagation(batch, BatchUpdateType.Create)
+
+      setBatch(batchesHandler.current.parseBatch(batch))
+      setBatchStatus(undefined)
+    } catch (error) {
+      console.error(error)
+      setErrored(true)
+    }
   }, [editorStatus, initialVideoQueue, videoSources, setBatchStatus, setBatchId])
 
   const fetchBatch = useCallback(async () => {
     setBatchStatus("fetching")
+    setErrored(false)
+    setMissing(false)
 
     batchesHandler.current.onBatchesLoaded = ([batch]) => {
       if (batch) {
@@ -114,16 +145,28 @@ const PostageBatchCard: React.FC<PostageBatchCardProps> = ({ disabled }) => {
 
   const upgradeBatch = useCallback(async () => {
     if (!batch) return
+
+    setErrored(false)
+    setMissing(false)
+
     const extraSpace = queue
       .filter(q => q.type === "upload" && !q.completion)
       .reduce((sum, q) => sum + (q.size ?? 0), 2 ** 20 * 1 /* 1mb extra */)
-    await batchesHandler.current.increaseBatchSize(batch, extraSpace)
-    const batchUpdate = await batchesHandler.current.waitBatchPropagation(
-      batch,
-      BatchUpdateType.Topup
-    )
-    setBatch(batchesHandler.current.parseBatch(batchUpdate))
-  }, [batch, queue])
+
+    setBatchStatus("propagation")
+
+    try {
+      await batchesHandler.current.increaseBatchSize(batch, extraSpace)
+      const batchUpdate = await batchesHandler.current.waitBatchPropagation(
+        batch,
+        BatchUpdateType.Topup
+      )
+      setBatch(batchesHandler.current.parseBatch(batchUpdate))
+    } catch (error) {
+      console.error(error)
+      setErrored(true)
+    }
+  }, [batch, queue, setBatchStatus])
 
   useEffect(() => {
     if (
@@ -170,26 +213,8 @@ const PostageBatchCard: React.FC<PostageBatchCardProps> = ({ disabled }) => {
       <Card title="Postage batch">
         <BatchLoading
           type={batchStatus ?? "fetching"}
-          title={
-            batchStatus === "not-found"
-              ? "Postage batch not found"
-              : missing
-              ? "Missing postage batch"
-              : batchStatus === "creating"
-              ? "Creating a postage batch for your video"
-              : "Loading your video postage batch"
-          }
-          message={
-            batchStatus === "not-found"
-              ? "Coudn't find the postage batch. Try changing the gateway or create a new one."
-              : missing
-              ? "This video doesn't have a postage batch. Create a new one."
-              : `Please wait while we ${
-                  batchStatus === "creating" ? "create" : "load"
-                } your postage batch.` +
-                `\n` +
-                `Postage batches are used to distribute your video to the swarm network.`
-          }
+          title={title}
+          message={message}
           error={batchStatus === "not-found" || missing}
           onCreate={createNewBatch}
         />
