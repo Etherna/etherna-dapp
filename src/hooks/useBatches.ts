@@ -65,11 +65,15 @@ export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) 
     try {
       if (gatewayType === "etherna-gateway") {
         const batchesPreview = await gatewayClient.users.fetchBatches()
-        batches = await Promise.all(
+        const batchesResults = await Promise.allSettled(
           batchesPreview.map(async batchPreview =>
             gatewayClient.users.fetchBatch(batchPreview.batchId)
           )
         )
+        batches = batchesResults
+          // @ts-ignore
+          .filter<PromiseFulfilledResult<GatewayBatch>>(result => result.status === "fulfilled")
+          .map(result => result.value)
       } else {
         await waitAuth()
 

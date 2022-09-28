@@ -89,8 +89,6 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
     async (page: number, limit: number): Promise<VideoWithIndexes[]> => {
       const playlist = await getPlaylist()
 
-      setTotal(playlist.videos?.length ?? 0)
-
       const from = page * limit
       const to = from + limit
       const references = playlist.videos?.slice(from, to) ?? []
@@ -107,6 +105,8 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
         ...(video as Video),
         indexesStatus: {},
       }))
+
+      setTotal(videosIndexes.length)
 
       return videosIndexes
     },

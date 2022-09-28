@@ -45,7 +45,7 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
   className,
   type,
   title,
-  message = "This process might take several seconds",
+  message,
   error,
   onCreate,
 }) => {
@@ -95,15 +95,17 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
       </div>
 
       {type === "propagation" && (
-        <p className="mt-2 text-sm leading-none">
+        <p className="mt-3 text-sm leading-none">
           <InformationCircleIcon width={16} className="mr-1 inline" />
           This process might take several minutes...
         </p>
       )}
 
-      <p className="mt-2 text-sm opacity-50">
-        {message ? message : typeof error === "object" ? JSON.stringify(error) : ""}
-      </p>
+      {message && (
+        <p className="mt-3 text-sm opacity-50">
+          {message ? message : typeof error === "object" ? JSON.stringify(error) : ""}
+        </p>
+      )}
 
       {(type === "fetching" || type === "not-found") && error && (
         <Button className="mt-4" color="inverted" small onClick={onCreate}>

@@ -125,7 +125,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
       hideSaveButton={isResultView}
       actions={
         <>
-          {!reference && (
+          {!reference && editorStatus !== "saved" && (
             <Button
               aspect="text"
               color="muted"

@@ -133,12 +133,15 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
           return (
             <button
               className={classNames(
-                "relative flex snap-start flex-col  rounded-md px-3 py-3",
-                "border-2 border-gray-300 text-sm font-medium dark:border-gray-500",
-                "transition-colors duration-100 hover:border-gray-300 dark:hover:border-gray-200",
+                "relative flex snap-start flex-col rounded-md px-3 py-3",
+                "border-2 text-sm font-medium",
+                "transition-colors duration-100",
                 {
-                  "border-primary-500 ring-2 ring-primary-200 hover:border-primary-500 dark:ring-primary-700":
-                    isActive,
+                  "border-gray-300 hover:border-gray-600": !isActive,
+                  "dark:border-gray-500 dark:hover:border-gray-200": !isActive,
+                  "border-primary-300 hover:border-primary-400": isActive,
+                  "dark:border-primary-700 dark:hover:border-primary-600": isActive,
+                  "ring-2 ring-primary-200 dark:ring-primary-600": isActive,
                   "pointer-events-none opacity-30": isDisabled,
                 }
               )}
