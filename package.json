@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@datapunt/matomo-tracker-react": "0.5.1",
-    "@etherna/api-js": "1.0.0",
+    "@etherna/api-js": "1.0.1",
     "@headlessui/react": "1.7.1",
     "@heroicons/react": "2.0.11",
     "@popperjs/core": "2.11.6",
