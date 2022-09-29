@@ -21,10 +21,10 @@ import { Menu as HLMenu } from "@headlessui/react"
 import type { Placement } from "@popperjs/core"
 import classNames from "classnames"
 
-import { Drawer } from "../display"
-import { Breakpoint } from "../layout"
 import UIButton from "./Button"
 import type { ButtonProps } from "./Button"
+import { Drawer } from "@/components/ui/display"
+import { Breakpoint } from "@/components/ui/layout"
 
 export type MenuProps = {
   children: React.ReactNode

@@ -22,11 +22,13 @@ import classNames from "classnames"
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
 
-import { Avatar, Badge, Skeleton } from "../ui/display"
 import Image from "@/components/common/Image"
 import Time from "@/components/media/Time"
-import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
+import { Avatar, Badge, Skeleton } from "@/components/ui/display"
+import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import routes from "@/routes"
+import useExtensionsStore from "@/stores/extensions"
+import type { VideoWithIndexes, VideoWithOwner } from "@/types/video"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
 import { encodedSvg } from "@/utils/svg"
@@ -34,7 +36,7 @@ import { encodedSvg } from "@/utils/svg"
 const thumbnailPreview = encodedSvg(<ThumbPlaceholder />)
 
 type VideoPreviewProps = {
-  video: Video
+  video: VideoWithIndexes & VideoWithOwner
   videoOffers?: VideoOffersStatus
   hideProfile?: boolean
   decentralizedLink?: boolean
@@ -46,6 +48,8 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   hideProfile,
   decentralizedLink,
 }) => {
+  const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
+
   const [ownerAddress, profileName] = useMemo(() => {
     const ownerAddress = video.ownerAddress
     const profileName = video.owner?.name || shortenEthAddr(ownerAddress)
@@ -74,14 +78,15 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
     return profileLink
   }, [ownerAddress])
 
+  const videoLink = useMemo(() => {
+    return decentralizedLink
+      ? video.reference
+      : video.indexesStatus[indexUrl].indexReference ?? video.reference
+  }, [decentralizedLink, indexUrl, video.indexesStatus, video.reference])
+
   return (
     <div className="w-full">
-      <Link
-        to={routes.watch(
-          decentralizedLink ? video.reference : video.indexReference ?? video.reference
-        )}
-        state={{ video, videoOffers }}
-      >
+      <Link to={routes.watch(videoLink)} state={{ video, ownerProfile: video.owner, videoOffers }}>
         <div className="relative flex w-full before:pb-[62%]">
           <Image
             className="bg-gray-200 dark:bg-gray-700"
@@ -114,10 +119,8 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
         )}
         <div className="flex flex-grow flex-col overflow-hidden">
           <Link
-            to={routes.watch(
-              decentralizedLink ? video.reference : video.indexReference ?? video.reference
-            )}
-            state={{ video, videoOffers }}
+            to={routes.watch(videoLink)}
+            state={{ video, ownerProfile: video.owner, videoOffers }}
           >
             <h4
               className={classNames(
@@ -144,9 +147,9 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
               </Skeleton>
             </Link>
           )}
-          {video.creationDateTime && (
+          {video.createdAt && (
             <div className="text-xs text-gray-600 dark:text-gray-500">
-              {dayjs.duration(dayjs(video.creationDateTime).diff(dayjs())).humanize(true)}
+              {dayjs.duration(dayjs(video.createdAt).diff(dayjs())).humanize(true)}
             </div>
           )}
           <div className="mt-2 grid auto-cols-max grid-flow-col gap-3 empty:mt-0">

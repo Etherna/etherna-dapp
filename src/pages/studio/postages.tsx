@@ -23,7 +23,7 @@ import { Container } from "@/components/ui/layout"
 
 const PostagesPage = () => {
   return (
-    <AppLayoutWrapper floatingSidebar hideSidebar>
+    <AppLayoutWrapper floatingSidebar>
       <Container noPaddingX noPaddingY fluid>
         <Postages />
       </Container>

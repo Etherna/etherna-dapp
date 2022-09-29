@@ -20,7 +20,7 @@ import { Helmet } from "react-helmet-async"
 import type { MetaProps } from "react-helmet-async"
 
 import Head from "./Head"
-import useSelector from "@/state/useSelector"
+import useSettingsStore from "@/stores/settings"
 
 type SEOProps = {
   children?: React.ReactNode
@@ -43,7 +43,7 @@ const SEO: React.FC<SEOProps> = ({
   type = "website",
   image,
 }) => {
-  const darkMode = useSelector(state => state.env.darkMode)
+  const darkMode = useSettingsStore(state => state.darkMode)
   const siteTitle = import.meta.env.VITE_APP_NAME
   const siteTagline = import.meta.env.VITE_APP_TAGLINE
 

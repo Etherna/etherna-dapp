@@ -16,6 +16,7 @@
  */
 
 import React, { useCallback, useEffect, useState } from "react"
+import { urlHostname } from "@etherna/api-js/utils"
 import classNames from "classnames"
 
 import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline"
@@ -26,18 +27,17 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/solid"
 
-import EthernaGatewayClient from "@/classes/EthernaGatewayClient"
-import EthernaIndexClient from "@/classes/EthernaIndexClient"
+import GatewayClient from "@/classes/GatewayClient"
+import IndexClient from "@/classes/IndexClient"
 import { Menu } from "@/components/ui/actions"
 import { Spinner, Tooltip } from "@/components/ui/display"
-import type { ExtensionType } from "@/definitions/app-state"
+import type { ExtensionType } from "@/stores/ui"
 import type {
   ExtensionHost,
   GatewayExtensionHost,
   GatewayType,
   IndexExtensionHost,
-} from "@/definitions/extension-host"
-import { urlHostname } from "@/utils/urls"
+} from "@/types/extension-host"
 
 const GatewayTypeLabel: Record<GatewayType, string> = {
   "etherna-gateway": "etherna",
@@ -46,7 +46,7 @@ const GatewayTypeLabel: Record<GatewayType, string> = {
 
 type ExtensionHostsListProps = {
   hosts: (IndexExtensionHost | GatewayExtensionHost)[]
-  selectedHost: (IndexExtensionHost | GatewayExtensionHost) | undefined
+  selectedExtensionUrl: string
   editing?: boolean
   type: ExtensionType
   allowDelete?(host: IndexExtensionHost | GatewayExtensionHost): boolean
@@ -57,7 +57,7 @@ type ExtensionHostsListProps = {
 
 const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
   hosts,
-  selectedHost,
+  selectedExtensionUrl,
   editing,
   type,
   allowDelete,
@@ -80,13 +80,10 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
       const controller = new AbortController()
       controllers.push(controller)
 
-      const client =
-        type === "index"
-          ? new EthernaIndexClient({ host: host.url, abortController: controller })
-          : new EthernaGatewayClient({ host: host.url, abortController: controller })
+      const client = type === "index" ? new IndexClient(host.url) : new GatewayClient(host.url)
 
       client.users
-        .fetchCurrentUser()
+        .fetchCurrentUser({ signal: controller.signal })
         .then(() => {
           sethostsSignedIn(hostsSignedIn => ({
             ...hostsSignedIn,
@@ -121,10 +118,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
 
   const signinHost = useCallback(
     (host: IndexExtensionHost | GatewayExtensionHost) => {
-      const client =
-        type === "index"
-          ? new EthernaIndexClient({ host: host.url })
-          : new EthernaGatewayClient({ host: host.url })
+      const client = type === "index" ? new IndexClient(host.url) : new GatewayClient(host.url)
       client.loginRedirect(window.location.href)
     },
     [type]
@@ -134,17 +128,20 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
     <div className="relative w-full">
       <div className="grid snap-y snap-mandatory auto-rows-fr grid-cols-1 gap-4 py-6 sm:grid-cols-2">
         {hosts?.map((host, i) => {
-          const isActive = host.url === selectedHost?.url
-          const isDisabled = editing && host.url !== selectedHost?.url
+          const isActive = host.url === selectedExtensionUrl
+          const isDisabled = editing && host.url !== selectedExtensionUrl
           return (
             <button
               className={classNames(
-                "relative flex snap-start flex-col  rounded-md px-3 py-3",
-                "border-2 border-gray-300 text-sm font-medium dark:border-gray-500",
-                "transition-colors duration-100 hover:border-gray-300 dark:hover:border-gray-200",
+                "relative flex snap-start flex-col rounded-md px-3 py-3",
+                "border-2 text-sm font-medium",
+                "transition-colors duration-100",
                 {
-                  "border-primary-500 ring-2 ring-primary-200 hover:border-primary-500 dark:ring-primary-700":
-                    isActive,
+                  "border-gray-300 hover:border-gray-600": !isActive,
+                  "dark:border-gray-500 dark:hover:border-gray-200": !isActive,
+                  "border-primary-300 hover:border-primary-400": isActive,
+                  "dark:border-primary-700 dark:hover:border-primary-600": isActive,
+                  "ring-2 ring-primary-200 dark:ring-primary-600": isActive,
                   "pointer-events-none opacity-30": isDisabled,
                 }
               )}

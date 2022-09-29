@@ -21,11 +21,15 @@ import classNames from "classnames"
 
 import { CheckIcon } from "@heroicons/react/24/solid"
 
+import { Spinner } from "@/components/ui/display"
+
 export type SelectionToggleProps = {
   className?: string
   label?: string
   description?: string
   checked: boolean
+  loading?: boolean
+  disabled?: boolean
   onChange(checked: boolean): void
 }
 
@@ -34,6 +38,8 @@ const SelectionToggle: React.FC<SelectionToggleProps> = ({
   label,
   description,
   checked,
+  loading,
+  disabled,
   onChange,
 }) => {
   return (
@@ -42,7 +48,7 @@ const SelectionToggle: React.FC<SelectionToggleProps> = ({
         checked={checked}
         onChange={onChange}
         className={classNames(
-          "flex items-start rounded-md border-2 p-2",
+          "flex items-start rounded-md border p-2",
           {
             "border-gray-400 hover:border-sky-300 dark:border-gray-600 dark:hover:border-sky-700":
               !checked,
@@ -50,16 +56,23 @@ const SelectionToggle: React.FC<SelectionToggleProps> = ({
           },
           className
         )}
+        disabled={disabled}
         data-component="selection-toggle"
       >
-        <div
-          className={classNames("flex h-5 w-5 shrink-0 rounded border-2 p-0.5", {
-            "border-gray-400 dark:border-gray-600": !checked,
-            "border-sky-500 text-sky-500 dark:border-sky-500": checked,
-          })}
-        >
-          {checked && (
-            <CheckIcon className="h-full w-full stroke-current stroke-[2px]" aria-hidden />
+        <div className="flex-w-5 h-5 shrink-0">
+          {loading ? (
+            <Spinner size={20} />
+          ) : (
+            <div
+              className={classNames("flex h-5 w-5 rounded border p-0.5", {
+                "border-gray-400 dark:border-gray-600": !checked,
+                "border-sky-500 text-sky-500 dark:border-sky-500": checked,
+              })}
+            >
+              {checked && (
+                <CheckIcon className="h-full w-full stroke-current stroke-[2px]" aria-hidden />
+              )}
+            </div>
           )}
         </div>
 

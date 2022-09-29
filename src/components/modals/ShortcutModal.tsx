@@ -22,9 +22,10 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/solid"
 
 import { Button, Modal } from "@/components/ui/actions"
 import { Kbd } from "@/components/ui/display"
-import { saveShortcut, shortcutExists } from "@/state/actions/enviroment/shortcuts"
-import { closeShortcutModal } from "@/state/actions/modals"
-import useSelector from "@/state/useSelector"
+import useShortcutsEditor from "@/hooks/useShortcutsEditor"
+import useEnvironmentStore from "@/stores/env"
+import useSettingsStore from "@/stores/settings"
+import useUIStore from "@/stores/ui"
 import { keyEventToString } from "@/utils/keyboard"
 
 type ShortcutModalProsp = {
@@ -32,21 +33,28 @@ type ShortcutModalProsp = {
 }
 
 const ShortcutModal: React.FC<ShortcutModalProsp> = ({ show = false }) => {
-  const { shortcutNamespace, shortcutKey, keymap, lang } = useSelector(state => state.env)
+  const lang = useEnvironmentStore(state => state.lang)
+  const editingShortcut = useUIStore(state => state.shortcut)
+  const hideShortcut = useUIStore(state => state.hideShortcut)
+  const keymap = useSettingsStore(state => state.keymap)
   const [shortcut, setShortcut] = useState<string | null>()
   const [existingShortcut, setExistingShortcut] = useState<string | null>(null)
   const editorRef = useRef<HTMLDivElement>(null)
+  const { saveShortcut, shortcutExists } = useShortcutsEditor()
 
   useEffect(() => {
-    if (!shortcutNamespace || !shortcutKey) return
+    if (!editingShortcut?.namespace || !editingShortcut.key) return
 
-    if (shortcutNamespace in keymap && shortcutKey in keymap[shortcutNamespace]) {
-      const namespace = keymap[shortcutNamespace]
-      const shortcut = namespace[shortcutKey]
+    if (
+      editingShortcut?.namespace in keymap &&
+      editingShortcut.key in keymap[editingShortcut?.namespace]
+    ) {
+      const namespace = keymap[editingShortcut?.namespace]
+      const shortcut = namespace[editingShortcut.key]
       setShortcut(shortcut)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shortcutNamespace, shortcutKey])
+  }, [editingShortcut?.namespace, editingShortcut?.key])
 
   useEffect(() => {
     focusEditor()
@@ -66,16 +74,19 @@ const ShortcutModal: React.FC<ShortcutModalProsp> = ({ show = false }) => {
 
   const overrideShortcut = useCallback(() => {
     saveShortcut(shortcut)
-  }, [shortcut])
+  }, [saveShortcut, shortcut])
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    e.stopPropagation()
-    e.preventDefault()
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      e.stopPropagation()
+      e.preventDefault()
 
-    const shortcut = keyEventToString(e.nativeEvent)
-    setShortcut(shortcut)
-    setExistingShortcut(shortcutExists(shortcut))
-  }, [])
+      const shortcut = keyEventToString(e.nativeEvent)
+      setShortcut(shortcut)
+      setExistingShortcut(shortcutExists(shortcut))
+    },
+    [shortcutExists]
+  )
 
   return (
     <Modal
@@ -83,15 +94,15 @@ const ShortcutModal: React.FC<ShortcutModalProsp> = ({ show = false }) => {
       showCloseButton={true}
       footerButtons={
         <>
-          <Button color="muted" onClick={overrideShortcut} disabled={!!existingShortcut}>
+          <Button color="primary" onClick={overrideShortcut} disabled={!!existingShortcut}>
             Save
           </Button>
-          <Button color="error" onClick={deleteShortcut}>
+          <Button color="warning" aspect="outline" onClick={deleteShortcut}>
             Clear
           </Button>
         </>
       }
-      onClose={() => closeShortcutModal()}
+      onClose={hideShortcut}
     >
       <div
         ref={editorRef}

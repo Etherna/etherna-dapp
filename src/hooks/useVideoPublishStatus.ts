@@ -15,17 +15,18 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import type { EthAddress } from "@etherna/api-js/clients"
 
 import useMounted from "./useMounted"
-import EthernaIndexClient from "@/classes/EthernaIndexClient"
-import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
-import useSelector from "@/state/useSelector"
+import IndexClient from "@/classes/IndexClient"
+import SwarmPlaylist from "@/classes/SwarmPlaylist"
+import useClientsStore from "@/stores/clients"
 
 export type UseVideoPublishStatusOptions = {
   reference?: string | undefined
   indexesUrls: string[]
   playlistIds: string[]
-  ownerAddress: string
+  ownerAddress: EthAddress
 }
 
 type PublishStatus = {
@@ -34,7 +35,7 @@ type PublishStatus = {
 }
 
 export default function useVideoPublishStatus(opts: UseVideoPublishStatusOptions) {
-  const beeClient = useSelector(state => state.env.beeClient)
+  const beeClient = useClientsStore(state => state.beeClient)
   const [isFetchingIndexes, setIsFetchingIndexes] = useState(false)
   const [isFetchingPlaylists, setIsFetchingPlaylists] = useState(false)
   const [videoIndexesStatus, setVideoIndexesStatus] = useState<Record<string, PublishStatus>>()
@@ -76,10 +77,10 @@ export default function useVideoPublishStatus(opts: UseVideoPublishStatusOptions
     const videoPlaylistsStatus: Record<string, PublishStatus> = {}
 
     for (const playlistId of opts.playlistIds) {
-      const reader = new SwarmPlaylistIO.Reader(undefined, undefined, {
+      const reader = new SwarmPlaylist.Reader(undefined, {
         beeClient,
-        id: playlistId,
-        owner: opts.ownerAddress,
+        playlistId: playlistId,
+        playlistOwner: opts.ownerAddress,
       })
 
       const publishStatus: PublishStatus = {
@@ -113,9 +114,7 @@ export default function useVideoPublishStatus(opts: UseVideoPublishStatusOptions
     const videoIndexesStatus: Record<string, PublishStatus> = {}
 
     for (const indexUrl of opts.indexesUrls) {
-      const indexClient = new EthernaIndexClient({
-        host: indexUrl,
-      })
+      const indexClient = new IndexClient(indexUrl)
 
       const publishStatus: PublishStatus = {
         status: "unindexed",

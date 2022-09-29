@@ -23,15 +23,17 @@ import { Button, Modal } from "@/components/ui/actions"
 import { FormGroup } from "@/components/ui/display"
 import { Alert } from "@/components/ui/display"
 import { TextInput } from "@/components/ui/inputs"
-import useBeeAuthentication from "@/state/hooks/ui/useBeeAuthentication"
-import useSelector from "@/state/useSelector"
+import useBeeAuthentication from "@/hooks/useBeeAuthentication"
+import useClientsStore from "@/stores/clients"
+import useExtensionsStore from "@/stores/extensions"
 
 type BeeAuthModalProps = {
   show?: boolean
 }
 
 const BeeAuthModal: React.FC<BeeAuthModalProps> = ({ show = false }) => {
-  const { gatewayUrl, beeClient } = useSelector(state => state.env)
+  const beeClient = useClientsStore(state => state.beeClient)
+  const gatewayUrl = useExtensionsStore(state => state.currentGatewayUrl)
   const { hideAuth } = useBeeAuthentication()
 
   const [isAuthenticating, setIsAuthenticating] = useState(false)

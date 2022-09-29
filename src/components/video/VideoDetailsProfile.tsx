@@ -17,15 +17,15 @@
 
 import React from "react"
 import { Link } from "react-router-dom"
+import type { Profile } from "@etherna/api-js"
 import classNames from "classnames"
 
 import { Avatar } from "@/components/ui/display"
-import type { Profile } from "@/definitions/swarm-profile"
 import routes from "@/routes"
 import { shortenEthAddr } from "@/utils/ethereum"
 
 type VideoDetailsProfileProps = {
-  owner?: Profile
+  owner?: Profile | null
 }
 
 const VideoDetailsProfile: React.FC<VideoDetailsProfileProps> = ({ owner }) => {

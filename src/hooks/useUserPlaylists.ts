@@ -15,72 +15,101 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react"
+import type { Playlist, PlaylistVideo, UserPlaylists, Video } from "@etherna/api-js"
+import type { EthAddress, Reference } from "@etherna/api-js/clients"
 
-import type { EthAddress } from "@/classes/BeeClient/types"
-import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
-import SwarmUserPlaylistsIO from "@/classes/SwarmUserPlaylists"
-import type { SwarmUserPlaylistsDownloadOptions } from "@/classes/SwarmUserPlaylists/types"
-import type {
-  SwarmPlaylist,
-  SwarmPlaylistType,
-  SwarmPlaylistVideo,
-  SwarmUserPlaylistsRaw,
-} from "@/definitions/swarm-playlist"
-import type { Video } from "@/definitions/swarm-video"
-import useSelector from "@/state/useSelector"
+import SwarmPlaylist from "@/classes/SwarmPlaylist"
+import SwarmUserPlaylists from "@/classes/SwarmUserPlaylists"
+import useClientsStore from "@/stores/clients"
 import { deepCloneArray } from "@/utils/array"
 import { deepCloneObject } from "@/utils/object"
 
-export default function useUserPlaylists(
-  owner: EthAddress,
-  opts?: SwarmUserPlaylistsDownloadOptions
-) {
-  const beeClient = useSelector(state => state.env.beeClient)
+interface UseUserPlaylistsOptions {
+  fetchChannel?: boolean
+  fetchSaved?: boolean
+  fetchCustom?: boolean
+}
+
+export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlaylistsOptions) {
+  const beeClient = useClientsStore(state => state.beeClient)
   const [isFetchingPlaylists, setIsFetchingPlaylists] = useState(false)
-  const [rawPlaylists, setRawPlaylists] = useState<SwarmUserPlaylistsRaw>()
-  const [channelPlaylist, setChannelPlaylist] = useState<SwarmPlaylist>()
-  const [savedPlaylist, setSavedPlaylist] = useState<SwarmPlaylist>()
-  const [customPlaylists, setCustomPlaylists] = useState<SwarmPlaylist[]>()
+  const [userPlaylists, setUserPlaylists] = useState<UserPlaylists>()
+  const [channelPlaylist, setChannelPlaylist] = useState<Playlist>()
+  const [savedPlaylist, setSavedPlaylist] = useState<Playlist>()
+  const [customPlaylists, setCustomPlaylists] = useState<Playlist[]>()
 
   const allPlaylists = useMemo(() => {
     return [channelPlaylist ?? false, savedPlaylist ?? false, ...(customPlaylists ?? [])].filter(
       Boolean
-    ) as SwarmPlaylist[]
+    ) as Playlist[]
   }, [channelPlaylist, savedPlaylist, customPlaylists])
 
   useEffect(() => {
-    setRawPlaylists(undefined)
+    setUserPlaylists(undefined)
     setChannelPlaylist(undefined)
     setSavedPlaylist(undefined)
     setCustomPlaylists(undefined)
   }, [owner])
 
+  const fetchPlaylist = useCallback(
+    async (
+      reference: string | undefined | null,
+      id: string | undefined,
+      owner: EthAddress | undefined
+    ) => {
+      const playlistReader = new SwarmPlaylist.Reader(reference as Reference, {
+        beeClient,
+        playlistId: id,
+        playlistOwner: owner,
+      })
+      return await playlistReader.download()
+    },
+    [beeClient]
+  )
+
   const loadPlaylists = useCallback(async () => {
     setIsFetchingPlaylists(true)
     try {
-      const reader = new SwarmUserPlaylistsIO.Reader(owner, {
+      const reader = new SwarmUserPlaylists.Reader(owner, {
         beeClient,
       })
-      await reader.download(opts)
 
-      setRawPlaylists(reader.rawPlaylists ?? undefined)
-      setChannelPlaylist(reader.channelPlaylist)
-      setSavedPlaylist(reader.savedPlaylist)
-      setCustomPlaylists(reader.customPlaylists)
+      const playlists = await reader.download()
+
+      setUserPlaylists(playlists)
+
+      const [channelPlaylist, savedPlaylist, customPlaylists] = await Promise.all([
+        opts?.fetchChannel
+          ? fetchPlaylist(playlists.channel, SwarmPlaylist.Reader.channelPlaylistId, owner)
+          : undefined,
+        opts?.fetchSaved
+          ? fetchPlaylist(playlists.saved, SwarmPlaylist.Reader.savedPlaylistId, owner)
+          : undefined,
+        opts?.fetchCustom
+          ? Promise.all(
+              playlists.custom.map(async playlistReference => {
+                return await fetchPlaylist(playlistReference, undefined, undefined)
+              })
+            )
+          : undefined,
+      ])
+
+      setChannelPlaylist(channelPlaylist)
+      setSavedPlaylist(savedPlaylist)
+      setCustomPlaylists(customPlaylists)
 
       setIsFetchingPlaylists(false)
 
       return {
-        rawPlaylists: reader.rawPlaylists,
-        channelPlaylist: reader.channelPlaylist,
-        savedPlaylist: reader.savedPlaylist,
-        customPlaylists: reader.customPlaylists,
+        channelPlaylist: channelPlaylist,
+        savedPlaylist: savedPlaylist,
+        customPlaylists: customPlaylists,
       }
     } catch (error: any) {
       console.error(error)
       setIsFetchingPlaylists(false)
     }
-  }, [owner, beeClient, opts])
+  }, [owner, beeClient, opts?.fetchChannel, opts?.fetchSaved, opts?.fetchCustom, fetchPlaylist])
 
   const playlistHasVideo = useCallback(
     (playlistId: string, reference: string) => {
@@ -95,9 +124,9 @@ export default function useUserPlaylists(
     [allPlaylists]
   )
 
-  const updatePlaylist = useCallback(
-    async (playlist: SwarmPlaylist, initialType: SwarmPlaylistType) => {
-      const playlistWriter = new SwarmPlaylistIO.Writer(playlist, {
+  const uploadPlaylist = useCallback(
+    async (playlist: Playlist) => {
+      const playlistWriter = new SwarmPlaylist.Writer(playlist, {
         beeClient,
       })
       return await playlistWriter.upload()
@@ -106,8 +135,8 @@ export default function useUserPlaylists(
   )
 
   const updateUserPlaylists = useCallback(
-    async (rawPlaylists: SwarmUserPlaylistsRaw) => {
-      const userPlaylistsWriter = new SwarmUserPlaylistsIO.Writer(rawPlaylists, {
+    async (userPlaylists: UserPlaylists) => {
+      const userPlaylistsWriter = new SwarmUserPlaylists.Writer(userPlaylists, {
         beeClient,
       })
       await userPlaylistsWriter.upload()
@@ -116,36 +145,44 @@ export default function useUserPlaylists(
   )
 
   const updatePlaylistAndUser = useCallback(
-    async (initialPlaylist: SwarmPlaylist, newPlaylist: SwarmPlaylist) => {
+    async (initialPlaylist: Playlist, newPlaylist: Playlist) => {
       // update & get new reference
-      const reference = await updatePlaylist(newPlaylist, initialPlaylist.type)
+      const reference = await uploadPlaylist(newPlaylist)
       newPlaylist.reference = reference
       // update raw with new reference
-      const playlistsRaw = rawPlaylists ? deepCloneObject(rawPlaylists) : {}
+      const updatedUserPlaylists: UserPlaylists = userPlaylists
+        ? deepCloneObject(userPlaylists)
+        : {
+            channel: null,
+            saved: null,
+            custom: [],
+          }
       if (newPlaylist.id === channelPlaylist?.id) {
-        playlistsRaw.channel = reference
+        updatedUserPlaylists.channel = reference
         setChannelPlaylist(newPlaylist)
       } else if (newPlaylist.id === savedPlaylist?.id) {
-        playlistsRaw.saved = reference
+        updatedUserPlaylists.saved = reference
         setSavedPlaylist(newPlaylist)
       } else {
-        const index = playlistsRaw.custom!.findIndex(ref => ref === initialPlaylist.reference)
-        playlistsRaw.custom![index] = reference
+        const index = updatedUserPlaylists.custom!.findIndex(
+          ref => ref === initialPlaylist.reference
+        )
+        updatedUserPlaylists.custom![index] = reference
 
         const newCustomPlaylists = [...customPlaylists!]
         newCustomPlaylists[index] = newPlaylist
         setCustomPlaylists(newCustomPlaylists)
       }
       // update user playlists
-      await updateUserPlaylists(playlistsRaw)
+      await updateUserPlaylists(updatedUserPlaylists)
     },
     [
-      rawPlaylists,
+      userPlaylists,
       customPlaylists,
       channelPlaylist?.id,
       savedPlaylist?.id,
       updateUserPlaylists,
-      updatePlaylist,
+      uploadPlaylist,
     ]
   )
 
@@ -164,7 +201,7 @@ export default function useUserPlaylists(
               title: video.title,
               addedAt: +new Date(),
               publishedAt: publishedAt,
-            } as SwarmPlaylistVideo)
+            } as PlaylistVideo)
         ),
         ...(newPlaylist.videos ?? []),
       ].filter((vid, i, self) => self.findIndex(vid2 => vid2.reference === vid.reference) === i)

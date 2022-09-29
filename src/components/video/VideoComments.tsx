@@ -16,13 +16,13 @@
  */
 
 import React, { useCallback, useEffect, useState } from "react"
+import type { IndexVideoComment } from "@etherna/api-js/clients"
 
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
 import VideoCommentsItem from "./VideoCommentsItem"
 import CommentForm from "@/components/video/CommentForm"
-import type { IndexVideoComment } from "@/definitions/api-index"
-import useSelector from "@/state/useSelector"
+import useClientsStore from "@/stores/clients"
 
 type VideoCommentsProps = {
   indexReference: string
@@ -32,8 +32,7 @@ type VideoCommentsProps = {
 const VideoComments: React.FC<VideoCommentsProps> = ({ indexReference, videoAuthorAddress }) => {
   const [comments, setComments] = useState<IndexVideoComment[]>([])
   const [isFetchingComments, setIsFetchingComments] = useState(false)
-
-  const { indexClient } = useSelector(state => state.env)
+  const indexClient = useClientsStore(state => state.indexClient)
 
   useEffect(() => {
     fetchComments()

@@ -25,7 +25,7 @@ import {
   ChevronUpDownIcon,
 } from "@heroicons/react/24/outline"
 
-import { Button } from "../actions"
+import { Button } from "@/components/ui/actions"
 import { clamp } from "@/utils/math"
 
 export type PaginationProps = {

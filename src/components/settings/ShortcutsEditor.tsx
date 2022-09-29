@@ -22,13 +22,10 @@ import { PencilIcon } from "@heroicons/react/24/solid"
 
 import { Button } from "@/components/ui/actions"
 import { Kbd } from "@/components/ui/display"
-import type { KeymapNamespace } from "@/definitions/keyboard"
-import {
-  editShortcut,
-  resetShortcut,
-  hasCustomShortcut,
-} from "@/state/actions/enviroment/shortcuts"
-import useSelector from "@/state/useSelector"
+import useShortcutsEditor from "@/hooks/useShortcutsEditor"
+import useEnvironmentStore from "@/stores/env"
+import useSettingsStore from "@/stores/settings"
+import type { KeymapNamespace } from "@/types/keyboard"
 import { splitArray } from "@/utils/array"
 
 type ShortcutsEditorProps = {
@@ -36,7 +33,9 @@ type ShortcutsEditorProps = {
 }
 
 const ShortcutsEditor: React.FC<ShortcutsEditorProps> = ({ namespace }) => {
-  const { lang, keymap } = useSelector(state => state.env)
+  const lang = useEnvironmentStore(state => state.lang)
+  const keymap = useSettingsStore(state => state.keymap)
+  const { editShortcut, resetShortcut, hasCustomShortcut } = useShortcutsEditor()
   const { [namespace]: shortcuts } = keymap
   const shortChunks = splitArray(Object.keys(shortcuts), 10)
 

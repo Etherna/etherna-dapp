@@ -16,15 +16,15 @@
  */
 
 import React, { useCallback, useMemo, useState } from "react"
+import type { Video } from "@etherna/api-js"
 import classNames from "classnames"
 
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 
 import Image from "@/components/common/Image"
 import { Button, Modal } from "@/components/ui/actions"
-import type { Video } from "@/definitions/swarm-video"
+import useErrorMessage from "@/hooks/useErrorMessage"
 import type { VideosSource } from "@/hooks/useUserVideos"
-import { useErrorMessage } from "@/state/hooks/ui"
 import { encodedSvg } from "@/utils/svg"
 
 type VideoDeleteModalProps = {

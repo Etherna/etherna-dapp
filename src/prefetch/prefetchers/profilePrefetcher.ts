@@ -14,60 +14,62 @@
  *  limitations under the License.
  */
 
-import type { EthAddress } from "@/classes/BeeClient/types"
-import SwarmProfileIO from "@/classes/SwarmProfile"
-import SwarmUserPlaylistsIO from "@/classes/SwarmUserPlaylists"
-import SwarmVideoIO from "@/classes/SwarmVideo"
-import type { Profile } from "@/definitions/swarm-profile"
-import type { Video } from "@/definitions/swarm-video"
-import { store } from "@/state/store"
+import type { Profile, Video } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
+
+import SwarmPlaylist from "@/classes/SwarmPlaylist"
+import SwarmProfile from "@/classes/SwarmProfile"
+import SwarmVideo from "@/classes/SwarmVideo"
+import clientsStore from "@/stores/clients"
 import { fullfilledPromisesResult } from "@/utils/promise"
 
 const match = /\/profile\/([^/]+)/
 
 const fetch = async () => {
-  const { beeClient, indexClient } = store.getState().env
+  const { beeClient, indexClient } = clientsStore.getState()
 
   const matches = window.location.pathname.match(match)
   if (matches && matches.length >= 2) {
     const address = matches[1] as EthAddress
 
-    // Fetch user's playlists & profile
-    const playlistsReader = new SwarmUserPlaylistsIO.Reader(address, {
+    // Fetch channel playlist & profile
+    const playlistReader = new SwarmPlaylist.Reader(undefined, {
       beeClient,
+      playlistId: SwarmPlaylist.Reader.channelPlaylistId,
+      playlistOwner: address,
     })
-    const swarmProfileReader = new SwarmProfileIO.Reader(address, { beeClient })
+    const profileReader = new SwarmProfile.Reader(address, { beeClient })
 
-    const [profilePromise] = await Promise.allSettled([
-      swarmProfileReader.download(true),
-      playlistsReader.download({ resolveChannel: true }),
+    const [profileResult, channelResult] = await Promise.allSettled([
+      profileReader.download(),
+      playlistReader.download(),
     ])
     const profile =
-      profilePromise.status === "fulfilled"
-        ? profilePromise.value
-        : {
+      profileResult.status === "fulfilled"
+        ? profileResult.value
+        : ({
             address,
+            name: "",
+            batchId: null,
             avatar: null,
             cover: null,
             description: null,
-            name: null,
-          }
+          } as Profile)
 
     // Fetch channel playlists videos
-    const references = playlistsReader.channelPlaylist?.videos?.slice(0, 50) ?? []
+    const playlistVideos = channelResult.status === "fulfilled" ? channelResult.value.videos : []
+    const references = playlistVideos?.slice(0, 10) ?? []
     const videosPromises = await Promise.allSettled(
       references.map(video => {
-        const reader = new SwarmVideoIO.Reader(video.reference, address, {
+        const reader = new SwarmVideo.Reader(video.reference, {
           beeClient,
           indexClient,
-          fetchProfile: false,
-          profileData: profile,
         })
         return reader.download()
       })
     )
 
-    const videos = fullfilledPromisesResult(videosPromises)
+    const videos = fullfilledPromisesResult(videosPromises).filter(Boolean) as Video[]
 
     // set prefetch data
     window.prefetchData = {}

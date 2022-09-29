@@ -15,20 +15,20 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import type { Video } from "@etherna/api-js"
 
 import useMounted from "./useMounted"
-import EthernaIndexClient from "@/classes/EthernaIndexClient"
-import type { Video, VideoIndexStatus } from "@/definitions/swarm-video"
+import IndexClient from "@/classes/IndexClient"
+
+type VideoIndexStatus = "public" | "processing" | "unindexed" | "error"
 
 export default function useVideosIndexStatus(videos: Video[] | undefined, indexUrl: string) {
-  const indexClient = useRef<EthernaIndexClient>()
+  const indexClient = useRef<IndexClient>()
   const [videosIndexStatus, setVideosIndexStatus] = useState<Record<string, VideoIndexStatus>>()
   const mounted = useMounted()
 
   useEffect(() => {
-    indexClient.current = new EthernaIndexClient({
-      host: indexUrl,
-    })
+    indexClient.current = new IndexClient(indexUrl)
 
     setVideosIndexStatus(undefined)
 

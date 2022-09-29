@@ -214,9 +214,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
   useEffect(() => {
     if (!charactersLimit) return
-    setHasExceededLimit(textLength >= charactersLimit)
+    setHasExceededLimit((value?.length ?? 0) >= charactersLimit)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [textLength, charactersLimit])
+  }, [value, charactersLimit])
 
   useEffect(() => {
     onCharacterLimitChange?.(hasExceededLimit)
@@ -343,7 +343,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         {charactersLimit && (
           <TextInput.CharactersLimit
             className={charLimitClassName}
-            textLength={textLength}
+            textLength={value?.length ?? 0}
             limit={charactersLimit}
           />
         )}

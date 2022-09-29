@@ -16,15 +16,16 @@
  */
 
 import React, { useCallback, useState } from "react"
+import type { Video } from "@etherna/api-js"
+import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
 
-import SwarmResourcesIO from "@/classes/SwarmResources"
 import { Button, Modal } from "@/components/ui/actions"
 import { SegmentedControl } from "@/components/ui/inputs"
-import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
-import { showError } from "@/state/actions/modals"
-import useSelector from "@/state/useSelector"
+import useErrorMessage from "@/hooks/useErrorMessage"
+import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
+import useUserStore from "@/stores/user"
 
 type VideoOffersModalProps = {
   show: boolean
@@ -43,11 +44,11 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
   unofferResources,
   onClose,
 }) => {
-  const { address } = useSelector(state => state.user)
-
+  const address = useUserStore(state => state.address)
   const [isAddingOffers, setIsAddingOffers] = useState(false)
   const [isRemovingOffers, setIsRemovingOffers] = useState(false)
   const [offersTab, setOffersTab] = useState("user")
+  const { showError } = useErrorMessage()
 
   const offerAllResources = useCallback(async () => {
     setIsAddingOffers(true)
@@ -57,7 +58,7 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
       showError("Cannot offer resources", error.message)
     }
     setIsAddingOffers(false)
-  }, [offerResources])
+  }, [offerResources, showError])
 
   const unofferAllResources = useCallback(async () => {
     setIsRemovingOffers(true)
@@ -67,7 +68,7 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
       showError("Cannot cancel offers", error.message)
     }
     setIsRemovingOffers(false)
-  }, [unofferResources])
+  }, [showError, unofferResources])
 
   const isActiveResource = useCallback(
     (resourceStatus: VideoOffersStatus["globalOffers"][number]) => {
@@ -131,14 +132,16 @@ const VideoOffersModal: React.FC<VideoOffersModalProps> = ({
         <table className="mt-4 w-full">
           <thead>
             <tr>
-              <th></th>
-              <th style={{ width: "100px" }}></th>
+              <th />
+              <th style={{ width: "100px" }} />
             </tr>
           </thead>
           <tbody>
             {offersStatus.globalOffers.map(resourceStatus => (
               <tr key={resourceStatus.reference}>
-                <th>{SwarmResourcesIO.getVideoReferenceLabel(video, resourceStatus.reference)}</th>
+                <th>
+                  {EthernaResourcesHandler.videoReferenceLabel(video, resourceStatus.reference)}
+                </th>
                 <td>
                   <Tippy
                     content={

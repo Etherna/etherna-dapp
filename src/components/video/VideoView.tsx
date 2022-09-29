@@ -16,24 +16,28 @@
  */
 
 import React, { useEffect, useMemo, useCallback } from "react"
+import type { Profile } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
 
-import { Container } from "../ui/layout"
 import VideoJsonLd from "./VideoJsonLd"
-import SwarmImageIO from "@/classes/SwarmImage"
+import SwarmImage from "@/classes/SwarmImage"
 import NotFound from "@/components/common/NotFound"
 import SEO from "@/components/layout/SEO"
 import Player from "@/components/player/Player"
+import { Container } from "@/components/ui/layout"
 import VideoDetails from "@/components/video/VideoDetails"
-import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
+import useErrorMessage from "@/hooks/useErrorMessage"
 import useResetRouteState from "@/hooks/useResetRouteState"
+import useSwarmProfile from "@/hooks/useSwarmProfile"
 import useSwarmVideo from "@/hooks/useSwarmVideo"
+import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import routes from "@/routes"
-import { useErrorMessage } from "@/state/hooks/ui"
-import useSelector from "@/state/useSelector"
+import useClientsStore from "@/stores/clients"
+import type { VideoWithIndexes } from "@/types/video"
 
 type VideoViewProps = {
   reference: string
-  routeState?: { video: Video; videoOffers: VideoOffersStatus }
+  routeState?: { video: VideoWithIndexes; ownerProfile?: Profile; videoOffers: VideoOffersStatus }
   embed?: boolean
 }
 
@@ -42,15 +46,18 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
 
   const { video, notFound, loadVideo } = useSwarmVideo({
     reference,
-    routeState: routeState?.video,
-    fetchFromCache: true,
-    fetchProfile: true,
+    routeState: routeState?.video ?? window.prefetchData?.video,
+    fetchIndexStatus: true,
   })
-  const beeClient = useSelector(state => state.env.beeClient)
+  const { profile, loadProfile } = useSwarmProfile({
+    address: video?.ownerAddress as EthAddress,
+    prefetchedProfile: routeState?.ownerProfile,
+  })
+  const beeClient = useClientsStore(state => state.beeClient)
   const { showError } = useErrorMessage()
 
   const posterUrl = useMemo(() => {
-    const thumbReference = SwarmImageIO.Reader.getOriginalSourceReference(video?.thumbnail)
+    const thumbReference = SwarmImage.Reader.getOriginalSourceReference(video?.thumbnail)
     if (thumbReference) {
       return beeClient.bzz.url(thumbReference)
     }
@@ -60,6 +67,8 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
   useEffect(() => {
     if (!video) {
       fetchVideo()
+    } else if (!profile) {
+      loadProfile()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [video])
@@ -103,7 +112,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
         <Player
           hash={reference}
           title={video?.title || reference}
-          owner={video?.owner}
+          owner={profile}
           sources={video?.sources ?? []}
           originalQuality={video?.originalQuality}
           thumbnailUrl={posterUrl}
@@ -116,13 +125,15 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
               <Player
                 hash={reference}
                 title={video?.title || reference}
-                owner={video?.owner}
+                owner={profile}
                 sources={video?.sources ?? []}
                 originalQuality={video?.originalQuality}
                 thumbnailUrl={posterUrl}
               />
 
-              {video && <VideoDetails video={video} videoOffers={routeState?.videoOffers} />}
+              {video && (
+                <VideoDetails video={video} owner={profile} videoOffers={routeState?.videoOffers} />
+              )}
             </div>
           </Container>
         </div>

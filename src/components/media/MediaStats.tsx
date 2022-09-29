@@ -18,7 +18,7 @@
 import React, { useRef, useState } from "react"
 import classNames from "classnames"
 
-import { ChevronDownIcon } from "@heroicons/react/24/solid"
+import { ChevronDownIcon } from "@heroicons/react/24/outline"
 
 type MediaStatsProps = {
   stats: Array<{ label: string; value: string | JSX.Element }>
@@ -32,13 +32,13 @@ const MediaStats: React.FC<MediaStatsProps> = ({
   hideText = "Hide stats",
 }) => {
   const [expanded, setExpanded] = useState(false)
-  const tableRef = useRef<HTMLTableElement>(null!)
+  const container = useRef<HTMLDivElement>(null!)
 
   return (
     <div>
       <button
         className={classNames(
-          "flex items-center space-x-2 border-none bg-transparent px-0 py-3",
+          "flex items-center space-x-2 border-none bg-transparent px-0 py-0",
           "text-sm font-medium text-gray-500 active:text-gray-600 dark:text-gray-300 dark:active:text-gray-200",
           "transition-colors duration-200",
           {
@@ -50,9 +50,10 @@ const MediaStats: React.FC<MediaStatsProps> = ({
         <span>{expanded ? hideText : showText}</span>
         <span className="transform transition-transform duration-200">
           <ChevronDownIcon
-            className={classNames("h-[1.25em]", {
+            className={classNames("h-[1.1em]", {
               "rotate-180": expanded,
             })}
+            strokeWidth={2.5}
             aria-hidden
           />
         </span>
@@ -60,9 +61,11 @@ const MediaStats: React.FC<MediaStatsProps> = ({
 
       <div
         className="max-h-0 overflow-hidden transition-[max-height] duration-300"
-        style={{ maxHeight: expanded ? `${tableRef.current.clientHeight}px` : undefined }}
+        style={{ maxHeight: expanded ? `${container.current.scrollHeight}px` : undefined }}
+        ref={container}
       >
-        <table className={classNames("w-full table-fixed  transition")} ref={tableRef}>
+        <div className="py-1" />
+        <table className={classNames("w-full table-fixed transition")}>
           <tbody>
             {stats.map((stat, i) => (
               <tr className="truncate text-left text-xs" key={i}>

@@ -15,17 +15,17 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import type { Playlist, Profile, Video } from "@etherna/api-js"
+import { VideoDeserializer } from "@etherna/api-js/serializers"
 import type { AxiosError } from "axios"
 
-import type { EthAddress } from "@/classes/BeeClient/types"
-import EthernaIndexClient from "@/classes/EthernaIndexClient"
-import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
-import SwarmVideoIO from "@/classes/SwarmVideo"
-import type { SwarmPlaylist } from "@/definitions/swarm-playlist"
-import type { Profile } from "@/definitions/swarm-profile"
-import type { Video } from "@/definitions/swarm-video"
-import { useErrorMessage } from "@/state/hooks/ui"
-import useSelector from "@/state/useSelector"
+import useErrorMessage from "./useErrorMessage"
+import IndexClient from "@/classes/IndexClient"
+import SwarmPlaylist from "@/classes/SwarmPlaylist"
+import SwarmVideo from "@/classes/SwarmVideo"
+import useClientsStore from "@/stores/clients"
+import useUserStore from "@/stores/user"
+import type { VideoWithIndexes } from "@/types/video"
 import { wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
 
@@ -44,19 +44,17 @@ export type UseUserVideosOptions = {
   limit?: number
 }
 
-let playlistResover: (() => Promise<SwarmPlaylist>) | undefined
+let playlistResover: (() => Promise<Playlist>) | undefined
 
 export default function useUserVideos(opts: UseUserVideosOptions) {
-  const beeClient = useSelector(state => state.env.beeClient)
-  const address = useSelector(state => state.user.address)
-
-  const channelPlaylist = useRef<SwarmPlaylist>()
-  const indexClient = useRef<EthernaIndexClient>()
+  const beeClient = useClientsStore(state => state.beeClient)
+  const address = useUserStore(state => state.address)
+  const channelPlaylist = useRef<Playlist>()
+  const indexClient = useRef<IndexClient>()
   const [isFetching, setIsFetching] = useState(false)
   const [currentPage, setCurrentPage] = useState(-1)
   const [total, setTotal] = useState(0)
-  const [videos, setVideos] = useState<Video[]>()
-
+  const [videos, setVideos] = useState<VideoWithIndexes[]>()
   const { showError } = useErrorMessage()
 
   useEffect(() => {
@@ -66,17 +64,15 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
     if (opts.source.type === "channel") {
       if (channelPlaylist.current) return
 
-      const reader = new SwarmPlaylistIO.Reader(undefined, undefined, {
-        owner: address,
+      const reader = new SwarmPlaylist.Reader(undefined, {
+        playlistId: SwarmPlaylist.Reader.channelPlaylistId,
+        playlistOwner: address,
         beeClient,
-        id: "__channel",
       })
 
       playlistResover = () => reader.download()
     } else if (opts.source.type === "index") {
-      indexClient.current = new EthernaIndexClient({
-        host: opts.source.indexUrl,
-      })
+      indexClient.current = new IndexClient(opts.source.indexUrl)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [opts.source.type, address])
@@ -90,51 +86,65 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
   }, [])
 
   const fetchPlaylistVideos = useCallback(
-    async (page: number, limit: number): Promise<Video[]> => {
+    async (page: number, limit: number): Promise<VideoWithIndexes[]> => {
       const playlist = await getPlaylist()
-
-      setTotal(playlist.videos?.length ?? 0)
 
       const from = page * limit
       const to = from + limit
       const references = playlist.videos?.slice(from, to) ?? []
-      return await Promise.all(
+      const videos = await Promise.all(
         references.map(async playlistVid => {
-          const reader = new SwarmVideoIO.Reader(
-            playlistVid.reference,
-            playlist.owner as EthAddress,
-            {
-              beeClient,
-              fetchProfile: false,
-              profileData: opts.profile,
-            }
-          )
-          const video = await reader.download(true)
+          const reader = new SwarmVideo.Reader(playlistVid.reference, {
+            beeClient,
+          })
+          const video = await reader.download()
           return video
         })
       )
+      const videosIndexes = videos.filter(Boolean).map<VideoWithIndexes>(video => ({
+        ...(video as Video),
+        indexesStatus: {},
+      }))
+
+      setTotal(videosIndexes.length)
+
+      return videosIndexes
     },
-    [beeClient, opts.profile, getPlaylist]
+    [beeClient, getPlaylist]
   )
 
   const fetchIndexVideos = useCallback(
-    async (page: number, limit: number): Promise<Video[]> => {
+    async (page: number, limit: number): Promise<VideoWithIndexes[]> => {
       const resp = await indexClient.current!.users.fetchVideos(address!, page, limit)
 
       setTotal(resp.totalElements)
 
-      return resp.elements.map(video => {
-        return new SwarmVideoIO.Reader(video.lastValidManifest!.hash, video.ownerAddress, {
+      return resp.elements.map(indexVideo => {
+        const videoReader = new SwarmVideo.Reader(indexVideo.lastValidManifest!.hash, {
           beeClient,
-          indexData: video,
-        }).video
+        })
+        const rawVideo = JSON.stringify(videoReader.indexVideoToRaw(indexVideo))
+        const video = new VideoDeserializer(beeClient.url).deserialize(rawVideo, {
+          reference: indexVideo.lastValidManifest!.hash,
+        })
+        const videoIndexes: VideoWithIndexes = {
+          ...video,
+          indexesStatus: {
+            [indexClient.current!.url]: {
+              indexReference: indexVideo.id,
+              totDownvotes: indexVideo.totDownvotes,
+              totUpvotes: indexVideo.totUpvotes,
+            },
+          },
+        }
+        return videoIndexes
       })
     },
     [address, beeClient]
   )
 
   const fetchVideos = useCallback(
-    async (page: number, limit: number): Promise<Video[]> => {
+    async (page: number, limit: number): Promise<VideoWithIndexes[]> => {
       import.meta.env.DEV && wait(1000)
 
       return opts.source.type === "channel"
@@ -168,22 +178,26 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
   )
 
   const deleteVideosFromPlaylist = useCallback(
-    async (videos: Video[]) => {
+    async (videosToDelete: Video[]) => {
       const playlist = await getPlaylist()
-      const writer = new SwarmPlaylistIO.Writer(playlist, {
+      playlist.videos = playlist.videos?.filter(
+        vid => !videosToDelete.some(vidToDelete => vidToDelete.reference === vid.reference)
+      )
+
+      const writer = new SwarmPlaylist.Writer(playlist, {
         beeClient,
       })
-      writer.removeVideos(videos.map(video => video.reference))
       writer.upload()
     },
     [beeClient, getPlaylist]
   )
 
   const deleteVideosFromIndex = useCallback(
-    async (videos: Video[]) => {
+    async (videos: VideoWithIndexes[]) => {
       for (const video of videos) {
         try {
-          await indexClient.current!.videos.deleteVideo(video.indexReference!)
+          const indexId = video.indexesStatus?.[0]?.indexReference
+          await indexClient.current!.videos.deleteVideo(indexId!)
         } catch (error) {
           const axiosError = error as AxiosError
           // set title for the error message
@@ -196,7 +210,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
   )
 
   const deleteVideosFromSource = useCallback(
-    async (videos: Video[]) => {
+    async (videos: VideoWithIndexes[]) => {
       try {
         if (opts.source.type === "channel") {
           await deleteVideosFromPlaylist(videos)

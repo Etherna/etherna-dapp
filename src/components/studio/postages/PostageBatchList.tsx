@@ -16,21 +16,23 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import type { GatewayBatch } from "@etherna/api-js/clients"
+import { BatchesHandler } from "@etherna/api-js/handlers"
+import { BatchUpdateType, useBatchesStore } from "@etherna/api-js/stores"
+import { getBatchPercentUtilization, getBatchSpace, parsePostageBatch } from "@etherna/api-js/utils"
 import classNames from "classnames"
 
 import { CogIcon } from "@heroicons/react/24/outline"
 import { CheckCircleIcon, InformationCircleIcon } from "@heroicons/react/24/solid"
 
 import PostageBatchEditor from "./PostageBatchEditor"
-import SwarmBatchesManager from "@/classes/SwarmBatchesManager"
 import { AlertPopup, Button, Modal } from "@/components/ui/actions"
 import { Capacity, FormGroup, Table } from "@/components/ui/display"
 import { Select } from "@/components/ui/inputs"
-import type { GatewayBatch } from "@/definitions/api-gateway"
-import { useErrorMessage } from "@/state/hooks/ui"
-import useSelector from "@/state/useSelector"
-import useBatchesStore, { BatchUpdateType } from "@/stores/batches"
-import { getBatchPercentUtilization, getBatchSpace, parsePostageBatch } from "@/utils/batches"
+import useErrorMessage from "@/hooks/useErrorMessage"
+import useClientsStore from "@/stores/clients"
+import useExtensionsStore from "@/stores/extensions"
+import useUserStore from "@/stores/user"
 import { convertBytes } from "@/utils/converters"
 import dayjs from "@/utils/dayjs"
 
@@ -43,11 +45,11 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
   const updatingBatches = useBatchesStore(state => state.updatingBatches)
   const addBatchUpdate = useBatchesStore(state => state.addBatchUpdate)
   const removeBatchUpdate = useBatchesStore(state => state.removeBatchUpdate)
-  const defaultBatchId = useSelector(state => state.user.defaultBatchId)
-  const address = useSelector(state => state.user.address)
-  const gatewayClient = useSelector(state => state.env.gatewayClient)
-  const beeClient = useSelector(state => state.env.beeClient)
-  const gatewayType = useSelector(state => state.env.gatewayType)
+  const defaultBatchId = useUserStore(state => state.defaultBatchId)
+  const address = useUserStore(state => state.address)
+  const gatewayClient = useClientsStore(state => state.gatewayClient)
+  const beeClient = useClientsStore(state => state.beeClient)
+  const gatewayType = useExtensionsStore(state => state.currentGatewayType)
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(25)
   const [editingBatch, setEditingBatch] = useState<GatewayBatch>()
@@ -60,11 +62,12 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
   const [showUpdateSuccess, setShowUpdateSuccess] = useState(false)
   const { showError } = useErrorMessage()
   const batchesManager = useRef(
-    new SwarmBatchesManager({
+    new BatchesHandler({
       address: address!,
       beeClient,
       gatewayClient,
       gatewayType,
+      network: import.meta.env.DEV ? "testnet" : "mainnet",
     })
   )
 

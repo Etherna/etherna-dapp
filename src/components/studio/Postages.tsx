@@ -21,12 +21,13 @@ import { InformationCircleIcon } from "@heroicons/react/24/solid"
 
 import PostageBatchList from "./postages/PostageBatchList"
 import { Alert, Spinner } from "@/components/ui/display"
-import useBatches from "@/state/hooks/user/useBatches"
-import useSelector from "@/state/useSelector"
+import useBatches from "@/hooks/useBatches"
+import useExtensionsStore from "@/stores/extensions"
+import useUserStore from "@/stores/user"
 
 const Postages: React.FC = () => {
-  const gatewayType = useSelector(state => state.env.gatewayType)
-  const batches = useSelector(state => state.user.batches)
+  const gatewayType = useExtensionsStore(state => state.currentGatewayType)
+  const batches = useUserStore(state => state.batches)
   const { updateBatch } = useBatches()
 
   return (

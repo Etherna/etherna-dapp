@@ -16,18 +16,20 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from "react"
+import type { Profile } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
 
 import ProfileAbout from "./ProfileAbout"
 import ProfileVideos from "./ProfileVideos"
-import type { EthAddress } from "@/classes/BeeClient/types"
+import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SEO from "@/components/layout/SEO"
 import ProfileInfo from "@/components/profile/ProfileInfo"
 import { Button } from "@/components/ui/actions"
 import { NavPills } from "@/components/ui/navigation"
-import type { Profile } from "@/definitions/swarm-profile"
 import usePlaylistVideos from "@/hooks/usePlaylistVideos"
 import routes from "@/routes"
-import useSelector from "@/state/useSelector"
+import useEnvironmentStore from "@/stores/env"
+import useUserStore from "@/stores/user"
 
 type ProfileViewProps = {
   profileAddress: EthAddress
@@ -36,11 +38,11 @@ type ProfileViewProps = {
 const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [activeTab, setActiveTab] = useState("videos")
-  const { address } = useSelector(state => state.user)
-  const { isMobile } = useSelector(state => state.env)
+  const address = useUserStore(state => state.address)
+  const isMobile = useEnvironmentStore(state => state.isMobile)
   // const { channelPlaylist, loadPlaylists } = useUserPlaylists(profileAddress, { resolveChannel: true })
   const { playlist, videos, hasMore, isFetching, isLoadingPlaylist, loadMore, loadPlaylist } =
-    usePlaylistVideos("__channel", {
+    usePlaylistVideos(SwarmPlaylist.Reader.channelPlaylistId, {
       owner: profile,
       limit: 20,
     })

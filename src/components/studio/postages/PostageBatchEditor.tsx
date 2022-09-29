@@ -16,21 +16,26 @@
  */
 
 import React, { useCallback, useEffect, useState, startTransition, useMemo } from "react"
+import type { GatewayBatch } from "@etherna/api-js/clients"
+import type { BatchesHandler } from "@etherna/api-js/handlers"
+import {
+  calcBatchPrice,
+  calcDilutedTTL,
+  getBatchCapacity,
+  ttlToAmount,
+} from "@etherna/api-js/utils"
 
-import EthernaGatewayClient from "@/classes/EthernaGatewayClient"
-import type SwarmBatchesManager from "@/classes/SwarmBatchesManager"
+import GatewayClient from "@/classes/GatewayClient"
 import { FormGroup, Spinner } from "@/components/ui/display"
 import { Slider } from "@/components/ui/inputs"
-import type { GatewayBatch } from "@/definitions/api-gateway"
-import type { GatewayType } from "@/definitions/extension-host"
-import { calcDilutedTTL, getBatchCapacity, calcBatchPrice, ttlToAmount } from "@/utils/batches"
+import type { GatewayType } from "@/types/extension-host"
 import { convertBytes } from "@/utils/converters"
 import dayjs from "@/utils/dayjs"
 import { clamp } from "@/utils/math"
 
 type PostageBatchEditorProps = {
   batch: GatewayBatch
-  batchesManager: SwarmBatchesManager
+  batchesManager: BatchesHandler
   gatewayType?: GatewayType
   disabled?: boolean
   onChange(depth: number, amount: string | undefined): void
@@ -49,7 +54,7 @@ const PostageBatchEditor: React.FC<PostageBatchEditorProps> = ({
   const [currentPrice, setcurrentPrice] = useState<number>()
 
   const maxDepth = useMemo(() => {
-    return gatewayType === "etherna-gateway" ? EthernaGatewayClient.maxBatchDepth : 50
+    return gatewayType === "etherna-gateway" ? GatewayClient.maxBatchDepth : 50
   }, [gatewayType])
 
   const ttlReadable = useMemo(() => {

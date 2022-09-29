@@ -20,15 +20,16 @@ import type { Crop } from "react-image-crop"
 
 import ImageCropper from "@/components/media/ImageCropper"
 import { Button, Modal } from "@/components/ui/actions"
-import { useImageCrop } from "@/state/hooks/ui"
-import useSelector from "@/state/useSelector"
+import useImageCrop from "@/hooks/useImageCrop"
+import useUIStore from "@/stores/ui"
 
 type ImageCropModalProps = {
   show?: boolean
 }
 
 const ImageCropModal: React.FC<ImageCropModalProps> = ({ show = false }) => {
-  const { imageType, image } = useSelector(state => state.ui)
+  const image = useUIStore(state => state.cropping?.image)
+  const imageType = useUIStore(state => state.cropping?.type)
   const [crop, setCrop] = useState<Crop>()
   const { finishCropping } = useImageCrop()
 

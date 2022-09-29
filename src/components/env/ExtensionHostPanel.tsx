@@ -16,27 +16,23 @@
  */
 
 import React, { useCallback, useMemo, useState } from "react"
+import { isSafeURL } from "@etherna/api-js/utils"
 
 import { TrashIcon, PlusIcon } from "@heroicons/react/24/solid"
 
 import ExtensionHostForm from "./ExtensionHostForm"
 import ExtensionHostsList from "./ExtensionHostsList"
 import { Button, Modal } from "@/components/ui/actions"
-import type { ExtensionType } from "@/definitions/app-state"
-import type { GatewayExtensionHost, IndexExtensionHost } from "@/definitions/extension-host"
-import useLocalStorage from "@/hooks/useLocalStorage"
-import { useConfirmation, useErrorMessage } from "@/state/hooks/ui"
-import { isSafeURL } from "@/utils/urls"
+import useConfirmation from "@/hooks/useConfirmation"
+import useErrorMessage from "@/hooks/useErrorMessage"
+import useExtensionsStore from "@/stores/extensions"
+import type { ExtensionType } from "@/stores/ui"
+import type { GatewayExtensionHost, IndexExtensionHost } from "@/types/extension-host"
 
 type ExtensionHostPanelProps<T extends IndexExtensionHost | GatewayExtensionHost> = {
-  listStorageKey: string
-  currentStorageKey: string
   hostParams: ExtensionParamConfig[]
-  initialValue?: T
-  defaultUrl?: string
   description?: string
   type: ExtensionType
-  onChange?(extension: T): void
 }
 
 export type ExtensionParamConfig = {
@@ -56,29 +52,34 @@ const EthernaUrls = [
 ]
 
 const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>({
-  listStorageKey,
-  currentStorageKey,
   hostParams,
-  initialValue,
-  defaultUrl,
   description,
   type,
-  onChange,
 }: ExtensionHostPanelProps<T>) => {
-  const defaultValue = initialValue ? [initialValue] : []
-  const [storageHosts, setStorageHosts] = useLocalStorage(listStorageKey, defaultValue)
-  const [storageSelectedUrl, setStorageSelectedUrl] = useLocalStorage(currentStorageKey, defaultUrl)
-  const [hosts, setHosts] = useState(storageHosts)
-  const [selectedUrl, setSelectedUrl] = useState(storageSelectedUrl)
+  const extensionsList = useExtensionsStore(state =>
+    type === "gateway" ? state.gatewaysList : state.indexesList
+  )
+  const currentUrl = useExtensionsStore(state =>
+    type === "gateway" ? state.currentGatewayUrl : state.currentIndexUrl
+  )
+  const addExtension = useExtensionsStore(state =>
+    type === "gateway" ? state.addGateway : state.addIndex
+  ) as (e: T) => void
+  const removeExtension = useExtensionsStore(state =>
+    type === "gateway" ? state.removeGateway : state.removeIndex
+  )
+  const updateExtension = useExtensionsStore(state =>
+    type === "gateway" ? state.updateGateway : state.updateIndex
+  )
+  const setCurrentUrl = useExtensionsStore(state =>
+    type === "gateway" ? state.setCurrentGatewayUrl : state.setCurrentIndexUrl
+  )
+  const [editingUrl, setEditingUrl] = useState<string | null>(null)
   const [showEditorModal, setShowEditorModal] = useState(false)
   const [editorTempExtension, setEditorTempExtension] = useState<T | undefined>()
 
   const { showError } = useErrorMessage()
   const { waitConfirmation } = useConfirmation()
-
-  const selectedHost = useMemo(() => {
-    return hosts?.find(host => host.url === selectedUrl)
-  }, [hosts, selectedUrl])
 
   const cantSaveHost = useMemo(() => {
     if (!editorTempExtension) return true
@@ -97,30 +98,21 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
     setEditorTempExtension(undefined)
   }, [])
 
-  const deleteHost = useCallback(
-    (host: T) => {
-      if (hosts!.length === 1) {
-        return showError("Cannot remove this extension", "You need at least 1 extension host")
+  const deleteExtension = useCallback(
+    (url: string) => {
+      if (extensionsList!.length === 1) {
+        return showError("Cannot remove this extension", "You need at least 1 extension url")
       }
 
-      const newHosts = [...hosts!]
-      const selectedHostIndex = newHosts.findIndex(h => h.url === host.url)
-      newHosts.splice(selectedHostIndex, 1)
-
-      const nextIndex = selectedHostIndex < newHosts.length ? selectedHostIndex : 0
-
-      setHosts(newHosts)
-      setStorageHosts(newHosts)
-      setSelectedUrl(newHosts[nextIndex].url)
-      setStorageSelectedUrl(newHosts[nextIndex].url)
+      currentUrl === url && setCurrentUrl(extensionsList[0].url)
+      removeExtension(url)
       hideEditor()
-      onChange?.(host)
     },
-    [hosts, onChange, setStorageHosts, setStorageSelectedUrl, showError, hideEditor]
+    [extensionsList, currentUrl, setCurrentUrl, removeExtension, hideEditor, showError]
   )
 
-  const askToDeleteHost = useCallback(
-    async (host: T) => {
+  const askToDeleteExtension = useCallback(
+    async (url: string) => {
       if (
         await waitConfirmation(
           "Are you sure you want to delete this host?",
@@ -129,35 +121,34 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
           "destructive"
         )
       ) {
-        deleteHost(host)
+        deleteExtension(url)
       }
     },
-    [deleteHost, waitConfirmation]
+    [deleteExtension, waitConfirmation]
   )
 
   const editHost = useCallback((host: T) => {
-    setSelectedUrl(host.url)
+    setEditingUrl(host.url)
     setEditorTempExtension(host)
     setShowEditorModal(true)
   }, [])
 
   const selectHost = useCallback(
     (newHost: T) => {
-      if (newHost.url === selectedUrl) {
+      if (newHost.url === editingUrl) {
         editHost(newHost)
         return
       }
 
-      const selectedHostIndex = hosts!.findIndex(host => host.url === newHost.url)
-      setSelectedUrl(hosts![selectedHostIndex].url)
-      setStorageSelectedUrl(hosts![selectedHostIndex].url)
-      onChange?.(newHost)
+      const selectedHostIndex = extensionsList!.findIndex(host => host.url === newHost.url)
+      setEditingUrl(extensionsList![selectedHostIndex].url)
+      setCurrentUrl(extensionsList![selectedHostIndex].url)
     },
-    [selectedUrl, hosts, setStorageSelectedUrl, onChange, editHost]
+    [editingUrl, extensionsList, setCurrentUrl, editHost]
   )
 
   const addHost = useCallback(() => {
-    setSelectedUrl(null)
+    setEditingUrl(null)
     setShowEditorModal(true)
   }, [])
 
@@ -171,8 +162,9 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
       return showError("URL Error", "Please insert a valid URL")
     }
 
-    const newHosts = [...hosts!]
-    const selectedHostIndex = newHosts.findIndex(host => host.url === editorTempExtension!.url)
+    const selectedHostIndex = extensionsList.findIndex(
+      host => host.url === editorTempExtension!.url
+    )
 
     for (const param of hostParams) {
       const key = param.key as keyof T
@@ -182,27 +174,21 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
     }
 
     if (selectedHostIndex === -1) {
-      newHosts.push(editorTempExtension!)
+      addExtension(editorTempExtension!)
     } else {
-      newHosts[selectedHostIndex] = editorTempExtension!
+      updateExtension(editingUrl!, editorTempExtension!)
     }
 
-    setHosts(newHosts)
-    setStorageHosts(newHosts)
-    setSelectedUrl(editorTempExtension!.url)
-    setStorageSelectedUrl(editorTempExtension!.url)
     hideEditor()
-    onChange?.(selectedHost!)
   }, [
-    editorTempExtension,
-    hosts,
-    selectedHost,
     hostParams,
-    onChange,
-    setStorageHosts,
-    setStorageSelectedUrl,
-    showError,
+    editingUrl,
+    editorTempExtension,
+    extensionsList,
+    addExtension,
     hideEditor,
+    showError,
+    updateExtension,
   ])
 
   return (
@@ -219,12 +205,12 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
 
         <div className="sm:w-[calc(100%-1rem)]">
           <ExtensionHostsList
-            hosts={hosts ?? []}
-            selectedHost={selectedHost}
+            hosts={extensionsList ?? []}
+            selectedExtensionUrl={currentUrl}
             allowDelete={host => !EthernaUrls.includes(host.url)}
             onSelect={selectHost}
             onEdit={editHost}
-            onDelete={askToDeleteHost}
+            onDelete={ext => askToDeleteExtension(ext.url)}
             type={type}
           />
         </div>
@@ -232,7 +218,7 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
 
       <Modal
         show={showEditorModal}
-        title={selectedHost ? "Edit host" : "Add new host"}
+        title={editingUrl ? "Edit host" : "Add new host"}
         footerButtons={
           <>
             <Button
@@ -242,13 +228,13 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
             >
               Save
             </Button>
-            {selectedHost && !EthernaUrls.includes(selectedHost.url) && (
+            {editingUrl && !EthernaUrls.includes(editingUrl) && (
               <Button
                 className="mr-auto w-full sm:w-auto"
                 aspect="text"
                 color="error"
                 prefix={<TrashIcon width={20} aria-hidden />}
-                onClick={() => askToDeleteHost(selectedHost)}
+                onClick={() => askToDeleteExtension(editingUrl)}
               >
                 Delete
               </Button>
@@ -258,11 +244,13 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
         showCloseButton
         onClose={cancelEditingHost}
       >
-        <ExtensionHostForm<T>
-          value={editorTempExtension}
-          params={hostParams}
-          onChange={setEditorTempExtension}
-        />
+        <div className="mt-6">
+          <ExtensionHostForm<T>
+            value={editorTempExtension}
+            params={hostParams}
+            onChange={setEditorTempExtension}
+          />
+        </div>
       </Modal>
     </>
   )

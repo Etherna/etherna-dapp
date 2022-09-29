@@ -15,30 +15,57 @@
  *
  */
 
-import React from "react"
+import React, { useMemo } from "react"
 import classNames from "classnames"
 
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { ExclamationCircleIcon, PlusIcon, SparklesIcon } from "@heroicons/react/24/solid"
 
 import { Button } from "@/components/ui/actions"
 import { ProgressBar } from "@/components/ui/display"
 
+export type BatchLoadingType =
+  | "fetching"
+  | "creating"
+  | "updating"
+  | "propagation"
+  | "saturated"
+  | "not-found"
+
 type BatchLoadingProps = {
   className?: string
-  type: "fetching" | "creating" | "updating" | "error"
+  type: BatchLoadingType
   title?: string
   message?: string
-  error?: string
+  error?: boolean | Error
   onCreate?(): void
 }
 
 const BatchLoading: React.FC<BatchLoadingProps> = ({
   className,
   type,
-  message = "This process might take several seconds",
+  title,
+  message,
   error,
   onCreate,
 }) => {
+  const defaultTitle = useMemo(() => {
+    switch (type) {
+      case "fetching":
+        return error ? "Coudn't load the postage batch" : "Loading postage batch"
+      case "creating":
+        return error ? "Coudn't create the postage batch" : "Creating postage batch"
+      case "updating":
+        return error ? "Coudn't update the postage batch" : "Updating postage batch"
+      case "propagation":
+        return error ? "Coudn't update the postage batch" : "Waiting for batch propagation"
+      case "saturated":
+        return "Postage batch is saturated"
+      case "not-found":
+        return "Coudn't find postage batch"
+    }
+  }, [type, error])
+
   return (
     <div
       className={classNames(
@@ -49,40 +76,41 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
     >
       {!error && <ProgressBar className="mb-3" indeterminate />}
       <div className="flex items-center">
-        <span
-          className={classNames("mr-2 h-5 w-5", {
-            "animate-pulse": type === "creating",
-            "text-red-500": !!error,
-          })}
-        >
-          {error ? (
-            <ExclamationCircleIcon className="h-full w-full" aria-hidden />
-          ) : type === "creating" ? (
-            <SparklesIcon className="h-full w-full" aria-hidden />
-          ) : null}
-        </span>
+        {(error || type === "creating") && (
+          <span
+            className={classNames("mr-2 h-5 w-5 shrink-0", {
+              "animate-pulse": type === "creating",
+              "text-red-500": !!error,
+            })}
+          >
+            {error ? (
+              <ExclamationCircleIcon className="h-full w-full" aria-hidden />
+            ) : type === "creating" ? (
+              <SparklesIcon className="h-full w-full" aria-hidden />
+            ) : null}
+          </span>
+        )}
 
-        <h4 className="mb-0 font-semibold">
-          {error
-            ? `Couldn't ${
-                type === "fetching" ? "fetch" : type === "updating" ? "update" : "create"
-              } the postage batch`
-            : type === "fetching"
-            ? "Loading postage batch"
-            : type === "updating"
-            ? "Updating postage batch"
-            : "Creating postage batch"}
-        </h4>
+        <h4 className="mb-0 font-semibold leading-none">{defaultTitle}</h4>
       </div>
 
-      <p className="mt-2 text-sm opacity-50">
-        {typeof error === "object" ? JSON.stringify(error) : error || message}
-      </p>
+      {type === "propagation" && (
+        <p className="mt-3 text-sm leading-none">
+          <InformationCircleIcon width={16} className="mr-1 inline" />
+          This process might take several minutes...
+        </p>
+      )}
 
-      {type === "fetching" && error && (
+      {message && (
+        <p className="mt-3 text-sm opacity-50">
+          {message ? message : typeof error === "object" ? JSON.stringify(error) : ""}
+        </p>
+      )}
+
+      {(type === "fetching" || type === "not-found") && error && (
         <Button className="mt-4" color="inverted" small onClick={onCreate}>
           <PlusIcon aria-hidden />
-          create new batch
+          create new postage
         </Button>
       )}
     </div>

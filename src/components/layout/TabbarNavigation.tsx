@@ -16,13 +16,10 @@
  */
 
 import React from "react"
+import { urlOrigin, urlPath } from "@etherna/api-js/utils"
 
-import {
-  BookmarkIcon,
-  HomeIcon,
-  UserIcon,
-  ArrowTopRightOnSquareIcon,
-} from "@heroicons/react/24/solid"
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
+import { BookmarkIcon, HomeIcon, UserIcon } from "@heroicons/react/24/solid"
 import { ReactComponent as FramesIcon } from "@/assets/icons/navigation/frames.svg"
 import { ReactComponent as PlaylistIcon } from "@/assets/icons/navigation/playlists.svg"
 
@@ -31,7 +28,6 @@ import FeedbackLink from "./FeedbackLink"
 import GatewayExtension from "@/components/env/GatewayExtension"
 import { Tabbar } from "@/components/ui/navigation"
 import routes from "@/routes"
-import { urlOrigin, urlPath } from "@/utils/urls"
 
 const TabbarNavigation: React.FC = () => {
   return (
@@ -70,7 +66,7 @@ const TabbarNavigation: React.FC = () => {
         />
         <Tabbar.Item
           title="Useful links"
-          iconSvg={<ArrowTopRightOnSquareIcon />}
+          iconSvg={<ArrowTopRightOnSquareIcon strokeWidth={2} />}
           isAccordion
           isSubmenu
         >

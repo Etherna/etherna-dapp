@@ -25,6 +25,7 @@ export type ToggleProps = {
   checkedIcon?: React.ReactNode
   uncheckedIcon?: React.ReactNode
   checked: boolean
+  disabled?: boolean
   onChange(checked: boolean): void
 }
 
@@ -34,6 +35,7 @@ const Toggle: React.FC<ToggleProps> = ({
   checkedIcon,
   uncheckedIcon,
   checked,
+  disabled,
   onChange,
 }) => {
   const styledIcon = useCallback((icon: React.ReactElement) => {
@@ -61,12 +63,14 @@ const Toggle: React.FC<ToggleProps> = ({
           onChange={onChange}
           className={classNames(
             "relative inline-flex h-4 w-11 items-center rounded-full transition-colors",
-            "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2",
+            "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-4 focus-visible:outline-none",
+            "focus:ring-offset-gray-50 dark:focus:ring-offset-gray-800",
             {
               "bg-gray-200 dark:bg-gray-700": !checked,
               "bg-primary-500": checked,
             }
           )}
+          disabled={disabled}
         >
           <span
             className={classNames(

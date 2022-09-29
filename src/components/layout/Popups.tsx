@@ -18,18 +18,13 @@
 import React from "react"
 
 import { AlertPopup } from "@/components/ui/actions"
-import { useErrorMessage, useConfirmation } from "@/state/hooks/ui"
-import useSelector from "@/state/useSelector"
+import useConfirmation from "@/hooks/useConfirmation"
+import useErrorMessage from "@/hooks/useErrorMessage"
+import useUIStore from "@/stores/ui"
 
 const Popups: React.FC = () => {
-  const {
-    errorTitle,
-    errorMessage,
-    confirmTitle,
-    confirmMessage,
-    confirmButtonTitle,
-    confirmButtonType,
-  } = useSelector(state => state.ui)
+  const confirmation = useUIStore(state => state.confirmation)
+  const error = useUIStore(state => state.error)
 
   const { hideConfirmation } = useConfirmation()
   const { hideError } = useErrorMessage()
@@ -37,18 +32,18 @@ const Popups: React.FC = () => {
   return (
     <>
       <AlertPopup
-        show={!!errorTitle || !!errorMessage}
+        show={!!error}
         icon="error"
-        title={errorTitle}
-        message={errorMessage}
+        title={error?.title}
+        message={error?.message}
         onAction={hideError}
       />
 
       <AlertPopup
-        show={!!confirmTitle || !!confirmMessage}
+        show={!!confirmation}
         icon="error"
-        title={confirmTitle}
-        message={confirmMessage}
+        title={confirmation?.title}
+        message={confirmation?.message}
         actions={[
           {
             title: "Cancel",
@@ -56,8 +51,8 @@ const Popups: React.FC = () => {
             action: () => hideConfirmation(false),
           },
           {
-            title: confirmButtonTitle ?? "OK",
-            type: confirmButtonType ?? "default",
+            title: confirmation?.buttonTitle ?? "OK",
+            type: confirmation?.buttonType ?? "default",
             action: () => hideConfirmation(true),
           },
         ]}

@@ -22,10 +22,10 @@ import StudioEditView from "./StudioEditView"
 import ChannelEditor from "./channel-editor/ChannelEditor"
 import OnlyUsableBatch from "./other/OnlyUsableBatch"
 import routes from "@/routes"
-import useSelector from "@/state/useSelector"
+import useUserStore from "@/stores/user"
 
 const ChannelEdit: React.FC = () => {
-  const address = useSelector(state => state.user.address)
+  const address = useUserStore(state => state.address)
   const saveCallback = useRef<() => Promise<void>>()
 
   const handleSave = useCallback(async () => {

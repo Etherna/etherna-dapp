@@ -77,7 +77,7 @@ const DropdownSidebar: React.FC<DropdownSidebarProps> = ({ className, defaultTit
           <Listbox.Button
             className={classNames(
               "flex w-full items-center rounded px-4 py-3 lg:hidden",
-              "border border-gray-600 dark:border-gray-400",
+              "border border-gray-400 dark:border-gray-600",
               "transition-colors duration-75 active:bg-gray-500/10"
             )}
           >

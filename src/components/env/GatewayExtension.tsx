@@ -20,8 +20,9 @@ import React from "react"
 import { ReactComponent as GatewayIcon } from "@/assets/icons/navigation/gateway.svg"
 
 import ExtensionHostStatus from "@/components/env/ExtensionHostStatus"
-import useExtensionEditor from "@/state/hooks/ui/useExtensionEditor"
-import useSelector from "@/state/useSelector"
+import useExtensionEditor from "@/hooks/useExtensionEditor"
+import useExtensionsStore from "@/stores/extensions"
+import useUserStore from "@/stores/user"
 
 type GatewayExtensionProps = {
   noIcon?: boolean
@@ -32,8 +33,8 @@ const GatewayExtension: React.FC<GatewayExtensionProps> = ({
   noIcon = false,
   compactMobile = false,
 }) => {
-  const { gatewayUrl } = useSelector(state => state.env)
-  const { isSignedInGateway } = useSelector(state => state.user)
+  const gatewayUrl = useExtensionsStore(state => state.currentGatewayUrl)
+  const isSignedInGateway = useUserStore(state => state.isSignedInGateway)
 
   const { showEditor } = useExtensionEditor()
 
@@ -43,7 +44,7 @@ const GatewayExtension: React.FC<GatewayExtensionProps> = ({
       host={gatewayUrl}
       isConnected={isSignedInGateway}
       iconSvg={!noIcon && <GatewayIcon />}
-      onClick={() => showEditor("gateway", gatewayUrl)}
+      onClick={() => showEditor("gateway")}
       compactMobile={compactMobile}
     />
   )

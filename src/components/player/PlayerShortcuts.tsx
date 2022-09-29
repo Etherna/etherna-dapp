@@ -21,14 +21,14 @@ import { PlayerReducerTypes } from "@/context/player-context"
 import { usePlayerState } from "@/context/player-context/hooks"
 import useShortcuts from "@/hooks/useShortcuts"
 import { PlayerActions } from "@/keyboard"
-import useSelector from "@/state/useSelector"
+import useSettingsStore from "@/stores/settings"
 
 type PlayerShortcutsProps = {
   children?: React.ReactNode
 }
 
 const PlayerShortcuts: React.FC<PlayerShortcutsProps> = ({ children }) => {
-  const keymap = useSelector(state => state.env.keymap)
+  const keymap = useSettingsStore(state => state.keymap)
   const [state, dispatch] = usePlayerState()
   const { isPlaying, muted } = state
 

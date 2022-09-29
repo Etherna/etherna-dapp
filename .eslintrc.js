@@ -27,6 +27,8 @@ module.exports = {
       process.env.NODE_ENV === "production"
         ? ["error", { allow: ["info", "warn", "error"] }]
         : "off",
+    "react/self-closing-comp": ["warn", { component: true, html: true }],
+    "no-restricted-imports": ["warn", { patterns: ["../"] }],
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
     "react/display-name": "off",

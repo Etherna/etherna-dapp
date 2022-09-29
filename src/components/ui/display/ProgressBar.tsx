@@ -15,7 +15,7 @@
  *
  */
 
-import React from "react"
+import React, { useEffect, useRef } from "react"
 import classNames from "classnames"
 
 import { clamp } from "@/utils/math"
@@ -23,10 +23,44 @@ import { clamp } from "@/utils/math"
 export type ProgressBarProps = {
   className?: string
   progress?: number
+  color?: "primary" | "rainbow"
   indeterminate?: boolean
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({ className, progress = 0, indeterminate }) => {
+const ProgressBar: React.FC<ProgressBarProps> = ({
+  className,
+  color = "primary",
+  progress = 0,
+  indeterminate,
+}) => {
+  const progressBar = useRef<HTMLDivElement>(null)
+  const animation = useRef<Animation>()
+
+  useEffect(() => {
+    if (!progressBar.current) return
+
+    if (color === "rainbow") {
+      animation.current = progressBar.current.animate(
+        [
+          { background: "hsl(0 80% 80%)" },
+          { background: "hsl(60 80% 80%)" },
+          { background: "hsl(120 80% 80%)" },
+          { background: "hsl(180 80% 80%)" },
+          { background: "hsl(240 80% 80%)" },
+          { background: "hsl(300 80% 80%)" },
+          { background: "hsl(360 80% 80%)" },
+        ],
+        {
+          duration: 8000,
+          iterations: Infinity,
+          fill: "both",
+        }
+      )
+    } else {
+      animation.current?.cancel()
+    }
+  }, [color])
+
   return (
     <div
       className={classNames(
@@ -36,20 +70,23 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ className, progress = 0, inde
       data-component="progress-bar"
     >
       <div
-        className={classNames("h-full rounded-full bg-primary-500 text-primary-500", {
+        className={classNames("h-full rounded-full", {
+          "bg-primary-500 text-primary-500": color === "primary",
+          "animate-[pulse_4s_infinite]": color === "rainbow",
           "absolute inset-0 w-full animate-slide": indeterminate,
         })}
         style={{
           width: !indeterminate ? `${clamp(progress, 0, 100)}%` : undefined,
           background: indeterminate
             ? `linear-gradient(
-            to right,
-            transparent 0%,
-            current 50%,
-            transparent 100%
-          )`
+                to right,
+                transparent 0%,
+                current 50%,
+                transparent 100%
+              )`
             : undefined,
         }}
+        ref={progressBar}
       />
     </div>
   )

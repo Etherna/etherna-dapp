@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+/* eslint-disable no-restricted-imports */
+
 import type { IncomingMessage } from "http"
 import { Response } from "node-fetch"
 

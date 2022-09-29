@@ -107,6 +107,7 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
         className={classNames(
           "fixed inset-0 flex items-center justify-center bg-gray-900/0",
           "z-200 transition duration-300",
+          "focus:outline-none focus-visible:outline-none",
           {
             invisible: !show,
             "visible bg-gray-900/60": show,

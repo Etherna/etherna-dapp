@@ -17,11 +17,11 @@
 
 import React from "react"
 import { useParams } from "react-router-dom"
+import type { Video } from "@etherna/api-js"
 
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
 import VideoEdit from "@/components/studio/VideoEdit"
 import { Container } from "@/components/ui/layout"
-import type { Video } from "@/definitions/swarm-video"
 import useRouteState from "@/hooks/useRouteState"
 
 const StudioVideoEdit = () => {
@@ -30,7 +30,7 @@ const StudioVideoEdit = () => {
   const routeState = useRouteState<{ video: Video; hasOffers: boolean }>()
 
   return (
-    <AppLayoutWrapper floatingSidebar hideSidebar>
+    <AppLayoutWrapper floatingSidebar>
       <Container noPaddingX noPaddingY>
         <VideoEdit reference={hash} routeState={routeState} />
       </Container>

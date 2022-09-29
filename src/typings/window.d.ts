@@ -14,9 +14,10 @@
  *  limitations under the License.
  */
 
-import type { ProfilePrefetch } from "prefetch/prefetchers/profilePrefetcher"
-import type { VideoPrefetch } from "prefetch/prefetchers/videoPrefetcher"
 import type { compose } from "redux"
+
+import type { ProfilePrefetch } from "@/prefetch/prefetchers/profilePrefetcher"
+import type { VideoPrefetch } from "@/prefetch/prefetchers/videoPrefetcher"
 
 declare global {
   interface Window {

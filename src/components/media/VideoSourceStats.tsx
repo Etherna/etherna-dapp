@@ -16,28 +16,29 @@
  */
 
 import React from "react"
+import type { VideoSource } from "@etherna/api-js"
 
 import MediaStats from "@/components/media/MediaStats"
-import type { SwarmVideoSourceRaw } from "@/definitions/swarm-video"
 import { convertBirate, convertBytes } from "@/utils/converters"
 
 type VideoSourceStatsProps = {
-  source: SwarmVideoSourceRaw | undefined
-  srcUrl: string | undefined
+  source: VideoSource | undefined
 }
 
-const VideoSourceStats: React.FC<VideoSourceStatsProps> = ({ source, srcUrl }) => {
+const VideoSourceStats: React.FC<VideoSourceStatsProps> = ({ source }) => {
   if (!source) return null
 
   const stats = [
     source.size ? { label: "Size", value: convertBytes(source.size).readable } : false,
-    source.bitrate ? { label: "Bitrate", value: convertBirate(source.bitrate).readable } : false,
+    source.bitrate
+      ? { label: "Bitrate", value: convertBirate(source.bitrate).readableBits }
+      : false,
     { label: "Hash", value: source.reference },
     {
       label: "Preview",
       value: (
-        <a href={srcUrl} target="_blank" rel="noreferrer">
-          {srcUrl}
+        <a href={source.source} target="_blank" rel="noreferrer">
+          {source.source}
         </a>
       ),
     },

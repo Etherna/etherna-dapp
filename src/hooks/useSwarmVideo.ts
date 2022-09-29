@@ -15,22 +15,26 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
+import type { IndexVideo } from "@etherna/api-js/clients"
 
-import SwarmVideoIO from "@/classes/SwarmVideo"
-import type { Video } from "@/definitions/swarm-video"
-import useSelector from "@/state/useSelector"
+import SwarmVideo from "@/classes/SwarmVideo"
+import useClientsStore from "@/stores/clients"
+import useExtensionsStore from "@/stores/extensions"
+import type { VideoWithIndexes } from "@/types/video"
+import { nullablePromise } from "@/utils/promise"
 
 type SwarmVideoOptions = {
   reference: string
-  routeState?: Video
-  fetchProfile?: boolean
-  fetchFromCache?: boolean
+  routeState?: VideoWithIndexes | null
+  fetchIndexStatus?: boolean
 }
 
 export default function useSwarmVideo(opts: SwarmVideoOptions) {
-  const { beeClient, indexClient } = useSelector(state => state.env)
+  const beeClient = useClientsStore(state => state.beeClient)
+  const indexClient = useClientsStore(state => state.indexClient)
+  const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
   const [reference, setReference] = useState(opts.reference)
-  const [video, setVideo] = useState<Video | null>(opts.routeState ?? null)
+  const [video, setVideo] = useState<VideoWithIndexes | null>(opts.routeState ?? null)
   const [isLoading, setIsloading] = useState(false)
   const [notFound, setNotFound] = useState(false)
 
@@ -45,22 +49,46 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
   const loadVideo = useCallback(async (): Promise<void> => {
     setIsloading(true)
 
-    const videoReader = new SwarmVideoIO.Reader(reference, undefined, {
-      beeClient,
-      indexClient,
-      fetchProfile: opts.fetchProfile,
-      fetchFromCache: opts.fetchFromCache,
-    })
-    const video = await videoReader.download()
+    try {
+      const isSwarmReference = beeClient.isValidHash(reference)
+      const videoReader = new SwarmVideo.Reader(reference, {
+        beeClient,
+        indexClient,
+      })
 
-    if (video.indexReference && !video.isVideoOnIndex) {
-      setNotFound(true)
-    } else {
+      let [video, indexVideo] = await Promise.all([
+        videoReader.download() as Promise<VideoWithIndexes>,
+        isSwarmReference
+          ? nullablePromise(indexClient.videos.fetchVideoFromHash(reference))
+          : Promise.resolve(null),
+      ])
+      video.indexesStatus = {}
+
+      if (!video) {
+        throw new Error("Video not found")
+      }
+
+      indexVideo =
+        indexVideo ?? "lastValidManifest" in (videoReader.rawResponse ?? {})
+          ? (videoReader.rawResponse as IndexVideo)
+          : null
+
+      if (indexVideo) {
+        video.indexesStatus[indexUrl] = {
+          indexReference: indexVideo.id,
+          totDownvotes: indexVideo.totDownvotes,
+          totUpvotes: indexVideo.totUpvotes,
+        }
+      }
+
       setVideo(video)
+    } catch (error) {
+      console.error(error)
+      setNotFound(true)
+    } finally {
+      setIsloading(false)
     }
-
-    setIsloading(false)
-  }, [beeClient, indexClient, opts.fetchProfile, opts.fetchFromCache, reference])
+  }, [beeClient, indexClient, indexUrl, reference])
 
   return {
     video,

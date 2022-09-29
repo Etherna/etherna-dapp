@@ -15,167 +15,209 @@
  *
  */
 
-import React, { useCallback, useImperativeHandle, useRef, useState } from "react"
-import type { Canceler } from "axios"
+import React, { useCallback, useMemo, useRef, useState } from "react"
+import type { Image } from "@etherna/api-js"
 
-import type { FileUploadFlowHandlers } from "@/components/media/FileUploadFlow"
-import FileUploadFlow from "@/components/media/FileUploadFlow"
+import { MinusIcon } from "@heroicons/react/24/outline"
+
+import SwarmImage from "@/classes/SwarmImage"
+import FileDrag from "@/components/media/FileDrag"
 import FileUploadProgress from "@/components/media/FileUploadProgress"
 import ImageSourcePreview from "@/components/media/ImageSourcePreview"
 import { Button } from "@/components/ui/actions"
-import {
-  useVideoEditorBaseActions,
-  useVideoEditorQueueActions,
-  useVideoEditorState,
-} from "@/context/video-editor-context/hooks"
-import { useErrorMessage } from "@/state/hooks/ui"
+import { Card, Text } from "@/components/ui/display"
+import useConfirmation from "@/hooks/useConfirmation"
+import useErrorMessage from "@/hooks/useErrorMessage"
+import useVideoEditorQueue from "@/hooks/useVideoEditorQueue"
+import useClientsStore from "@/stores/clients"
+import useVideoEditorStore from "@/stores/video-editor"
 import { isAnimatedImage } from "@/utils/media"
 import { isMimeWebCompatible } from "@/utils/mime-types"
 
 type ThumbnailUploadProps = {
   disabled?: boolean
-  onComplete?: () => void
-  onCancel?: () => void
-}
-
-export type ThumbnailUploadHandlers = {
-  clear: () => void
 }
 
 export const THUMBNAIL_QUEUE_NAME = "thumbnail"
 
-const ThumbnailUpload = React.forwardRef<ThumbnailUploadHandlers, ThumbnailUploadProps>(
-  ({ disabled, onComplete, onCancel }, ref) => {
-    const flowRef = useRef<FileUploadFlowHandlers>(null)
-    const [{ queue, videoWriter }] = useVideoEditorState()
-    const [contentType, setContentType] = useState<string>("image/*")
-    const abortController = useRef<AbortController>()
+const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
+  const beeClient = useClientsStore(state => state.beeClient)
+  const batchStatus = useVideoEditorStore(state => state.batchStatus)
+  const batchId = useVideoEditorStore(state => state.video.batchId)
+  const thumbnail = useVideoEditorStore(state => state.video.thumbnail)
+  const [selectedFile, setSelectedFile] = useState<File>()
+  const [isProcessingImages, setIsProcessingImages] = useState(false)
+  const abortController = useRef<AbortController>()
 
-    const { addToQueue, removeFromQueue, updateQueueCompletion, setQueueError } =
-      useVideoEditorQueueActions()
-    const { resetState } = useVideoEditorBaseActions()
-    const { showError } = useErrorMessage()
+  const addToQueue = useVideoEditorStore(state => state.addToQueue)
+  const removeFromQueue = useVideoEditorStore(state => state.removeFromQueue)
+  const updateQueueCompletion = useVideoEditorStore(state => state.updateQueueCompletion)
+  const updateQueueSize = useVideoEditorStore(state => state.updateQueueSize)
+  const setQueueError = useVideoEditorStore(state => state.setQueueError)
+  const setThumbnail = useVideoEditorStore(state => state.setThumbnail)
+  const { showError } = useErrorMessage()
+  const { waitConfirmation } = useConfirmation()
 
-    const currentQueue = queue.find(q => !q.reference)
-    const thumbnailQueue = queue.find(q => q.name === THUMBNAIL_QUEUE_NAME)
-    const uploadProgress = thumbnailQueue?.completion
+  const uploadThumbnail = useCallback(
+    async (queueId: string, progressCallback: (p: number) => void) => {
+      if (!selectedFile) {
+        return setQueueError(queueId, "Can't upload. No file selected.")
+      }
+      if (isAnimatedImage(new Uint8Array(await selectedFile.arrayBuffer()))) {
+        return showError("Animated images are not allowed")
+      }
 
-    useImperativeHandle(ref, () => ({
-      clear() {
-        flowRef.current?.clear()
-        resetState()
-      },
-    }))
+      abortController.current = new AbortController()
 
-    const handleFileSelected = useCallback(
-      (file: File) => {
-        setContentType(file.type)
-        addToQueue(THUMBNAIL_QUEUE_NAME)
-      },
-      [addToQueue]
-    )
+      const imageWriter = new SwarmImage.Writer(selectedFile, {
+        beeClient,
+        responsiveSizes: SwarmImage.Writer.thumbnailResponsiveSizes,
+      })
 
-    const canSelectFile = useCallback(
-      async (file: File) => {
-        if (!file) {
-          showError("Error", "The selected file is not supported")
-          return false
-        }
+      setIsProcessingImages(true)
+      const totalSize = await imageWriter.pregenerateImages()
+      setIsProcessingImages(false)
 
-        if (!isMimeWebCompatible(file.type)) {
-          showError("Error", "The selected file is not supported")
-          return false
-        }
+      updateQueueSize(queueId, totalSize)
 
-        return true
-      },
-      [showError]
-    )
+      const image = await imageWriter.upload({
+        signal: abortController.current.signal,
+        onUploadProgress: p => {
+          progressCallback(p)
+        },
+      })
 
-    const uploadThumbnail = useCallback(
-      async (buffer: ArrayBuffer) => {
-        if (isAnimatedImage(new Uint8Array(buffer))) {
-          throw new Error("Animated images are not allowed")
-        }
+      const imageReader = new SwarmImage.Reader(image, { beeClient })
 
-        // show loading start while processing responsive images
-        updateQueueCompletion(THUMBNAIL_QUEUE_NAME, 1)
+      // remove data
+      setSelectedFile(undefined)
 
-        abortController.current = new AbortController()
+      // will also be removed from queue
+      setThumbnail(imageReader.image)
+    },
+    [beeClient, selectedFile, setQueueError, setThumbnail, showError, updateQueueSize]
+  )
 
-        const reference = await videoWriter.addThumbnail(buffer, contentType, {
-          signal: abortController.current.signal,
-          onUploadProgress: p => {
-            updateQueueCompletion(THUMBNAIL_QUEUE_NAME, p)
-          },
-        })
+  const processingOptions = useMemo(() => {
+    return {
+      hasSelectedFile: !!selectedFile,
+      onUpload: uploadThumbnail,
+    }
+  }, [selectedFile, uploadThumbnail])
 
-        updateQueueCompletion(THUMBNAIL_QUEUE_NAME, 100, reference)
+  const { processingStatus, currentQueue } = useVideoEditorQueue<Image>(
+    THUMBNAIL_QUEUE_NAME,
+    processingOptions
+  )
 
-        // Completion
-        onComplete?.()
+  const canSelectFile = useCallback(
+    async (file: File) => {
+      if (!file) {
+        showError("Error", "The selected file is not supported")
+        return false
+      }
 
-        return reference
-      },
-      [contentType, onComplete, updateQueueCompletion, videoWriter]
-    )
+      if (!isMimeWebCompatible(file.type)) {
+        showError("Error", "The selected file is not supported")
+        return false
+      }
 
-    const handleReset = useCallback(async () => {
-      removeFromQueue(THUMBNAIL_QUEUE_NAME)
+      return true
+    },
+    [showError]
+  )
 
-      abortController.current?.abort("Upload canceled by the user")
+  const handleFileSelected = useCallback(
+    (file: File) => {
+      setSelectedFile(file)
+      addToQueue("upload", "thumbnail", THUMBNAIL_QUEUE_NAME)
+    },
+    [addToQueue]
+  )
 
-      videoWriter.removeThumbnail()
+  const handleCancelUpload = useCallback(() => {
+    abortController.current?.abort("User canceled the upload.")
+    currentQueue && updateQueueCompletion(currentQueue.id, 0)
+  }, [currentQueue, updateQueueCompletion])
 
-      onCancel?.()
-    }, [onCancel, removeFromQueue, videoWriter])
+  const handleRemove = useCallback(async () => {
+    if (
+      await waitConfirmation(
+        "Are you sure you want to remove this source?",
+        "",
+        "Yes, remove",
+        "destructive"
+      )
+    ) {
+      handleCancelUpload()
+      currentQueue?.id && removeFromQueue(currentQueue.id)
+      setThumbnail(null)
+      setSelectedFile(undefined)
+    }
+  }, [currentQueue?.id, handleCancelUpload, removeFromQueue, setThumbnail, waitConfirmation])
 
-    const handleUploadError = useCallback(
-      (errorMessage: string) => {
-        setQueueError(THUMBNAIL_QUEUE_NAME, errorMessage)
-      },
-      [setQueueError]
-    )
+  const waitingForBatch = useMemo(() => {
+    return !batchId || batchStatus !== undefined
+  }, [batchId, batchStatus])
 
-    return (
-      <>
-        <FileUploadFlow
-          ref={flowRef}
-          reference={thumbnailQueue?.reference}
-          label={"Thumbnail"}
-          dragLabel={"Drag your thumbnail here"}
-          acceptTypes={["image"]}
-          sizeLimit={2}
-          canProcessFile={currentQueue?.name === THUMBNAIL_QUEUE_NAME}
-          uploadHandler={uploadThumbnail}
-          onFileSelected={handleFileSelected}
+  return (
+    <Card
+      title="Thumbnail"
+      variant="fill"
+      actions={
+        <>
+          {processingStatus !== "select" && (
+            <Button
+              color="warning"
+              aspect="outline"
+              prefix={<MinusIcon width={18} strokeWidth={2.5} />}
+              rounded
+              small
+              onClick={handleRemove}
+            >
+              {processingStatus === "preview" ? "Remove" : "Cancel"}
+            </Button>
+          )}
+        </>
+      }
+    >
+      {processingStatus === "select" && !selectedFile && (
+        <FileDrag
+          id={THUMBNAIL_QUEUE_NAME}
+          label="Drag the thumbnail here"
+          mimeTypes={"image/png,image/jpeg"}
+          uploadLimit={1}
           canSelectFile={canSelectFile}
-          onCancel={handleReset}
-          onUploadError={handleUploadError}
+          onSelectFile={handleFileSelected}
           disabled={disabled}
-        >
-          {({ isUploading }) =>
-            isUploading || !videoWriter.thumbnail ? (
-              <FileUploadProgress progress={uploadProgress ?? 0} />
-            ) : (
-              <>
-                <ImageSourcePreview image={videoWriter.thumbnail} />
-                <Button
-                  className="mt-4 text-sm"
-                  aspect="text"
-                  color="inverted"
-                  onClick={handleReset}
-                  small
-                >
-                  Change thumbnail
-                </Button>
-              </>
-            )
-          }
-        </FileUploadFlow>
-      </>
-    )
-  }
-)
+        />
+      )}
+
+      {processingStatus === "queued" && (
+        <Text size="sm">Qeued. Waiting for other uploads to finish...</Text>
+      )}
+
+      {processingStatus === "upload" && (
+        <>
+          {waitingForBatch ? (
+            <Text size="sm">Waiting postage batch creation...</Text>
+          ) : (
+            <FileUploadProgress
+              isPreloading={isProcessingImages}
+              progress={(currentQueue?.completion ?? 0) * 100}
+              preloadingText={"Processing images..."}
+            />
+          )}
+        </>
+      )}
+
+      {processingStatus === "encoding" && (
+        <FileUploadProgress progress={(currentQueue?.completion ?? 0) * 100} color="rainbow" />
+      )}
+
+      {processingStatus === "preview" && <ImageSourcePreview image={thumbnail} />}
+    </Card>
+  )
+}
 
 export default ThumbnailUpload

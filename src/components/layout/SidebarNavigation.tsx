@@ -16,6 +16,7 @@
  */
 
 import React, { useCallback } from "react"
+import { urlOrigin, urlPath } from "@etherna/api-js/utils"
 
 import { BookmarkIcon, HomeIcon, UserIcon } from "@heroicons/react/24/solid"
 import { ReactComponent as FramesIcon } from "@/assets/icons/navigation/frames.svg"
@@ -26,24 +27,20 @@ import Logo from "@/components/common/Logo"
 import GatewayExtension from "@/components/env/GatewayExtension"
 // import IndexExtension from "@/components/env/IndexExtension"
 import { Sidebar } from "@/components/ui/navigation"
-import { LayoutReducerTypes } from "@/context/layout-context"
-import { useLayoutState } from "@/context/layout-context/hooks"
 import routes from "@/routes"
-import { urlOrigin, urlPath } from "@/utils/urls"
+import useUIStore from "@/stores/ui"
 
 const SidebarNavigation: React.FC = () => {
-  const [state, dispatch] = useLayoutState()
-  const { hideSidebar, floatingSidebar } = state
+  const showSidebar = useUIStore(state => state.showSidebar)
+  const floatingSidebar = useUIStore(state => state.floatingSidebar)
+  const toggleSidebar = useUIStore(state => state.toggleSidebar)
 
-  const hodeSidebar = useCallback(() => {
-    dispatch({
-      type: LayoutReducerTypes.SET_SIDEBAR_HIDDEN,
-      hideSidebar: true,
-    })
-  }, [dispatch])
+  const hideSidebar = useCallback(() => {
+    toggleSidebar(false)
+  }, [toggleSidebar])
 
   return (
-    <Sidebar floating={floatingSidebar} show={!hideSidebar} onClose={hodeSidebar}>
+    <Sidebar floating={floatingSidebar} show={showSidebar} onClose={hideSidebar}>
       <Sidebar.Logo className="mt-1.5" logo={<Logo />} logoCompact={<Logo compact />} />
 
       <Sidebar.Space customHeight="1rem" />

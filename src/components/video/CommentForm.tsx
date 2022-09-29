@@ -16,16 +16,17 @@
  */
 
 import React, { useCallback, useState } from "react"
+import type { IndexVideoComment } from "@etherna/api-js/clients"
 import classNames from "classnames"
 
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
-import { Button } from "../ui/actions"
-import { Avatar } from "../ui/display"
 import MarkdownEditor from "@/components/common/MarkdownEditor"
-import type { IndexVideoComment } from "@/definitions/api-index"
-import { showError } from "@/state/actions/modals"
-import useSelector from "@/state/useSelector"
+import { Button } from "@/components/ui/actions"
+import { Avatar } from "@/components/ui/display"
+import useErrorMessage from "@/hooks/useErrorMessage"
+import useClientsStore from "@/stores/clients"
+import useUserStore from "@/stores/user"
 
 type CommentFormProps = {
   indexReference: string
@@ -37,10 +38,11 @@ const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPost
   const [isFocused, setIsFocused] = useState(false)
   const [isPosting, setIsPosting] = useState(false)
   const [hasExceededLimit, setHasExceededLimit] = useState(false)
-
-  const { isSignedIn, address } = useSelector(state => state.user)
-  const { avatar } = useSelector(state => state.profile)
-  const { indexClient } = useSelector(state => state.env)
+  const address = useUserStore(state => state.address)
+  const avatar = useUserStore(state => state.profile?.avatar)
+  const isSignedIn = useUserStore(state => state.isSignedIn)
+  const indexClient = useClientsStore(state => state.indexClient)
+  const { showError } = useErrorMessage()
 
   const blurEditor = useCallback(() => {
     document.body.focus()
@@ -65,7 +67,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPost
 
       setIsPosting(false)
     },
-    [blurEditor, indexClient.videos, indexReference, onCommentPosted, text]
+    [text, indexClient.videos, indexReference, blurEditor, onCommentPosted, showError]
   )
 
   const onCancel = useCallback(() => {

@@ -19,15 +19,16 @@ import React, { useMemo } from "react"
 import classNames from "classnames"
 
 import { usePlayerState } from "@/context/player-context/hooks"
-import useSelector from "@/state/useSelector"
+import useSessionStore from "@/stores/session"
+import useUserStore from "@/stores/user"
 import { convertTime } from "@/utils/converters"
 
 const PlayerBytesCounter: React.FC = () => {
   const [state] = usePlayerState()
   const { sourceSize, duration, currentTime } = state
 
-  const { bytePrice } = useSelector(state => state.env)
-  const { credit } = useSelector(state => state.user)
+  const bytePrice = useSessionStore(state => state.bytesPrice)
+  const credit = useUserStore(state => state.credit)
 
   const [watchablePercent, remainingSeconds] = useMemo(() => {
     if (!bytePrice || bytePrice === 0 || credit == null) return [null, null]

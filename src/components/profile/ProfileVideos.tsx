@@ -15,14 +15,14 @@
  *
  */
 
-import React from "react"
+import React, { useMemo } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
 import VideoGrid from "@/components/video/VideoGrid"
-import type { Video } from "@/definitions/swarm-video"
+import type { VideoWithIndexes, VideoWithOwner } from "@/types/video"
 
 type ProfileVideosProps = {
-  videos: Video[] | null | undefined
+  videos: VideoWithOwner[] | null | undefined
   isFetching: boolean
   hasMoreVideos: boolean
   onLoadMore(): void
@@ -34,6 +34,16 @@ const ProfileVideos: React.FC<ProfileVideosProps> = ({
   hasMoreVideos,
   onLoadMore,
 }) => {
+  const videosWithIndexes = useMemo(() => {
+    return (videos ?? []).map(
+      video =>
+        ({
+          ...video,
+          indexesStatus: {},
+        } as VideoWithIndexes & VideoWithOwner)
+    )
+  }, [videos])
+
   return (
     <>
       {!isFetching && videos?.length === 0 && (
@@ -47,7 +57,12 @@ const ProfileVideos: React.FC<ProfileVideosProps> = ({
         scrollThreshold={30}
         loader={<div />}
       >
-        <VideoGrid videos={videos ?? []} mini={true} isFetching={isFetching} decentralizedLink />
+        <VideoGrid
+          videos={videosWithIndexes}
+          mini={true}
+          isFetching={isFetching}
+          decentralizedLink
+        />
       </InfiniteScroller>
     </>
   )

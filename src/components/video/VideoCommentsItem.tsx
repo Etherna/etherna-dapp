@@ -17,13 +17,12 @@
 
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom"
+import type { EthAddress, IndexVideoComment } from "@etherna/api-js/clients"
 import classNames from "classnames"
 
-import { Avatar } from "../ui/display"
-import type { EthAddress } from "@/classes/BeeClient/types"
 import MarkdownPreview from "@/components/common/MarkdownPreview"
 import VideoCommentPlaceholder from "@/components/placeholders/VideoCommentPlaceholder"
-import type { IndexVideoComment } from "@/definitions/api-index"
+import { Avatar } from "@/components/ui/display"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
 import routes from "@/routes"
 import dayjs from "@/utils/dayjs"
@@ -38,7 +37,6 @@ const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({ comment, videoAut
   const { creationDateTime, text, ownerAddress } = comment
   const { profile, isLoading, loadProfile } = useSwarmProfile({
     address: ownerAddress as EthAddress,
-    fetchFromCache: true,
   })
 
   useEffect(() => {

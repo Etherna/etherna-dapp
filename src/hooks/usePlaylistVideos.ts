@@ -15,16 +15,15 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import type { Playlist, Profile, Video } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
 
+import useErrorMessage from "./useErrorMessage"
 import BeeClient from "@/classes/BeeClient"
-import type { EthAddress } from "@/classes/BeeClient/types"
-import SwarmPlaylistIO from "@/classes/SwarmPlaylist"
-import SwarmVideoIO from "@/classes/SwarmVideo"
-import type { SwarmPlaylist } from "@/definitions/swarm-playlist"
-import type { Profile } from "@/definitions/swarm-profile"
-import type { Video } from "@/definitions/swarm-video"
-import { useErrorMessage } from "@/state/hooks/ui"
-import useSelector from "@/state/useSelector"
+import SwarmPlaylist from "@/classes/SwarmPlaylist"
+import SwarmVideo from "@/classes/SwarmVideo"
+import useClientsStore from "@/stores/clients"
+import type { VideoWithOwner } from "@/types/video"
 import { getResponseErrorMessage } from "@/utils/request"
 
 type PlaylistVideosOptions = {
@@ -33,22 +32,21 @@ type PlaylistVideosOptions = {
 }
 
 export default function usePlaylistVideos(
-  playlistReference: SwarmPlaylist | string | undefined,
+  playlistReference: Playlist | string | undefined,
   opts: PlaylistVideosOptions = { limit: -1 }
 ) {
-  const beeClient = useSelector(state => state.env.beeClient)
-  const indexClient = useSelector(state => state.env.indexClient)
-  const [playlist, setPlaylist] = useState<SwarmPlaylist | undefined>(
+  const beeClient = useClientsStore(state => state.beeClient)
+  const indexClient = useClientsStore(state => state.indexClient)
+  const [playlist, setPlaylist] = useState<Playlist | undefined>(
     typeof playlistReference === "string" ? undefined : playlistReference
   )
-  const [videos, setVideos] = useState<Video[]>()
+  const [videos, setVideos] = useState<VideoWithOwner[]>()
   const [isFetching, setIsFetching] = useState(false)
   const [isLoadingPlaylist, setIsLoadingPlaylist] = useState(false)
   const [hasMore, setHasMore] = useState(false)
   const [total, setTotal] = useState(0)
   const [isEncrypted, setIsEncrypted] = useState(playlist?.type === "private" && !playlist.videos)
   const fetchingPage = useRef<number>()
-
   const { showError } = useErrorMessage()
 
   useEffect(() => {
@@ -66,6 +64,21 @@ export default function usePlaylistVideos(
     }
   }, [playlist])
 
+  const applyOwnerToVideos = useCallback(
+    (videos: Video[]): VideoWithOwner[] => {
+      if (!opts.owner) return videos as VideoWithOwner[]
+
+      return videos.map(
+        video =>
+          ({
+            ...video,
+            owner: opts.owner,
+          } as VideoWithOwner)
+      )
+    },
+    [opts.owner]
+  )
+
   const loadPlaylist = useCallback(async () => {
     if (typeof playlistReference !== "string") return
     if (!opts.owner) return
@@ -80,10 +93,10 @@ export default function usePlaylistVideos(
     const id = isReference ? undefined : playlistReference
 
     try {
-      const reader = new SwarmPlaylistIO.Reader(reference, undefined, {
+      const reader = new SwarmPlaylist.Reader(reference, {
         beeClient,
-        id,
-        owner: opts.owner?.address,
+        playlistId: id,
+        playlistOwner: opts.owner?.address as EthAddress,
       })
 
       const playlist = await reader.download()
@@ -111,17 +124,15 @@ export default function usePlaylistVideos(
         const references = playlist.videos.slice(from, to)
         const newVideos = await Promise.all(
           references.map(video => {
-            const reader = new SwarmVideoIO.Reader(video.reference, playlist.owner as EthAddress, {
+            const reader = new SwarmVideo.Reader(video.reference, {
               beeClient,
               indexClient,
-              fetchProfile: !opts.owner,
-              profileData: opts.owner ?? undefined,
             })
             return reader.download()
           })
         )
 
-        return newVideos
+        return applyOwnerToVideos(newVideos.filter(Boolean) as Video[])
       } catch (error) {
         console.error(error)
 
@@ -131,7 +142,7 @@ export default function usePlaylistVideos(
         setIsFetching(false)
       }
     },
-    [beeClient, indexClient, opts.owner, playlist, showError]
+    [beeClient, indexClient, playlist, showError, applyOwnerToVideos]
   )
 
   const fetchPage = useCallback(
@@ -145,10 +156,10 @@ export default function usePlaylistVideos(
 
       fetchingPage.current = page
       const newVideos = await fetchVideos(from, to)
-      setVideos(newVideos)
+      setVideos(applyOwnerToVideos(newVideos))
       fetchingPage.current = undefined
     },
-    [fetchVideos, opts.limit]
+    [applyOwnerToVideos, fetchVideos, opts.limit]
   )
 
   const loadMore = useCallback(async () => {
@@ -165,8 +176,8 @@ export default function usePlaylistVideos(
     const to = from + (limit === -1 ? playlist.videos.length ?? 0 : limit)
     const newVideos = await fetchVideos(from, to)
     setHasMore(to < playlist.videos.length)
-    setVideos([...(videos ?? []), ...newVideos])
-  }, [fetchVideos, hasMore, isFetching, opts.limit, playlist, videos])
+    setVideos(applyOwnerToVideos([...(videos ?? []), ...newVideos]))
+  }, [applyOwnerToVideos, fetchVideos, hasMore, isFetching, opts.limit, playlist, videos])
 
   return {
     playlist,

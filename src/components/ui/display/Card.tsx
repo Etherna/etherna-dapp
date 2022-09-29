@@ -16,17 +16,34 @@
  */
 
 import React from "react"
+import classNames from "classnames"
 
 export type CardProps = {
   children: React.ReactNode
+  className?: string
   actions?: React.ReactNode
   title?: string
+  variant?: "fill" | "bordered"
 }
 
-const Card: React.FC<CardProps> = ({ children, actions, title }) => {
+const Card: React.FC<CardProps> = ({
+  children,
+  className,
+  actions,
+  title,
+  variant = "bordered",
+}) => {
   return (
     <div
-      className="flex flex-col rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900"
+      className={classNames(
+        "flex flex-col rounded-lg p-4",
+        {
+          "border border-gray-200": variant === "bordered",
+          "bg-gray-50 dark:border-gray-700 dark:bg-gray-900": variant === "bordered",
+          "bg-gray-900/5 p-4 dark:bg-gray-100/5": variant === "fill",
+        },
+        className
+      )}
       data-component="card"
     >
       {(title || actions) && (

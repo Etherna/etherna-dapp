@@ -50,6 +50,7 @@ export default defineConfig(({ mode, command }) => ({
     eslintPlugin({ cache: false }),
     checker({
       typescript: true,
+      overlay: false,
     }),
     dynamicBase({
       publicPath: " window.__dynamic_base__",

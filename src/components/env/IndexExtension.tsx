@@ -20,8 +20,9 @@ import React from "react"
 import { ReactComponent as IndexIcon } from "@/assets/icons/navigation/index.svg"
 
 import ExtensionHostStatus from "@/components/env/ExtensionHostStatus"
-import useExtensionEditor from "@/state/hooks/ui/useExtensionEditor"
-import useSelector from "@/state/useSelector"
+import useExtensionEditor from "@/hooks/useExtensionEditor"
+import useExtensionsStore from "@/stores/extensions"
+import useUserStore from "@/stores/user"
 
 type IndexExtensionProps = {
   noIcon?: boolean
@@ -32,8 +33,8 @@ const IndexExtension: React.FC<IndexExtensionProps> = ({
   noIcon = false,
   compactMobile = false,
 }) => {
-  const { indexUrl } = useSelector(state => state.env)
-  const { isSignedIn } = useSelector(state => state.user)
+  const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
+  const isSignedIn = useUserStore(state => state.isSignedIn)
 
   const { showEditor } = useExtensionEditor()
 
@@ -43,7 +44,7 @@ const IndexExtension: React.FC<IndexExtensionProps> = ({
       host={indexUrl}
       isConnected={isSignedIn}
       iconSvg={!noIcon && <IndexIcon />}
-      onClick={() => showEditor("index", indexUrl)}
+      onClick={() => showEditor("index")}
       compactMobile={compactMobile}
     />
   )

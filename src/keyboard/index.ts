@@ -14,7 +14,55 @@
  *  limitations under the License.
  */
 
-import { KEYMAP_OVERRIDE_NAME, baseKeymap, defaultKeymap } from "./defaultKeymap"
-import { PlayerActions } from "./keymaps/player"
+import { PlayerKeymap } from "./keymaps/player"
+import type { Shortcuts, KeymapNamespace } from "@/types/keyboard"
+import { deepCloneObject } from "@/utils/object"
 
-export { KEYMAP_OVERRIDE_NAME, baseKeymap, defaultKeymap, PlayerActions }
+export { PlayerActions } from "./keymaps/player"
+
+export const getDefaultKeymap = () => ({
+  APP: {} as Shortcuts,
+  PLAYER: { ...PlayerKeymap },
+})
+
+export type Keymaps = ReturnType<typeof getDefaultKeymap>
+
+export const optimizeKeymapsForStorage = (keymaps: Keymaps) => {
+  const optimizedKeymap = deepCloneObject(keymaps)
+  const defaultKeymap = getDefaultKeymap()
+
+  for (const [namespace, keymap] of Object.entries(optimizedKeymap) as [
+    n: KeymapNamespace,
+    s: Shortcuts
+  ][]) {
+    for (const [key, shortcut] of Object.entries(keymap)) {
+      if (shortcut === "") {
+        delete optimizedKeymap[namespace][key]
+      } else if (optimizedKeymap[namespace][key] === defaultKeymap[namespace]?.[key]) {
+        delete optimizedKeymap[namespace][key]
+      }
+    }
+  }
+
+  return optimizedKeymap
+}
+
+export const mergeKeymaps = (baseKeymaps: Keymaps, keymaps: Keymaps | undefined) => {
+  // console.log(baseKeymaps)
+  const mergedKeymap = { ...baseKeymaps }
+
+  if (!keymaps) {
+    return mergedKeymap
+  }
+
+  for (const [namespace, keymap] of Object.entries(keymaps) as [
+    n: KeymapNamespace,
+    s: Shortcuts
+  ][]) {
+    for (const [key, shortcut] of Object.entries(keymap)) {
+      mergedKeymap[namespace][key] = shortcut
+    }
+  }
+
+  return mergedKeymap
+}

@@ -15,7 +15,8 @@
  *
  */
 
-import React from "react"
+import React, { useMemo } from "react"
+import type { Profile } from "@etherna/api-js"
 
 import VideoComments from "./VideoComments"
 import VideoDetailsDescription from "./VideoDetailsDescription"
@@ -23,14 +24,22 @@ import VideoDetailsInfoBar from "./VideoDetailsInfoBar"
 import VideoDetailsProfile from "./VideoDetailsProfile"
 import VideoDetailsTitleBar from "./VideoDetailsTitleBar"
 import VideoExtraMenu from "./VideoExtraMenu"
-import type { Video, VideoOffersStatus } from "@/definitions/swarm-video"
+import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
+import useExtensionsStore from "@/stores/extensions"
+import type { VideoWithIndexes } from "@/types/video"
 
 type VideoDetailsProps = {
-  video: Video
+  video: VideoWithIndexes
+  owner: Profile | null | undefined
   videoOffers?: VideoOffersStatus
 }
 
-const VideoDetails: React.FC<VideoDetailsProps> = ({ video, videoOffers }) => {
+const VideoDetails: React.FC<VideoDetailsProps> = ({ video, owner, videoOffers }) => {
+  const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
+  const indexReference = useMemo(() => {
+    return video.indexesStatus[indexUrl]?.indexReference
+  }, [indexUrl, video.indexesStatus])
+
   return (
     <div>
       <VideoDetailsTitleBar title={video.title}>
@@ -39,15 +48,12 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video, videoOffers }) => {
 
       <VideoDetailsInfoBar video={video} videoOffers={videoOffers} />
 
-      <VideoDetailsProfile owner={video.owner} />
+      <VideoDetailsProfile owner={owner} />
 
       <VideoDetailsDescription description={video.description} />
 
-      {video.indexReference && (
-        <VideoComments
-          indexReference={video.indexReference}
-          videoAuthorAddress={video.ownerAddress}
-        />
+      {indexReference && (
+        <VideoComments indexReference={indexReference} videoAuthorAddress={video.ownerAddress} />
       )}
     </div>
   )

@@ -15,8 +15,9 @@
  *
  */
 
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Navigate } from "react-router-dom"
+import type { Video } from "@etherna/api-js"
 
 import { TrashIcon } from "@heroicons/react/24/outline"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
@@ -25,12 +26,12 @@ import StudioEditView from "./StudioEditView"
 import OnlyUsableBatch from "./other/OnlyUsableBatch"
 import VideoEditor from "./video-editor/VideoEditor"
 import { Button } from "@/components/ui/actions"
-import { VideoEditorContextProvider } from "@/context/video-editor-context"
-import type { Video } from "@/definitions/swarm-video"
+import useConfirmation from "@/hooks/useConfirmation"
 import useSwarmVideo from "@/hooks/useSwarmVideo"
 import routes from "@/routes"
-import { useConfirmation } from "@/state/hooks/ui"
-import useSelector from "@/state/useSelector"
+import useUserStore from "@/stores/user"
+import useVideoEditorStore from "@/stores/video-editor"
+import type { VideoWithIndexes } from "@/types/video"
 
 type VideoEditProps = {
   reference: string | undefined
@@ -43,17 +44,35 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   const [isEmpty, setIsEmpty] = useState<boolean>()
   const [canSave, setCanSave] = useState<boolean>()
   const saveCallback = useRef<() => Promise<void>>()
-  const clearCallback = useRef<() => Promise<void>>()
-  const resetState = useRef<() => void>()
-  const { address } = useSelector(state => state.user)
+  const address = useUserStore(state => state.address)
+  const editorStatus = useVideoEditorStore(state => state.status)
+  const hasChanges = useVideoEditorStore(state => state.hasChanges)
+  const storeReference = useVideoEditorStore(state => state.reference)
+  const storeVideo = useVideoEditorStore(state => state.video)
+  const reset = useVideoEditorStore(state => state.reset)
 
-  const stateVideo = routeState?.video
+  const isResultView = useMemo(() => {
+    return editorStatus === "saved" || editorStatus === "error"
+  }, [editorStatus])
+
+  const stateVideo = useMemo(() => {
+    if (!reference) {
+      return undefined
+    }
+
+    const baseVideo = reference === storeReference ? storeVideo : routeState?.video
+    const videoIndexes: VideoWithIndexes | undefined = baseVideo
+      ? {
+          ...baseVideo,
+          indexesStatus: {},
+        }
+      : undefined
+    return videoIndexes
+  }, [reference, routeState?.video, storeReference, storeVideo])
 
   const { waitConfirmation } = useConfirmation()
   const { video, isLoading, loadVideo } = useSwarmVideo({
     reference: reference || "",
-    fetchProfile: false,
-    fetchFromCache: false,
     routeState: stateVideo,
   })
 
@@ -65,23 +84,34 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   }, [reference])
 
   const backPrompt = useCallback(async () => {
-    if (isEmpty || reference) return true
+    if (editorStatus === "saved") return true
+    if (!hasChanges) return true
+
     const continueEditing = await waitConfirmation(
       "Cancel upload",
       "Are you sure you want to cancel this upload. The progress will be lost.",
       "Continue editing"
     )
-    !continueEditing && resetState.current?.()
-    return !continueEditing
-  }, [isEmpty, reference, waitConfirmation])
+
+    const navigateBack = !continueEditing
+
+    navigateBack && reset()
+    return navigateBack
+  }, [editorStatus, hasChanges, reset, waitConfirmation])
 
   const handleSave = useCallback(async () => {
     await saveCallback.current?.()
   }, [])
 
   const askToClearState = useCallback(async () => {
-    await clearCallback.current?.()
-  }, [])
+    const clear = await waitConfirmation(
+      "Clear all",
+      "Are you sure you want to clear the upload data? This action cannot be reversed.",
+      "Yes, clear",
+      "destructive"
+    )
+    clear && reset()
+  }, [reset, waitConfirmation])
 
   if (video && video.ownerAddress !== address) {
     return <Navigate to={routes.studioVideos} />
@@ -89,12 +119,13 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
 
   return (
     <StudioEditView
-      title={reference ? "Edit video" : "Publish new video"}
+      title={isResultView ? "" : reference ? "Edit video" : "Publish new video"}
       saveLabel={reference ? "Update" : "Publish"}
       canSave={canSave}
+      hideSaveButton={isResultView}
       actions={
         <>
-          {!reference && (
+          {!reference && editorStatus !== "saved" && (
             <Button
               aspect="text"
               color="muted"
@@ -114,19 +145,16 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
         <Spinner className="mx-auto mt-10 w-10 text-primary-500" />
       ) : (
         <OnlyUsableBatch>
-          <VideoEditorContextProvider reference={reference} videoData={video!}>
-            <VideoEditor
-              ref={ref => {
-                if (!ref) return
+          <VideoEditor
+            video={video}
+            ref={ref => {
+              if (!ref) return
 
-                saveCallback.current = ref.submitVideo
-                clearCallback.current = ref.askToClearState
-                resetState.current = ref.resetState
-                ref.isEmpty !== isEmpty && setIsEmpty(ref.isEmpty)
-                ref.canSubmitVideo !== canSave && setCanSave(ref.canSubmitVideo)
-              }}
-            />
-          </VideoEditorContextProvider>
+              saveCallback.current = ref.submitVideo
+              ref.isEmpty !== isEmpty && setIsEmpty(ref.isEmpty)
+              ref.canSubmitVideo !== canSave && setCanSave(ref.canSubmitVideo)
+            }}
+          />
         </OnlyUsableBatch>
       )}
     </StudioEditView>

@@ -16,7 +16,7 @@
 
 import { createContext } from "react"
 
-import type { PlayerContextStore } from "@/definitions/player-context"
+import type { PlayerContextStore } from "@/types/player-context"
 
 export const PlayerContext = createContext<PlayerContextStore | undefined>(undefined)
 
@@ -24,4 +24,4 @@ export const PlayerContext = createContext<PlayerContextStore | undefined>(undef
 export { default as PlayerContextProvider } from "./PlayerContextProvider"
 export { PlayerReducerTypes } from "./reducer"
 export type { AnyPlayerAction } from "./reducer"
-export type { PlayerContextStore, PlayerContextState } from "@/definitions/player-context"
+export type { PlayerContextStore, PlayerContextState } from "@/types/player-context"

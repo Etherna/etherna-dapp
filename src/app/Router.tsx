@@ -23,7 +23,7 @@ import AuthenticateRoute from "./route-wrappers/AuthenticateRoute"
 import BatchesRoute from "./route-wrappers/BatchesRoute"
 import DefaultBatchRoute from "./route-wrappers/DefaultBatchRoute"
 import SignedInRoute from "./route-wrappers/SignedInRoute"
-import StateProviderRoute from "./route-wrappers/StateProviderRoute"
+import StoreCleanupRoute from "./route-wrappers/StoreCleanupRoute"
 import StudioLayoutRoute from "./route-wrappers/StudioLayoutRoute"
 import VideoRoute from "./route-wrappers/VideoRoute"
 import { PageLoader } from "@/components/ui/layout"
@@ -141,7 +141,7 @@ const Router = () => {
   return (
     <>
       <Routes location={backgroundLocation || location}>
-        <Route path="" element={<StateProviderRoute />}>
+        <Route path="" element={<StoreCleanupRoute />}>
           <Route path="" element={<AuthenticateRoute />}>
             <Route path="" element={<AppLayoutRoute />}>
               <Route path="/" element={<Home />} />
@@ -175,15 +175,15 @@ const Router = () => {
               </Route>
             </Route>
           </Route>
-
-          <Route path="/embed" element={<VideoRoute />}>
-            <Route path=":hash" element={<Embed />} />
-          </Route>
-
-          <Route path="/devconvi-party" element={<PartyRedirectPage />} />
-
-          <Route path="*" element={<NotFound />} />
         </Route>
+
+        <Route path="/embed" element={<VideoRoute />}>
+          <Route path=":hash" element={<Embed />} />
+        </Route>
+
+        <Route path="/devconvi-party" element={<PartyRedirectPage />} />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
       {/* mini player */}

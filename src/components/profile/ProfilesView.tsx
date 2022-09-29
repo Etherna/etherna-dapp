@@ -17,16 +17,16 @@
 
 import React, { useState, useEffect, useCallback } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
+import type { IndexUser } from "@etherna/api-js/clients"
 
 import ProfilePreview from "./ProfilePreview"
 import ProfilePreviewPlaceholder from "@/components/placeholders/ProfilePreviewPlaceholder"
-import type { IndexUser } from "@/definitions/api-index"
-import useSelector from "@/state/useSelector"
+import useClientsStore from "@/stores/clients"
 
 const FETCH_COUNT = 10
 
 const ProfilesView: React.FC = () => {
-  const { indexClient } = useSelector(state => state.env)
+  const indexClient = useClientsStore(state => state.indexClient)
   const [profiles, setProfiles] = useState<IndexUser[]>()
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
@@ -71,7 +71,7 @@ const ProfilesView: React.FC = () => {
             <ProfilePreview profileAddress={profile.address} key={`${profile.address}-${index}`} />
           ))
         ) : (
-          <div></div>
+          <div />
         )}
       </InfiniteScroller>
     </div>

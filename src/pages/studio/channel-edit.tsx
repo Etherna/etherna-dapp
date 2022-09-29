@@ -23,7 +23,7 @@ import { Container } from "@/components/ui/layout"
 
 const ChannelEditPage = () => {
   return (
-    <AppLayoutWrapper floatingSidebar hideSidebar>
+    <AppLayoutWrapper floatingSidebar>
       <Container noPaddingX noPaddingY fluid>
         <ChannelEditor />
       </Container>
