@@ -98,7 +98,7 @@ const AlphaWarning: React.FC = () => {
           >
             <Dialog.Backdrop
               className={classNames(
-                "fixed inset-0 backdrop-blur-sm transition-opacity",
+                "fixed inset-0 z-1 backdrop-blur-sm transition-opacity",
                 "bg-gray-500/75 dark:bg-gray-800/50"
               )}
             />
