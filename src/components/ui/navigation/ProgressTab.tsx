@@ -76,12 +76,10 @@ const ProgressTabLink: React.FC<ProgressTabLinkProps> = ({
         <span className="inline-block">{children ?? title}</span>
         {text && (
           <p
-            className={classNames(
-              "mt-1.5 w-full text-left text-xs font-normal italic text-gray-500/75",
-              {
-                "text-gray-50/75": active,
-              }
-            )}
+            className={classNames("mt-1.5 w-full text-left text-xs font-normal italic", {
+              "text-gray-500/75": !active,
+              "text-gray-50/75": active,
+            })}
           >
             {text}
           </p>
@@ -97,8 +95,8 @@ const ProgressTabLink: React.FC<ProgressTabLinkProps> = ({
                 {
                   "flex-grow": typeof progress === "number" && !completed,
                   "bg-gray-500/25": !completed,
-                  "bg-blue-400": completed,
-                  "bg-gray-50": active && !completed,
+                  "bg-blue-400": completed && !active,
+                  "bg-gray-50": active,
                 }
               )}
               key={i}
