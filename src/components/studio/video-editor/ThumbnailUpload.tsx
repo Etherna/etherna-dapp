@@ -204,7 +204,7 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
           ) : (
             <FileUploadProgress
               isPreloading={isProcessingImages}
-              progress={(currentQueue?.completion ?? 0) * 100}
+              progress={currentQueue?.completion ?? 0}
               preloadingText={"Processing images..."}
             />
           )}
@@ -212,7 +212,7 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
       )}
 
       {processingStatus === "encoding" && (
-        <FileUploadProgress progress={(currentQueue?.completion ?? 0) * 100} color="rainbow" />
+        <FileUploadProgress progress={currentQueue?.completion ?? 0} color="rainbow" />
       )}
 
       {processingStatus === "preview" && <ImageSourcePreview image={thumbnail} />}
