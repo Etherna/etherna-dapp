@@ -71,7 +71,7 @@ const ProfilesView: React.FC = () => {
             <ProfilePreview profileAddress={profile.address} key={`${profile.address}-${index}`} />
           ))
         ) : (
-          <div></div>
+          <div />
         )}
       </InfiniteScroller>
     </div>

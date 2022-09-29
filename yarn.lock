@@ -1804,6 +1804,11 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
+"@etherna/api-js@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@etherna/api-js/-/api-js-1.0.0.tgz#1ab5c4a9c2c094a9cfc18491e6448eae287a66e1"
+  integrity sha512-U45VaMDGI0n4RzfJMIIEHnZi+Vm0TGLG/TfjLfr+xVlsxzsBouzxXvHbpVNDbPDcYkjPULHQBRkznZqvmDbNgA==
+
 "@hapi/hoek@^9.0.0":
   version "9.2.0"
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.2.0.tgz#f3933a44e365864f4dad5db94158106d511e8131"

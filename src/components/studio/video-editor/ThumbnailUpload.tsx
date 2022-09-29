@@ -87,9 +87,7 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
         },
       })
 
-      console.log("image raw", image)
       const imageReader = new SwarmImage.Reader(image, { beeClient })
-      console.log("image", imageReader.image)
 
       // remove data
       setSelectedFile(undefined)
