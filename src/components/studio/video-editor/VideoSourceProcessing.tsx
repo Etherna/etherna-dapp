@@ -228,7 +228,6 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
           portal={shouldPortal ? `#${PORTAL_ID}` : undefined}
           label="Drag the video file here"
           mimeTypes={"video/mp4"}
-          uploadLimit={500}
           canSelectFile={canSelectFile}
           onSelectFile={handleFileSelected}
           disabled={disabled}
