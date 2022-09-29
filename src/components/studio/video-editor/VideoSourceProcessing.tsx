@@ -74,7 +74,6 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
         contentType: "video/mp4",
         signal: abortController.current.signal,
         onUploadProgress: p => {
-          console.log("PROGRESS", p)
           progressCallback(p)
         },
       })
