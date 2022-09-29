@@ -62,6 +62,8 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
   }, [])
 
   const fetchIdentity = async () => {
+    toggleProfileLoading(true)
+
     const [identityResult, currentUserResult, hasCreditResult] = await Promise.allSettled([
       fetchAuthIdentity(),
       fetchIndexCurrentUser(),
@@ -80,8 +82,10 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
 
     if (currentUser && identity) {
       const address = identity.etherAddress as EthAddress
-      fetchProfile(address, identity)
+      await fetchProfile(address, identity)
     }
+
+    toggleProfileLoading(false)
   }
 
   const fetchAuthIdentity = async () => {
@@ -137,8 +141,6 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
   }
 
   const fetchProfile = async (address: EthAddress, identity?: SSOIdentity) => {
-    toggleProfileLoading(true)
-
     // update bee client with signer for feed update
     if (identity?.accountType === "web2") {
       const beeClientSigner = new BeeClient(beeClient.url, {
@@ -176,7 +178,5 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
     } catch (error: any) {
       console.error(error)
     }
-
-    toggleProfileLoading(false)
   }
 }

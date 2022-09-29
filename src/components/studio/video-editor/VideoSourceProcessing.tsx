@@ -241,7 +241,7 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
       {processingStatus === "upload" && (
         <>
           {batchId && batchStatus === undefined ? (
-            <FileUploadProgress progress={(currentQueue?.completion ?? 0) * 100} />
+            <FileUploadProgress progress={currentQueue?.completion ?? 0} />
           ) : (
             <Text size="sm">Waiting postage batch creation...</Text>
           )}
@@ -249,7 +249,7 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
       )}
 
       {processingStatus === "encoding" && (
-        <FileUploadProgress progress={(currentQueue?.completion ?? 0) * 100} color="rainbow" />
+        <FileUploadProgress progress={currentQueue?.completion ?? 0} color="rainbow" />
       )}
 
       {processingStatus === "preview" && <VideoSourceStats source={currentSource} />}
