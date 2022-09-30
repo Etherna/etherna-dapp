@@ -25,7 +25,7 @@ import usePlaylistVideos from "@/hooks/usePlaylistVideos"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
 import useUserPlaylists from "@/hooks/useUserPlaylists"
 import routes from "@/routes"
-import type { VideoWithIndexes, VideoWithOwner } from "@/types/video"
+import type { VideoWithIndexes, VideoWithOffersStatus, VideoWithOwner } from "@/types/video"
 import { shortenEthAddr } from "@/utils/ethereum"
 
 type ProfilePreviewProps = {
@@ -47,7 +47,8 @@ const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress }) => {
         ({
           ...video,
           indexesStatus: {},
-        } as VideoWithOwner & VideoWithIndexes)
+          offers: undefined,
+        } as VideoWithOwner & VideoWithIndexes & VideoWithOffersStatus)
     )
   }, [videos])
 

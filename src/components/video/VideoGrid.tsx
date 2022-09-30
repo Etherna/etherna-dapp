@@ -20,12 +20,11 @@ import classNames from "classnames"
 
 import VideoPreviewPlaceholder from "@/components/placeholders/VideoPreviewPlaceholder"
 import VideoPreview from "@/components/video/VideoPreview"
-import useVideosResources from "@/hooks/useVideosResources"
-import type { VideoWithIndexes, VideoWithOwner } from "@/types/video"
+import type { VideoWithIndexes, VideoWithOffersStatus, VideoWithOwner } from "@/types/video"
 
 type VideoGridProps = {
   label?: string
-  videos?: (VideoWithIndexes & VideoWithOwner)[]
+  videos?: (VideoWithOwner & VideoWithIndexes & VideoWithOffersStatus)[]
   isFetching?: boolean
   fetchingPreviewCount?: number
   mini?: boolean
@@ -40,8 +39,6 @@ const VideoGrid: React.FC<VideoGridProps> = ({
   decentralizedLink,
   fetchingPreviewCount = 4,
 }) => {
-  const { videosOffersStatus } = useVideosResources(videos)
-
   const LabelTag = mini ? "h5" : "h3"
 
   return (
@@ -65,7 +62,7 @@ const VideoGrid: React.FC<VideoGridProps> = ({
           videos.map(video => (
             <VideoPreview
               video={video}
-              videoOffers={videosOffersStatus?.[video.reference]}
+              videoOffers={video.offers}
               hideProfile={mini}
               decentralizedLink={decentralizedLink}
               key={video.reference}

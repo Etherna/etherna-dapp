@@ -227,7 +227,7 @@ export default function useVideoEditor() {
 
   const offerVideoResources = useCallback(async () => {
     try {
-      const handler = new EthernaResourcesHandler(newVideo.current!, { gatewayClient })
+      const handler = new EthernaResourcesHandler([newVideo.current!], { gatewayClient })
       await handler.offerResources()
     } catch (error) {
       console.error(error)
@@ -238,7 +238,7 @@ export default function useVideoEditor() {
   const unofferVideoResources = useCallback(async () => {
     try {
       // using 'old' video reference to unoffer resources
-      const handler = new EthernaResourcesHandler(video, { gatewayClient })
+      const handler = new EthernaResourcesHandler([video], { gatewayClient })
       await handler.unofferResources()
     } catch (error) {
       console.error(error)

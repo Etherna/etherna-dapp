@@ -17,7 +17,11 @@
 
 import type { Profile, Video } from "@etherna/api-js"
 
+import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
+
 export type VideoWithOwner = Video & { owner: Profile | undefined }
+
+export type VideoWithOffersStatus = Video & { offers: VideoOffersStatus | undefined }
 
 export type VideoWithIndexes = Video & { indexesStatus: IndexesStatus }
 

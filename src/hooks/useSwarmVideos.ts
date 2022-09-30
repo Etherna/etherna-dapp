@@ -16,14 +16,16 @@
 
 import { useCallback, useEffect, useState } from "react"
 import type { EthAddress } from "@etherna/api-js/clients"
+import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
 
 import useErrorMessage from "./useErrorMessage"
+import { parseReaderStatus } from "./useVideoOffers"
 import SwarmProfile from "@/classes/SwarmProfile"
 import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
-import type { VideoWithIndexes, VideoWithOwner } from "@/types/video"
+import type { VideoWithIndexes, VideoWithOffersStatus, VideoWithOwner } from "@/types/video"
 import { wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
 
@@ -35,11 +37,14 @@ type SwarmVideosOptions = {
 const DEFAULT_SEED_LIMIT = 50
 const DEFAULT_FETCH_LIMIT = 20
 
+type VideoWithAll = VideoWithOwner & VideoWithIndexes & VideoWithOffersStatus
+
 export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
   const indexClient = useClientsStore(state => state.indexClient)
   const beeClient = useClientsStore(state => state.beeClient)
+  const gatewayClient = useClientsStore(state => state.gatewayClient)
   const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
-  const [videos, setVideos] = useState<(VideoWithOwner & VideoWithIndexes)[]>()
+  const [videos, setVideos] = useState<VideoWithAll[]>()
   const [page, setPage] = useState(0)
   const [isFetching, setIsFetching] = useState(false)
   const [hasMore, setHasMore] = useState(true)
@@ -50,8 +55,30 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
 
+  const loadVideosOffers = useCallback(
+    async (videos: VideoWithAll[]) => {
+      try {
+        const handler = new EthernaResourcesHandler(videos, { gatewayClient })
+        await handler.fetchOffers({ withByWhom: false })
+
+        setVideos(videos =>
+          videos?.map(video => {
+            const offers = parseReaderStatus(handler, video, undefined)
+            return {
+              ...video,
+              offers,
+            }
+          })
+        )
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    [gatewayClient]
+  )
+
   const loadVideoProfiles = useCallback(
-    async (videos: (VideoWithOwner & VideoWithIndexes)[]) => {
+    async (videos: VideoWithAll[]) => {
       const addresses = videos
         .filter(video => !video.owner)
         .map(video => video.ownerAddress)
@@ -107,7 +134,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
         const video = new VideoDeserializer(beeClient.url).deserialize(videoRaw, {
           reference: indexVideo.lastValidManifest?.hash ?? "",
         })
-        const videoOwner: VideoWithOwner & VideoWithIndexes = {
+        const videoOwner: VideoWithAll = {
           ...video,
           owner: undefined,
           indexesStatus: {
@@ -117,9 +144,11 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
               totUpvotes: indexVideo.totUpvotes,
             },
           },
+          offers: undefined,
         }
         return videoOwner
       })
+
       import.meta.env.DEV && (await wait(1000))
 
       if (newVideos.length < take) {
@@ -131,6 +160,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
       })
 
       loadVideoProfiles(newVideos)
+      loadVideosOffers(newVideos)
     } catch (error: any) {
       showError("Coudn't fetch the videos", getResponseErrorMessage(error))
     }
@@ -139,12 +169,13 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
   }, [
     hasMore,
     page,
-    opts.seedLimit,
-    opts.fetchLimit,
     indexClient,
-    loadVideoProfiles,
     beeClient,
     indexUrl,
+    opts.seedLimit,
+    opts.fetchLimit,
+    loadVideoProfiles,
+    loadVideosOffers,
     showError,
   ])
 

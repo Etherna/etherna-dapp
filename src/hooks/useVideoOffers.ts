@@ -83,10 +83,10 @@ export default function useVideoOffers(
 
     try {
       const parsedVideo = getParsedVideo()
-      const resourcesHandler = new EthernaResourcesHandler(parsedVideo, { gatewayClient })
+      const resourcesHandler = new EthernaResourcesHandler([parsedVideo], { gatewayClient })
       await resourcesHandler.fetchOffers()
 
-      setVideoOffersStatus(parseReaderStatus(resourcesHandler, address))
+      setVideoOffersStatus(parseReaderStatus(resourcesHandler, parsedVideo, address))
     } catch (error) {
       console.error(error)
     }
@@ -96,20 +96,20 @@ export default function useVideoOffers(
     if (!video) throw new Error("Video not loaded")
 
     const parsedVideo = getParsedVideo()
-    const resourcesHandler = new EthernaResourcesHandler(parsedVideo, { gatewayClient })
+    const resourcesHandler = new EthernaResourcesHandler([parsedVideo], { gatewayClient })
     await resourcesHandler.offerResources()
     await resourcesHandler.fetchOffers()
-    setVideoOffersStatus(parseReaderStatus(resourcesHandler, address))
+    setVideoOffersStatus(parseReaderStatus(resourcesHandler, parsedVideo, address))
   }, [video, getParsedVideo, gatewayClient, address])
 
   const unofferResources = useCallback(async () => {
     if (!video) throw new Error("Video not loaded")
 
     const parsedVideo = getParsedVideo()
-    const resourcesHandler = new EthernaResourcesHandler(parsedVideo, { gatewayClient })
+    const resourcesHandler = new EthernaResourcesHandler([parsedVideo], { gatewayClient })
     await resourcesHandler.unofferResources()
     await resourcesHandler.fetchOffers()
-    setVideoOffersStatus(parseReaderStatus(resourcesHandler, address))
+    setVideoOffersStatus(parseReaderStatus(resourcesHandler, parsedVideo, address))
   }, [video, getParsedVideo, gatewayClient, address])
 
   return {
@@ -121,34 +121,37 @@ export default function useVideoOffers(
 
 export const parseReaderStatus = (
   handler: EthernaResourcesHandler,
+  video: Video,
   userAddress: string | undefined
 ): VideoOffersStatus => {
+  const handlerVideoResources = handler.getVideoReferencesStatus(video)
   return {
-    offersStatus: getStatus(handler),
-    userOffersStatus: getStatus(handler, userAddress),
-    globalOffers: handler.resourcesStatus ?? [],
+    offersStatus: getStatus(handler, video),
+    userOffersStatus: getStatus(handler, video, userAddress ?? "0x0"),
+    globalOffers: handlerVideoResources,
     userOfferedResourses: userAddress
-      ? (handler.resourcesStatus?.map(status => status.reference) ?? []).filter(reference =>
+      ? (handlerVideoResources.map(status => status.reference) ?? []).filter(reference =>
           handler.getReferenceStatus(reference)?.offeredBy.includes(userAddress)
         )
       : [],
     userUnOfferedResourses: userAddress
-      ? (handler.resourcesStatus?.map(status => status.reference) ?? []).filter(
+      ? (handlerVideoResources.map(status => status.reference) ?? []).filter(
           reference => !handler.getReferenceStatus(reference)?.offeredBy.includes(userAddress)
         )
       : [],
   }
 }
 
-function getStatus(handler: EthernaResourcesHandler, byAddress?: string) {
-  const resourcesStatus = (handler.resourcesStatus ?? []).filter(
+function getStatus(handler: EthernaResourcesHandler, video: Video, byAddress?: string) {
+  const handlerVideoResources = handler.getVideoReferencesStatus(video)
+  const resourcesStatus = handlerVideoResources.filter(
     r => !byAddress || r.offeredBy.includes(byAddress)
   )
   const resourcesCount = resourcesStatus.length
   const offeredResourcesCount = resourcesStatus.filter(status => status.isOffered).length
   const allSourcesOffered =
-    handler.video.sources.length > 0 &&
-    handler.video.sources
+    video.sources.length > 0 &&
+    video.sources
       .map(source => handler.getReferenceStatus(source.reference))
       .every(status => status?.isOffered && (!byAddress || status.offeredBy.includes(byAddress)))
   const fullyOffered = offeredResourcesCount === resourcesCount
