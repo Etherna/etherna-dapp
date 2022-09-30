@@ -54,17 +54,15 @@ export default function useVideosResources(videos: Video[] | undefined) {
 
       videosQueue.current = [...videosQueue.current, ...videosToFetch.map(video => video.reference)]
 
-      const handlers = videosToFetch.map(
-        video => new EthernaResourcesHandler(video, { gatewayClient })
-      )
-      await Promise.allSettled(handlers.map(handler => handler.fetchOffers()))
+      const handler = new EthernaResourcesHandler(videosToFetch, { gatewayClient })
+      await handler.fetchOffers()
 
       const statuses: Record<string, VideoOffersStatus> = {
         ...videosOffersStatus,
       }
 
-      for (const handler of handlers) {
-        statuses[handler.video.reference] = parseReaderStatus(handler, address)
+      for (const video of videosToFetch) {
+        statuses[video.reference] = parseReaderStatus(handler, video, address)
       }
 
       videosQueue.current = []
@@ -76,11 +74,11 @@ export default function useVideosResources(videos: Video[] | undefined) {
 
   const offerVideoResources = useCallback(
     async (video: Video) => {
-      const handler = new EthernaResourcesHandler(video, { gatewayClient })
+      const handler = new EthernaResourcesHandler([video], { gatewayClient })
       await handler.offerResources()
       await handler.fetchOffers()
       const statuses = { ...videosOffersStatus }
-      statuses[handler.video.reference] = parseReaderStatus(handler, address)
+      statuses[video.reference] = parseReaderStatus(handler, video, address)
       setVideosOffersStatus(statuses)
     },
     [videosOffersStatus, address, gatewayClient]
@@ -88,11 +86,11 @@ export default function useVideosResources(videos: Video[] | undefined) {
 
   const unofferVideoResources = useCallback(
     async (video: Video) => {
-      const handler = new EthernaResourcesHandler(video, { gatewayClient })
+      const handler = new EthernaResourcesHandler([video], { gatewayClient })
       await handler.unofferResources()
       await handler.fetchOffers()
       const statuses = { ...videosOffersStatus }
-      statuses[handler.video.reference] = parseReaderStatus(handler, address)
+      statuses[video.reference] = parseReaderStatus(handler, video, address)
       setVideosOffersStatus(statuses)
     },
     [videosOffersStatus, address, gatewayClient]

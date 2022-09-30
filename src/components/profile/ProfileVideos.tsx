@@ -19,7 +19,7 @@ import React, { useMemo } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
 import VideoGrid from "@/components/video/VideoGrid"
-import type { VideoWithIndexes, VideoWithOwner } from "@/types/video"
+import type { VideoWithIndexes, VideoWithOffersStatus, VideoWithOwner } from "@/types/video"
 
 type ProfileVideosProps = {
   videos: VideoWithOwner[] | null | undefined
@@ -40,7 +40,8 @@ const ProfileVideos: React.FC<ProfileVideosProps> = ({
         ({
           ...video,
           indexesStatus: {},
-        } as VideoWithIndexes & VideoWithOwner)
+          offers: undefined,
+        } as VideoWithIndexes & VideoWithOwner & VideoWithOffersStatus)
     )
   }, [videos])
 
