@@ -75,7 +75,7 @@ const ResultStatus: React.FC<{ result: PublishStatus }> = ({ result }) => {
         {result.source.name}
 
         {result.source.source === "index" && (
-          <span className="ml-2 text-sm text-sky-500">processing...</span>
+          <span className="ml-2 text-sm text-sky-500">under validation...</span>
         )}
       </span>
 

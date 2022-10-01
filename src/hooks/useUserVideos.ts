@@ -24,6 +24,7 @@ import IndexClient from "@/classes/IndexClient"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
+import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
 import type { VideoWithIndexes } from "@/types/video"
 import { wait } from "@/utils/promise"
@@ -49,6 +50,7 @@ let playlistResover: (() => Promise<Playlist>) | undefined
 export default function useUserVideos(opts: UseUserVideosOptions) {
   const beeClient = useClientsStore(state => state.beeClient)
   const address = useUserStore(state => state.address)
+  const currentIndexUrl = useExtensionsStore(state => state.currentIndexUrl)
   const channelPlaylist = useRef<Playlist>()
   const indexClient = useRef<IndexClient>()
   const [isFetching, setIsFetching] = useState(false)
@@ -130,7 +132,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
         const videoIndexes: VideoWithIndexes = {
           ...video,
           indexesStatus: {
-            [indexClient.current!.url]: {
+            [currentIndexUrl]: {
               indexReference: indexVideo.id,
               totDownvotes: indexVideo.totDownvotes,
               totUpvotes: indexVideo.totUpvotes,
@@ -140,7 +142,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
         return videoIndexes
       })
     },
-    [address, beeClient]
+    [address, beeClient, currentIndexUrl]
   )
 
   const fetchVideos = useCallback(
@@ -196,7 +198,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
     async (videos: VideoWithIndexes[]) => {
       for (const video of videos) {
         try {
-          const indexId = video.indexesStatus?.[0]?.indexReference
+          const indexId = video.indexesStatus[currentIndexUrl]?.indexReference
           await indexClient.current!.videos.deleteVideo(indexId!)
         } catch (error) {
           const axiosError = error as AxiosError
@@ -206,7 +208,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
         }
       }
     },
-    [indexClient]
+    [indexClient, currentIndexUrl]
   )
 
   const deleteVideosFromSource = useCallback(
