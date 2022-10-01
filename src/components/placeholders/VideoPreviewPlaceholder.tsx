@@ -28,7 +28,7 @@ const VideoPreviewPlaceholder: React.FC<VideoPreviewPlaceholderProps> = ({ mini 
   return (
     <div className="flex flex-col">
       <Skeleton squared>
-        <div className="w-full pb-[62%]" />
+        <div className="w-full pb-[56.25%]" />
       </Skeleton>
       <div className="items-top mt-2 flex">
         {!mini && (

@@ -28,7 +28,7 @@ import { isMimeCompatible } from "@/utils/mime-types"
 type FileDragProps = {
   id: string
   portal?: string
-  label?: string
+  label?: string | React.ReactNode
   mimeTypes?: string
   disabled?: boolean
   uploadLimit?: number
