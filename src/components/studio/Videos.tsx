@@ -221,7 +221,7 @@ const Videos: React.FC = () => {
                 <div
                   className={classNames(
                     "relative w-14 shrink-0 overflow-hidden md:w-20",
-                    "bg-gray-300 after:block after:pb-[62%] dark:bg-gray-600"
+                    "bg-gray-300 after:block after:pb-[56.25%] dark:bg-gray-600"
                   )}
                 >
                   <Image

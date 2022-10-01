@@ -87,7 +87,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   return (
     <div className="w-full">
       <Link to={routes.watch(videoLink)} state={{ video, ownerProfile: video.owner, videoOffers }}>
-        <div className="relative flex w-full before:pb-[62%]">
+        <div className="relative flex w-full before:pb-[56.25%]">
           <Image
             className="bg-gray-200 dark:bg-gray-700"
             sources={videoThumbnail?.sources}

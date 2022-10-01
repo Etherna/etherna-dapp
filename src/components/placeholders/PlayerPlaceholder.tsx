@@ -23,7 +23,7 @@ const PlayerPlaceholder = () => {
   return (
     <>
       <Skeleton className="mt-12 mb-8 w-full">
-        <div className="h-32 pb-[62%]" />
+        <div className="h-32 pb-[56.25%]" />
       </Skeleton>
       <div className="flex flex-col">
         <Skeleton roundedThin>
