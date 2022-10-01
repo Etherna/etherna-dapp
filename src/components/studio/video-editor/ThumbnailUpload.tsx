@@ -184,7 +184,13 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
       {processingStatus === "select" && !selectedFile && (
         <FileDrag
           id={THUMBNAIL_QUEUE_NAME}
-          label="Drag the thumbnail here"
+          label={
+            <p className="text-center">
+              <span>Drag the thumbnail here</span>
+              <br />
+              <span className="text-sm">(ideal 16:9 format of 1280x720)</span>
+            </p>
+          }
           mimeTypes={"image/png,image/jpeg"}
           uploadLimit={1}
           canSelectFile={canSelectFile}
