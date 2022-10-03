@@ -20,15 +20,24 @@ import { Outlet } from "react-router-dom"
 
 import BatchLoading from "@/components/common/BatchLoading"
 import useDefaultBatch from "@/hooks/useDefaultBatch"
+import useExtensionsStore from "@/stores/extensions"
 
 const DefaultBatchRoute: React.FC = () => {
-  const { isFetchingBatch, isCreatingBatch, error } = useDefaultBatch({ autofetch: true })
+  const gatewayType = useExtensionsStore(state => state.currentGatewayType)
+  const { isFetchingBatch, isCreatingBatch, error, createDefaultBatch } = useDefaultBatch({
+    autofetch: true,
+  })
 
   return isFetchingBatch || isCreatingBatch || error ? (
     <BatchLoading
       type={isCreatingBatch ? "creating" : "fetching"}
       error={!!error}
-      message={error}
+      message={
+        error && gatewayType === "etherna-gateway"
+          ? "Come back in a few minutes. If your batch isn't created create new one manually."
+          : error
+      }
+      onCreate={createDefaultBatch}
     />
   ) : (
     <Outlet />

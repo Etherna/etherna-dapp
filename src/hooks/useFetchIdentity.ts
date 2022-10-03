@@ -41,7 +41,6 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
   const setBytesPrice = useSessionStore(state => state.setBytesPrice)
   const setCredit = useUserStore(state => state.setCredit)
   const setDefaultBatchId = useUserStore(state => state.setDefaultBatchId)
-  const setBatches = useUserStore(state => state.setBatches)
   const setProfile = useUserStore(state => state.setProfile)
   const updateIdentity = useUserStore(state => state.updateIdentity)
   const updateSignedIn = useUserStore(state => state.updateSignedIn)
