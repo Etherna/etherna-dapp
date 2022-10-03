@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import type { GatewayBatch, PostageBatch } from "@etherna/api-js/clients"
 import { BatchesHandler } from "@etherna/api-js/handlers"
 import { BatchUpdateType } from "@etherna/api-js/stores"
@@ -30,6 +30,7 @@ import dayjs from "@/utils/dayjs"
 
 type UseBatchesOpts = {
   autofetch?: boolean
+  autoCreate?: boolean
 }
 
 export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: false }) {
@@ -43,7 +44,6 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
   const defaultBatch = useUserStore(state => state.batches.find(b => b.id === defaultBatchId))
   const updateBeeClient = useClientsStore(state => state.updateBeeClient)
-  const setBatches = useUserStore(state => state.setBatches)
   const setDefaultBatchId = useUserStore(state => state.setDefaultBatchId)
   const isLoadingProfile = useUIStore(state => state.isLoadingProfile)
   const { waitAuth } = useBeeAuthentication()
@@ -64,34 +64,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [opts.autofetch, isLoadingProfile])
 
-  const fetchBatch = async () => {
-    setIsFetchingBatch(true)
-
-    let batch = await fetchDefaultBatch()
-
-    if (!batch) {
-      batch = await fetchBestUsableBatch()
-    }
-
-    if (!batch) {
-      batch = await createDefaultBatch()
-    }
-
-    setIsFetchingBatch(false)
-
-    if (batch) {
-      updateBeeClient(
-        new BeeClient(beeClient.url, {
-          axios: beeClient.request,
-          postageBatches: [parseGatewayBatch(batch)],
-          signer: beeClient.signer,
-        })
-      )
-      setDefaultBatchId(batch.id)
-    }
-  }
-
-  const fetchDefaultBatch = async () => {
+  const fetchDefaultBatch = useCallback(async () => {
     if (!defaultBatchId) return null
 
     try {
@@ -106,12 +79,12 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     } catch {
       return null
     }
-  }
+  }, [beeClient.stamps, defaultBatchId, gatewayClient.users, gatewayType, waitAuth])
 
-  const fetchBestUsableBatch = async (): Promise<GatewayBatch | null> => {
+  const fetchBestUsableBatch = useCallback(async (): Promise<GatewayBatch | null> => {
     try {
       if (gatewayType === "etherna-gateway") {
-        const batchesPreviews = (await gatewayClient.users.fetchBatches()).reverse()
+        const batchesPreviews = await gatewayClient.users.fetchBatches()
 
         for (const batchPreview of batchesPreviews) {
           const batch = await gatewayClient.users.fetchBatch(batchPreview.batchId)
@@ -141,9 +114,9 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     } catch (error) {
       return null
     }
-  }
+  }, [beeClient.stamps, gatewayClient.users, gatewayType, waitAuth])
 
-  const createDefaultBatch = async (): Promise<GatewayBatch | null> => {
+  const createDefaultBatch = useCallback(async (): Promise<GatewayBatch | null> => {
     setIsCreatingBatch(true)
     setError(undefined)
 
@@ -182,7 +155,44 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     } finally {
       setIsCreatingBatch(false)
     }
-  }
+  }, [address, beeClient, gatewayClient, gatewayType, waitAuth])
+
+  const fetchBatch = useCallback(async () => {
+    setIsFetchingBatch(true)
+
+    let batch = await fetchDefaultBatch()
+
+    if (!batch) {
+      batch = await fetchBestUsableBatch()
+    }
+
+    if (!batch && opts.autoCreate) {
+      batch = await createDefaultBatch()
+    }
+
+    setIsFetchingBatch(false)
+
+    if (batch) {
+      updateBeeClient(
+        new BeeClient(beeClient.url, {
+          axios: beeClient.request,
+          postageBatches: [parseGatewayBatch(batch)],
+          signer: beeClient.signer,
+        })
+      )
+      setDefaultBatchId(batch.id)
+    } else {
+      setError("No usable batch found")
+    }
+  }, [
+    opts.autoCreate,
+    beeClient,
+    fetchDefaultBatch,
+    fetchBestUsableBatch,
+    createDefaultBatch,
+    updateBeeClient,
+    setDefaultBatchId,
+  ])
 
   return {
     isCreatingBatch,
@@ -190,5 +200,6 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     error,
     defaultBatch,
     fetchDefaultBatch,
+    createDefaultBatch,
   }
 }

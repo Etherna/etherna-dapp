@@ -72,6 +72,7 @@ export default function useVideoEditor() {
 
   useEffect(() => {
     if (address) {
+      console.log("LOAD")
       loadPlaylists()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -128,6 +129,7 @@ export default function useVideoEditor() {
       const newReference = await videoWriter.upload()
       return newReference
     } catch (error: any) {
+      console.error(error)
       showError("Manifest error", getResponseErrorMessage(error))
       return null
     }
@@ -144,6 +146,7 @@ export default function useVideoEditor() {
         isUpdate && (await updateVideoInPlaylist(id, initialReference, newVideo.current!))
         return true
       } catch (error) {
+        console.error(error)
         return false
       }
     },

@@ -21,6 +21,7 @@ import type { EthAddress, Reference } from "@etherna/api-js/clients"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmUserPlaylists from "@/classes/SwarmUserPlaylists"
 import useClientsStore from "@/stores/clients"
+import useUserStore from "@/stores/user"
 import { deepCloneArray } from "@/utils/array"
 import { deepCloneObject } from "@/utils/object"
 
@@ -31,6 +32,7 @@ interface UseUserPlaylistsOptions {
 }
 
 export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlaylistsOptions) {
+  const address = useUserStore(state => state.address)
   const beeClient = useClientsStore(state => state.beeClient)
   const [isFetchingPlaylists, setIsFetchingPlaylists] = useState(false)
   const [userPlaylists, setUserPlaylists] = useState<UserPlaylists>()
@@ -78,7 +80,7 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
 
       setUserPlaylists(playlists)
 
-      const [channelPlaylist, savedPlaylist, customPlaylists] = await Promise.all([
+      const [channelResult, savedResult, customResult] = await Promise.allSettled([
         opts?.fetchChannel
           ? fetchPlaylist(playlists.channel, SwarmPlaylist.Reader.channelPlaylistId, owner)
           : undefined,
@@ -94,9 +96,19 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
           : undefined,
       ])
 
-      setChannelPlaylist(channelPlaylist)
-      setSavedPlaylist(savedPlaylist)
-      setCustomPlaylists(customPlaylists)
+      const channelPlaylist = channelResult.status === "fulfilled" ? channelResult.value : undefined
+      const savedPlaylist = savedResult.status === "fulfilled" ? savedResult.value : undefined
+      const customPlaylists = customResult.status === "fulfilled" ? customResult.value : undefined
+
+      opts?.fetchChannel &&
+        setChannelPlaylist(
+          channelPlaylist ?? SwarmUserPlaylists.Writer.defaultChannelPlaylists(address!)
+        )
+      opts?.fetchSaved &&
+        setSavedPlaylist(
+          savedPlaylist ?? SwarmUserPlaylists.Writer.defaultChannelPlaylists(address!)
+        )
+      opts?.fetchCustom && setCustomPlaylists(customPlaylists ?? [])
 
       setIsFetchingPlaylists(false)
 
@@ -109,7 +121,15 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
       console.error(error)
       setIsFetchingPlaylists(false)
     }
-  }, [owner, beeClient, opts?.fetchChannel, opts?.fetchSaved, opts?.fetchCustom, fetchPlaylist])
+  }, [
+    beeClient,
+    address,
+    owner,
+    opts?.fetchChannel,
+    opts?.fetchSaved,
+    opts?.fetchCustom,
+    fetchPlaylist,
+  ])
 
   const playlistHasVideo = useCallback(
     (playlistId: string, reference: string) => {
@@ -126,6 +146,10 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
 
   const uploadPlaylist = useCallback(
     async (playlist: Playlist) => {
+      console.log(playlist)
+      if (playlist.reference === "") {
+        playlist.reference = "0".repeat(64)
+      }
       const playlistWriter = new SwarmPlaylist.Writer(playlist, {
         beeClient,
       })
