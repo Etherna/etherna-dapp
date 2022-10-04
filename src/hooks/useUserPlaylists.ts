@@ -146,7 +146,6 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
 
   const uploadPlaylist = useCallback(
     async (playlist: Playlist) => {
-      console.log(playlist)
       if (playlist.reference === "") {
         playlist.reference = "0".repeat(64)
       }
