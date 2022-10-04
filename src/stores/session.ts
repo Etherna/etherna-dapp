@@ -11,11 +11,17 @@ export type SessionState = {
   apiVersion: {
     [url: string]: string
   }
+  characterLimits?: {
+    comment: number
+    title: number
+    description: number
+  }
 }
 
 export type SessionActions = {
-  setBytesPrice(bytesPrice: number | undefined): void
   setApiVersion(url: string, version: string): void
+  setBytesPrice(bytesPrice: number | undefined): void
+  setCharaterLimits(comment: number, title: number, description: number): void
 }
 
 const getInitialState = (): SessionState => ({
@@ -41,6 +47,15 @@ const useSessionStore = create<SessionState & SessionActions>()(
           setBytesPrice(bytesPrice) {
             set(state => {
               state.bytesPrice = bytesPrice
+            })
+          },
+          setCharaterLimits(comment, title, description) {
+            set(state => {
+              state.characterLimits = {
+                comment,
+                title,
+                description,
+              }
             })
           },
         })),

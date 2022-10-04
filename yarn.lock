@@ -1804,10 +1804,10 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@etherna/api-js@1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@etherna/api-js/-/api-js-1.1.1.tgz#60895122473f08dc6b6bf351f27b60cedc73cf2e"
-  integrity sha512-ZYC4j7qia98czRfZx+e4v47okq/HTVP+53BWHoGYth7UeRIZxTF5nRQT0avYlnvf6swUubqK+xnAlxkZQ2ZK3A==
+"@etherna/api-js@1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@etherna/api-js/-/api-js-1.2.3.tgz#64503e48e3403326981c5417c6139f1c2298cc96"
+  integrity sha512-YzcOTYouTXSXAptUB5QVmuKcWV6WDvptKX75N0V1FbMg3rtoA6Bes7eIY+hkTF3J1LyWJxSGHfYTMDvadYHt3w==
 
 "@hapi/hoek@^9.0.0":
   version "9.2.0"

@@ -24,6 +24,7 @@ import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 import MarkdownEditor from "@/components/common/MarkdownEditor"
 import { Button } from "@/components/ui/actions"
 import { Avatar } from "@/components/ui/display"
+import useCharaterLimits from "@/hooks/useCharaterLimits"
 import useErrorMessage from "@/hooks/useErrorMessage"
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
@@ -42,6 +43,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPost
   const avatar = useUserStore(state => state.profile?.avatar)
   const isSignedIn = useUserStore(state => state.isSignedIn)
   const indexClient = useClientsStore(state => state.indexClient)
+  const { characterLimits, isFetching, fetchCharLimits } = useCharaterLimits()
   const { showError } = useErrorMessage()
 
   const blurEditor = useCallback(() => {
@@ -76,6 +78,13 @@ const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPost
     blurEditor()
   }, [blurEditor])
 
+  const onFocus = useCallback(() => {
+    setIsFocused(true)
+    if (!characterLimits && !isFetching) {
+      fetchCharLimits()
+    }
+  }, [characterLimits, isFetching, fetchCharLimits])
+
   if (!isSignedIn) return null
 
   return (
@@ -96,16 +105,16 @@ const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPost
         })}
         placeholder="Add a public comment"
         value={text}
-        charactersLimit={2000}
+        charactersLimit={characterLimits?.comment}
         onChange={setText}
-        onFocus={() => setIsFocused(true)}
+        onFocus={onFocus}
         onCharacterLimitChange={setHasExceededLimit}
         disabled={isPosting}
       />
 
       {isFocused && (
         <div className="mt-2 flex w-full items-center justify-end space-x-2">
-          <Button color="transparent" onClick={onCancel} disabled={isPosting}>
+          <Button color="transparent" onClick={onCancel} disabled={isPosting || isFetching}>
             Cancel
           </Button>
           <Button type="submit" disabled={isPosting || !text || hasExceededLimit}>
