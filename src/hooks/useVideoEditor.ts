@@ -72,7 +72,6 @@ export default function useVideoEditor() {
 
   useEffect(() => {
     if (address) {
-      console.log("LOAD")
       loadPlaylists()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
