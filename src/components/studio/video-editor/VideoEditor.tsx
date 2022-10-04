@@ -9,6 +9,7 @@ import SavingResultCard from "./cards/SavingResultCard"
 import VideoDetailsCard from "./cards/VideoDetailsCard"
 import VideoSourcesCard from "./cards/VideoSourcesCard"
 import { Container } from "@/components/ui/layout"
+import useCharaterLimits from "@/hooks/useCharaterLimits"
 import useEffectOnce from "@/hooks/useEffectOnce"
 import useVideoEditor from "@/hooks/useVideoEditor"
 import useUserStore from "@/stores/user"
@@ -27,9 +28,6 @@ type VideoEditorProps = {
   video: Video | null | undefined
 }
 
-const MAX_TITLE_LENGTH = 150
-const MAX_DESCRIPTION_LENGTH = 5000
-
 const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref) => {
   const address = useUserStore(state => state.address!)
   const batchStatus = useVideoEditorStore(state => state.batchStatus)
@@ -44,6 +42,7 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
   const setEditingVideo = useVideoEditorStore(state => state.setEditingVideo)
   const setOwnerAddress = useVideoEditorStore(state => state.setOwnerAddress)
   const resetState = useVideoEditorStore(state => state.reset)
+  const { characterLimits } = useCharaterLimits({ autoFetch: true })
   const { isSaving, saveVideoTo } = useVideoEditor()
 
   const canSubmitVideo = useMemo(() => {
@@ -51,11 +50,18 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
       !!batchId &&
       batchStatus === undefined &&
       videoTitle.length > 0 &&
-      videoTitle.length <= MAX_TITLE_LENGTH &&
-      videoDescription.length <= MAX_DESCRIPTION_LENGTH &&
+      videoTitle.length <= (characterLimits?.title ?? 0) &&
+      videoDescription.length <= (characterLimits?.description ?? 0) &&
       videoSources.length > 0
     )
-  }, [batchId, batchStatus, videoTitle, videoDescription, videoSources])
+  }, [
+    batchId,
+    batchStatus,
+    characterLimits,
+    videoTitle.length,
+    videoDescription.length,
+    videoSources.length,
+  ])
 
   const usePortal = useMemo(() => {
     return editorStatus === "creating" && videoSources.length === 0 && queue[0]?.name === "0p"
@@ -115,8 +121,8 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
           {editorStatus === "creating" || editorStatus === "editing" ? (
             <>
               <VideoDetailsCard
-                maxTitleLength={MAX_TITLE_LENGTH}
-                maxDescriptionLength={MAX_DESCRIPTION_LENGTH}
+                maxTitleLength={characterLimits?.title}
+                maxDescriptionLength={characterLimits?.description}
                 disabled={isSaving}
               />
               <VideoSourcesCard disabled={isSaving} />

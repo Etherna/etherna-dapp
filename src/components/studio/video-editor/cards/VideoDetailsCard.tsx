@@ -24,8 +24,8 @@ import { TextInput } from "@/components/ui/inputs"
 import useVideoEditorStore from "@/stores/video-editor"
 
 type VideoDetailsCardProps = {
-  maxTitleLength: number
-  maxDescriptionLength: number
+  maxTitleLength: number | undefined
+  maxDescriptionLength: number | undefined
   disabled?: boolean
 }
 
