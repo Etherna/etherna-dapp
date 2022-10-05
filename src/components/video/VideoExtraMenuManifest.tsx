@@ -18,6 +18,7 @@
 import React, { useMemo } from "react"
 import type { Video } from "@etherna/api-js"
 import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
+import { extractReference } from "@etherna/api-js/utils"
 
 import { FilmIcon, PhotoIcon } from "@heroicons/react/20/solid"
 import { ReactComponent as ManifestIcon } from "@/assets/icons/manifest.svg"
