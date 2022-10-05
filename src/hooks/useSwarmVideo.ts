@@ -16,7 +16,9 @@
 
 import { useCallback, useEffect, useState } from "react"
 import type { IndexVideo } from "@etherna/api-js/clients"
+import { VideoDeserializer } from "@etherna/api-js/serializers"
 
+import SwarmImage from "@/classes/SwarmImage"
 import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
@@ -62,16 +64,41 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
           ? nullablePromise(indexClient.videos.fetchVideoFromHash(reference))
           : Promise.resolve(null),
       ])
-      video.indexesStatus = {}
 
-      if (!video) {
+      if (!video && !indexVideo?.lastValidManifest) {
         throw new Error("Video not found")
       }
 
+      if (!video && indexVideo?.lastValidManifest) {
+        const videoParsed = new VideoDeserializer(beeClient.url).deserialize(
+          JSON.stringify({
+            ownerAddress: indexVideo.ownerAddress,
+            title: indexVideo.lastValidManifest.title,
+            description: indexVideo.lastValidManifest.description,
+            thumbnail: indexVideo.lastValidManifest.thumbnail,
+            batchId: indexVideo.lastValidManifest.batchId ?? null,
+            duration: indexVideo.lastValidManifest.duration,
+            originalQuality: indexVideo.lastValidManifest.originalQuality,
+            sources: indexVideo.lastValidManifest.sources,
+            createdAt: new Date(indexVideo.creationDateTime).getTime(),
+            updatedAt: indexVideo.lastValidManifest.updatedAt ?? null,
+          }),
+          {
+            reference: indexVideo.lastValidManifest.hash,
+          }
+        )
+        video = {
+          ...videoParsed,
+          indexesStatus: {},
+        }
+      }
+      video.indexesStatus = {}
+
       indexVideo =
-        indexVideo ?? "lastValidManifest" in (videoReader.rawResponse ?? {})
+        indexVideo ??
+        ("lastValidManifest" in (videoReader.rawResponse ?? {})
           ? (videoReader.rawResponse as IndexVideo)
-          : null
+          : null)
 
       if (indexVideo) {
         video.indexesStatus[indexUrl] = {

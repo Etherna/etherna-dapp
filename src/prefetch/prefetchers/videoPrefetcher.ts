@@ -17,6 +17,7 @@
 import type { Profile } from "@etherna/api-js"
 import type { EthAddress, IndexVideo } from "@etherna/api-js/clients"
 import { BeeClient } from "@etherna/api-js/clients"
+import { VideoDeserializer } from "@etherna/api-js/serializers"
 import { urlOrigin } from "@etherna/api-js/utils"
 
 import SwarmProfile from "@/classes/SwarmProfile"
@@ -25,14 +26,14 @@ import clientsStore from "@/stores/clients"
 import type { VideoWithIndexes } from "@/types/video"
 import { nullablePromise } from "@/utils/promise"
 
-const match = /\/watch/
+const match = /\/watch\/([^/]+)/
 
 const fetch = async () => {
   const { beeClient, indexClient } = clientsStore.getState()
 
-  const searchParams = new URLSearchParams(window.location.search)
-  if (searchParams && searchParams.has("v")) {
-    const reference = searchParams.get("v")!
+  const matches = window.location.pathname.match(match)
+  if (matches && matches.length >= 2) {
+    const reference = matches[1]!
 
     try {
       const isSwarmReference = BeeClient.isValidHash(reference)
@@ -47,12 +48,37 @@ const fetch = async () => {
           ? nullablePromise(indexClient.videos.fetchVideoFromHash(reference))
           : Promise.resolve(null),
       ])
+
+      if (!video && indexVideo?.lastValidManifest) {
+        const videoParsed = new VideoDeserializer(beeClient.url).deserialize(
+          JSON.stringify({
+            ownerAddress: indexVideo.ownerAddress,
+            title: indexVideo.lastValidManifest.title,
+            description: indexVideo.lastValidManifest.description,
+            thumbnail: indexVideo.lastValidManifest.thumbnail,
+            batchId: indexVideo.lastValidManifest.batchId ?? null,
+            duration: indexVideo.lastValidManifest.duration,
+            originalQuality: indexVideo.lastValidManifest.originalQuality,
+            sources: indexVideo.lastValidManifest.sources,
+            createdAt: new Date(indexVideo.creationDateTime).getTime(),
+            updatedAt: indexVideo.lastValidManifest.updatedAt ?? null,
+          }),
+          {
+            reference: indexVideo.lastValidManifest.hash,
+          }
+        )
+        video = {
+          ...videoParsed,
+          indexesStatus: {},
+        }
+      }
       video.indexesStatus = {}
 
       indexVideo =
-        indexVideo ?? "lastValidManifest" in (videoReader.rawResponse ?? {})
+        indexVideo ??
+        ("lastValidManifest" in (videoReader.rawResponse ?? {})
           ? (videoReader.rawResponse as IndexVideo)
-          : null
+          : null)
 
       if (indexVideo) {
         video.indexesStatus[urlOrigin(indexClient.url)!] = {
