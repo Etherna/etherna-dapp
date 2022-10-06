@@ -15,6 +15,7 @@
  */
 
 import { stringPadLeft } from "./string"
+import { timeComponents } from "./time"
 
 const BYTES_MAP = {
   b: 0.125,
@@ -94,14 +95,19 @@ export const convertBirate = (fromBitsPerSec: number | string) => {
 /**
  * Convert time from seconds
  *
- * @param seconds Seconds amount
+ * @param duration Seconds amount
  * @returns Object with various time conversions
  */
-export const convertTime = (seconds: number) => {
-  seconds = Math.round(seconds)
+export const convertTime = (duration: number) => {
+  const {
+    hours: hoursString,
+    minutes: minutesString,
+    seconds: secondsString,
+  } = timeComponents(duration)
+  const hours = hoursString ? parseInt(hoursString) : 0
+  const minutes = parseInt(minutesString)
+  const seconds = parseInt(secondsString)
 
-  const minutes = Math.round(seconds / 60)
-  const hours = +(minutes / 60).toFixed(1)
   const readable =
     seconds > 120
       ? minutes > 60 * 60 * 2
