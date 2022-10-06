@@ -25,10 +25,18 @@ import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
 
-export default function useVideosResources(videos: Video[] | undefined) {
+type UseVideosResourcesOptions = {
+  autoFetch?: boolean
+}
+
+export default function useVideosResources(
+  videos: Video[] | undefined,
+  opts?: UseVideosResourcesOptions
+) {
   const gatewayClient = useClientsStore(state => state.gatewayClient)
   const gatewayType = useExtensionsStore(state => state.currentGatewayType)
   const address = useUserStore(state => state.address)
+  const [isFetchingOffers, setIsFetchingOffers] = useState(false)
   const [videosOffersStatus, setVideosOffersStatus] = useState<Record<string, VideoOffersStatus>>()
   const videosQueue = useRef<string[]>([])
   const mounted = useMounted()
@@ -36,7 +44,7 @@ export default function useVideosResources(videos: Video[] | undefined) {
   useEffect(() => {
     if (gatewayType === "bee") return
 
-    if (videos) {
+    if (videos && opts?.autoFetch) {
       fetchVideosStatus()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -45,6 +53,8 @@ export default function useVideosResources(videos: Video[] | undefined) {
   const fetchVideosStatus = useCallback(async () => {
     if (!videos) return
     if (!mounted.current) return
+
+    setIsFetchingOffers(true)
 
     try {
       const videosToFetch = videos.filter(
@@ -69,6 +79,8 @@ export default function useVideosResources(videos: Video[] | undefined) {
       mounted.current && setVideosOffersStatus(statuses)
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsFetchingOffers(false)
     }
   }, [videos, videosOffersStatus, address, gatewayClient, mounted])
 
@@ -97,7 +109,9 @@ export default function useVideosResources(videos: Video[] | undefined) {
   )
 
   return {
+    isFetchingOffers,
     videosOffersStatus,
+    fetchVideosStatus,
     offerVideoResources,
     unofferVideoResources,
   }

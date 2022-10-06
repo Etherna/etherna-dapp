@@ -17,6 +17,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import type { Playlist, Profile, Video } from "@etherna/api-js"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
+import { urlOrigin } from "@etherna/api-js/utils"
 import type { AxiosError } from "axios"
 
 import useErrorMessage from "./useErrorMessage"
@@ -27,8 +28,17 @@ import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
 import type { VideoWithIndexes } from "@/types/video"
-import { wait } from "@/utils/promise"
+import { nullablePromise, wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
+
+export type VisibilityStatus = {
+  sourceType: "index" | "playlist"
+  sourceIdentifier: string
+  status: VideoStatus
+  errors?: string[]
+}
+
+export type VideoStatus = "public" | "processing" | "unindexed" | "error"
 
 export type VideosSource =
   | {
@@ -40,7 +50,8 @@ export type VideosSource =
     }
 
 export type UseUserVideosOptions = {
-  source: VideosSource
+  sources: VideosSource[]
+  fetchSource: VideosSource
   profile: Profile
   limit?: number
 }
@@ -51,21 +62,19 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
   const beeClient = useClientsStore(state => state.beeClient)
   const address = useUserStore(state => state.address)
   const currentIndexUrl = useExtensionsStore(state => state.currentIndexUrl)
-  const channelPlaylist = useRef<Playlist>()
-  const indexClient = useRef<IndexClient>()
   const [isFetching, setIsFetching] = useState(false)
+  const [isFetchingVisibility, setIsFetchingVisibility] = useState(false)
   const [currentPage, setCurrentPage] = useState(-1)
   const [total, setTotal] = useState(0)
   const [videos, setVideos] = useState<VideoWithIndexes[]>()
+  const [visibility, setVisibility] = useState<Record<string, VisibilityStatus[]>>({})
+  const channelPlaylist = useRef<Playlist>()
+  const indexClients = useRef<IndexClient[]>()
+  const currentIndexClient = useRef<IndexClient>()
   const { showError } = useErrorMessage()
 
   useEffect(() => {
-    setTotal(-1)
-    setVideos([])
-
-    if (opts.source.type === "channel") {
-      if (channelPlaylist.current) return
-
+    if (!channelPlaylist.current) {
       const reader = new SwarmPlaylist.Reader(undefined, {
         playlistId: SwarmPlaylist.Reader.channelPlaylistId,
         playlistOwner: address,
@@ -73,11 +82,26 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
       })
 
       playlistResover = () => reader.download()
-    } else if (opts.source.type === "index") {
-      indexClient.current = new IndexClient(opts.source.indexUrl)
+    }
+
+    indexClients.current = opts.sources
+      .filter(source => source.type === "index")
+      .map(source => new IndexClient((source as VideosSource & { type: "index" }).indexUrl))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, opts.sources])
+
+  useEffect(() => {
+    setTotal(-1)
+    setVideos([])
+
+    const source = opts.fetchSource
+    if (source.type === "index") {
+      currentIndexClient.current = indexClients.current?.find(
+        client => client.url === source.indexUrl
+      )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts.source.type, address])
+  }, [opts.fetchSource.type, address])
 
   const getPlaylist = useCallback(async () => {
     if (channelPlaylist.current) return channelPlaylist.current
@@ -117,7 +141,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
 
   const fetchIndexVideos = useCallback(
     async (page: number, limit: number): Promise<VideoWithIndexes[]> => {
-      const resp = await indexClient.current!.users.fetchVideos(address!, page, limit)
+      const resp = await currentIndexClient.current!.users.fetchVideos(address!, page, limit)
 
       setTotal(resp.totalElements)
 
@@ -149,11 +173,83 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
     async (page: number, limit: number): Promise<VideoWithIndexes[]> => {
       import.meta.env.DEV && wait(1000)
 
-      return opts.source.type === "channel"
+      return opts.fetchSource.type === "channel"
         ? await fetchPlaylistVideos(page, limit)
         : await fetchIndexVideos(page, limit)
     },
-    [fetchIndexVideos, fetchPlaylistVideos, opts.source.type]
+    [fetchIndexVideos, fetchPlaylistVideos, opts.fetchSource.type]
+  )
+
+  const fetchVideosStatus = useCallback(
+    async (videos: Video[]) => {
+      setIsFetchingVisibility(true)
+      let videosVisibility: typeof visibility = {}
+
+      try {
+        const channel = await getPlaylist()
+
+        const results = await Promise.allSettled(
+          videos.map(async video => {
+            const channelVisibility: VisibilityStatus = {
+              sourceType: "playlist",
+              sourceIdentifier: SwarmPlaylist.Reader.channelPlaylistId,
+              status: channel.videos.some(v => v.reference === video.reference)
+                ? "public"
+                : "unindexed",
+            }
+            const indexesResults = await Promise.allSettled(
+              indexClients.current!.map(async indexClient => {
+                const indexValidation = await nullablePromise(
+                  indexClient.videos.fetchHashValidation(video.reference)
+                )
+                const status =
+                  indexValidation === null
+                    ? "unindexed"
+                    : indexValidation.isValid === null
+                    ? "processing"
+                    : indexValidation.isValid
+                    ? "public"
+                    : "error"
+                const indexVisibility: VisibilityStatus = {
+                  sourceType: "index",
+                  sourceIdentifier: indexClient.url,
+                  status,
+                  errors: indexValidation?.errorDetails.length
+                    ? indexValidation?.errorDetails.map(e => e.errorMessage)
+                    : undefined,
+                }
+                return indexVisibility
+              })
+            )
+            const indexesVisibility: VisibilityStatus[] = indexesResults.map((result, i) => {
+              if (result.status === "fulfilled") return result.value
+              else {
+                return {
+                  sourceType: "index",
+                  sourceIdentifier: urlOrigin(indexClients.current![i].url)!,
+                  status: "error",
+                }
+              }
+            })
+
+            return [channelVisibility, ...indexesVisibility]
+          })
+        )
+
+        videosVisibility = results.reduce((acc, val, i) => {
+          if (val.status === "fulfilled") {
+            return { ...acc, [videos[i].reference]: val.value }
+          }
+          return acc
+        }, {} as typeof visibility)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setIsFetchingVisibility(false)
+        setVisibility(videosVisibility)
+      }
+    },
+    [getPlaylist]
   )
 
   const fetchPage = useCallback(
@@ -166,6 +262,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
         setIsFetching(true)
         const newVideos = await fetchVideos(page - 1, limit)
         setVideos(newVideos)
+        fetchVideosStatus(newVideos)
       } catch (error: any) {
         setVideos([])
         if (error.response?.status !== 404) {
@@ -176,7 +273,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
         setIsFetching(false)
       }
     },
-    [opts.limit, fetchVideos, showError]
+    [opts.limit, fetchVideos, showError, fetchVideosStatus]
   )
 
   const deleteVideosFromPlaylist = useCallback(
@@ -199,7 +296,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
       for (const video of videos) {
         try {
           const indexId = video.indexesStatus[currentIndexUrl]?.indexReference
-          await indexClient.current!.videos.deleteVideo(indexId!)
+          await currentIndexClient.current!.videos.deleteVideo(indexId!)
         } catch (error) {
           const axiosError = error as AxiosError
           // set title for the error message
@@ -208,15 +305,15 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
         }
       }
     },
-    [indexClient, currentIndexUrl]
+    [currentIndexUrl]
   )
 
   const deleteVideosFromSource = useCallback(
     async (videos: VideoWithIndexes[]) => {
       try {
-        if (opts.source.type === "channel") {
+        if (opts.fetchSource.type === "channel") {
           await deleteVideosFromPlaylist(videos)
-        } else if (opts.source.type === "index") {
+        } else if (opts.fetchSource.type === "index") {
           await deleteVideosFromIndex(videos)
         }
         await fetchPage(currentPage)
@@ -226,7 +323,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
     },
     [
       currentPage,
-      opts.source.type,
+      opts.fetchSource.type,
       deleteVideosFromIndex,
       deleteVideosFromPlaylist,
       fetchPage,
@@ -236,8 +333,10 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
 
   return {
     isFetching,
+    isFetchingVisibility,
     total,
     videos,
+    visibility,
     fetchPage,
     deleteVideosFromSource,
   }

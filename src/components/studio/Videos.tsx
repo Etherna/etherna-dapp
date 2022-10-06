@@ -17,32 +17,29 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Link, Navigate } from "react-router-dom"
-import type { Profile, Video } from "@etherna/api-js"
+import type { Profile } from "@etherna/api-js"
 import { urlHostname } from "@etherna/api-js/utils"
 import classNames from "classnames"
 
 import { TrashIcon, PencilIcon, InformationCircleIcon } from "@heroicons/react/24/solid"
-import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
-import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
 
+import VideoOffersStatus from "./other/VideoOffersStatus"
+import VideoVisibilityStatus from "./other/VideoVisibilityStatus"
 import VideoDeleteModal from "./video-editor/VideoDeleteModal"
 import Image from "@/components/common/Image"
-import VideoOffersModal from "@/components/modals/VideoOffersModal"
+import Time from "@/components/media/Time"
 import TableVideoPlaceholder from "@/components/placeholders/TableVideoPlaceholder"
 import { Button } from "@/components/ui/actions"
 import { Badge, Table, Tooltip } from "@/components/ui/display"
 import { Select } from "@/components/ui/inputs"
 import useUserVideos from "@/hooks/useUserVideos"
 import type { VideosSource } from "@/hooks/useUserVideos"
-import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
-import useVideosIndexStatus from "@/hooks/useVideosIndexStatus"
 import useVideosResources from "@/hooks/useVideosResources"
 import routes from "@/routes"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
 import type { VideoWithIndexes } from "@/types/video"
-import { convertTime } from "@/utils/converters"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
 import { encodedSvg } from "@/utils/svg"
@@ -64,10 +61,6 @@ const Videos: React.FC = () => {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
   const [selectedVideos, setSelectedVideos] = useState<VideoWithIndexes[]>([])
-  const [selectedVideoOffers, setSelectedVideoOffers] = useState<{
-    video: Video
-    offersStatus: VideoOffersStatus
-  }>()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   const currentSource = useMemo(() => {
@@ -85,14 +78,22 @@ const Videos: React.FC = () => {
     }
   }, [address, profileInfo, defaultBatchId])
 
-  const { isFetching, videos, total, fetchPage, deleteVideosFromSource } = useUserVideos({
-    source: currentSource,
+  const {
+    isFetching,
+    isFetchingVisibility,
+    videos,
+    total,
+    visibility,
+    fetchPage,
+    deleteVideosFromSource,
+  } = useUserVideos({
+    fetchSource: currentSource,
+    sources,
     profile,
     limit: perPage,
   })
-  const { videosOffersStatus, offerVideoResources, unofferVideoResources } =
-    useVideosResources(videos)
-  const { videosIndexStatus } = useVideosIndexStatus(videos, indexUrl)
+  const { videosOffersStatus, isFetchingOffers, offerVideoResources, unofferVideoResources } =
+    useVideosResources(videos, { autoFetch: true })
 
   useEffect(() => {
     setPage(1)
@@ -105,82 +106,10 @@ const Videos: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
 
-  useEffect(() => {
-    if (videosOffersStatus && selectedVideoOffers) {
-      const video = selectedVideoOffers.video
-      const offersStatus = videosOffersStatus[video.reference]
-      setSelectedVideoOffers(offersStatus ? { video, offersStatus } : undefined)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [videosOffersStatus])
-
   const deleteSelectedVideos = useCallback(async () => {
     await deleteVideosFromSource(selectedVideos)
     setShowDeleteModal(false)
   }, [deleteVideosFromSource, selectedVideos])
-
-  const renderVideoStatus = useCallback(
-    (video: Video) => {
-      if (videosIndexStatus === undefined) {
-        return <Spinner className="h-5 w-5" />
-      }
-
-      const status = videosIndexStatus[video.reference] ?? "unindexed"
-
-      return (
-        <Badge
-          color={status === "public" ? "success" : status === "processing" ? "info" : "muted"}
-          small
-        >
-          {status.replace(/^[a-z]{1}/, letter => letter.toUpperCase())}
-        </Badge>
-      )
-    },
-    [videosIndexStatus]
-  )
-
-  const renderOffersStatus = useCallback(
-    (video: Video) => {
-      if (gatewayType === "bee") {
-        return null
-      }
-
-      if (videosOffersStatus === undefined || videosOffersStatus[video.reference] === undefined) {
-        return <Spinner className="h-5 w-5" />
-      }
-
-      const videoResourcesStatus = videosOffersStatus[video.reference]
-      const status = videoResourcesStatus.userOffersStatus
-
-      return (
-        <Badge
-          color={
-            status === "full"
-              ? "success"
-              : status === "partial"
-              ? "indigo"
-              : status === "sources"
-              ? "info"
-              : "muted"
-          }
-          small
-          prefix={<CreditIcon width={16} aria-hidden />}
-          onClick={() =>
-            setSelectedVideoOffers({
-              video,
-              offersStatus: videoResourcesStatus,
-            })
-          }
-        >
-          {status === "none" && "No offers (viewers cost)"}
-          {status === "full" && "Fully offered"}
-          {status === "sources" && "Video sources offered"}
-          {status === "partial" && "Partially offered"}
-        </Badge>
-      )
-    },
-    [gatewayType, videosOffersStatus]
-  )
 
   if (!address) {
     return <Navigate to={routes.home} />
@@ -220,7 +149,7 @@ const Videos: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <div
                   className={classNames(
-                    "relative w-14 shrink-0 overflow-hidden md:w-20",
+                    "relative w-14 shrink-0 overflow-hidden md:w-20 lg:w-24 xl:w-28",
                     "bg-gray-300 after:block after:pb-[56.25%] dark:bg-gray-600"
                   )}
                 >
@@ -231,6 +160,11 @@ const Videos: React.FC = () => {
                     fallbackSrc={encodedSvg(<ThumbPlaceholder />)}
                     layout="fill"
                   />
+                  <span className="absolute bottom-0 right-0 rounded-sm bg-black leading-none">
+                    <span className="px-1 text-2xs font-semibold">
+                      <Time duration={item.duration} />
+                    </span>
+                  </span>
                 </div>
                 <div className="flex flex-grow flex-col items-start space-y-2">
                   <Link
@@ -244,36 +178,62 @@ const Videos: React.FC = () => {
                     <h3 className="text-base font-bold leading-tight">{item.title}</h3>
                   </Link>
                   <div className="grid auto-cols-max grid-flow-col gap-2 lg:hidden">
-                    {renderVideoStatus(item)}
-                    {renderOffersStatus(item)}
+                    <VideoVisibilityStatus
+                      video={item}
+                      visibility={visibility[item.reference]}
+                      isLoading={isFetchingVisibility}
+                    />
+                    <VideoOffersStatus
+                      video={item}
+                      offersStatus={videosOffersStatus?.[item.reference]}
+                      isLoading={isFetchingOffers}
+                      onOfferResources={() => offerVideoResources(item)}
+                      onUnofferResources={() => unofferVideoResources(item)}
+                    />
                   </div>
                 </div>
               </div>
             ),
           },
           {
-            title: "Duration",
+            title: "Visibility",
             hideOnMobile: true,
-            render: item => <span className="text-sm">{convertTime(item.duration).digital}</span>,
-          },
-          {
-            title: "Index Status",
-            hideOnMobile: true,
-            render: item => renderVideoStatus(item),
+            render: item => (
+              <VideoVisibilityStatus
+                video={item}
+                visibility={visibility[item.reference]}
+                isLoading={isFetchingVisibility}
+              />
+            ),
           },
           gatewayType === "bee"
             ? null
             : {
                 title: "Offered (by you)",
                 hideOnMobile: true,
-                render: item => renderOffersStatus(item),
+                render: item => (
+                  <VideoOffersStatus
+                    video={item}
+                    offersStatus={videosOffersStatus?.[item.reference]}
+                    isLoading={isFetchingOffers}
+                    onOfferResources={() => offerVideoResources(item)}
+                    onUnofferResources={() => unofferVideoResources(item)}
+                  />
+                ),
               },
           {
             title: "Date",
             hideOnMobile: true,
             render: item =>
               item.createdAt ? (
-                <span className="text-sm leading-none">{dayjs(item.createdAt).format("LLL")}</span>
+                <span>
+                  <span className="text-sm leading-none xl:hidden">
+                    {dayjs(item.createdAt).format("LL")}
+                  </span>
+                  <span className="hidden text-sm leading-none xl:inline">
+                    {dayjs(item.createdAt).format("LLL")}
+                  </span>
+                </span>
               ) : (
                 ""
               ),
@@ -329,15 +289,6 @@ const Videos: React.FC = () => {
         videos={selectedVideos}
         deleteHandler={deleteSelectedVideos}
         onCancel={() => setShowDeleteModal(false)}
-      />
-
-      <VideoOffersModal
-        show={!!selectedVideoOffers}
-        offersStatus={selectedVideoOffers?.offersStatus}
-        video={selectedVideoOffers?.video}
-        offerResources={async () => await offerVideoResources(selectedVideoOffers!.video)}
-        unofferResources={async () => await unofferVideoResources(selectedVideoOffers!.video)}
-        onClose={() => setSelectedVideoOffers(undefined)}
       />
     </>
   )
