@@ -111,7 +111,7 @@ const Table = <T, A>({
 
       <div className="w-full overflow-x-auto">
         <table
-          className={classNames("min-w-full transition-opacity duration-200 ease-out", {
+          className={classNames("min-w-full text-sm transition-opacity duration-200 ease-out", {
             "pointer-events-none opacity-30": isLoading,
           })}
         >
@@ -120,7 +120,7 @@ const Table = <T, A>({
               {showSelection && (
                 <th
                   className={classNames(
-                    "py-2 text-left font-medium leading-none text-gray-600 dark:text-gray-300",
+                    "py-2 px-1 text-left font-medium leading-none text-gray-600 dark:text-gray-200",
                     "border-b border-gray-300 dark:border-gray-700"
                   )}
                   style={{ width: "32px" }}
@@ -155,7 +155,7 @@ const Table = <T, A>({
             {items?.map((item, i) => (
               <tr className="group" key={i}>
                 {showSelection && (
-                  <td className="border-t border-gray-200 py-2 group-first:border-t-0 dark:border-gray-800">
+                  <td className="border-t border-gray-200 px-1 py-2 group-first:border-t-0 dark:border-gray-800">
                     <Checkbox
                       checked={selectedItems.indexOf(item) >= 0}
                       onChange={val => toggleSelection(item, val)}
@@ -167,7 +167,7 @@ const Table = <T, A>({
                   return (
                     <td
                       className={classNames(
-                        "border-t border-gray-200 py-2 group-first:border-t-0 dark:border-gray-800",
+                        "border-t border-gray-200 px-1 py-2 group-first:border-t-0 dark:border-gray-800",
                         {
                           "hidden lg:table-cell": col.hideOnMobile,
                         }

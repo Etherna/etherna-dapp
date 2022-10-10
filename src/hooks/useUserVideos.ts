@@ -17,7 +17,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import type { Playlist, Profile, Video } from "@etherna/api-js"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
-import type { AxiosError } from "axios"
+import { urlOrigin } from "@etherna/api-js/utils"
 
 import useErrorMessage from "./useErrorMessage"
 import IndexClient from "@/classes/IndexClient"
@@ -40,7 +40,8 @@ export type VideosSource =
     }
 
 export type UseUserVideosOptions = {
-  source: VideosSource
+  sources: VideosSource[]
+  fetchSource: VideosSource
   profile: Profile
   limit?: number
 }
@@ -51,21 +52,20 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
   const beeClient = useClientsStore(state => state.beeClient)
   const address = useUserStore(state => state.address)
   const currentIndexUrl = useExtensionsStore(state => state.currentIndexUrl)
-  const channelPlaylist = useRef<Playlist>()
-  const indexClient = useRef<IndexClient>()
   const [isFetching, setIsFetching] = useState(false)
-  const [currentPage, setCurrentPage] = useState(-1)
   const [total, setTotal] = useState(0)
   const [videos, setVideos] = useState<VideoWithIndexes[]>()
+  const channelPlaylist = useRef<Playlist>()
+  const indexClients = useRef<IndexClient[]>()
+  const currentIndexClient = useRef<IndexClient>()
   const { showError } = useErrorMessage()
 
   useEffect(() => {
-    setTotal(-1)
-    setVideos([])
+    if (opts.fetchSource.type === "channel") {
+      channelPlaylist.current = undefined
+    }
 
-    if (opts.source.type === "channel") {
-      if (channelPlaylist.current) return
-
+    if (!channelPlaylist.current) {
       const reader = new SwarmPlaylist.Reader(undefined, {
         playlistId: SwarmPlaylist.Reader.channelPlaylistId,
         playlistOwner: address,
@@ -73,11 +73,26 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
       })
 
       playlistResover = () => reader.download()
-    } else if (opts.source.type === "index") {
-      indexClient.current = new IndexClient(opts.source.indexUrl)
+    }
+
+    indexClients.current = opts.sources
+      .filter(source => source.type === "index")
+      .map(source => new IndexClient((source as VideosSource & { type: "index" }).indexUrl))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, opts.sources, opts.fetchSource])
+
+  useEffect(() => {
+    setTotal(-1)
+    setVideos([])
+
+    const source = opts.fetchSource
+    if (source.type === "index") {
+      currentIndexClient.current = indexClients.current?.find(
+        client => urlOrigin(client.url) === source.indexUrl
+      )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts.source.type, address])
+  }, [opts.fetchSource.type, address])
 
   const getPlaylist = useCallback(async () => {
     if (channelPlaylist.current) return channelPlaylist.current
@@ -117,7 +132,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
 
   const fetchIndexVideos = useCallback(
     async (page: number, limit: number): Promise<VideoWithIndexes[]> => {
-      const resp = await indexClient.current!.users.fetchVideos(address!, page, limit)
+      const resp = await currentIndexClient.current!.users.fetchVideos(address!, page, limit)
 
       setTotal(resp.totalElements)
 
@@ -149,11 +164,11 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
     async (page: number, limit: number): Promise<VideoWithIndexes[]> => {
       import.meta.env.DEV && wait(1000)
 
-      return opts.source.type === "channel"
+      return opts.fetchSource.type === "channel"
         ? await fetchPlaylistVideos(page, limit)
         : await fetchIndexVideos(page, limit)
     },
-    [fetchIndexVideos, fetchPlaylistVideos, opts.source.type]
+    [fetchIndexVideos, fetchPlaylistVideos, opts.fetchSource.type]
   )
 
   const fetchPage = useCallback(
@@ -172,66 +187,10 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
           showError("Fetching error", getResponseErrorMessage(error))
         }
       } finally {
-        setCurrentPage(page)
         setIsFetching(false)
       }
     },
     [opts.limit, fetchVideos, showError]
-  )
-
-  const deleteVideosFromPlaylist = useCallback(
-    async (videosToDelete: Video[]) => {
-      const playlist = await getPlaylist()
-      playlist.videos = playlist.videos?.filter(
-        vid => !videosToDelete.some(vidToDelete => vidToDelete.reference === vid.reference)
-      )
-
-      const writer = new SwarmPlaylist.Writer(playlist, {
-        beeClient,
-      })
-      writer.upload()
-    },
-    [beeClient, getPlaylist]
-  )
-
-  const deleteVideosFromIndex = useCallback(
-    async (videos: VideoWithIndexes[]) => {
-      for (const video of videos) {
-        try {
-          const indexId = video.indexesStatus[currentIndexUrl]?.indexReference
-          await indexClient.current!.videos.deleteVideo(indexId!)
-        } catch (error) {
-          const axiosError = error as AxiosError
-          // set title for the error message
-          axiosError.name = video.title ?? ""
-          throw axiosError
-        }
-      }
-    },
-    [indexClient, currentIndexUrl]
-  )
-
-  const deleteVideosFromSource = useCallback(
-    async (videos: VideoWithIndexes[]) => {
-      try {
-        if (opts.source.type === "channel") {
-          await deleteVideosFromPlaylist(videos)
-        } else if (opts.source.type === "index") {
-          await deleteVideosFromIndex(videos)
-        }
-        await fetchPage(currentPage)
-      } catch (error: any) {
-        showError(`Cannot delete the video: ${error.name}`, getResponseErrorMessage(error))
-      }
-    },
-    [
-      currentPage,
-      opts.source.type,
-      deleteVideosFromIndex,
-      deleteVideosFromPlaylist,
-      fetchPage,
-      showError,
-    ]
   )
 
   return {
@@ -239,6 +198,5 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
     total,
     videos,
     fetchPage,
-    deleteVideosFromSource,
   }
 }

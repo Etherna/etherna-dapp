@@ -26,9 +26,11 @@ export type VideoWithOffersStatus = Video & { offers: VideoOffersStatus | undefi
 export type VideoWithIndexes = Video & { indexesStatus: IndexesStatus }
 
 export type IndexesStatus = {
-  [url: string]: {
-    indexReference: string
-    totUpvotes: number
-    totDownvotes: number
-  }
+  [url: string]:
+    | {
+        indexReference: string
+        totUpvotes: number
+        totDownvotes: number
+      }
+    | undefined
 }

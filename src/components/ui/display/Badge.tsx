@@ -67,7 +67,7 @@ const Badge: React.FC<BadgeProps> = ({
           "border-red-500 text-red-500": color === "error" && variant === "outline",
           "border-sky-500 text-sky-500": color === "info" && variant === "outline",
           "border-indigo-500 text-indigo-500": color === "indigo" && variant === "outline",
-          "border-gray-600 text-gray-300 dark:border-gray-300 dark:text-gray-700":
+          "border-gray-500 text-gray-500 dark:border-gray-400 dark:text-gray-400":
             color === "muted" && variant === "outline",
           "rounded-full": rounded,
         },

@@ -103,7 +103,7 @@ const DropdownSidebar: React.FC<DropdownSidebarProps> = ({ className, defaultTit
             {React.Children.map(children, (item: any, i) => (
               <Listbox.Option
                 as="div"
-                className=" min-w-[12rem] focus:outline-none"
+                className="min-w-[10rem] focus:outline-none xl:min-w-[12rem]"
                 value={item.props.to}
                 key={i}
               >
