@@ -1,5 +1,5 @@
 import type { Image, Video } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
+import type { EthAddress, Reference } from "@etherna/api-js/clients"
 import type { VideoQuality } from "@etherna/api-js/schemas/video"
 import create from "zustand"
 import { persist, devtools } from "zustand/middleware"
@@ -43,7 +43,7 @@ export type VideoEditorQueue = {
 
 export type VideoEditorState = {
   /** Initial video reference (if editing a video) */
-  reference: string | undefined
+  reference: Reference | undefined
   /** Current editor status */
   status: "creating" | "editing" | "saved" | "error"
   /** Current batch status */
@@ -190,7 +190,7 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
           setEditingVideo(video) {
             set(state => {
               state.video = video
-              state.reference = video.reference
+              state.reference = video.reference as Reference
               state.status = "editing"
             })
           },

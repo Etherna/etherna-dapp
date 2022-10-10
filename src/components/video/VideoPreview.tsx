@@ -81,7 +81,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   const videoLink = useMemo(() => {
     return decentralizedLink
       ? video.reference
-      : video.indexesStatus[indexUrl].indexReference ?? video.reference
+      : video.indexesStatus[indexUrl]?.indexReference ?? video.reference
   }, [decentralizedLink, indexUrl, video.indexesStatus, video.reference])
 
   return (

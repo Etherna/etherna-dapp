@@ -14,19 +14,16 @@
  *  limitations under the License.
  */
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import type { Video } from "@etherna/api-js"
-import type { BatchId } from "@etherna/api-js/clients"
+import type { BatchId, Reference } from "@etherna/api-js/clients"
 import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
-import type { AxiosError } from "axios"
 
 import useErrorMessage from "./useErrorMessage"
+import useVideoPublish from "./useVideoPublish"
 import useWallet from "./useWallet"
-import IndexClient from "@/classes/IndexClient"
 import SwarmVideo from "@/classes/SwarmVideo"
-import useUserPlaylists from "@/hooks/useUserPlaylists"
 import useClientsStore from "@/stores/clients"
-import useUserStore from "@/stores/user"
 import type { VideoEditorPublishSource } from "@/stores/video-editor"
 import useVideoEditorStore from "@/stores/video-editor"
 import { getResponseErrorMessage } from "@/utils/request"
@@ -50,32 +47,13 @@ export default function useVideoEditor() {
   const updateEditorStatus = useVideoEditorStore(state => state.updateEditorStatus)
   const updateVideoReference = useVideoEditorStore(state => state.updateVideoReference)
   const setPublishingResults = useVideoEditorStore(state => state.setPublishingResults)
-
   const beeClient = useClientsStore(state => state.beeClient)
   const gatewayClient = useClientsStore(state => state.gatewayClient)
-  const address = useUserStore(state => state.address)
   const { isLocked } = useWallet()
-
   const [isSaving, setIsSaving] = useState(false)
   const newVideo = useRef<Video>()
-
+  const { addToIndex, addToPlaylist, removeFromIndex, removeFromPlaylist } = useVideoPublish()
   const { showError } = useErrorMessage()
-
-  const {
-    channelPlaylist,
-    loadPlaylists,
-    addVideosToPlaylist,
-    updateVideoInPlaylist,
-    removeVideosFromPlaylist,
-    playlistHasVideo,
-  } = useUserPlaylists(address!, { fetchChannel: true })
-
-  useEffect(() => {
-    if (address) {
-      loadPlaylists()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address])
 
   const resetState = useCallback(() => {
     setPublishingResults(undefined)
@@ -90,15 +68,6 @@ export default function useVideoEditor() {
 
     return true
   }, [isLocked, showError])
-
-  const checkChannel = useCallback(() => {
-    if (!channelPlaylist) {
-      showError("Channel error", "Channel video list not fetched correctly.")
-      return false
-    }
-
-    return true
-  }, [channelPlaylist, showError])
 
   const validateMetadata = useCallback(() => {
     const { duration, originalQuality, batchId } = video
@@ -134,97 +103,11 @@ export default function useVideoEditor() {
     }
   }, [video, beeClient, checkAccountability, showError])
 
-  const addToPlaylist = useCallback(
-    async (id: string) => {
-      if (!checkChannel()) return false
-      if (!checkAccountability()) return false
-
-      try {
-        const isUpdate = initialReference && playlistHasVideo(id, initialReference)
-        !isUpdate && (await addVideosToPlaylist(id, [newVideo.current!]))
-        isUpdate && (await updateVideoInPlaylist(id, initialReference, newVideo.current!))
-        return true
-      } catch (error) {
-        console.error(error)
-        return false
-      }
-    },
-    [
-      initialReference,
-      checkChannel,
-      checkAccountability,
-      playlistHasVideo,
-      addVideosToPlaylist,
-      updateVideoInPlaylist,
-    ]
-  )
-
-  const removeFromPlaylist = useCallback(
-    async (id: string) => {
-      if (!checkChannel()) return false
-      if (!checkAccountability()) return false
-
-      try {
-        initialReference && (await removeVideosFromPlaylist(id, [initialReference]))
-        return true
-      } catch (error) {
-        console.error(error)
-        return false
-      }
-    },
-    [initialReference, checkAccountability, checkChannel, removeVideosFromPlaylist]
-  )
-
   const getVideoIndexId = useCallback(
     (indexUrl: string) => {
       return saveTo.find(s => s.source === "index" && s.identifier === indexUrl)!.videoId
     },
     [saveTo]
-  )
-
-  const addToIndex = useCallback(
-    async (url: string) => {
-      try {
-        const indexReference = getVideoIndexId(url)
-
-        const indexClient = new IndexClient(url)
-        if (indexReference) {
-          await indexClient.videos.updateVideo(indexReference, newVideo.current!.reference)
-        } else {
-          await indexClient.videos.createVideo(newVideo.current!.reference)
-        }
-        return true
-      } catch (error) {
-        const axiosError = error as AxiosError
-        const data = (axiosError.response?.data as any) ?? ""
-        if (/duplicate/i.test(data.toString()) && axiosError.response?.status === 400) {
-          return true
-        }
-        return false
-      }
-    },
-    [getVideoIndexId]
-  )
-
-  const removeFromIndex = useCallback(
-    async (url: string) => {
-      const indexReference = getVideoIndexId(url)
-
-      if (!indexReference) return true
-
-      try {
-        const indexClient = new IndexClient(url)
-        await indexClient.videos.deleteVideo(indexReference)
-        return true
-      } catch (error) {
-        const axiosError = error as AxiosError
-        if (axiosError.response?.status === 404) {
-          return true
-        }
-        return false
-      }
-    },
-    [getVideoIndexId]
   )
 
   const offerVideoResources = useCallback(async () => {
@@ -265,7 +148,7 @@ export default function useVideoEditor() {
       // Upload metadata
       if (saveManifest && !validateMetadata()) return setIsSaving(false)
       const newReference =
-        saveManifest || !video.reference ? await uploadManifest() : video.reference
+        saveManifest || !video.reference ? await uploadManifest() : (video.reference as Reference)
 
       if (!newReference) return setIsSaving(false)
 
@@ -295,21 +178,22 @@ export default function useVideoEditor() {
 
         if (source.source === "playlist") {
           if (source.add) {
-            const ok = await addToPlaylist(source.identifier)
+            const ok = await addToPlaylist(initialReference, newVideo.current!, source.identifier)
             newPublishResults[statusIndex].ok = ok
             newPublishResults[statusIndex].type = "add"
           } else {
-            const ok = await removeFromPlaylist(source.identifier)
+            const ok = await removeFromPlaylist(newReference, source.identifier)
             newPublishResults[statusIndex].ok = ok
             newPublishResults[statusIndex].type = "remove"
           }
         } else if (source.source === "index") {
+          const indexReference = getVideoIndexId(source.identifier)
           if (source.add) {
-            const ok = await addToIndex(source.identifier)
+            const ok = await addToIndex(indexReference, newVideo.current!, source.identifier)
             newPublishResults[statusIndex].ok = ok
             newPublishResults[statusIndex].type = "add"
           } else {
-            const ok = await removeFromIndex(source.identifier)
+            const ok = await removeFromIndex(indexReference, source.identifier)
             newPublishResults[statusIndex].ok = ok
             newPublishResults[statusIndex].type = "remove"
           }
@@ -332,9 +216,9 @@ export default function useVideoEditor() {
     },
     [
       initialReference,
+      video,
       publishingResults,
       saveTo,
-      video,
       validateMetadata,
       uploadManifest,
       updateVideoReference,
@@ -343,6 +227,7 @@ export default function useVideoEditor() {
       unofferVideoResources,
       addToPlaylist,
       removeFromPlaylist,
+      getVideoIndexId,
       addToIndex,
       removeFromIndex,
       offerVideoResources,

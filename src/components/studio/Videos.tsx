@@ -35,6 +35,7 @@ import { Badge, Table, Tooltip } from "@/components/ui/display"
 import { Select } from "@/components/ui/inputs"
 import useUserVideos from "@/hooks/useUserVideos"
 import type { VideosSource } from "@/hooks/useUserVideos"
+import useUserVideosVisibility from "@/hooks/useUserVideosVisibility"
 import useVideosResources from "@/hooks/useVideosResources"
 import routes from "@/routes"
 import useExtensionsStore from "@/stores/extensions"
@@ -78,20 +79,16 @@ const Videos: React.FC = () => {
     }
   }, [address, profileInfo, defaultBatchId])
 
-  const {
-    isFetching,
-    isFetchingVisibility,
-    videos,
-    total,
-    visibility,
-    fetchPage,
-    deleteVideosFromSource,
-  } = useUserVideos({
+  const { isFetching, videos, total, fetchPage } = useUserVideos({
     fetchSource: currentSource,
     sources,
     profile,
     limit: perPage,
   })
+  const { isFetchingVisibility, visibility, toggleVideosVisibility } = useUserVideosVisibility(
+    videos,
+    { sources }
+  )
   const { videosOffersStatus, isFetchingOffers, offerVideoResources, unofferVideoResources } =
     useVideosResources(videos, { autoFetch: true })
 
@@ -107,9 +104,10 @@ const Videos: React.FC = () => {
   }, [page])
 
   const deleteSelectedVideos = useCallback(async () => {
-    await deleteVideosFromSource(selectedVideos)
+    await toggleVideosVisibility(selectedVideos, currentSource, "unpublished")
     setShowDeleteModal(false)
-  }, [deleteVideosFromSource, selectedVideos])
+    fetchPage(page)
+  }, [toggleVideosVisibility, fetchPage, currentSource, page, selectedVideos])
 
   if (!address) {
     return <Navigate to={routes.home} />
@@ -182,6 +180,7 @@ const Videos: React.FC = () => {
                       video={item}
                       visibility={visibility[item.reference]}
                       isLoading={isFetchingVisibility}
+                      toggleVisibilityCallback={toggleVideosVisibility}
                     />
                     <VideoOffersStatus
                       video={item}
@@ -203,6 +202,7 @@ const Videos: React.FC = () => {
                 video={item}
                 visibility={visibility[item.reference]}
                 isLoading={isFetchingVisibility}
+                toggleVisibilityCallback={toggleVideosVisibility}
               />
             ),
           },

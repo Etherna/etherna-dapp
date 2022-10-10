@@ -81,7 +81,7 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
             )}
             <VideoShareButton
               reference={video.reference}
-              indexReference={indexStatus.indexReference}
+              indexReference={indexStatus?.indexReference}
             />
             {gatewayType === "etherna-gateway" && (
               <VideoOffersButton

@@ -25,7 +25,7 @@ module.exports = {
     semi: ["error", "never"],
     "no-console":
       process.env.NODE_ENV === "production"
-        ? ["error", { allow: ["info", "warn", "error"] }]
+        ? ["error", { allow: ["info", "warn", "error", "debug"] }]
         : "off",
     "react/self-closing-comp": ["warn", { component: true, html: true }],
     "no-restricted-imports": ["warn", { patterns: ["../"] }],
