@@ -117,6 +117,16 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
       }
 
       const quality = await getVideoResolution(file)
+      const duration = await getVideoDuration(file)
+
+      if (!duration || !quality) {
+        showError(
+          "Cannot add source",
+          `The coded used for this video is not web compatible. Please encode this video with a different codec.`
+        )
+        return false
+      }
+
       const queueName = getSourceName(quality)
       const hasQuality = videoSources.some(q => q.quality === queueName)
 
@@ -132,13 +142,8 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
 
   const handleFileSelected = useCallback(
     async (file: File) => {
-      let duration = 0
-      let quality = 0
-
-      if (isMimeWebCompatible(file.type)) {
-        duration = await getVideoDuration(file)
-        quality = await getVideoResolution(file)
-      }
+      const duration = await getVideoDuration(file)
+      const quality = await getVideoResolution(file)
 
       const queueName = getSourceName(quality)
       const sourceQueue = queue.find(q => q.name === queueName)
