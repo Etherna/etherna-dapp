@@ -77,11 +77,11 @@ const FileDragContent: React.FC<FileDragProps> = ({
     if (inputRef.current) {
       inputRef.current.value = ""
     }
+    setFile(undefined)
   }, [])
 
   const handleCancel = useCallback(() => {
     resetInput()
-    setFile(undefined)
   }, [resetInput])
 
   const handleFileSelect = useCallback(
@@ -161,10 +161,11 @@ const FileDragContent: React.FC<FileDragProps> = ({
       const canProcede = (await canSelectFile?.(file)) ?? true
       setIsVerifing(false)
       canProcede && onSelectFile(file)
+      !canProcede && resetInput()
     } else {
       console.error("No file selected. Cannot continue.")
     }
-  }, [file, onSelectFile, canSelectFile])
+  }, [file, onSelectFile, canSelectFile, resetInput])
 
   return (
     <>
