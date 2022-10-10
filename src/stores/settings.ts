@@ -64,6 +64,17 @@ const useSettingsStore = create<SettingsState & SettingsActions>()(
         {
           name: "etherna:settings",
           getStorage: () => localStorage,
+          merge(persistedState, currentState) {
+            if (persistedState === undefined) {
+              // first time
+              loadColorScheme(prefersDarkColorScheme())
+            }
+
+            return {
+              ...currentState,
+              ...(persistedState as StorageValue<SettingsState>),
+            }
+          },
           serialize(state) {
             return JSON.stringify({
               ...state,
