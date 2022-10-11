@@ -20,6 +20,7 @@ import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
 
 import useErrorMessage from "./useErrorMessage"
+import useSmartFetchCount from "./useSmartFetchCount"
 import { parseReaderStatus } from "./useVideoOffers"
 import SwarmProfile from "@/classes/SwarmProfile"
 import SwarmVideo from "@/classes/SwarmVideo"
@@ -30,12 +31,10 @@ import { wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
 
 type SwarmVideosOptions = {
+  gridRef?: React.RefObject<HTMLElement>
   seedLimit?: number
   fetchLimit?: number
 }
-
-const DEFAULT_SEED_LIMIT = 50
-const DEFAULT_FETCH_LIMIT = 20
 
 type VideoWithAll = VideoWithOwner & VideoWithIndexes & VideoWithOffersStatus
 
@@ -49,11 +48,13 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
   const [isFetching, setIsFetching] = useState(false)
   const [hasMore, setHasMore] = useState(true)
   const { showError } = useErrorMessage()
+  const fetchCount = useSmartFetchCount(opts.gridRef, opts.seedLimit, opts.fetchLimit)
 
   useEffect(() => {
+    if (!fetchCount) return
     fetchVideos()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page])
+  }, [page, fetchCount])
 
   const loadVideosOffers = useCallback(
     async (videos: VideoWithAll[]) => {
@@ -120,11 +121,8 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
 
     setIsFetching(true)
 
-    const take =
-      page === 0 ? opts.seedLimit ?? DEFAULT_SEED_LIMIT : opts.fetchLimit ?? DEFAULT_FETCH_LIMIT
-
     try {
-      const indexVideos = await indexClient.videos.fetchLatestVideos(page, take)
+      const indexVideos = await indexClient.videos.fetchLatestVideos(page, fetchCount)
       const newVideos = indexVideos.map(indexVideo => {
         const swarmVideoReader = new SwarmVideo.Reader(indexVideo.id, {
           beeClient,
@@ -151,7 +149,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
 
       import.meta.env.DEV && (await wait(1000))
 
-      if (newVideos.length < take) {
+      if (newVideos.length < fetchCount) {
         setHasMore(false)
       }
 
@@ -172,8 +170,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
     indexClient,
     beeClient,
     indexUrl,
-    opts.seedLimit,
-    opts.fetchLimit,
+    fetchCount,
     loadVideoProfiles,
     loadVideosOffers,
     showError,
@@ -197,6 +194,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
     videos,
     hasMore,
     isFetching,
+    fetchCount,
     loadMore,
     refresh,
   }

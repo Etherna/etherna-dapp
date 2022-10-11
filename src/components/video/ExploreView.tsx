@@ -15,14 +15,15 @@
  *
  */
 
-import React, { useEffect } from "react"
+import React, { useEffect, useRef } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
 import VideoGrid from "@/components/video/VideoGrid"
 import useSwarmVideos from "@/hooks/useSwarmVideos"
 
 const ExploreView = () => {
-  const { videos, hasMore, isFetching, loadMore, refresh } = useSwarmVideos()
+  const gridRef = useRef<HTMLDivElement>(null)
+  const { videos, hasMore, isFetching, fetchCount, loadMore, refresh } = useSwarmVideos({ gridRef })
 
   useEffect(() => {
     window.addEventListener("refresh", refreshResults)
@@ -41,11 +42,15 @@ const ExploreView = () => {
       dataLength={videos?.length ?? 0}
       next={loadMore}
       hasMore={hasMore}
-      scrollThreshold={30}
       loader={<div />}
       style={{ overflow: "unset" }}
     >
-      <VideoGrid videos={videos} isFetching={isFetching} />
+      <VideoGrid
+        videos={videos}
+        isFetching={isFetching}
+        fetchingPreviewCount={fetchCount}
+        ref={gridRef}
+      />
     </InfiniteScroller>
   )
 }

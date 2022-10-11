@@ -40,12 +40,18 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
   const [activeTab, setActiveTab] = useState("videos")
   const address = useUserStore(state => state.address)
   const isMobile = useEnvironmentStore(state => state.isMobile)
-  // const { channelPlaylist, loadPlaylists } = useUserPlaylists(profileAddress, { resolveChannel: true })
-  const { playlist, videos, hasMore, isFetching, isLoadingPlaylist, loadMore, loadPlaylist } =
-    usePlaylistVideos(SwarmPlaylist.Reader.channelPlaylistId, {
-      owner: profile,
-      limit: 20,
-    })
+  const {
+    playlist,
+    videos,
+    hasMore,
+    isFetching,
+    isLoadingPlaylist,
+    smartFetchCount,
+    loadMore,
+    loadPlaylist,
+  } = usePlaylistVideos(SwarmPlaylist.Reader.channelPlaylistId, {
+    owner: profile,
+  })
 
   const isLoading = useMemo(() => {
     return isFetching || !profile || isLoadingPlaylist
@@ -66,7 +72,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
     if (profile && playlist) {
       loadMore()
     }
-  }, [playlist, profile, loadMore])
+  }, [playlist, profile, smartFetchCount, loadMore])
 
   const handleFetchedProfile = useCallback((profile: Profile | null) => {
     setProfile(profile)
@@ -103,6 +109,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
             hasMoreVideos={hasMore}
             isFetching={isLoading}
             onLoadMore={loadMore}
+            fetchingPreviewCount={smartFetchCount}
             videos={videos}
           />
         )}
