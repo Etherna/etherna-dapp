@@ -84,7 +84,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
       </div>
 
       <header className="flex w-full items-start p-4">
-        <div className={classNames("-mt-8 shrink-0 md:w-56 md:pr-4")}>
+        <div className={classNames("-mt-8 shrink-0 md:w-56 md:pr-8")}>
           <span
             className={classNames(
               "relative mx-auto flex overflow-hidden rounded-full border-4",
