@@ -19,6 +19,7 @@ import type { Playlist, Profile, Video } from "@etherna/api-js"
 import type { EthAddress } from "@etherna/api-js/clients"
 
 import useErrorMessage from "./useErrorMessage"
+import useSmartFetchCount from "./useSmartFetchCount"
 import BeeClient from "@/classes/BeeClient"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmVideo from "@/classes/SwarmVideo"
@@ -27,6 +28,7 @@ import type { VideoWithOwner } from "@/types/video"
 import { getResponseErrorMessage } from "@/utils/request"
 
 type PlaylistVideosOptions = {
+  gridRef?: React.RefObject<HTMLElement>
   owner?: Profile | null
   limit?: number
 }
@@ -48,6 +50,7 @@ export default function usePlaylistVideos(
   const [isEncrypted, setIsEncrypted] = useState(playlist?.type === "private" && !playlist.videos)
   const fetchingPage = useRef<number>()
   const { showError } = useErrorMessage()
+  const smartFetchCount = useSmartFetchCount(opts.gridRef)
 
   useEffect(() => {
     if (opts.owner) return
@@ -171,13 +174,13 @@ export default function usePlaylistVideos(
 
     if (playlist?.videos == null) return
 
-    const limit = opts.limit!
+    const limit = smartFetchCount
     const from = videos?.length ?? 0
     const to = from + (limit === -1 ? playlist.videos.length ?? 0 : limit)
     const newVideos = await fetchVideos(from, to)
     setHasMore(to < playlist.videos.length)
     setVideos(applyOwnerToVideos([...(videos ?? []), ...newVideos]))
-  }, [applyOwnerToVideos, fetchVideos, hasMore, isFetching, opts.limit, playlist, videos])
+  }, [applyOwnerToVideos, fetchVideos, hasMore, isFetching, smartFetchCount, playlist, videos])
 
   return {
     playlist,
@@ -187,6 +190,7 @@ export default function usePlaylistVideos(
     isLoadingPlaylist,
     isEncrypted,
     hasMore,
+    smartFetchCount,
     loadPlaylist,
     loadMore,
     fetchPage,

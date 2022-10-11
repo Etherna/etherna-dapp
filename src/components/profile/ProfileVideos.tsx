@@ -25,6 +25,7 @@ type ProfileVideosProps = {
   videos: VideoWithOwner[] | null | undefined
   isFetching: boolean
   hasMoreVideos: boolean
+  fetchingPreviewCount?: number
   onLoadMore(): void
 }
 
@@ -32,6 +33,7 @@ const ProfileVideos: React.FC<ProfileVideosProps> = ({
   videos,
   isFetching,
   hasMoreVideos,
+  fetchingPreviewCount,
   onLoadMore,
 }) => {
   const videosWithIndexes = useMemo(() => {
@@ -62,6 +64,7 @@ const ProfileVideos: React.FC<ProfileVideosProps> = ({
           videos={videosWithIndexes}
           mini={true}
           isFetching={isFetching}
+          fetchingPreviewCount={fetchingPreviewCount}
           decentralizedLink
         />
       </InfiniteScroller>
