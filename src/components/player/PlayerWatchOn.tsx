@@ -30,7 +30,7 @@ const PlayerWatchOn: React.FC<PlayerWatchOnProps> = ({ hash }) => {
     <a
       className={classNames(
         "inline-flex items-center space-x-3 p-4",
-        "text-base font-medium tracking-tight",
+        "text-sm font-medium tracking-tight",
         "bg-gray-800/60 text-white hover:text-white"
       )}
       href={import.meta.env.VITE_APP_PUBLIC_URL + routes.watch(hash)}

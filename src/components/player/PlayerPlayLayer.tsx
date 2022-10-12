@@ -23,10 +23,16 @@ import { ReactComponent as PlayIcon } from "@/assets/icons/player/play.svg"
 type PlayerPlayLayerProps = {
   thumbnailUrl?: string | null
   floating?: boolean
+  embed?: boolean
   onPlay(): void
 }
 
-const PlayerPlayLayer: React.FC<PlayerPlayLayerProps> = ({ thumbnailUrl, floating, onPlay }) => {
+const PlayerPlayLayer: React.FC<PlayerPlayLayerProps> = ({
+  thumbnailUrl,
+  floating,
+  embed,
+  onPlay,
+}) => {
   return (
     <div
       className={classNames(
@@ -34,8 +40,8 @@ const PlayerPlayLayer: React.FC<PlayerPlayLayerProps> = ({ thumbnailUrl, floatin
         "after:absolute after:inset-0 after:block after:bg-black/5",
         "after:transition-colors after:duration-200 after:ease-out hover:after:bg-black/0",
         {
-          "bottom-15": !floating,
-          "bottom-0": floating,
+          "bottom-15": !floating && !embed,
+          "bottom-0": floating || embed,
         }
       )}
       tabIndex={0}
