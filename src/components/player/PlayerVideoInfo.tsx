@@ -31,21 +31,21 @@ type PlayerVideoInfoProps = {
 const PlayerVideoInfo: React.FC<PlayerVideoInfoProps> = ({ hash, title, owner }) => {
   return (
     <a
-      className="flex items-center text-lg font-medium"
+      className="flex items-start text-lg font-medium"
       href={import.meta.env.VITE_APP_PUBLIC_URL + routes.watch(hash)}
       target="_blank"
       rel="noreferrer"
     >
       {owner && (
-        <div className="relative mr-3 h-8 w-8 rounded-full shadow-sm shadow-black/25 md:h-12 md:w-12">
+        <div className="relative mr-3 h-8 w-8 shrink-0 rounded-full shadow-sm shadow-black/25 md:h-12 md:w-12">
           <Avatar size="fill" image={owner.avatar} address={owner.address} />
         </div>
       )}
-      <div className="inline-flex items-baseline space-x-2 text-white shadow-black/75 drop-shadow">
+      <div className="pt-1 leading-tight text-white shadow-black/75 drop-shadow">
         <span>{title}</span>
         {owner && (
           <>
-            <span>|</span>
+            <span> | </span>
             <span>{owner.name || shortenEthAddr(owner.address)}</span>
           </>
         )}

@@ -75,9 +75,10 @@ const PlayerToolbarSelect: React.FC<PlayerToolbarSelectProps> = ({
 
             <div
               className={classNames(
-                "invisible absolute left-1/2 bottom-0 ml-0 opacity-0",
-                "z-20 -translate-x-1/2 transform  pb-10",
+                "absolute left-1/2 bottom-0 ml-0",
+                "z-20 -translate-x-1/2 transform pb-10",
                 {
+                  "invisible opacity-0": !open,
                   "visible opacity-100 transition-opacity duration-200": open,
                 }
               )}

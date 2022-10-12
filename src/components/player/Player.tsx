@@ -344,7 +344,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
               "landscape-touch:bg-gray-900 landscape-touch:dark:bg-gray-900": !embed,
               "landscape-touch:max-h-full landscape-touch:flex-shrink landscape-touch:flex-grow":
                 !embed,
-              "max-h-screen": embed,
+              "h-full max-h-screen": embed,
             }
           )}
           src={filterXSS(source)}
@@ -397,10 +397,11 @@ const InnerPlayer: React.FC<PlayerProps> = ({
         {embed && !error && (
           <div
             className={classNames(
-              "absolute left-0 bottom-4 z-1 -translate-x-full",
+              "absolute left-0 z-1 -translate-x-full",
               "transition-transform duration-200 ease-out",
               {
-                "bottom-24": floating && currentTime > 0,
+                "bottom-4": currentTime === 0,
+                "bottom-24": currentTime > 0,
                 "translate-x-0": !isPlaying,
               }
             )}
@@ -410,7 +411,12 @@ const InnerPlayer: React.FC<PlayerProps> = ({
         )}
 
         {!isPlaying && currentTime === 0 && !error && (
-          <PlayerPlayLayer thumbnailUrl={thumbnailUrl} floating={floating} onPlay={togglePlay} />
+          <PlayerPlayLayer
+            thumbnailUrl={thumbnailUrl}
+            floating={floating}
+            embed={embed}
+            onPlay={togglePlay}
+          />
         )}
 
         {isTouchDevice() && currentTime > 0 && !error && (
@@ -429,7 +435,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
         {error && <PlayerErrorBanner />}
       </div>
 
-      <PlayerBytesCounter />
+      {!embed && <PlayerBytesCounter />}
     </PlayerShortcuts>
   )
 }
