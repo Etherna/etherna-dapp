@@ -29,7 +29,7 @@ const PlayerWatchOn: React.FC<PlayerWatchOnProps> = ({ hash }) => {
   return (
     <a
       className={classNames(
-        "inline-flex items-center space-x-3 p-4",
+        "inline-flex items-center space-x-3 p-3 sm:p-4",
         "text-sm font-medium tracking-tight",
         "bg-gray-800/60 text-white hover:text-white"
       )}

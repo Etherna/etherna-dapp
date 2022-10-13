@@ -30,27 +30,29 @@ type PlayerVideoInfoProps = {
 
 const PlayerVideoInfo: React.FC<PlayerVideoInfoProps> = ({ hash, title, owner }) => {
   return (
-    <a
-      className="flex items-start text-lg font-medium"
-      href={import.meta.env.VITE_APP_PUBLIC_URL + routes.watch(hash)}
-      target="_blank"
-      rel="noreferrer"
-    >
-      {owner && (
-        <div className="relative mr-3 h-8 w-8 shrink-0 rounded-full shadow-sm shadow-black/25 md:h-12 md:w-12">
-          <Avatar size="fill" image={owner.avatar} address={owner.address} />
-        </div>
-      )}
-      <div className="pt-1 leading-tight text-white shadow-black/75 drop-shadow">
-        <span>{title}</span>
+    <div className="bg-gradient-to-b from-black/40 to-black/0 pt-3 pb-6 pl-3">
+      <a
+        className="flex items-start text-base font-medium md:text-lg"
+        href={import.meta.env.VITE_APP_PUBLIC_URL + routes.watch(hash)}
+        target="_blank"
+        rel="noreferrer"
+      >
         {owner && (
-          <>
-            <span> | </span>
-            <span>{owner.name || shortenEthAddr(owner.address)}</span>
-          </>
+          <div className="relative mr-3 h-8 w-8 shrink-0 rounded-full shadow-sm shadow-black/25 md:h-12 md:w-12">
+            <Avatar size="fill" image={owner.avatar} address={owner.address} />
+          </div>
         )}
-      </div>
-    </a>
+        <div className="pt-1 leading-tight text-white shadow-black/75 drop-shadow line-clamp-1 md:pt-3 lg:line-clamp-3">
+          <span>{title}</span>
+          {owner && (
+            <>
+              <span> | </span>
+              <span>{owner.name || shortenEthAddr(owner.address)}</span>
+            </>
+          )}
+        </div>
+      </a>
+    </div>
   )
 }
 
