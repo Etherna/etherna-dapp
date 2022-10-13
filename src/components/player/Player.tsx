@@ -73,8 +73,8 @@ const InnerPlayer: React.FC<PlayerProps> = ({
 
   const [isTouch, floating] = useMemo(() => {
     const isTouch = isTouchDevice()
-    return [isTouch, !isTouch]
-  }, [])
+    return [isTouch, !isTouch || embed]
+  }, [embed])
 
   const showControls = useMemo(() => {
     const defaultShow = !hiddenControls && videoElement && !error
@@ -384,10 +384,10 @@ const InnerPlayer: React.FC<PlayerProps> = ({
 
         {embed && !error && (
           <div
-            className={classNames("absolute top-3 left-3 z-1", {
+            className={classNames("absolute inset-x-0 top-0", {
               "group-hover:opacity-100": true,
               "opacity-100": !isPlaying,
-              "opacity-0": isPlaying && idle,
+              "opacity-0": isPlaying,
             })}
           >
             <PlayerVideoInfo hash={hash} title={title || "Untitled"} owner={owner} />
@@ -401,7 +401,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
               "transition-transform duration-200 ease-out",
               {
                 "bottom-4": currentTime === 0,
-                "bottom-24": currentTime > 0,
+                "bottom-16 md:bottom-24": currentTime > 0,
                 "translate-x-0": !isPlaying,
               }
             )}
