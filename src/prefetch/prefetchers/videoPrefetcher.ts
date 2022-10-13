@@ -49,7 +49,7 @@ const fetch = async () => {
           : Promise.resolve(null),
       ])
 
-      if (!video && indexVideo?.lastValidManifest) {
+      if (!video && indexVideo?.lastValidManifest?.sources.length) {
         const videoParsed = new VideoDeserializer(beeClient.url).deserialize(
           JSON.stringify({
             ownerAddress: indexVideo.ownerAddress,
@@ -72,6 +72,11 @@ const fetch = async () => {
           indexesStatus: {},
         }
       }
+
+      if (!video) {
+        throw new Error("Video not found")
+      }
+
       video.indexesStatus = {}
 
       indexVideo =
@@ -80,7 +85,7 @@ const fetch = async () => {
           ? (videoReader.rawResponse as IndexVideo)
           : null)
 
-      if (indexVideo) {
+      if (video && indexVideo) {
         video.indexesStatus[urlOrigin(indexClient.url)!] = {
           indexReference: indexVideo.id,
           totDownvotes: indexVideo.totDownvotes,
@@ -98,6 +103,9 @@ const fetch = async () => {
       window.prefetchData.video = video
     } catch (error: any) {
       console.error(error)
+      window.prefetchData = {}
+      window.prefetchData.ownerProfile = null
+      window.prefetchData.video = null
     }
   }
 }

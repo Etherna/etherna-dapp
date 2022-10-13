@@ -65,11 +65,11 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
           : Promise.resolve(null),
       ])
 
-      if (!video && !indexVideo?.lastValidManifest) {
+      if (!video && !indexVideo?.lastValidManifest?.sources.length) {
         throw new Error("Video not found")
       }
 
-      if (!video && indexVideo?.lastValidManifest) {
+      if (!video && indexVideo?.lastValidManifest?.sources.length) {
         const videoParsed = new VideoDeserializer(beeClient.url).deserialize(
           JSON.stringify({
             ownerAddress: indexVideo.ownerAddress,
@@ -92,6 +92,11 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
           indexesStatus: {},
         }
       }
+
+      if (!video) {
+        throw new Error("Video not found")
+      }
+
       video.indexesStatus = {}
 
       indexVideo =
