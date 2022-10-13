@@ -42,7 +42,7 @@ const PlayerVideoInfo: React.FC<PlayerVideoInfoProps> = ({ hash, title, owner })
             <Avatar size="fill" image={owner.avatar} address={owner.address} />
           </div>
         )}
-        <div className="pt-1 leading-tight text-white shadow-black/75 drop-shadow line-clamp-1 md:pt-3">
+        <div className="pt-1 leading-tight text-white shadow-black/75 drop-shadow line-clamp-1 md:pt-3 lg:line-clamp-3">
           <span>{title}</span>
           {owner && (
             <>

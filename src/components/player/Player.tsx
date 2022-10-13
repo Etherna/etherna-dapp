@@ -384,7 +384,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
 
         {embed && !error && (
           <div
-            className={classNames("absolute inset-x-0 top-0", {
+            className={classNames("absolute inset-x-0 top-0 z-1", {
               "group-hover:opacity-100": true,
               "opacity-100": !isPlaying,
               "opacity-0": isPlaying,
