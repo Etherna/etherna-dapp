@@ -32,6 +32,7 @@ import { getResponseErrorMessage } from "@/utils/request"
 
 type SwarmVideosOptions = {
   gridRef?: React.RefObject<HTMLElement>
+  query?: string
   seedLimit?: number
   fetchLimit?: number
 }
@@ -47,8 +48,22 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
   const [page, setPage] = useState(0)
   const [isFetching, setIsFetching] = useState(false)
   const [hasMore, setHasMore] = useState(true)
-  const { showError } = useErrorMessage()
   const fetchCount = useSmartFetchCount(opts.gridRef, opts.seedLimit, opts.fetchLimit)
+  const { showError } = useErrorMessage()
+
+  useEffect(() => {
+    setVideos(undefined)
+    setHasMore(true)
+
+    if (page > 0) {
+      setPage(0)
+    } else {
+      if (fetchCount) {
+        fetchVideos(true)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [opts.query])
 
   useEffect(() => {
     if (!fetchCount) return
@@ -58,6 +73,8 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
 
   const loadVideosOffers = useCallback(
     async (videos: VideoWithAll[]) => {
+      if (!videos.length) return
+
       try {
         const handler = new EthernaResourcesHandler(videos, { gatewayClient })
         await handler.fetchOffers({ withByWhom: false })
@@ -114,67 +131,76 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
     [beeClient]
   )
 
-  const fetchVideos = useCallback(async () => {
-    if (!hasMore) {
-      return setIsFetching(false)
-    }
-
-    setIsFetching(true)
-
-    try {
-      const indexVideos = await indexClient.videos.fetchLatestVideos(page, fetchCount)
-      const newVideos = indexVideos.map(indexVideo => {
-        const swarmVideoReader = new SwarmVideo.Reader(indexVideo.id, {
-          beeClient,
-          indexClient,
-        })
-        const videoRaw = JSON.stringify(swarmVideoReader.indexVideoToRaw(indexVideo))
-        const video = new VideoDeserializer(beeClient.url).deserialize(videoRaw, {
-          reference: indexVideo.lastValidManifest?.hash ?? "",
-        })
-        const videoOwner: VideoWithAll = {
-          ...video,
-          owner: undefined,
-          indexesStatus: {
-            [indexUrl]: {
-              indexReference: indexVideo.id,
-              totDownvotes: indexVideo.totDownvotes,
-              totUpvotes: indexVideo.totUpvotes,
-            },
-          },
-          offers: undefined,
-        }
-        return videoOwner
-      })
-
-      import.meta.env.DEV && (await wait(1000))
-
-      if (newVideos.length < fetchCount) {
-        setHasMore(false)
+  const fetchVideos = useCallback(
+    async (refetch = false) => {
+      if (!refetch && isFetching) return
+      if (!refetch && !hasMore) {
+        return setIsFetching(false)
       }
 
-      setVideos(videos => {
-        return [...(videos ?? []), ...newVideos].filter((vid, i, self) => self.indexOf(vid) === i)
-      })
+      setIsFetching(true)
 
-      loadVideoProfiles(newVideos)
-      loadVideosOffers(newVideos)
-    } catch (error: any) {
-      showError("Coudn't fetch the videos", getResponseErrorMessage(error))
-    }
+      try {
+        const indexVideos = opts?.query
+          ? await indexClient.search.fetchVideos(opts.query, page, fetchCount)
+          : await indexClient.videos.fetchLatestVideos(page, fetchCount)
 
-    setIsFetching(false)
-  }, [
-    hasMore,
-    page,
-    indexClient,
-    beeClient,
-    indexUrl,
-    fetchCount,
-    loadVideoProfiles,
-    loadVideosOffers,
-    showError,
-  ])
+        const newVideos = indexVideos.map(indexVideo => {
+          const swarmVideoReader = new SwarmVideo.Reader(indexVideo.id, {
+            beeClient,
+            indexClient,
+          })
+          const videoRaw = JSON.stringify(swarmVideoReader.indexVideoToRaw(indexVideo))
+          const video = new VideoDeserializer(beeClient.url).deserialize(videoRaw, {
+            reference: indexVideo.lastValidManifest?.hash ?? "",
+          })
+          const videoOwner: VideoWithAll = {
+            ...video,
+            owner: undefined,
+            indexesStatus: {
+              [indexUrl]: {
+                indexReference: indexVideo.id,
+                totDownvotes: indexVideo.totDownvotes,
+                totUpvotes: indexVideo.totUpvotes,
+              },
+            },
+            offers: undefined,
+          }
+          return videoOwner
+        })
+
+        import.meta.env.DEV && (await wait(1000))
+
+        if (newVideos.length < fetchCount) {
+          setHasMore(false)
+        }
+
+        setVideos(videos => {
+          return [...(videos ?? []), ...newVideos].filter((vid, i, self) => self.indexOf(vid) === i)
+        })
+
+        loadVideoProfiles(newVideos)
+        loadVideosOffers(newVideos)
+      } catch (error: any) {
+        showError("Coudn't fetch the videos", getResponseErrorMessage(error))
+      }
+
+      setIsFetching(false)
+    },
+    [
+      opts.query,
+      isFetching,
+      hasMore,
+      page,
+      indexClient,
+      beeClient,
+      indexUrl,
+      fetchCount,
+      loadVideoProfiles,
+      loadVideosOffers,
+      showError,
+    ]
+  )
 
   // Returns
   const loadMore = useCallback(() => {

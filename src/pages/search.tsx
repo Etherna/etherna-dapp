@@ -18,10 +18,10 @@
 import React from "react"
 import { useLocation } from "react-router-dom"
 
-import ComingSoon from "@/components/common/ComingSoon"
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
 import SEO from "@/components/layout/SEO"
 import { Container } from "@/components/ui/layout"
+import SearchView from "@/components/video/SearchView"
 
 const SearchPage = () => {
   const location = useLocation()
@@ -33,8 +33,7 @@ const SearchPage = () => {
       <SEO title={`Search: ${query}`} />
 
       <Container fluid>
-        <h1>Search: {query}</h1>
-        <ComingSoon description={`Search any video, frame and user`} />
+        <SearchView query={query} />
       </Container>
     </AppLayoutWrapper>
   )

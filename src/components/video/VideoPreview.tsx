@@ -40,6 +40,7 @@ type VideoPreviewProps = {
   videoOffers?: VideoOffersStatus
   hideProfile?: boolean
   decentralizedLink?: boolean
+  direction?: "horizontal" | "vertical"
 }
 
 const VideoPreview: React.FC<VideoPreviewProps> = ({
@@ -47,6 +48,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   videoOffers,
   hideProfile,
   decentralizedLink,
+  direction = "vertical",
 }) => {
   const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
 
@@ -85,9 +87,20 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   }, [decentralizedLink, indexUrl, video.indexesStatus, video.reference])
 
   return (
-    <div className="w-full">
-      <Link to={routes.watch(videoLink)} state={{ video, ownerProfile: video.owner, videoOffers }}>
-        <div className="relative flex w-full before:pb-[56.25%]">
+    <div
+      className={classNames("flex w-full", {
+        "flex-col": direction === "vertical",
+        "flex-col sm:flex-row": direction === "horizontal",
+      })}
+    >
+      <Link
+        className={classNames("block", {
+          "w-full shrink-0 sm:w-1/3": direction === "horizontal",
+        })}
+        to={routes.watch(videoLink)}
+        state={{ video, ownerProfile: video.owner, videoOffers }}
+      >
+        <div className={classNames("relative flex w-full before:pb-[56.25%]", {})}>
           <Image
             className="bg-gray-200 dark:bg-gray-700"
             sources={videoThumbnail?.sources}
@@ -109,15 +122,26 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
           )}
         </div>
       </Link>
-      <div className="mt-2 flex space-x-2">
+      <div
+        className={classNames("flex space-x-2", {
+          "mt-2": direction === "vertical",
+          "mt-2 sm:mt-0 sm:ml-2 sm:flex-1": direction === "horizontal",
+        })}
+      >
         {!hideProfile && profileLink && (
-          <Link to={profileLink}>
-            <Skeleton show={isLoadingProfile} roundedFull>
-              <Avatar size={32} image={profileAvatar} address={ownerAddress} />
-            </Skeleton>
-          </Link>
+          <div className="sm:hidden">
+            <Link to={profileLink}>
+              <Skeleton show={isLoadingProfile} roundedFull>
+                <Avatar size={32} image={profileAvatar} address={ownerAddress} />
+              </Skeleton>
+            </Link>
+          </div>
         )}
-        <div className="flex flex-grow flex-col overflow-hidden">
+        <div
+          className={classNames("flex flex-grow flex-col overflow-hidden", {
+            "sm:space-y-2": direction === "horizontal",
+          })}
+        >
           <Link
             to={routes.watch(videoLink)}
             state={{ video, ownerProfile: video.owner, videoOffers }}
@@ -128,23 +152,33 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
                 "text-gray-900 dark:text-gray-100",
                 "max-w-full overflow-hidden text-ellipsis line-clamp-2"
               )}
+              title={video.title}
             >
               {video.title || "???"}
             </h4>
           </Link>
           {!hideProfile && profileLink && (
             <Link to={profileLink}>
-              <Skeleton show={isLoadingProfile}>
-                <h5
-                  className={classNames(
-                    "max-w-full flex-grow overflow-hidden text-ellipsis text-sm font-semibold",
-                    "text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300",
-                    "transition-colors duration-200"
-                  )}
-                >
-                  {profileName}
-                </h5>
-              </Skeleton>
+              <div className="flex items-center">
+                {direction === "horizontal" && (
+                  <div className="hidden sm:mr-2 sm:flex">
+                    <Skeleton show={isLoadingProfile} roundedFull>
+                      <Avatar size={32} image={profileAvatar} address={ownerAddress} />
+                    </Skeleton>
+                  </div>
+                )}
+                <Skeleton show={isLoadingProfile}>
+                  <h5
+                    className={classNames(
+                      "max-w-full flex-grow overflow-hidden text-ellipsis text-sm font-semibold",
+                      "text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300",
+                      "transition-colors duration-200"
+                    )}
+                  >
+                    {profileName}
+                  </h5>
+                </Skeleton>
+              </div>
             </Link>
           )}
           {video.createdAt && (
@@ -152,7 +186,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
               {dayjs.duration(dayjs(video.createdAt).diff(dayjs())).humanize(true)}
             </div>
           )}
-          <div className="mt-2 grid auto-cols-max grid-flow-col gap-3 empty:mt-0">
+          <div className={classNames("mt-2 grid auto-cols-max grid-flow-col gap-3 empty:mt-0")}>
             {isVideoOffered && (
               <Badge prefix={<CreditIcon width={16} aria-hidden />} color="primary" small>
                 Free to watch

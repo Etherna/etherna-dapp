@@ -26,16 +26,12 @@ const ExploreView = () => {
   const { videos, hasMore, isFetching, fetchCount, loadMore, refresh } = useSwarmVideos({ gridRef })
 
   useEffect(() => {
-    window.addEventListener("refresh", refreshResults)
+    window.addEventListener("refresh", refresh)
     return () => {
-      window.removeEventListener("refresh", refreshResults)
+      window.removeEventListener("refresh", refresh)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const refreshResults = () => {
-    refresh()
-  }
 
   return (
     <InfiniteScroller

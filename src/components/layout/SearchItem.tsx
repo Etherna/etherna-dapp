@@ -69,9 +69,9 @@ const SearchItem: React.FC = () => {
             onBlur={() => setShowInput(false)}
             autoFocus
           />
-          <button className="absolute right-2" onClick={() => setShowInput(false)}>
+          <div role="button" className="absolute right-2" onClick={() => setShowInput(false)}>
             <XMarkIcon width={20} aria-hidden />
-          </button>
+          </div>
         </>
       )}
     </Topbar.Item>
