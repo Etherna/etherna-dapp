@@ -35,7 +35,7 @@ const SearchItem: React.FC = () => {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.code === "Enter" && searchQuery) {
+      if (["Enter", "NumpadEnter"].includes(e.code) && searchQuery) {
         navigate(routes.search(searchQuery))
         trackSiteSearch({
           keyword: searchQuery.toLowerCase(),
