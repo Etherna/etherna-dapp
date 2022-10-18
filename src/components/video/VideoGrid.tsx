@@ -28,11 +28,15 @@ type VideoGridProps = {
   isFetching?: boolean
   fetchingPreviewCount?: number
   mini?: boolean
+  singleColumn?: boolean
   decentralizedLink?: boolean
 }
 
 const VideoGrid = forwardRef<HTMLDivElement, VideoGridProps>(
-  ({ label, videos, mini, isFetching, decentralizedLink, fetchingPreviewCount = 4 }, ref) => {
+  (
+    { label, videos, mini, singleColumn, isFetching, decentralizedLink, fetchingPreviewCount = 4 },
+    ref
+  ) => {
     const LabelTag = mini ? "h5" : "h3"
 
     return (
@@ -43,14 +47,23 @@ const VideoGrid = forwardRef<HTMLDivElement, VideoGridProps>(
           </div>
         )}
         <div
-          className={classNames("grid grid-flow-row-dense gap-4", {
-            "grid-cols-[repeat(auto-fill,minmax(200px,1fr))]": !mini,
-            "lg:grid-cols-[repeat(auto-fill,minmax(240px,1fr))]": !mini,
-            "xl:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]": !mini,
-            "grid-cols-[repeat(auto-fill,minmax(180px,1fr))]": mini,
-            "lg:grid-cols-[repeat(auto-fill,minmax(220px,1fr))]": mini,
-            "xl:grid-cols-[repeat(auto-fill,minmax(260px,1fr))]": mini,
-          })}
+          className={classNames(
+            "grid grid-flow-row-dense gap-4",
+            singleColumn
+              ? {
+                  "sm:gap-6": true,
+                  "grid-cols-1 grid-rows-[repeat(auto-fill,minmax(150px,1fr))]": true,
+                  "mx-auto max-w-screen-lg": true,
+                }
+              : {
+                  "grid-cols-[repeat(auto-fill,minmax(200px,1fr))]": !mini,
+                  "lg:grid-cols-[repeat(auto-fill,minmax(240px,1fr))]": !mini,
+                  "xl:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]": !mini,
+                  "grid-cols-[repeat(auto-fill,minmax(180px,1fr))]": mini,
+                  "lg:grid-cols-[repeat(auto-fill,minmax(220px,1fr))]": mini,
+                  "xl:grid-cols-[repeat(auto-fill,minmax(260px,1fr))]": mini,
+                }
+          )}
           ref={ref}
         >
           {videos &&
@@ -60,13 +73,20 @@ const VideoGrid = forwardRef<HTMLDivElement, VideoGridProps>(
                 videoOffers={video.offers}
                 hideProfile={mini}
                 decentralizedLink={decentralizedLink}
+                direction={singleColumn ? "horizontal" : "vertical"}
                 key={video.reference}
               />
             ))}
           {isFetching &&
             Array(fetchingPreviewCount)
               .fill(0)
-              .map((_, i) => <VideoPreviewPlaceholder mini={mini} key={i} />)}
+              .map((_, i) => (
+                <VideoPreviewPlaceholder
+                  mini={mini}
+                  direction={singleColumn ? "horizontal" : "vertical"}
+                  key={i}
+                />
+              ))}
         </div>
       </>
     )

@@ -22,31 +22,60 @@ import { Skeleton } from "@/components/ui/display"
 
 type VideoPreviewPlaceholderProps = {
   mini?: boolean
+  direction?: "horizontal" | "vertical"
 }
 
-const VideoPreviewPlaceholder: React.FC<VideoPreviewPlaceholderProps> = ({ mini }) => {
+const VideoPreviewPlaceholder: React.FC<VideoPreviewPlaceholderProps> = ({
+  mini,
+  direction = "vertical",
+}) => {
   return (
-    <div className="flex flex-col">
-      <Skeleton squared>
+    <div
+      className={classNames("flex w-full", {
+        "flex-col": direction === "vertical",
+        "flex-col sm:flex-row": direction === "horizontal",
+      })}
+    >
+      <Skeleton
+        className={classNames({
+          "w-full": direction === "vertical",
+          "w-full sm:w-1/3": direction === "horizontal",
+        })}
+        squared
+      >
         <div className="w-full pb-[56.25%]" />
       </Skeleton>
-      <div className="items-top mt-2 flex">
+      <div
+        className={classNames("items-top mt-2 flex flex-1", {
+          "sm:mt-0 sm:ml-2": direction === "horizontal",
+        })}
+      >
         {!mini && (
-          <Skeleton className="h-8 w-8 shrink-0" roundedFull>
+          <Skeleton className="h-8 w-8 shrink-0 sm:hidden" roundedFull>
             <div className="h-8 w-8" />
           </Skeleton>
         )}
         <div
           className={classNames("mt-1 flex flex-grow flex-col", {
             "ml-2": !mini,
+            "sm:space-y-2": direction === "horizontal",
           })}
         >
           <Skeleton className="h-4 w-full" roundedThin>
             <div className="h-4 w-full" />
           </Skeleton>
-          <Skeleton className="mt-1.5 h-3 w-2/5" roundedThin>
-            <div className="h-3 w-2/5" />
-          </Skeleton>
+          <div className="mt-1.5 flex items-center">
+            {direction === "horizontal" && (
+              <div className="hidden sm:mr-2 sm:flex">
+                <Skeleton className="h-8 w-8 shrink-0" roundedFull>
+                  <div className="h-8 w-8" />
+                </Skeleton>
+              </div>
+            )}
+            <Skeleton className="w-2/5" roundedThin>
+              <div className="h-3 w-2/5" />
+            </Skeleton>
+          </div>
         </div>
       </div>
     </div>

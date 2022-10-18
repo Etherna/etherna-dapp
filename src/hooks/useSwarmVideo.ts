@@ -18,7 +18,6 @@ import { useCallback, useEffect, useState } from "react"
 import type { IndexVideo } from "@etherna/api-js/clients"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
 
-import SwarmImage from "@/classes/SwarmImage"
 import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
