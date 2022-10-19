@@ -54,6 +54,16 @@ const VideoComments: React.FC<VideoCommentsProps> = ({ indexReference, videoAuth
     setComments(comments => [comment, ...comments])
   }, [])
 
+  const onCommentDeleted = useCallback((comment: IndexVideoComment) => {
+    setComments(comments =>
+      comments.map(c => ({
+        ...c,
+        text: c.id === comment.id ? "(removed by author)" : c.text,
+        isFrozen: c.id === comment.id ? true : c.isFrozen,
+      }))
+    )
+  }, [])
+
   return (
     <div className="mt-12 md:mt-20">
       {!isFetchingComments && (
@@ -75,7 +85,12 @@ const VideoComments: React.FC<VideoCommentsProps> = ({ indexReference, videoAuth
         {isFetchingComments && <Spinner className="mx-auto" width={28} height={28} />}
 
         {comments.map((comment, i) => (
-          <VideoCommentsItem comment={comment} videoAuthorAddress={videoAuthorAddress} key={i} />
+          <VideoCommentsItem
+            comment={comment}
+            videoAuthorAddress={videoAuthorAddress}
+            key={i}
+            onDelete={() => onCommentDeleted(comment)}
+          />
         ))}
       </div>
     </div>
