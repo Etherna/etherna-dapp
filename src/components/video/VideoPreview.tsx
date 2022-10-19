@@ -129,7 +129,11 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
         })}
       >
         {!hideProfile && profileLink && (
-          <div className="sm:hidden">
+          <div
+            className={classNames({
+              "sm:hidden": direction === "horizontal",
+            })}
+          >
             <Link to={profileLink}>
               <Skeleton show={isLoadingProfile} roundedFull>
                 <Avatar size={32} image={profileAvatar} address={ownerAddress} />
