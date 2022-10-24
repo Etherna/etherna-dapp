@@ -79,9 +79,12 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
         const handler = new EthernaResourcesHandler(videos, { gatewayClient })
         await handler.fetchOffers({ withByWhom: false })
 
+        const fetchedVideosReferences = videos.map(video => video.reference)
         setVideos(videos =>
           videos?.map(video => {
-            const offers = parseReaderStatus(handler, video, undefined)
+            const offers = fetchedVideosReferences.includes(video.reference)
+              ? parseReaderStatus(handler, video, undefined)
+              : video.offers
             return {
               ...video,
               offers,

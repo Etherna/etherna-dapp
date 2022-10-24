@@ -51,7 +51,12 @@ const VideoPreviewPlaceholder: React.FC<VideoPreviewPlaceholderProps> = ({
         })}
       >
         {!mini && (
-          <Skeleton className="h-8 w-8 shrink-0 sm:hidden" roundedFull>
+          <Skeleton
+            className={classNames("h-8 w-8 shrink-0", {
+              "sm:hidden": direction === "horizontal",
+            })}
+            roundedFull
+          >
             <div className="h-8 w-8" />
           </Skeleton>
         )}
