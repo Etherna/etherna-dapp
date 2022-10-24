@@ -54,20 +54,16 @@ const SEO: React.FC<SEOProps> = ({
           lang,
         }}
         title={title}
-        titleTemplate={`%s – ${title === siteTitle ? siteTagline : siteTitle}`}
+        titleTemplate={`%s | ${title === siteTitle ? siteTagline : siteTitle}`}
         meta={
           [
             {
               name: `theme-color`,
               content: darkMode ? `#111827` : `#f9fafb`,
             },
-            {
+            description && {
               name: `description`,
-              content: description || "A transparent, decentralized and open source video platform",
-            },
-            {
-              property: `keywords`,
-              content: `video, sharing, decentralized, ads free, transparent video platform, upload`,
+              content: description,
             },
             {
               property: `og:title`,

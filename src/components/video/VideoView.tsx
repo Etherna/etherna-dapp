@@ -18,6 +18,7 @@
 import React, { useEffect, useMemo, useCallback } from "react"
 import type { Profile } from "@etherna/api-js"
 import type { EthAddress } from "@etherna/api-js/clients"
+import removeMarkdown from "remove-markdown"
 
 import VideoJsonLd from "./VideoJsonLd"
 import SwarmImage from "@/classes/SwarmImage"
@@ -89,7 +90,8 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
   return (
     <>
       <SEO
-        title={video?.title || reference}
+        title={`${video?.title ?? reference} | ${profile?.name || video?.ownerAddress}`}
+        description={removeMarkdown(video?.description ?? "").replace(/\n/g, "")}
         type="video.other"
         image={video?.thumbnail?.src}
         canonicalUrl={video ? routes.withOrigin.watch(video.reference) : undefined}
