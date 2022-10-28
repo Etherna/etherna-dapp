@@ -290,7 +290,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
           withCredentials: true,
           onDownloadProgress: p => {
             // cancel large responses
-            if (p.total > 1000) {
+            if ((p.total || 0) > 1000) {
               cancelToken!("Network Error")
             }
           },
