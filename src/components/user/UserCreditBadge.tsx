@@ -60,7 +60,7 @@ const UserCreditBadge: React.FC<UserCreditBadgeProps> = ({ credit }) => {
       onMouseEnter={() => setIsHover(!isTouch)}
       onMouseLeave={() => setIsHover(false)}
     >
-      {/* <span className="hidden xs:inline text-xs tracking-tighter text-gray-600 dark:text-gray-400 mr-1">CHF</span> */}
+      {/* <span className="hidden xs:inline text-xs tracking-tighter text-gray-600 dark:text-gray-400 mr-1">xDAI</span> */}
       <div
         className={classNames(
           "relative flex items-baseline overflow-hidden",

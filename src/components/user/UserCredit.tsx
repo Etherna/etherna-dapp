@@ -51,7 +51,7 @@ const UserCredit: React.FC = () => {
           <p className="mb-4 text-xs">You current balance is:</p>
           <p className="break-all text-2xl font-bold">
             {readableCredit}
-            <span className="text-sm tracking-tighter text-gray-600 dark:text-gray-400">CHF</span>
+            <span className="text-sm tracking-tighter text-gray-600 dark:text-gray-400">xDAI</span>
           </p>
           {bytePrice && (
             <p className="my-3 text-sm text-gray-600 dark:text-gray-400">
