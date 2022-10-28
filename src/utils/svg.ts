@@ -13,9 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+import ReactDOMServer from "react-dom/server"
 
 import type React from "react"
-import ReactDOMServer from "react-dom/server"
 
 /**
  * Encode a SVG React component in base64 string

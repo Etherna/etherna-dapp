@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React from "react"
 
 import { ReactComponent as GatewayIcon } from "@/assets/icons/navigation/gateway.svg"

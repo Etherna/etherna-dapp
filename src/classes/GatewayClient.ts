@@ -1,8 +1,9 @@
-import type { GatewayClientOptions } from "@etherna/api-js/clients"
 import { EthernaGatewayClient } from "@etherna/api-js/clients"
 import { isSafeURL, urlOrigin } from "@etherna/api-js/utils"
 
 import extensionsStore from "@/stores/extensions"
+
+import type { GatewayClientOptions } from "@etherna/api-js/clients"
 
 export default class GatewayClient extends EthernaGatewayClient {
   constructor(host: string, opts?: Omit<GatewayClientOptions, "url">) {

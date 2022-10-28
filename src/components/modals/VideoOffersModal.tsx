@@ -14,9 +14,7 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useState } from "react"
-import type { Video } from "@etherna/api-js"
 import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
@@ -24,8 +22,10 @@ import classNames from "classnames"
 import { Button, Modal } from "@/components/ui/actions"
 import { SegmentedControl } from "@/components/ui/inputs"
 import useErrorMessage from "@/hooks/useErrorMessage"
-import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import useUserStore from "@/stores/user"
+
+import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
+import type { Video } from "@etherna/api-js"
 
 type VideoOffersModalProps = {
   show: boolean

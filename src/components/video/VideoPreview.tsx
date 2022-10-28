@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
 import classNames from "classnames"
@@ -25,13 +24,14 @@ import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
 import Image from "@/components/common/Image"
 import Time from "@/components/media/Time"
 import { Avatar, Badge, Skeleton } from "@/components/ui/display"
-import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import routes from "@/routes"
 import useExtensionsStore from "@/stores/extensions"
-import type { VideoWithIndexes, VideoWithOwner } from "@/types/video"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
 import { encodedSvg } from "@/utils/svg"
+
+import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
+import type { VideoWithIndexes, VideoWithOwner } from "@/types/video"
 
 const thumbnailPreview = encodedSvg(<ThumbPlaceholder />)
 

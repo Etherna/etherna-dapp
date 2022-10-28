@@ -13,9 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { useCallback, useEffect, useRef, useState } from "react"
-import type { Playlist, Profile, Video } from "@etherna/api-js"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
 import { urlOrigin } from "@etherna/api-js/utils"
 
@@ -26,9 +24,11 @@ import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
-import type { VideoWithIndexes } from "@/types/video"
 import { wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
+
+import type { VideoWithIndexes } from "@/types/video"
+import type { Playlist, Profile, Video } from "@etherna/api-js"
 
 export type VideosSource =
   | {

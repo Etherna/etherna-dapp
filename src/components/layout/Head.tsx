@@ -14,9 +14,9 @@
  *  limitations under the License.
  *
  */
+import { createPortal } from "react-dom"
 
 import type React from "react"
-import { createPortal } from "react-dom"
 
 type HeadProps = {
   children: React.ReactNode

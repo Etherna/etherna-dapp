@@ -1,4 +1,3 @@
-import type Lang from "lang.js"
 import create from "zustand"
 import { devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
@@ -6,6 +5,8 @@ import { immer } from "zustand/middleware/immer"
 import logger from "./middlewares/log"
 import lang from "@/lang"
 import { checkIsMobile, isTouchDevice } from "@/utils/browser"
+
+import type Lang from "lang.js"
 
 export type EnvironmentState = {
   isMobile: boolean

@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-
 import type { State, StateCreator, StoreMutatorIdentifier, Mutate, StoreApi } from "zustand"
 
 interface ISyncAction<TPayload = any> {

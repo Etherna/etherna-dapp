@@ -13,15 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-import type { Profile, Video } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
-
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmProfile from "@/classes/SwarmProfile"
 import SwarmVideo from "@/classes/SwarmVideo"
 import clientsStore from "@/stores/clients"
 import { fullfilledPromisesResult } from "@/utils/promise"
+
+import type { Profile, Video } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
 
 const match = /\/profile\/([^/]+)/
 

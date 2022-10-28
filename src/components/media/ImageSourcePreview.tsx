@@ -14,13 +14,13 @@
  *  limitations under the License.
  *
  */
-
 import React, { useMemo } from "react"
-import type { Image, ImageRaw } from "@etherna/api-js"
 
 import SwarmImage from "@/classes/SwarmImage"
 import MediaStats from "@/components/media/MediaStats"
 import useClientsStore from "@/stores/clients"
+
+import type { Image, ImageRaw } from "@etherna/api-js"
 
 type ImageSourcePreviewProps = {
   image?: Image | ImageRaw | null

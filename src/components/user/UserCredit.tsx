@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React, { useMemo } from "react"
 import { urlOrigin } from "@etherna/api-js/utils"
 

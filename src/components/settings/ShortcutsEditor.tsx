@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React from "react"
 
 import { BackspaceIcon } from "@heroicons/react/24/outline"
@@ -25,8 +24,9 @@ import { Kbd } from "@/components/ui/display"
 import useShortcutsEditor from "@/hooks/useShortcutsEditor"
 import useEnvironmentStore from "@/stores/env"
 import useSettingsStore from "@/stores/settings"
-import type { KeymapNamespace } from "@/types/keyboard"
 import { splitArray } from "@/utils/array"
+
+import type { KeymapNamespace } from "@/types/keyboard"
 
 type ShortcutsEditorProps = {
   namespace: KeymapNamespace

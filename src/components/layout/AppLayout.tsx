@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React from "react"
 
 import Popups from "@/components/layout/Popups"

@@ -13,17 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { useCallback, useEffect, useRef, useState } from "react"
-import type { Video } from "@etherna/api-js"
 import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 
 import useMounted from "./useMounted"
-import type { VideoOffersStatus } from "./useVideoOffers"
 import { parseReaderStatus } from "./useVideoOffers"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
+
+import type { VideoOffersStatus } from "./useVideoOffers"
+import type { Video } from "@etherna/api-js"
 
 type UseVideosResourcesOptions = {
   autoFetch?: boolean

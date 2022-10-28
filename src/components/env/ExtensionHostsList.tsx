@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useEffect, useState } from "react"
 import { urlHostname } from "@etherna/api-js/utils"
 import classNames from "classnames"
@@ -31,6 +30,7 @@ import GatewayClient from "@/classes/GatewayClient"
 import IndexClient from "@/classes/IndexClient"
 import { Menu } from "@/components/ui/actions"
 import { Spinner, Tooltip } from "@/components/ui/display"
+
 import type { ExtensionType } from "@/stores/ui"
 import type {
   ExtensionHost,

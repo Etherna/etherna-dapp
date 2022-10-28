@@ -14,14 +14,12 @@
  *  limitations under the License.
  *
  */
-
 import React, { useEffect } from "react"
 
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
 import SEO from "@/components/layout/SEO"
 
 import "@/styles/overrides/iubenda.scss"
-
 import { Container } from "@/components/ui/layout"
 
 const PrivacyPolicyPage = () => {

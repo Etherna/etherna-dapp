@@ -14,13 +14,13 @@
  *  limitations under the License.
  *
  */
-
 import React from "react"
-import type { Profile } from "@etherna/api-js"
 
 import { Avatar } from "@/components/ui/display"
 import routes from "@/routes"
 import { shortenEthAddr } from "@/utils/ethereum"
+
+import type { Profile } from "@etherna/api-js"
 
 type PlayerVideoInfoProps = {
   hash: string

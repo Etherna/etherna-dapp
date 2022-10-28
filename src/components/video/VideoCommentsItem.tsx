@@ -14,10 +14,8 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import type { EthAddress, IndexVideoComment } from "@etherna/api-js/clients"
 import classNames from "classnames"
 
 import { EllipsisVerticalIcon, TrashIcon } from "@heroicons/react/24/solid"
@@ -34,6 +32,8 @@ import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
+
+import type { EthAddress, IndexVideoComment } from "@etherna/api-js/clients"
 
 type VideoCommentsItemProps = {
   comment: IndexVideoComment

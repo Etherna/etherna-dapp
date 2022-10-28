@@ -14,9 +14,7 @@
  *  limitations under the License.
  *
  */
-
 import React, { useMemo } from "react"
-import type { Profile } from "@etherna/api-js"
 
 import VideoComments from "./VideoComments"
 import VideoDetailsDescription from "./VideoDetailsDescription"
@@ -24,9 +22,11 @@ import VideoDetailsInfoBar from "./VideoDetailsInfoBar"
 import VideoDetailsProfile from "./VideoDetailsProfile"
 import VideoDetailsTitleBar from "./VideoDetailsTitleBar"
 import VideoExtraMenu from "./VideoExtraMenu"
-import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import useExtensionsStore from "@/stores/extensions"
+
+import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import type { VideoWithIndexes } from "@/types/video"
+import type { Profile } from "@etherna/api-js"
 
 type VideoDetailsProps = {
   video: VideoWithIndexes

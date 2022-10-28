@@ -14,15 +14,13 @@
  *  limitations under the License.
  *
  */
-
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import { Transition } from "@headlessui/react"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
 
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/20/solid"
-import { PlayIcon } from "@heroicons/react/20/solid"
+import { ArrowTopRightOnSquareIcon, PlayIcon } from "@heroicons/react/20/solid"
 
 import { Popup } from "@/components/ui/display"
 

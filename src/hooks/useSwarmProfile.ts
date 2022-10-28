@@ -13,14 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { useCallback, useState } from "react"
-import type { Profile } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
 
 import SwarmProfile from "@/classes/SwarmProfile"
 import useClientsStore from "@/stores/clients"
 import { wait } from "@/utils/promise"
+
+import type { Profile } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
 
 type SwarmProfileOptions = {
   address: EthAddress

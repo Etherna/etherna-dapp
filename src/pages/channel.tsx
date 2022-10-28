@@ -14,15 +14,15 @@
  *  limitations under the License.
  *
  */
-
 import React from "react"
 import { useParams } from "react-router-dom"
-import type { EthAddress } from "@etherna/api-js/clients"
 
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
 import SEO from "@/components/layout/SEO"
 import ProfileView from "@/components/profile/ProfileView"
 import { Container } from "@/components/ui/layout"
+
+import type { EthAddress } from "@etherna/api-js/clients"
 
 const ChannelPage = () => {
   const { id } = useParams<{ id: EthAddress }>()

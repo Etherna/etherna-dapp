@@ -1,13 +1,14 @@
-import type { Image, Video } from "@etherna/api-js"
-import type { EthAddress, Reference } from "@etherna/api-js/clients"
-import type { VideoQuality } from "@etherna/api-js/schemas/video"
 import create from "zustand"
 import { persist, devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
-import type { BatchLoadingType } from "@/components/common/BatchLoading"
 import { uuidv4Short } from "@/utils/uuid"
+
+import type { BatchLoadingType } from "@/components/common/BatchLoading"
+import type { Image, Video } from "@etherna/api-js"
+import type { EthAddress, Reference } from "@etherna/api-js/clients"
+import type { VideoQuality } from "@etherna/api-js/schemas/video"
 
 export type VideoEditorPublishSourceType = "playlist" | "index"
 

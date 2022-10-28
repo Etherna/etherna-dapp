@@ -1,9 +1,10 @@
-import type { Crop } from "react-image-crop"
 import create from "zustand"
 import { devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
+
+import type { Crop } from "react-image-crop"
 import type { KeymapNamespace } from "@/types/keyboard"
 
 export type ExtensionType = "index" | "gateway"

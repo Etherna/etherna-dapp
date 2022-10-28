@@ -13,12 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { useCallback } from "react"
-import type { Crop } from "react-image-crop"
 import { fileToDataURL } from "@etherna/api-js/utils"
 
 import useUIStore from "@/stores/ui"
+
+import type { Crop } from "react-image-crop"
 
 let resolveCropData: ((crop: Partial<Crop> | undefined) => void) | undefined
 

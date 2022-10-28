@@ -1,8 +1,9 @@
-import type { IndexClientOptions } from "@etherna/api-js/clients"
 import { EthernaIndexClient } from "@etherna/api-js/clients"
 import { isSafeURL, urlOrigin } from "@etherna/api-js/utils"
 
 import extensionsStore from "@/stores/extensions"
+
+import type { IndexClientOptions } from "@etherna/api-js/clients"
 
 export default class IndexClient extends EthernaIndexClient {
   constructor(host: string, opts?: Omit<IndexClientOptions, "url">) {

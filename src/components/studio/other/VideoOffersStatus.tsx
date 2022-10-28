@@ -1,12 +1,13 @@
 import React, { useState } from "react"
-import type { Video } from "@etherna/api-js"
 
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline"
 
 import VideoOffersModal from "@/components/modals/VideoOffersModal"
 import { Badge, Spinner } from "@/components/ui/display"
-import type { VideoOffersStatus as VideoOffers } from "@/hooks/useVideoOffers"
 import useExtensionsStore from "@/stores/extensions"
+
+import type { VideoOffersStatus as VideoOffers } from "@/hooks/useVideoOffers"
+import type { Video } from "@etherna/api-js"
 
 type VideoOffersStatusProps = {
   className?: string

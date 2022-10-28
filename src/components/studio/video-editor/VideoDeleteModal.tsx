@@ -14,9 +14,7 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useMemo, useState } from "react"
-import type { Video } from "@etherna/api-js"
 import classNames from "classnames"
 
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
@@ -24,8 +22,10 @@ import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-p
 import Image from "@/components/common/Image"
 import { Button, Modal } from "@/components/ui/actions"
 import useErrorMessage from "@/hooks/useErrorMessage"
-import type { VideosSource } from "@/hooks/useUserVideos"
 import { encodedSvg } from "@/utils/svg"
+
+import type { VideosSource } from "@/hooks/useUserVideos"
+import type { Video } from "@etherna/api-js"
 
 type VideoDeleteModalProps = {
   source: VideosSource

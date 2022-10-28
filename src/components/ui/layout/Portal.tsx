@@ -14,10 +14,10 @@
  *  limitations under the License.
  *
  */
-
-import type React from "react"
 import { useEffect, useState } from "react"
 import ReactDOM from "react-dom"
+
+import type React from "react"
 
 type PortalProps = {
   children?: React.ReactNode

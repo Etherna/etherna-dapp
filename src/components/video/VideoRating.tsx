@@ -14,14 +14,14 @@
  *  limitations under the License.
  *
  */
-
 import React, { useState, useEffect, useMemo, useCallback } from "react"
-import type { VoteValue } from "@etherna/api-js/clients"
 import classNames from "classnames"
 
 import { ReactComponent as VoteIcon } from "@/assets/icons/player/upvote.svg"
 
 import useClientsStore from "@/stores/clients"
+
+import type { VoteValue } from "@etherna/api-js/clients"
 
 type VideoRatingProps = {
   videoId: string

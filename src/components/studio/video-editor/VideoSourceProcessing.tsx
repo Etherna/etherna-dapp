@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo, useRef, useState } from "react"
-import type { VideoQuality, VideoSource } from "@etherna/api-js/schemas/video"
 
 import { MinusIcon } from "@heroicons/react/24/outline"
 
@@ -16,6 +15,8 @@ import useClientsStore from "@/stores/clients"
 import useVideoEditorStore from "@/stores/video-editor"
 import { getVideoDuration, getVideoResolution } from "@/utils/media"
 import { isMimeWebCompatible } from "@/utils/mime-types"
+
+import type { VideoQuality, VideoSource } from "@etherna/api-js/schemas/video"
 
 type VideoSourceProcessingProps = {
   name: VideoQuality

@@ -14,10 +14,8 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Link, Navigate } from "react-router-dom"
-import type { Profile } from "@etherna/api-js"
 import { urlHostname } from "@etherna/api-js/utils"
 import classNames from "classnames"
 
@@ -34,16 +32,18 @@ import { Button } from "@/components/ui/actions"
 import { Badge, Table, Tooltip } from "@/components/ui/display"
 import { Select } from "@/components/ui/inputs"
 import useUserVideos from "@/hooks/useUserVideos"
-import type { VideosSource } from "@/hooks/useUserVideos"
 import useUserVideosVisibility from "@/hooks/useUserVideosVisibility"
 import useVideosResources from "@/hooks/useVideosResources"
 import routes from "@/routes"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
-import type { VideoWithIndexes } from "@/types/video"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
 import { encodedSvg } from "@/utils/svg"
+
+import type { VideosSource } from "@/hooks/useUserVideos"
+import type { VideoWithIndexes } from "@/types/video"
+import type { Profile } from "@etherna/api-js"
 
 const Videos: React.FC = () => {
   const defaultBatchId = useUserStore(state => state.defaultBatchId)

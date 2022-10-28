@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { extractReference } from "@etherna/api-js/utils"
 import classNames from "classnames"

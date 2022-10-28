@@ -14,10 +14,7 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import type { Profile } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
 
 import ProfileAbout from "./ProfileAbout"
 import ProfileVideos from "./ProfileVideos"
@@ -30,6 +27,9 @@ import usePlaylistVideos from "@/hooks/usePlaylistVideos"
 import routes from "@/routes"
 import useEnvironmentStore from "@/stores/env"
 import useUserStore from "@/stores/user"
+
+import type { Profile } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
 
 type ProfileViewProps = {
   profileAddress: EthAddress

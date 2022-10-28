@@ -14,18 +14,18 @@
  *  limitations under the License.
  *
  */
-
 import React from "react"
 import { useParams } from "react-router-dom"
-import type { Profile } from "@etherna/api-js"
 
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
 import SEO from "@/components/layout/SEO"
 import { Container } from "@/components/ui/layout"
 import VideoView from "@/components/video/VideoView"
 import useRouteState from "@/hooks/useRouteState"
+
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import type { VideoWithIndexes } from "@/types/video"
+import type { Profile } from "@etherna/api-js"
 
 const WatchPage = () => {
   const { hash } = useParams()

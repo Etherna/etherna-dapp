@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React, { useMemo } from "react"
 import classNames from "classnames"
 
@@ -23,11 +22,12 @@ import VideoOffersButton from "./VideoOffersButton"
 import VideoRating from "./VideoRating"
 import VideoShareButton from "./VideoShareButton"
 import VideoStatusBadge from "./VideoStatusBadge"
-import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import useVideoOffers from "@/hooks/useVideoOffers"
 import useExtensionsStore from "@/stores/extensions"
-import type { VideoWithIndexes } from "@/types/video"
 import dayjs from "@/utils/dayjs"
+
+import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
+import type { VideoWithIndexes } from "@/types/video"
 
 type VideoDetailsInfoBarProps = {
   video: VideoWithIndexes

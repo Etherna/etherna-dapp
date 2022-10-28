@@ -14,10 +14,7 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useEffect } from "react"
-import type { Profile } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
 
@@ -28,6 +25,9 @@ import useSwarmProfile from "@/hooks/useSwarmProfile"
 import { shortenEthAddr } from "@/utils/ethereum"
 import makeBlockies from "@/utils/make-blockies"
 import { getResponseErrorMessage } from "@/utils/request"
+
+import type { Profile } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
 
 type ProfileInfoProps = {
   children: React.ReactNode

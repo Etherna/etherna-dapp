@@ -13,21 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { useCallback, useEffect, useRef, useState } from "react"
-import type { Playlist, PlaylistVideo, Video } from "@etherna/api-js"
 import { urlOrigin } from "@etherna/api-js/utils"
-import type { AxiosError } from "axios"
 
 import useErrorMessage from "./useErrorMessage"
-import type { UseUserVideosOptions, VideosSource } from "./useUserVideos"
 import IndexClient from "@/classes/IndexClient"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
-import type { VideoWithIndexes } from "@/types/video"
 import { nullablePromise } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
+
+import type { UseUserVideosOptions, VideosSource } from "./useUserVideos"
+import type { VideoWithIndexes } from "@/types/video"
+import type { Playlist, PlaylistVideo, Video } from "@etherna/api-js"
+import type { AxiosError } from "axios"
 
 export type VisibilityStatus = {
   sourceType: "index" | "playlist"

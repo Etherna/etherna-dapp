@@ -13,9 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { useCallback, useEffect, useRef, useState } from "react"
-import type { GatewayBatch } from "@etherna/api-js/clients"
 import { parsePostageBatch } from "@etherna/api-js/utils"
 
 import useBeeAuthentication from "./useBeeAuthentication"
@@ -23,6 +21,8 @@ import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useUIStore from "@/stores/ui"
 import useUserStore from "@/stores/user"
+
+import type { GatewayBatch } from "@etherna/api-js/clients"
 
 type UseBatchesOpts = {
   autofetch?: boolean

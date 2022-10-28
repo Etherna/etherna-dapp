@@ -14,17 +14,17 @@
  *  limitations under the License.
  *
  */
-
 import React, { forwardRef, useContext, useState } from "react"
 import { usePopper } from "react-popper"
 import { Menu as HLMenu } from "@headlessui/react"
-import type { Placement } from "@popperjs/core"
 import classNames from "classnames"
 
 import UIButton from "./Button"
-import type { ButtonProps } from "./Button"
 import { Drawer } from "@/components/ui/display"
 import { Breakpoint } from "@/components/ui/layout"
+
+import type { ButtonProps } from "./Button"
+import type { Placement } from "@popperjs/core"
 
 export type MenuProps = {
   children: React.ReactNode
@@ -114,7 +114,7 @@ const MenuItems: React.FC<MenuItemsProps> = ({ children, width, height, placemen
           <Breakpoint.Sm>
             <div
               className={classNames(
-                "z-100 min-w-[8rem] rounded-md p-2 outline-hidden",
+                "outline-hidden z-100 min-w-[8rem] rounded-md p-2",
                 "bg-gray-50 shadow-lg dark:bg-gray-900",
                 "border border-gray-100 dark:border-gray-700",
                 "transition duration-75 ease-in-out",

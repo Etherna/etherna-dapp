@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useMemo, useState } from "react"
 import { isSafeURL } from "@etherna/api-js/utils"
 
@@ -26,6 +25,7 @@ import { Button, Modal } from "@/components/ui/actions"
 import useConfirmation from "@/hooks/useConfirmation"
 import useErrorMessage from "@/hooks/useErrorMessage"
 import useExtensionsStore from "@/stores/extensions"
+
 import type { ExtensionType } from "@/stores/ui"
 import type { GatewayExtensionHost, IndexExtensionHost } from "@/types/extension-host"
 

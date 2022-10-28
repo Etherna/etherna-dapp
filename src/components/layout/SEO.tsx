@@ -14,13 +14,13 @@
  *  limitations under the License.
  *
  */
-
 import React from "react"
 import { Helmet } from "react-helmet-async"
-import type { MetaProps } from "react-helmet-async"
 
 import Head from "./Head"
 import useSettingsStore from "@/stores/settings"
+
+import type { MetaProps } from "react-helmet-async"
 
 type SEOProps = {
   children?: React.ReactNode
