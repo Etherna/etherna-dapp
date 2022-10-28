@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo } from "react"
-import type { Image } from "@etherna/api-js"
-import type { VideoSource } from "@etherna/api-js/schemas/video"
 
 import useErrorMessage from "./useErrorMessage"
 import { THUMBNAIL_QUEUE_NAME } from "@/components/studio/video-editor/ThumbnailUpload"
-import type { VideoEditorQueueType } from "@/stores/video-editor"
 import useVideoEditorStore from "@/stores/video-editor"
+
+import type { VideoEditorQueueType } from "@/stores/video-editor"
+import type { Image } from "@etherna/api-js"
+import type { VideoSource } from "@etherna/api-js/schemas/video"
 
 type UseVideoEditorQueueOptions = {
   hasSelectedFile: boolean

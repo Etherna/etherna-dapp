@@ -13,16 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { useCallback, useEffect, useState } from "react"
-import type { IndexVideo } from "@etherna/api-js/clients"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
 
 import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
-import type { VideoWithIndexes } from "@/types/video"
 import { nullablePromise } from "@/utils/promise"
+
+import type { VideoWithIndexes } from "@/types/video"
+import type { IndexVideo } from "@etherna/api-js/clients"
 
 type SwarmVideoOptions = {
   reference: string

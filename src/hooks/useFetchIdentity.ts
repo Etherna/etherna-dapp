@@ -13,9 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { useEffect } from "react"
-import type { BatchId, EthAddress, SSOIdentity } from "@etherna/api-js/clients"
 
 import BeeClient from "@/classes/BeeClient"
 import SwarmProfile from "@/classes/SwarmProfile"
@@ -25,6 +23,8 @@ import useUIStore from "@/stores/ui"
 import useUserStore from "@/stores/user"
 import { loginRedirect } from "@/utils/automations"
 import { signMessage } from "@/utils/ethereum"
+
+import type { BatchId, EthAddress, SSOIdentity } from "@etherna/api-js/clients"
 
 type AutoSigninOpts = {
   forceSignin?: boolean

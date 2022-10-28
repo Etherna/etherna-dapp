@@ -13,10 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { useCallback, useEffect, useMemo, useState } from "react"
-import type { Playlist, PlaylistVideo, UserPlaylists, Video } from "@etherna/api-js"
-import type { EthAddress, Reference } from "@etherna/api-js/clients"
 
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmUserPlaylists from "@/classes/SwarmUserPlaylists"
@@ -24,6 +21,9 @@ import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
 import { deepCloneArray } from "@/utils/array"
 import { deepCloneObject } from "@/utils/object"
+
+import type { Playlist, PlaylistVideo, UserPlaylists, Video } from "@etherna/api-js"
+import type { EthAddress, Reference } from "@etherna/api-js/clients"
 
 interface UseUserPlaylistsOptions {
   fetchChannel?: boolean

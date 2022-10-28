@@ -1,13 +1,14 @@
 import { useCallback, useEffect } from "react"
-import type { Video } from "@etherna/api-js"
-import type { Reference } from "@etherna/api-js/clients"
-import type { AxiosError } from "axios"
 
 import useErrorMessage from "./useErrorMessage"
 import useUserPlaylists from "./useUserPlaylists"
 import useWallet from "./useWallet"
 import IndexClient from "@/classes/IndexClient"
 import useUserStore from "@/stores/user"
+
+import type { Video } from "@etherna/api-js"
+import type { Reference } from "@etherna/api-js/clients"
+import type { AxiosError } from "axios"
 
 export default function useVideoPublish() {
   const address = useUserStore(state => state.address!)

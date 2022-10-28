@@ -14,15 +14,15 @@
  *  limitations under the License.
  *
  */
-
 import React from "react"
 import { Link } from "react-router-dom"
-import type { Profile } from "@etherna/api-js"
 import classNames from "classnames"
 
 import { Avatar } from "@/components/ui/display"
 import routes from "@/routes"
 import { shortenEthAddr } from "@/utils/ethereum"
+
+import type { Profile } from "@etherna/api-js"
 
 type VideoDetailsProfileProps = {
   owner?: Profile | null

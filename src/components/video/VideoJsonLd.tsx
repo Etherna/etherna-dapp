@@ -14,14 +14,14 @@
  *  limitations under the License.
  *
  */
-
 import React, { useMemo } from "react"
 import { JsonLd } from "react-schemaorg"
-import type { VideoObject } from "schema-dts"
 
 import dayjs from "@/utils/dayjs"
 import { stripMarkdown } from "@/utils/markdown"
 import { timeComponents } from "@/utils/time"
+
+import type { VideoObject } from "schema-dts"
 
 export type VideoJsonLdProps = {
   title: string

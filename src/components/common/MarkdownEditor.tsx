@@ -14,11 +14,9 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import classNames from "classnames"
 import { Editor, EditorState, RichUtils, convertFromRaw, convertToRaw } from "draft-js"
-import type { DraftEditorCommand, DraftHandleValue, EditorProps } from "draft-js"
 import { draftToMarkdown, markdownToDraft } from "markdown-draft-js"
 
 import { ReactComponent as BoldIcon } from "@/assets/icons/rte/bold.svg"
@@ -30,8 +28,8 @@ import { ReactComponent as StrikethroughIcon } from "@/assets/icons/rte/striketh
 import { ReactComponent as UnderlineIcon } from "@/assets/icons/rte/underline.svg"
 import { ReactComponent as UnorderedListIconIcon } from "@/assets/icons/rte/unordered-list.svg"
 
+import type { DraftEditorCommand, DraftHandleValue, EditorProps } from "draft-js"
 import "@/styles/overrides/draft-js.scss"
-
 import { Label } from "@/components/ui/display"
 import { TextInput } from "@/components/ui/inputs"
 

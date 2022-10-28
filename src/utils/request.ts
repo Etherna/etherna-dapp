@@ -13,9 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+import axios from "axios"
 
 import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios"
-import axios from "axios"
 
 interface SkipXHRError extends AxiosError {
   isSkipXHR?: boolean

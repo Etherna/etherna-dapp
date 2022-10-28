@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { useCallback, useState } from "react"
 
 type UseLocalStorageReturn<T> = [T | null, (value: T | ((oldValue: T) => T)) => void]

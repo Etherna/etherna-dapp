@@ -14,9 +14,7 @@
  *  limitations under the License.
  *
  */
-
 import React, { useMemo } from "react"
-import type { Video } from "@etherna/api-js"
 import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 import { extractReference } from "@etherna/api-js/utils"
 
@@ -25,6 +23,8 @@ import { ReactComponent as ManifestIcon } from "@/assets/icons/manifest.svg"
 
 import { Button, Modal } from "@/components/ui/actions"
 import useClientsStore from "@/stores/clients"
+
+import type { Video } from "@etherna/api-js"
 
 type VideoExtraMenuManifestProps = {
   video: Video

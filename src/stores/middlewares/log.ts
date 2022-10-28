@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-
 import type { State, StateCreator, StoreMutatorIdentifier, Mutate, StoreApi } from "zustand"
 
 interface ISyncAction<TPayload = any> {
@@ -22,23 +21,25 @@ declare module "zustand" {
   }
 }
 
-type LoggerImpl = <T extends State>(
+type LoggerImpl = <T extends unknown>(
   f: PopArgument<StateCreator<T, [], []>>
 ) => PopArgument<StateCreator<T, [], []>>
 
-const logger: LoggerImpl = f => (set, get, _store) => {
-  type T = ReturnType<typeof f>
+const logger: LoggerImpl =
+  f =>
+  (...args) => {
+    type T = ReturnType<typeof f>
 
-  const store = _store as Mutate<StoreApi<T>, [["logger", ISyncAction]]>
+    // const store = args[0] as Mutate<StoreApi<T>, [["logger", ISyncAction]]>
 
-  if (import.meta.env.DEV) {
-    store.subscribe((newState, oldState) => {
-      console.debug("state changed", newState)
-    })
+    if (import.meta.env.DEV) {
+      //   store.subscribe((newState, oldState) => {
+      //     console.debug("state changed", newState)
+      //   })
+    }
+
+    return f(...args)
   }
-
-  return f(set, get, _store)
-}
 
 type PopArgument<T extends (...a: never[]) => unknown> = T extends (
   ...a: [...infer A, infer _]

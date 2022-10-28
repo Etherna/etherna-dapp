@@ -13,9 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { useCallback, useEffect, useState } from "react"
-import type { EthAddress } from "@etherna/api-js/clients"
 import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
 
@@ -26,9 +24,11 @@ import SwarmProfile from "@/classes/SwarmProfile"
 import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
-import type { VideoWithIndexes, VideoWithOffersStatus, VideoWithOwner } from "@/types/video"
 import { wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
+
+import type { VideoWithIndexes, VideoWithOffersStatus, VideoWithOwner } from "@/types/video"
+import type { EthAddress } from "@etherna/api-js/clients"
 
 type SwarmVideosOptions = {
   gridRef?: React.RefObject<HTMLElement>

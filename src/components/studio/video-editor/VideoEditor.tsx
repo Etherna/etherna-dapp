@@ -1,5 +1,4 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo } from "react"
-import type { Video } from "@etherna/api-js"
 import classNames from "classnames"
 
 import OffersCard from "./cards/OffersCard"
@@ -14,6 +13,8 @@ import useEffectOnce from "@/hooks/useEffectOnce"
 import useVideoEditor from "@/hooks/useVideoEditor"
 import useUserStore from "@/stores/user"
 import useVideoEditorStore from "@/stores/video-editor"
+
+import type { Video } from "@etherna/api-js"
 
 export const PORTAL_ID = "video-drag-portal"
 

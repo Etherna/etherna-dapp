@@ -14,10 +14,7 @@
  *  limitations under the License.
  *
  */
-
 import React, { useEffect, useMemo, useCallback } from "react"
-import type { Profile } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
 import removeMarkdown from "remove-markdown"
 
 import VideoJsonLd from "./VideoJsonLd"
@@ -31,10 +28,13 @@ import useErrorMessage from "@/hooks/useErrorMessage"
 import useResetRouteState from "@/hooks/useResetRouteState"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
 import useSwarmVideo from "@/hooks/useSwarmVideo"
-import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import routes from "@/routes"
 import useClientsStore from "@/stores/clients"
+
+import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import type { VideoWithIndexes } from "@/types/video"
+import type { Profile } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
 
 type VideoViewProps = {
   reference: string

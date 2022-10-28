@@ -14,10 +14,8 @@
  *  limitations under the License.
  *
  */
-
 import React, { useEffect, useMemo } from "react"
 import { Link } from "react-router-dom"
-import type { EthAddress } from "@etherna/api-js/clients"
 
 import { Avatar } from "@/components/ui/display"
 import VideoGrid from "@/components/video/VideoGrid"
@@ -25,8 +23,10 @@ import usePlaylistVideos from "@/hooks/usePlaylistVideos"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
 import useUserPlaylists from "@/hooks/useUserPlaylists"
 import routes from "@/routes"
-import type { VideoWithIndexes, VideoWithOffersStatus, VideoWithOwner } from "@/types/video"
 import { shortenEthAddr } from "@/utils/ethereum"
+
+import type { VideoWithIndexes, VideoWithOffersStatus, VideoWithOwner } from "@/types/video"
+import type { EthAddress } from "@etherna/api-js/clients"
 
 type ProfilePreviewProps = {
   profileAddress: EthAddress

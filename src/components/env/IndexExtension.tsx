@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React from "react"
 
 import { ReactComponent as IndexIcon } from "@/assets/icons/navigation/index.svg"

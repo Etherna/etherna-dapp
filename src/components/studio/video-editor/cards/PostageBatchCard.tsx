@@ -14,9 +14,7 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import type { BatchId, PostageBatch } from "@etherna/api-js/clients"
 import { BatchesHandler } from "@etherna/api-js/handlers"
 import { BatchUpdateType } from "@etherna/api-js/stores"
 import { Transition } from "@headlessui/react"
@@ -27,6 +25,8 @@ import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
 import useVideoEditorStore from "@/stores/video-editor"
+
+import type { BatchId, PostageBatch } from "@etherna/api-js/clients"
 
 type PostageBatchCardProps = {
   disabled?: boolean

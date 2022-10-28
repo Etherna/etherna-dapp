@@ -13,9 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-import type { Profile } from "@etherna/api-js"
-import type { EthAddress, IndexVideo } from "@etherna/api-js/clients"
 import { BeeClient } from "@etherna/api-js/clients"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
 import { urlOrigin } from "@etherna/api-js/utils"
@@ -23,8 +20,11 @@ import { urlOrigin } from "@etherna/api-js/utils"
 import SwarmProfile from "@/classes/SwarmProfile"
 import SwarmVideo from "@/classes/SwarmVideo"
 import clientsStore from "@/stores/clients"
-import type { VideoWithIndexes } from "@/types/video"
 import { nullablePromise } from "@/utils/promise"
+
+import type { VideoWithIndexes } from "@/types/video"
+import type { Profile } from "@etherna/api-js"
+import type { EthAddress, IndexVideo } from "@etherna/api-js/clients"
 
 const match = /\/watch\/([^/]+)/
 

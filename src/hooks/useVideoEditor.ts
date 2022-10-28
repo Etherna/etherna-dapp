@@ -13,10 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { useCallback, useRef, useState } from "react"
-import type { Video } from "@etherna/api-js"
-import type { BatchId, Reference } from "@etherna/api-js/clients"
 import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 
 import useErrorMessage from "./useErrorMessage"
@@ -24,9 +21,12 @@ import useVideoPublish from "./useVideoPublish"
 import useWallet from "./useWallet"
 import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
-import type { VideoEditorPublishSource } from "@/stores/video-editor"
 import useVideoEditorStore from "@/stores/video-editor"
 import { getResponseErrorMessage } from "@/utils/request"
+
+import type { VideoEditorPublishSource } from "@/stores/video-editor"
+import type { Video } from "@etherna/api-js"
+import type { BatchId, Reference } from "@etherna/api-js/clients"
 
 type SaveOpts = {
   saveManifest: boolean

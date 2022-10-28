@@ -14,12 +14,12 @@
  *  limitations under the License.
  *
  */
-
 import React from "react"
-import type { VideoSource } from "@etherna/api-js"
 
 import MediaStats from "@/components/media/MediaStats"
 import { convertBirate, convertBytes } from "@/utils/converters"
+
+import type { VideoSource } from "@etherna/api-js"
 
 type VideoSourceStatsProps = {
   source: VideoSource | undefined

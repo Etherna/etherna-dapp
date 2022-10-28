@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React from "react"
 
 import { SparklesIcon, UserCircleIcon, FilmIcon, BanknotesIcon } from "@heroicons/react/24/solid"

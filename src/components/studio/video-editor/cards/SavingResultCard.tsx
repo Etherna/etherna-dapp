@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/actions"
 import { Alert, Card, Text } from "@/components/ui/display"
 import useVideoEditor from "@/hooks/useVideoEditor"
 import routes from "@/routes"
-import type { PublishStatus } from "@/stores/video-editor"
 import useVideoEditorStore from "@/stores/video-editor"
+
+import type { PublishStatus } from "@/stores/video-editor"
 
 type SavingResultCardProps = {}
 

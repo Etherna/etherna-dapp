@@ -14,13 +14,13 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useContext, useState } from "react"
 import { usePopper } from "react-popper"
 import { Link } from "react-router-dom"
 import { Menu } from "@headlessui/react"
-import type { Placement } from "@popperjs/core"
 import classNames from "classnames"
+
+import type { Placement } from "@popperjs/core"
 
 export type DropdownProps = {
   children?: React.ReactNode

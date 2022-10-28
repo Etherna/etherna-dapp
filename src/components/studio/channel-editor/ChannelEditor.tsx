@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React, {
   forwardRef,
   useCallback,
@@ -24,8 +23,6 @@ import React, {
   useRef,
   useState,
 } from "react"
-import type { Image, Profile } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
 import classNames from "classnames"
 
 import { TrashIcon } from "@heroicons/react/24/outline"
@@ -43,6 +40,9 @@ import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
 import makeBlockies from "@/utils/make-blockies"
 import { isAnimatedImage } from "@/utils/media"
+
+import type { Image, Profile } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
 
 type ImageType = "avatar" | "cover"
 

@@ -14,10 +14,7 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useEffect, useState, startTransition, useMemo } from "react"
-import type { GatewayBatch } from "@etherna/api-js/clients"
-import type { BatchesHandler } from "@etherna/api-js/handlers"
 import {
   calcBatchPrice,
   calcDilutedTTL,
@@ -28,10 +25,13 @@ import {
 import GatewayClient from "@/classes/GatewayClient"
 import { FormGroup, Spinner } from "@/components/ui/display"
 import { Slider } from "@/components/ui/inputs"
-import type { GatewayType } from "@/types/extension-host"
 import { convertBytes } from "@/utils/converters"
 import dayjs from "@/utils/dayjs"
 import { clamp } from "@/utils/math"
+
+import type { GatewayType } from "@/types/extension-host"
+import type { GatewayBatch } from "@etherna/api-js/clients"
+import type { BatchesHandler } from "@etherna/api-js/handlers"
 
 type PostageBatchEditorProps = {
   batch: GatewayBatch

@@ -3,9 +3,10 @@ import { devtools, persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
-import type { Keymaps } from "@/keyboard"
 import { getDefaultKeymap, mergeKeymaps, optimizeKeymapsForStorage } from "@/keyboard"
 import { loadColorScheme, prefersDarkColorScheme } from "@/utils/dark-mode"
+
+import type { Keymaps } from "@/keyboard"
 
 type StorageValue<S> = {
   state: S

@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React, { useMemo, useState } from "react"
 
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline"
@@ -25,6 +24,7 @@ import VideoExtraMenuManifest from "./VideoExtraMenuManifest"
 import VideoExtraMenuReport from "./VideoExtraMenuReport"
 import { Dropdown } from "@/components/ui/actions"
 import useExtensionsStore from "@/stores/extensions"
+
 import type { VideoWithIndexes } from "@/types/video"
 
 type VideoExtraMenuProps = {

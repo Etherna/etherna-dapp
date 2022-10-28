@@ -14,15 +14,15 @@
  *  limitations under the License.
  *
  */
-
 import React from "react"
 import { RadioGroup } from "@headlessui/react"
 import classNames from "classnames"
 
 import { CheckCircleIcon } from "@heroicons/react/24/solid"
 
-import type { ExtensionParamConfig } from "./ExtensionHostPanel"
 import { TextInput } from "@/components/ui/inputs"
+
+import type { ExtensionParamConfig } from "./ExtensionHostPanel"
 
 type ExtensionHostPanelParamProps = {
   value: string

@@ -13,9 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { useCallback, useEffect, useRef, useState } from "react"
-import type { GatewayBatch, PostageBatch } from "@etherna/api-js/clients"
 import { BatchesHandler } from "@etherna/api-js/handlers"
 import { BatchUpdateType } from "@etherna/api-js/stores"
 import { getBatchSpace, parseGatewayBatch, parsePostageBatch } from "@etherna/api-js/utils"
@@ -27,6 +25,8 @@ import useExtensionsStore from "@/stores/extensions"
 import useUIStore from "@/stores/ui"
 import useUserStore from "@/stores/user"
 import dayjs from "@/utils/dayjs"
+
+import type { GatewayBatch, PostageBatch } from "@etherna/api-js/clients"
 
 type UseBatchesOpts = {
   autofetch?: boolean

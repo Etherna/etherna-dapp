@@ -13,14 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { useCallback, useEffect, useState } from "react"
-import type { Video, VideoRaw } from "@etherna/api-js"
 import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
 
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
+
+import type { Video, VideoRaw } from "@etherna/api-js"
 
 export type VideoOffersStatus = {
   offersStatus: "full" | "partial" | "sources" | "none"

@@ -13,11 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { urlOrigin } from "@etherna/api-js/utils"
 
 import { parseLocalStorage } from "./local-storage"
 import clientsStore from "@/stores/clients"
+
 import type { IndexExtensionHost } from "@/types/extension-host"
 
 export const autoRedirect = () => {

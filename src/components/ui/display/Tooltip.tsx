@@ -14,12 +14,11 @@
  *  limitations under the License.
  *
  */
-
 import React from "react"
-import type { Placement } from "@popperjs/core"
 import Tippy from "@tippyjs/react"
 import classNames from "classnames"
 
+import type { Placement } from "@popperjs/core"
 import "tippy.js/dist/tippy.css"
 
 export type TooltipProps = {

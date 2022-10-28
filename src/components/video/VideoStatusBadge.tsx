@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback } from "react"
 
 import { ReactComponent as UnindexedIcon } from "@/assets/icons/unindexed.svg"

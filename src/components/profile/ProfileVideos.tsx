@@ -14,11 +14,11 @@
  *  limitations under the License.
  *
  */
-
 import React, { useMemo } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
 import VideoGrid from "@/components/video/VideoGrid"
+
 import type { VideoWithIndexes, VideoWithOffersStatus, VideoWithOwner } from "@/types/video"
 
 type ProfileVideosProps = {

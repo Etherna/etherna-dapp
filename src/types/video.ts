@@ -14,10 +14,8 @@
  *  limitations under the License.
  *
  */
-
-import type { Profile, Video } from "@etherna/api-js"
-
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
+import type { Profile, Video } from "@etherna/api-js"
 
 export type VideoWithOwner = Video & { owner: Profile | undefined }
 

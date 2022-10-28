@@ -13,10 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import { useCallback, useEffect, useRef, useState } from "react"
-import type { Playlist, Profile, Video } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
 
 import useErrorMessage from "./useErrorMessage"
 import useSmartFetchCount from "./useSmartFetchCount"
@@ -24,8 +21,11 @@ import BeeClient from "@/classes/BeeClient"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
-import type { VideoWithOwner } from "@/types/video"
 import { getResponseErrorMessage } from "@/utils/request"
+
+import type { VideoWithOwner } from "@/types/video"
+import type { Playlist, Profile, Video } from "@etherna/api-js"
+import type { EthAddress } from "@etherna/api-js/clients"
 
 type PlaylistVideosOptions = {
   gridRef?: React.RefObject<HTMLElement>

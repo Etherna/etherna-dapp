@@ -14,11 +14,11 @@
  *  limitations under the License.
  *
  */
-
 import React from "react"
 import ReactSliderLib from "react-slider"
-import type { ReactSliderProps } from "react-slider"
 import classNames from "classnames"
+
+import type { ReactSliderProps } from "react-slider"
 
 const ReactSlider = ReactSliderLib as unknown as React.FC<ReactSliderProps>
 

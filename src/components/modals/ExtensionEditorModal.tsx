@@ -14,19 +14,19 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import { ReactComponent as GatewayIcon } from "@/assets/icons/navigation/gateway.svg"
 import { ReactComponent as IndexIcon } from "@/assets/icons/navigation/index.svg"
 
 import ExtensionHostPanel from "@/components/env/ExtensionHostPanel"
-import type { ExtensionParamConfig } from "@/components/env/ExtensionHostPanel"
 import { Button, Modal } from "@/components/ui/actions"
 import useExtensionEditor from "@/hooks/useExtensionEditor"
 import sessionStore from "@/stores/session"
 import useUIStore from "@/stores/ui"
 import userStore from "@/stores/user"
+
+import type { ExtensionParamConfig } from "@/components/env/ExtensionHostPanel"
 import type { GatewayExtensionHost, IndexExtensionHost } from "@/types/extension-host"
 
 const ExtensionEditorModal = <T extends IndexExtensionHost | GatewayExtensionHost>() => {

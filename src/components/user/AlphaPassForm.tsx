@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useState } from "react"
 import { useMatomo } from "@datapunt/matomo-tracker-react"
 import axios from "axios"

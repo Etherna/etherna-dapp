@@ -1,5 +1,6 @@
-import type { EffectCallback } from "react"
 import { useEffect, useRef } from "react"
+
+import type { EffectCallback } from "react"
 
 export default function useEffectOnce(effect: EffectCallback) {
   const didRun = useRef(false)

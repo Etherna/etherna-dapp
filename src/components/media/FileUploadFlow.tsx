@@ -14,13 +14,13 @@
  *  limitations under the License.
  *
  */
-
 import React, { useState, useImperativeHandle, useEffect, useCallback } from "react"
 import { fileToBuffer } from "@etherna/api-js/utils"
 
 import FileDrag from "./FileDrag"
 import FileUpload from "./FileUpload"
 import { Label } from "@/components/ui/display"
+
 import type { FilePreviewRenderProps } from "@/types/file-preview"
 
 type FileUploadFlowProps = {

@@ -14,14 +14,14 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useMemo } from "react"
 
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid"
 
-import type { ExtensionParamConfig } from "./ExtensionHostPanel"
 import ExtensionHostPanelParam from "./ExtensionHostPanelParam"
 import { Alert, FormGroup, Label } from "@/components/ui/display"
+
+import type { ExtensionParamConfig } from "./ExtensionHostPanel"
 import type { GatewayExtensionHost, IndexExtensionHost } from "@/types/extension-host"
 
 const swarmExtensionUrl =

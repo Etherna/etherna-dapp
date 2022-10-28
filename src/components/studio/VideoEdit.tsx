@@ -14,10 +14,8 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Navigate } from "react-router-dom"
-import type { Video } from "@etherna/api-js"
 
 import { TrashIcon } from "@heroicons/react/24/outline"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
@@ -31,7 +29,9 @@ import useSwarmVideo from "@/hooks/useSwarmVideo"
 import routes from "@/routes"
 import useUserStore from "@/stores/user"
 import useVideoEditorStore from "@/stores/video-editor"
+
 import type { VideoWithIndexes } from "@/types/video"
+import type { Video } from "@etherna/api-js"
 
 type VideoEditProps = {
   reference: string | undefined

@@ -1,10 +1,11 @@
-import type { Profile } from "@etherna/api-js"
-import type { BatchId, EthAddress, GatewayBatch } from "@etherna/api-js/clients"
 import create from "zustand"
 import { persist, devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
+
+import type { Profile } from "@etherna/api-js"
+import type { BatchId, EthAddress, GatewayBatch } from "@etherna/api-js/clients"
 
 export type WalletType = "etherna" | "metamask"
 

@@ -14,9 +14,7 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import type { GatewayBatch } from "@etherna/api-js/clients"
 import { BatchesHandler } from "@etherna/api-js/handlers"
 import { BatchUpdateType, useBatchesStore } from "@etherna/api-js/stores"
 import { getBatchPercentUtilization, getBatchSpace, parsePostageBatch } from "@etherna/api-js/utils"
@@ -35,6 +33,8 @@ import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
 import { convertBytes } from "@/utils/converters"
 import dayjs from "@/utils/dayjs"
+
+import type { GatewayBatch } from "@etherna/api-js/clients"
 
 type PostageBatchListProps = {
   batches: GatewayBatch[]

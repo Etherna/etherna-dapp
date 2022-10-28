@@ -3,6 +3,7 @@ import { persist, devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
+
 import type { GatewayExtensionHost, GatewayType, IndexExtensionHost } from "@/types/extension-host"
 
 export type ExtensionsState = {

@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback } from "react"
 
 import PlayerToolbarSelect from "./PlayerToolbarSelect"

@@ -14,13 +14,13 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useRef, useState } from "react"
-import type { Crop } from "react-image-crop"
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop"
 import classNames from "classnames"
 
 import { Slider } from "@/components/ui/inputs"
+
+import type { Crop } from "react-image-crop"
 
 type ImageCropperProps = {
   className?: string

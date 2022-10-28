@@ -14,14 +14,14 @@
  *  limitations under the License.
  *
  */
-
 import React, { useState, useEffect, useCallback } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
-import type { IndexUser } from "@etherna/api-js/clients"
 
 import ProfilePreview from "./ProfilePreview"
 import ProfilePreviewPlaceholder from "@/components/placeholders/ProfilePreviewPlaceholder"
 import useClientsStore from "@/stores/clients"
+
+import type { IndexUser } from "@etherna/api-js/clients"
 
 const FETCH_COUNT = 10
 

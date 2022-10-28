@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React, { useEffect } from "react"
 
 const AlphaPassRedirect = () => {

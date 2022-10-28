@@ -14,13 +14,13 @@
  *  limitations under the License.
  *
  */
-
 import React from "react"
-import type { Image as SwarmImage } from "@etherna/api-js"
 import classNames from "classnames"
 
 import Image from "@/components/common/Image"
 import makeBlockies from "@/utils/make-blockies"
+
+import type { Image as SwarmImage } from "@etherna/api-js"
 
 export type AvatarProps = {
   image?: string | SwarmImage | null

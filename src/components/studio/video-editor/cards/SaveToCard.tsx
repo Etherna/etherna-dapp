@@ -14,7 +14,6 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useEffect, useMemo } from "react"
 import { urlHostname } from "@etherna/api-js/utils"
 
@@ -24,8 +23,9 @@ import { SelectionToggle } from "@/components/ui/inputs"
 import useVideoPublishStatus from "@/hooks/useVideoPublishStatus"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
-import type { VideoEditorPublishSourceType } from "@/stores/video-editor"
 import useVideoEditorStore from "@/stores/video-editor"
+
+import type { VideoEditorPublishSourceType } from "@/stores/video-editor"
 
 type SaveToCardProps = {
   disabled?: boolean

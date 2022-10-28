@@ -14,11 +14,8 @@
  *  limitations under the License.
  *
  */
-
 import React, { useRef, useState, useEffect, useCallback, useMemo } from "react"
-import type { Profile, VideoSource } from "@etherna/api-js"
 import Axios from "axios"
-import type { Canceler } from "axios"
 import classNames from "classnames"
 import { filterXSS } from "xss"
 
@@ -36,6 +33,9 @@ import { usePlayerState } from "@/context/player-context/hooks"
 import useVideoTracking from "@/hooks/useVideoTracking"
 import { isTouchDevice } from "@/utils/browser"
 import http from "@/utils/request"
+
+import type { Profile, VideoSource } from "@etherna/api-js"
+import type { Canceler } from "axios"
 
 const DEFAULT_SKIP = 5
 
@@ -290,7 +290,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
           withCredentials: true,
           onDownloadProgress: p => {
             // cancel large responses
-            if (p.total > 1000) {
+            if ((p.total || 0) > 1000) {
               cancelToken!("Network Error")
             }
           },

@@ -14,9 +14,7 @@
  *  limitations under the License.
  *
  */
-
 import React, { useCallback, useMemo, useRef, useState } from "react"
-import type { Image } from "@etherna/api-js"
 
 import { MinusIcon } from "@heroicons/react/24/outline"
 
@@ -33,6 +31,8 @@ import useClientsStore from "@/stores/clients"
 import useVideoEditorStore from "@/stores/video-editor"
 import { isAnimatedImage } from "@/utils/media"
 import { isMimeWebCompatible } from "@/utils/mime-types"
+
+import type { Image } from "@etherna/api-js"
 
 type ThumbnailUploadProps = {
   disabled?: boolean
