@@ -216,8 +216,8 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
     setVideos([])
     setHasMore(true)
     setPage(0)
-    fetchVideos()
-  }, [fetchVideos])
+    page === 0 && fetchVideos()
+  }, [page, fetchVideos])
 
   return {
     videos,

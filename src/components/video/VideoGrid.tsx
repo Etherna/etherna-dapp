@@ -74,7 +74,12 @@ const VideoGrid = forwardRef<HTMLDivElement, VideoGridProps>(
                 hideProfile={mini}
                 decentralizedLink={decentralizedLink}
                 direction={singleColumn ? "horizontal" : "vertical"}
-                key={video.reference}
+                key={
+                  video.indexesStatus
+                    ? video.indexesStatus[Object.keys(video.indexesStatus)[0]]?.indexReference ??
+                      video.reference
+                    : video.reference
+                }
               />
             ))}
           {isFetching &&
