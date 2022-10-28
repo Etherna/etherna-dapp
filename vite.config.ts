@@ -13,48 +13,64 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import react from "@vitejs/plugin-react"
 import fs from "fs"
 import { resolve } from "path"
-import { defineConfig } from "vite"
+import { defineConfig, loadEnv } from "vite"
 import checker from "vite-plugin-checker"
 import { dynamicBase } from "vite-plugin-dynamic-base"
 import eslintPlugin from "vite-plugin-eslint"
 import svgr from "vite-plugin-svgr"
 
-// https://vitejs.dev/config/
-export default defineConfig(({ mode, command }) => ({
-  base: mode === "production" && command === "build" ? "/__dynamic_base__/" : "/",
-  build: {
-    manifest: true,
-    outDir: "build",
-  },
-  server: {
-    https: fs.existsSync("proxy/sslcert/key.pem") &&
-      fs.existsSync("proxy/sslcert/cert.pem") && {
-        key: fs.readFileSync("proxy/sslcert/key.pem"),
-        cert: fs.readFileSync("proxy/sslcert/cert.pem"),
+function htmlPlugin(env: ReturnType<typeof loadEnv>) {
+  return {
+    name: "html-transform",
+    transformIndexHtml: {
+      enforce: "pre" as const,
+      transform: (html: string) => {
+        return html.replace(/\{\{(.*?)\}\}/g, (match, p1) => env[p1] ?? match)
       },
-    port: 3000,
-  },
-  define: {
-    global: "window",
-  },
-  resolve: {
-    alias: [{ find: "@", replacement: resolve(__dirname, "src") }],
-  },
-  plugins: [
-    react(),
-    svgr(),
-    eslintPlugin({ cache: false }),
-    checker({
-      typescript: true,
-      overlay: false,
-    }),
-    dynamicBase({
-      publicPath: " window.__dynamic_base__",
-      transformIndexHtml: true,
-    }),
-  ],
-}))
+    },
+  }
+}
+
+// https://vitejs.dev/config/
+export default defineConfig(({ mode, command }) => {
+  const env = loadEnv(mode, "")
+
+  return {
+    base: mode === "production" && command === "build" ? "/__dynamic_base__/" : "/",
+    build: {
+      manifest: true,
+      outDir: "build",
+    },
+    server: {
+      https: fs.existsSync("proxy/sslcert/key.pem") &&
+        fs.existsSync("proxy/sslcert/cert.pem") && {
+          key: fs.readFileSync("proxy/sslcert/key.pem"),
+          cert: fs.readFileSync("proxy/sslcert/cert.pem"),
+        },
+      port: 3000,
+    },
+    define: {
+      global: "window",
+    },
+    resolve: {
+      alias: [{ find: "@", replacement: resolve(__dirname, "src") }],
+    },
+    plugins: [
+      htmlPlugin(env),
+      react(),
+      svgr(),
+      eslintPlugin({ cache: false }),
+      checker({
+        typescript: true,
+        overlay: false,
+      }),
+      dynamicBase({
+        publicPath: " window.__dynamic_base__",
+        transformIndexHtml: true,
+      }),
+    ],
+  }
+})
