@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 import { useEffect } from "react"
+import { useAuth } from "react-oidc-context"
 
 import BeeClient from "@/classes/BeeClient"
 import SwarmProfile from "@/classes/SwarmProfile"
@@ -21,18 +22,14 @@ import useClientsStore from "@/stores/clients"
 import useSessionStore from "@/stores/session"
 import useUIStore from "@/stores/ui"
 import useUserStore from "@/stores/user"
-import { loginRedirect } from "@/utils/automations"
 import { signMessage } from "@/utils/ethereum"
 
 import type { BatchId, EthAddress, SSOIdentity } from "@etherna/api-js/clients"
 
-type AutoSigninOpts = {
-  forceSignin?: boolean
-  service?: "index" | "gateway"
-  isStatusPage?: boolean
-}
+type AutoSigninOpts = {}
 
 export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
+  const auth = useAuth()
   const indexClient = useClientsStore(state => state.indexClient)
   const gatewayClient = useClientsStore(state => state.gatewayClient)
   const ssoClient = useClientsStore(state => state.ssoClient)
@@ -47,20 +44,14 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
   const toggleProfileLoading = useUIStore(state => state.toggleProfileLoading)
 
   useEffect(() => {
-    // status page doesn't need current user info
-    if (opts.isStatusPage) return
-
-    if (opts.forceSignin) {
-      // Launch login
-      loginRedirect(opts.service)
-    } else {
-      // fetch signed in user with profile info
-      fetchIdentity()
+    if (!auth.isLoading) {
+      fetchIdentity(auth.user?.access_token)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [auth.isLoading, auth.user])
 
-  const fetchIdentity = async () => {
+  const fetchIdentity = async (accessToken: string | undefined) => {
+    console.log("TOKEN", accessToken)
     toggleProfileLoading(true)
 
     const [identityResult, currentUserResult, hasCreditResult] = await Promise.allSettled([

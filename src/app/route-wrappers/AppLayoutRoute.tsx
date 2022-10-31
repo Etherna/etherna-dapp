@@ -15,11 +15,15 @@
  *
  */
 import React from "react"
+import { useAuth } from "react-oidc-context"
 import { Outlet } from "react-router-dom"
 
 import AppLayout from "@/components/layout/AppLayout"
 
 const AppLayoutRoute: React.FC = () => {
+  const { isAuthenticated, isLoading } = useAuth()
+  console.log("AUTH", isAuthenticated, isLoading)
+
   return (
     <AppLayout>
       <Outlet />

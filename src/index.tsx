@@ -20,13 +20,10 @@ import ReactDOM from "react-dom/client"
 import Root from "./app/Root"
 import prefetch from "./prefetch"
 import unsupportedRender from "./unsupported-render"
-import { autoRedirect, autoSigninSignout } from "./utils/automations"
+import { autoRedirect } from "./utils/automations"
 
 // Automatically redirect from www to non-www
 autoRedirect()
-
-// Automatically redirect to signin/signout page
-autoSigninSignout()
 
 // Prefetch data for SEO
 // Once the data has been set to a window variable call RenderDOM

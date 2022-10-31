@@ -14,6 +14,7 @@
  *  limitations under the License.
  */
 import { urlOrigin } from "@etherna/api-js/utils"
+import { UserManager } from "oidc-client-ts"
 
 import { parseLocalStorage } from "./local-storage"
 import clientsStore from "@/stores/clients"
@@ -25,22 +26,6 @@ export const autoRedirect = () => {
     const location = new URL(window.location.href)
     location.host = location.host.replace("www.", "")
     window.location.href = location.href
-  }
-}
-
-export const autoSigninSignout = () => {
-  const searchParams = new URLSearchParams(window.location.search)
-
-  // login redirect
-  let service = searchParams.get("signin")
-  if (service) {
-    loginRedirect(service)
-  }
-
-  // logout redirect
-  service = searchParams.get("signout")
-  if (service) {
-    logoutRedirect(service)
   }
 }
 
@@ -89,33 +74,6 @@ export const logoutRedirect = (service: "index" | "gateway" | String | null = nu
     case null:
     case undefined:
       indexClient.logoutRedirect(redirectUrl + "?signout=gateway")
-      break
-    default:
-      break
-  }
-}
-
-/**
- * Redirect to the service login page
- *
- * @param service Service to signin
- */
-export const loginRedirect = (service: "index" | "gateway" | string | null = null) => {
-  const { indexClient, gatewayClient } = clientsStore.getState()
-
-  // strip query params
-  const redirectUrl = window.location.origin + window.location.pathname
-
-  switch (service) {
-    case "index":
-      indexClient.loginRedirect(redirectUrl)
-      break
-    case "gateway":
-      gatewayClient.loginRedirect(redirectUrl)
-      break
-    case null:
-    case undefined:
-      indexClient.loginRedirect(redirectUrl + "?signin=gateway")
       break
     default:
       break

@@ -15,22 +15,31 @@
  *
  */
 import React from "react"
-import { useAuth } from "react-oidc-context"
+import { AuthProvider, hasAuthParams } from "react-oidc-context"
+import { Navigate, Outlet, useLocation } from "react-router-dom"
 
-import { Button } from "@/components/ui/actions"
-
-type SigninButtonProps = {
-  children?: React.ReactNode
+const oidcConfig = {
+  authority: import.meta.env.VITE_APP_SSO_URL,
+  client_id: "ethernaDappClientId",
+  redirect_uri: window.location.origin + "/callback",
+  automaticSilentRenew: true,
 }
 
-const SigninButton: React.FC<SigninButtonProps> = ({ children }) => {
-  const { signinRedirect } = useAuth()
+const IdentityRoute: React.FC = () => {
+  const { pathname } = useLocation()
+
+  if (pathname === "/callback") {
+    if (hasAuthParams()) {
+      return <Navigate to="/" />
+    }
+    return null
+  }
 
   return (
-    <Button type="button" onClick={() => signinRedirect()} lighter>
-      {children}
-    </Button>
+    <AuthProvider {...oidcConfig}>
+      <Outlet />
+    </AuthProvider>
   )
 }
 
-export default SigninButton
+export default IdentityRoute
