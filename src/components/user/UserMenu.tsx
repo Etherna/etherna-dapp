@@ -15,6 +15,7 @@
  *
  */
 import React from "react"
+import { useAuth } from "react-oidc-context"
 
 import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline"
 import { EllipsisVerticalIcon } from "@heroicons/react/24/solid"
@@ -24,19 +25,16 @@ import SignedInMenuItems from "./SignedInMenuItems"
 import SigninButton from "./SigninButton"
 import { Button, Dropdown } from "@/components/ui/actions"
 import { Avatar, Skeleton } from "@/components/ui/display"
-import useSignout from "@/hooks/useSignout"
 import useUIStore from "@/stores/ui"
 import useUserStore from "@/stores/user"
 
 const UserMenu: React.FC = () => {
+  const { isAuthenticated, isLoading, signoutRedirect } = useAuth()
   const avatar = useUserStore(state => state.profile?.avatar)
-  const isSignedIn = useUserStore(state => state.isSignedIn)
   const address = useUserStore(state => state.address)
   const isLoadingProfile = useUIStore(state => state.isLoadingProfile)
-  const { signout } = useSignout()
 
-  const isSigningIn = isSignedIn === undefined || isLoadingProfile
-  const isFullySignedIn = isSignedIn === true
+  const isSigningIn = isLoading || isLoadingProfile
 
   if (isSigningIn) {
     return (
@@ -51,7 +49,7 @@ const UserMenu: React.FC = () => {
       <Dropdown>
         <Dropdown.Toggle>
           <Button as="div" color="inverted" aspect="text" rounded>
-            {isFullySignedIn ? (
+            {isAuthenticated ? (
               <Avatar image={avatar} address={address} size={36} />
             ) : (
               <EllipsisVerticalIcon width={20} aria-hidden />
@@ -61,16 +59,16 @@ const UserMenu: React.FC = () => {
 
         <Dropdown.Menu>
           <>
-            {isFullySignedIn && <SignedInMenuItems />}
+            {isAuthenticated && <SignedInMenuItems />}
 
             <SharedMenuItems />
 
-            {isFullySignedIn && (
+            {isAuthenticated && (
               <>
                 <Dropdown.Separator />
                 <Dropdown.Group>
                   <Dropdown.Item
-                    action={signout}
+                    action={() => signoutRedirect()}
                     icon={<ArrowRightOnRectangleIcon strokeWidth={2} />}
                   >
                     Sign out
@@ -82,7 +80,7 @@ const UserMenu: React.FC = () => {
         </Dropdown.Menu>
       </Dropdown>
 
-      {!isFullySignedIn && <SigninButton>Sign in</SigninButton>}
+      {!isAuthenticated && <SigninButton>Sign in</SigninButton>}
     </>
   )
 }

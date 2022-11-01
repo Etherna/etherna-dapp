@@ -14,29 +14,32 @@
  *  limitations under the License.
  *
  */
-import React from "react"
-import { AuthProvider, hasAuthParams } from "react-oidc-context"
-import { Navigate, Outlet, useLocation } from "react-router-dom"
+import React, { useCallback } from "react"
+import { AuthProvider } from "react-oidc-context"
+import { Outlet, useNavigate } from "react-router-dom"
+import { WebStorageStateStore } from "oidc-client-ts"
 
-const oidcConfig = {
-  authority: import.meta.env.VITE_APP_SSO_URL,
-  client_id: "ethernaDappClientId",
-  redirect_uri: window.location.origin + "/callback",
-  automaticSilentRenew: true,
-}
+import type { User } from "oidc-client-ts"
 
 const IdentityRoute: React.FC = () => {
-  const { pathname } = useLocation()
+  const navigate = useNavigate()
 
-  if (pathname === "/callback") {
-    if (hasAuthParams()) {
-      return <Navigate to="/" />
-    }
-    return null
-  }
+  const onSigninCallback = useCallback(
+    (user: User | void) => {
+      navigate("/")
+    },
+    [navigate]
+  )
 
   return (
-    <AuthProvider {...oidcConfig}>
+    <AuthProvider
+      authority={import.meta.env.VITE_APP_SSO_URL}
+      client_id={"ethernaDappClientId"}
+      redirect_uri={window.location.origin + "/callback"}
+      automaticSilentRenew={true}
+      userStore={new WebStorageStateStore({ store: window.localStorage })}
+      onSigninCallback={onSigninCallback}
+    >
       <Outlet />
     </AuthProvider>
   )

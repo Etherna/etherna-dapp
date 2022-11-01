@@ -19,7 +19,7 @@ export type UserState = {
   creditUnlimited?: boolean
   defaultBatchId?: BatchId
   batches: GatewayBatch[]
-  isSignedIn?: boolean
+  isSignedInIndex?: boolean
   isSignedInGateway?: boolean
 }
 
@@ -29,7 +29,7 @@ export type UserActions = {
   setDefaultBatchId(batchId: BatchId): void
   setBatches(batches: GatewayBatch[]): void
   updateIdentity(address: EthAddress, prevAddresses: EthAddress[], wallet: WalletType): void
-  updateSignedIn(isSignedIn: boolean, isSignedInGateway: boolean): void
+  updateSignedIn(isSignedInIndex: boolean, isSignedInGateway: boolean): void
 }
 
 const getInitialState = (): UserState => ({
@@ -72,9 +72,9 @@ const useUserStore = create<UserState & UserActions>()(
               state.currentWallet = wallet
             })
           },
-          updateSignedIn(isSignedIn, isSignedInGateway) {
+          updateSignedIn(isSignedInIndex, isSignedInGateway) {
             set(state => {
-              state.isSignedIn = isSignedIn
+              state.isSignedInIndex = isSignedInIndex
               state.isSignedInGateway = isSignedInGateway
             })
           },
