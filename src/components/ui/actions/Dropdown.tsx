@@ -169,7 +169,7 @@ const DropdownItem: React.FC<DropdownItemProps> = ({
 
         const content = (
           <>
-            {icon && <div className="mr-2 flex h-5 w-5 items-center">{icon}</div>}
+            {icon && <div className="mr-2 flex h-5 w-5 items-center [&>*]:w-full">{icon}</div>}
 
             {children}
 
