@@ -58,6 +58,8 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
   }, [auth.isLoading, auth.user])
 
   const fetchIdentity = async () => {
+    if (!auth.user) return
+
     toggleProfileLoading(true)
 
     const [identityResult, currentUserResult, hasCreditResult] = await Promise.allSettled([

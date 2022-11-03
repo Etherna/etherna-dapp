@@ -14,8 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback } from "react"
-import { AuthProvider } from "react-oidc-context"
+import React, { useCallback, useRef } from "react"
+import { AuthProvider, useAuth } from "react-oidc-context"
 import { Outlet, useNavigate } from "react-router-dom"
 import { WebStorageStateStore } from "oidc-client-ts"
 
@@ -37,12 +37,33 @@ const IdentityRoute: React.FC = () => {
       client_id={"ethernaDappClientId"}
       redirect_uri={window.location.origin + "/callback"}
       automaticSilentRenew={true}
+      max_age={3600 * 24 * 30}
       userStore={new WebStorageStateStore({ store: window.localStorage })}
       onSigninCallback={onSigninCallback}
+      scope="openid profile offline_access ether_accounts userApi.gateway userApi.index userApi.credit"
     >
-      <Outlet />
+      <IdentityRouteSilentRenew />
     </AuthProvider>
   )
+}
+
+const IdentityRouteSilentRenew: React.FC = () => {
+  const auth = useAuth()
+  const hasTriedSilentRenew = useRef(false)
+
+  if (auth.isLoading) return null
+  if (
+    !auth.isLoading &&
+    !auth.isAuthenticated &&
+    auth.user?.refresh_token &&
+    !hasTriedSilentRenew.current
+  ) {
+    hasTriedSilentRenew.current = true
+    auth.signinSilent()
+    return null
+  }
+
+  return <Outlet />
 }
 
 export default IdentityRoute

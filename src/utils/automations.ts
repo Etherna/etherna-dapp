@@ -14,10 +14,8 @@
  *  limitations under the License.
  */
 import { urlOrigin } from "@etherna/api-js/utils"
-import { UserManager } from "oidc-client-ts"
 
 import { parseLocalStorage } from "./local-storage"
-import clientsStore from "@/stores/clients"
 
 import type { IndexExtensionHost } from "@/types/extension-host"
 
@@ -50,33 +48,6 @@ export const autoUpgradeEthernaService = (localSettingKey: string, newUrl: strin
       url: upgradeUrl(extension.url, newUrl),
     }))
     localStorage.setItem(localSettingKey, JSON.stringify(urls))
-  }
-}
-
-/**
- * Redirect to the service login page
- *
- * @param service Service to signin
- */
-export const logoutRedirect = (service: "index" | "gateway" | String | null = null) => {
-  const { indexClient, gatewayClient } = clientsStore.getState()
-
-  // strip query params
-  const redirectUrl = window.location.origin + window.location.pathname
-
-  switch (service) {
-    case "index":
-      indexClient.logoutRedirect(redirectUrl)
-      break
-    case "gateway":
-      gatewayClient.logoutRedirect(redirectUrl)
-      break
-    case null:
-    case undefined:
-      indexClient.logoutRedirect(redirectUrl + "?signout=gateway")
-      break
-    default:
-      break
   }
 }
 

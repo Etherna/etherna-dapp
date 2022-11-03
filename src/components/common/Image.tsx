@@ -14,12 +14,13 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { extractReference } from "@etherna/api-js/utils"
 import classNames from "classnames"
 import { filterXSS } from "xss"
 
 import useClientsStore from "@/stores/clients"
+import { downloadImageData, isAnimatedImage } from "@/utils/media"
 
 type ImageProps = {
   className?: string
@@ -53,34 +54,33 @@ const Image: React.FC<ImageProps> = ({
   style,
 }) => {
   const beeClient = useClientsStore(state => state.beeClient)
-  const [src, setSrc] = useState<string | undefined>(staticSrc)
+  const [srcUrl, setSrcUrl] = useState<string | undefined>()
+  const [src, setSrc] = useState<string | undefined>()
   const [imgLoaded, setImgLoaded] = useState(!blurredDataURL || placeholder === "empty")
-  const rootEl = useRef<HTMLDivElement>(null)
+  const [rootEl, setRootEl] = useState<HTMLDivElement>()
   const resizeObserver = useRef<ResizeObserver>()
-  const sourcesSizes = useMemo(() => {
-    return Object.keys(sources ?? {})
-  }, [sources])
+  const sourcesSizes = Object.keys(sources ?? {})
 
   if (layout === "responsive" && !aspectRatio) {
     throw new Error("Image with layout='responsive' must set an aspectRatio")
   }
 
   useEffect(() => {
-    if (rootEl.current && layout === "responsive" && sourcesSizes.length) {
+    if (rootEl && layout === "responsive" && sourcesSizes.length) {
       resizeObserver.current = new ResizeObserver(onContainerResize)
-      resizeObserver.current.observe(rootEl.current)
+      resizeObserver.current.observe(rootEl)
     }
     return () => {
       resizeObserver.current?.disconnect()
       resizeObserver.current = undefined
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rootEl.current, layout, sourcesSizes])
+  }, [rootEl, layout])
 
   useEffect(() => {
-    updateCurrentSrc()
+    loadBestImage()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [staticSrc, sources, rootEl.current])
+  }, [staticSrc, sources, rootEl])
 
   const getOptimizedSrc = useCallback(
     (sources: ImageProps["sources"], size: number): string => {
@@ -103,27 +103,6 @@ const Image: React.FC<ImageProps> = ({
     [beeClient]
   )
 
-  const updateCurrentSrc = useCallback(() => {
-    if (!rootEl.current) return
-
-    if (sources) {
-      const newSrc = getOptimizedSrc(sources, rootEl.current.clientWidth)
-      setSrc(newSrc)
-      newSrc !== src && setImgLoaded(false)
-    } else {
-      setSrc(staticSrc ?? fallbackSrc)
-    }
-  }, [src, sources, staticSrc, fallbackSrc, getOptimizedSrc])
-
-  const onContainerResize = useCallback(
-    (entries: ResizeObserverEntry[]) => {
-      if (layout === "responsive") {
-        updateCurrentSrc()
-      }
-    },
-    [layout, updateCurrentSrc]
-  )
-
   const onLoadImage = useCallback(() => {
     setImgLoaded(true)
   }, [])
@@ -137,6 +116,40 @@ const Image: React.FC<ImageProps> = ({
       setImgLoaded(true)
     }
   }, [fallbackSrc, src])
+
+  const loadBestImage = useCallback(async () => {
+    if (!rootEl) return
+
+    const hasSources = !!sources && Object.keys(sources).length > 0
+    const newSrc = hasSources ? getOptimizedSrc(sources, rootEl.clientWidth) : staticSrc
+
+    if (!newSrc) {
+      return onError()
+    }
+    if (newSrc === srcUrl) {
+      return
+    }
+
+    const filteredSrc = filterXSS(newSrc)
+    const imageData = await downloadImageData(filteredSrc)
+
+    if (!imageData || isAnimatedImage(imageData)) {
+      onError()
+    } else {
+      setSrcUrl(filteredSrc)
+      setSrc(URL.createObjectURL(new Blob([imageData])))
+      setImgLoaded(true)
+    }
+  }, [getOptimizedSrc, onError, rootEl, sources, srcUrl, staticSrc])
+
+  const onContainerResize = useCallback(
+    (entries: ResizeObserverEntry[]) => {
+      if (layout === "responsive") {
+        loadBestImage()
+      }
+    },
+    [layout, loadBestImage]
+  )
 
   return (
     <div
@@ -152,20 +165,21 @@ const Image: React.FC<ImageProps> = ({
         paddingBottom:
           layout === "responsive" ? `${Math.round((1 / aspectRatio!) * 100)}%` : undefined,
       }}
-      ref={rootEl}
-      data-component="image"
+      ref={el => el && setRootEl(el)}
+      data-loaded={imgLoaded}
     >
       {src && (
         <picture onError={onError} onLoad={onLoadImage}>
           <img
             className={classNames("absolute inset-0 h-full w-full", imgClassName)}
-            src={filterXSS(src)}
+            src={src}
             alt={alt}
             style={{
               ...style,
               objectFit,
             }}
             loading="lazy"
+            data-src={srcUrl}
           />
         </picture>
       )}
