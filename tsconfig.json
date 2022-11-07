@@ -26,7 +26,7 @@
     "typeRoots": ["src/typings"]
   },
   "include": ["*.ts", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx"],
-  "exclude": ["build", "node_modules", "public"],
+  "exclude": ["build", "node_modules", "public", "scripts"],
   "references": [
     {
       "path": "./tsconfig.node.json"

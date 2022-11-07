@@ -15,13 +15,13 @@
  */
 
 /* eslint-disable no-restricted-imports */
-
-import type { IncomingMessage } from "http"
 import { Response } from "node-fetch"
 
 import FilterTransformStream from "../classes/FilterTransformStream.js"
-import type { ValidationResponse } from "../typings/validator"
 import defaultProxyResponse from "./default-proxy-response.js"
+
+import type { ValidationResponse } from "../typings/validator"
+import type { IncomingMessage } from "http"
 
 /**
  * Validated bee response

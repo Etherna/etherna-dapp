@@ -13,9 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+import { Transform } from "stream"
 
 import type { TransformOptions } from "stream"
-import { Transform } from "stream"
 
 export default class FilterTransformStream extends Transform {
   streamedBytes: number
