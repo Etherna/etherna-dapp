@@ -17,7 +17,7 @@ module.exports = {
   },
   parser: "@typescript-eslint/parser",
   extends: ["plugin:react/recommended", "plugin:react-hooks/recommended"],
-  plugins: ["react", "@typescript-eslint", "prettier"],
+  plugins: ["react", "@typescript-eslint", "prettier", "jsx-a11y"],
   ignorePatterns: ["*/build/*", "public/*", "node_modules/*"],
   rules: {
     "prettier/prettier": ["warn"],
