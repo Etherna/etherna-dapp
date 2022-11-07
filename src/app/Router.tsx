@@ -39,7 +39,6 @@ const AsyncChannelEdit = lazy(() => import("@/pages/studio/channel-edit"))
 const AsyncVideosList = lazy(() => import("@/pages/studio/videos-list"))
 const AsyncVideoEdit = lazy(() => import("@/pages/studio/video-edit"))
 const AsyncPostages = lazy(() => import("@/pages/studio/postages"))
-const AsyncProfiles = lazy(() => import("@/pages/profiles"))
 const AsyncWatch = lazy(() => import("@/pages/watch"))
 const AsyncEmbed = lazy(() => import("@/pages/embed"))
 const AsyncSearch = lazy(() => import("@/pages/search"))
@@ -75,11 +74,6 @@ const Saved = () => (
 const Channel = () => (
   <Suspense fallback={<PageLoader />}>
     <AsyncChannel />
-  </Suspense>
-)
-const Profiles = () => (
-  <Suspense fallback={<PageLoader />}>
-    <AsyncProfiles />
   </Suspense>
 )
 const Watch = () => (
@@ -149,7 +143,6 @@ const Router = () => {
               <Route path="/following" element={<Following />} />
               <Route path="/playlists" element={<Playlists />} />
               <Route path="/saved" element={<Saved />} />
-              <Route path="/profiles" element={<Profiles />} />
               <Route path="/channel/:id" element={<Channel />} />
               <Route path="/search" element={<Search />} />
               <Route path="/shortcuts" element={<Shortcuts />} />
