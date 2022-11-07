@@ -15,13 +15,12 @@
  */
 
 /* eslint-disable no-restricted-imports */
-
-import type { IncomingMessage } from "http"
-import fetch from "node-fetch"
-import { Response } from "node-fetch"
+import fetch, { Response } from "node-fetch"
 
 import parseBody from "../utils/parse-body.js"
 import saveSeedData from "./save-seed-data.js"
+
+import type { IncomingMessage } from "http"
 
 export default async function defaultProxyResponse(
   req: IncomingMessage,
