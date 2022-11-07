@@ -159,7 +159,7 @@ const Videos: React.FC = () => {
                     layout="fill"
                   />
                   <span className="absolute bottom-0 right-0 rounded-sm bg-black leading-none">
-                    <span className="px-1 text-2xs font-semibold">
+                    <span className="px-1 text-2xs font-semibold text-white dark:text-white">
                       <Time duration={item.duration} />
                     </span>
                   </span>
