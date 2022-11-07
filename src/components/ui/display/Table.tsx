@@ -74,7 +74,7 @@ const Table = <T, A>({
     (item?: T, selected?: boolean) => {
       if (!item) {
         if (selectedItems.length) setSelectedItems([])
-        else setSelectedItems(items ?? [])
+        else setSelectedItems([...(items ?? [])])
       } else {
         if (selected) {
           setSelectedItems(items => [...items, item])
