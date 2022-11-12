@@ -16,10 +16,10 @@
  */
 import React from "react"
 import { Link } from "react-router-dom"
-import classNames from "classnames"
 
 import { Avatar } from "@/components/ui/display"
 import routes from "@/routes"
+import classNames from "@/utils/classnames"
 import { shortenEthAddr } from "@/utils/ethereum"
 
 import type { Profile } from "@etherna/api-js"

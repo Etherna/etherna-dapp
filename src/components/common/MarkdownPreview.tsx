@@ -15,9 +15,10 @@
  *
  */
 import React, { useMemo } from "react"
-import classNames from "classnames"
 import { parse } from "micro-down"
 import { filterXSS } from "xss"
+
+import classNames from "@/utils/classnames"
 
 type MarkdownPreviewProps = {
   value: string

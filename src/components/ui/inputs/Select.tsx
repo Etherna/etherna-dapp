@@ -16,9 +16,10 @@
  */
 import React, { Fragment, useCallback, useMemo } from "react"
 import { Listbox, Transition } from "@headlessui/react"
-import classNames from "classnames"
 
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/24/solid"
+
+import classNames from "@/utils/classnames"
 
 export type Option = {
   label: string | JSX.Element

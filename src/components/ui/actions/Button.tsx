@@ -16,9 +16,9 @@
  */
 import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
-import classNames from "classnames"
 
 import { Spinner } from "@/components/ui/display"
+import classNames from "@/utils/classnames"
 
 export type ButtonProps = {
   children?: React.ReactNode

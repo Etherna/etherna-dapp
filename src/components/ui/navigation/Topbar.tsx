@@ -16,12 +16,12 @@
  */
 import React, { useMemo } from "react"
 import { NavLink, useLocation } from "react-router-dom"
-import classNames from "classnames"
 import omit from "lodash/omit"
 
 import { ChevronDownIcon } from "@heroicons/react/24/outline"
 
 import { Popup } from "@/components/ui/display"
+import classNames from "@/utils/classnames"
 
 export type TopbarProps = {
   children?: React.ReactNode

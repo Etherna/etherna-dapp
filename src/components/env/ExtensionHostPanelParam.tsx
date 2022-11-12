@@ -16,11 +16,11 @@
  */
 import React from "react"
 import { RadioGroup } from "@headlessui/react"
-import classNames from "classnames"
 
 import { CheckCircleIcon } from "@heroicons/react/24/solid"
 
 import { TextInput } from "@/components/ui/inputs"
+import classNames from "@/utils/classnames"
 
 import type { ExtensionParamConfig } from "./ExtensionHostPanel"
 

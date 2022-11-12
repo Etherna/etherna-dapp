@@ -15,11 +15,12 @@
  *
  */
 import React from "react"
-import classNames from "classnames"
 import { omit } from "lodash"
 
 import { ReactComponent as EthernaSymbol } from "@/assets/logo-symbol.svg"
 import { ReactComponent as EthernaLogo } from "@/assets/logo.svg"
+
+import classNames from "@/utils/classnames"
 
 type LogoProps = React.SVGAttributes<SVGElement> & {
   compact?: boolean

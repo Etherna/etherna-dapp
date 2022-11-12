@@ -15,7 +15,8 @@
  *
  */
 import React, { useCallback, useRef } from "react"
-import classNames from "classnames"
+
+import classNames from "@/utils/classnames"
 
 type PlayerToolbarButtonProps = {
   children?: React.ReactNode

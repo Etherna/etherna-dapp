@@ -1,5 +1,4 @@
 import React, { useMemo } from "react"
-import classNames from "classnames"
 
 import { CheckIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline"
 
@@ -8,6 +7,7 @@ import { Alert, Card, Text } from "@/components/ui/display"
 import useVideoEditor from "@/hooks/useVideoEditor"
 import routes from "@/routes"
 import useVideoEditorStore from "@/stores/video-editor"
+import classNames from "@/utils/classnames"
 
 import type { PublishStatus } from "@/stores/video-editor"
 

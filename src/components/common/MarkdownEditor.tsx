@@ -15,7 +15,6 @@
  *
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import classNames from "classnames"
 import { Editor, EditorState, RichUtils, convertFromRaw, convertToRaw } from "draft-js"
 import { draftToMarkdown, markdownToDraft } from "markdown-draft-js"
 
@@ -27,6 +26,8 @@ import { ReactComponent as OrderedListIconIcon } from "@/assets/icons/rte/ordere
 import { ReactComponent as StrikethroughIcon } from "@/assets/icons/rte/strikethrough.svg"
 import { ReactComponent as UnderlineIcon } from "@/assets/icons/rte/underline.svg"
 import { ReactComponent as UnorderedListIconIcon } from "@/assets/icons/rte/unordered-list.svg"
+
+import classNames from "@/utils/classnames"
 
 import type { DraftEditorCommand, DraftHandleValue, EditorProps } from "draft-js"
 import "@/styles/overrides/draft-js.scss"

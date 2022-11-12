@@ -16,12 +16,12 @@
  */
 import React, { Fragment, useCallback, useRef } from "react"
 import { Dialog, Transition } from "@headlessui/react"
-import classNames from "classnames"
 
 import { XMarkIcon } from "@heroicons/react/24/solid"
 
 import Button from "./Button"
 import { isBotUserAgent } from "@/utils/browser"
+import classNames from "@/utils/classnames"
 
 export type ModalProps = {
   children?: React.ReactNode

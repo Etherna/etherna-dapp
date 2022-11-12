@@ -16,7 +16,8 @@
  */
 import React from "react"
 import Tippy from "@tippyjs/react"
-import classNames from "classnames"
+
+import classNames from "@/utils/classnames"
 
 import type { Placement } from "@popperjs/core"
 import "tippy.js/dist/tippy.css"

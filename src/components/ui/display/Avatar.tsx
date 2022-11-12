@@ -15,9 +15,9 @@
  *
  */
 import React from "react"
-import classNames from "classnames"
 
 import Image from "@/components/common/Image"
+import classNames from "@/utils/classnames"
 import makeBlockies from "@/utils/make-blockies"
 
 import type { Image as SwarmImage } from "@etherna/api-js"

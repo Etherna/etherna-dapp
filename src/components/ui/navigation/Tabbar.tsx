@@ -17,11 +17,12 @@
 import React, { useCallback, useMemo, useRef, useState } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import { Transition } from "@headlessui/react"
-import classNames from "classnames"
 import omit from "lodash/omit"
 
 import { Bars2Icon } from "@heroicons/react/24/outline"
 import { ChevronDownIcon } from "@heroicons/react/24/solid"
+
+import classNames from "@/utils/classnames"
 
 export type TabbarProps = {
   children?: React.ReactNode

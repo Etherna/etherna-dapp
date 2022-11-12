@@ -16,11 +16,11 @@
  */
 import React, { Fragment, useCallback, useEffect, useMemo } from "react"
 import { Dialog, Transition } from "@headlessui/react"
-import classNames from "classnames"
 
 import { CheckCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/24/solid"
 
 import { isBotUserAgent } from "@/utils/browser"
+import classNames from "@/utils/classnames"
 
 export type AlertAction = {
   title: string

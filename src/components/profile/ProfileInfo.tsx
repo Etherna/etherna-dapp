@@ -16,12 +16,12 @@
  */
 import React, { useCallback, useEffect } from "react"
 import Tippy from "@tippyjs/react"
-import classNames from "classnames"
 
 import Image from "@/components/common/Image"
 import { Skeleton } from "@/components/ui/display"
 import useErrorMessage from "@/hooks/useErrorMessage"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
+import classNames from "@/utils/classnames"
 import { shortenEthAddr } from "@/utils/ethereum"
 import makeBlockies from "@/utils/make-blockies"
 import { getResponseErrorMessage } from "@/utils/request"

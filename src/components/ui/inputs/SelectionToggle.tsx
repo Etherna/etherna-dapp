@@ -16,11 +16,11 @@
  */
 import React from "react"
 import { Switch } from "@headlessui/react"
-import classNames from "classnames"
 
 import { CheckIcon } from "@heroicons/react/24/solid"
 
 import { Spinner } from "@/components/ui/display"
+import classNames from "@/utils/classnames"
 
 export type SelectionToggleProps = {
   className?: string

@@ -17,13 +17,13 @@
 import React, { Fragment, useCallback, useEffect, useRef, useState } from "react"
 import { Dialog, Transition } from "@headlessui/react"
 import Tippy from "@tippyjs/react"
-import classNames from "classnames"
 
 import { ReactComponent as DiscordLogo } from "@/assets/brand/logo-discord.svg"
 import { ReactComponent as BugIcon } from "@/assets/icons/bug.svg"
 
 import useLocalStorage from "@/hooks/useLocalStorage"
 import { isBotUserAgent } from "@/utils/browser"
+import classNames from "@/utils/classnames"
 
 type AlphaWarningActionProps = {
   children: React.ReactNode

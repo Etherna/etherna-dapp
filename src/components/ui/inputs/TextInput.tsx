@@ -15,9 +15,9 @@
  *
  */
 import React, { useCallback, useMemo } from "react"
-import classNames from "classnames"
 
 import { Label } from "@/components/ui/display"
+import classNames from "@/utils/classnames"
 
 export type TextInputProps = {
   id?: string

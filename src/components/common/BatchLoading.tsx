@@ -15,13 +15,13 @@
  *
  */
 import React, { useMemo } from "react"
-import classNames from "classnames"
 
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { ExclamationCircleIcon, PlusIcon, SparklesIcon } from "@heroicons/react/24/solid"
 
 import { Button } from "@/components/ui/actions"
 import { ProgressBar } from "@/components/ui/display"
+import classNames from "@/utils/classnames"
 
 export type BatchLoadingType =
   | "fetching"

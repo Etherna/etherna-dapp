@@ -23,7 +23,6 @@ import React, {
   useRef,
   useState,
 } from "react"
-import classNames from "classnames"
 
 import { TrashIcon } from "@heroicons/react/24/outline"
 
@@ -38,6 +37,7 @@ import useSwarmProfile from "@/hooks/useSwarmProfile"
 import useWallet from "@/hooks/useWallet"
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
+import classNames from "@/utils/classnames"
 import makeBlockies from "@/utils/make-blockies"
 import { isAnimatedImage } from "@/utils/media"
 

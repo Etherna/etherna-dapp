@@ -16,12 +16,12 @@
  */
 import React, { useCallback, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import classNames from "classnames"
 
 import { ArrowSmallLeftIcon } from "@heroicons/react/24/solid"
 
 import { Button } from "@/components/ui/actions"
 import useMounted from "@/hooks/useMounted"
+import classNames from "@/utils/classnames"
 
 type StudioEditViewProps = {
   children?: React.ReactNode

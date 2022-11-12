@@ -15,12 +15,12 @@
  *
  */
 import React, { useCallback, useMemo, useRef, useState } from "react"
-import classNames from "classnames"
 
 import Time from "@/components/media/Time"
 import { Slider } from "@/components/ui/inputs"
 import { PlayerReducerTypes } from "@/context/player-context"
 import { usePlayerState } from "@/context/player-context/hooks"
+import classNames from "@/utils/classnames"
 
 type PlayerToolbarProgressProps = {
   focus?: boolean

@@ -16,7 +16,8 @@
  */
 import React, { useCallback } from "react"
 import Tippy from "@tippyjs/react"
-import classNames from "classnames"
+
+import classNames from "@/utils/classnames"
 
 export type SegmentedControlProps = {
   entries: Array<{ value: string; label: string; tip?: string }>

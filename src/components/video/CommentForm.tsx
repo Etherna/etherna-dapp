@@ -15,7 +15,6 @@
  *
  */
 import React, { useCallback, useState } from "react"
-import classNames from "classnames"
 
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
@@ -26,6 +25,7 @@ import useCharaterLimits from "@/hooks/useCharaterLimits"
 import useErrorMessage from "@/hooks/useErrorMessage"
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
+import classNames from "@/utils/classnames"
 
 import type { IndexVideoComment } from "@etherna/api-js/clients"
 

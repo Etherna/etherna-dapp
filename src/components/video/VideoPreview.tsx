@@ -16,7 +16,6 @@
  */
 import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
-import classNames from "classnames"
 
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 import { ReactComponent as CreditIcon } from "@/assets/icons/credit.svg"
@@ -26,6 +25,7 @@ import Time from "@/components/media/Time"
 import { Avatar, Badge, Skeleton } from "@/components/ui/display"
 import routes from "@/routes"
 import useExtensionsStore from "@/stores/extensions"
+import classNames from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
 import { encodedSvg } from "@/utils/svg"

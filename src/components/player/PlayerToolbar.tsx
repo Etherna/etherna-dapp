@@ -15,7 +15,6 @@
  *
  */
 import React from "react"
-import classNames from "classnames"
 
 import PlayerFullScreenButton from "./PlayerFullScreenButton"
 import PlayerPiPButton from "./PlayerPiPButton"
@@ -25,6 +24,7 @@ import PlayerQuality from "./PlayerQuality"
 import PlayerTimeProgress from "./PlayerTimeProgress"
 import PlayerToolbarProgress from "./PlayerToolbarProgress"
 import PlayerVolume from "./PlayerVolume"
+import classNames from "@/utils/classnames"
 
 type PlayerToolbarProps = {
   floating?: boolean

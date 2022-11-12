@@ -15,9 +15,9 @@
  *
  */
 import React from "react"
-import classNames from "classnames"
 
 import { Skeleton } from "@/components/ui/display"
+import classNames from "@/utils/classnames"
 
 type VideoPreviewPlaceholderProps = {
   mini?: boolean

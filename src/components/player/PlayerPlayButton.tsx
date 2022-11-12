@@ -15,13 +15,13 @@
  *
  */
 import React, { useCallback } from "react"
-import classNames from "classnames"
 
 import { ReactComponent as PauseIcon } from "@/assets/icons/player/pause.svg"
 import { ReactComponent as PlayIcon } from "@/assets/icons/player/play.svg"
 
 import { PlayerReducerTypes } from "@/context/player-context"
 import { usePlayerState } from "@/context/player-context/hooks"
+import classNames from "@/utils/classnames"
 
 const PlayerPlayButton: React.FC = () => {
   const [state, dispatch] = usePlayerState()

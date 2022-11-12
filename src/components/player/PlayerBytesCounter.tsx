@@ -15,11 +15,11 @@
  *
  */
 import React, { useMemo } from "react"
-import classNames from "classnames"
 
 import { usePlayerState } from "@/context/player-context/hooks"
 import useSessionStore from "@/stores/session"
 import useUserStore from "@/stores/user"
+import classNames from "@/utils/classnames"
 import { convertTime } from "@/utils/converters"
 
 const PlayerBytesCounter: React.FC = () => {

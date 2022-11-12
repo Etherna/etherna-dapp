@@ -17,7 +17,6 @@
 import React, { useCallback, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useMatomo } from "@datapunt/matomo-tracker-react"
-import classNames from "classnames"
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { XMarkIcon } from "@heroicons/react/24/solid"
@@ -25,6 +24,7 @@ import { XMarkIcon } from "@heroicons/react/24/solid"
 import { TextInput } from "@/components/ui/inputs"
 import { Topbar } from "@/components/ui/navigation"
 import routes from "@/routes"
+import classNames from "@/utils/classnames"
 
 const SearchItem: React.FC = () => {
   const navigate = useNavigate()

@@ -15,9 +15,10 @@
  *
  */
 import React, { useCallback, useState } from "react"
-import classNames from "classnames"
 
 import { FilmIcon, PlusIcon } from "@heroicons/react/24/outline"
+
+import classNames from "@/utils/classnames"
 
 export type FileDragProps = {
   label?: string
