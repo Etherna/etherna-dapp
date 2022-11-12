@@ -29,7 +29,7 @@ import classNames from "@/utils/classnames"
 const SearchItem: React.FC = () => {
   const navigate = useNavigate()
   const { trackSiteSearch } = useMatomo()
-  const [showInput, setShowInput] = useState(true)
+  const [showInput, setShowInput] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
 
   const handleEnter = useCallback(() => {

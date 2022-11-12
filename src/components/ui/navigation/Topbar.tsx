@@ -97,7 +97,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
       <As
         className={classNames(
           "items-center justify-items-center lg:justify-items-stretch",
-          "cursor-pointer space-x-2 rounded-md",
+          "h-8 cursor-pointer space-x-2 rounded-md md:h-9",
           "text-gray-800 transition-colors duration-300 dark:text-gray-200",
           {
             "px-1.5 py-1.5 sm:px-3": !noPadding,
@@ -163,7 +163,7 @@ const TopbarPopupItemToggle: React.FC<TopbarItemProps> = props => {
   const itemProps = { ...omit(props, "children") }
 
   return (
-    <TopbarItem {...itemProps} className={classNames(itemProps.className, "p-0")} as="div">
+    <TopbarItem {...itemProps} noPadding as="div">
       {props.children && props.children}
     </TopbarItem>
   )
