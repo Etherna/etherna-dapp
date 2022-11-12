@@ -97,7 +97,7 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
       <As
         className={classNames(
           "w-full flex-shrink-0 flex-grow",
-          "flex items-center rounded px-4",
+          "flex items-center rounded-md px-4",
           "cursor-pointer transition-colors duration-300",
           "text-gray-800 dark:text-gray-200",
           "active:bg-gray-200 active:text-gray-800 dark:active:bg-gray-800 dark:active:text-gray-100",

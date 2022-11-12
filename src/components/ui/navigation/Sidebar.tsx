@@ -114,7 +114,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       <As
         className={classNames(
           "flex items-center justify-items-center lg:justify-items-stretch",
-          "w-full space-x-3 rounded",
+          "w-full space-x-3 rounded-md",
           "text-sm text-gray-800 dark:text-gray-200",
           className,
           {

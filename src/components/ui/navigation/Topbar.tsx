@@ -97,10 +97,10 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
       <As
         className={classNames(
           "items-center justify-items-center lg:justify-items-stretch",
-          "cursor-pointer space-x-2 rounded",
+          "cursor-pointer space-x-2 rounded-md",
           "text-gray-800 transition-colors duration-300 dark:text-gray-200",
           {
-            "px-1.5 py-1": !noPadding,
+            "px-1.5 py-1.5 sm:px-3": !noPadding,
             flex: !hideMobile,
             "hidden md:flex": hideMobile,
             "mx-0 active:bg-opacity-50 sm:mx-0": !ignoreHoverState,
@@ -122,10 +122,10 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
     )
   }, [
     As,
+    isCurrentPage,
     noPadding,
     hideMobile,
     ignoreHoverState,
-    isCurrentPage,
     className,
     to,
     target,
@@ -135,10 +135,26 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
 
   return (
     <Wrapper>
-      {prefix && <div className="mr-1">{prefix}</div>}
+      {prefix && (
+        <div
+          className={classNames({
+            "mr-1": title || children,
+          })}
+        >
+          {prefix}
+        </div>
+      )}
       {title && <span className="hidden lg:inline lg:text-sm lg:font-semibold">{title}</span>}
       {children}
-      {suffix && <div className="ml-1">{suffix}</div>}
+      {suffix && (
+        <div
+          className={classNames({
+            "ml-1": title || children,
+          })}
+        >
+          {suffix}
+        </div>
+      )}
     </Wrapper>
   )
 }
@@ -147,7 +163,7 @@ const TopbarPopupItemToggle: React.FC<TopbarItemProps> = props => {
   const itemProps = { ...omit(props, "children") }
 
   return (
-    <TopbarItem {...itemProps} as="div">
+    <TopbarItem {...itemProps} className={classNames(itemProps.className, "p-0")} as="div">
       {props.children && props.children}
     </TopbarItem>
   )
