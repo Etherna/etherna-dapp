@@ -15,13 +15,13 @@
  *
  */
 import React, { useCallback, useRef, useState } from "react"
-import classNames from "classnames"
 
 import { ReactComponent as DragIcon } from "@/assets/icons/drag.svg"
 
 import { Button } from "@/components/ui/actions"
 import { Portal } from "@/components/ui/layout"
 import useErrorMessage from "@/hooks/useErrorMessage"
+import classNames from "@/utils/classnames"
 import { isMimeCompatible } from "@/utils/mime-types"
 
 type FileDragProps = {

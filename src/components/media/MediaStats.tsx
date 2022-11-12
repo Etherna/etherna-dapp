@@ -15,9 +15,10 @@
  *
  */
 import React, { useRef, useState } from "react"
-import classNames from "classnames"
 
 import { ChevronDownIcon } from "@heroicons/react/24/outline"
+
+import classNames from "@/utils/classnames"
 
 type MediaStatsProps = {
   stats: Array<{ label: string; value: string | JSX.Element }>

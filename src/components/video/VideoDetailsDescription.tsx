@@ -15,12 +15,12 @@
  *
  */
 import React, { useEffect, useState } from "react"
-import classNames from "classnames"
 
 import { ChevronDownIcon } from "@heroicons/react/24/solid"
 
 import MarkdownPreview from "@/components/common/MarkdownPreview"
 import { Button } from "@/components/ui/actions"
+import classNames from "@/utils/classnames"
 
 type VideoDetailsDescriptionProps = {
   description?: string | null

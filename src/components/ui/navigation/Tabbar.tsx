@@ -17,11 +17,12 @@
 import React, { useCallback, useMemo, useRef, useState } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import { Transition } from "@headlessui/react"
-import classNames from "classnames"
 import omit from "lodash/omit"
 
 import { Bars2Icon } from "@heroicons/react/24/outline"
 import { ChevronDownIcon } from "@heroicons/react/24/solid"
+
+import classNames from "@/utils/classnames"
 
 export type TabbarProps = {
   children?: React.ReactNode
@@ -97,7 +98,7 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
       <As
         className={classNames(
           "w-full flex-shrink-0 flex-grow",
-          "flex items-center rounded px-4",
+          "flex items-center rounded-md px-4",
           "cursor-pointer transition-colors duration-300",
           "text-gray-800 dark:text-gray-200",
           "active:bg-gray-200 active:text-gray-800 dark:active:bg-gray-800 dark:active:text-gray-100",

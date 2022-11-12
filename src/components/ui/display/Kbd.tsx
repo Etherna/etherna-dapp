@@ -15,7 +15,8 @@
  *
  */
 import React, { useEffect, useMemo, useRef } from "react"
-import classNames from "classnames"
+
+import classNames from "@/utils/classnames"
 
 export type KbdProps = {
   shortcut: string

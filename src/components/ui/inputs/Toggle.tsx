@@ -16,7 +16,8 @@
  */
 import React, { useCallback, useMemo } from "react"
 import { Switch } from "@headlessui/react"
-import classNames from "classnames"
+
+import classNames from "@/utils/classnames"
 
 export type ToggleProps = {
   className?: string

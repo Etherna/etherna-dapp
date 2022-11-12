@@ -15,9 +15,10 @@
  *
  */
 import React from "react"
-import classNames from "classnames"
 
 import { ReactComponent as DividerPattern } from "@/assets/backgrounds/divider.svg"
+
+import classNames from "@/utils/classnames"
 
 export type DividerProps = {
   children?: React.ReactNode

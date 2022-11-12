@@ -16,10 +16,10 @@
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { extractReference } from "@etherna/api-js/utils"
-import classNames from "classnames"
 import { filterXSS } from "xss"
 
 import useClientsStore from "@/stores/clients"
+import classNames from "@/utils/classnames"
 
 type ImageProps = {
   className?: string

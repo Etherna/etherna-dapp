@@ -15,10 +15,10 @@
  *
  */
 import React, { forwardRef } from "react"
-import classNames from "classnames"
 
 import VideoPreviewPlaceholder from "@/components/placeholders/VideoPreviewPlaceholder"
 import VideoPreview from "@/components/video/VideoPreview"
+import classNames from "@/utils/classnames"
 
 import type { VideoWithIndexes, VideoWithOffersStatus, VideoWithOwner } from "@/types/video"
 

@@ -15,8 +15,8 @@
  *
  */
 import React, { useEffect, useRef } from "react"
-import classNames from "classnames"
 
+import classNames from "@/utils/classnames"
 import { clamp } from "@/utils/math"
 
 export type ProgressBarProps = {

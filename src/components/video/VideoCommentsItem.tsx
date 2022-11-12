@@ -16,7 +16,6 @@
  */
 import React, { useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import classNames from "classnames"
 
 import { EllipsisVerticalIcon, TrashIcon } from "@heroicons/react/24/solid"
 
@@ -30,6 +29,7 @@ import useSwarmProfile from "@/hooks/useSwarmProfile"
 import routes from "@/routes"
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
+import classNames from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
 

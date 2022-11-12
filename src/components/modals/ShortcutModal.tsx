@@ -15,7 +15,6 @@
  *
  */
 import React, { useEffect, useState, useRef, useCallback } from "react"
-import classNames from "classnames"
 
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid"
 
@@ -25,6 +24,7 @@ import useShortcutsEditor from "@/hooks/useShortcutsEditor"
 import useEnvironmentStore from "@/stores/env"
 import useSettingsStore from "@/stores/settings"
 import useUIStore from "@/stores/ui"
+import classNames from "@/utils/classnames"
 import { keyEventToString } from "@/utils/keyboard"
 
 type ShortcutModalProsp = {

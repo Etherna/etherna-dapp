@@ -15,9 +15,10 @@
  *
  */
 import React, { useCallback, useRef, useState } from "react"
-import classNames from "classnames"
 
 import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid"
+
+import classNames from "@/utils/classnames"
 
 type PlayerTouchOverlayProps = {
   floating?: boolean

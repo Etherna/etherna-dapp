@@ -16,7 +16,6 @@
  */
 import React, { useRef, useState, useEffect, useCallback, useMemo } from "react"
 import Axios from "axios"
-import classNames from "classnames"
 import { filterXSS } from "xss"
 
 import PlayerBytesCounter from "./PlayerBytesCounter"
@@ -32,6 +31,7 @@ import { PlayerContextProvider, PlayerReducerTypes } from "@/context/player-cont
 import { usePlayerState } from "@/context/player-context/hooks"
 import useVideoTracking from "@/hooks/useVideoTracking"
 import { isTouchDevice } from "@/utils/browser"
+import classNames from "@/utils/classnames"
 import http from "@/utils/request"
 
 import type { Profile, VideoSource } from "@etherna/api-js"

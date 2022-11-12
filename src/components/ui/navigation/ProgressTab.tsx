@@ -15,7 +15,8 @@
  *
  */
 import React, { useState } from "react"
-import classNames from "classnames"
+
+import classNames from "@/utils/classnames"
 
 export type ProgressTabProps = {
   children?: React.ReactNode

@@ -15,11 +15,11 @@
  *
  */
 import React, { useState, useEffect, useMemo, useCallback } from "react"
-import classNames from "classnames"
 
 import { ReactComponent as VoteIcon } from "@/assets/icons/player/upvote.svg"
 
 import useClientsStore from "@/stores/clients"
+import classNames from "@/utils/classnames"
 
 import type { VoteValue } from "@etherna/api-js/clients"
 

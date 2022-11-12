@@ -17,11 +17,11 @@
 import React, { forwardRef, useContext, useState } from "react"
 import { usePopper } from "react-popper"
 import { Menu as HLMenu } from "@headlessui/react"
-import classNames from "classnames"
 
 import UIButton from "./Button"
 import { Drawer } from "@/components/ui/display"
 import { Breakpoint } from "@/components/ui/layout"
+import classNames from "@/utils/classnames"
 
 import type { ButtonProps } from "./Button"
 import type { Placement } from "@popperjs/core"

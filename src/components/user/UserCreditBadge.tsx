@@ -15,9 +15,9 @@
  *
  */
 import React, { useEffect, useState } from "react"
-import classNames from "classnames"
 
 import { isTouchDevice } from "@/utils/browser"
+import classNames from "@/utils/classnames"
 import { getDecimalParts } from "@/utils/math"
 
 type UserCreditBadgeProps = {

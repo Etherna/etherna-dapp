@@ -15,7 +15,6 @@
  *
  */
 import React, { useMemo } from "react"
-import classNames from "classnames"
 
 import VideoOffersBadge from "./VideoOffersBadge"
 import VideoOffersButton from "./VideoOffersButton"
@@ -24,6 +23,7 @@ import VideoShareButton from "./VideoShareButton"
 import VideoStatusBadge from "./VideoStatusBadge"
 import useVideoOffers from "@/hooks/useVideoOffers"
 import useExtensionsStore from "@/stores/extensions"
+import classNames from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"

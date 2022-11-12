@@ -15,10 +15,10 @@
  *
  */
 import React, { useCallback, useEffect, useState } from "react"
-import classNames from "classnames"
 
 import { Checkbox } from "@/components/ui/inputs"
 import { Pagination } from "@/components/ui/navigation"
+import classNames from "@/utils/classnames"
 
 export type TableProps<T = any> = {
   className?: string

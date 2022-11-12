@@ -17,9 +17,10 @@
 import React, { useCallback, useMemo } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { Listbox } from "@headlessui/react"
-import classNames from "classnames"
 
 import { ChevronUpDownIcon } from "@heroicons/react/24/solid"
+
+import classNames from "@/utils/classnames"
 
 type DropdownSidebarProps = {
   children?: React.ReactNode

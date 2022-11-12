@@ -15,13 +15,13 @@
  *
  */
 import React, { useCallback, useEffect, useState } from "react"
-import classNames from "classnames"
 
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline"
 import { LockClosedIcon } from "@heroicons/react/24/solid"
 import { ReactComponent as CreditErrorIcon } from "@/assets/icons/credit-error.svg"
 
 import { usePlayerState } from "@/context/player-context/hooks"
+import classNames from "@/utils/classnames"
 
 const PlayerErrorBanner: React.FC = () => {
   const [description, setDescription] = useState("")

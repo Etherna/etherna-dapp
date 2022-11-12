@@ -15,9 +15,9 @@
  *
  */
 import React, { useCallback, useMemo } from "react"
-import classNames from "classnames"
 
 import { Label } from "@/components/ui/display"
+import classNames from "@/utils/classnames"
 
 export type TextInputProps = {
   id?: string
@@ -50,8 +50,8 @@ export type TextInputProps = {
   onChange?(value: string): void
   onKeyDown?(e: React.KeyboardEvent<HTMLInputElement>): void
   onEnter?(): void
-  onBlur?(): void
-  onFocus?(): void
+  onBlur?(e: React.FocusEvent<HTMLInputElement>): void
+  onFocus?(e: React.FocusEvent<HTMLInputElement>): void
 }
 
 export type TextInputCharsLimitProps = {
@@ -117,7 +117,7 @@ const TextInput: React.FC<TextInputProps> & { CharactersLimit: typeof TextInputC
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
+      if (["Enter", "NumpadEnter"].includes(e.code)) {
         onEnter?.()
       }
       onKeyDown?.(e)
