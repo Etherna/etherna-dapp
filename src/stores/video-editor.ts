@@ -103,6 +103,7 @@ export type VideoEditorActions = {
   updateQueueType(id: string, type: VideoEditorQueueType): void
   updateQueueCompletion(id: string, completion: number): void
   updateQueueSize(id: string, size: number): void
+  updateQueueError(id: string, error: string | undefined): void
   updateMetadata(quality: VideoQuality, duration: number): void
   updateVideoReference(reference: string): void
   updateSaveTo(list: VideoEditorPublishSource[]): void
@@ -303,6 +304,16 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
               const index = state.queue.findIndex(q => q.id === id)
               if (index >= 0) {
                 state.queue[index].size = size
+              }
+              state.hasChanges = true
+            })
+          },
+          updateQueueError(id, error) {
+            set(state => {
+              const index = state.queue.findIndex(q => q.id === id)
+              if (index >= 0) {
+                state.queue[index].error = error
+                state.queue[index].completion = 0
               }
               state.hasChanges = true
             })
