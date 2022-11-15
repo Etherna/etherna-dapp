@@ -582,10 +582,10 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@etherna/api-js@1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@etherna/api-js/-/api-js-1.5.0.tgz#20ee5cf5aa42e0cb8f640c027929133ba0287194"
-  integrity sha512-UBytbsFmEX5XqoRDRaoeLNPrVVV9zXdHwWHQuSMNBqQXDG669NyDm1V3Dz66Depfysl/7pWEsba6xloHqaSIog==
+"@etherna/api-js@1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@etherna/api-js/-/api-js-1.5.1.tgz#3130cdfadb37ce85ded7b78c4de570d67eeee244"
+  integrity sha512-gJArO+EuQ7j02E8jkR89/exrDlD6AVvo1jLsLjBrpd21ajuz72GalV7Z6vPVBQYtcWf50xu394ofak+UW4mtuA==
 
 "@hapi/hoek@^9.0.0":
   version "9.2.0"
