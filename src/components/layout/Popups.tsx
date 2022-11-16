@@ -34,7 +34,7 @@ const Popups: React.FC = () => {
         show={!!error}
         icon="error"
         title={error?.title}
-        message={error?.message}
+        message={error?.message?.substring(0, 500)}
         onAction={hideError}
       />
 
@@ -42,7 +42,7 @@ const Popups: React.FC = () => {
         show={!!confirmation}
         icon="error"
         title={confirmation?.title}
-        message={confirmation?.message}
+        message={confirmation?.message?.substring(0, 500)}
         actions={[
           {
             title: "Cancel",

@@ -136,26 +136,28 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
 
       setTotal(resp.totalElements)
 
-      return resp.elements.map(indexVideo => {
-        const videoReader = new SwarmVideo.Reader(indexVideo.lastValidManifest!.hash, {
-          beeClient,
-        })
-        const rawVideo = JSON.stringify(videoReader.indexVideoToRaw(indexVideo))
-        const video = new VideoDeserializer(beeClient.url).deserialize(rawVideo, {
-          reference: indexVideo.lastValidManifest!.hash,
-        })
-        const videoIndexes: VideoWithIndexes = {
-          ...video,
-          indexesStatus: {
-            [currentIndexUrl]: {
-              indexReference: indexVideo.id,
-              totDownvotes: indexVideo.totDownvotes,
-              totUpvotes: indexVideo.totUpvotes,
+      return resp.elements
+        .filter(vid => vid.lastValidManifest)
+        .map(indexVideo => {
+          const videoReader = new SwarmVideo.Reader(indexVideo.lastValidManifest!.hash, {
+            beeClient,
+          })
+          const rawVideo = JSON.stringify(videoReader.indexVideoToRaw(indexVideo))
+          const video = new VideoDeserializer(beeClient.url).deserialize(rawVideo, {
+            reference: indexVideo.lastValidManifest!.hash,
+          })
+          const videoIndexes: VideoWithIndexes = {
+            ...video,
+            indexesStatus: {
+              [currentIndexUrl]: {
+                indexReference: indexVideo.id,
+                totDownvotes: indexVideo.totDownvotes,
+                totUpvotes: indexVideo.totUpvotes,
+              },
             },
-          },
-        }
-        return videoIndexes
-      })
+          }
+          return videoIndexes
+        })
     },
     [address, beeClient, currentIndexUrl]
   )

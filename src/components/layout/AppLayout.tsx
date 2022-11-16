@@ -40,7 +40,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         <div className="z-0 flex-grow">
           <TopbarNavigation />
           <TabbarNavigation />
-          <main className="w-full overflow-x-hidden">{children}</main>
+          <main className="min-h-[50vh] w-full overflow-x-hidden">{children}</main>
         </div>
       </div>
 
