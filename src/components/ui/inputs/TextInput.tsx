@@ -117,7 +117,7 @@ const TextInput: React.FC<TextInputProps> & { CharactersLimit: typeof TextInputC
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (["Enter", "NumpadEnter"].includes(e.code)) {
+      if (["Enter", "NumpadEnter"].includes(e.code) || e.keyCode === 13) {
         onEnter?.()
       }
       onKeyDown?.(e)

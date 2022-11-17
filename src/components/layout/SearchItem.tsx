@@ -64,7 +64,7 @@ const SearchItem: React.FC = () => {
         <TextInput
           className="w-full md:w-auto"
           inputClassName={classNames(
-            "px-0 h-6 pr-8 md:pr-0",
+            "px-0 h-8 pr-8 md:pr-0",
             "bg-transparent dark:bg-transparent",
             "focus:ring-0 focus:border-none"
           )}
