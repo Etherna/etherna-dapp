@@ -174,7 +174,7 @@ export default function usePlaylistVideos(
 
     if (playlist?.videos == null) return
 
-    const limit = smartFetchCount
+    const limit = smartFetchCount || 9
     const from = videos?.length ?? 0
     const to = from + (limit === -1 ? playlist.videos.length ?? 0 : limit)
     const newVideos = await fetchVideos(from, to)

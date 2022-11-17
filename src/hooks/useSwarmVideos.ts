@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { useCallback, useEffect, useState } from "react"
+import { startTransition, useCallback, useEffect, useState } from "react"
 import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
 
@@ -67,6 +67,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
 
   useEffect(() => {
     if (!fetchCount) return
+    if (page < 0) return
     fetchVideos()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, fetchCount])
@@ -137,6 +138,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
   const fetchVideos = useCallback(
     async (refetch = false) => {
       if (!refetch && isFetching) return
+      if (!fetchCount) return
       if (!refetch && !hasMore) {
         return setIsFetching(false)
       }
@@ -215,9 +217,12 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
   const refresh = useCallback(() => {
     setVideos([])
     setHasMore(true)
-    setPage(0)
-    page === 0 && fetchVideos()
-  }, [page, fetchVideos])
+    // trigger effect when page is already 0
+    setPage(-1)
+    startTransition(() => {
+      setPage(0)
+    })
+  }, [])
 
   return {
     videos,
