@@ -109,7 +109,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
             hasMoreVideos={hasMore}
             isFetching={isLoading}
             onLoadMore={loadMore}
-            fetchingPreviewCount={smartFetchCount}
+            fetchingPreviewCount={smartFetchCount || 9}
             videos={videos}
           />
         )}

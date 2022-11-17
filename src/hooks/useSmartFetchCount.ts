@@ -5,7 +5,7 @@ export default function useSmartFetchCount(
   defaulSeed = 24,
   defaultFetch = 12
 ) {
-  const [fetchCount, setFetchCount] = useState(0)
+  const [fetchCount, setFetchCount] = useState<number | null>(null)
 
   useEffect(() => {
     if (gridRef && !gridRef.current) return
@@ -21,7 +21,7 @@ export default function useSmartFetchCount(
 
       const seedCount = Math.max(visibileRowsCount * gridCols.length, 6)
       // const loadMoreCount = gridCols.length * 3 // 3 more rows per load
-      setFetchCount(seedCount)
+      setFetchCount(seedCount || defaulSeed)
     } else {
       setFetchCount(defaulSeed)
     }

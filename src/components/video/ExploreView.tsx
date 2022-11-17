@@ -43,7 +43,7 @@ const ExploreView = () => {
       <VideoGrid
         videos={videos}
         isFetching={isFetching}
-        fetchingPreviewCount={fetchCount}
+        fetchingPreviewCount={fetchCount || 9}
         ref={gridRef}
       />
     </InfiniteScroller>
