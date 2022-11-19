@@ -16,6 +16,8 @@
  */
 import React from "react"
 
+import useDarkMode from "@/hooks/useDarkMode"
+
 import type { SlateElement } from "@/utils/slate"
 import type { RenderElementProps } from "slate-react"
 
@@ -24,11 +26,17 @@ export type SlateBlockProps = RenderElementProps & {
 }
 
 const SlateBlock: React.FC<SlateBlockProps> = ({ attributes, children, element }) => {
+  const { darkMode } = useDarkMode()
+
   const isList = ["ol", "ul"].includes(element.type)
   const style: React.CSSProperties = {
     textAlign: element.align,
     listStyle: isList ? (element.type === "ol" ? "decimal" : "disc") : undefined,
-    paddingLeft: isList ? "1.5rem" : "0",
+    paddingLeft: isList ? "1.5rem" : undefined,
+    padding: element.type === "code" ? "4px" : undefined,
+    backgroundColor: element.type === "code" ? (darkMode ? "#374151" : "#E5E7EB") : undefined,
+    borderRadius: element.type === "code" ? "4px" : undefined,
+    color: element.type === "a" ? "#00AABE" : undefined,
   }
   switch (element.type) {
     case "blockquote":
@@ -96,6 +104,12 @@ const SlateBlock: React.FC<SlateBlockProps> = ({ attributes, children, element }
         <pre style={style} {...attributes}>
           <code>{children}</code>
         </pre>
+      )
+    case "a":
+      return (
+        <a style={style} {...attributes} href={element.url} target="_blank" rel="noreferrer">
+          {children}
+        </a>
       )
     case "p":
       return (

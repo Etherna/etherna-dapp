@@ -15,19 +15,21 @@
  */
 import markdown from "remark-parse"
 import slate, { serialize } from "remark-slate"
-import { Editor, Element, Transforms } from "slate"
+import { Editor, Element, Range, Transforms } from "slate"
 import { unified } from "unified"
 
-import type { BlockType, InputNodeTypes } from "remark-slate"
+import type { InputNodeTypes, NodeTypes } from "remark-slate"
 import type { BaseEditor, Text, Descendant } from "slate"
+import type { ReactEditor } from "slate-react"
 
 export type SlateDescendant = SlateElement | SlateText
 
-export type SlateElementType = typeof BLOCK_TEXT_TYPES[number]
+export type SlateElementType = typeof BLOCK_TEXT_TYPES[number] | typeof INLINE_TEXT_TYPES[number]
 
 export type SlateElement<T = SlateElementType> = Omit<Element, "children"> & {
   type: T
   align?: TextAlignment
+  url?: string
   children: (SlateElement | SlateText)[]
 }
 
@@ -64,6 +66,8 @@ export const BLOCK_TEXT_TYPES = [
   "li",
   "code",
 ] as const
+
+export const INLINE_TEXT_TYPES = ["a"] as const
 
 export const HOTKEYS: Record<string, TextLeaf> = {
   "mod+b": "bold",
@@ -105,13 +109,15 @@ export const toggleBlock = (editor: BaseEditor, blockType: ElementBlockType, val
     })
   } else if (blockType === "type") {
     Transforms.unwrapNodes(editor, {
-      match: n => !Editor.isEditor(n) && isSlateElement(n) && ["ol", "ul"].includes(n.type),
+      match: n => !Editor.isEditor(n) && isSlateElement(n) && n.type === value,
       split: true,
     })
 
-    Transforms.setNodes<SlateElement>(editor, {
-      type: isActive ? "p" : "li",
-    })
+    if (["ol", "ul"].includes(value)) {
+      Transforms.setNodes<SlateElement>(editor, {
+        type: isActive ? "p" : "li",
+      })
+    }
 
     if (!isActive) {
       const block = { type: value, children: [] }
@@ -159,10 +165,93 @@ const markdownNodeType: InputNodeTypes = {
 }
 
 export const markdownToSlate = async (markdownText: string): Promise<SlateDescendant[]> => {
-  const result = await unified().use(markdown).use(slate).process(markdownText)
+  const result = await unified()
+    .use(markdown)
+    .use(slate, {
+      nodeTypes: markdownNodeType,
+    })
+    .process(markdownText)
   return result.result as SlateDescendant[]
 }
 
 export const slateToMarkdown = (value: Descendant[]): string => {
-  return value.map(v => serialize(v as any)).join("")
+  return value
+    .map(v =>
+      serialize(v as any, {
+        nodeTypes: markdownNodeType as NodeTypes,
+      })
+    )
+    .join("")
+}
+
+export const withExtra = (editor: ReactEditor) => {
+  const { insertData, insertText, isInline, normalizeNode } = editor
+
+  editor.isInline = element => {
+    if (isSlateElement(element)) {
+      return element.type === "a"
+    }
+    return isInline(element)
+  }
+
+  // editor.insertText = text => {
+  //   if (text && isUrl(text)) {
+  //     wrapLink(editor, text)
+  //   } else {
+  //     insertText(text)
+  //   }
+  // }
+
+  // editor.insertData = data => {
+  //   const text = data.getData("text/plain")
+
+  //   if (text && isUrl(text)) {
+  //     wrapLink(editor, text)
+  //   } else {
+  //     insertData(data)
+  //   }
+  // }
+
+  const isUrl = (string: string) => {
+    try {
+      return !!new URL(string)
+    } catch {
+      return false
+    }
+  }
+
+  const insertLink = (editor: BaseEditor, url: string) => {
+    if (editor.selection) {
+      wrapLink(editor, url)
+    }
+  }
+
+  const unwrapLink = (editor: BaseEditor) => {
+    Transforms.unwrapNodes(editor, {
+      match: n => !Editor.isEditor(n) && isSlateElement(n) && n.type === "a",
+    })
+  }
+
+  const wrapLink = (editor: BaseEditor, url: string) => {
+    if (isBlockActive(editor, "type", "a")) {
+      unwrapLink(editor)
+    }
+
+    const { selection } = editor
+    const isCollapsed = selection && Range.isCollapsed(selection)
+    const link: SlateElement = {
+      type: "a",
+      url,
+      children: isCollapsed ? [{ text: url }] : [],
+    }
+
+    if (isCollapsed) {
+      Transforms.insertNodes(editor, link)
+    } else {
+      Transforms.wrapNodes(editor, link, { split: true })
+      Transforms.collapse(editor, { edge: "end" })
+    }
+  }
+
+  return editor
 }

@@ -16,9 +16,9 @@
  */
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import isHotkey from "is-hotkey"
-import { createEditor, Transforms } from "slate"
+import { createEditor } from "slate"
 import { withHistory } from "slate-history"
-import { withReact, Slate, Editable, ReactEditor, useSlate } from "slate-react"
+import { withReact, Slate, Editable, useSlate } from "slate-react"
 
 import { ReactComponent as BoldIcon } from "@/assets/icons/rte/bold.svg"
 import { ReactComponent as CodeBlockIcon } from "@/assets/icons/rte/code-block.svg"
@@ -42,6 +42,7 @@ import {
   slateToMarkdown,
   toggleBlock,
   toggleMark,
+  withExtra,
 } from "@/utils/slate"
 
 import type { SlateElement, TextLeaf, ElementBlockType, inferBlockTypeValue } from "@/utils/slate"
@@ -92,7 +93,7 @@ const SlateMarkdownEditor: React.FC<SlateMarkdownEditorProps> = ({
   onBlur,
   onCharacterLimitChange,
 }) => {
-  const editor = useMemo(() => withHistory(withReact(createEditor())), [])
+  const editor = useMemo(() => withExtra(withHistory(withReact(createEditor()))), [])
   const [hasFocus, setHasFocus] = useState(false)
   const [charactersCount, setCharactersCount] = useState(0)
   const [hasExceededLimit, setHasExceededLimit] = useState(false)
@@ -110,9 +111,13 @@ const SlateMarkdownEditor: React.FC<SlateMarkdownEditorProps> = ({
   const updateCharactersCount = useCallback(
     (markdown: string) => {
       setCharactersCount(markdown.length)
-      setHasExceededLimit(charactersLimit ? markdown.length > charactersLimit : false)
+
+      if (charactersLimit) {
+        setHasExceededLimit(markdown.length > charactersLimit)
+        onCharacterLimitChange?.(markdown.length > charactersLimit)
+      }
     },
-    [charactersLimit]
+    [charactersLimit, onCharacterLimitChange]
   )
 
   useEffect(() => {
@@ -129,7 +134,9 @@ const SlateMarkdownEditor: React.FC<SlateMarkdownEditorProps> = ({
 
   const handleChange = useCallback(
     (val: Descendant[]) => {
+      console.log(val)
       const markdown = slateToMarkdown(val)
+      console.log(markdown)
       updateCharactersCount(markdown)
       onChange?.(safeMarkdown(markdown))
     },
@@ -165,7 +172,12 @@ const SlateMarkdownEditor: React.FC<SlateMarkdownEditorProps> = ({
         data-editor
       >
         <Slate editor={editor} value={defaultValue} onChange={handleChange}>
-          <div className="mb-4 flex items-center space-x-4 border-b border-gray-200 pb-4 dark:border-gray-700">
+          <div
+            className={classNames(
+              "mb-4 flex items-center space-x-4 border-b border-gray-200 pb-4 dark:border-gray-700",
+              toolbarClassName
+            )}
+          >
             <div className="space-x-1">
               <ToolbarButton mark="bold">
                 <BoldIcon width={16} />

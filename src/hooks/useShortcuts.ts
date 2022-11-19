@@ -19,7 +19,7 @@ import { keyEventToString } from "@/utils/keyboard"
 
 import type { Shortcuts } from "@/types/keyboard"
 
-export default function useShortcut(keymap: Shortcuts, handler: (action: string) => void) {
+export default function useShortcuts(keymap: Shortcuts, handler: (action: string) => void) {
   const keymapEntries = useMemo(() => {
     return Object.entries(keymap) as [string, string][]
   }, [keymap])
