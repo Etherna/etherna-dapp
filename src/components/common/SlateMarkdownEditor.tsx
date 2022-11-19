@@ -150,9 +150,9 @@ const SlateMarkdownEditor: React.FC<SlateMarkdownEditorProps> = ({
 
       <div
         className={classNames(
-          "relative block w-full appearance-none rounded border leading-tight",
+          "relative block w-full appearance-none rounded-lg border leading-tight",
           "min-h-24 px-3 py-3",
-          "border-gray-200 bg-gray-900/5 text-gray-700",
+          "border-gray-200 bg-gray-400/5 text-gray-700",
           "dark:border-gray-800 dark:bg-gray-100/5 dark:text-gray-200",
           {
             "border-green-500 outline-none dark:border-green-500": hasFocus,
@@ -165,10 +165,22 @@ const SlateMarkdownEditor: React.FC<SlateMarkdownEditorProps> = ({
         data-editor
       >
         <Slate editor={editor} value={defaultValue} onChange={handleChange}>
-          <div className="mb-4 flex items-center space-x-4 border-b border-gray-300 pb-4 dark:border-gray-700">
+          <div className="mb-4 flex items-center space-x-4 border-b border-gray-200 pb-4 dark:border-gray-700">
             <div className="space-x-1">
               <ToolbarButton mark="bold">
                 <BoldIcon width={16} />
+              </ToolbarButton>
+              <ToolbarButton mark="italic">
+                <ItalicIcon width={16} />
+              </ToolbarButton>
+              <ToolbarButton mark="underline">
+                <UnderlineIcon width={16} />
+              </ToolbarButton>
+              <ToolbarButton mark="striketrough">
+                <StrikethroughIcon width={16} />
+              </ToolbarButton>
+              <ToolbarButton mark="code">
+                <CodeIcon width={16} />
               </ToolbarButton>
             </div>
             <div className="space-x-1">
@@ -177,6 +189,9 @@ const SlateMarkdownEditor: React.FC<SlateMarkdownEditorProps> = ({
               </ToolbarButton>
               <ToolbarButton blockType="type" blockValue="ul">
                 <UnorderedListIconIcon width={16} />
+              </ToolbarButton>
+              <ToolbarButton blockType="type" blockValue="code">
+                <CodeBlockIcon width={16} />
               </ToolbarButton>
             </div>
           </div>
@@ -239,7 +254,7 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({ children, blockType, bloc
   return (
     <button
       className={classNames("rounded p-1.5", {
-        "bg-gray-500/20": isActive,
+        "bg-gray-400/20 dark:bg-gray-500/20": isActive,
       })}
       onClick={handleToggle}
     >
