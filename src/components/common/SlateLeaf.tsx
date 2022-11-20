@@ -30,6 +30,7 @@ const SlateLeaf: React.FC<SlateLeafProps> = ({ children, attributes, leaf }) => 
 
   const style: React.CSSProperties = {
     fontSize: leaf.size ? `${leaf.size}pt` : undefined,
+    color: leaf.link ? "#00AABE" : undefined,
     backgroundColor: leaf.code ? (darkMode ? "#374151" : "#E5E7EB") : undefined,
     borderRadius: leaf.code ? "4px" : undefined,
     padding: leaf.code ? "1px 2px" : undefined,

@@ -15,11 +15,11 @@
  */
 import markdown from "remark-parse"
 import slate, { serialize } from "remark-slate"
-import { Editor, Element, Range, Transforms } from "slate"
+import { Editor, Element, Text, Transforms } from "slate"
 import { unified } from "unified"
 
 import type { InputNodeTypes, NodeTypes } from "remark-slate"
-import type { BaseEditor, Text, Descendant } from "slate"
+import type { BaseEditor, Descendant, BaseRange, Node, NodeEntry } from "slate"
 import type { ReactEditor } from "slate-react"
 
 export type SlateDescendant = SlateElement | SlateText
@@ -41,6 +41,7 @@ export type SlateTextProps = {
   italic?: boolean
   underline?: boolean
   striketrough?: boolean
+  link?: boolean
   size?: number
 }
 
@@ -185,7 +186,7 @@ export const slateToMarkdown = (value: Descendant[]): string => {
 }
 
 export const withExtra = (editor: ReactEditor) => {
-  const { insertData, insertText, isInline, normalizeNode } = editor
+  const { isInline } = editor
 
   editor.isInline = element => {
     if (isSlateElement(element)) {
@@ -194,23 +195,17 @@ export const withExtra = (editor: ReactEditor) => {
     return isInline(element)
   }
 
-  // editor.insertText = text => {
-  //   if (text && isUrl(text)) {
-  //     wrapLink(editor, text)
-  //   } else {
-  //     insertText(text)
-  //   }
-  // }
+  return editor
+}
 
-  // editor.insertData = data => {
-  //   const text = data.getData("text/plain")
+export const decorate = (match: NodeEntry<Node>): BaseRange[] => {
+  const ranges: BaseRange[] = []
 
-  //   if (text && isUrl(text)) {
-  //     wrapLink(editor, text)
-  //   } else {
-  //     insertData(data)
-  //   }
-  // }
+  const [node, path] = match
+
+  if (!Text.isText(node)) {
+    return ranges
+  }
 
   const isUrl = (string: string) => {
     try {
@@ -220,38 +215,26 @@ export const withExtra = (editor: ReactEditor) => {
     }
   }
 
-  const insertLink = (editor: BaseEditor, url: string) => {
-    if (editor.selection) {
-      wrapLink(editor, url)
+  const tokens = node.text.split(
+    /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/g
+  )
+
+  let start = 0
+
+  for (const token of tokens) {
+    const length = token.length
+    const end = start + length
+
+    if (isUrl(token)) {
+      ranges.push({
+        link: true,
+        anchor: { path, offset: start },
+        focus: { path, offset: end },
+      } as any)
     }
+
+    start = end
   }
 
-  const unwrapLink = (editor: BaseEditor) => {
-    Transforms.unwrapNodes(editor, {
-      match: n => !Editor.isEditor(n) && isSlateElement(n) && n.type === "a",
-    })
-  }
-
-  const wrapLink = (editor: BaseEditor, url: string) => {
-    if (isBlockActive(editor, "type", "a")) {
-      unwrapLink(editor)
-    }
-
-    const { selection } = editor
-    const isCollapsed = selection && Range.isCollapsed(selection)
-    const link: SlateElement = {
-      type: "a",
-      url,
-      children: isCollapsed ? [{ text: url }] : [],
-    }
-
-    if (isCollapsed) {
-      Transforms.insertNodes(editor, link)
-    } else {
-      Transforms.wrapNodes(editor, link, { split: true })
-      Transforms.collapse(editor, { edge: "end" })
-    }
-  }
-
-  return editor
+  return ranges
 }

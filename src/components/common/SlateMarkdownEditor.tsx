@@ -35,6 +35,7 @@ import { Label } from "@/components/ui/display"
 import { TextInput } from "@/components/ui/inputs"
 import classNames from "@/utils/classnames"
 import {
+  decorate,
   HOTKEYS,
   isBlockActive,
   isMarkActive,
@@ -213,6 +214,7 @@ const SlateMarkdownEditor: React.FC<SlateMarkdownEditorProps> = ({
             className="font-normal [&>*+*]:mt-2"
             renderElement={renderElement}
             renderLeaf={renderLeaf}
+            decorate={decorate}
             placeholder={placeholder}
             spellCheck
             onFocus={() => {
