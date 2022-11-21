@@ -16,7 +16,7 @@
  */
 import React from "react"
 
-import MarkdownEditor from "@/components/common/MarkdownEditor"
+import MarkdownEditor from "@/components/common/SlateMarkdownEditor"
 import ThumbnailUpload from "@/components/studio/video-editor/ThumbnailUpload"
 import { Card, FormGroup } from "@/components/ui/display"
 import { TextInput } from "@/components/ui/inputs"
@@ -58,7 +58,7 @@ const VideoDetailsCard: React.FC<VideoDetailsCardProps> = ({
           id="description"
           label="Description"
           placeholder="Description of the video"
-          value={description}
+          initialValue={description}
           charactersLimit={maxDescriptionLength}
           onChange={value => updateDescription(value)}
           disabled={disabled}

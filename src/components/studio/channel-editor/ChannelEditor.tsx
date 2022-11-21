@@ -27,7 +27,7 @@ import React, {
 import { TrashIcon } from "@heroicons/react/24/outline"
 
 import SwarmImage from "@/classes/SwarmImage"
-import MarkdownEditor from "@/components/common/MarkdownEditor"
+import MarkdownEditor from "@/components/common/SlateMarkdownEditor"
 import WalletState from "@/components/studio/other/WalletState"
 import { Button } from "@/components/ui/actions"
 import { TextInput } from "@/components/ui/inputs"
@@ -347,7 +347,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
           <label htmlFor="description">Channel description</label>
           <MarkdownEditor
             placeholder="Write something about you"
-            value={profileDescription}
+            initialValue={profile?.description ?? ""}
             charactersLimit={5000}
             onCharacterLimitChange={setHasExceededLimit}
             onChange={value => setProfileDescription(value)}

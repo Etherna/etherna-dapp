@@ -16,7 +16,7 @@
  */
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import isHotkey from "is-hotkey"
-import { createEditor } from "slate"
+import { createEditor, Editor, Transforms } from "slate"
 import { withHistory } from "slate-history"
 import { withReact, Slate, Editable, useSlate } from "slate-react"
 
@@ -98,6 +98,7 @@ const SlateMarkdownEditor: React.FC<SlateMarkdownEditorProps> = ({
   const [hasFocus, setHasFocus] = useState(false)
   const [charactersCount, setCharactersCount] = useState(0)
   const [hasExceededLimit, setHasExceededLimit] = useState(false)
+  const [value, setValue] = useState<Descendant[]>(defaultValue)
 
   const safeMarkdown = useCallback(
     (markdown: string) => {
@@ -126,8 +127,11 @@ const SlateMarkdownEditor: React.FC<SlateMarkdownEditorProps> = ({
       updateCharactersCount(initialValue)
       // replace content
       markdownToSlate(initialValue).then(value => {
-        editor.children = value
-        editor.normalizeNode([editor, []])
+        setValue(value)
+        // try {
+        //   editor.children = value
+        //   editor.normalizeNode([editor, []])
+        // } catch (error) {}
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -172,7 +176,7 @@ const SlateMarkdownEditor: React.FC<SlateMarkdownEditorProps> = ({
         onClick={onContainerClick}
         data-editor
       >
-        <Slate editor={editor} value={defaultValue} onChange={handleChange}>
+        <Slate editor={editor} value={value} onChange={handleChange}>
           <div
             className={classNames(
               "mb-4 flex items-center space-x-4 border-b border-gray-200 pb-4 dark:border-gray-700",

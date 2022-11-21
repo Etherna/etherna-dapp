@@ -18,7 +18,7 @@ import React, { useCallback, useState } from "react"
 
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
-import MarkdownEditor from "@/components/common/MarkdownEditor"
+import MarkdownEditor from "@/components/common/SlateMarkdownEditor"
 import { Button } from "@/components/ui/actions"
 import { Avatar } from "@/components/ui/display"
 import useCharaterLimits from "@/hooks/useCharaterLimits"
@@ -104,7 +104,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPost
           hidden: !isFocused,
         })}
         placeholder="Add a public comment"
-        value={text}
+        initialValue={text}
         charactersLimit={characterLimits?.comment}
         onChange={setText}
         onFocus={onFocus}
