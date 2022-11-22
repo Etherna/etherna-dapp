@@ -15,7 +15,7 @@
  *
  */
 import React, { useMemo } from "react"
-import { parse } from "micro-down"
+import { marked } from "marked"
 import { filterXSS } from "xss"
 
 import classNames from "@/utils/classnames"
@@ -41,7 +41,7 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({
 }) => {
   const markdown = useMemo(() => {
     const formattedMarkdown = forceNewLine ? value.replace(/\n/g, "<br />") : value
-    const html = filterXSS(parse(formattedMarkdown))
+    const html = filterXSS(marked(formattedMarkdown))
     const safeLinksHtml = html.replace(
       /<a href="(.*?)">(.*?)<\/a>/g,
       (_, href: string, text: string) => {

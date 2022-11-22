@@ -47,9 +47,9 @@ export default function usePlaylistVideos(
   const [isLoadingPlaylist, setIsLoadingPlaylist] = useState(false)
   const [hasMore, setHasMore] = useState(false)
   const [total, setTotal] = useState(0)
+  const [error, setError] = useState<string>()
   const [isEncrypted, setIsEncrypted] = useState(playlist?.type === "private" && !playlist.videos)
   const fetchingPage = useRef<number>()
-  const { showError } = useErrorMessage()
   const smartFetchCount = useSmartFetchCount(opts.gridRef)
 
   useEffect(() => {
@@ -88,6 +88,7 @@ export default function usePlaylistVideos(
 
     setTotal(0)
     setVideos(undefined)
+    setError(undefined)
 
     setIsLoadingPlaylist(true)
 
@@ -107,11 +108,11 @@ export default function usePlaylistVideos(
     } catch (error: any) {
       if (error.response.status === 404) return
 
-      showError("Error loading channel", getResponseErrorMessage(error))
+      setError("Error loading channel. Response: " + getResponseErrorMessage(error))
     } finally {
       setIsLoadingPlaylist(false)
     }
-  }, [beeClient, opts.owner, playlistReference, showError])
+  }, [beeClient, opts.owner, playlistReference])
 
   const fetchVideos = useCallback(
     async (from: number, to: number): Promise<Video[]> => {
@@ -120,6 +121,7 @@ export default function usePlaylistVideos(
         return []
       }
 
+      setError(undefined)
       setTotal(playlist.videos.length)
       setIsFetching(true)
 
@@ -139,13 +141,13 @@ export default function usePlaylistVideos(
       } catch (error) {
         console.error(error)
 
-        showError("Fetching error", "Coudn't fetch playlist videos")
+        setError("Fetching error. Response: " + "Coudn't fetch playlist videos")
         return []
       } finally {
         setIsFetching(false)
       }
     },
-    [beeClient, indexClient, playlist, showError, applyOwnerToVideos]
+    [beeClient, indexClient, playlist, applyOwnerToVideos]
   )
 
   const fetchPage = useCallback(
@@ -186,6 +188,7 @@ export default function usePlaylistVideos(
     playlist,
     videos,
     total,
+    error,
     isFetching,
     isLoadingPlaylist,
     isEncrypted,

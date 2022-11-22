@@ -17,7 +17,6 @@ import { startTransition, useCallback, useEffect, useState } from "react"
 import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
 
-import useErrorMessage from "./useErrorMessage"
 import useSmartFetchCount from "./useSmartFetchCount"
 import { parseReaderStatus } from "./useVideoOffers"
 import SwarmProfile from "@/classes/SwarmProfile"
@@ -48,8 +47,8 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
   const [page, setPage] = useState(0)
   const [isFetching, setIsFetching] = useState(false)
   const [hasMore, setHasMore] = useState(true)
+  const [error, setError] = useState<string>()
   const fetchCount = useSmartFetchCount(opts.gridRef, opts.seedLimit, opts.fetchLimit)
-  const { showError } = useErrorMessage()
 
   useEffect(() => {
     setVideos(undefined)
@@ -144,6 +143,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
       }
 
       setIsFetching(true)
+      setError(undefined)
 
       try {
         const indexVideos = opts?.query
@@ -187,7 +187,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
         loadVideoProfiles(newVideos)
         loadVideosOffers(newVideos)
       } catch (error: any) {
-        showError("Coudn't fetch the videos", getResponseErrorMessage(error))
+        setError("Coudn't fetch the videos. Response: " + getResponseErrorMessage(error))
       }
 
       setIsFetching(false)
@@ -203,7 +203,6 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
       fetchCount,
       loadVideoProfiles,
       loadVideosOffers,
-      showError,
     ]
   )
 
@@ -229,6 +228,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
     hasMore,
     isFetching,
     fetchCount,
+    error,
     loadMore,
     refresh,
   }

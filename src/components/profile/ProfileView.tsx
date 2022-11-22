@@ -43,6 +43,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
   const {
     playlist,
     videos,
+    error,
     hasMore,
     isFetching,
     isLoadingPlaylist,
@@ -106,11 +107,12 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
       >
         {activeTab === "videos" && (
           <ProfileVideos
+            videos={videos}
+            error={error}
             hasMoreVideos={hasMore}
             isFetching={isLoading}
             onLoadMore={loadMore}
             fetchingPreviewCount={smartFetchCount || 9}
-            videos={videos}
           />
         )}
         {activeTab === "about" && (

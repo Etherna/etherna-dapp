@@ -347,7 +347,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
           <label htmlFor="description">Channel description</label>
           <MarkdownEditor
             placeholder="Write something about you"
-            value={profileDescription}
+            initialValue={profile?.description ?? ""}
             charactersLimit={5000}
             onCharacterLimitChange={setHasExceededLimit}
             onChange={value => setProfileDescription(value)}
