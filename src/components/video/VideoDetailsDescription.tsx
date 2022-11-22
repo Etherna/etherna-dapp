@@ -73,7 +73,7 @@ const VideoDetailsDescription: React.FC<VideoDetailsDescriptionProps> = ({ descr
         ref={el => el && setDescriptionEl(el)}
       >
         {description ? (
-          <MarkdownPreview value={description} disableHeading={true} />
+          <MarkdownPreview value={description} disableHeading={true} forceNewLine />
         ) : (
           <p className="text-sm text-gray-500">
             <em>{"This video doesn't have a description"}</em>

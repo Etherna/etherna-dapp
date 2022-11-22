@@ -14,7 +14,7 @@
  *  limitations under the License.
  *
  */
-import React from "react"
+import React, { useMemo } from "react"
 
 import MarkdownEditor from "@/components/common/SlateMarkdownEditor"
 import ThumbnailUpload from "@/components/studio/video-editor/ThumbnailUpload"
@@ -37,6 +37,10 @@ const VideoDetailsCard: React.FC<VideoDetailsCardProps> = ({
   const description = useVideoEditorStore(state => state.video.description)
   const updateTitle = useVideoEditorStore(state => state.updateTitle)
   const updateDescription = useVideoEditorStore(state => state.updateDescription)
+  const initialDescription = useMemo(() => {
+    return description
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <Card title="Video information">
@@ -58,7 +62,7 @@ const VideoDetailsCard: React.FC<VideoDetailsCardProps> = ({
           id="description"
           label="Description"
           placeholder="Description of the video"
-          initialValue={description}
+          initialValue={initialDescription}
           charactersLimit={maxDescriptionLength}
           onChange={value => updateDescription(value)}
           disabled={disabled}

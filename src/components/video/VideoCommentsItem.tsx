@@ -142,6 +142,7 @@ const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({
             "text-gray-400 dark:text-gray-500": comment.isFrozen,
           })}
           value={text}
+          forceNewLine
         />
       </div>
     </div>

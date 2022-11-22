@@ -30,12 +30,13 @@ export default function useShortcuts(keymap: Shortcuts, handler: (action: string
 
   const handleKeydown = useCallback(
     (e: KeyboardEvent) => {
-      const target = document.activeElement ?? (document.body as HTMLElement)
+      const target: HTMLElement =
+        (document.activeElement as HTMLElement) ?? (document.body as HTMLElement)
 
       if (target.nodeName === "INPUT" || target.nodeName === "TEXTAREA") {
         return
       }
-      if (target.className.includes("DraftEditor")) {
+      if (target.dataset.slateEditor === "true") {
         return
       }
 

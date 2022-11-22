@@ -166,23 +166,33 @@ const markdownNodeType: InputNodeTypes = {
 }
 
 export const markdownToSlate = async (markdownText: string): Promise<SlateDescendant[]> => {
-  const result = await unified()
-    .use(markdown)
-    .use(slate, {
-      nodeTypes: markdownNodeType,
-    })
-    .process(markdownText)
-  return result.result as SlateDescendant[]
+  let value: SlateDescendant[] = []
+
+  const lines = markdownText.split("\n")
+
+  for (const line of lines) {
+    const lineResult = await unified()
+      .use(markdown)
+      .use(slate, { nodeTypes: markdownNodeType })
+      .process(line)
+    value = [...value, ...(lineResult.result as any)]
+  }
+
+  return value
 }
 
 export const slateToMarkdown = (value: Descendant[]): string => {
-  return value
+  const markdown = value
     .map(v =>
       serialize(v as any, {
         nodeTypes: markdownNodeType as NodeTypes,
+        ignoreParagraphNewline: true,
       })
     )
     .join("")
+    .replace(/(\r\n|\n|\r)$/m, "")
+
+  return markdown
 }
 
 export const withExtra = (editor: ReactEditor) => {

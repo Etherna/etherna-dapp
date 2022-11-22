@@ -14,11 +14,19 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from "react"
 import isHotkey from "is-hotkey"
-import { createEditor, Editor, Transforms } from "slate"
+import { createEditor, Selection, Transforms } from "slate"
 import { withHistory } from "slate-history"
-import { withReact, Slate, Editable, useSlate } from "slate-react"
+import { withReact, Slate, Editable, useSlate, ReactEditor } from "slate-react"
+import { Transform } from "stream"
 
 import { ReactComponent as BoldIcon } from "@/assets/icons/rte/bold.svg"
 import { ReactComponent as CodeBlockIcon } from "@/assets/icons/rte/code-block.svg"
@@ -65,6 +73,10 @@ type SlateMarkdownEditorProps = {
   onCharacterLimitChange?(exeeded: boolean): void
 }
 
+type SlateMarkdownEditorRef = {
+  reset(): void
+}
+
 type ToolbarButtonProps<T = ElementBlockType> = {
   children: React.ReactNode
   mark?: TextLeaf
@@ -79,189 +91,212 @@ const defaultValue: SlateElement[] = [
   },
 ]
 
-const SlateMarkdownEditor: React.FC<SlateMarkdownEditorProps> = ({
-  id,
-  className,
-  initialValue,
-  toolbarClassName,
-  charLimitClassName,
-  label,
-  placeholder,
-  disabled,
-  charactersLimit,
-  onChange,
-  onFocus,
-  onBlur,
-  onCharacterLimitChange,
-}) => {
-  const editor = useMemo(() => withExtra(withHistory(withReact(createEditor()))), [])
-  const [hasFocus, setHasFocus] = useState(false)
-  const [charactersCount, setCharactersCount] = useState(0)
-  const [hasExceededLimit, setHasExceededLimit] = useState(false)
-  const [value, setValue] = useState<Descendant[]>(defaultValue)
-
-  const safeMarkdown = useCallback(
-    (markdown: string) => {
-      if (charactersLimit) {
-        return markdown.slice(0, charactersLimit)
-      }
-      return markdown
+const SlateMarkdownEditor = forwardRef<SlateMarkdownEditorRef, SlateMarkdownEditorProps>(
+  (
+    {
+      id,
+      className,
+      initialValue,
+      toolbarClassName,
+      charLimitClassName,
+      label,
+      placeholder,
+      disabled,
+      charactersLimit,
+      onChange,
+      onFocus,
+      onBlur,
+      onCharacterLimitChange,
     },
-    [charactersLimit]
-  )
+    ref
+  ) => {
+    const editor = useMemo(() => withExtra(withHistory(withReact(createEditor()))), [])
+    const [hasFocus, setHasFocus] = useState(false)
+    const [charactersCount, setCharactersCount] = useState(0)
+    const [hasExceededLimit, setHasExceededLimit] = useState(false)
 
-  const updateCharactersCount = useCallback(
-    (markdown: string) => {
-      setCharactersCount(markdown.length)
+    const safeMarkdown = useCallback(
+      (markdown: string) => {
+        if (charactersLimit) {
+          return markdown.slice(0, charactersLimit)
+        }
+        return markdown
+      },
+      [charactersLimit]
+    )
 
-      if (charactersLimit) {
-        setHasExceededLimit(markdown.length > charactersLimit)
-        onCharacterLimitChange?.(markdown.length > charactersLimit)
-      }
-    },
-    [charactersLimit, onCharacterLimitChange]
-  )
-
-  useEffect(() => {
-    if (initialValue) {
-      updateCharactersCount(initialValue)
-      // replace content
-      markdownToSlate(initialValue).then(value => {
-        setValue(value)
-        // try {
-        //   editor.children = value
-        //   editor.normalizeNode([editor, []])
-        // } catch (error) {}
+    const resetEditor = useCallback(() => {
+      editor.children = defaultValue
+      editor.normalizeNode([editor, []])
+      Transforms.setSelection(editor, {
+        anchor: { path: [0, 0], offset: 0 },
+        focus: { path: [0, 0], offset: 0 },
       })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValue, editor])
+    }, [editor])
 
-  const handleChange = useCallback(
-    (val: Descendant[]) => {
-      console.log(val)
-      const markdown = slateToMarkdown(val)
-      console.log(markdown)
-      updateCharactersCount(markdown)
-      onChange?.(safeMarkdown(markdown))
-    },
-    [onChange, updateCharactersCount, safeMarkdown]
-  )
+    const updateCharactersCount = useCallback(
+      (markdown: string) => {
+        const lengthWithoutNewLines = markdown.replace(/\n/g, "").length
+        setCharactersCount(lengthWithoutNewLines)
 
-  const onContainerClick = useCallback((e: React.MouseEvent) => {
-    // e.target === e.currentTarget && Transforms.select(editor, { offset: 0, path: [0, 0] })
-  }, [])
+        if (charactersLimit) {
+          setHasExceededLimit(lengthWithoutNewLines > charactersLimit)
+          onCharacterLimitChange?.(lengthWithoutNewLines > charactersLimit)
+        }
+      },
+      [charactersLimit, onCharacterLimitChange]
+    )
 
-  const renderElement = useCallback((props: any) => <SlateBlock {...props} />, [])
+    useEffect(() => {
+      if (initialValue) {
+        updateCharactersCount(initialValue)
+        // replace content
+        markdownToSlate(initialValue).then(value => {
+          try {
+            editor.children = value
+            editor.normalizeNode([editor, []])
+          } catch (error) {}
+        })
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initialValue, editor])
 
-  const renderLeaf = useCallback((props: any) => <SlateLeaf {...props} />, [])
+    const handleChange = useCallback(
+      (val: Descendant[]) => {
+        const markdown = slateToMarkdown(val)
+        updateCharactersCount(markdown)
+        onChange?.(safeMarkdown(markdown))
+      },
+      [onChange, updateCharactersCount, safeMarkdown]
+    )
 
-  return (
-    <div className={classNames(className)}>
-      {label && <Label htmlFor={id}>{label}</Label>}
+    const onContainerClick = useCallback((e: React.MouseEvent) => {
+      // e.target === e.currentTarget && Transforms.select(editor, { offset: 0, path: [0, 0] })
+    }, [])
 
-      <div
-        className={classNames(
-          "relative block w-full appearance-none rounded-lg border leading-tight",
-          "min-h-24 px-3 py-3",
-          "border-gray-200 bg-gray-400/5 text-gray-700",
-          "dark:border-gray-800 dark:bg-gray-100/5 dark:text-gray-200",
-          {
-            "border-green-500 outline-none dark:border-green-500": hasFocus,
-            "bg-transparent dark:bg-transparent dark:text-gray-200": hasFocus,
-            "border-red-500 dark:border-red-500": hasExceededLimit,
-            "pb-10": !!charactersLimit,
-          }
-        )}
-        onClick={onContainerClick}
-        data-editor
-      >
-        <Slate editor={editor} value={value} onChange={handleChange}>
-          <div
-            className={classNames(
-              "mb-4 flex items-center space-x-4 border-b border-gray-200 pb-4 dark:border-gray-700",
-              toolbarClassName
-            )}
-          >
-            <div className="space-x-1">
-              <ToolbarButton mark="bold">
-                <BoldIcon width={16} />
-              </ToolbarButton>
-              <ToolbarButton mark="italic">
-                <ItalicIcon width={16} />
-              </ToolbarButton>
-              <ToolbarButton mark="underline">
-                <UnderlineIcon width={16} />
-              </ToolbarButton>
-              <ToolbarButton mark="striketrough">
-                <StrikethroughIcon width={16} />
-              </ToolbarButton>
-              <ToolbarButton mark="code">
-                <CodeIcon width={16} />
-              </ToolbarButton>
+    const renderElement = useCallback((props: any) => <SlateBlock {...props} />, [])
+
+    const renderLeaf = useCallback((props: any) => <SlateLeaf {...props} />, [])
+
+    useImperativeHandle(ref, () => ({
+      reset: () => {
+        resetEditor()
+      },
+    }))
+
+    return (
+      <div className={classNames(className)}>
+        {label && <Label htmlFor={id}>{label}</Label>}
+
+        <div
+          className={classNames(
+            "relative block w-full appearance-none rounded-lg border leading-tight",
+            "min-h-24 px-3 py-3",
+            "border-gray-200 bg-gray-400/5 text-gray-700",
+            "dark:border-gray-800 dark:bg-gray-100/5 dark:text-gray-200",
+            {
+              "border-green-500 outline-none dark:border-green-500": hasFocus,
+              "bg-transparent dark:bg-transparent dark:text-gray-200": hasFocus,
+              "border-red-500 dark:border-red-500": hasExceededLimit,
+              "pb-10": !!charactersLimit,
+            }
+          )}
+          onClick={onContainerClick}
+          data-editor
+        >
+          <Slate editor={editor} value={defaultValue} onChange={handleChange}>
+            <div
+              className={classNames(
+                "mb-4 flex items-center space-x-4 border-b border-gray-200 pb-4 dark:border-gray-700",
+                toolbarClassName
+              )}
+            >
+              <div className="space-x-1">
+                <ToolbarButton mark="bold">
+                  <BoldIcon width={16} />
+                </ToolbarButton>
+                <ToolbarButton mark="italic">
+                  <ItalicIcon width={16} />
+                </ToolbarButton>
+                <ToolbarButton mark="underline">
+                  <UnderlineIcon width={16} />
+                </ToolbarButton>
+                <ToolbarButton mark="striketrough">
+                  <StrikethroughIcon width={16} />
+                </ToolbarButton>
+                <ToolbarButton mark="code">
+                  <CodeIcon width={16} />
+                </ToolbarButton>
+              </div>
+              <div className="space-x-1">
+                <ToolbarButton blockType="type" blockValue="ol">
+                  <OrderedListIconIcon width={16} />
+                </ToolbarButton>
+                <ToolbarButton blockType="type" blockValue="ul">
+                  <UnorderedListIconIcon width={16} />
+                </ToolbarButton>
+                <ToolbarButton blockType="type" blockValue="code">
+                  <CodeBlockIcon width={16} />
+                </ToolbarButton>
+              </div>
             </div>
-            <div className="space-x-1">
-              <ToolbarButton blockType="type" blockValue="ol">
-                <OrderedListIconIcon width={16} />
-              </ToolbarButton>
-              <ToolbarButton blockType="type" blockValue="ul">
-                <UnorderedListIconIcon width={16} />
-              </ToolbarButton>
-              <ToolbarButton blockType="type" blockValue="code">
-                <CodeBlockIcon width={16} />
-              </ToolbarButton>
-            </div>
-          </div>
 
-          <Editable
-            id={id}
-            className="font-normal [&>*+*]:mt-2"
-            renderElement={renderElement}
-            renderLeaf={renderLeaf}
-            decorate={decorate}
-            placeholder={placeholder}
-            spellCheck
-            onFocus={() => {
-              setHasFocus(true)
-              onFocus?.()
-            }}
-            onBlur={() => {
-              setHasFocus(false)
-              onBlur?.()
-            }}
-            onKeyDown={event => {
-              for (const hotkey in HOTKEYS) {
-                if (isHotkey(hotkey, event as any)) {
-                  event.preventDefault()
-                  event.stopPropagation()
-                  const mark = HOTKEYS[hotkey]!
-                  toggleMark(editor, mark)
+            <Editable
+              id={id}
+              className="font-normal [&>*+*]:mt-2"
+              renderElement={renderElement}
+              renderLeaf={renderLeaf}
+              decorate={decorate}
+              placeholder={placeholder}
+              spellCheck
+              onFocus={() => {
+                setHasFocus(true)
+                onFocus?.()
+              }}
+              onBlur={() => {
+                setHasFocus(false)
+                onBlur?.()
+              }}
+              onKeyDown={event => {
+                for (const hotkey in HOTKEYS) {
+                  if (isHotkey(hotkey, event as any)) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    const mark = HOTKEYS[hotkey]!
+                    toggleMark(editor, mark)
+                  }
                 }
-              }
-            }}
-            disabled={disabled}
-          />
-        </Slate>
+              }}
+              disabled={disabled}
+            />
+          </Slate>
 
-        {charactersLimit && (
-          <TextInput.CharactersLimit
-            className={charLimitClassName}
-            textLength={charactersCount}
-            limit={charactersLimit}
-          />
-        )}
+          {charactersLimit && (
+            <TextInput.CharactersLimit
+              className={charLimitClassName}
+              textLength={charactersCount}
+              limit={charactersLimit}
+            />
+          )}
+        </div>
       </div>
-    </div>
-  )
-}
+    )
+  }
+)
 
 const ToolbarButton: React.FC<ToolbarButtonProps> = ({ children, blockType, blockValue, mark }) => {
   const editor = useSlate()
 
-  const handleToggle = useCallback(() => {
-    mark && toggleMark(editor, mark!)
-    blockType && toggleBlock(editor, blockType, blockValue!)
-  }, [editor, blockType, blockValue, mark])
+  const handleToggle = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+
+      mark && toggleMark(editor, mark!)
+      blockType && toggleBlock(editor, blockType, blockValue!)
+    },
+    [editor, blockType, blockValue, mark]
+  )
 
   const isActive = mark
     ? isMarkActive(editor, mark)
@@ -274,7 +309,8 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({ children, blockType, bloc
       className={classNames("rounded p-1.5", {
         "bg-gray-400/20 dark:bg-gray-500/20": isActive,
       })}
-      onClick={handleToggle}
+      type="button"
+      onMouseDown={handleToggle}
     >
       {children}
     </button>
