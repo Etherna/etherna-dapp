@@ -14,9 +14,18 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Editor, EditorState, RichUtils, convertFromRaw, convertToRaw } from "draft-js"
-import { draftToMarkdown, markdownToDraft } from "markdown-draft-js"
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from "react"
+import isHotkey from "is-hotkey"
+import { createEditor, Transforms } from "slate"
+import { withHistory } from "slate-history"
+import { withReact, Slate, Editable, useSlate } from "slate-react"
 
 import { ReactComponent as BoldIcon } from "@/assets/icons/rte/bold.svg"
 import { ReactComponent as CodeBlockIcon } from "@/assets/icons/rte/code-block.svg"
@@ -27,21 +36,32 @@ import { ReactComponent as StrikethroughIcon } from "@/assets/icons/rte/striketh
 import { ReactComponent as UnderlineIcon } from "@/assets/icons/rte/underline.svg"
 import { ReactComponent as UnorderedListIconIcon } from "@/assets/icons/rte/unordered-list.svg"
 
-import classNames from "@/utils/classnames"
-
-import type { DraftEditorCommand, DraftHandleValue, EditorProps } from "draft-js"
-import "@/styles/overrides/draft-js.scss"
+import SlateBlock from "./SlateBlock"
+import SlateLeaf from "./SlateLeaf"
 import { Label } from "@/components/ui/display"
 import { TextInput } from "@/components/ui/inputs"
+import classNames from "@/utils/classnames"
+import {
+  decorate,
+  HOTKEYS,
+  isBlockActive,
+  isMarkActive,
+  markdownToSlate,
+  slateToMarkdown,
+  toggleBlock,
+  toggleMark,
+  withExtra,
+} from "@/utils/slate"
 
-const EditorFix = Editor as unknown as React.FC<EditorProps>
+import type { SlateElement, TextLeaf, ElementBlockType, inferBlockTypeValue } from "@/utils/slate"
+import type { Descendant } from "slate"
 
-type MarkdownEditorProps = {
+type SlateMarkdownEditorProps = {
   id?: string
   className?: string
+  initialValue?: string
   toolbarClassName?: string
   charLimitClassName?: string
-  value: string | null | undefined
   label?: string
   placeholder?: string
   disabled?: boolean
@@ -52,303 +72,248 @@ type MarkdownEditorProps = {
   onCharacterLimitChange?(exeeded: boolean): void
 }
 
-type ToolbarConfig = {
-  [key: string]: MarkdownButtonConfig[]
+type SlateMarkdownEditorRef = {
+  reset(): void
 }
 
-const toolbarConfig: ToolbarConfig = {
-  INLINE_STYLE_BUTTONS: [
-    { label: "Bold", type: "inline", style: "BOLD" },
-    { label: "Italic", type: "inline", style: "ITALIC" },
-    { label: "Underline", type: "inline", style: "UNDERLINE" },
-    { label: "Strikethrough", type: "inline", style: "STRIKETHROUGH" },
-    { label: "Code", type: "inline", style: "CODE" },
-  ],
-  BLOCK_TYPE_BUTTONS: [
-    { label: "Unordered list", type: "block", style: "unordered-list-item" },
-    { label: "Ordered list", type: "block", style: "ordered-list-item" },
-    { label: "Code block", type: "block", style: "code-block" },
-  ],
-}
-type MarkdownButtonConfig = {
-  label?: string
-} & (
-  | {
-      type: "block"
-      style:
-        | "header-one"
-        | "header-two"
-        | "header-three"
-        | "header-four"
-        | "header-five"
-        | "header-six"
-        | "blockquote"
-        | "unordered-list-item"
-        | "ordered-list-item"
-        | "code-block"
-    }
-  | {
-      type: "inline"
-      style: "BOLD" | "ITALIC" | "UNDERLINE" | "CODE" | "STRIKETHROUGH"
-    }
-)
-
-type MarkdownEditorButtonProps = {
-  editorState: EditorState
-  config: MarkdownButtonConfig
-  onEditorStateChange?(editorState: EditorState): void
+type ToolbarButtonProps<T = ElementBlockType> = {
+  children: React.ReactNode
+  mark?: TextLeaf
+  blockType?: T
+  blockValue?: inferBlockTypeValue<T>
 }
 
-const MarkdownEditorButton: React.FC<MarkdownEditorButtonProps> = ({
-  editorState,
-  config,
-  onEditorStateChange,
-}) => {
-  const selection = editorState.getSelection()
-  const blockType =
-    config.type === "block" &&
-    editorState.getCurrentContent().getBlockForKey(selection.getStartKey()).getType()
-  const inlineStyle = config.type === "inline" ? editorState.getCurrentInlineStyle() : null
-  const active =
-    (config.type === "block" && blockType === config.style) ||
-    (config.type === "inline" && inlineStyle!.has(config.style))
+const defaultValue: SlateElement[] = [
+  {
+    type: "p",
+    children: [{ text: "" }],
+  },
+]
 
-  const toggleStyle = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault()
-
-      if (config.type === "inline") {
-        onEditorStateChange?.(RichUtils.toggleInlineStyle(editorState, config.style))
-      }
-      if (config.type === "block") {
-        onEditorStateChange?.(RichUtils.toggleBlockType(editorState, config.style))
-      }
+const SlateMarkdownEditor = forwardRef<SlateMarkdownEditorRef, SlateMarkdownEditorProps>(
+  (
+    {
+      id,
+      className,
+      initialValue,
+      toolbarClassName,
+      charLimitClassName,
+      label,
+      placeholder,
+      disabled,
+      charactersLimit,
+      onChange,
+      onFocus,
+      onBlur,
+      onCharacterLimitChange,
     },
-    [config.style, config.type, editorState, onEditorStateChange]
-  )
+    ref
+  ) => {
+    const editor = useMemo(() => withExtra(withHistory(withReact(createEditor()))), [])
+    const [hasFocus, setHasFocus] = useState(false)
+    const [charactersCount, setCharactersCount] = useState(0)
+    const [hasExceededLimit, setHasExceededLimit] = useState(false)
 
-  const getIcon = useCallback(() => {
-    switch (config.style) {
-      case "BOLD":
-        return <BoldIcon width={20} />
-      case "ITALIC":
-        return <ItalicIcon width={20} />
-      case "UNDERLINE":
-        return <UnderlineIcon width={20} />
-      case "STRIKETHROUGH":
-        return <StrikethroughIcon width={20} />
-      case "CODE":
-        return <CodeIcon width={20} />
-      case "code-block":
-        return <CodeBlockIcon width={20} />
-      case "unordered-list-item":
-        return <UnorderedListIconIcon width={20} />
-      case "ordered-list-item":
-        return <OrderedListIconIcon width={20} />
-    }
-  }, [config.style])
-
-  return (
-    <div
-      className={classNames(
-        "flex h-8 w-8 cursor-pointer appearance-none items-center justify-center",
-        "text-gray-700 dark:text-gray-400",
-        {
-          "hover:bg-gray-100 dark:hover:bg-gray-800": !active,
-          "bg-gray-100 text-blue-400 dark:bg-gray-800": active,
+    const safeMarkdown = useCallback(
+      (markdown: string) => {
+        if (charactersLimit) {
+          return markdown.slice(0, charactersLimit)
         }
-      )}
-      title={config.label}
-      onMouseDown={toggleStyle}
-    >
-      {getIcon()}
-    </div>
-  )
-}
+        return markdown
+      },
+      [charactersLimit]
+    )
 
-const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
-  id,
-  className,
-  toolbarClassName,
-  charLimitClassName,
-  value,
-  label,
-  placeholder,
-  charactersLimit,
-  disabled,
-  onChange,
-  onFocus,
-  onBlur,
-  onCharacterLimitChange,
-}) => {
-  const [markdown, setMarkdown] = useState(value)
-  const [hasFocus, setHasFocus] = useState(false)
-  const [hasExceededLimit, setHasExceededLimit] = useState(false)
-  const [state, setState] = useState<EditorState>(() => {
-    const rawData = markdownToDraft(value ?? "")
-    const contentState = convertFromRaw(rawData)
-    const newEditorState = EditorState.createWithContent(contentState)
-    return newEditorState
-  })
-  const previousValue = useRef(!value)
-  const textLength = useMemo(() => {
-    return state.getCurrentContent().getPlainText("").length
-  }, [state])
-
-  useEffect(() => {
-    if (value === "") {
-      // reset state
-      setState(EditorState.createEmpty())
-      setMarkdown(value)
-    } else if (value && !previousValue.current) {
-      previousValue.current = true
-      setState(() => {
-        const rawData = markdownToDraft(value)
-        const contentState = convertFromRaw(rawData)
-        const newEditorState = EditorState.createWithContent(contentState)
-        return newEditorState
+    const resetEditor = useCallback(() => {
+      editor.children = defaultValue
+      editor.normalizeNode([editor, []])
+      Transforms.setSelection(editor, {
+        anchor: { path: [0, 0], offset: 0 },
+        focus: { path: [0, 0], offset: 0 },
       })
-    }
-  }, [value])
+    }, [editor])
 
-  useEffect(() => {
-    if (!charactersLimit) return
-    setHasExceededLimit((value?.length ?? 0) >= charactersLimit)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, charactersLimit])
+    const updateCharactersCount = useCallback(
+      (markdown: string) => {
+        const lengthWithoutNewLines = markdown.replace(/\n/g, "").length
+        setCharactersCount(lengthWithoutNewLines)
 
-  useEffect(() => {
-    onCharacterLimitChange?.(hasExceededLimit)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasExceededLimit])
+        if (charactersLimit) {
+          setHasExceededLimit(lengthWithoutNewLines > charactersLimit)
+          onCharacterLimitChange?.(lengthWithoutNewLines > charactersLimit)
+        }
+      },
+      [charactersLimit, onCharacterLimitChange]
+    )
 
-  const handleBeforeInput = useCallback(
-    (chars: string, editorState: EditorState, eventTimeStamp: number) => {
-      const currentContent = editorState.getCurrentContent()
-      const currentContentLength = currentContent.getPlainText("").length
-
-      if (charactersLimit && currentContentLength > charactersLimit - 1) {
-        return "handled"
+    useEffect(() => {
+      if (initialValue) {
+        updateCharactersCount(initialValue)
+        // replace content
+        markdownToSlate(initialValue).then(value => {
+          try {
+            editor.children = value
+            editor.normalizeNode([editor, []])
+          } catch (error) {}
+        })
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initialValue, editor])
 
-      return "not-handled"
-    },
-    [charactersLimit]
-  )
+    const handleChange = useCallback(
+      (val: Descendant[]) => {
+        const markdown = slateToMarkdown(val)
+        updateCharactersCount(markdown)
+        onChange?.(safeMarkdown(markdown))
+      },
+      [onChange, updateCharactersCount, safeMarkdown]
+    )
 
-  const handleKeyCommand = useCallback(
-    (command: DraftEditorCommand, editorState: EditorState): DraftHandleValue => {
-      const newState = RichUtils.handleKeyCommand(editorState, command)
+    const onContainerClick = useCallback((e: React.MouseEvent) => {
+      // e.target === e.currentTarget && Transforms.select(editor, { offset: 0, path: [0, 0] })
+    }, [])
 
-      if (newState) {
-        setState(newState)
-        return "handled"
-      }
+    const renderElement = useCallback((props: any) => <SlateBlock {...props} />, [])
 
-      return "not-handled"
-    },
-    []
-  )
+    const renderLeaf = useCallback((props: any) => <SlateLeaf {...props} />, [])
 
-  const handleChange = useCallback(
-    (editorState: EditorState) => {
-      setState(editorState)
+    useImperativeHandle(ref, () => ({
+      reset: () => {
+        resetEditor()
+      },
+    }))
 
-      const content = editorState.getCurrentContent()
-      const rawObject = convertToRaw(content)
-      const markdownString = draftToMarkdown(rawObject)
+    return (
+      <div className={classNames(className)}>
+        {label && <Label htmlFor={id}>{label}</Label>}
 
-      if (markdownString !== markdown) {
-        setMarkdown(markdownString)
-        onChange?.(markdownString)
-      }
-    },
-    [markdown, onChange]
-  )
-
-  const handleFocus = useCallback(() => {
-    setHasFocus(true)
-    onFocus?.()
-  }, [onFocus])
-
-  const handleBlur = useCallback(() => {
-    setHasFocus(false)
-    onBlur?.()
-  }, [onBlur])
-
-  return (
-    <>
-      {label && <Label htmlFor={id}>{label}</Label>}
-      <div
-        className={classNames(
-          "relative block w-full appearance-none rounded border leading-tight",
-          "border-gray-200 bg-gray-900/5 text-gray-700",
-          "dark:border-gray-800 dark:bg-gray-100/5 dark:text-gray-200",
-          {
-            "border-green-500 bg-transparent outline-none": hasFocus,
-            "dark:border-green-500 dark:bg-transparent dark:text-gray-200": hasFocus,
-            "pb-8": !!charactersLimit,
-          },
-          className
-        )}
-        data-editor
-      >
         <div
           className={classNames(
-            "flex items-center space-x-4 overflow-x-auto px-3 py-1.5",
-            "pointer-events-none scrollbar-none",
-            toolbarClassName,
+            "relative block w-full appearance-none rounded-lg border leading-tight",
+            "min-h-24 px-3 py-3",
+            "border-gray-200 bg-gray-400/5 text-gray-700",
+            "dark:border-gray-800 dark:bg-gray-100/5 dark:text-gray-200",
             {
-              "pointer-events-auto": hasFocus,
+              "border-green-500 outline-none dark:border-green-500": hasFocus,
+              "bg-transparent dark:bg-transparent dark:text-gray-200": hasFocus,
+              "border-red-500 dark:border-red-500": hasExceededLimit,
+              "pb-10": !!charactersLimit,
             }
           )}
-          data-editor-toolbar
+          onClick={onContainerClick}
+          data-editor
         >
-          {Object.keys(toolbarConfig).map(key => (
+          <Slate editor={editor} value={defaultValue} onChange={handleChange}>
             <div
               className={classNames(
-                "flex items-center overflow-hidden rounded",
-                "border border-gray-200 dark:border-gray-700",
-                "divide-x divide-gray-200 dark:divide-gray-700"
+                "mb-4 flex items-center space-x-4 border-b border-gray-200 pb-4 dark:border-gray-700",
+                toolbarClassName
               )}
-              key={key}
             >
-              {toolbarConfig[key].map((btnConfig, i) => (
-                <MarkdownEditorButton
-                  editorState={state}
-                  config={btnConfig}
-                  onEditorStateChange={handleChange}
-                  key={i}
-                />
-              ))}
+              <div className="space-x-1">
+                <ToolbarButton mark="bold">
+                  <BoldIcon width={16} />
+                </ToolbarButton>
+                <ToolbarButton mark="italic">
+                  <ItalicIcon width={16} />
+                </ToolbarButton>
+                <ToolbarButton mark="underline">
+                  <UnderlineIcon width={16} />
+                </ToolbarButton>
+                <ToolbarButton mark="striketrough">
+                  <StrikethroughIcon width={16} />
+                </ToolbarButton>
+                <ToolbarButton mark="code">
+                  <CodeIcon width={16} />
+                </ToolbarButton>
+              </div>
+              <div className="space-x-1">
+                <ToolbarButton blockType="type" blockValue="ol">
+                  <OrderedListIconIcon width={16} />
+                </ToolbarButton>
+                <ToolbarButton blockType="type" blockValue="ul">
+                  <UnorderedListIconIcon width={16} />
+                </ToolbarButton>
+                <ToolbarButton blockType="type" blockValue="code">
+                  <CodeBlockIcon width={16} />
+                </ToolbarButton>
+              </div>
             </div>
-          ))}
-        </div>
 
-        <div className="prose max-w-none text-gray-700 dark:text-gray-200">
-          <EditorFix
-            placeholder={placeholder}
-            editorState={state}
-            handleBeforeInput={handleBeforeInput}
-            handleKeyCommand={handleKeyCommand}
-            onChange={handleChange}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            readOnly={disabled}
-            spellCheck
-          />
-        </div>
+            <Editable
+              id={id}
+              className="font-normal [&>*+*]:mt-2"
+              renderElement={renderElement}
+              renderLeaf={renderLeaf}
+              decorate={decorate}
+              placeholder={placeholder}
+              spellCheck
+              onFocus={() => {
+                setHasFocus(true)
+                onFocus?.()
+              }}
+              onBlur={() => {
+                setHasFocus(false)
+                onBlur?.()
+              }}
+              onKeyDown={event => {
+                for (const hotkey in HOTKEYS) {
+                  if (isHotkey(hotkey, event as any)) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    const mark = HOTKEYS[hotkey]!
+                    toggleMark(editor, mark)
+                  }
+                }
+              }}
+              disabled={disabled}
+            />
+          </Slate>
 
-        {charactersLimit && (
-          <TextInput.CharactersLimit
-            className={charLimitClassName}
-            textLength={value?.length ?? 0}
-            limit={charactersLimit}
-          />
-        )}
+          {charactersLimit && (
+            <TextInput.CharactersLimit
+              className={charLimitClassName}
+              textLength={charactersCount}
+              limit={charactersLimit}
+            />
+          )}
+        </div>
       </div>
-    </>
+    )
+  }
+)
+
+const ToolbarButton: React.FC<ToolbarButtonProps> = ({ children, blockType, blockValue, mark }) => {
+  const editor = useSlate()
+
+  const handleToggle = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+
+      mark && toggleMark(editor, mark!)
+      blockType && toggleBlock(editor, blockType, blockValue!)
+    },
+    [editor, blockType, blockValue, mark]
+  )
+
+  const isActive = mark
+    ? isMarkActive(editor, mark)
+    : blockType
+    ? isBlockActive(editor, blockType, blockValue!)
+    : false
+
+  return (
+    <button
+      className={classNames("rounded p-1.5", {
+        "bg-gray-400/20 dark:bg-gray-500/20": isActive,
+      })}
+      type="button"
+      onMouseDown={handleToggle}
+    >
+      {children}
+    </button>
   )
 }
 
-export default MarkdownEditor
+export default SlateMarkdownEditor

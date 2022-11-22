@@ -18,7 +18,7 @@ import React, { useCallback, useRef, useState } from "react"
 
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
-import MarkdownEditor from "@/components/common/SlateMarkdownEditor"
+import MarkdownEditor from "@/components/common/MarkdownEditor"
 import { Button } from "@/components/ui/actions"
 import { Avatar } from "@/components/ui/display"
 import useCharaterLimits from "@/hooks/useCharaterLimits"

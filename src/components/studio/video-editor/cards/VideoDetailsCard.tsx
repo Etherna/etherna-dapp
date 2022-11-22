@@ -16,7 +16,7 @@
  */
 import React, { useMemo } from "react"
 
-import MarkdownEditor from "@/components/common/SlateMarkdownEditor"
+import MarkdownEditor from "@/components/common/MarkdownEditor"
 import ThumbnailUpload from "@/components/studio/video-editor/ThumbnailUpload"
 import { Card, FormGroup } from "@/components/ui/display"
 import { TextInput } from "@/components/ui/inputs"
