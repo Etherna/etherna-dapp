@@ -16,7 +16,6 @@
 import chalk from "chalk"
 import fs from "fs"
 import https from "https"
-import fetch from "node-fetch"
 import path from "path"
 
 const port = process.env.BEE_HTTPS_PORT || 1643
