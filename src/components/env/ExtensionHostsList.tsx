@@ -16,7 +16,6 @@
  */
 import React, { useCallback, useEffect, useState } from "react"
 import { urlHostname } from "@etherna/api-js/utils"
-import classNames from "classnames"
 
 import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline"
 import {
@@ -30,6 +29,7 @@ import GatewayClient from "@/classes/GatewayClient"
 import IndexClient from "@/classes/IndexClient"
 import { Menu } from "@/components/ui/actions"
 import { Spinner, Tooltip } from "@/components/ui/display"
+import classNames from "@/utils/classnames"
 
 import type { ExtensionType } from "@/stores/ui"
 import type {

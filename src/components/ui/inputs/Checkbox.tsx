@@ -15,9 +15,9 @@
  *
  */
 import React from "react"
-import classNames from "classnames"
 
 import { Label } from "@/components/ui/display"
+import classNames from "@/utils/classnames"
 
 export type CheckboxProps = {
   id?: string
@@ -45,7 +45,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
         <input
           id={id}
           className={classNames(
-            "rounded p-0.5",
+            "rounded-md p-0.5",
             "bg-gray-200 text-primary-600 dark:bg-gray-700",
             "border-gray-300 dark:border-gray-600",
             "checked:border-primary-600 checked:bg-primary-600 checked:dark:border-primary-600 checked:dark:bg-primary-600",

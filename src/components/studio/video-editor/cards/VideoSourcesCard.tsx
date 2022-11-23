@@ -15,13 +15,13 @@
  *
  */
 import React, { useCallback, useEffect, useMemo } from "react"
-import classNames from "classnames"
 
 import { PlusIcon } from "@heroicons/react/24/solid"
 
 import VideoSourceProcessing from "@/components/studio/video-editor/VideoSourceProcessing"
 import { Card } from "@/components/ui/display"
 import useVideoEditorStore from "@/stores/video-editor"
+import classNames from "@/utils/classnames"
 
 import type { VideoEditorQueue } from "@/stores/video-editor"
 import type { VideoQuality, VideoSource } from "@etherna/api-js/schemas/video"

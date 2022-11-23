@@ -17,9 +17,9 @@
 import React, { forwardRef, useState } from "react"
 import { usePopper } from "react-popper"
 import { Popover } from "@headlessui/react"
-import classNames from "classnames"
 
 import useSidebar from "@/hooks/useSidebar"
+import classNames from "@/utils/classnames"
 
 import type { Placement } from "@popperjs/core"
 

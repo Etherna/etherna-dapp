@@ -16,7 +16,8 @@
  */
 import React, { useCallback, Fragment, useEffect, useState } from "react"
 import { Dialog, Transition } from "@headlessui/react"
-import classNames from "classnames"
+
+import classNames from "@/utils/classnames"
 
 export type DrawerProps = {
   children: React.ReactNode

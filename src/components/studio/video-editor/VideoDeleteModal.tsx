@@ -15,13 +15,13 @@
  *
  */
 import React, { useCallback, useMemo, useState } from "react"
-import classNames from "classnames"
 
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 
 import Image from "@/components/common/Image"
 import { Button, Modal } from "@/components/ui/actions"
 import useErrorMessage from "@/hooks/useErrorMessage"
+import classNames from "@/utils/classnames"
 import { encodedSvg } from "@/utils/svg"
 
 import type { VideosSource } from "@/hooks/useUserVideos"

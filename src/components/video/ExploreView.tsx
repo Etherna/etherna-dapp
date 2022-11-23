@@ -17,12 +17,17 @@
 import React, { useEffect, useRef } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
+import { ExclamationCircleIcon } from "@heroicons/react/24/solid"
+
+import { Alert } from "@/components/ui/display"
 import VideoGrid from "@/components/video/VideoGrid"
 import useSwarmVideos from "@/hooks/useSwarmVideos"
 
 const ExploreView = () => {
   const gridRef = useRef<HTMLDivElement>(null)
-  const { videos, hasMore, isFetching, fetchCount, loadMore, refresh } = useSwarmVideos({ gridRef })
+  const { videos, hasMore, isFetching, fetchCount, error, loadMore, refresh } = useSwarmVideos({
+    gridRef,
+  })
 
   useEffect(() => {
     window.addEventListener("refresh", refresh)
@@ -40,10 +45,16 @@ const ExploreView = () => {
       loader={<div />}
       style={{ overflow: "unset" }}
     >
+      {error && (
+        <Alert color="error" icon={<ExclamationCircleIcon />}>
+          {error}
+        </Alert>
+      )}
+
       <VideoGrid
         videos={videos}
         isFetching={isFetching}
-        fetchingPreviewCount={fetchCount}
+        fetchingPreviewCount={fetchCount || 9}
         ref={gridRef}
       />
     </InfiniteScroller>

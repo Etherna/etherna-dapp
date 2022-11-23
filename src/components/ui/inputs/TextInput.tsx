@@ -15,9 +15,9 @@
  *
  */
 import React, { useCallback, useMemo } from "react"
-import classNames from "classnames"
 
 import { Label } from "@/components/ui/display"
+import classNames from "@/utils/classnames"
 
 export type TextInputProps = {
   id?: string
@@ -50,8 +50,8 @@ export type TextInputProps = {
   onChange?(value: string): void
   onKeyDown?(e: React.KeyboardEvent<HTMLInputElement>): void
   onEnter?(): void
-  onBlur?(): void
-  onFocus?(): void
+  onBlur?(e: React.FocusEvent<HTMLInputElement>): void
+  onFocus?(e: React.FocusEvent<HTMLInputElement>): void
 }
 
 export type TextInputCharsLimitProps = {
@@ -117,7 +117,7 @@ const TextInput: React.FC<TextInputProps> & { CharactersLimit: typeof TextInputC
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
+      if (["Enter", "NumpadEnter"].includes(e.code) || e.keyCode === 13) {
         onEnter?.()
       }
       onKeyDown?.(e)
@@ -146,8 +146,8 @@ const TextInput: React.FC<TextInputProps> & { CharactersLimit: typeof TextInputC
         <Field
           id={id}
           className={classNames(
-            "block w-full appearance-none rounded-md border py-3 px-3 leading-tight",
-            "border-gray-200 bg-gray-900/5 placeholder-gray-400",
+            "block w-full appearance-none rounded-lg border py-3 px-3 leading-tight",
+            "border-gray-200 bg-gray-400/5 placeholder-gray-400",
             "dark:border-gray-800  dark:bg-gray-100/5 dark:placeholder-gray-500",
             "dark:focus:border-green-500 dark:focus:bg-transparent",
             "focus:border-green-500 focus:bg-transparent focus:outline-none focus:ring-0",

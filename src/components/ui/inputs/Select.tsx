@@ -16,9 +16,10 @@
  */
 import React, { Fragment, useCallback, useMemo } from "react"
 import { Listbox, Transition } from "@headlessui/react"
-import classNames from "classnames"
 
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/24/solid"
+
+import classNames from "@/utils/classnames"
 
 export type Option = {
   label: string | JSX.Element
@@ -62,14 +63,14 @@ const Select: React.FC<SelectProps> = ({
               "pointer-events-none cursor-default opacity-50": disabled,
             })}
           >
-            <div className="inline-flex items-center rounded-md border border-gray-500 dark:border-gray-400">
+            <div className="inline-flex items-center rounded-lg border border-gray-500 dark:border-gray-400">
               {label && (
                 <span className="mx-2 text-sm text-gray-600 dark:text-gray-300">{label}</span>
               )}
               {selectedRender && <div className="inline">{selectedRender}</div>}
               <Listbox.Button
                 className={classNames(
-                  "relative inline-flex items-center rounded-md bg-transparent px-2 py-1.5",
+                  "relative inline-flex items-center rounded-lg bg-transparent px-2 py-1.5",
                   "text-sm font-medium text-gray-900 hover:bg-gray-500/5 dark:text-gray-100",
                   "transition-colors duration-200"
                 )}
@@ -94,7 +95,7 @@ const Select: React.FC<SelectProps> = ({
             >
               <Listbox.Options
                 className={classNames(
-                  "absolute left-0 mt-2 w-72 origin-top-left rounded-md shadow-lg",
+                  "absolute left-0 mt-2 w-72 origin-top-left rounded-lg shadow-lg",
                   "divide-y border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900",
                   "divide-gray-200 ring-1 ring-black/5 dark:divide-gray-700",
                   "z-10 focus:outline-none"

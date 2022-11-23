@@ -18,7 +18,8 @@ import React, { useCallback, useContext, useState } from "react"
 import { usePopper } from "react-popper"
 import { Link } from "react-router-dom"
 import { Menu } from "@headlessui/react"
-import classNames from "classnames"
+
+import classNames from "@/utils/classnames"
 
 import type { Placement } from "@popperjs/core"
 

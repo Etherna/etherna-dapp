@@ -19,7 +19,7 @@ import { keyEventToString } from "@/utils/keyboard"
 
 import type { Shortcuts } from "@/types/keyboard"
 
-export default function useShortcut(keymap: Shortcuts, handler: (action: string) => void) {
+export default function useShortcuts(keymap: Shortcuts, handler: (action: string) => void) {
   const keymapEntries = useMemo(() => {
     return Object.entries(keymap) as [string, string][]
   }, [keymap])
@@ -30,12 +30,13 @@ export default function useShortcut(keymap: Shortcuts, handler: (action: string)
 
   const handleKeydown = useCallback(
     (e: KeyboardEvent) => {
-      const target = document.activeElement ?? (document.body as HTMLElement)
+      const target: HTMLElement =
+        (document.activeElement as HTMLElement) ?? (document.body as HTMLElement)
 
       if (target.nodeName === "INPUT" || target.nodeName === "TEXTAREA") {
         return
       }
-      if (target.className.includes("DraftEditor")) {
+      if (target.dataset.slateEditor === "true") {
         return
       }
 

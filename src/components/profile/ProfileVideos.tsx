@@ -17,12 +17,16 @@
 import React, { useMemo } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
+import { ExclamationCircleIcon } from "@heroicons/react/24/solid"
+
+import { Alert } from "@/components/ui/display"
 import VideoGrid from "@/components/video/VideoGrid"
 
 import type { VideoWithIndexes, VideoWithOffersStatus, VideoWithOwner } from "@/types/video"
 
 type ProfileVideosProps = {
   videos: VideoWithOwner[] | null | undefined
+  error?: string
   isFetching: boolean
   hasMoreVideos: boolean
   fetchingPreviewCount?: number
@@ -31,6 +35,7 @@ type ProfileVideosProps = {
 
 const ProfileVideos: React.FC<ProfileVideosProps> = ({
   videos,
+  error,
   isFetching,
   hasMoreVideos,
   fetchingPreviewCount,
@@ -60,6 +65,12 @@ const ProfileVideos: React.FC<ProfileVideosProps> = ({
         scrollThreshold={30}
         loader={<div />}
       >
+        {error && (
+          <Alert color="error" icon={<ExclamationCircleIcon />}>
+            {error}
+          </Alert>
+        )}
+
         <VideoGrid
           videos={videosWithIndexes}
           mini={true}

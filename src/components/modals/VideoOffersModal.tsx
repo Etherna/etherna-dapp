@@ -17,12 +17,12 @@
 import React, { useCallback, useState } from "react"
 import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 import Tippy from "@tippyjs/react"
-import classNames from "classnames"
 
 import { Button, Modal } from "@/components/ui/actions"
 import { SegmentedControl } from "@/components/ui/inputs"
 import useErrorMessage from "@/hooks/useErrorMessage"
 import useUserStore from "@/stores/user"
+import classNames from "@/utils/classnames"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import type { Video } from "@etherna/api-js"

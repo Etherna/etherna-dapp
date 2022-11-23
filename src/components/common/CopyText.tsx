@@ -16,10 +16,11 @@
  */
 import React, { useCallback, useState } from "react"
 import Tippy from "@tippyjs/react"
-import classNames from "classnames"
 
 import { CheckIcon } from "@heroicons/react/24/outline"
 import { ClipboardIcon } from "@heroicons/react/24/solid"
+
+import classNames from "@/utils/classnames"
 
 type CopyTextProps = {
   children?: string

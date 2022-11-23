@@ -16,7 +16,6 @@
  */
 import React, { lazy, Suspense } from "react"
 import { Routes, Route, useLocation, Navigate } from "react-router-dom"
-import { UserManager } from "oidc-client-ts"
 
 import AppLayoutRoute from "./route-wrappers/AppLayoutRoute"
 import AuthenticateRoute from "./route-wrappers/AuthenticateRoute"

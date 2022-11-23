@@ -17,11 +17,11 @@
 import React, { useCallback, useState } from "react"
 import { useMatomo } from "@datapunt/matomo-tracker-react"
 import axios from "axios"
-import classNames from "classnames"
 
 import { Button } from "@/components/ui/actions"
 import { Alert, FormGroup } from "@/components/ui/display"
 import { TextInput } from "@/components/ui/inputs"
+import classNames from "@/utils/classnames"
 
 const whatChoices = [
   {

@@ -15,13 +15,13 @@
  */
 
 /* eslint-disable no-restricted-imports */
-
 import fs from "fs"
-import type { IncomingMessage } from "http"
-import type { Response } from "node-fetch"
 import path from "path"
 
 import parseJSON from "../utils/parse-json.js"
+
+import type { IncomingMessage } from "http"
+import type { Response } from "node-fetch"
 
 const SeedDataFolder = path.resolve(process.cwd() + "/../") + "/seed"
 

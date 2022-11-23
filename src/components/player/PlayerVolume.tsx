@@ -15,7 +15,6 @@
  *
  */
 import React, { useCallback, useState } from "react"
-import classNames from "classnames"
 
 import { ReactComponent as MutedIcon } from "@/assets/icons/player/muted.svg"
 import { ReactComponent as VolumeLowIcon } from "@/assets/icons/player/volume-low.svg"
@@ -26,6 +25,7 @@ import { Slider } from "@/components/ui/inputs"
 import { PlayerReducerTypes } from "@/context/player-context"
 import { usePlayerState } from "@/context/player-context/hooks"
 import { isTouchDevice } from "@/utils/browser"
+import classNames from "@/utils/classnames"
 
 const PlayerVolume: React.FC = () => {
   const [isTouch] = useState(isTouchDevice())

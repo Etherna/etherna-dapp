@@ -15,9 +15,10 @@
  *
  */
 import React from "react"
-import classNames from "classnames"
 
 import { ReactComponent as PlayIcon } from "@/assets/icons/player/play.svg"
+
+import classNames from "@/utils/classnames"
 
 type PlayerPlayLayerProps = {
   thumbnailUrl?: string | null

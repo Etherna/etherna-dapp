@@ -16,11 +16,11 @@
  */
 import React from "react"
 import { Switch } from "@headlessui/react"
-import classNames from "classnames"
 
 import { CheckIcon } from "@heroicons/react/24/solid"
 
 import { Spinner } from "@/components/ui/display"
+import classNames from "@/utils/classnames"
 
 export type SelectionToggleProps = {
   className?: string
@@ -47,7 +47,7 @@ const SelectionToggle: React.FC<SelectionToggleProps> = ({
         checked={checked}
         onChange={onChange}
         className={classNames(
-          "flex items-start rounded-md border p-2",
+          "flex items-start rounded-lg border p-2",
           {
             "border-gray-400 hover:border-sky-300 dark:border-gray-600 dark:hover:border-sky-700":
               !checked,
@@ -63,7 +63,7 @@ const SelectionToggle: React.FC<SelectionToggleProps> = ({
             <Spinner size={20} />
           ) : (
             <div
-              className={classNames("flex h-5 w-5 rounded border p-0.5", {
+              className={classNames("flex h-5 w-5 rounded-md border p-0.5", {
                 "border-gray-400 dark:border-gray-600": !checked,
                 "border-sky-500 text-sky-500 dark:border-sky-500": checked,
               })}

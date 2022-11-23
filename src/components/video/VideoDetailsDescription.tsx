@@ -15,12 +15,12 @@
  *
  */
 import React, { useEffect, useState } from "react"
-import classNames from "classnames"
 
 import { ChevronDownIcon } from "@heroicons/react/24/solid"
 
 import MarkdownPreview from "@/components/common/MarkdownPreview"
 import { Button } from "@/components/ui/actions"
+import classNames from "@/utils/classnames"
 
 type VideoDetailsDescriptionProps = {
   description?: string | null
@@ -73,7 +73,7 @@ const VideoDetailsDescription: React.FC<VideoDetailsDescriptionProps> = ({ descr
         ref={el => el && setDescriptionEl(el)}
       >
         {description ? (
-          <MarkdownPreview value={description} disableHeading={true} />
+          <MarkdownPreview value={description} disableHeading={true} forceNewLine />
         ) : (
           <p className="text-sm text-gray-500">
             <em>{"This video doesn't have a description"}</em>

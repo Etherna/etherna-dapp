@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import bcrypt from "bcryptjs"
 import chalk from "chalk"
 import { exec } from "child_process"
@@ -23,7 +22,6 @@ import url from "url"
 import waitOn from "wait-on"
 
 import "./env.mjs"
-
 import proxyBeeOverHttps from "./bee-https-proxy.mjs"
 import { createPostageBatch } from "./create-postage-batch.mjs"
 import { loadSeed } from "./swarm-seed.mjs"

@@ -23,7 +23,6 @@ import React, {
   useRef,
   useState,
 } from "react"
-import classNames from "classnames"
 
 import { TrashIcon } from "@heroicons/react/24/outline"
 
@@ -38,6 +37,7 @@ import useSwarmProfile from "@/hooks/useSwarmProfile"
 import useWallet from "@/hooks/useWallet"
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
+import classNames from "@/utils/classnames"
 import makeBlockies from "@/utils/make-blockies"
 import { isAnimatedImage } from "@/utils/media"
 
@@ -347,7 +347,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
           <label htmlFor="description">Channel description</label>
           <MarkdownEditor
             placeholder="Write something about you"
-            value={profileDescription}
+            initialValue={profile?.description ?? ""}
             charactersLimit={5000}
             onCharacterLimitChange={setHasExceededLimit}
             onChange={value => setProfileDescription(value)}

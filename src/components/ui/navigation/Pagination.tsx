@@ -16,7 +16,6 @@
  */
 import React, { useCallback, useState } from "react"
 import { Listbox } from "@headlessui/react"
-import classNames from "classnames"
 
 import {
   ChevronDoubleLeftIcon,
@@ -25,6 +24,7 @@ import {
 } from "@heroicons/react/24/outline"
 
 import { Button } from "@/components/ui/actions"
+import classNames from "@/utils/classnames"
 import { clamp } from "@/utils/math"
 
 export type PaginationProps = {

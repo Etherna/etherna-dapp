@@ -16,7 +16,8 @@
  */
 import React, { useCallback } from "react"
 import Tippy from "@tippyjs/react"
-import classNames from "classnames"
+
+import classNames from "@/utils/classnames"
 
 export type SegmentedControlProps = {
   entries: Array<{ value: string; label: string; tip?: string }>
@@ -44,7 +45,7 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
     <div
       className={classNames(
         "relative flex w-full select-none rounded-lg font-semibold",
-        "bg-gray-700/10 text-white dark:bg-gray-100/10"
+        "bg-gray-400/5 text-white dark:bg-gray-100/5"
       )}
       data-component="segmented-control"
     >

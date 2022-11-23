@@ -16,7 +16,8 @@
  */
 import React from "react"
 import { urlHostname } from "@etherna/api-js/utils"
-import classNames from "classnames"
+
+import classNames from "@/utils/classnames"
 
 type ExtensionHostStatusProps = {
   title: string

@@ -15,10 +15,10 @@
  *
  */
 import React, { useCallback, useEffect, useState } from "react"
-import classNames from "classnames"
 
 import { Checkbox } from "@/components/ui/inputs"
 import { Pagination } from "@/components/ui/navigation"
+import classNames from "@/utils/classnames"
 
 export type TableProps<T = any> = {
   className?: string
@@ -74,7 +74,7 @@ const Table = <T, A>({
     (item?: T, selected?: boolean) => {
       if (!item) {
         if (selectedItems.length) setSelectedItems([])
-        else setSelectedItems(items ?? [])
+        else setSelectedItems([...(items ?? [])])
       } else {
         if (selected) {
           setSelectedItems(items => [...items, item])

@@ -13,11 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 import chalk from "chalk"
 import fs from "fs"
 import https from "https"
-import fetch from "node-fetch"
 import path from "path"
 
 const port = process.env.BEE_HTTPS_PORT || 1643

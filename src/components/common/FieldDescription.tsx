@@ -15,9 +15,9 @@
  *
  */
 import React from "react"
-import classNames from "classnames"
 
 import Text from "@/components/ui/display/Text"
+import classNames from "@/utils/classnames"
 
 type FieldDescriptionProps = {
   children?: React.ReactNode

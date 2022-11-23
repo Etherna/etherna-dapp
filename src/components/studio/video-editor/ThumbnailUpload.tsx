@@ -33,6 +33,7 @@ import { isAnimatedImage } from "@/utils/media"
 import { isMimeWebCompatible } from "@/utils/mime-types"
 
 import type { Image } from "@etherna/api-js"
+import type { BatchId } from "@etherna/api-js/clients"
 
 type ThumbnailUploadProps = {
   disabled?: boolean
@@ -70,6 +71,7 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
       abortController.current = new AbortController()
 
       const imageWriter = new SwarmImage.Writer(selectedFile, {
+        batchId: batchId as BatchId,
         beeClient,
         responsiveSizes: SwarmImage.Writer.thumbnailResponsiveSizes,
       })
@@ -95,7 +97,7 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
       // will also be removed from queue
       setThumbnail(imageReader.image)
     },
-    [beeClient, selectedFile, setQueueError, setThumbnail, showError, updateQueueSize]
+    [batchId, beeClient, selectedFile, setQueueError, setThumbnail, showError, updateQueueSize]
   )
 
   const processingOptions = useMemo(() => {

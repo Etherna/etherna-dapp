@@ -15,10 +15,10 @@
  *
  */
 import React from "react"
-import classNames from "classnames"
 
 import Logo from "@/components/common/Logo"
 import routes from "@/routes"
+import classNames from "@/utils/classnames"
 
 type PlayerWatchOnProps = {
   hash: string

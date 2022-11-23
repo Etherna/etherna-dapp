@@ -17,7 +17,6 @@
 import React, { useCallback, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useMatomo } from "@datapunt/matomo-tracker-react"
-import classNames from "classnames"
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { XMarkIcon } from "@heroicons/react/24/solid"
@@ -25,6 +24,7 @@ import { XMarkIcon } from "@heroicons/react/24/solid"
 import { TextInput } from "@/components/ui/inputs"
 import { Topbar } from "@/components/ui/navigation"
 import routes from "@/routes"
+import classNames from "@/utils/classnames"
 
 const SearchItem: React.FC = () => {
   const navigate = useNavigate()
@@ -32,48 +32,59 @@ const SearchItem: React.FC = () => {
   const [showInput, setShowInput] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (["Enter", "NumpadEnter"].includes(e.code) && searchQuery) {
-        navigate(routes.search(searchQuery))
-        trackSiteSearch({
-          keyword: searchQuery.toLowerCase(),
-        })
-      }
-    },
-    [navigate, searchQuery, trackSiteSearch]
-  )
+  const handleEnter = useCallback(() => {
+    if (searchQuery) {
+      navigate(routes.search(searchQuery))
+      trackSiteSearch({
+        keyword: searchQuery.toLowerCase(),
+      })
+    }
+  }, [searchQuery, navigate, trackSiteSearch])
 
-  return (
+  const handlerBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
+    if (!e.currentTarget.value) {
+      setShowInput(false)
+    }
+  }, [])
+
+  const resetInput = useCallback(() => {
+    setSearchQuery("")
+    setShowInput(false)
+  }, [])
+
+  return showInput ? (
+    <div
+      className={classNames(
+        "absolute left-1 top-1 right-1 z-20 py-1.5 md:relative md:top-0",
+        "rounded-md bg-gray-200 dark:bg-gray-800"
+      )}
+    >
+      <div className="flex items-center space-x-2 px-2">
+        <MagnifyingGlassIcon width={22} strokeWidth={3} aria-hidden />
+        <TextInput
+          className="w-full md:w-auto"
+          inputClassName={classNames(
+            "px-0 h-8 pr-8 md:pr-0",
+            "bg-transparent dark:bg-transparent",
+            "focus:ring-0 focus:border-none"
+          )}
+          value={searchQuery}
+          onChange={setSearchQuery}
+          onEnter={handleEnter}
+          onBlur={handlerBlur}
+          autoFocus
+        />
+        <div role="button" className="absolute right-2" onClick={resetInput}>
+          <XMarkIcon width={20} aria-hidden />
+        </div>
+      </div>
+    </div>
+  ) : (
     <Topbar.Item
-      className={classNames({
-        "absolute left-1 top-1 right-1 z-20 py-1.5 md:relative md:top-0": showInput,
-        "bg-gray-200 dark:bg-gray-800": showInput,
-      })}
+      as="div"
       prefix={<MagnifyingGlassIcon width={22} strokeWidth={3} aria-hidden />}
       onClick={() => setShowInput(true)}
-    >
-      {showInput && (
-        <>
-          <TextInput
-            className="w-full md:w-auto"
-            inputClassName={classNames(
-              "pr-0 pl-2 pt-2 pb-2 pr-8 md:pr-0",
-              "bg-transparent dark:bg-transparent",
-              "focus:ring-0 focus:border-none"
-            )}
-            value={searchQuery}
-            onChange={setSearchQuery}
-            onKeyDown={handleKeyDown}
-            onBlur={() => setShowInput(false)}
-            autoFocus
-          />
-          <div role="button" className="absolute right-2" onClick={() => setShowInput(false)}>
-            <XMarkIcon width={20} aria-hidden />
-          </div>
-        </>
-      )}
-    </Topbar.Item>
+    />
   )
 }
 

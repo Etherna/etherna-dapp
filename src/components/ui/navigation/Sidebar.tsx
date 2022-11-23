@@ -18,11 +18,11 @@ import React, { useEffect, useMemo, useRef, useState } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import { Transition } from "@headlessui/react"
 import Tippy from "@tippyjs/react"
-import classNames from "classnames"
 
 import { ArrowTopRightOnSquareIcon, PlayIcon } from "@heroicons/react/20/solid"
 
 import { Popup } from "@/components/ui/display"
+import classNames from "@/utils/classnames"
 
 export type SidebarProps = {
   children?: React.ReactNode
@@ -114,7 +114,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       <As
         className={classNames(
           "flex items-center justify-items-center lg:justify-items-stretch",
-          "w-full space-x-3 rounded",
+          "w-full space-x-3 rounded-md",
           "text-sm text-gray-800 dark:text-gray-200",
           className,
           {

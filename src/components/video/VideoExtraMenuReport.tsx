@@ -15,11 +15,11 @@
  *
  */
 import React, { useCallback, useState } from "react"
-import classNames from "classnames"
 
 import { AlertPopup, Button, Modal } from "@/components/ui/actions"
 import useErrorMessage from "@/hooks/useErrorMessage"
 import useClientsStore from "@/stores/clients"
+import classNames from "@/utils/classnames"
 
 type VideoExtraMenuReportProps = {
   videoId: string

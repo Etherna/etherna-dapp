@@ -1,13 +1,14 @@
 import React, { useCallback, useMemo, useRef, useState } from "react"
 
 import { MinusIcon } from "@heroicons/react/24/outline"
+import { ExclamationCircleIcon } from "@heroicons/react/24/solid"
 
 import { PORTAL_ID } from "./VideoEditor"
 import FileDrag from "@/components/media/FileDrag"
 import FileUploadProgress from "@/components/media/FileUploadProgress"
 import VideoSourceStats from "@/components/media/VideoSourceStats"
 import { Button } from "@/components/ui/actions"
-import { Card, Text } from "@/components/ui/display"
+import { Alert, Card, Text } from "@/components/ui/display"
 import useConfirmation from "@/hooks/useConfirmation"
 import useErrorMessage from "@/hooks/useErrorMessage"
 import useVideoEditorQueue from "@/hooks/useVideoEditorQueue"
@@ -41,6 +42,7 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
   const updateQueueCompletion = useVideoEditorStore(state => state.updateQueueCompletion)
   const updateQueueName = useVideoEditorStore(state => state.updateQueueName)
   const updateQueueSize = useVideoEditorStore(state => state.updateQueueSize)
+  const updateQueueError = useVideoEditorStore(state => state.updateQueueError)
   const { showError } = useErrorMessage()
   const { waitConfirmation } = useConfirmation()
 
@@ -69,23 +71,28 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
       const size = selectedFile.size
       const bitrate = Math.round((size * 8) / duration)
 
-      abortController.current = new AbortController()
-      const { reference } = await beeClient.bzz.upload(selectedFile, {
-        batchId: batchId!,
-        contentType: "video/mp4",
-        signal: abortController.current.signal,
-        onUploadProgress: p => {
-          progressCallback(p)
-        },
-      })
+      try {
+        abortController.current = new AbortController()
+        const { reference } = await beeClient.bzz.upload(selectedFile, {
+          batchId: batchId!,
+          contentType: "video/mp4",
+          signal: abortController.current.signal,
+          onUploadProgress: p => {
+            progressCallback(p)
+          },
+        })
 
-      // remove data
-      setSelectedFile(undefined)
+        // remove data
+        setSelectedFile(undefined)
 
-      // will also be removed from queue
-      addVideoSource(name, reference, size, bitrate, beeClient.bzz.url(reference))
+        // will also be removed from queue
+        addVideoSource(name, reference, size, bitrate, beeClient.bzz.url(reference))
+      } catch (error) {
+        console.error(error)
+        updateQueueError(queueId, "There was an error uploading the video.")
+      }
     },
-    [name, selectedFile, beeClient.bzz, batchId, addVideoSource, setQueueError]
+    [selectedFile, setQueueError, beeClient.bzz, batchId, addVideoSource, name, updateQueueError]
   )
 
   const processingOptions = useMemo(() => {
@@ -242,6 +249,18 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
 
       {processingStatus === "queued" && (
         <Text size="sm">Qeued. Waiting for other uploads to finish...</Text>
+      )}
+
+      {currentQueue?.error && (
+        <Alert
+          title="Upload error"
+          className="mb-4"
+          color="error"
+          icon={<ExclamationCircleIcon />}
+          small
+        >
+          {currentQueue.error}
+        </Alert>
       )}
 
       {processingStatus === "upload" && (
