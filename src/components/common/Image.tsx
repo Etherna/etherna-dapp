@@ -19,8 +19,8 @@ import { extractReference } from "@etherna/api-js/utils"
 import { filterXSS } from "xss"
 
 import useClientsStore from "@/stores/clients"
-import { downloadImageData, isAnimatedImage } from "@/utils/media"
 import classNames from "@/utils/classnames"
+import { downloadImageData, isAnimatedImage } from "@/utils/media"
 
 type ImageProps = {
   className?: string
