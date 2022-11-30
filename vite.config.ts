@@ -38,6 +38,11 @@ function htmlPlugin(env: ReturnType<typeof loadEnv>) {
 export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, "")
 
+  const useHTTPS =
+    env.VITE_APP_HTTPS === "true" &&
+    fs.existsSync("proxy/sslcert/key.pem") &&
+    fs.existsSync("proxy/sslcert/cert.pem")
+
   return {
     base: mode === "production" && command === "build" ? "/__dynamic_base__/" : "/",
     build: {
@@ -45,11 +50,10 @@ export default defineConfig(({ mode, command }) => {
       outDir: "build",
     },
     server: {
-      https: fs.existsSync("proxy/sslcert/key.pem") &&
-        fs.existsSync("proxy/sslcert/cert.pem") && {
-          key: fs.readFileSync("proxy/sslcert/key.pem"),
-          cert: fs.readFileSync("proxy/sslcert/cert.pem"),
-        },
+      https: useHTTPS && {
+        key: fs.readFileSync("proxy/sslcert/key.pem"),
+        cert: fs.readFileSync("proxy/sslcert/cert.pem"),
+      },
       port: 3000,
     },
     define: {
