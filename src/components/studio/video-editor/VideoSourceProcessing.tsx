@@ -29,6 +29,7 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
   const queue = useVideoEditorStore(state => state.queue)
   const batchId = useVideoEditorStore(state => state.video.batchId)
   const batchStatus = useVideoEditorStore(state => state.batchStatus)
+  const pinContent = useVideoEditorStore(state => state.pinContent)
   const originalQuality = useVideoEditorStore(state => state.video.originalQuality)
   const videoSources = useVideoEditorStore(state => state.video.sources)
   const [selectedFile, setSelectedFile] = useState<File>()
@@ -76,6 +77,7 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
         const { reference } = await beeClient.bzz.upload(selectedFile, {
           batchId: batchId!,
           contentType: "video/mp4",
+          pin: pinContent,
           signal: abortController.current.signal,
           onUploadProgress: p => {
             progressCallback(p)
@@ -92,7 +94,16 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
         updateQueueError(queueId, "There was an error uploading the video.")
       }
     },
-    [selectedFile, setQueueError, beeClient.bzz, batchId, addVideoSource, name, updateQueueError]
+    [
+      name,
+      selectedFile,
+      beeClient,
+      batchId,
+      pinContent,
+      setQueueError,
+      addVideoSource,
+      updateQueueError,
+    ]
   )
 
   const processingOptions = useMemo(() => {

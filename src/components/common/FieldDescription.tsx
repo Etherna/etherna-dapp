@@ -21,17 +21,22 @@ import classNames from "@/utils/classnames"
 
 type FieldDescriptionProps = {
   children?: React.ReactNode
+  className?: string
   smaller?: boolean
 }
 
-const FieldDescription: React.FC<FieldDescriptionProps> = ({ children, smaller }) => {
+const FieldDescription: React.FC<FieldDescriptionProps> = ({ children, className, smaller }) => {
   return (
     <Text
       size="xs"
-      className={classNames("mt-1.5 text-gray-500 dark:text-gray-400", {
-        "max-w-md": !smaller,
-        "max-w-xs": smaller,
-      })}
+      className={classNames(
+        "mt-1.5 text-gray-500 dark:text-gray-400",
+        {
+          "max-w-md": !smaller,
+          "max-w-xs": smaller,
+        },
+        className
+      )}
       data-component="field-description"
     >
       {children}

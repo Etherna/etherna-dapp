@@ -76,7 +76,7 @@ export default function useUserVideosVisibility(
   }, [address])
 
   useEffect(() => {
-    if (videos) {
+    if (videos?.length && !isFetchingVisibility) {
       fetchVideosStatus()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -334,6 +334,8 @@ export default function useUserVideosVisibility(
       showError,
     ]
   )
+
+  console.log("visibility", visibility)
 
   return {
     isFetchingVisibility,
