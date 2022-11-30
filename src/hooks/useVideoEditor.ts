@@ -42,6 +42,7 @@ export type PublishStatus = {
 export default function useVideoEditor() {
   const video = useVideoEditorStore(state => state.video)
   const saveTo = useVideoEditorStore(state => state.saveTo)
+  const pinContent = useVideoEditorStore(state => state.pinContent)
   const initialReference = useVideoEditorStore(state => state.reference)
   const publishingResults = useVideoEditorStore(state => state.publishingResults)
   const updateEditorStatus = useVideoEditorStore(state => state.updateEditorStatus)
@@ -94,14 +95,16 @@ export default function useVideoEditor() {
     try {
       const batchId = video.batchId! as BatchId
       const videoWriter = new SwarmVideo.Writer(video, { batchId, beeClient })
-      const newReference = await videoWriter.upload()
+      const newReference = await videoWriter.upload({
+        pin: pinContent,
+      })
       return newReference
     } catch (error: any) {
       console.error(error)
       showError("Manifest error", getResponseErrorMessage(error))
       return null
     }
-  }, [video, beeClient, checkAccountability, showError])
+  }, [video, beeClient, pinContent, checkAccountability, showError])
 
   const getVideoIndexId = useCallback(
     (indexUrl: string) => {

@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo } from "react"
 
-import OffersCard from "./cards/OffersCard"
+import AvailabilityCard from "./cards/AvailabilityCard"
 import PostageBatchCard from "./cards/PostageBatchCard"
 import SaveToCard from "./cards/SaveToCard"
 import SavingResultCard from "./cards/SavingResultCard"
@@ -113,7 +113,7 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
               <>
                 <PostageBatchCard disabled={isSaving} />
                 <SaveToCard disabled={isSaving} />
-                <OffersCard disabled={isSaving} />
+                <AvailabilityCard disabled={isSaving} />
               </>
             )}
           </div>

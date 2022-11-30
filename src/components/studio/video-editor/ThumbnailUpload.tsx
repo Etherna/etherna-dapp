@@ -44,6 +44,7 @@ export const THUMBNAIL_QUEUE_NAME = "thumbnail"
 const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
   const beeClient = useClientsStore(state => state.beeClient)
   const batchStatus = useVideoEditorStore(state => state.batchStatus)
+  const pinContent = useVideoEditorStore(state => state.pinContent)
   const batchId = useVideoEditorStore(state => state.video.batchId)
   const thumbnail = useVideoEditorStore(state => state.video.thumbnail)
   const [selectedFile, setSelectedFile] = useState<File>()
@@ -84,6 +85,7 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
 
       const image = await imageWriter.upload({
         signal: abortController.current.signal,
+        pin: pinContent,
         onUploadProgress: p => {
           progressCallback(p)
         },
@@ -97,7 +99,16 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
       // will also be removed from queue
       setThumbnail(imageReader.image)
     },
-    [batchId, beeClient, selectedFile, setQueueError, setThumbnail, showError, updateQueueSize]
+    [
+      batchId,
+      beeClient,
+      selectedFile,
+      pinContent,
+      setQueueError,
+      setThumbnail,
+      showError,
+      updateQueueSize,
+    ]
   )
 
   const processingOptions = useMemo(() => {

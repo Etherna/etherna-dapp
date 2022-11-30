@@ -22,6 +22,7 @@ import { TrashIcon, PencilIcon, InformationCircleIcon } from "@heroicons/react/2
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 
 import VideoOffersStatus from "./other/VideoOffersStatus"
+import VideoPinningStatus from "./other/VideoPinningStatus"
 import VideoVisibilityStatus from "./other/VideoVisibilityStatus"
 import VideoDeleteModal from "./video-editor/VideoDeleteModal"
 import Image from "@/components/common/Image"
@@ -31,6 +32,7 @@ import { Button } from "@/components/ui/actions"
 import { Badge, Table, Tooltip } from "@/components/ui/display"
 import { Select } from "@/components/ui/inputs"
 import useUserVideos from "@/hooks/useUserVideos"
+import useUserVideosPinning from "@/hooks/useUserVideosPinning"
 import useUserVideosVisibility from "@/hooks/useUserVideosVisibility"
 import useVideosResources from "@/hooks/useVideosResources"
 import routes from "@/routes"
@@ -89,6 +91,7 @@ const Videos: React.FC = () => {
     videos,
     { sources }
   )
+  const { isFetchingPinning, pinningStatus, togglePinning } = useUserVideosPinning(videos)
   const { videosOffersStatus, isFetchingOffers, offerVideoResources, unofferVideoResources } =
     useVideosResources(videos, { autoFetch: true })
 
@@ -173,7 +176,7 @@ const Videos: React.FC = () => {
                       ]?.indexReference || item.reference
                     )}
                   >
-                    <h3 className="text-base font-bold leading-tight">{item.title}</h3>
+                    <h3 className="text-sm font-bold leading-tight xl:text-base">{item.title}</h3>
                   </Link>
                   <div className="grid auto-cols-max grid-flow-col gap-2 lg:hidden">
                     <VideoVisibilityStatus
@@ -203,6 +206,18 @@ const Videos: React.FC = () => {
                 visibility={visibility[item.reference]}
                 isLoading={isFetchingVisibility}
                 toggleVisibilityCallback={toggleVideosVisibility}
+              />
+            ),
+          },
+          {
+            title: "Pinned",
+            hideOnMobile: true,
+            render: item => (
+              <VideoPinningStatus
+                video={item}
+                isLoading={isFetchingPinning}
+                pinStatus={pinningStatus[item.reference]}
+                togglePinningCallback={togglePinning}
               />
             ),
           },

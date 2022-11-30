@@ -16,7 +16,7 @@
  */
 import React, { useMemo } from "react"
 import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
-import { extractReference } from "@etherna/api-js/utils"
+import { extractReference, extractVideoReferences } from "@etherna/api-js/utils"
 
 import { FilmIcon, PhotoIcon } from "@heroicons/react/20/solid"
 import { ReactComponent as ManifestIcon } from "@/assets/icons/manifest.svg"
@@ -40,7 +40,7 @@ const VideoExtraMenuManifest: React.FC<VideoExtraMenuManifestProps> = ({
   const beeClient = useClientsStore(state => state.beeClient)
 
   const sources = useMemo(() => {
-    const references = EthernaResourcesHandler.videoReferences(video)
+    const references = extractVideoReferences(video)
     return references.map(reference => ({
       reference,
       type: EthernaResourcesHandler.videoReferenceType(video, reference),
