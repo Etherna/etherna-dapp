@@ -335,8 +335,6 @@ export default function useUserVideosVisibility(
     ]
   )
 
-  console.log("visibility", visibility)
-
   return {
     isFetchingVisibility,
     visibility,
