@@ -10,6 +10,7 @@
     "start:proxy": "node scripts/etherna-services.mjs --proxy",
     "start:bee": "node scripts/etherna-services.mjs --bee",
     "start:services": "node scripts/etherna-services.mjs --sso --index --credit --gateway --beehive",
+    "seed": "node scripts/seed.mjs",
     "postage": "node scripts/create-postage-batch.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview --port 3000",
@@ -18,7 +19,7 @@
   },
   "dependencies": {
     "@datapunt/matomo-tracker-react": "0.5.1",
-    "@etherna/api-js": "1.5.4",
+    "@etherna/api-js": "1.6.0",
     "@headlessui/react": "1.7.4",
     "@heroicons/react": "2.0.13",
     "@popperjs/core": "2.11.6",
