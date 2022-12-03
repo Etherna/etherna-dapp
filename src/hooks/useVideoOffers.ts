@@ -49,11 +49,11 @@ export default function useVideoOffers(
     if (opts?.disable) return
     if (video && !("reference" in video) && !opts?.reference) return
 
-    if (video && !videoOffersStatus && !opts?.routeState) {
+    if (video && !videoOffersStatus) {
+      opts?.routeState && setVideoOffersStatus(opts.routeState)
+      // route state doesn't have the user offers so
+      // we still need to fetch the video status
       fetchVideoStatus()
-    }
-    if (!videoOffersStatus && opts?.routeState) {
-      setVideoOffersStatus(opts.routeState)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [video, opts])
