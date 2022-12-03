@@ -19,23 +19,30 @@ import React, { useState } from "react"
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline"
 
 import VideoDetailsButton from "./VideoDetailsButton"
-import VideoOffersModal from "@/components/modals/VideoOffersModal"
+import VideoSupportModal from "@/components/modals/VideoSupportModal"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
+import type { VideoPinningStatus } from "@/hooks/useVideoPinning"
 import type { Video } from "@etherna/api-js"
 
 type VideoOffersButtonProps = {
   video: Video | null | undefined
   videoOffersStatus: VideoOffersStatus | undefined
+  videoPinningStatus: VideoPinningStatus | undefined
   onOfferResources(): Promise<void>
   onUnofferResources(): Promise<void>
+  onPinResources(): Promise<void>
+  onUnpinResources(): Promise<void>
 }
 
 const VideoOffersButton: React.FC<VideoOffersButtonProps> = ({
   video,
   videoOffersStatus,
+  videoPinningStatus,
   onOfferResources,
   onUnofferResources,
+  onPinResources,
+  onUnpinResources,
 }) => {
   const [showOffersModal, setShowOffersModal] = useState(false)
 
@@ -47,15 +54,18 @@ const VideoOffersButton: React.FC<VideoOffersButtonProps> = ({
         icon={<CurrencyDollarIcon width={20} aria-hidden />}
         onClick={() => setShowOffersModal(true)}
       >
-        Offer content
+        Support
       </VideoDetailsButton>
 
-      <VideoOffersModal
+      <VideoSupportModal
         show={showOffersModal}
         offersStatus={videoOffersStatus}
+        pinningStatus={videoPinningStatus}
         video={video}
         offerResources={onOfferResources}
         unofferResources={onUnofferResources}
+        pinResources={onPinResources}
+        unpinResources={onUnpinResources}
         onClose={() => setShowOffersModal(false)}
       />
     </>
