@@ -45,8 +45,8 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
   const beeClient = useClientsStore(state => state.beeClient)
   const batchStatus = useVideoEditorStore(state => state.batchStatus)
   const pinContent = useVideoEditorStore(state => state.pinContent)
-  const batchId = useVideoEditorStore(state => state.video.batchId)
-  const thumbnail = useVideoEditorStore(state => state.video.thumbnail)
+  const thumbnail = useVideoEditorStore(state => state.builder.previewMeta.thumbnail)
+  const batchId = useVideoEditorStore(state => state.builder.detailsMeta.batchId)
   const [selectedFile, setSelectedFile] = useState<File>()
   const [isProcessingImages, setIsProcessingImages] = useState(false)
   const abortController = useRef<AbortController>()
@@ -78,26 +78,39 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
       })
 
       setIsProcessingImages(true)
-      const totalSize = await imageWriter.pregenerateImages()
+      const processedImage = await imageWriter.pregenerateImages()
       setIsProcessingImages(false)
 
+      const totalSize = processedImage.responsiveSourcesData.reduce(
+        (acc, { data }) => acc + data.length,
+        0
+      )
       updateQueueSize(queueId, totalSize)
 
-      const image = await imageWriter.upload({
-        signal: abortController.current.signal,
-        pin: pinContent,
-        onUploadProgress: p => {
-          progressCallback(p)
-        },
-      })
+      try {
+        let totalCompletion = 0
+        await Promise.all(
+          processedImage.responsiveSourcesData.map(({ data }) => {
+            beeClient.bytes.upload(data, {
+              batchId: batchId as BatchId,
+              pin: pinContent,
+              signal: abortController.current?.signal,
+              onUploadProgress(completion) {
+                totalCompletion += completion
+                progressCallback(totalCompletion / totalSize)
+              },
+            })
+          })
+        )
 
-      const imageReader = new SwarmImage.Reader(image, { beeClient })
+        // remove data
+        setSelectedFile(undefined)
 
-      // remove data
-      setSelectedFile(undefined)
-
-      // will also be removed from queue
-      setThumbnail(imageReader.image)
+        // will also be removed from queue
+        setThumbnail(processedImage)
+      } catch (error) {
+        setQueueError(queueId, "There was a problem uploading the thumbnail")
+      }
     },
     [
       batchId,

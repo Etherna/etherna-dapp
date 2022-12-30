@@ -29,6 +29,7 @@ import { getResponseErrorMessage } from "@/utils/request"
 
 import type { VideoWithIndexes } from "@/types/video"
 import type { Playlist, Profile, Video } from "@etherna/api-js"
+import type { Reference } from "@etherna/api-js/clients"
 
 export type VideosSource =
   | {
@@ -114,7 +115,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
           const reader = new SwarmVideo.Reader(playlistVid.reference, {
             beeClient,
           })
-          const video = await reader.download()
+          const video = await reader.download({ mode: "preview" })
           return video
         })
       )
@@ -143,11 +144,17 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
             beeClient,
           })
           const rawVideo = JSON.stringify(videoReader.indexVideoToRaw(indexVideo))
-          const video = new VideoDeserializer(beeClient.url).deserialize(rawVideo, {
+          const deserializer = new VideoDeserializer(beeClient.url)
+          const preview = deserializer.deserializePreview(rawVideo, {
+            reference: indexVideo.lastValidManifest!.hash,
+          })
+          const details = deserializer.deserializeDetails(rawVideo, {
             reference: indexVideo.lastValidManifest!.hash,
           })
           const videoIndexes: VideoWithIndexes = {
-            ...video,
+            reference: indexVideo.lastValidManifest!.hash as Reference,
+            preview,
+            details,
             indexesStatus: {
               [currentIndexUrl]: {
                 indexReference: indexVideo.id,

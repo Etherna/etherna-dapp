@@ -221,7 +221,7 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
           video =>
             ({
               reference: video.reference,
-              title: video.title,
+              title: video.preview.title,
               addedAt: +new Date(),
               publishedAt: publishedAt,
             } as PlaylistVideo)
@@ -250,7 +250,7 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
 
       newPlaylist.videos!.splice(index, 1, {
         reference: newVideo.reference,
-        title: newVideo.title || "",
+        title: newVideo.preview.title || "",
         addedAt: newPlaylist.videos![index].addedAt,
         publishedAt: newPlaylist.videos![index].publishedAt,
       })

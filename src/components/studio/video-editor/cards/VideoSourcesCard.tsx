@@ -24,7 +24,7 @@ import useVideoEditorStore from "@/stores/video-editor"
 import classNames from "@/utils/classnames"
 
 import type { VideoEditorQueue } from "@/stores/video-editor"
-import type { VideoQuality, VideoSource } from "@etherna/api-js/schemas/video"
+import type { VideoQuality, VideoSourceRaw } from "@etherna/api-js/schemas/video"
 
 type VideoSourcesCardProps = {
   disabled?: boolean
@@ -32,7 +32,7 @@ type VideoSourcesCardProps = {
 
 const VideoSourcesCard: React.FC<VideoSourcesCardProps> = ({ disabled }) => {
   const editorStatus = useVideoEditorStore(state => state.status)
-  const videoSources = useVideoEditorStore(state => state.video.sources)
+  const videoSources = useVideoEditorStore(state => state.builder.detailsMeta.sources)
   const queue = useVideoEditorStore(state => state.queue)
   const addToQueue = useVideoEditorStore(state => state.addToQueue)
 
@@ -44,15 +44,15 @@ const VideoSourcesCard: React.FC<VideoSourcesCardProps> = ({ disabled }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queue, videoSources.length])
 
-  const getSourceIdentifier = useCallback(
-    (source: VideoEditorQueue | VideoSource): VideoQuality => {
-      return "quality" in source ? source.quality : (source.name as VideoQuality)
-    },
-    []
-  )
+  const getSourceIdentifier = useCallback((source: VideoEditorQueue | VideoSourceRaw) => {
+    if ("name" in source) {
+      return source.name as VideoQuality
+    }
+    return source.type === "mp4" || !source.type ? source.quality : source.type
+  }, [])
 
-  const sources: (VideoEditorQueue | VideoSource)[] = useMemo(() => {
-    const sources: (VideoEditorQueue | VideoSource)[] = [
+  const sources: (VideoEditorQueue | VideoSourceRaw)[] = useMemo(() => {
+    const sources: (VideoEditorQueue | VideoSourceRaw)[] = [
       ...videoSources,
       ...queue.filter(q => q.source === "source"),
     ]
@@ -74,13 +74,17 @@ const VideoSourcesCard: React.FC<VideoSourcesCardProps> = ({ disabled }) => {
   return (
     <Card title="Video sources">
       <div className="space-y-3">
-        {sources.map(source => (
-          <VideoSourceProcessing
-            name={getSourceIdentifier(source)}
-            disabled={disabled}
-            key={"id" in source ? source.id : getSourceIdentifier(source)}
-          />
-        ))}
+        {sources.map(source => {
+          const identifier = getSourceIdentifier(source)
+          const isStaticSource = (identifier: string): identifier is VideoQuality => {
+            return /^[0-9]+p$/.test(identifier)
+          }
+          return isStaticSource(identifier) ? (
+            <VideoSourceProcessing key={identifier} name={identifier} disabled={disabled} />
+          ) : (
+            <div>TODO!</div>
+          )
+        })}
 
         {canManuallyAddSource && (
           <button

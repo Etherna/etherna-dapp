@@ -39,8 +39,9 @@ const PostageBatchCard: React.FC<PostageBatchCardProps> = ({ disabled }) => {
   const address = useUserStore(state => state.address)
   const editorStatus = useVideoEditorStore(state => state.status)
   const queue = useVideoEditorStore(state => state.queue)
-  const videoSources = useVideoEditorStore(state => state.video.sources)
-  const batchId = useVideoEditorStore(state => state.video.batchId)
+  const duration = useVideoEditorStore(state => state.builder.previewMeta.duration)
+  const videoSources = useVideoEditorStore(state => state.builder.detailsMeta.sources)
+  const batchId = useVideoEditorStore(state => state.builder.detailsMeta.batchId)
   const batchStatus = useVideoEditorStore(state => state.batchStatus)
   const setBatchStatus = useVideoEditorStore(state => state.updateBatchStatus)
   const setBatchId = useVideoEditorStore(state => state.setBatchId)
@@ -101,7 +102,19 @@ const PostageBatchCard: React.FC<PostageBatchCardProps> = ({ disabled }) => {
             initialVideoQueue!.size!,
             parseInt(initialVideoQueue!.name)
           )
-        : videoSources.reduce((sum, s) => sum + s.size, 0) + 2 ** 20 * 100 // 100mb extra
+        : videoSources.reduce((sum, s) => {
+            if (s.type === "mp4") {
+              return sum + s.size
+            } else if (s.type === "dash") {
+              // average 2.5MB per second
+              return sum + duration! * 2.5 * 2 ** 20
+            } else if (s.type === "hls") {
+              // average 2MB per second
+              return sum + duration! * 2 * 2 ** 20
+            }
+            return sum
+          }, 0) +
+          2 ** 20 * 100 // 100mb extra
 
     setMissing(false)
     setErrored(false)
@@ -120,7 +133,7 @@ const PostageBatchCard: React.FC<PostageBatchCardProps> = ({ disabled }) => {
       console.error(error)
       setErrored(true)
     }
-  }, [editorStatus, initialVideoQueue, videoSources, setBatchStatus, setBatchId])
+  }, [editorStatus, initialVideoQueue, videoSources, duration, setBatchStatus, setBatchId])
 
   const fetchBatch = useCallback(async () => {
     setBatchStatus("fetching")

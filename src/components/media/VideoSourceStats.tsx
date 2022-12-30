@@ -29,16 +29,18 @@ const VideoSourceStats: React.FC<VideoSourceStatsProps> = ({ source }) => {
   if (!source) return null
 
   const stats = [
-    source.size ? { label: "Size", value: convertBytes(source.size).readable } : false,
-    source.bitrate
+    source.type === "mp4" && source.size
+      ? { label: "Size", value: convertBytes(source.size).readable }
+      : false,
+    source.type === "mp4" && source.bitrate
       ? { label: "Bitrate", value: convertBirate(source.bitrate).readableBits }
       : false,
-    { label: "Hash", value: source.reference },
+    source.type === "mp4" && source.reference ? { label: "Hash", value: source.reference } : false,
     {
       label: "Preview",
       value: (
-        <a href={source.source} target="_blank" rel="noreferrer">
-          {source.source}
+        <a href={source.url} target="_blank" rel="noreferrer">
+          {source.url}
         </a>
       ),
     },

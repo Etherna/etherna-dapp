@@ -231,13 +231,9 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
       [cropImage, handleUploadImage, showError]
     )
 
-    const swarmImageUrl = useCallback(
-      (image: Image | null | undefined) => {
-        const reference = SwarmImage.Reader.getOriginalSourceReference(image)
-        return reference ? beeClient.bzz.url(reference) : undefined
-      },
-      [beeClient]
-    )
+    const swarmImageUrl = useCallback((image: Image | null | undefined, maxWidth?: number) => {
+      return image ? SwarmImage.Reader.getBestImageUrl(image, maxWidth) : undefined
+    }, [])
 
     return (
       <div className="flex flex-col flex-wrap space-y-6">

@@ -41,6 +41,7 @@ import useUserStore from "@/stores/user"
 import classNames from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
+import { requiresMigration } from "@/utils/migrations"
 import { encodedSvg } from "@/utils/svg"
 
 import type { VideosSource } from "@/hooks/useUserVideos"
@@ -155,15 +156,15 @@ const Videos: React.FC = () => {
                   )}
                 >
                   <Image
-                    sources={item.thumbnail?.sources}
+                    sources={item.preview.thumbnail?.sources}
                     placeholder="blur"
-                    blurredDataURL={item.thumbnail?.blurredBase64}
+                    blurredDataURL={item.preview.thumbnail?.blurredBase64}
                     fallbackSrc={encodedSvg(<ThumbPlaceholder />)}
                     layout="fill"
                   />
                   <span className="absolute bottom-0 right-0 rounded-sm bg-black leading-none">
                     <span className="px-1 text-2xs font-semibold text-white dark:text-white">
-                      <Time duration={item.duration} />
+                      <Time duration={item.preview.duration} />
                     </span>
                   </span>
                 </div>
@@ -176,7 +177,9 @@ const Videos: React.FC = () => {
                       ]?.indexReference || item.reference
                     )}
                   >
-                    <h3 className="text-sm font-bold leading-tight xl:text-base">{item.title}</h3>
+                    <h3 className="text-sm font-bold leading-tight xl:text-base">
+                      {item.preview.title}
+                    </h3>
                   </Link>
                   <div className="grid auto-cols-max grid-flow-col gap-2 lg:hidden">
                     <VideoVisibilityStatus
@@ -240,13 +243,13 @@ const Videos: React.FC = () => {
             title: "Date",
             hideOnMobile: true,
             render: item =>
-              item.createdAt ? (
+              item.preview.createdAt ? (
                 <span>
                   <span className="text-sm leading-none xl:hidden">
-                    {dayjs(item.createdAt).format("LL")}
+                    {dayjs(item.preview.createdAt).format("LL")}
                   </span>
                   <span className="hidden text-sm leading-none xl:inline">
-                    {dayjs(item.createdAt).format("LLL")}
+                    {dayjs(item.preview.createdAt).format("LLL")}
                   </span>
                 </span>
               ) : (
@@ -258,8 +261,8 @@ const Videos: React.FC = () => {
             width: "1%",
             render: item => (
               <div className="flex items-center">
-                {!item.batchId && (
-                  <Tooltip text="Missing postage batch">
+                {requiresMigration(item.preview.v) && (
+                  <Tooltip text="Migration required. Re-save this video to update to the latest version">
                     <div>
                       <Badge color="warning" rounded>
                         <InformationCircleIcon width={12} />

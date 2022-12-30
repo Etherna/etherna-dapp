@@ -21,12 +21,14 @@ import { filterXSS } from "xss"
 import useClientsStore from "@/stores/clients"
 import classNames from "@/utils/classnames"
 
+import type { ImageSource } from "@etherna/api-js"
+
 type ImageProps = {
   className?: string
   imgClassName?: string
   placeholderClassName?: string
   src?: string
-  sources?: Partial<Record<`${number}w`, string>>
+  sources?: ImageSource[]
   fallbackSrc?: string
   blurredDataURL?: string
   aspectRatio?: number
@@ -52,21 +54,17 @@ const Image: React.FC<ImageProps> = ({
   alt,
   style,
 }) => {
-  const beeClient = useClientsStore(state => state.beeClient)
   const [src, setSrc] = useState<string | undefined>(staticSrc)
   const [imgLoaded, setImgLoaded] = useState(!blurredDataURL || placeholder === "empty")
   const rootEl = useRef<HTMLDivElement>(null)
   const resizeObserver = useRef<ResizeObserver>()
-  const sourcesSizes = useMemo(() => {
-    return Object.keys(sources ?? {})
-  }, [sources])
 
   if (layout === "responsive" && !aspectRatio) {
     throw new Error("Image with layout='responsive' must set an aspectRatio")
   }
 
   useEffect(() => {
-    if (rootEl.current && layout === "responsive" && sourcesSizes.length) {
+    if (rootEl.current && layout === "responsive" && sources?.length) {
       resizeObserver.current = new ResizeObserver(onContainerResize)
       resizeObserver.current.observe(rootEl.current)
     }
@@ -75,33 +73,26 @@ const Image: React.FC<ImageProps> = ({
       resizeObserver.current = undefined
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rootEl.current, layout, sourcesSizes])
+  }, [rootEl.current, layout, sources])
 
   useEffect(() => {
     updateCurrentSrc()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [staticSrc, sources, rootEl.current])
 
-  const getOptimizedSrc = useCallback(
-    (sources: ImageProps["sources"], size: number): string => {
-      if (!sources) throw new Error("Missing sources")
-      const screenSize = size * (window.devicePixelRatio ?? 1)
-      const sizes = Object.keys(sources)
-        .map(size => parseInt(size))
-        .sort()
-      const largest = sizes[sizes.length - 1]
-      const largestReference = extractReference(sources[`${largest}w`]!)
+  const getOptimizedSrc = useCallback((sources: ImageProps["sources"], size: number): string => {
+    if (!sources) throw new Error("Missing sources")
+    const screenSize = size * (window.devicePixelRatio ?? 1)
+    const sizes = sources.map(source => source.width).sort()
+    const largest = sizes[sizes.length - 1]
+    const largestUrl = sources.find(source => source.width === largest)!.url
 
-      if (size > largest) return beeClient.bzz.url(largestReference)
+    if (size > largest) return largestUrl
 
-      const optimized = sizes.find(size => size > screenSize)
-      const optimizedReference = optimized
-        ? extractReference(sources[`${optimized}w`]!)
-        : largestReference
-      return optimizedReference ? beeClient.bzz.url(optimizedReference) : ""
-    },
-    [beeClient]
-  )
+    const optimized = sizes.find(size => size > screenSize)
+    const optimizedUrl = sources.find(source => source.width === optimized)?.url ?? largestUrl
+    return optimizedUrl
+  }, [])
 
   const updateCurrentSrc = useCallback(() => {
     if (!rootEl.current) return

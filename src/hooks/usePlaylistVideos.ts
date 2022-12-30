@@ -23,9 +23,11 @@ import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
 import { getResponseErrorMessage } from "@/utils/request"
 
-import type { VideoWithOwner } from "@/types/video"
+import type { WithOwner } from "@/types/video"
 import type { Playlist, Profile, Video } from "@etherna/api-js"
 import type { EthAddress } from "@etherna/api-js/clients"
+
+type VideoWithOwner = WithOwner<Video>
 
 type PlaylistVideosOptions = {
   gridRef?: React.RefObject<HTMLElement>
@@ -133,7 +135,7 @@ export default function usePlaylistVideos(
               beeClient,
               indexClient,
             })
-            return reader.download()
+            return reader.download({ mode: "preview" })
           })
         )
 

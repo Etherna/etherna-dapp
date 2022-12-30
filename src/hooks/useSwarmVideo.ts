@@ -22,7 +22,7 @@ import useExtensionsStore from "@/stores/extensions"
 import { nullablePromise } from "@/utils/promise"
 
 import type { VideoWithIndexes } from "@/types/video"
-import type { IndexVideo } from "@etherna/api-js/clients"
+import type { IndexVideo, Reference } from "@etherna/api-js/clients"
 
 type SwarmVideoOptions = {
   reference: string
@@ -58,7 +58,7 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
       })
 
       let [video, indexVideo] = await Promise.all([
-        videoReader.download() as Promise<VideoWithIndexes>,
+        videoReader.download({ mode: "full" }) as Promise<VideoWithIndexes>,
         isSwarmReference
           ? nullablePromise(indexClient.videos.fetchVideoFromHash(reference))
           : Promise.resolve(null),
@@ -69,25 +69,28 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
       }
 
       if (!video && indexVideo?.lastValidManifest?.sources.length) {
-        const videoParsed = new VideoDeserializer(beeClient.url).deserialize(
-          JSON.stringify({
-            ownerAddress: indexVideo.ownerAddress,
-            title: indexVideo.lastValidManifest.title,
-            description: indexVideo.lastValidManifest.description,
-            thumbnail: indexVideo.lastValidManifest.thumbnail,
-            batchId: indexVideo.lastValidManifest.batchId ?? null,
-            duration: indexVideo.lastValidManifest.duration,
-            originalQuality: indexVideo.lastValidManifest.originalQuality,
-            sources: indexVideo.lastValidManifest.sources,
-            createdAt: new Date(indexVideo.creationDateTime).getTime(),
-            updatedAt: indexVideo.lastValidManifest.updatedAt ?? null,
-          }),
-          {
-            reference: indexVideo.lastValidManifest.hash,
-          }
-        )
+        const deserializer = new VideoDeserializer(beeClient.url)
+        const rawVideo = JSON.stringify({
+          ownerAddress: indexVideo.ownerAddress,
+          title: indexVideo.lastValidManifest.title,
+          description: indexVideo.lastValidManifest.description,
+          thumbnail: indexVideo.lastValidManifest.thumbnail,
+          batchId: indexVideo.lastValidManifest.batchId ?? null,
+          duration: indexVideo.lastValidManifest.duration,
+          sources: indexVideo.lastValidManifest.sources,
+          createdAt: new Date(indexVideo.creationDateTime).getTime(),
+          updatedAt: indexVideo.lastValidManifest.updatedAt ?? null,
+        })
+        const preview = deserializer.deserializePreview(rawVideo, {
+          reference: indexVideo.lastValidManifest.hash,
+        })
+        const details = deserializer.deserializeDetails(rawVideo, {
+          reference: indexVideo.lastValidManifest.hash,
+        })
         video = {
-          ...videoParsed,
+          reference: indexVideo.lastValidManifest.hash as Reference,
+          preview,
+          details,
           indexesStatus: {},
         }
       }

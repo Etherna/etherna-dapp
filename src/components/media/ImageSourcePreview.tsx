@@ -30,15 +30,14 @@ const ImageSourcePreview: React.FC<ImageSourcePreviewProps> = ({ image }) => {
   const beeClient = useClientsStore(state => state.beeClient)
 
   const [reference, srcUrl] = useMemo(() => {
-    const reference = SwarmImage.Reader.getOriginalSourceReference(image)
-    const url = reference ? beeClient.bzz.url(reference) : undefined
-    return [reference, url]
+    const url = ""
+    return ["reference", url]
   }, [image, beeClient])
 
   return (
     <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
       <img className="h-auto w-full max-w-xxs" src={srcUrl} alt="" />
-      <div className="overflow-hidden md:flex-grow">
+      {/* <div className="overflow-hidden md:flex-grow">
         <MediaStats
           stats={[
             {
@@ -57,7 +56,7 @@ const ImageSourcePreview: React.FC<ImageSourcePreviewProps> = ({ image }) => {
           showText="Show info"
           hideText="Hide info"
         />
-      </div>
+      </div> */}
     </div>
   )
 }

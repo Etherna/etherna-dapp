@@ -20,11 +20,12 @@ import VideoPreviewPlaceholder from "@/components/placeholders/VideoPreviewPlace
 import VideoPreview from "@/components/video/VideoPreview"
 import classNames from "@/utils/classnames"
 
-import type { VideoWithIndexes, VideoWithOffersStatus, VideoWithOwner } from "@/types/video"
+import type { WithIndexes, WithOffersStatus, WithOwner } from "@/types/video"
+import type { Video } from "@etherna/api-js"
 
 type VideoGridProps = {
   label?: string
-  videos?: (VideoWithOwner & VideoWithIndexes & VideoWithOffersStatus)[]
+  videos?: WithOwner<WithIndexes<WithOffersStatus<Video>>>[]
   isFetching?: boolean
   fetchingPreviewCount?: number
   mini?: boolean

@@ -20,7 +20,8 @@ import { VideoDeserializer } from "@etherna/api-js/serializers"
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
 
-import type { Video, VideoRaw } from "@etherna/api-js"
+import type { Video, VideoRaw, VideoSource } from "@etherna/api-js"
+import type { Reference } from "@etherna/api-js/clients"
 
 export type VideoOffersStatus = {
   offersStatus: "full" | "partial" | "sources" | "none"
@@ -70,9 +71,19 @@ export default function useVideoOffers(
     }
 
     if (isRawVideo) {
-      return new VideoDeserializer(beeClient.url).deserialize(JSON.stringify(video), {
+      const videoDeserializer = new VideoDeserializer(beeClient.url)
+      const preview = videoDeserializer.deserializePreview(JSON.stringify(video), {
         reference: opts!.reference!,
       })
+      const details = videoDeserializer.deserializeDetails(JSON.stringify(video), {
+        reference: opts!.reference!,
+      })
+
+      return {
+        reference: opts!.reference! as Reference,
+        preview,
+        details,
+      }
     }
 
     return video
@@ -149,11 +160,17 @@ function getStatus(handler: EthernaResourcesHandler, video: Video, byAddress?: s
   )
   const resourcesCount = resourcesStatus.length
   const offeredResourcesCount = resourcesStatus.filter(status => status.isOffered).length
-  const allSourcesOffered =
-    video.sources.length > 0 &&
-    video.sources
-      .map(source => handler.getReferenceStatus(source.reference))
-      .every(status => status?.isOffered && (!byAddress || status.offeredBy.includes(byAddress)))
+  const details = "details" in video ? video.details : null
+  const videoSourcesReferences: string[] = details?.sources.length
+    ? (
+        details.sources.filter(
+          source => source.type === "mp4" && source.reference
+        ) as (VideoSource & { type: "mp4" })[]
+      ).map(source => source.reference!)
+    : []
+  const allSourcesOffered = videoSourcesReferences
+    .map(reference => handler.getReferenceStatus(reference))
+    .every(status => status?.isOffered && (!byAddress || status.offeredBy.includes(byAddress)))
   const fullyOffered = offeredResourcesCount === resourcesCount
 
   return offeredResourcesCount > 0

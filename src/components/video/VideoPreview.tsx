@@ -31,12 +31,13 @@ import { shortenEthAddr } from "@/utils/ethereum"
 import { encodedSvg } from "@/utils/svg"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
-import type { VideoWithIndexes, VideoWithOwner } from "@/types/video"
+import type { WithIndexes, WithOwner } from "@/types/video"
+import type { Video } from "@etherna/api-js"
 
 const thumbnailPreview = encodedSvg(<ThumbPlaceholder />)
 
 type VideoPreviewProps = {
-  video: VideoWithIndexes & VideoWithOwner
+  video: WithIndexes<WithOwner<Video>>
   videoOffers?: VideoOffersStatus
   hideProfile?: boolean
   decentralizedLink?: boolean
@@ -53,10 +54,10 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
 
   const [ownerAddress, profileName] = useMemo(() => {
-    const ownerAddress = video.ownerAddress
+    const ownerAddress = video.preview.ownerAddress
     const profileName = video.owner?.name || shortenEthAddr(ownerAddress)
     return [ownerAddress, profileName]
-  }, [video.ownerAddress, video.owner])
+  }, [video.preview.ownerAddress, video.owner?.name])
 
   const profileAvatar = useMemo(() => {
     const profileAvatar = video.owner?.avatar
@@ -64,8 +65,8 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   }, [video.owner?.avatar])
 
   const videoThumbnail = useMemo(() => {
-    return video.thumbnail
-  }, [video.thumbnail])
+    return video.preview.thumbnail
+  }, [video.preview.thumbnail])
 
   const isLoadingProfile = useMemo(() => {
     return !video.owner
@@ -109,7 +110,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
             layout="fill"
             fallbackSrc={thumbnailPreview}
           />
-          {video.duration && video.duration > 0 && (
+          {video.preview.duration && video.preview.duration > 0 && (
             <div
               className={classNames(
                 "absolute right-0 bottom-0 left-auto top-auto m-2 px-1.5 py-1",
@@ -117,7 +118,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
                 "bg-gray-900 text-gray-100 sm:py-0.5 sm:text-xs"
               )}
             >
-              <Time duration={video.duration} />
+              <Time duration={video.preview.duration} />
             </div>
           )}
         </div>
@@ -156,9 +157,9 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
                 "text-gray-900 dark:text-gray-100",
                 "max-w-full overflow-hidden text-ellipsis line-clamp-2"
               )}
-              title={video.title}
+              title={video.preview.title}
             >
-              {video.title || "???"}
+              {video.preview.title || "???"}
             </h4>
           </Link>
           {!hideProfile && profileLink && (
@@ -185,9 +186,9 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
               </div>
             </Link>
           )}
-          {video.createdAt && (
+          {video.preview.createdAt && (
             <div className="text-xs text-gray-600 dark:text-gray-500">
-              {dayjs.duration(dayjs(video.createdAt).diff(dayjs())).humanize(true)}
+              {dayjs.duration(dayjs(video.preview.createdAt).diff(dayjs())).humanize(true)}
             </div>
           )}
           <div className={classNames("mt-2 grid auto-cols-max grid-flow-col gap-3 empty:mt-0")}>

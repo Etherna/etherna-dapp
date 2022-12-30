@@ -42,7 +42,7 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video, owner, videoOffers }
 
   return (
     <div>
-      <VideoDetailsTitleBar title={video.title}>
+      <VideoDetailsTitleBar title={video.preview.title}>
         <VideoExtraMenu video={video} />
       </VideoDetailsTitleBar>
 
@@ -50,10 +50,13 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video, owner, videoOffers }
 
       <VideoDetailsProfile owner={owner} />
 
-      <VideoDetailsDescription description={video.description} />
+      <VideoDetailsDescription description={video.details?.description} />
 
       {indexReference && (
-        <VideoComments indexReference={indexReference} videoAuthorAddress={video.ownerAddress} />
+        <VideoComments
+          indexReference={indexReference}
+          videoAuthorAddress={video.preview.ownerAddress}
+        />
       )}
     </div>
   )

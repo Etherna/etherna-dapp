@@ -14,7 +14,8 @@
  *  limitations under the License.
  */
 import { useCallback, useRef, useState } from "react"
-import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
+import { EthernaPinningHandler, EthernaResourcesHandler } from "@etherna/api-js/handlers"
+import { extractVideoReferences } from "@etherna/api-js/utils"
 
 import useErrorMessage from "./useErrorMessage"
 import useVideoPublish from "./useVideoPublish"
@@ -31,6 +32,7 @@ import type { BatchId, Reference } from "@etherna/api-js/clients"
 type SaveOpts = {
   saveManifest: boolean
   offerResources: boolean
+  pinResources: boolean
 }
 
 export type PublishStatus = {
@@ -40,14 +42,14 @@ export type PublishStatus = {
 }
 
 export default function useVideoEditor() {
-  const video = useVideoEditorStore(state => state.video)
+  const builder = useVideoEditorStore(state => state.builder)
+  const previusReferences = useVideoEditorStore(state => state.references)
   const saveTo = useVideoEditorStore(state => state.saveTo)
-  const pinContent = useVideoEditorStore(state => state.pinContent)
   const initialReference = useVideoEditorStore(state => state.reference)
   const publishingResults = useVideoEditorStore(state => state.publishingResults)
   const updateEditorStatus = useVideoEditorStore(state => state.updateEditorStatus)
-  const updateVideoReference = useVideoEditorStore(state => state.updateVideoReference)
   const setPublishingResults = useVideoEditorStore(state => state.setPublishingResults)
+  const saveNode = useVideoEditorStore(state => state.saveNode)
   const beeClient = useClientsStore(state => state.beeClient)
   const gatewayClient = useClientsStore(state => state.gatewayClient)
   const { isLocked } = useWallet()
@@ -71,9 +73,10 @@ export default function useVideoEditor() {
   }, [isLocked, showError])
 
   const validateMetadata = useCallback(() => {
-    const { duration, originalQuality, batchId } = video
+    const { duration } = builder.previewMeta
+    const { batchId } = builder.detailsMeta!
 
-    if (!duration || !originalQuality) {
+    if (!duration) {
       showError(
         "Metadata error",
         "There was a problem loading the video metadata. Try to re-upload the original video."
@@ -87,24 +90,20 @@ export default function useVideoEditor() {
     }
 
     return true
-  }, [video, showError])
+  }, [builder, showError])
 
   const uploadManifest = useCallback(async () => {
     if (!checkAccountability()) return
 
     try {
-      const batchId = video.batchId! as BatchId
-      const videoWriter = new SwarmVideo.Writer(video, { batchId, beeClient })
-      const newReference = await videoWriter.upload({
-        pin: pinContent,
-      })
+      const newReference = await saveNode(beeClient)
       return newReference
     } catch (error: any) {
       console.error(error)
       showError("Manifest error", getResponseErrorMessage(error))
       return null
     }
-  }, [video, beeClient, pinContent, checkAccountability, showError])
+  }, [beeClient, checkAccountability, showError, saveNode])
 
   const getVideoIndexId = useCallback(
     (indexUrl: string) => {
@@ -113,53 +112,105 @@ export default function useVideoEditor() {
     [saveTo]
   )
 
-  const offerVideoResources = useCallback(async () => {
-    try {
-      const handler = new EthernaResourcesHandler([newVideo.current!], { gatewayClient })
-      await handler.offerResources()
-    } catch (error) {
-      console.error(error)
-      return false
-    }
-  }, [gatewayClient])
+  const offerVideoResources = useCallback(
+    async (references: Reference[]) => {
+      try {
+        const handler = new EthernaResourcesHandler(references, { gatewayClient })
+        await handler.offerResources()
+      } catch (error) {
+        console.error(error)
+        return false
+      }
+    },
+    [gatewayClient]
+  )
 
-  const unofferVideoResources = useCallback(async () => {
-    try {
-      // using 'old' video reference to unoffer resources
-      const handler = new EthernaResourcesHandler([video], { gatewayClient })
-      await handler.unofferResources()
-    } catch (error) {
-      console.error(error)
-      return false
-    }
-  }, [gatewayClient, video])
+  const pinVideoResources = useCallback(
+    async (references: Reference[]) => {
+      try {
+        const handler = new EthernaPinningHandler(references, { client: gatewayClient })
+        await handler.pinResources()
+      } catch (error) {
+        console.error(error)
+        return false
+      }
+    },
+    [gatewayClient]
+  )
+
+  const unpinVideoResources = useCallback(
+    async (references: Reference[]) => {
+      try {
+        // using 'old' video reference to unoffer resources
+        const handler = new EthernaPinningHandler(references, { client: gatewayClient })
+        await handler.unpinResources()
+      } catch (error) {
+        console.error(error)
+        return false
+      }
+    },
+    [gatewayClient]
+  )
+
+  const unofferVideoResources = useCallback(
+    async (references: Reference[]) => {
+      try {
+        // using 'old' video reference to unoffer resources
+        const handler = new EthernaResourcesHandler(references, { gatewayClient })
+        await handler.unofferResources()
+      } catch (error) {
+        console.error(error)
+        return false
+      }
+    },
+    [gatewayClient]
+  )
 
   const saveVideoTo = useCallback(
     async (saveToSources: VideoEditorPublishSource[], opts: SaveOpts) => {
-      const { saveManifest, offerResources } = opts
+      const { saveManifest, offerResources, pinResources } = opts
 
       setIsSaving(true)
 
+      // save manifest
+      if (saveManifest && !validateMetadata()) return setIsSaving(false)
+      const newReference = opts.saveManifest ? await uploadManifest() : builder.reference
+
+      if (!newReference) return setIsSaving(false)
+
+      const referencesToRemove = previusReferences.filter(ref => ref !== newReference)
+
       // Unoffer previous resources before offering new ones
       if (saveManifest && initialReference) {
-        const offered = await unofferVideoResources()
+        const offered = await unofferVideoResources(referencesToRemove)
         if (!offered) {
           console.error("Coudn't un-offer previous resources")
         }
       }
 
-      // Upload metadata
-      if (saveManifest && !validateMetadata()) return setIsSaving(false)
-      const newReference =
-        saveManifest || !video.reference ? await uploadManifest() : (video.reference as Reference)
-
-      if (!newReference) return setIsSaving(false)
-
-      newVideo.current = {
-        ...video,
-        reference: newReference,
+      // Unpin previous resources before pinning new ones
+      if (saveManifest && initialReference) {
+        const offered = await unpinVideoResources(referencesToRemove)
+        if (!offered) {
+          console.error("Coudn't un-offer previous resources")
+        }
       }
-      updateVideoReference(newReference)
+
+      // Offer resources
+      if (offerResources) {
+        const offered = await offerVideoResources([newReference])
+        if (!offered) {
+          console.error("Coudn't offer resources")
+        }
+      }
+
+      // Pin resources
+      if (pinResources) {
+        const pinned = await pinVideoResources([newReference])
+        if (!pinned) {
+          console.error("Coudn't pin resources")
+        }
+      }
 
       // Add/remove to sources
       const newPublishResults: PublishStatus[] = JSON.parse(JSON.stringify(publishingResults ?? []))
@@ -204,27 +255,20 @@ export default function useVideoEditor() {
       }
       setPublishingResults(newPublishResults)
 
-      // Offer resources
-      if (offerResources) {
-        const offered = await offerVideoResources()
-        if (!offered) {
-          console.error("Coudn't offer resources")
-        }
-      }
-
       const hasErrors = newPublishResults.some(ps => !ps.ok)
       updateEditorStatus(hasErrors ? "error" : "saved")
-      updateVideoReference(newReference)
       setIsSaving(false)
     },
     [
       initialReference,
-      video,
+      builder,
       publishingResults,
       saveTo,
+      previusReferences,
+      pinVideoResources,
+      unpinVideoResources,
       validateMetadata,
       uploadManifest,
-      updateVideoReference,
       setPublishingResults,
       updateEditorStatus,
       unofferVideoResources,
@@ -239,20 +283,27 @@ export default function useVideoEditor() {
 
   return {
     isSaving,
-    saveVideoTo: (sources: VideoEditorPublishSource[], offerResources = false) =>
+    saveVideoTo: (
+      sources: VideoEditorPublishSource[],
+      offerResources = false,
+      pinResources = false
+    ) =>
       saveVideoTo(sources, {
         saveManifest: true,
         offerResources,
+        pinResources,
       }),
     reSaveTo: (source: VideoEditorPublishSource) =>
       saveVideoTo([source], {
         saveManifest: false,
         offerResources: false,
+        pinResources: false,
       }),
     saveVideoResources: () =>
       saveVideoTo([], {
         saveManifest: false,
         offerResources: true,
+        pinResources: false,
       }),
     resetState,
   }

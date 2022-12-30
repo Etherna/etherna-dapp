@@ -34,12 +34,12 @@ const AvailabilityCard: React.FC<AvailabilityCardProps> = ({ disabled }) => {
   const beeClient = useClientsStore(state => state.beeClient)
   const isBeeInstance = useExtensionsStore(state => state.currentGatewayType === "bee")
   const reference = useVideoEditorStore(state => state.reference)
-  const video = useVideoEditorStore(state => state.video)
   const offerResources = useVideoEditorStore(state => state.offerResources)
   const pinContent = useVideoEditorStore(state => state.pinContent)
+  const getVideo = useVideoEditorStore(state => state.getVideo)
   const toggleOfferResources = useVideoEditorStore(state => state.toggleOfferResources)
   const togglePinContent = useVideoEditorStore(state => state.togglePinContent)
-  const { videoOffersStatus } = useVideoOffers(video, {
+  const { videoOffersStatus } = useVideoOffers(getVideo(beeClient.url), {
     reference,
   })
   const abortController = useRef<AbortController>()
@@ -61,7 +61,7 @@ const AvailabilityCard: React.FC<AvailabilityCardProps> = ({ disabled }) => {
       }
       abortController.current = new AbortController()
 
-      const handler = new EthernaPinningHandler([video], {
+      const handler = new EthernaPinningHandler([getVideo(beeClient.url)], {
         client: isBeeInstance ? beeClient : gatewayClient,
       })
 
@@ -83,7 +83,7 @@ const AvailabilityCard: React.FC<AvailabilityCardProps> = ({ disabled }) => {
           })
       }
     },
-    [beeClient, gatewayClient, isBeeInstance, video, togglePinContent]
+    [beeClient, gatewayClient, isBeeInstance, togglePinContent, getVideo]
   )
 
   return (

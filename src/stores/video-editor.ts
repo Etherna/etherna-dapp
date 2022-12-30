@@ -1,3 +1,5 @@
+import { VideoBuilder } from "@etherna/api-js/swarm"
+import { extractVideoReferences } from "@etherna/api-js/utils"
 import create from "zustand"
 import { persist, devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
@@ -6,8 +8,8 @@ import logger from "./middlewares/log"
 import { uuidv4Short } from "@/utils/uuid"
 
 import type { BatchLoadingType } from "@/components/common/BatchLoading"
-import type { Image, Video } from "@etherna/api-js"
-import type { EthAddress, Reference } from "@etherna/api-js/clients"
+import type { Image, ProcessedImage, Video } from "@etherna/api-js"
+import type { BeeClient, EthAddress, Reference } from "@etherna/api-js/clients"
 import type { VideoQuality } from "@etherna/api-js/schemas/video"
 
 export type VideoEditorPublishSourceType = "playlist" | "index"
@@ -43,14 +45,16 @@ export type VideoEditorQueue = {
 }
 
 export type VideoEditorState = {
-  /** Initial video reference (if editing a video) */
+  /** Initial main video reference (if editing a video) */
   reference: Reference | undefined
+  /** Initial video references for all resources (if editing a video) */
+  references: Reference[]
   /** Current editor status */
   status: "creating" | "editing" | "saved" | "error"
   /** Current batch status */
   batchStatus?: BatchLoadingType
-  /** Video metadata */
-  video: Video
+  /** Video manifest builder */
+  builder: VideoBuilder
   /** Whether the user made come changes */
   hasChanges: boolean
   /** Upload queue */
@@ -74,24 +78,20 @@ export type VideoEditorState = {
 
 export type VideoEditorActions = {
   addToQueue(type: VideoEditorQueueType, source: VideoEditorQueueSource, identifier: string): void
-  addVideoSource(
-    quality: VideoQuality,
-    reference: string,
-    size: number,
-    bitrate: number,
-    src: string
-  ): void
+  addVideoSource(mp4: Uint8Array): void
+  getVideo(beeUrl: string): Video
+  loadNode(beeClient: BeeClient): Promise<void>
   removeFromQueue(id: string): void
   removeVideoSource(quality: VideoQuality): void
   reset(): void
+  saveNode(beeClient: BeeClient): Promise<Reference>
   setBatchId(batchId: string): void
-  setEditingVideo(video: Video): void
+  setInitialState(ownerAddress: string, video?: Video | null): void
   setQueueError(id: string, error: string): void
   setIsOffered(offered: boolean): void
-  setOwnerAddress(address: EthAddress): void
   setPublishingSources(sources: VideoEditorPublishSource[]): void
   setPublishingResults(results: PublishStatus[] | undefined): void
-  setThumbnail(thumbnail: Image | null): void
+  setThumbnail(thumbnail: ProcessedImage | null): void
   togglePinContent(enabled: boolean): void
   togglePublishTo(source: VideoEditorPublishSourceType, identifier: string, enabled: boolean): void
   toggleOfferResources(enabled: boolean): void
@@ -104,27 +104,14 @@ export type VideoEditorActions = {
   updateQueueCompletion(id: string, completion: number): void
   updateQueueSize(id: string, size: number): void
   updateQueueError(id: string, error: string | undefined): void
-  updateMetadata(quality: VideoQuality, duration: number): void
-  updateVideoReference(reference: string): void
   updateSaveTo(list: VideoEditorPublishSource[]): void
 }
 
 const getInitialState = (): VideoEditorState => ({
   reference: undefined,
+  references: [],
   status: "creating",
-  video: {
-    reference: "0".repeat(64),
-    batchId: null,
-    title: "",
-    description: "",
-    duration: 0,
-    originalQuality: "0p",
-    ownerAddress: "0x0",
-    sources: [],
-    thumbnail: null,
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
-  },
+  builder: new VideoBuilder(),
   hasChanges: false,
   queue: [],
   pinContent: false,
@@ -152,18 +139,17 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
               state.hasChanges = true
             })
           },
-          addVideoSource(quality, reference, size, bitrate, src) {
+          addVideoSource(mp4: Uint8Array) {
             set(state => {
-              state.video.sources.push({
-                quality,
-                reference,
-                size,
-                bitrate,
-                source: src,
-              })
-              state.queue = state.queue.filter(q => q.name !== quality)
+              state.builder.addMp4Source(mp4)
               state.hasChanges = true
             })
+          },
+          getVideo(beeUrl: string) {
+            return get().builder.getVideo(beeUrl)
+          },
+          loadNode(beeClient) {
+            return get().builder.loadNode({ beeClient })
           },
           removeFromQueue(id) {
             set(state => {
@@ -173,7 +159,7 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
           },
           removeVideoSource(quality) {
             set(state => {
-              state.video.sources = state.video.sources.filter(s => s.quality !== quality)
+              state.builder.removeMp4Source(quality)
               state.hasChanges = true
             })
           },
@@ -183,16 +169,23 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
             newState.saveTo = state.saveTo.map(src => ({ ...src, videoId: undefined, add: true }))
             set(newState)
           },
+          saveNode(beeClient) {
+            return get().builder.saveNode({ beeClient })
+          },
           setBatchId(batchId) {
             set(state => {
-              state.video.batchId = batchId
+              state.builder.detailsMeta.batchId = batchId
               state.hasChanges = true
             })
           },
-          setEditingVideo(video) {
+          setInitialState(ownerAddress, video) {
             set(state => {
-              state.video = video
-              state.reference = video.reference as Reference
+              if (video) {
+                state.builder.initialize(video.reference, video.preview, video.details)
+                state.reference = video.reference as Reference
+                state.references = extractVideoReferences(video)
+              }
+              state.builder.previewMeta.ownerAddress = ownerAddress
               state.status = "editing"
             })
           },
@@ -209,11 +202,6 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
               state.isOffered = offered
             })
           },
-          setOwnerAddress(address) {
-            set(state => {
-              state.video.ownerAddress = address
-            })
-          },
           setPublishingSources(sources) {
             set(state => {
               state.saveTo = sources
@@ -226,7 +214,16 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
           },
           setThumbnail(thumbnail) {
             set(state => {
-              state.video.thumbnail = thumbnail
+              state.builder.previewMeta.thumbnail = thumbnail
+                ? {
+                    aspectRatio: thumbnail.aspectRatio,
+                    blurhash: thumbnail?.blurhash,
+                    sources: [],
+                  }
+                : null
+              for (const source of thumbnail?.responsiveSourcesData || []) {
+                state.builder.addThumbnailSource(source.data, source.width, source.type)
+              }
               state.queue = state.queue.filter(q => q.source === "thumbnail")
               state.hasChanges = true
             })
@@ -264,13 +261,13 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
           },
           updateTitle(title) {
             set(state => {
-              state.video.title = title
+              state.builder.previewMeta.title = title
               state.hasChanges = true
             })
           },
           updateDescription(description) {
             set(state => {
-              state.video.description = description
+              state.builder.detailsMeta.description = description
               state.hasChanges = true
             })
           },
@@ -318,22 +315,9 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
               state.hasChanges = true
             })
           },
-          updateMetadata(quality, duration) {
-            set(state => {
-              state.video.originalQuality = quality
-              state.video.duration = duration
-              state.hasChanges = true
-            })
-          },
           updateSaveTo(list) {
             set(state => {
               state.saveTo = list
-            })
-          },
-          updateVideoReference(reference) {
-            set(state => {
-              state.video.reference = reference
-              state.hasChanges = true
             })
           },
         })),
@@ -341,11 +325,28 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
           name: "etherna:video-editor",
           getStorage: () => sessionStorage,
           serialize(state) {
-            if (state.state.batchStatus === "creating" && !state.state.video.batchId) {
+            if (
+              state.state.batchStatus === "creating" &&
+              !state.state.builder.detailsMeta.batchId
+            ) {
               state.state.batchStatus = undefined
             }
-            state.state.queue = []
-            return JSON.stringify(state)
+
+            return JSON.stringify({
+              ...state,
+              state: {
+                ...state.state,
+                builder: state.state.builder.serialize(),
+                queue: [],
+              },
+            })
+          },
+          deserialize(str) {
+            const state = JSON.parse(str)
+            const seriazliedBuilder = state.state.builder
+            state.state.builder = new VideoBuilder()
+            state.state.builder.deserialize(seriazliedBuilder)
+            return state
           },
         }
       ),

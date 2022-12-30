@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/actions"
 import useConfirmation from "@/hooks/useConfirmation"
 import useSwarmVideo from "@/hooks/useSwarmVideo"
 import routes from "@/routes"
+import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
 import useVideoEditorStore from "@/stores/video-editor"
 
@@ -44,11 +45,12 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   const [isEmpty, setIsEmpty] = useState<boolean>()
   const [canSave, setCanSave] = useState<boolean>()
   const saveCallback = useRef<() => Promise<void>>()
+  const beeClient = useClientsStore(state => state.beeClient)
   const address = useUserStore(state => state.address)
   const editorStatus = useVideoEditorStore(state => state.status)
   const hasChanges = useVideoEditorStore(state => state.hasChanges)
   const storeReference = useVideoEditorStore(state => state.reference)
-  const storeVideo = useVideoEditorStore(state => state.video)
+  const getVideo = useVideoEditorStore(state => state.getVideo)
   const reset = useVideoEditorStore(state => state.reset)
 
   const isResultView = useMemo(() => {
@@ -60,7 +62,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
       return undefined
     }
 
-    const baseVideo = reference === storeReference ? storeVideo : routeState?.video
+    const baseVideo = reference === storeReference ? getVideo(beeClient.url) : routeState?.video
     const videoIndexes: VideoWithIndexes | undefined = baseVideo
       ? {
           ...baseVideo,
@@ -68,7 +70,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
         }
       : undefined
     return videoIndexes
-  }, [reference, routeState?.video, storeReference, storeVideo])
+  }, [beeClient.url, reference, routeState?.video, storeReference, getVideo])
 
   const { waitConfirmation } = useConfirmation()
   const { video, isLoading, loadVideo } = useSwarmVideo({
@@ -77,7 +79,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
   })
 
   useEffect(() => {
-    if (reference && !video) {
+    if (reference && !video?.details) {
       loadVideo()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -113,7 +115,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
     clear && reset()
   }, [reset, waitConfirmation])
 
-  if (video && video.ownerAddress !== address) {
+  if (video && video.details && video.preview.ownerAddress !== address) {
     return <Navigate to={routes.studioVideos} />
   }
 
@@ -141,7 +143,7 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
       backPrompt={backPrompt}
       onSave={handleSave}
     >
-      {isLoading || (reference && !video) ? (
+      {isLoading || (reference && !video?.details) ? (
         <Spinner className="mx-auto mt-10 w-10 text-primary-500" />
       ) : (
         <OnlyUsableBatch>

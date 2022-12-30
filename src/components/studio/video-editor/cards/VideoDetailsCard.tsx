@@ -33,8 +33,8 @@ const VideoDetailsCard: React.FC<VideoDetailsCardProps> = ({
   maxDescriptionLength,
   disabled,
 }) => {
-  const title = useVideoEditorStore(state => state.video.title)
-  const description = useVideoEditorStore(state => state.video.description)
+  const title = useVideoEditorStore(state => state.builder.previewMeta.title)
+  const description = useVideoEditorStore(state => state.builder.detailsMeta.description)
   const updateTitle = useVideoEditorStore(state => state.updateTitle)
   const updateDescription = useVideoEditorStore(state => state.updateDescription)
   const initialDescription = useMemo(() => {
@@ -52,7 +52,7 @@ const VideoDetailsCard: React.FC<VideoDetailsCardProps> = ({
           placeholder="Title of the video"
           value={title}
           charactersLimit={maxTitleLength}
-          onChange={updateTitle}
+          onChange={value => updateTitle(value)}
           disabled={disabled}
         />
       </FormGroup>

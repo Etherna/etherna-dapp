@@ -27,11 +27,10 @@ type VideoSourceProcessingProps = {
 const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, disabled }) => {
   const beeClient = useClientsStore(state => state.beeClient)
   const queue = useVideoEditorStore(state => state.queue)
-  const batchId = useVideoEditorStore(state => state.video.batchId)
   const batchStatus = useVideoEditorStore(state => state.batchStatus)
   const pinContent = useVideoEditorStore(state => state.pinContent)
-  const originalQuality = useVideoEditorStore(state => state.video.originalQuality)
-  const videoSources = useVideoEditorStore(state => state.video.sources)
+  const batchId = useVideoEditorStore(state => state.builder.detailsMeta.batchId)
+  const videoSources = useVideoEditorStore(state => state.builder.detailsMeta.sources)
   const [selectedFile, setSelectedFile] = useState<File>()
   const abortController = useRef<AbortController>()
 
@@ -39,7 +38,6 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
   const removeFromQueue = useVideoEditorStore(state => state.removeFromQueue)
   const removeVideoSource = useVideoEditorStore(state => state.removeVideoSource)
   const setQueueError = useVideoEditorStore(state => state.setQueueError)
-  const updateMetadata = useVideoEditorStore(state => state.updateMetadata)
   const updateQueueCompletion = useVideoEditorStore(state => state.updateQueueCompletion)
   const updateQueueName = useVideoEditorStore(state => state.updateQueueName)
   const updateQueueSize = useVideoEditorStore(state => state.updateQueueSize)
@@ -68,15 +66,11 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
         return setQueueError(queueId, "Can't upload. No file selected.")
       }
 
-      const duration = await getVideoDuration(selectedFile)
-      const size = selectedFile.size
-      const bitrate = Math.round((size * 8) / duration)
-
       try {
         abortController.current = new AbortController()
-        const { reference } = await beeClient.bzz.upload(selectedFile, {
+        const data = new Uint8Array(await selectedFile.arrayBuffer())
+        await beeClient.bytes.upload(data, {
           batchId: batchId!,
-          contentType: "video/mp4",
           pin: pinContent,
           signal: abortController.current.signal,
           onUploadProgress: p => {
@@ -84,24 +78,24 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
           },
         })
 
+        addVideoSource(data)
+        removeFromQueue(queueId)
+
         // remove data
         setSelectedFile(undefined)
-
-        // will also be removed from queue
-        addVideoSource(name, reference, size, bitrate, beeClient.bzz.url(reference))
       } catch (error) {
         console.error(error)
         updateQueueError(queueId, "There was an error uploading the video.")
       }
     },
     [
-      name,
       selectedFile,
       beeClient,
       batchId,
       pinContent,
       setQueueError,
       addVideoSource,
+      removeFromQueue,
       updateQueueError,
     ]
   )
@@ -147,7 +141,7 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
       }
 
       const queueName = getSourceName(quality)
-      const hasQuality = videoSources.some(q => q.quality === queueName)
+      const hasQuality = videoSources.some(q => q.type === "mp4" && q.quality === queueName)
 
       if (hasQuality) {
         showError("Cannot add source", `There is already a source with the quality ${quality}p`)
@@ -166,8 +160,7 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
 
       const queueName = getSourceName(quality)
       const sourceQueue = queue.find(q => q.name === queueName)
-      const hasQuality = videoSources.some(q => q.quality === queueName)
-      const currentOriginalQuality = getSourceQuality(originalQuality)
+      const hasQuality = videoSources.some(s => s.type === "mp4" && s.quality === queueName)
 
       if (hasQuality) {
         return showError(
@@ -180,10 +173,6 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
         removeFromQueue(sourceQueue.id)
       }
 
-      if (isNaN(currentOriginalQuality) || quality > currentOriginalQuality) {
-        updateMetadata(getSourceName(quality), duration)
-      }
-
       setSelectedFile(file)
 
       updateQueueName(currentQueue!.id, queueName)
@@ -192,15 +181,12 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
     [
       queue,
       videoSources,
-      originalQuality,
       currentQueue,
       getSourceName,
-      getSourceQuality,
       updateQueueName,
       updateQueueSize,
       showError,
       removeFromQueue,
-      updateMetadata,
     ]
   )
 
@@ -221,9 +207,9 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
 
   const canRemove = useMemo(() => {
     if (currentQueue) return true
-    if (currentSource) return currentSource.quality !== originalQuality
+    if (currentSource) return videoSources.length > 1
     return false
-  }, [currentQueue, currentSource, originalQuality])
+  }, [currentQueue, currentSource, videoSources.length])
 
   return (
     <Card

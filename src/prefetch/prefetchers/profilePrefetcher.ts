@@ -64,7 +64,7 @@ const fetch = async () => {
           beeClient,
           indexClient,
         })
-        return reader.download()
+        return reader.download({ mode: "preview" })
       })
     )
 

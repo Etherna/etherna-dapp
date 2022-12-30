@@ -65,9 +65,9 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
         )}
       >
         <div className="flex w-full items-center py-2 md:w-auto">
-          {video.createdAt && (
+          {video.preview.createdAt && (
             <span className="font-medium; text-gray-700 dark:text-gray-200">
-              {dayjs(video.createdAt).format("LLL")}
+              {dayjs(video.preview.createdAt).format("LLL")}
             </span>
           )}
         </div>
