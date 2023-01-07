@@ -1,5 +1,6 @@
 import { VideoBuilder } from "@etherna/api-js/swarm"
 import { extractVideoReferences } from "@etherna/api-js/utils"
+import produce, { immerable } from "immer"
 import create from "zustand"
 import { persist, devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
@@ -8,8 +9,8 @@ import logger from "./middlewares/log"
 import { uuidv4Short } from "@/utils/uuid"
 
 import type { BatchLoadingType } from "@/components/common/BatchLoading"
-import type { Image, ProcessedImage, Video } from "@etherna/api-js"
-import type { BeeClient, EthAddress, Reference } from "@etherna/api-js/clients"
+import type { ProcessedImage, Video } from "@etherna/api-js"
+import type { BeeClient, Reference } from "@etherna/api-js/clients"
 import type { VideoQuality } from "@etherna/api-js/schemas/video"
 
 export type VideoEditorPublishSourceType = "playlist" | "index"
@@ -49,6 +50,8 @@ export type VideoEditorState = {
   reference: Reference | undefined
   /** Initial video references for all resources (if editing a video) */
   references: Reference[]
+  /** Whether the mantaray node has been initialized */
+  initialized: boolean
   /** Current editor status */
   status: "creating" | "editing" | "saved" | "error"
   /** Current batch status */
@@ -110,6 +113,7 @@ export type VideoEditorActions = {
 const getInitialState = (): VideoEditorState => ({
   reference: undefined,
   references: [],
+  initialized: false,
   status: "creating",
   builder: new VideoBuilder(),
   hasChanges: false,
@@ -148,8 +152,16 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
           getVideo(beeUrl: string) {
             return get().builder.getVideo(beeUrl)
           },
-          loadNode(beeClient) {
-            return get().builder.loadNode({ beeClient })
+          async loadNode(beeClient) {
+            if (get().initialized) return
+
+            const builder = await produce(get().builder, async draft => {
+              await draft.loadNode({ beeClient })
+            })
+            set(state => {
+              state.builder = builder
+              state.initialized = true
+            })
           },
           removeFromQueue(id) {
             set(state => {
@@ -169,8 +181,14 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
             newState.saveTo = state.saveTo.map(src => ({ ...src, videoId: undefined, add: true }))
             set(newState)
           },
-          saveNode(beeClient) {
-            return get().builder.saveNode({ beeClient })
+          async saveNode(beeClient) {
+            const builder = await produce(get().builder, async draft => {
+              await draft.saveNode({ beeClient })
+            })
+            set(state => {
+              state.builder = builder
+            })
+            return builder.reference
           },
           setBatchId(batchId) {
             set(state => {
@@ -180,13 +198,15 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
           },
           setInitialState(ownerAddress, video) {
             set(state => {
+              if (state.initialized) return
+
               if (video) {
                 state.builder.initialize(video.reference, video.preview, video.details)
                 state.reference = video.reference as Reference
                 state.references = extractVideoReferences(video)
               }
               state.builder.previewMeta.ownerAddress = ownerAddress
-              state.status = "editing"
+              state.status = video ? "editing" : "creating"
             })
           },
           setQueueError(id, error) {
@@ -343,9 +363,9 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
           },
           deserialize(str) {
             const state = JSON.parse(str)
-            const seriazliedBuilder = state.state.builder
+            const serializedBuilder = state.state.builder
             state.state.builder = new VideoBuilder()
-            state.state.builder.deserialize(seriazliedBuilder)
+            state.state.builder.deserialize(serializedBuilder)
             return state
           },
         }

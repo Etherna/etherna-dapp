@@ -16,11 +16,11 @@ const VideoLoading: React.FC<VideoLoadingProps> = ({ children, video }) => {
   const builderReference = useVideoEditorStore(state => state.builder.reference)
   const loadNode = useVideoEditorStore(state => state.loadNode)
   const [isLoading, setIsLoading] = useState(!!video)
-  const [hasLoaded, setHasLoaded] = useState(true)
+  const [hasLoaded, setHasLoaded] = useState(false)
 
   useEffect(() => {
     if (!video) return
-    if (!hasLoaded) return
+    if (hasLoaded) return
     // wait until initial state is set
     if (builderReference !== video.reference) return
 

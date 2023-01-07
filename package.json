@@ -7,8 +7,7 @@
   "scripts": {
     "dev": "vite --host",
     "start": "node scripts/etherna-services.mjs",
-    "start:proxy": "node scripts/etherna-services.mjs --proxy",
-    "start:bee": "node scripts/etherna-services.mjs --bee",
+    "start:bee": "node scripts/etherna-services.mjs --bee --proxy",
     "start:services": "node scripts/etherna-services.mjs --sso --index --credit --gateway --beehive",
     "seed": "node scripts/seed.mjs",
     "postage": "node scripts/create-postage-batch.mjs",
