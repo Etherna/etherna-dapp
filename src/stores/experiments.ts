@@ -4,18 +4,24 @@ import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
 
-export type ExperimentsState = {}
+import type { WritableDraft } from "immer/dist/internal"
 
-export type ExperimentsActions = {}
+export type ExperimentsState = {}
 
 const getInitialState = (): ExperimentsState => ({})
 
-const useExperimentsStore = create<ExperimentsState & ExperimentsActions>()(
+type SetFunc = (setFunc: (state: WritableDraft<ExperimentsState>) => void) => void
+type GetFunc = () => ExperimentsState
+
+const actions = (set: SetFunc, get: GetFunc) => ({})
+
+const useExperimentsStore = create<ExperimentsState & ReturnType<typeof actions>>()(
   logger(
     devtools(
       persist(
-        immer(set => ({
+        immer((set, get) => ({
           ...getInitialState(),
+          ...actions(set, get),
         })),
         {
           name: "etherna:experiments",

@@ -16,6 +16,7 @@ import type { BatchLoadingType } from "@/components/common/BatchLoading"
 import type { ProcessedImage, Video } from "@etherna/api-js"
 import type { BeeClient, Reference } from "@etherna/api-js/clients"
 import type { VideoQuality } from "@etherna/api-js/schemas/video"
+import type { WritableDraft } from "immer/dist/internal"
 
 export type VideoEditorPublishSourceType = "playlist" | "index"
 
@@ -83,39 +84,6 @@ export type VideoEditorState = {
   publishingResults?: PublishStatus[]
 }
 
-export type VideoEditorActions = {
-  addToQueue(type: VideoEditorQueueType, source: VideoEditorQueueSource, identifier: string): void
-  addVideoSource(mp4: Uint8Array): Promise<void>
-  getThumbEntry(): string | undefined
-  getVideoEntry(path: string): string | undefined
-  getVideo(beeUrl: string): Video
-  loadNode(beeClient: BeeClient): Promise<void>
-  removeFromQueue(id: string): void
-  removeVideoSource(quality: VideoQuality): void
-  reset(): void
-  saveNode(beeClient: BeeClient): Promise<Reference>
-  setBatchId(batchId: string): void
-  setInitialState(ownerAddress: string, video?: Video | null): void
-  setQueueError(id: string, error: string): void
-  setIsOffered(offered: boolean): void
-  setPublishingSources(sources: VideoEditorPublishSource[]): void
-  setPublishingResults(results: PublishStatus[] | undefined): void
-  setThumbnail(thumbnail: ProcessedImage | null): void
-  togglePinContent(enabled: boolean): void
-  togglePublishTo(source: VideoEditorPublishSourceType, identifier: string, enabled: boolean): void
-  toggleOfferResources(enabled: boolean): void
-  updateBatchStatus(status: VideoEditorState["batchStatus"]): void
-  updateEditorStatus(status: "saved" | "error"): void
-  updateTitle(title: string): void
-  updateDescription(description: string): void
-  updateQueueName(id: string, newName: string): void
-  updateQueueType(id: string, type: VideoEditorQueueType): void
-  updateQueueCompletion(id: string, completion: number): void
-  updateQueueSize(id: string, size: number): void
-  updateQueueError(id: string, error: string | undefined): void
-  updateSaveTo(list: VideoEditorPublishSource[]): void
-}
-
 const getInitialState = (): VideoEditorState => ({
   reference: undefined,
   references: [],
@@ -131,240 +99,247 @@ const getInitialState = (): VideoEditorState => ({
   saveTo: [],
 })
 
-const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
+type SetFunc = (
+  setFunc: Partial<VideoEditorState> | ((state: WritableDraft<VideoEditorState>) => void)
+) => void
+type GetFunc = () => VideoEditorState
+
+const actions = (set: SetFunc, get: GetFunc) => ({
+  addToQueue(type: VideoEditorQueueType, source: VideoEditorQueueSource, identifier: string) {
+    set(state => {
+      state.queue.push({
+        id: uuidv4Short(),
+        type,
+        source,
+        name: identifier,
+        completion: null,
+      })
+      state.hasChanges = true
+    })
+  },
+  async addVideoSource(mp4: Uint8Array) {
+    const builder = await produce(get().builder, async draft => {
+      await draft.addMp4Source(mp4)
+    })
+    set(state => {
+      state.builder = builder
+      state.hasChanges = true
+    })
+  },
+  getThumbEntry() {
+    const thumbsNodes = getNodesWithPrefix(get().builder.node, "thumb/")
+    const entry = thumbsNodes[0]?.getEntry
+    return entry ? bytesReferenceToReference(entry) : undefined
+  },
+  getVideoEntry(path: string) {
+    const thumbsNodes = getNodesWithPrefix(get().builder.node, path)
+    const entry = thumbsNodes[0]?.getEntry
+    return entry ? bytesReferenceToReference(entry) : undefined
+  },
+  getVideo(beeUrl: string) {
+    return get().builder.getVideo(beeUrl)
+  },
+  async loadNode(beeClient: BeeClient) {
+    if (get().initialized) return
+
+    const builder = await produce(get().builder, async draft => {
+      await draft.loadNode({ beeClient })
+    })
+    set(state => {
+      state.builder = builder
+      state.initialized = true
+    })
+  },
+  removeFromQueue(id: string) {
+    set(state => {
+      state.queue = state.queue.filter(q => q.id !== id)
+      state.hasChanges = true
+    })
+  },
+  removeVideoSource(quality: VideoQuality) {
+    const builder = produce(get().builder, draft => {
+      draft.removeMp4Source(quality)
+    })
+    set(state => {
+      state.builder = builder
+      state.hasChanges = true
+    })
+  },
+  reset() {
+    const state = get()
+    const newState = getInitialState()
+    newState.saveTo = state.saveTo.map(src => ({ ...src, videoId: undefined, add: true }))
+    set(newState)
+  },
+  async saveNode(beeClient: BeeClient) {
+    const builder = await produce(get().builder, async draft => {
+      await draft.saveNode({ beeClient })
+    })
+    set(state => {
+      state.builder = builder
+    })
+    return builder.reference
+  },
+  setBatchId(batchId: string) {
+    set(state => {
+      state.builder.detailsMeta.batchId = batchId
+      state.hasChanges = true
+    })
+  },
+  setInitialState(ownerAddress: string, video?: Video | null) {
+    set(state => {
+      if (state.initialized) return
+
+      if (video) {
+        state.builder.initialize(video.reference, video.preview, video.details)
+        state.reference = video.reference as Reference
+        state.references = extractVideoReferences(video)
+      }
+      state.builder.previewMeta.ownerAddress = ownerAddress
+      state.status = video ? "editing" : "creating"
+    })
+  },
+  setQueueError(id: string, error: string) {
+    set(state => {
+      const queueItem = state.queue.find(q => q.id === id)
+      if (queueItem) {
+        queueItem.error = error
+      }
+    })
+  },
+  setIsOffered(offered: boolean) {
+    set(state => {
+      state.isOffered = offered
+    })
+  },
+  setPublishingSources(sources: VideoEditorPublishSource[]) {
+    set(state => {
+      state.saveTo = sources
+    })
+  },
+  setPublishingResults(results: PublishStatus[] | undefined) {
+    set(state => {
+      state.publishingResults = results
+    })
+  },
+  setThumbnail(thumbnail: ProcessedImage | null) {
+    const builder = produce(get().builder, draft => {
+      draft.previewMeta.thumbnail = thumbnail
+        ? {
+            aspectRatio: thumbnail.aspectRatio,
+            blurhash: thumbnail?.blurhash,
+            sources: [],
+          }
+        : null
+      for (const source of thumbnail?.responsiveSourcesData || []) {
+        draft.addThumbnailSource(source.data, source.width, source.type)
+      }
+    })
+    set(state => {
+      state.builder = builder
+      state.queue = state.queue.filter(q => q.source === "thumbnail")
+      state.hasChanges = true
+    })
+  },
+  toggleOfferResources(enabled: boolean) {
+    set(state => {
+      state.offerResources = enabled
+    })
+  },
+  togglePinContent(enabled: boolean) {
+    set(state => {
+      state.pinContent = enabled
+    })
+  },
+  togglePublishTo(source: VideoEditorPublishSourceType, identifier: string, enabled: boolean) {
+    set(state => {
+      const index = state.saveTo.findIndex(s => s.source === source && s.identifier === identifier)
+      if (index >= 0) {
+        state.saveTo[index].add = enabled
+      }
+    })
+  },
+  updateBatchStatus(status: VideoEditorState["batchStatus"]) {
+    set(state => {
+      state.batchStatus = status
+    })
+  },
+  updateEditorStatus(status: "saved" | "error") {
+    set(state => {
+      state.status = status
+      state.hasChanges = true
+    })
+  },
+  updateTitle(title: string) {
+    set(state => {
+      state.builder.previewMeta.title = title
+      state.hasChanges = true
+    })
+  },
+  updateDescription(description: string) {
+    set(state => {
+      state.builder.detailsMeta.description = description
+      state.hasChanges = true
+    })
+  },
+  updateQueueName(id: string, newName: string) {
+    set(state => {
+      const queueItem = state.queue.find(q => q.id === id)
+      if (queueItem) {
+        queueItem.name = newName
+      }
+    })
+  },
+  updateQueueType(id: string, type: VideoEditorQueueType) {
+    set(state => {
+      const queueItem = state.queue.find(q => q.id === id)
+      if (queueItem) {
+        queueItem.type = type
+      }
+    })
+  },
+  updateQueueCompletion(id: string, completion: number) {
+    set(state => {
+      const index = state.queue.findIndex(q => q.id === id)
+      if (index >= 0) {
+        state.queue[index].completion = completion
+      }
+      state.hasChanges = true
+    })
+  },
+  updateQueueSize(id: string, size: number) {
+    set(state => {
+      const index = state.queue.findIndex(q => q.id === id)
+      if (index >= 0) {
+        state.queue[index].size = size
+      }
+      state.hasChanges = true
+    })
+  },
+  updateQueueError(id: string, error: string | undefined) {
+    set(state => {
+      const index = state.queue.findIndex(q => q.id === id)
+      if (index >= 0) {
+        state.queue[index].error = error
+        state.queue[index].completion = 0
+      }
+      state.hasChanges = true
+    })
+  },
+  updateSaveTo(list: VideoEditorPublishSource[]) {
+    set(state => {
+      state.saveTo = list
+    })
+  },
+})
+
+const useVideoEditorStore = create<VideoEditorState & ReturnType<typeof actions>>()(
   logger(
     devtools(
       persist(
         immer((set, get) => ({
           ...getInitialState(),
-          addToQueue(type, source, name) {
-            set(state => {
-              state.queue.push({
-                id: uuidv4Short(),
-                type,
-                source,
-                name,
-                completion: null,
-              })
-              state.hasChanges = true
-            })
-          },
-          async addVideoSource(mp4: Uint8Array) {
-            const builder = await produce(get().builder, async draft => {
-              await draft.addMp4Source(mp4)
-            })
-            set(state => {
-              state.builder = builder
-              state.hasChanges = true
-            })
-          },
-          getThumbEntry() {
-            const thumbsNodes = getNodesWithPrefix(get().builder.node, "thumb/")
-            const entry = thumbsNodes[0]?.getEntry
-            return entry ? bytesReferenceToReference(entry) : undefined
-          },
-          getVideoEntry(path: string) {
-            const thumbsNodes = getNodesWithPrefix(get().builder.node, path)
-            const entry = thumbsNodes[0]?.getEntry
-            return entry ? bytesReferenceToReference(entry) : undefined
-          },
-          getVideo(beeUrl: string) {
-            return get().builder.getVideo(beeUrl)
-          },
-          async loadNode(beeClient) {
-            if (get().initialized) return
-
-            const builder = await produce(get().builder, async draft => {
-              await draft.loadNode({ beeClient })
-            })
-            set(state => {
-              state.builder = builder
-              state.initialized = true
-            })
-          },
-          removeFromQueue(id) {
-            set(state => {
-              state.queue = state.queue.filter(q => q.id !== id)
-              state.hasChanges = true
-            })
-          },
-          removeVideoSource(quality) {
-            const builder = produce(get().builder, draft => {
-              draft.removeMp4Source(quality)
-            })
-            set(state => {
-              state.builder = builder
-              state.hasChanges = true
-            })
-          },
-          reset() {
-            const state = get()
-            const newState = getInitialState()
-            newState.saveTo = state.saveTo.map(src => ({ ...src, videoId: undefined, add: true }))
-            set(newState)
-          },
-          async saveNode(beeClient) {
-            const builder = await produce(get().builder, async draft => {
-              await draft.saveNode({ beeClient })
-            })
-            set(state => {
-              state.builder = builder
-            })
-            return builder.reference
-          },
-          setBatchId(batchId) {
-            set(state => {
-              state.builder.detailsMeta.batchId = batchId
-              state.hasChanges = true
-            })
-          },
-          setInitialState(ownerAddress, video) {
-            set(state => {
-              if (state.initialized) return
-
-              if (video) {
-                state.builder.initialize(video.reference, video.preview, video.details)
-                state.reference = video.reference as Reference
-                state.references = extractVideoReferences(video)
-              }
-              state.builder.previewMeta.ownerAddress = ownerAddress
-              state.status = video ? "editing" : "creating"
-            })
-          },
-          setQueueError(id, error) {
-            set(state => {
-              const queueItem = state.queue.find(q => q.id === id)
-              if (queueItem) {
-                queueItem.error = error
-              }
-            })
-          },
-          setIsOffered(offered) {
-            set(state => {
-              state.isOffered = offered
-            })
-          },
-          setPublishingSources(sources) {
-            set(state => {
-              state.saveTo = sources
-            })
-          },
-          setPublishingResults(results) {
-            set(state => {
-              state.publishingResults = results
-            })
-          },
-          setThumbnail(thumbnail) {
-            const builder = produce(get().builder, draft => {
-              draft.previewMeta.thumbnail = thumbnail
-                ? {
-                    aspectRatio: thumbnail.aspectRatio,
-                    blurhash: thumbnail?.blurhash,
-                    sources: [],
-                  }
-                : null
-              for (const source of thumbnail?.responsiveSourcesData || []) {
-                draft.addThumbnailSource(source.data, source.width, source.type)
-              }
-            })
-            set(state => {
-              state.builder = builder
-              state.queue = state.queue.filter(q => q.source === "thumbnail")
-              state.hasChanges = true
-            })
-          },
-          toggleOfferResources(enabled) {
-            set(state => {
-              state.offerResources = enabled
-            })
-          },
-          togglePinContent(enabled) {
-            set(state => {
-              state.pinContent = enabled
-            })
-          },
-          togglePublishTo(source, identifier, enabled) {
-            set(state => {
-              const index = state.saveTo.findIndex(
-                s => s.source === source && s.identifier === identifier
-              )
-              if (index >= 0) {
-                state.saveTo[index].add = enabled
-              }
-            })
-          },
-          updateBatchStatus(status) {
-            set(state => {
-              state.batchStatus = status
-            })
-          },
-          updateEditorStatus(status) {
-            set(state => {
-              state.status = status
-              state.hasChanges = true
-            })
-          },
-          updateTitle(title) {
-            set(state => {
-              state.builder.previewMeta.title = title
-              state.hasChanges = true
-            })
-          },
-          updateDescription(description) {
-            set(state => {
-              state.builder.detailsMeta.description = description
-              state.hasChanges = true
-            })
-          },
-          updateQueueName(id, newName) {
-            set(state => {
-              const queueItem = state.queue.find(q => q.id === id)
-              if (queueItem) {
-                queueItem.name = newName
-              }
-            })
-          },
-          updateQueueType(id, type) {
-            set(state => {
-              const queueItem = state.queue.find(q => q.id === id)
-              if (queueItem) {
-                queueItem.type = type
-              }
-            })
-          },
-          updateQueueCompletion(id, completion) {
-            set(state => {
-              const index = state.queue.findIndex(q => q.id === id)
-              if (index >= 0) {
-                state.queue[index].completion = completion
-              }
-              state.hasChanges = true
-            })
-          },
-          updateQueueSize(id, size) {
-            set(state => {
-              const index = state.queue.findIndex(q => q.id === id)
-              if (index >= 0) {
-                state.queue[index].size = size
-              }
-              state.hasChanges = true
-            })
-          },
-          updateQueueError(id, error) {
-            set(state => {
-              const index = state.queue.findIndex(q => q.id === id)
-              if (index >= 0) {
-                state.queue[index].error = error
-                state.queue[index].completion = 0
-              }
-              state.hasChanges = true
-            })
-          },
-          updateSaveTo(list) {
-            set(state => {
-              state.saveTo = list
-            })
-          },
+          ...actions(set, get),
         })),
         {
           name: "etherna:video-editor",
