@@ -29,8 +29,10 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
   const queue = useVideoEditorStore(state => state.queue)
   const batchStatus = useVideoEditorStore(state => state.batchStatus)
   const pinContent = useVideoEditorStore(state => state.pinContent)
+  const duration = useVideoEditorStore(state => state.builder.previewMeta.duration)
   const batchId = useVideoEditorStore(state => state.builder.detailsMeta.batchId)
   const videoSources = useVideoEditorStore(state => state.builder.detailsMeta.sources)
+  const getVideoEntry = useVideoEditorStore(state => state.getVideoEntry)
   const [selectedFile, setSelectedFile] = useState<File>()
   const abortController = useRef<AbortController>()
 
@@ -273,7 +275,13 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
         <FileUploadProgress progress={currentQueue?.completion ?? 0} color="rainbow" />
       )}
 
-      {processingStatus === "preview" && <VideoSourceStats source={currentSource} />}
+      {processingStatus === "preview" && (
+        <VideoSourceStats
+          source={currentSource}
+          duration={duration}
+          entry={currentSource.path ? getVideoEntry(currentSource.path) : undefined}
+        />
+      )}
     </Card>
   )
 }

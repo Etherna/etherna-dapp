@@ -87,6 +87,7 @@ export type VideoEditorActions = {
   addToQueue(type: VideoEditorQueueType, source: VideoEditorQueueSource, identifier: string): void
   addVideoSource(mp4: Uint8Array): Promise<void>
   getThumbEntry(): string | undefined
+  getVideoEntry(path: string): string | undefined
   getVideo(beeUrl: string): Video
   loadNode(beeClient: BeeClient): Promise<void>
   removeFromQueue(id: string): void
@@ -159,6 +160,11 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
           },
           getThumbEntry() {
             const thumbsNodes = getNodesWithPrefix(get().builder.node, "thumb/")
+            const entry = thumbsNodes[0]?.getEntry
+            return entry ? bytesReferenceToReference(entry) : undefined
+          },
+          getVideoEntry(path: string) {
+            const thumbsNodes = getNodesWithPrefix(get().builder.node, path)
             const entry = thumbsNodes[0]?.getEntry
             return entry ? bytesReferenceToReference(entry) : undefined
           },
