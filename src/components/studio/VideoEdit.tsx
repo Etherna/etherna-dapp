@@ -115,7 +115,11 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
     clear && reset()
   }, [reset, waitConfirmation])
 
-  if (video && video.details && video.preview.ownerAddress !== address) {
+  if (
+    video &&
+    video.details &&
+    video.preview.ownerAddress.toLowerCase() !== address?.toLowerCase()
+  ) {
     return <Navigate to={routes.studioVideos} />
   }
 

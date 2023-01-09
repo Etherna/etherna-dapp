@@ -1,5 +1,9 @@
 import { VideoBuilder } from "@etherna/api-js/swarm"
-import { extractVideoReferences } from "@etherna/api-js/utils"
+import {
+  bytesReferenceToReference,
+  extractVideoReferences,
+  getNodesWithPrefix,
+} from "@etherna/api-js/utils"
 import produce, { immerable } from "immer"
 import create from "zustand"
 import { persist, devtools } from "zustand/middleware"
@@ -82,6 +86,7 @@ export type VideoEditorState = {
 export type VideoEditorActions = {
   addToQueue(type: VideoEditorQueueType, source: VideoEditorQueueSource, identifier: string): void
   addVideoSource(mp4: Uint8Array): Promise<void>
+  getThumbEntry(): string | undefined
   getVideo(beeUrl: string): Video
   loadNode(beeClient: BeeClient): Promise<void>
   removeFromQueue(id: string): void
@@ -151,6 +156,11 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
               state.builder = builder
               state.hasChanges = true
             })
+          },
+          getThumbEntry() {
+            const thumbsNodes = getNodesWithPrefix(get().builder.node, "thumb/")
+            const entry = thumbsNodes[0]?.getEntry
+            return entry ? bytesReferenceToReference(entry) : undefined
           },
           getVideo(beeUrl: string) {
             return get().builder.getVideo(beeUrl)

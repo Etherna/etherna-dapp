@@ -15,6 +15,7 @@
  *
  */
 import React, { useCallback, useMemo, useRef, useState } from "react"
+import { bytesReferenceToReference, getNodesWithPrefix } from "@etherna/api-js/utils"
 
 import { MinusIcon } from "@heroicons/react/24/outline"
 
@@ -47,6 +48,7 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
   const pinContent = useVideoEditorStore(state => state.pinContent)
   const thumbnail = useVideoEditorStore(state => state.builder.previewMeta.thumbnail)
   const batchId = useVideoEditorStore(state => state.builder.detailsMeta.batchId)
+  const node = useVideoEditorStore(state => state.builder.node)
   const [selectedFile, setSelectedFile] = useState<File>()
   const [isProcessingImages, setIsProcessingImages] = useState(false)
   const abortController = useRef<AbortController>()
@@ -57,6 +59,7 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
   const updateQueueSize = useVideoEditorStore(state => state.updateQueueSize)
   const setQueueError = useVideoEditorStore(state => state.setQueueError)
   const setThumbnail = useVideoEditorStore(state => state.setThumbnail)
+  const getThumbEntry = useVideoEditorStore(state => state.getThumbEntry)
   const { showError } = useErrorMessage()
   const { waitConfirmation } = useConfirmation()
 
@@ -247,7 +250,9 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
         <FileUploadProgress progress={currentQueue?.completion ?? 0} color="rainbow" />
       )}
 
-      {processingStatus === "preview" && <ImageSourcePreview image={thumbnail} />}
+      {processingStatus === "preview" && (
+        <img className="w-full" src={beeClient.bytes.url(getThumbEntry()!)} />
+      )}
     </Card>
   )
 }
