@@ -78,7 +78,7 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
           },
         })
 
-        addVideoSource(data)
+        await addVideoSource(data)
         removeFromQueue(queueId)
 
         // remove data
@@ -155,7 +155,6 @@ const VideoSourceProcessing: React.FC<VideoSourceProcessingProps> = ({ name, dis
 
   const handleFileSelected = useCallback(
     async (file: File) => {
-      const duration = await getVideoDuration(file)
       const quality = await getVideoResolution(file)
 
       const queueName = getSourceName(quality)

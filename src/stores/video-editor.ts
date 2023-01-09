@@ -81,7 +81,7 @@ export type VideoEditorState = {
 
 export type VideoEditorActions = {
   addToQueue(type: VideoEditorQueueType, source: VideoEditorQueueSource, identifier: string): void
-  addVideoSource(mp4: Uint8Array): void
+  addVideoSource(mp4: Uint8Array): Promise<void>
   getVideo(beeUrl: string): Video
   loadNode(beeClient: BeeClient): Promise<void>
   removeFromQueue(id: string): void
@@ -143,9 +143,12 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
               state.hasChanges = true
             })
           },
-          addVideoSource(mp4: Uint8Array) {
+          async addVideoSource(mp4: Uint8Array) {
+            const builder = await produce(get().builder, async draft => {
+              await draft.addMp4Source(mp4)
+            })
             set(state => {
-              state.builder.addMp4Source(mp4)
+              state.builder = builder
               state.hasChanges = true
             })
           },
@@ -170,8 +173,11 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
             })
           },
           removeVideoSource(quality) {
+            const builder = produce(get().builder, draft => {
+              draft.removeMp4Source(quality)
+            })
             set(state => {
-              state.builder.removeMp4Source(quality)
+              state.builder = builder
               state.hasChanges = true
             })
           },
@@ -233,8 +239,8 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
             })
           },
           setThumbnail(thumbnail) {
-            set(state => {
-              state.builder.previewMeta.thumbnail = thumbnail
+            const builder = produce(get().builder, draft => {
+              draft.previewMeta.thumbnail = thumbnail
                 ? {
                     aspectRatio: thumbnail.aspectRatio,
                     blurhash: thumbnail?.blurhash,
@@ -242,8 +248,11 @@ const useVideoEditorStore = create<VideoEditorState & VideoEditorActions>()(
                   }
                 : null
               for (const source of thumbnail?.responsiveSourcesData || []) {
-                state.builder.addThumbnailSource(source.data, source.width, source.type)
+                draft.addThumbnailSource(source.data, source.width, source.type)
               }
+            })
+            set(state => {
+              state.builder = builder
               state.queue = state.queue.filter(q => q.source === "thumbnail")
               state.hasChanges = true
             })

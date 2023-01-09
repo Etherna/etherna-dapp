@@ -13,21 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useState } from "react"
 import { EthernaPinningHandler, EthernaResourcesHandler } from "@etherna/api-js/handlers"
-import { extractVideoReferences } from "@etherna/api-js/utils"
+import { VideoDeserializer } from "@etherna/api-js/serializers"
 
 import useErrorMessage from "./useErrorMessage"
 import useVideoPublish from "./useVideoPublish"
 import useWallet from "./useWallet"
-import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
 import useVideoEditorStore from "@/stores/video-editor"
 import { getResponseErrorMessage } from "@/utils/request"
 
 import type { VideoEditorPublishSource } from "@/stores/video-editor"
 import type { Video } from "@etherna/api-js"
-import type { BatchId, Reference } from "@etherna/api-js/clients"
+import type { Reference } from "@etherna/api-js/clients"
 
 type SaveOpts = {
   saveManifest: boolean
@@ -42,11 +41,14 @@ export type PublishStatus = {
 }
 
 export default function useVideoEditor() {
-  const builder = useVideoEditorStore(state => state.builder)
+  const currentReference = useVideoEditorStore(state => state.builder.reference)
+  const previewMeta = useVideoEditorStore(state => state.builder.previewMeta)
+  const detailsMeta = useVideoEditorStore(state => state.builder.detailsMeta)
   const previusReferences = useVideoEditorStore(state => state.references)
   const saveTo = useVideoEditorStore(state => state.saveTo)
   const initialReference = useVideoEditorStore(state => state.reference)
   const publishingResults = useVideoEditorStore(state => state.publishingResults)
+  const getVideo = useVideoEditorStore(state => state.getVideo)
   const updateEditorStatus = useVideoEditorStore(state => state.updateEditorStatus)
   const setPublishingResults = useVideoEditorStore(state => state.setPublishingResults)
   const saveNode = useVideoEditorStore(state => state.saveNode)
@@ -54,7 +56,6 @@ export default function useVideoEditor() {
   const gatewayClient = useClientsStore(state => state.gatewayClient)
   const { isLocked } = useWallet()
   const [isSaving, setIsSaving] = useState(false)
-  const newVideo = useRef<Video>()
   const { addToIndex, addToPlaylist, removeFromIndex, removeFromPlaylist } = useVideoPublish()
   const { showError } = useErrorMessage()
 
@@ -73,8 +74,8 @@ export default function useVideoEditor() {
   }, [isLocked, showError])
 
   const validateMetadata = useCallback(() => {
-    const { duration } = builder.previewMeta
-    const { batchId } = builder.detailsMeta!
+    const { duration } = previewMeta
+    const { batchId } = detailsMeta!
 
     if (!duration) {
       showError(
@@ -90,7 +91,7 @@ export default function useVideoEditor() {
     }
 
     return true
-  }, [builder, showError])
+  }, [previewMeta, detailsMeta, showError])
 
   const uploadManifest = useCallback(async () => {
     if (!checkAccountability()) return
@@ -174,7 +175,7 @@ export default function useVideoEditor() {
 
       // save manifest
       if (saveManifest && !validateMetadata()) return setIsSaving(false)
-      const newReference = opts.saveManifest ? await uploadManifest() : builder.reference
+      const newReference = opts.saveManifest ? await uploadManifest() : currentReference
 
       if (!newReference) return setIsSaving(false)
 
@@ -212,6 +213,8 @@ export default function useVideoEditor() {
         }
       }
 
+      console.log(`http://localhost:1633/bzz/${newReference}`)
+
       // Add/remove to sources
       const newPublishResults: PublishStatus[] = JSON.parse(JSON.stringify(publishingResults ?? []))
       for (const source of saveToSources) {
@@ -230,9 +233,14 @@ export default function useVideoEditor() {
           statusIndex = newPublishResults.length - 1
         }
 
+        const newVideo: Video = {
+          ...getVideo("http://localhost:1633"),
+          reference: newReference,
+        }
+
         if (source.source === "playlist") {
           if (source.add) {
-            const ok = await addToPlaylist(initialReference, newVideo.current!, source.identifier)
+            const ok = await addToPlaylist(initialReference, newVideo, source.identifier)
             newPublishResults[statusIndex].ok = ok
             newPublishResults[statusIndex].type = "add"
           } else {
@@ -243,7 +251,7 @@ export default function useVideoEditor() {
         } else if (source.source === "index") {
           const indexReference = getVideoIndexId(source.identifier)
           if (source.add) {
-            const ok = await addToIndex(indexReference, newVideo.current!, source.identifier)
+            const ok = await addToIndex(indexReference, newVideo, source.identifier)
             newPublishResults[statusIndex].ok = ok
             newPublishResults[statusIndex].type = "add"
           } else {
@@ -261,10 +269,11 @@ export default function useVideoEditor() {
     },
     [
       initialReference,
-      builder,
+      currentReference,
       publishingResults,
       saveTo,
       previusReferences,
+      getVideo,
       pinVideoResources,
       unpinVideoResources,
       validateMetadata,

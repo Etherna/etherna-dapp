@@ -183,6 +183,7 @@ const PostageBatchCard: React.FC<PostageBatchCardProps> = ({ disabled }) => {
 
   useEffect(() => {
     if (
+      !batchId &&
       initialVideoQueue?.completion === null &&
       editorStatus === "creating" &&
       videoSources.length === 0

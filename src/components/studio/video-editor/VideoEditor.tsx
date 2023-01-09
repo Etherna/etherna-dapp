@@ -39,6 +39,7 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
   const videoSources = useVideoEditorStore(state => state.builder.detailsMeta.sources)
   const editorStatus = useVideoEditorStore(state => state.status)
   const offerResources = useVideoEditorStore(state => state.offerResources)
+  const pinContent = useVideoEditorStore(state => state.pinContent)
   const queue = useVideoEditorStore(state => state.queue)
   const saveTo = useVideoEditorStore(state => state.saveTo)
   const setInitialState = useVideoEditorStore(state => state.setInitialState)
@@ -71,7 +72,7 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
   useImperativeHandle(ref, () => ({
     isEmpty: videoSources.length === 0,
     canSubmitVideo,
-    submitVideo: () => saveVideoTo(saveTo, offerResources),
+    submitVideo: () => saveVideoTo(saveTo, offerResources, pinContent),
     resetState,
   }))
 

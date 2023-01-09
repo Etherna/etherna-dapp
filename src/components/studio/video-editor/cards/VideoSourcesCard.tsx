@@ -44,7 +44,17 @@ const VideoSourcesCard: React.FC<VideoSourcesCardProps> = ({ disabled }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queue, videoSources.length])
 
+  const getSourceName = useCallback((source: VideoEditorQueue | VideoSourceRaw) => {
+    if ("name" in source) {
+      return source.name as VideoQuality
+    }
+    return source.type === "mp4" || !source.type ? source.quality : source.type
+  }, [])
+
   const getSourceIdentifier = useCallback((source: VideoEditorQueue | VideoSourceRaw) => {
+    if ("id" in source) {
+      return source.id
+    }
     if ("name" in source) {
       return source.name as VideoQuality
     }
@@ -76,11 +86,13 @@ const VideoSourcesCard: React.FC<VideoSourcesCardProps> = ({ disabled }) => {
       <div className="space-y-3">
         {sources.map(source => {
           const identifier = getSourceIdentifier(source)
+          const name = getSourceName(source)
           const isStaticSource = (identifier: string): identifier is VideoQuality => {
             return /^[0-9]+p$/.test(identifier)
           }
-          return isStaticSource(identifier) ? (
-            <VideoSourceProcessing key={identifier} name={identifier} disabled={disabled} />
+
+          return isStaticSource(name) ? (
+            <VideoSourceProcessing key={identifier} name={name} disabled={disabled} />
           ) : (
             <div>TODO!</div>
           )
