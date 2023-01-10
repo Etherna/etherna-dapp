@@ -57,18 +57,19 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
         indexClient,
       })
 
-      let [video, indexVideo] = await Promise.all([
-        videoReader.download({ mode: "full" }) as Promise<VideoWithIndexes>,
+      const mode = video?.preview ? "details" : "full"
+      let [newVideo, indexVideo] = await Promise.all([
+        videoReader.download({ mode, previewData: video?.preview }) as Promise<VideoWithIndexes>,
         isSwarmReference
           ? nullablePromise(indexClient.videos.fetchVideoFromHash(reference))
           : Promise.resolve(null),
       ])
 
-      if (!video && !indexVideo?.lastValidManifest?.sources.length) {
+      if (!newVideo && !indexVideo?.lastValidManifest?.sources.length) {
         throw new Error("Video not found")
       }
 
-      if (!video && indexVideo?.lastValidManifest?.sources.length) {
+      if (!newVideo && indexVideo?.lastValidManifest?.sources.length) {
         const deserializer = new VideoDeserializer(beeClient.url)
         const rawVideo = JSON.stringify({
           ownerAddress: indexVideo.ownerAddress,
@@ -87,7 +88,7 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
         const details = deserializer.deserializeDetails(rawVideo, {
           reference: indexVideo.lastValidManifest.hash,
         })
-        video = {
+        newVideo = {
           reference: indexVideo.lastValidManifest.hash as Reference,
           preview,
           details,
@@ -95,11 +96,11 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
         }
       }
 
-      if (!video) {
+      if (!newVideo) {
         throw new Error("Video not found")
       }
 
-      video.indexesStatus = {}
+      newVideo.indexesStatus = {}
 
       indexVideo =
         indexVideo ??
@@ -108,21 +109,21 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
           : null)
 
       if (indexVideo) {
-        video.indexesStatus[indexUrl] = {
+        newVideo.indexesStatus[indexUrl] = {
           indexReference: indexVideo.id,
           totDownvotes: indexVideo.totDownvotes,
           totUpvotes: indexVideo.totUpvotes,
         }
       }
 
-      setVideo(video)
+      setVideo(newVideo)
     } catch (error) {
       console.error(error)
       setNotFound(true)
     } finally {
       setIsloading(false)
     }
-  }, [beeClient, indexClient, indexUrl, reference])
+  }, [beeClient, indexClient, indexUrl, reference, video?.preview])
 
   return {
     video,
