@@ -15,14 +15,12 @@
  *
  */
 import React, { useCallback, useMemo, useRef, useState } from "react"
-import { bytesReferenceToReference, getNodesWithPrefix } from "@etherna/api-js/utils"
 
 import { MinusIcon } from "@heroicons/react/24/outline"
 
 import SwarmImage from "@/classes/SwarmImage"
 import FileDrag from "@/components/media/FileDrag"
 import FileUploadProgress from "@/components/media/FileUploadProgress"
-import ImageSourcePreview from "@/components/media/ImageSourcePreview"
 import { Button } from "@/components/ui/actions"
 import { Card, Text } from "@/components/ui/display"
 import useConfirmation from "@/hooks/useConfirmation"

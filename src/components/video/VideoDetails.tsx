@@ -22,6 +22,7 @@ import VideoDetailsInfoBar from "./VideoDetailsInfoBar"
 import VideoDetailsProfile from "./VideoDetailsProfile"
 import VideoDetailsTitleBar from "./VideoDetailsTitleBar"
 import VideoExtraMenu from "./VideoExtraMenu"
+import VideoDetailsPlaceholder from "@/components/placeholders/VideoDetailsPlaceholder"
 import useExtensionsStore from "@/stores/extensions"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
@@ -40,7 +41,7 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video, owner, videoOffers }
     return video.indexesStatus[indexUrl]?.indexReference
   }, [indexUrl, video.indexesStatus])
 
-  return (
+  return video.details ? (
     <div>
       <VideoDetailsTitleBar title={video.preview.title}>
         <VideoExtraMenu video={video} />
@@ -59,6 +60,8 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video, owner, videoOffers }
         />
       )}
     </div>
+  ) : (
+    <VideoDetailsPlaceholder />
   )
 }
 

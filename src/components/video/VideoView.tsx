@@ -18,7 +18,6 @@ import React, { useEffect, useMemo, useCallback } from "react"
 import removeMarkdown from "remove-markdown"
 
 import VideoJsonLd from "./VideoJsonLd"
-import SwarmImage from "@/classes/SwarmImage"
 import NotFound from "@/components/common/NotFound"
 import SEO from "@/components/layout/SEO"
 import Player from "@/components/player/Player"
@@ -29,16 +28,15 @@ import useResetRouteState from "@/hooks/useResetRouteState"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
 import useSwarmVideo from "@/hooks/useSwarmVideo"
 import routes from "@/routes"
-import useClientsStore from "@/stores/clients"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
-import type { WithIndexes } from "@/types/video"
-import type { Profile, Video } from "@etherna/api-js"
+import type { VideoWithIndexes } from "@/types/video"
+import type { Profile } from "@etherna/api-js"
 import type { EthAddress } from "@etherna/api-js/clients"
 
 type VideoViewProps = {
   reference: string
-  routeState?: { video: WithIndexes<Video>; ownerProfile?: Profile; videoOffers: VideoOffersStatus }
+  routeState?: { video: VideoWithIndexes; ownerProfile?: Profile; videoOffers: VideoOffersStatus }
   embed?: boolean
 }
 
