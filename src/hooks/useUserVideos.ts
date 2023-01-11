@@ -143,12 +143,12 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
           const videoReader = new SwarmVideo.Reader(indexVideo.lastValidManifest!.hash, {
             beeClient,
           })
-          const rawVideo = JSON.stringify(videoReader.indexVideoToRaw(indexVideo))
+          const rawVideo = videoReader.indexVideoToRaw(indexVideo)
           const deserializer = new VideoDeserializer(beeClient.url)
-          const preview = deserializer.deserializePreview(rawVideo, {
+          const preview = deserializer.deserializePreview(JSON.stringify(rawVideo.preview), {
             reference: indexVideo.lastValidManifest!.hash,
           })
-          const details = deserializer.deserializeDetails(rawVideo, {
+          const details = deserializer.deserializeDetails(JSON.stringify(rawVideo.details), {
             reference: indexVideo.lastValidManifest!.hash,
           })
           const videoIndexes: VideoWithIndexes = {

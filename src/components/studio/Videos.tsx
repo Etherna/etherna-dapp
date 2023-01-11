@@ -31,6 +31,7 @@ import TableVideoPlaceholder from "@/components/placeholders/TableVideoPlacehold
 import { Button } from "@/components/ui/actions"
 import { Badge, Table, Tooltip } from "@/components/ui/display"
 import { Select } from "@/components/ui/inputs"
+import useBulkMigrations from "@/hooks/useBulkMigrations"
 import useUserVideos from "@/hooks/useUserVideos"
 import useUserVideosPinning from "@/hooks/useUserVideosPinning"
 import useUserVideosVisibility from "@/hooks/useUserVideosVisibility"
@@ -41,7 +42,6 @@ import useUserStore from "@/stores/user"
 import classNames from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
-import { requiresMigration } from "@/utils/migrations"
 import { encodedSvg } from "@/utils/svg"
 
 import type { VideosSource } from "@/hooks/useUserVideos"
@@ -95,6 +95,7 @@ const Videos: React.FC = () => {
   const { isFetchingPinning, pinningStatus, togglePinning } = useUserVideosPinning(videos)
   const { videosOffersStatus, isFetchingOffers, offerVideoResources, unofferVideoResources } =
     useVideosResources(videos, { autoFetch: true })
+  const { videosToMigrate } = useBulkMigrations(videos, currentSource.type)
 
   useEffect(() => {
     setPage(1)
@@ -261,7 +262,7 @@ const Videos: React.FC = () => {
             width: "1%",
             render: item => (
               <div className="flex items-center">
-                {requiresMigration(item.preview.v) && (
+                {videosToMigrate.includes(item.reference) && (
                   <Tooltip text="Migration required. Re-save this video to update to the latest version">
                     <div>
                       <Badge color="warning" rounded>
