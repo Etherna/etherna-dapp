@@ -4,7 +4,7 @@ import {
   extractVideoReferences,
   getNodesWithPrefix,
 } from "@etherna/api-js/utils"
-import produce, { immerable } from "immer"
+import produce from "immer"
 import create from "zustand"
 import { persist, devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
@@ -89,7 +89,7 @@ const getInitialState = (): VideoEditorState => ({
   references: [],
   initialized: false,
   status: "creating",
-  builder: new VideoBuilder(),
+  builder: new VideoBuilder.Immerable(),
   hasChanges: false,
   queue: [],
   pinContent: false,
@@ -364,7 +364,7 @@ const useVideoEditorStore = create<VideoEditorState & ReturnType<typeof actions>
           deserialize(str) {
             const state = JSON.parse(str)
             const serializedBuilder = state.state.builder
-            state.state.builder = new VideoBuilder()
+            state.state.builder = new VideoBuilder.Immerable()
             state.state.builder.deserialize(serializedBuilder)
             return state
           },

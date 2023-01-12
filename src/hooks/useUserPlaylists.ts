@@ -281,6 +281,7 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
   )
 
   return {
+    userPlaylists,
     isFetchingPlaylists,
     channelPlaylist,
     savedPlaylist,

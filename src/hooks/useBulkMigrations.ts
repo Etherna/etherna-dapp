@@ -78,8 +78,6 @@ export default function useBulkMigrations(
     setIsMigrating(false)
   }, [videos])
 
-  console.log("M", videosToMigrate)
-
   return {
     videosToMigrate,
     isLoading,

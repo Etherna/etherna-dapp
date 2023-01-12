@@ -18,7 +18,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Link, Navigate } from "react-router-dom"
 import { urlHostname } from "@etherna/api-js/utils"
 
-import { TrashIcon, PencilIcon, InformationCircleIcon } from "@heroicons/react/24/solid"
+import { TrashIcon, PencilIcon, InformationCircleIcon, BoltIcon } from "@heroicons/react/24/solid"
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 
 import VideoOffersStatus from "./other/VideoOffersStatus"
@@ -96,6 +96,12 @@ const Videos: React.FC = () => {
   const { videosOffersStatus, isFetchingOffers, offerVideoResources, unofferVideoResources } =
     useVideosResources(videos, { autoFetch: true })
   const { videosToMigrate } = useBulkMigrations(videos, currentSource.type)
+
+  const selectedVideosToMigrate = useMemo(() => {
+    return videosToMigrate.filter(
+      ref => selectedVideos.findIndex(vid => vid.reference === ref) !== -1
+    )
+  }, [videosToMigrate, selectedVideos])
 
   useEffect(() => {
     setPage(1)
@@ -263,7 +269,7 @@ const Videos: React.FC = () => {
             render: item => (
               <div className="flex items-center">
                 {videosToMigrate.includes(item.reference) && (
-                  <Tooltip text="Migration required. Re-save this video to update to the latest version">
+                  <Tooltip text="Upgrade required. Re-save this video to update to the latest version">
                     <div>
                       <Badge color="warning" rounded>
                         <InformationCircleIcon width={12} />
@@ -288,11 +294,17 @@ const Videos: React.FC = () => {
           },
         ]}
         selectionActions={
-          <>
-            <Button color="inverted" aspect="text" large onClick={() => setShowDeleteModal(true)}>
+          <div className="flex items-center space-x-4 md:space-x-6">
+            {selectedVideosToMigrate.length > 0 && (
+              <Button color="inverted" aspect="text" large onClick={() => setShowDeleteModal(true)}>
+                <BoltIcon className="mr-1" width={20} aria-hidden />
+                Upgrade
+              </Button>
+            )}
+            <Button color="error" aspect="text" large onClick={() => setShowDeleteModal(true)}>
               <TrashIcon width={20} aria-hidden />
             </Button>
-          </>
+          </div>
         }
         onSelectionChange={setSelectedVideos}
         onPageChange={(page, perPage) => {
