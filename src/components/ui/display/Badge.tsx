@@ -48,7 +48,7 @@ const Badge: React.FC<BadgeProps> = ({
     <As
       className={classNames(
         "inline-flex items-center",
-        "whitespace-nowrap font-semibold",
+        "cursor-default whitespace-nowrap font-semibold",
         {
           "rounded-md px-1.5 py-1 text-xs md:text-sm": !small,
           "rounded px-1 py-0.5 text-2xs md:text-xs": small,

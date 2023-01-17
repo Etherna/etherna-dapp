@@ -17,6 +17,7 @@
 import React, { useCallback, useEffect, useMemo } from "react"
 import { urlHostname } from "@etherna/api-js/utils"
 
+import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import FieldDescription from "@/components/common/FieldDescription"
 import { Card, Spinner } from "@/components/ui/display"
 import { SelectionToggle } from "@/components/ui/inputs"
@@ -66,7 +67,7 @@ const SaveToCard: React.FC<SaveToCardProps> = ({ disabled }) => {
         source: "playlist",
         name: "Public channel",
         description: "Decentralized feed",
-        identifier: "__channel",
+        identifier: SwarmPlaylist.Reader.channelPlaylistId,
         videoId: undefined,
         add: editorStatus === "creating",
       },

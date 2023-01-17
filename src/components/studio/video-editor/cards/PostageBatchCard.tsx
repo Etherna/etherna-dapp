@@ -102,19 +102,7 @@ const PostageBatchCard: React.FC<PostageBatchCardProps> = ({ disabled }) => {
             initialVideoQueue!.size!,
             parseInt(initialVideoQueue!.name)
           )
-        : videoSources.reduce((sum, s) => {
-            if (s.type === "mp4") {
-              return sum + s.size
-            } else if (s.type === "dash") {
-              // average 2.5MB per second
-              return sum + duration! * 2.5 * 2 ** 20
-            } else if (s.type === "hls") {
-              // average 2MB per second
-              return sum + duration! * 2 * 2 ** 20
-            }
-            return sum
-          }, 0) +
-          2 ** 20 * 100 // 100mb extra
+        : batchesHandler.current.calcBatchSizeForVideoSources(videoSources, duration)
 
     setMissing(false)
     setErrored(false)

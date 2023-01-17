@@ -361,6 +361,12 @@ const Videos: React.FC = () => {
         isMigrating={isMigrating}
         migrationStatus={migrationStatus}
         migrateHandler={signal => migrate(selectedVideosToMigrate, signal)}
+        onMigrationCompleted={() => {
+          setShowMigrationModal(false)
+          resetMigration()
+          setSelectedVideos([])
+          fetchPage(page)
+        }}
         onCancel={() => {
           setShowMigrationModal(false)
           resetMigration()

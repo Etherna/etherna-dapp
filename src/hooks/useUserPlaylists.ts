@@ -113,6 +113,7 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
       setIsFetchingPlaylists(false)
 
       return {
+        userPlaylists: playlists,
         channelPlaylist: channelPlaylist,
         savedPlaylist: savedPlaylist,
         customPlaylists: customPlaylists,
@@ -162,7 +163,12 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
       const userPlaylistsWriter = new SwarmUserPlaylists.Writer(userPlaylists, {
         beeClient,
       })
-      await userPlaylistsWriter.upload()
+      try {
+        await userPlaylistsWriter.upload()
+        console.log("done")
+      } catch (error) {
+        console.log("error", error)
+      }
     },
     [beeClient]
   )
@@ -264,6 +270,40 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
     [allPlaylists, updatePlaylistAndUser]
   )
 
+  const updateVideosInPlaylist = useCallback(
+    async (playlistId: string, operations: { remove: Reference; add: Video }[]) => {
+      const initialPlaylist = allPlaylists.find(playlist => playlist.id === playlistId)
+
+      if (!initialPlaylist) throw new Error("Playlist not loaded")
+
+      const newPlaylist = deepCloneObject(initialPlaylist)
+
+      for (const operation of operations) {
+        const index = newPlaylist.videos?.findIndex(video => video.reference === operation.remove)
+        const vid: PlaylistVideo = {
+          reference: operation.add.reference,
+          title: operation.add.preview.title || "",
+          addedAt: newPlaylist.videos![index].addedAt,
+          publishedAt: newPlaylist.videos![index].publishedAt,
+        }
+        if (index >= 0) {
+          newPlaylist.videos!.splice(index, 1, vid)
+        } else {
+          newPlaylist.videos!.push(vid)
+        }
+      }
+
+      newPlaylist.videos = [...(newPlaylist.videos ?? [])].filter(
+        (vid, i, self) => self.findIndex(vid2 => vid2.reference === vid.reference) === i
+      )
+
+      console.log("new playlist", newPlaylist)
+
+      await updatePlaylistAndUser(initialPlaylist, newPlaylist)
+    },
+    [allPlaylists, updatePlaylistAndUser]
+  )
+
   const removeVideosFromPlaylist = useCallback(
     async (playlistId: string, videosReferences: string[]) => {
       const initialPlaylist = allPlaylists.find(playlist => playlist.id === playlistId)
@@ -289,6 +329,7 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
     loadPlaylists,
     addVideosToPlaylist,
     updateVideoInPlaylist,
+    updateVideosInPlaylist,
     removeVideosFromPlaylist,
     playlistHasVideo,
   }

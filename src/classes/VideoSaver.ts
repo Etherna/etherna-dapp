@@ -30,6 +30,7 @@ type VideoSaverRequestOptions = {
   offerResources: boolean
   pinResources: boolean
   previusResults: PublishStatus[]
+  signal?: AbortSignal
 }
 
 export default class VideoSaver {
@@ -41,48 +42,60 @@ export default class VideoSaver {
     // save manifest
     if (opts.saveManifest && !this.validateMetadata()) return
     const newReference = opts.saveManifest
-      ? await this.uploadManifest()
+      ? await this.uploadManifest(opts.signal)
       : this.videoBuilder.reference
 
     if (!newReference) return
 
     const referencesToRemove = previusReferences.filter(ref => ref !== newReference)
 
+    if (opts.signal?.aborted) return
+
     // Unoffer previous resources before offering new ones
     if (opts.saveManifest && initialReference) {
-      const offered = await this.unofferVideoResources(referencesToRemove)
+      const offered = await this.unofferVideoResources(referencesToRemove, opts.signal)
       if (!offered) {
         console.error("Coudn't un-offer previous resources")
       }
     }
+
+    if (opts.signal?.aborted) return
 
     // Unpin previous resources before pinning new ones
     if (opts.saveManifest && initialReference) {
-      const offered = await this.unpinVideoResources(referencesToRemove)
+      const offered = await this.unpinVideoResources(referencesToRemove, opts.signal)
       if (!offered) {
         console.error("Coudn't un-offer previous resources")
       }
     }
 
+    if (opts.signal?.aborted) return
+
     // Offer resources
     if (opts.offerResources) {
-      const offered = await this.offerVideoResources([newReference])
+      const offered = await this.offerVideoResources([newReference], opts.signal)
       if (!offered) {
         console.error("Coudn't offer resources")
       }
     }
 
+    if (opts.signal?.aborted) return
+
     // Pin resources
     if (opts.pinResources) {
-      const pinned = await this.pinVideoResources([newReference])
+      const pinned = await this.pinVideoResources([newReference], opts.signal)
       if (!pinned) {
         console.error("Coudn't pin resources")
       }
     }
 
+    if (opts.signal?.aborted) return
+
     // Add/remove to sources
     const newPublishResults: PublishStatus[] = JSON.parse(JSON.stringify(opts.previusResults ?? []))
     for (const source of saveTo) {
+      if (opts.signal?.aborted) return
+
       // don't remove on creation
       if (!source.add && !initialReference) continue
 
@@ -105,22 +118,22 @@ export default class VideoSaver {
 
       if (source.source === "playlist") {
         if (source.add) {
-          const ok = await this.addToPlaylist(initialReference, newVideo, source.identifier)
+          const ok = await this.addToPlaylist(initialReference, newVideo, opts.signal)
           newPublishResults[statusIndex].ok = ok
           newPublishResults[statusIndex].type = "add"
         } else {
-          const ok = await this.removeFromPlaylist(newReference)
+          const ok = await this.removeFromPlaylist(newReference, opts.signal)
           newPublishResults[statusIndex].ok = ok
           newPublishResults[statusIndex].type = "remove"
         }
       } else if (source.source === "index") {
         const indexReference = this.getVideoIndexId(source.identifier)
         if (source.add) {
-          const ok = await this.addToIndex(indexReference, newVideo)
+          const ok = await this.addToIndex(indexReference, newVideo, opts.signal)
           newPublishResults[statusIndex].ok = ok
           newPublishResults[statusIndex].type = "add"
         } else {
-          const ok = await this.removeFromIndex(indexReference)
+          const ok = await this.removeFromIndex(indexReference, opts.signal)
           newPublishResults[statusIndex].ok = ok
           newPublishResults[statusIndex].type = "remove"
         }
@@ -148,7 +161,7 @@ export default class VideoSaver {
     return true
   }
 
-  async addToPlaylist(initialReference: Reference | undefined, video: Video, playlistId: string) {
+  async addToPlaylist(initialReference: Reference | undefined, video: Video, signal?: AbortSignal) {
     if (!this.checkChannel()) return false
     if (!this.checkAccountability()) return false
 
@@ -169,7 +182,7 @@ export default class VideoSaver {
         publishedAt: undefined,
       })
 
-      await this.updateChannelAndUser(playlist)
+      await this.updateChannelAndUser(playlist, signal)
 
       return true
     } catch (error) {
@@ -178,14 +191,14 @@ export default class VideoSaver {
     }
   }
 
-  async removeFromPlaylist(reference: Reference | undefined) {
+  async removeFromPlaylist(reference: Reference | undefined, signal?: AbortSignal) {
     if (!this.checkChannel()) return false
     if (!this.checkAccountability()) return false
 
     try {
       const playlist = deepCloneObject(this.options.channelPlaylist!)
       playlist.videos = playlist.videos.filter(video => video.reference !== reference)
-      await this.updateChannelAndUser(playlist)
+      await this.updateChannelAndUser(playlist, signal)
       return true
     } catch (error) {
       console.error(error)
@@ -193,12 +206,12 @@ export default class VideoSaver {
     }
   }
 
-  async updateChannelAndUser(channel: Playlist) {
+  async updateChannelAndUser(channel: Playlist, signal?: AbortSignal) {
     // save playlist
     const playlistWriter = new SwarmPlaylist.Writer(channel, {
       beeClient: this.options.beeClient,
     })
-    const reference = await playlistWriter.upload()
+    const reference = await playlistWriter.upload({ signal })
     // save user playlists
     const userPlaylists: UserPlaylists = {
       ...(this.options.userPlaylists ?? {
@@ -211,16 +224,16 @@ export default class VideoSaver {
     const userPlaylistsWriter = new SwarmUserPlaylists.Writer(userPlaylists, {
       beeClient: this.options.beeClient,
     })
-    await userPlaylistsWriter.upload()
+    await userPlaylistsWriter.upload({ signal })
   }
 
-  async addToIndex(initialVideoId: string | undefined, video: Video) {
+  async addToIndex(initialVideoId: string | undefined, video: Video, signal?: AbortSignal) {
     try {
       const indexClient = this.options.indexClient
       if (initialVideoId) {
-        await indexClient.videos.updateVideo(initialVideoId, video.reference)
+        await indexClient.videos.updateVideo(initialVideoId, video.reference, { signal })
       } else {
-        await indexClient.videos.createVideo(video.reference)
+        await indexClient.videos.createVideo(video.reference, undefined, { signal })
       }
       return true
     } catch (error) {
@@ -233,12 +246,12 @@ export default class VideoSaver {
     }
   }
 
-  async removeFromIndex(videoId: string | undefined) {
+  async removeFromIndex(videoId: string | undefined, signal?: AbortSignal) {
     if (!videoId) return true
 
     try {
       const indexClient = this.options.indexClient
-      await indexClient.videos.deleteVideo(videoId)
+      await indexClient.videos.deleteVideo(videoId, { signal })
       return true
     } catch (error) {
       const axiosError = error as AxiosError
@@ -273,12 +286,13 @@ export default class VideoSaver {
     return true
   }
 
-  async uploadManifest() {
+  async uploadManifest(signal?: AbortSignal) {
     if (!this.checkAccountability()) return
 
     try {
       const newReference = await this.videoBuilder.saveNode({
         beeClient: this.options.beeClient,
+        signal,
       })
       return newReference
     } catch (error: any) {
@@ -292,46 +306,46 @@ export default class VideoSaver {
     return this.options.saveTo.find(s => s.source === "index" && s.identifier === indexUrl)!.videoId
   }
 
-  async offerVideoResources(references: Reference[]) {
+  async offerVideoResources(references: Reference[], signal?: AbortSignal) {
     try {
       const handler = new EthernaResourcesHandler(references, {
         gatewayClient: this.options.gatewayClient,
       })
-      await handler.offerResources()
+      await handler.offerResources({ signal })
     } catch (error) {
       console.error(error)
       return false
     }
   }
 
-  async pinVideoResources(references: Reference[]) {
+  async pinVideoResources(references: Reference[], signal?: AbortSignal) {
     try {
       const handler = new EthernaPinningHandler(references, { client: this.options.gatewayClient })
-      await handler.pinResources()
+      await handler.pinResources({ signal })
     } catch (error) {
       console.error(error)
       return false
     }
   }
 
-  async unpinVideoResources(references: Reference[]) {
+  async unpinVideoResources(references: Reference[], signal?: AbortSignal) {
     try {
       // using 'old' video reference to unoffer resources
       const handler = new EthernaPinningHandler(references, { client: this.options.gatewayClient })
-      await handler.unpinResources()
+      await handler.unpinResources({ signal })
     } catch (error) {
       console.error(error)
       return false
     }
   }
 
-  async unofferVideoResources(references: Reference[]) {
+  async unofferVideoResources(references: Reference[], signal?: AbortSignal) {
     try {
       // using 'old' video reference to unoffer resources
       const handler = new EthernaResourcesHandler(references, {
         gatewayClient: this.options.gatewayClient,
       })
-      await handler.unofferResources()
+      await handler.unofferResources({ signal })
     } catch (error) {
       console.error(error)
       return false

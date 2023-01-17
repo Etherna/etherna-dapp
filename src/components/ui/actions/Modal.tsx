@@ -32,6 +32,7 @@ export type ModalProps = {
   status?: "error" | "warning" | "success"
   showCloseButton?: boolean
   showCancelButton?: boolean
+  autoClose?: boolean
   large?: boolean
   setShow?(show: boolean): void
   onClose?(): void
@@ -48,6 +49,7 @@ const Modal: React.FC<ModalProps> = ({
   footerButtons,
   showCloseButton,
   showCancelButton,
+  autoClose,
   large,
   setShow,
   onClose,
@@ -71,7 +73,7 @@ const Modal: React.FC<ModalProps> = ({
         className={classNames("fixed inset-0 z-50 overflow-y-auto")}
         initialFocus={cancelButtonRef}
         open={show}
-        onClose={handleCancel}
+        onClose={() => (autoClose ? handleCancel() : () => {})}
         tabIndex={0}
         data-component="modal"
       >

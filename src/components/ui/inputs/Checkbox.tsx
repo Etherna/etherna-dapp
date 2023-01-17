@@ -49,6 +49,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
             "bg-gray-200 text-primary-600 dark:bg-gray-700",
             "border-gray-300 dark:border-gray-600",
             "checked:border-primary-600 checked:bg-primary-600 checked:dark:border-primary-600 checked:dark:bg-primary-600",
+            "focus:ring-offset-gray-50 dark:focus:ring-offset-gray-900",
             inputClassName
           )}
           type="checkbox"
