@@ -90,7 +90,7 @@ const Videos: React.FC = () => {
     }
   }, [address, profileInfo, defaultBatchId])
 
-  const { isFetching, videos, total, fetchPage } = useUserVideos({
+  const { isFetching, videos, total, fetchPage, invalidatePage } = useUserVideos({
     fetchSource: currentSource,
     sources,
     profile,
@@ -365,7 +365,7 @@ const Videos: React.FC = () => {
           setShowMigrationModal(false)
           resetMigration()
           setSelectedVideos([])
-          fetchPage(page)
+          invalidatePage(page)
         }}
         onCancel={() => {
           setShowMigrationModal(false)

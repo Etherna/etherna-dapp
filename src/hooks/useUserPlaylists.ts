@@ -163,12 +163,7 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
       const userPlaylistsWriter = new SwarmUserPlaylists.Writer(userPlaylists, {
         beeClient,
       })
-      try {
-        await userPlaylistsWriter.upload()
-        console.log("done")
-      } catch (error) {
-        console.log("error", error)
-      }
+      await userPlaylistsWriter.upload()
     },
     [beeClient]
   )
@@ -296,8 +291,6 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
       newPlaylist.videos = [...(newPlaylist.videos ?? [])].filter(
         (vid, i, self) => self.findIndex(vid2 => vid2.reference === vid.reference) === i
       )
-
-      console.log("new playlist", newPlaylist)
 
       await updatePlaylistAndUser(initialPlaylist, newPlaylist)
     },
