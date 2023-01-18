@@ -34,6 +34,17 @@ type SetFunc = (setFunc: (state: WritableDraft<UserState>) => void) => void
 type GetFunc = () => UserState
 
 const actions = (set: SetFunc, get: GetFunc) => ({
+  addBatches(batches: GatewayBatch[]) {
+    set(state => {
+      state.batches = [
+        ...state.batches,
+        ...batches.filter(batch => !state.batches.find(stateBatch => stateBatch.id === batch.id)),
+      ]
+    })
+  },
+  getBatchNumber(batchId: BatchId) {
+    return get().batches.findIndex(batch => batch.id === batchId) + 1
+  },
   setCredit(credit: number | null, unlimited?: boolean) {
     set(state => {
       state.credit = credit

@@ -28,7 +28,7 @@ import { wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
 
 import type { VideoWithIndexes } from "@/types/video"
-import type { Playlist, Profile, VideoPreview } from "@etherna/api-js"
+import type { Playlist, Profile } from "@etherna/api-js"
 import type { Reference } from "@etherna/api-js/clients"
 
 export type VideosSource =
