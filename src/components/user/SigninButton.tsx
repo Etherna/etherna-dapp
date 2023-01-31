@@ -15,17 +15,19 @@
  *
  */
 import React from "react"
+import { useAuth } from "react-oidc-context"
 
 import { Button } from "@/components/ui/actions"
-import { loginRedirect } from "@/utils/automations"
 
 type SigninButtonProps = {
   children?: React.ReactNode
 }
 
 const SigninButton: React.FC<SigninButtonProps> = ({ children }) => {
+  const { signinRedirect } = useAuth()
+
   return (
-    <Button type="button" onClick={() => loginRedirect()} lighter>
+    <Button type="button" onClick={() => signinRedirect()} lighter>
       {children}
     </Button>
   )

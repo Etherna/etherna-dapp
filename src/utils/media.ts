@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+import { getAccessToken } from "./jwt"
 import http from "./request"
 
 /**
@@ -85,7 +86,9 @@ export const downloadImageData = async (imageUrl: string): Promise<Uint8Array | 
   try {
     const resp = await http.get(imageUrl, {
       responseType: "arraybuffer",
-      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${getAccessToken()}`,
+      },
     })
     return new Uint8Array(resp.data)
   } catch (error) {

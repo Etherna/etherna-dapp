@@ -41,7 +41,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPost
   const [hasExceededLimit, setHasExceededLimit] = useState(false)
   const address = useUserStore(state => state.address)
   const avatar = useUserStore(state => state.profile?.avatar)
-  const isSignedIn = useUserStore(state => state.isSignedIn)
+  const isSignedIn = useUserStore(state => state.isSignedInIndex)
   const indexClient = useClientsStore(state => state.indexClient)
   const { characterLimits, isFetching, fetchCharLimits } = useCharaterLimits()
   const resetEditor = useRef<() => void>()

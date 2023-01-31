@@ -20,7 +20,7 @@ export type UserState = {
   creditUnlimited?: boolean
   defaultBatchId?: BatchId
   batches: GatewayBatch[]
-  isSignedIn?: boolean
+  isSignedInIndex?: boolean
   isSignedInGateway?: boolean
 }
 

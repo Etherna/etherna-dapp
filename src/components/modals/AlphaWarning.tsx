@@ -18,6 +18,7 @@ import React, { Fragment, useCallback, useEffect, useRef, useState } from "react
 import { Dialog, Transition } from "@headlessui/react"
 import Tippy from "@tippyjs/react"
 
+import { ChatBubbleBottomCenterTextIcon } from "@heroicons/react/24/solid"
 import { ReactComponent as DiscordLogo } from "@/assets/brand/logo-discord.svg"
 import { ReactComponent as BugIcon } from "@/assets/icons/bug.svg"
 
@@ -153,6 +154,9 @@ const AlphaWarning: React.FC = () => {
                   </AlphaWarningAction>
                   <AlphaWarningAction as="a" href="https://discord.gg/vfHYEXf">
                     <DiscordLogo /> Discord support
+                  </AlphaWarningAction>
+                  <AlphaWarningAction as="a" href="https://info.etherna.io/faq">
+                    <ChatBubbleBottomCenterTextIcon /> FAQ
                   </AlphaWarningAction>
 
                   <AlphaWarningAction as="button" onClick={handleClose} alt>
