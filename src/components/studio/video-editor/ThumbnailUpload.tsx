@@ -44,9 +44,7 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
   const beeClient = useClientsStore(state => state.beeClient)
   const batchStatus = useVideoEditorStore(state => state.batchStatus)
   const pinContent = useVideoEditorStore(state => state.pinContent)
-  const thumbnail = useVideoEditorStore(state => state.builder.previewMeta.thumbnail)
   const batchId = useVideoEditorStore(state => state.builder.detailsMeta.batchId)
-  const node = useVideoEditorStore(state => state.builder.node)
   const [selectedFile, setSelectedFile] = useState<File>()
   const [isProcessingImages, setIsProcessingImages] = useState(false)
   const abortController = useRef<AbortController>()
@@ -73,7 +71,6 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
       abortController.current = new AbortController()
 
       const imageWriter = new SwarmImage.Writer(selectedFile, {
-        batchId: batchId as BatchId,
         beeClient,
         responsiveSizes: SwarmImage.Writer.thumbnailResponsiveSizes,
       })

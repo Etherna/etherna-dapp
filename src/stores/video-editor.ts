@@ -128,12 +128,12 @@ const actions = (set: SetFunc, get: GetFunc) => ({
   },
   getThumbEntry() {
     const thumbsNodes = getNodesWithPrefix(get().builder.node, "thumb/")
-    const entry = thumbsNodes[0]?.getEntry
+    const entry = thumbsNodes[0]?.entry
     return entry ? bytesReferenceToReference(entry) : undefined
   },
   getVideoEntry(path: string) {
     const thumbsNodes = getNodesWithPrefix(get().builder.node, path)
-    const entry = thumbsNodes[0]?.getEntry
+    const entry = thumbsNodes[0]?.entry
     return entry ? bytesReferenceToReference(entry) : undefined
   },
   getVideo(beeUrl: string) {

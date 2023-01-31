@@ -15,10 +15,8 @@
  *
  */
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { extractReference } from "@etherna/api-js/utils"
 import { filterXSS } from "xss"
 
-import useClientsStore from "@/stores/clients"
 import classNames from "@/utils/classnames"
 import { downloadImageData, isAnimatedImage } from "@/utils/media"
 
@@ -65,7 +63,7 @@ const Image: React.FC<ImageProps> = ({
   }
 
   useEffect(() => {
-    if (rootEl.current && layout === "responsive" && sources?.length) {
+    if (rootEl && layout === "responsive" && sources?.length) {
       resizeObserver.current = new ResizeObserver(onContainerResize)
       resizeObserver.current.observe(rootEl)
     }
@@ -74,7 +72,7 @@ const Image: React.FC<ImageProps> = ({
       resizeObserver.current = undefined
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rootEl.current, layout, sources])
+  }, [rootEl, layout, sources])
 
   useEffect(() => {
     loadBestImage()
@@ -118,7 +116,7 @@ const Image: React.FC<ImageProps> = ({
     if (!newSrc) {
       return onError()
     }
-    if (newSrc === srcUrl) {
+    if (newSrc === src) {
       return
     }
 
@@ -128,11 +126,11 @@ const Image: React.FC<ImageProps> = ({
     if (!imageData || isAnimatedImage(imageData)) {
       onError()
     } else {
-      setSrcUrl(filteredSrc)
+      setSrc(filteredSrc)
       setSrc(URL.createObjectURL(new Blob([imageData])))
       setImgLoaded(true)
     }
-  }, [getOptimizedSrc, onError, rootEl, sources, srcUrl, staticSrc])
+  }, [getOptimizedSrc, onError, rootEl, src, sources, staticSrc])
 
   const onContainerResize = useCallback(
     (entries: ResizeObserverEntry[]) => {
@@ -171,7 +169,7 @@ const Image: React.FC<ImageProps> = ({
               objectFit,
             }}
             loading="lazy"
-            data-src={srcUrl}
+            data-src={src}
           />
         </picture>
       )}

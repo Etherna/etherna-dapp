@@ -73,9 +73,9 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       state.currentWallet = wallet
     })
   },
-  updateSignedIn(isSignedIn: boolean, isSignedInGateway: boolean) {
+  updateSignedIn(isSignedInIndex: boolean, isSignedInGateway: boolean) {
     set(state => {
-      state.isSignedIn = isSignedIn
+      state.isSignedInIndex = isSignedInIndex
       state.isSignedInGateway = isSignedInGateway
     })
   },
