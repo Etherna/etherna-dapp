@@ -37,7 +37,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       <div className="flex w-full flex-wrap" data-sidebar-floating={`${floatingSidebar}`}>
         <SidebarNavigation />
 
-        <div className="z-0 flex-grow">
+        <div className="z-0 max-w-full flex-grow">
           <TopbarNavigation />
           <TabbarNavigation />
           <main className="min-h-[50vh] w-full overflow-x-hidden">{children}</main>

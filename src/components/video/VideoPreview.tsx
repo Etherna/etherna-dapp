@@ -101,7 +101,12 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
         to={routes.watch(videoLink)}
         state={{ video, ownerProfile: video.owner, videoOffers }}
       >
-        <div className={classNames("relative flex w-full before:pb-[56.25%]", {})}>
+        <div
+          className={classNames(
+            "relative flex w-full overflow-hidden rounded-sm before:pb-[56.25%]",
+            {}
+          )}
+        >
           <Image
             className="bg-gray-200 dark:bg-gray-700"
             sources={videoThumbnail?.sources}

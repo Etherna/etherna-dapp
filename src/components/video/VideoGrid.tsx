@@ -49,7 +49,7 @@ const VideoGrid = forwardRef<HTMLDivElement, VideoGridProps>(
         )}
         <div
           className={classNames(
-            "grid grid-flow-row-dense gap-4",
+            "mx-auto grid max-w-[2560px] grid-flow-row-dense gap-4",
             singleColumn
               ? {
                   "sm:gap-6": true,
