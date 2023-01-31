@@ -1,4 +1,5 @@
 import { EthernaPinningHandler, EthernaResourcesHandler } from "@etherna/api-js/handlers"
+import { isEmptyReference } from "@etherna/api-js/utils"
 
 import SwarmPlaylist from "./SwarmPlaylist"
 import SwarmUserPlaylists from "./SwarmUserPlaylists"
@@ -41,9 +42,10 @@ export default class VideoSaver {
 
     // save manifest
     if (opts.saveManifest && !this.validateMetadata()) return
-    const newReference = opts.saveManifest
-      ? await this.uploadManifest(opts.signal)
-      : this.videoBuilder.reference
+    const newReference =
+      opts.saveManifest || isEmptyReference(this.videoBuilder.reference)
+        ? await this.uploadManifest(opts.signal)
+        : this.videoBuilder.reference
 
     if (!newReference) return
 
