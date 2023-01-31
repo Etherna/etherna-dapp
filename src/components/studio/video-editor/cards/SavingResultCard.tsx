@@ -15,7 +15,7 @@ type SavingResultCardProps = {}
 
 const SavingResultCard: React.FC<SavingResultCardProps> = ({}) => {
   const publishingResults = useVideoEditorStore(state => state.publishingResults)
-  const newReference = useVideoEditorStore(state => state.video.reference)
+  const newReference = useVideoEditorStore(state => state.builder.reference)
 
   const successfulAddResults = useMemo(() => {
     return (publishingResults ?? []).filter(result => result.ok && result.type === "add")

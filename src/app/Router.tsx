@@ -19,7 +19,6 @@ import { Routes, Route, useLocation, Navigate } from "react-router-dom"
 
 import AppLayoutRoute from "./route-wrappers/AppLayoutRoute"
 import AuthenticateRoute from "./route-wrappers/AuthenticateRoute"
-import BatchesRoute from "./route-wrappers/BatchesRoute"
 import DefaultBatchRoute from "./route-wrappers/DefaultBatchRoute"
 import IdentityRoute from "./route-wrappers/IdentityRoute"
 import SignedInRoute from "./route-wrappers/SignedInRoute"
@@ -166,9 +165,7 @@ const Router = () => {
                       <Route path="videos/:id" element={<VideoEdit />} />
                       <Route path="channel" element={<ChannelEdit />} />
                     </Route>
-                    <Route path="" element={<BatchesRoute />}>
-                      <Route path="postages" element={<Postages />} />
-                    </Route>
+                    <Route path="postages" element={<Postages />} />
                   </Route>
                 </Route>
               </Route>

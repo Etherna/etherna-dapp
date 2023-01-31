@@ -13,9 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import axios from "axios"
+import axios, { AxiosError } from "axios"
+import { ZodError } from "zod"
 
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios"
+import type { AxiosRequestConfig, AxiosResponse } from "axios"
+import type { ZodIssue } from "zod"
 
 interface SkipXHRError extends AxiosError {
   isSkipXHR?: boolean
@@ -223,36 +225,47 @@ export const createRequest = (config?: AxiosRequestConfig) => {
   return request
 }
 
-export const getResponseErrorMessage = (error: AxiosError): string => {
-  const response = error.response
-  if (response) {
-    const data = error.response?.data
+export const getResponseErrorMessage = (error: any): string => {
+  if (error instanceof AxiosError) {
+    const response = error.response
+    if (response) {
+      const data = error.response?.data
 
-    if (typeof data === "string") return data
+      if (typeof data === "string") return data
 
-    try {
-      if (!data) throw "CODE"
+      try {
+        if (!data) throw "CODE"
 
-      return JSON.stringify(data)
-    } catch {
-      switch (error.response?.status) {
-        case 400:
-          return "Bad request"
-        case 401:
-          return "Unauthorized"
-        case 402:
-          return "Insufficient Credit"
-        case 403:
-          return "Forbidden"
-        case 404:
-          return "Not found"
-        default:
-          return "Internal server error"
+        return JSON.stringify(data)
+      } catch {
+        switch (error.response?.status) {
+          case 400:
+            return "Bad request"
+          case 401:
+            return "Unauthorized"
+          case 402:
+            return "Insufficient Credit"
+          case 403:
+            return "Forbidden"
+          case 404:
+            return "Not found"
+          default:
+            return "Internal server error"
+        }
       }
     }
-  } else {
+  } else if (typeof error === "object" && "issues" in error) {
+    console.table(
+      error.issues.map(({ path, ...issue }: ZodIssue) => ({
+        path: path.join("."),
+        ...issue,
+      }))
+    )
+    return "Invalid data"
+  } else if (error instanceof Error) {
     return error.message
   }
+  return "Unknown error"
 }
 
 const request = createRequest()

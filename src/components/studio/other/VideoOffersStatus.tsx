@@ -2,7 +2,7 @@ import React, { useState } from "react"
 
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline"
 
-import VideoOffersModal from "@/components/modals/VideoOffersModal"
+import VideoOffersModal from "@/components/modals/VideoSupportModal"
 import { Badge, Spinner } from "@/components/ui/display"
 import useExtensionsStore from "@/stores/extensions"
 

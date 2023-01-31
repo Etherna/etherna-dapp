@@ -144,6 +144,7 @@ const playerContextReducer = (
       return {
         ...state,
         sourceQualities: action.qualities,
+        currentQuality: action.qualities[0],
       }
     }
 

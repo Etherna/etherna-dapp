@@ -19,10 +19,10 @@ export default function useVideoEditorQueue<S = Image | VideoSource>(
   name: string,
   opts: UseVideoEditorQueueOptions
 ) {
-  const batchId = useVideoEditorStore(state => state.video.batchId)
+  const batchId = useVideoEditorStore(state => state.builder.detailsMeta!.batchId)
   const batchStatus = useVideoEditorStore(state => state.batchStatus)
-  const videoSources = useVideoEditorStore(state => state.video.sources)
-  const thumbnail = useVideoEditorStore(state => state.video.thumbnail)
+  const videoSources = useVideoEditorStore(state => state.builder.detailsMeta!.sources)
+  const thumbnail = useVideoEditorStore(state => state.builder.previewMeta.thumbnail)
   const queue = useVideoEditorStore(state => state.queue)
 
   const updateQueueCompletion = useVideoEditorStore(state => state.updateQueueCompletion)
@@ -32,7 +32,7 @@ export default function useVideoEditorQueue<S = Image | VideoSource>(
     const source: S | null | undefined =
       name === THUMBNAIL_QUEUE_NAME
         ? (thumbnail as S)
-        : (videoSources.find(s => s.quality === name) as S)
+        : (videoSources.find(s => (s.type === "mp4" && s.quality === name) || s.type === name) as S)
     return [queue.find(q => q.name === name), source]
   }, [name, queue, thumbnail, videoSources])
   const isQueued = useMemo(() => {

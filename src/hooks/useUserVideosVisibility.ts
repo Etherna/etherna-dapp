@@ -76,7 +76,7 @@ export default function useUserVideosVisibility(
   }, [address])
 
   useEffect(() => {
-    if (videos) {
+    if (videos?.length && !isFetchingVisibility) {
       fetchVideosStatus()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -207,7 +207,7 @@ export default function useUserVideosVisibility(
           video =>
             ({
               reference: video.reference,
-              title: video.title,
+              title: video.preview.title,
               addedAt: +new Date(),
             } as PlaylistVideo)
         ),
@@ -260,7 +260,7 @@ export default function useUserVideosVisibility(
         } catch (error) {
           const axiosError = error as AxiosError
           // set title for the error message
-          axiosError.name = video.title ?? ""
+          axiosError.name = video.preview.title ?? ""
           throw axiosError
         }
       }
@@ -295,7 +295,7 @@ export default function useUserVideosVisibility(
         } catch (error) {
           const axiosError = error as AxiosError
           // set title for the error message
-          axiosError.name = video.title ?? ""
+          axiosError.name = video.preview.title ?? ""
           throw axiosError
         }
       }

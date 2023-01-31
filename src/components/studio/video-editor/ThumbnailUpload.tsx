@@ -21,7 +21,6 @@ import { MinusIcon } from "@heroicons/react/24/outline"
 import SwarmImage from "@/classes/SwarmImage"
 import FileDrag from "@/components/media/FileDrag"
 import FileUploadProgress from "@/components/media/FileUploadProgress"
-import ImageSourcePreview from "@/components/media/ImageSourcePreview"
 import { Button } from "@/components/ui/actions"
 import { Card, Text } from "@/components/ui/display"
 import useConfirmation from "@/hooks/useConfirmation"
@@ -44,8 +43,10 @@ export const THUMBNAIL_QUEUE_NAME = "thumbnail"
 const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
   const beeClient = useClientsStore(state => state.beeClient)
   const batchStatus = useVideoEditorStore(state => state.batchStatus)
-  const batchId = useVideoEditorStore(state => state.video.batchId)
-  const thumbnail = useVideoEditorStore(state => state.video.thumbnail)
+  const pinContent = useVideoEditorStore(state => state.pinContent)
+  const thumbnail = useVideoEditorStore(state => state.builder.previewMeta.thumbnail)
+  const batchId = useVideoEditorStore(state => state.builder.detailsMeta.batchId)
+  const node = useVideoEditorStore(state => state.builder.node)
   const [selectedFile, setSelectedFile] = useState<File>()
   const [isProcessingImages, setIsProcessingImages] = useState(false)
   const abortController = useRef<AbortController>()
@@ -56,6 +57,7 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
   const updateQueueSize = useVideoEditorStore(state => state.updateQueueSize)
   const setQueueError = useVideoEditorStore(state => state.setQueueError)
   const setThumbnail = useVideoEditorStore(state => state.setThumbnail)
+  const getThumbEntry = useVideoEditorStore(state => state.getThumbEntry)
   const { showError } = useErrorMessage()
   const { waitConfirmation } = useConfirmation()
 
@@ -77,27 +79,50 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
       })
 
       setIsProcessingImages(true)
-      const totalSize = await imageWriter.pregenerateImages()
+      const processedImage = await imageWriter.pregenerateImages()
       setIsProcessingImages(false)
 
+      const totalSize = processedImage.responsiveSourcesData.reduce(
+        (acc, { data }) => acc + data.length,
+        0
+      )
       updateQueueSize(queueId, totalSize)
 
-      const image = await imageWriter.upload({
-        signal: abortController.current.signal,
-        onUploadProgress: p => {
-          progressCallback(p)
-        },
-      })
+      try {
+        let totalCompletion = 0
+        await Promise.all(
+          processedImage.responsiveSourcesData.map(({ data }) => {
+            beeClient.bytes.upload(data, {
+              batchId: batchId as BatchId,
+              pin: pinContent,
+              signal: abortController.current?.signal,
+              onUploadProgress(completion) {
+                totalCompletion += completion
+                progressCallback(totalCompletion / totalSize)
+              },
+            })
+          })
+        )
 
-      const imageReader = new SwarmImage.Reader(image, { beeClient })
+        // remove data
+        setSelectedFile(undefined)
 
-      // remove data
-      setSelectedFile(undefined)
-
-      // will also be removed from queue
-      setThumbnail(imageReader.image)
+        // will also be removed from queue
+        setThumbnail(processedImage)
+      } catch (error) {
+        setQueueError(queueId, "There was a problem uploading the thumbnail")
+      }
     },
-    [batchId, beeClient, selectedFile, setQueueError, setThumbnail, showError, updateQueueSize]
+    [
+      batchId,
+      beeClient,
+      selectedFile,
+      pinContent,
+      setQueueError,
+      setThumbnail,
+      showError,
+      updateQueueSize,
+    ]
   )
 
   const processingOptions = useMemo(() => {
@@ -223,7 +248,9 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
         <FileUploadProgress progress={currentQueue?.completion ?? 0} color="rainbow" />
       )}
 
-      {processingStatus === "preview" && <ImageSourcePreview image={thumbnail} />}
+      {processingStatus === "preview" && (
+        <img className="w-full" src={beeClient.bytes.url(getThumbEntry()!)} />
+      )}
     </Card>
   )
 }

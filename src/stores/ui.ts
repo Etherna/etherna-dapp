@@ -6,6 +6,7 @@ import logger from "./middlewares/log"
 
 import type { Crop } from "react-image-crop"
 import type { KeymapNamespace } from "@/types/keyboard"
+import type { WritableDraft } from "immer/dist/internal"
 
 export type ExtensionType = "index" | "gateway"
 
@@ -26,131 +27,120 @@ export type UIState = {
   showSidebar: boolean
 }
 
-export type UIActions = {
-  showBeeAuthentication(): void
-  hideBeeAuthentication(): void
-  showCropImage(type: "avatar" | "cover", imageDataURL: string): void
-  hideCropImage(): void
-  showError(title: string, message?: string): void
-  hideError(): void
-  showConfirmation(
-    title: string,
-    message?: string,
-    buttonTitle?: string,
-    buttonType?: "default" | "destructive"
-  ): void
-  hideConfirmation(): void
-  toggleProfileLoading(loading: boolean): void
-  toggleSidebar(show: boolean): void
-  toggleFloatingSidebar(floating: boolean): void
-  showExtension(type: ExtensionType): void
-  hideExtension(): void
-  showShortcut(namespace: KeymapNamespace, key: string): void
-  hideShortcut(): void
-}
-
 const getInitialState = (): UIState => ({
   showSidebar: false,
   floatingSidebar: false,
 })
 
-const useUIStore = create<UIState & UIActions>()(
+type SetFunc = (setFunc: (state: WritableDraft<UIState>) => void) => void
+type GetFunc = () => UIState
+
+const actions = (set: SetFunc, get: GetFunc) => ({
+  hideBeeAuthentication() {
+    set(state => {
+      state.isAuthenticatingBee = false
+    })
+  },
+  hideConfirmation() {
+    set(state => {
+      state.confirmation = undefined
+    })
+  },
+  hideCropImage() {
+    set(state => {
+      state.cropping = undefined
+    })
+  },
+  hideError() {
+    set(state => {
+      state.error = undefined
+    })
+  },
+  hideExtension() {
+    set(state => {
+      state.extension = undefined
+    })
+  },
+  hideShortcut() {
+    set(state => {
+      state.shortcut = undefined
+    })
+  },
+  showBeeAuthentication() {
+    set(state => {
+      state.isAuthenticatingBee = true
+    })
+  },
+  showConfirmation(
+    title: string,
+    message?: string,
+    buttonTitle?: string,
+    buttonType: "default" | "destructive" = "default"
+  ) {
+    set(state => {
+      state.confirmation = {
+        title,
+        message,
+        buttonTitle,
+        buttonType,
+      }
+    })
+  },
+  showCropImage(type: "avatar" | "cover", imageDataURL: string) {
+    set(state => {
+      state.cropping = {
+        type,
+        crop: {},
+        image: imageDataURL,
+      }
+    })
+  },
+  showError(title: string, message?: string) {
+    set(state => {
+      state.error = {
+        title,
+        message,
+      }
+    })
+  },
+  showExtension(type: ExtensionType) {
+    set(state => {
+      state.extension = {
+        type,
+      }
+    })
+  },
+  showShortcut(namespace: KeymapNamespace, key: string) {
+    set(state => {
+      state.shortcut = {
+        namespace,
+        key,
+      }
+    })
+  },
+  toggleFloatingSidebar(floating: boolean) {
+    set(state => {
+      state.floatingSidebar = floating
+    })
+  },
+  toggleProfileLoading(loading: boolean) {
+    set(state => {
+      state.isLoadingProfile = loading
+    })
+  },
+  toggleSidebar(show: boolean) {
+    set(state => {
+      state.showSidebar = show
+    })
+  },
+})
+
+const useUIStore = create<UIState & ReturnType<typeof actions>>()(
   logger(
     devtools(
-      immer(set => ({
+      immer((set, get) => ({
         ...getInitialState(),
-        hideBeeAuthentication() {
-          set(state => {
-            state.isAuthenticatingBee = false
-          })
-        },
-        hideConfirmation() {
-          set(state => {
-            state.confirmation = undefined
-          })
-        },
-        hideCropImage() {
-          set(state => {
-            state.cropping = undefined
-          })
-        },
-        hideError() {
-          set(state => {
-            state.error = undefined
-          })
-        },
-        hideExtension() {
-          set(state => {
-            state.extension = undefined
-          })
-        },
-        hideShortcut() {
-          set(state => {
-            state.shortcut = undefined
-          })
-        },
-        showBeeAuthentication() {
-          set(state => {
-            state.isAuthenticatingBee = true
-          })
-        },
-        showConfirmation(title, message, buttonTitle, buttonType = "default") {
-          set(state => {
-            state.confirmation = {
-              title,
-              message,
-              buttonTitle,
-              buttonType,
-            }
-          })
-        },
-        showCropImage(type, image) {
-          set(state => {
-            state.cropping = {
-              type,
-              crop: {},
-              image,
-            }
-          })
-        },
-        showError(title, message) {
-          set(state => {
-            state.error = {
-              title,
-              message,
-            }
-          })
-        },
-        showExtension(type) {
-          set(state => {
-            state.extension = {
-              type,
-            }
-          })
-        },
-        showShortcut(namespace, key) {
-          set(state => {
-            state.shortcut = {
-              namespace,
-              key,
-            }
-          })
-        },
-        toggleFloatingSidebar(floating) {
-          set(state => {
-            state.floatingSidebar = floating
-          })
-        },
-        toggleProfileLoading(loading) {
-          set(state => {
-            state.isLoadingProfile = loading
-          })
-        },
-        toggleSidebar(show) {
-          set(state => {
-            state.showSidebar = show
-          })
-        },
+        ...actions(set, get),
       })),
       {
         name: "ui",

@@ -15,13 +15,21 @@
  *
  */
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
-import type { Profile, Video } from "@etherna/api-js"
+import type { Profile, Video, VideoPreview } from "@etherna/api-js"
 
-export type VideoWithOwner = Video & { owner: Profile | undefined }
+export type WithOwner<V extends Video | VideoPreview> = V & { owner: Profile | undefined }
 
-export type VideoWithOffersStatus = Video & { offers: VideoOffersStatus | undefined }
+export type WithOffersStatus<V extends Video | VideoPreview> = V & {
+  offers: VideoOffersStatus | undefined
+}
 
-export type VideoWithIndexes = Video & { indexesStatus: IndexesStatus }
+export type WithIndexes<V extends Video | VideoPreview> = V & { indexesStatus: IndexesStatus }
+
+export type VideoWithIndexes = WithIndexes<Video>
+
+export type VideoWithOwner = WithOwner<Video>
+
+export type VideoWithAll = WithIndexes<WithOffersStatus<WithOwner<Video>>>
 
 export type IndexesStatus = {
   [url: string]:

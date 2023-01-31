@@ -21,11 +21,11 @@ import { ExclamationCircleIcon } from "@heroicons/react/24/solid"
 
 import { Alert } from "@/components/ui/display"
 import VideoGrid from "@/components/video/VideoGrid"
-import useSwarmVideos from "@/hooks/useSwarmVideos"
+import useIndexVideos from "@/hooks/useIndexVideos"
 
 const ExploreView = () => {
   const gridRef = useRef<HTMLDivElement>(null)
-  const { videos, hasMore, isFetching, fetchCount, error, loadMore, refresh } = useSwarmVideos({
+  const { videos, hasMore, isFetching, fetchCount, error, loadMore, refresh } = useIndexVideos({
     gridRef,
   })
 

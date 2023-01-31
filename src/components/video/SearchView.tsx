@@ -3,7 +3,7 @@ import InfiniteScroller from "react-infinite-scroll-component"
 
 import VideoGrid from "./VideoGrid"
 import { Text } from "@/components/ui/display"
-import useSwarmVideos from "@/hooks/useSwarmVideos"
+import useSwarmVideos from "@/hooks/useIndexVideos"
 
 type SearchViewProps = {
   query: string

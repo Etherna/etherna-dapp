@@ -44,7 +44,6 @@ type PlayerProps = {
   title: string | undefined
   owner: Profile | undefined | null
   sources: VideoSource[]
-  originalQuality?: string | null
   thumbnailUrl?: string | null
   embed?: boolean
 }
@@ -54,7 +53,6 @@ const InnerPlayer: React.FC<PlayerProps> = ({
   title,
   owner,
   sources,
-  originalQuality,
   thumbnailUrl,
   embed,
 }) => {
@@ -70,6 +68,10 @@ const InnerPlayer: React.FC<PlayerProps> = ({
   const videoMutationObserverRef = useRef<MutationObserver>()
   const idleTimeoutRef = useRef<number>()
   const focusTimeoutRef = useRef<number>()
+
+  const mp4Sources = useMemo(() => {
+    return sources.filter(s => s.type === "mp4") as (VideoSource & { type: "mp4" })[]
+  }, [sources])
 
   const [isTouch, floating] = useMemo(() => {
     const isTouch = isTouchDevice()
@@ -87,25 +89,18 @@ const InnerPlayer: React.FC<PlayerProps> = ({
   useEffect(() => {
     dispatch({
       type: PlayerReducerTypes.SET_SOURCE_QUALITIES,
-      qualities: sources.map(s => s.quality),
+      qualities: mp4Sources.map(s => s.quality),
     })
-
-    if (originalQuality) {
-      dispatch({
-        type: PlayerReducerTypes.SET_CURRENT_QUALITY,
-        currentQuality: originalQuality,
-      })
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sources])
+  }, [mp4Sources])
 
   useEffect(() => {
-    if (!sources.length) return
+    if (!mp4Sources.length) return
 
-    const sourceInfo = sources.find(s => s.quality === currentQuality) || sources[0]
+    const sourceInfo = mp4Sources.find(s => s.quality === currentQuality) || mp4Sources[0]
     dispatch({
       type: PlayerReducerTypes.SET_SOURCE,
-      source: sourceInfo.source,
+      source: sourceInfo.url,
       size: sourceInfo.size || undefined,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps

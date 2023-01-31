@@ -22,6 +22,7 @@ import VideoRating from "./VideoRating"
 import VideoShareButton from "./VideoShareButton"
 import VideoStatusBadge from "./VideoStatusBadge"
 import useVideoOffers from "@/hooks/useVideoOffers"
+import useVideoPinning from "@/hooks/useVideoPinning"
 import useExtensionsStore from "@/stores/extensions"
 import classNames from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
@@ -41,6 +42,7 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
     routeState: videoOffers,
     disable: gatewayType === "bee",
   })
+  const { videoPinningStatus, pinResources, unpinResources } = useVideoPinning(video)
   const indexStatus = useMemo(() => {
     return video.indexesStatus[indexUrl]
   }, [indexUrl, video.indexesStatus])
@@ -63,9 +65,9 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
         )}
       >
         <div className="flex w-full items-center py-2 md:w-auto">
-          {video.createdAt && (
+          {video.preview.createdAt && (
             <span className="font-medium; text-gray-700 dark:text-gray-200">
-              {dayjs(video.createdAt).format("LLL")}
+              {dayjs(video.preview.createdAt).format("LLL")}
             </span>
           )}
         </div>
@@ -87,8 +89,11 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
               <VideoOffersButton
                 video={video}
                 videoOffersStatus={videoOffersStatus}
+                videoPinningStatus={videoPinningStatus}
                 onOfferResources={offerResources}
                 onUnofferResources={unofferResources}
+                onPinResources={pinResources}
+                onUnpinResources={unpinResources}
               />
             )}
           </div>

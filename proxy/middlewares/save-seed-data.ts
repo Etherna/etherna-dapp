@@ -42,7 +42,7 @@ export default async function saveSeedData(
   // Check if request is seedable
   if (!shouldSaveSeedData) return
   if (req.method !== "POST") return
-  if (!/^\/(soc|bzz|feeds)/.test(req.url)) return
+  if (!/^\/(soc|bzz|bytes|chunks|feeds)/.test(req.url)) return
 
   // create folders
   if (!fs.existsSync(SeedDataFolder)) fs.mkdirSync(SeedDataFolder)

@@ -7,6 +7,7 @@ import { getDefaultKeymap, mergeKeymaps, optimizeKeymapsForStorage } from "@/key
 import { loadColorScheme, prefersDarkColorScheme } from "@/utils/dark-mode"
 
 import type { Keymaps } from "@/keyboard"
+import type { WritableDraft } from "immer/dist/internal"
 
 type StorageValue<S> = {
   state: S
@@ -34,33 +35,40 @@ const getInitialState = (): SettingsState => ({
   zenMode: false,
 })
 
-const useSettingsStore = create<SettingsState & SettingsActions>()(
+type SetFunc = (setFunc: (state: WritableDraft<SettingsState>) => void) => void
+type GetFunc = () => SettingsState
+
+const actions = (set: SetFunc, get: GetFunc) => ({
+  switchLocale(locale: string) {
+    set(state => {
+      state.locale = locale
+    })
+  },
+  toggleDarkMode(enabled: boolean) {
+    loadColorScheme(enabled)
+    set(state => {
+      state.darkMode = enabled
+    })
+  },
+  toggleZenMode(enabled: boolean) {
+    set(state => {
+      state.zenMode = enabled
+    })
+  },
+  updateKeymap(keymap: Keymaps) {
+    set(state => {
+      state.keymap = keymap
+    })
+  },
+})
+
+const useSettingsStore = create<SettingsState & ReturnType<typeof actions>>()(
   logger(
     devtools(
       persist(
-        immer(set => ({
+        immer((set, get) => ({
           ...getInitialState(),
-          switchLocale(locale) {
-            set(state => {
-              state.locale = locale
-            })
-          },
-          toggleDarkMode(enabled) {
-            loadColorScheme(enabled)
-            set(state => {
-              state.darkMode = enabled
-            })
-          },
-          toggleZenMode(enabled) {
-            set(state => {
-              state.zenMode = enabled
-            })
-          },
-          updateKeymap(keymap) {
-            set(state => {
-              state.keymap = keymap
-            })
-          },
+          ...actions(set, get),
         })),
         {
           name: "etherna:settings",

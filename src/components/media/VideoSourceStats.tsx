@@ -15,6 +15,7 @@
  *
  */
 import React from "react"
+import { getBitrate } from "@etherna/api-js/utils"
 
 import MediaStats from "@/components/media/MediaStats"
 import { convertBirate, convertBytes } from "@/utils/converters"
@@ -23,25 +24,32 @@ import type { VideoSource } from "@etherna/api-js"
 
 type VideoSourceStatsProps = {
   source: VideoSource | undefined
+  duration?: number
+  entry?: string
 }
 
-const VideoSourceStats: React.FC<VideoSourceStatsProps> = ({ source }) => {
+const VideoSourceStats: React.FC<VideoSourceStatsProps> = ({ source, duration, entry }) => {
   if (!source) return null
 
   const stats = [
-    source.size ? { label: "Size", value: convertBytes(source.size).readable } : false,
-    source.bitrate
-      ? { label: "Bitrate", value: convertBirate(source.bitrate).readableBits }
+    source.type === "mp4" && source.size
+      ? { label: "Size", value: convertBytes(source.size).readable }
       : false,
-    { label: "Hash", value: source.reference },
-    {
-      label: "Preview",
-      value: (
-        <a href={source.source} target="_blank" rel="noreferrer">
-          {source.source}
-        </a>
-      ),
-    },
+    source.type === "mp4" && duration
+      ? {
+          label: "Bitrate",
+          value: convertBirate(getBitrate(source.size, duration)).readableBits,
+        }
+      : false,
+    entry ? { label: "Hash", value: entry } : false,
+    // {
+    //   label: "Preview",
+    //   value: (
+    //     <a href={source.url} target="_blank" rel="noreferrer">
+    //       {source.url}
+    //     </a>
+    //   ),
+    // },
   ].filter(Boolean) as Array<{ label: string; value: string | JSX.Element }>
 
   return (

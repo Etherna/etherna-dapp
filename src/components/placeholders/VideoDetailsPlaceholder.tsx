@@ -18,12 +18,28 @@ import React from "react"
 
 import { Skeleton } from "@/components/ui/display"
 
-const PlayerPlaceholder = () => {
+const VideoDetailsPlaceholder = () => {
   return (
-    <Skeleton className="mt-12 mb-8 w-full">
-      <div className="h-32 pb-[56.25%]" />
-    </Skeleton>
+    <>
+      <div className="flex flex-col">
+        <Skeleton roundedThin>
+          <div className="h-6 w-3/5" />
+        </Skeleton>
+        <Skeleton className="mt-6">
+          <div className="h-20 w-full" />
+        </Skeleton>
+
+        <div className="mt-6 flex items-center">
+          <Skeleton roundedFull>
+            <div className="h-10 w-10" />
+          </Skeleton>
+          <Skeleton className="ml-2" roundedThin>
+            <div className="h-4 w-24" />
+          </Skeleton>
+        </div>
+      </div>
+    </>
   )
 }
 
-export default PlayerPlaceholder
+export default VideoDetailsPlaceholder

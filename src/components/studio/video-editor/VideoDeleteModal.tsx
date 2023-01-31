@@ -95,10 +95,10 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
               <div className="relative h-full w-full bg-gray-300 dark:bg-gray-600" key={i}>
                 <Image
                   src={encodedSvg(<ThumbPlaceholder />)}
-                  sources={video.thumbnail?.sources}
+                  sources={video.preview.thumbnail?.sources}
                   fallbackSrc={encodedSvg(<ThumbPlaceholder />)}
                   placeholder="blur"
-                  blurredDataURL={video.thumbnail?.blurredBase64}
+                  blurredDataURL={video.preview.thumbnail?.blurredBase64}
                 />
               </div>
             </div>
@@ -107,7 +107,7 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
         <div className="max-h-40 flex-grow overflow-y-auto sm:pl-4">
           {videos.map((video, i) => (
             <h4 className="text-base font-semibold" key={i}>
-              {video.title || "Untitled"}
+              {video.preview.title || "Untitled"}
             </h4>
           ))}
         </div>

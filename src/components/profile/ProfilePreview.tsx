@@ -25,7 +25,7 @@ import useUserPlaylists from "@/hooks/useUserPlaylists"
 import routes from "@/routes"
 import { shortenEthAddr } from "@/utils/ethereum"
 
-import type { VideoWithIndexes, VideoWithOffersStatus, VideoWithOwner } from "@/types/video"
+import type { VideoWithAll } from "@/types/video"
 import type { EthAddress } from "@etherna/api-js/clients"
 
 type ProfilePreviewProps = {
@@ -48,7 +48,7 @@ const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress }) => {
           ...video,
           indexesStatus: {},
           offers: undefined,
-        } as VideoWithOwner & VideoWithIndexes & VideoWithOffersStatus)
+        } as VideoWithAll)
     )
   }, [videos])
 

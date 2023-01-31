@@ -26,8 +26,9 @@ import useExtensionsStore from "@/stores/extensions"
 import { wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
 
-import type { VideoWithIndexes, VideoWithOffersStatus, VideoWithOwner } from "@/types/video"
-import type { EthAddress } from "@etherna/api-js/clients"
+import type { WithIndexes, WithOffersStatus, WithOwner } from "@/types/video"
+import type { Video } from "@etherna/api-js"
+import type { EthAddress, Reference } from "@etherna/api-js/clients"
 
 type SwarmVideosOptions = {
   gridRef?: React.RefObject<HTMLElement>
@@ -36,9 +37,9 @@ type SwarmVideosOptions = {
   fetchLimit?: number
 }
 
-type VideoWithAll = VideoWithOwner & VideoWithIndexes & VideoWithOffersStatus
+type VideoWithAll = WithOwner<WithIndexes<WithOffersStatus<Video>>>
 
-export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
+export default function useIndexVideos(opts: SwarmVideosOptions = {}) {
   const indexClient = useClientsStore(state => state.indexClient)
   const beeClient = useClientsStore(state => state.beeClient)
   const gatewayClient = useClientsStore(state => state.gatewayClient)
@@ -102,7 +103,7 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
     async (videos: VideoWithAll[]) => {
       const addresses = videos
         .filter(video => !video.owner)
-        .map(video => video.ownerAddress)
+        .map(video => video.preview.ownerAddress)
         .filter((address, index, self) => address && self.indexOf(address) === index) as string[]
 
       const profiles = await Promise.all(
@@ -121,8 +122,8 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
         for (const video of updatedVideos) {
           if (!video.owner) {
             const profile =
-              profiles.find(profile => profile?.address === video.ownerAddress) ??
-              new SwarmProfile.Reader(video.ownerAddress as EthAddress, {
+              profiles.find(profile => profile?.address === video.preview.ownerAddress) ??
+              new SwarmProfile.Reader(video.preview.ownerAddress as EthAddress, {
                 beeClient,
               }).emptyProfile()
             video.owner = profile
@@ -155,12 +156,13 @@ export default function useSwarmVideos(opts: SwarmVideosOptions = {}) {
             beeClient,
             indexClient,
           })
-          const videoRaw = JSON.stringify(swarmVideoReader.indexVideoToRaw(indexVideo))
-          const video = new VideoDeserializer(beeClient.url).deserialize(videoRaw, {
+          const videoRaw = JSON.stringify(swarmVideoReader.indexVideoToRaw(indexVideo).preview)
+          const preview = new VideoDeserializer(beeClient.url).deserializePreview(videoRaw, {
             reference: indexVideo.lastValidManifest?.hash ?? "",
           })
           const videoOwner: VideoWithAll = {
-            ...video,
+            reference: (indexVideo.lastValidManifest?.hash ?? "0".repeat(64)) as Reference,
+            preview,
             owner: undefined,
             indexesStatus: {
               [indexUrl]: {

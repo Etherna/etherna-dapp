@@ -26,6 +26,7 @@ export type ToggleProps = {
   uncheckedIcon?: React.ReactNode
   checked: boolean
   disabled?: boolean
+  size?: "xs" | "sm" | "md"
   onChange(checked: boolean): void
 }
 
@@ -35,6 +36,7 @@ const Toggle: React.FC<ToggleProps> = ({
   checkedIcon,
   uncheckedIcon,
   checked,
+  size = "md",
   disabled,
   onChange,
 }) => {
@@ -62,10 +64,13 @@ const Toggle: React.FC<ToggleProps> = ({
           checked={checked}
           onChange={onChange}
           className={classNames(
-            "relative inline-flex h-4 w-11 items-center rounded-full transition-colors",
+            "relative inline-flex items-center rounded-full transition-colors",
             "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-4 focus-visible:outline-none",
             "focus:ring-offset-gray-50 dark:focus:ring-offset-gray-800",
             {
+              "h-4 w-7": size === "xs",
+              "h-3 w-8": size === "sm",
+              "h-4 w-11": size === "md",
               "bg-gray-200 dark:bg-gray-700": !checked,
               "bg-primary-500": checked,
             }
@@ -74,12 +79,17 @@ const Toggle: React.FC<ToggleProps> = ({
         >
           <span
             className={classNames(
-              "flex h-6 w-6 items-center justify-center",
+              "flex items-center justify-center",
               "rounded-full bg-white text-gray-600",
               "border border-gray-200 dark:border-gray-700",
               "translate-x-0 transform transition-transform duration-200 ease-in-out",
               {
-                "translate-x-5": checked,
+                "h-4 w-4": size === "xs",
+                "h-5 w-5": size === "sm",
+                "h-6 w-6": size === "md",
+                "translate-x-3": checked && size === "xs",
+                "translate-x-4": checked && size === "sm",
+                "translate-x-5": checked && size === "md",
               }
             )}
           >
