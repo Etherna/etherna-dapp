@@ -55,7 +55,7 @@
     "schema-dts": "1.1.0",
     "slate": "0.90.0",
     "slate-history": "0.86.0",
-    "slate-react": "0.90.0",
+    "slate-react": "0.86.0",
     "tailwind-merge": "1.9.1",
     "unified": "10.1.2",
     "uuid": "9.0.0",
