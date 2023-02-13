@@ -51,6 +51,9 @@ export default function proxyBeeOverHttps() {
         }
         const body = buffers.length ? Buffer.concat(buffers) : undefined
 
+        // fix: https://github.com/nodejs/undici/issues/1470
+        delete req.headers.connection
+
         const resp = await fetch(`${process.env.BEE_ENDPOINT}${req.url}`, {
           method: req.method,
           body,
@@ -77,8 +80,13 @@ export default function proxyBeeOverHttps() {
 
 function fixResponseHeaders(req, res) {
   const origin = (req.headers.referer || process.env.VITE_APP_PUBLIC_URL).replace(/\/$/, "")
+  const responseHeaders = res
+    ? typeof res.headers.raw === "function"
+      ? res.headers.raw()
+      : res.headers
+    : {}
   const respHeaders = {
-    ...(res ? res.headers.raw() : {}),
+    ...responseHeaders,
     "access-control-allow-origin": [origin],
     "access-control-allow-credentials": "true",
     "access-control-allow-headers": [req.headers["access-control-request-headers"] || "*"],

@@ -24,7 +24,9 @@ import type { ReactEditor } from "slate-react"
 
 export type SlateDescendant = SlateElement | SlateText
 
-export type SlateElementType = typeof BLOCK_TEXT_TYPES[number] | typeof INLINE_TEXT_TYPES[number]
+export type SlateElementType =
+  | (typeof BLOCK_TEXT_TYPES)[number]
+  | (typeof INLINE_TEXT_TYPES)[number]
 
 export type SlateElement<T = SlateElementType> = Omit<Element, "children"> & {
   type: T
@@ -49,7 +51,7 @@ export type TextLeaf = Partial<keyof SlateTextProps>
 
 export type ElementBlockType = Exclude<keyof SlateElement, "children">
 
-export type TextAlignment = typeof TEXT_ALIGN_TYPES[number]
+export type TextAlignment = (typeof TEXT_ALIGN_TYPES)[number]
 
 export const TEXT_ALIGN_TYPES = ["left", "center", "right", "justify"] as const
 
