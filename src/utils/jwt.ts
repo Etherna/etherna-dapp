@@ -7,7 +7,7 @@ export const getStorakeKey = () => {
 export const getUser = (): User | null => {
   const data = localStorage.getItem(getStorakeKey())
   if (data) {
-    return JSON.parse(data)
+    return JSON.parse(data) as User
   }
   return null
 }

@@ -21,5 +21,5 @@
  * @returns Cloned object
  */
 export const deepCloneObject = <T>(object: T): T => {
-  return JSON.parse(JSON.stringify(object))
+  return JSON.parse(JSON.stringify(object)) as T
 }
