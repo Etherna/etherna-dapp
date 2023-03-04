@@ -55,6 +55,10 @@ export default defineConfig(({ mode, command }) => {
         cert: fs.readFileSync("proxy/sslcert/cert.pem"),
       },
       port: 3000,
+      headers: {
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cross-Origin-Opener-Policy": "same-origin",
+      },
     },
     define: {
       global: "window",

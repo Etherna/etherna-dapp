@@ -19,6 +19,7 @@
   "dependencies": {
     "@datapunt/matomo-tracker-react": "0.5.1",
     "@etherna/api-js": "2.0.0",
+    "@ffmpeg/ffmpeg": "0.11.6",
     "@headlessui/react": "1.7.10",
     "@heroicons/react": "2.0.15",
     "@popperjs/core": "2.11.6",
@@ -69,6 +70,7 @@
     "@tailwindcss/forms": "0.5.3",
     "@tailwindcss/line-clamp": "0.4.2",
     "@tailwindcss/typography": "0.5.9",
+    "@total-typescript/ts-reset": "0.3.7",
     "@types/classnames": "2.3.1",
     "@types/lodash": "4.14.191",
     "@types/marked": "4.0.8",
