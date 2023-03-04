@@ -57,7 +57,10 @@ export default function proxyBeeOverHttps() {
         const resp = await fetch(`${process.env.BEE_ENDPOINT}${req.url}`, {
           method: req.method,
           body,
-          headers: req.headers,
+          headers: {
+            ...req.headers,
+            "Accept-Encoding": "identity",
+          },
         })
         const data = await resp.arrayBuffer()
 

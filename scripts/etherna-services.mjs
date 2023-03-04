@@ -102,7 +102,6 @@ const serviceHost = projectPath => {
           if (bProtocol === "https") return -1
           return 0
         })
-      console.log(urls)
       return urls.length > 0 ? urls[0] : null
     }
   }
@@ -114,13 +113,13 @@ const serviceHost = projectPath => {
  * @param {string} projectPath The service project path
  */
 const execProject = projectPath => {
-  const projectDir = path.dirname(projectPath)
-  const launchSettingsUrl = projectDir + "/Properties/launchSettings.json"
+  const basePath = path.dirname(projectPath)
+  const appSettingsPath = path.join(basePath, "Properties/launchSettings.json")
 
   const params = []
 
-  if (fs.existsSync(launchSettingsUrl)) {
-    const launchSettings = JSON.parse(fs.readFileSync(launchSettingsUrl).toString("utf8"))
+  if (fs.existsSync(appSettingsPath)) {
+    const launchSettings = JSON.parse(stripBOM(fs.readFileSync(appSettingsPath).toString("utf8")))
     const profiles = launchSettings.profiles ?? {}
     if ("https" in profiles) {
       params.push("--launch-profile", "https")
@@ -145,7 +144,6 @@ const execBee = () => {
   ]
   const params = [
     process.env.BEE_MODE === "dev" ? "dev" : "start",
-    `--cors-allowed-origins=*`,
     `--admin-password='${adminPassword}'`,
     `--restricted`,
     ...(process.env.BEE_MODE === "testnet" ? testnetParams : []),
