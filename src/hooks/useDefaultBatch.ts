@@ -141,10 +141,10 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
       gatewayType,
       network: import.meta.env.DEV ? "testnet" : "mainnet",
     })
-    const depth = 20
+    const depth = 17
     const { amount } = await batchesManager.calcDepthAmount(
       0,
-      dayjs.duration(2, "years").asSeconds()
+      dayjs.duration(1, "years").asSeconds()
     )
 
     let batch: GatewayBatch | null = null
