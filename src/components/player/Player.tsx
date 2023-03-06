@@ -85,17 +85,21 @@ const InnerPlayer: React.FC<PlayerProps> = ({
   }, [embed, currentTime, error, hiddenControls, videoElement])
 
   useEffect(() => {
+    if (!sources.length) return
+
+    const sortedSources = sources
+      .sort((a, b) => parseInt(a.quality) - parseInt(b.quality))
+      .map(s => s.quality)
+    const initialQuality = sortedSources.filter(q => parseInt(q) >= 360)[0] ?? sortedSources[0]
+
     dispatch({
       type: PlayerReducerTypes.SET_SOURCE_QUALITIES,
-      qualities: sources.map(s => s.quality),
+      qualities: sortedSources.reverse(),
     })
-
-    if (originalQuality) {
-      dispatch({
-        type: PlayerReducerTypes.SET_CURRENT_QUALITY,
-        currentQuality: originalQuality,
-      })
-    }
+    dispatch({
+      type: PlayerReducerTypes.SET_CURRENT_QUALITY,
+      currentQuality: initialQuality,
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sources])
 
