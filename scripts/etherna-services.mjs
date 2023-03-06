@@ -52,13 +52,13 @@ const jsonDeepValue = (json, keySearch, ingoreKeys = []) => {
   if (typeof json !== "object") return null
 
   for (const key in json) {
-    if (ingoreKeys.indexOf(key) >= 0) continue
+    if (ingoreKeys.includes(key)) continue
 
     if (key === keySearch) {
       return json[key]
     }
 
-    const deepValue = jsonDeepValue(json[key], keySearch)
+    const deepValue = jsonDeepValue(json[key], keySearch, ingoreKeys)
     if (deepValue) return deepValue
   }
 
@@ -89,7 +89,7 @@ const serviceHost = projectPath => {
   if (fs.existsSync(appSettingsPath)) {
     const data = fs.readFileSync(appSettingsPath).toString("utf8")
     const json = JSON.parse(stripBOM(data))
-    const applicationUrl = jsonDeepValue(json, "applicationUrl", ["iisSettings"])
+    const applicationUrl = jsonDeepValue(json, "applicationUrl", ["iisSettings", "http"])
     if (typeof applicationUrl === "string") {
       const urls = applicationUrl
         .split(";")
@@ -113,7 +113,20 @@ const serviceHost = projectPath => {
  * @param {string} projectPath The service project path
  */
 const execProject = projectPath => {
-  const execCms = `dotnet run -p ${projectPath}`
+  const basePath = path.dirname(projectPath)
+  const appSettingsPath = path.join(basePath, "Properties/launchSettings.json")
+
+  const params = []
+
+  if (fs.existsSync(appSettingsPath)) {
+    const launchSettings = JSON.parse(stripBOM(fs.readFileSync(appSettingsPath).toString("utf8")))
+    const profiles = launchSettings.profiles ?? {}
+    if ("https" in profiles) {
+      params.push("--launch-profile", "https")
+    }
+  }
+
+  const execCms = `dotnet run -p ${projectPath} ${params.join(" ")}`
   return exec(execCms, execCallback)
 }
 
@@ -131,7 +144,6 @@ const execBee = () => {
   ]
   const params = [
     process.env.BEE_MODE === "dev" ? "dev" : "start",
-    `--cors-allowed-origins=*`,
     `--admin-password='${adminPassword}'`,
     `--restricted`,
     ...(process.env.BEE_MODE === "testnet" ? testnetParams : []),
