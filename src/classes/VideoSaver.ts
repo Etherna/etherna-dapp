@@ -94,7 +94,9 @@ export default class VideoSaver {
     if (opts.signal?.aborted) return
 
     // Add/remove to sources
-    const newPublishResults: PublishStatus[] = JSON.parse(JSON.stringify(opts.previusResults ?? []))
+    const newPublishResults = JSON.parse(
+      JSON.stringify(opts.previusResults ?? [])
+    ) as PublishStatus[]
     for (const source of saveTo) {
       if (opts.signal?.aborted) return
 

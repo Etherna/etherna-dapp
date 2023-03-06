@@ -22,7 +22,8 @@ import { clamp } from "@/utils/math"
 export type ProgressBarProps = {
   className?: string
   progress?: number
-  color?: "primary" | "rainbow"
+  color?: "primary" | "muted" | "rainbow" | "success" | "error"
+  height?: number
   indeterminate?: boolean
 }
 
@@ -30,6 +31,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   className,
   color = "primary",
   progress = 0,
+  height,
   indeterminate,
 }) => {
   const progressBar = useRef<HTMLDivElement>(null)
@@ -66,11 +68,15 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         "relative block h-1 w-full overflow-hidden rounded-full bg-gray-300/50 dark:bg-gray-700/50",
         className
       )}
+      style={{ height: height ? `${height}px` : undefined }}
       data-component="progress-bar"
     >
       <div
-        className={classNames("h-full rounded-full", {
+        className={classNames("h-full rounded-full transition-[width] duration-300", {
           "bg-primary-500 text-primary-500": color === "primary",
+          "bg-green-500 text-green-500": color === "success",
+          "bg-red-500 text-red-500": color === "error",
+          "bg-gray-400 text-gray-500 dark:bg-gray-600 dark:text-gray-300": color === "muted",
           "animate-[pulse_4s_infinite]": color === "rainbow",
           "absolute inset-0 w-full animate-slide": indeterminate,
         })}

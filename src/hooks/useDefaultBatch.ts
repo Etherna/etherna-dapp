@@ -40,7 +40,6 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
   const gatewayClient = useClientsStore(state => state.gatewayClient)
   const beeClient = useClientsStore(state => state.beeClient)
   const gatewayType = useExtensionsStore(state => state.currentGatewayType)
-  const address = useUserStore(state => state.address)
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
   const defaultBatch = useUserStore(state => state.batches.find(b => b.id === defaultBatchId))
   const updateBeeClient = useClientsStore(state => state.updateBeeClient)
@@ -58,11 +57,13 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
 
   useEffect(() => {
     if (!opts.autofetch) return
-    if (isLoadingProfile) return
+    if (isLoadingProfile || isFetchingBatch) return
+    // wait for the auth token
+    if (!gatewayClient.accessToken) return
 
     fetchBatch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts.autofetch, isLoadingProfile])
+  }, [opts.autofetch, isLoadingProfile, gatewayClient])
 
   const fetchDefaultBatch = useCallback(async () => {
     if (!defaultBatchId) return null
@@ -79,7 +80,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     } catch {
       return null
     }
-  }, [beeClient.stamps, defaultBatchId, gatewayClient.users, gatewayType, waitAuth])
+  }, [beeClient, gatewayClient, defaultBatchId, gatewayType, waitAuth])
 
   const fetchBestUsableBatch = useCallback(async (): Promise<GatewayBatch | null> => {
     try {
@@ -135,16 +136,15 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     setError(undefined)
 
     const batchesManager = new BatchesHandler({
-      address: address!,
       beeClient,
       gatewayClient,
       gatewayType,
       network: import.meta.env.DEV ? "testnet" : "mainnet",
     })
-    const depth = 20
+    const depth = 17
     const { amount } = await batchesManager.calcDepthAmount(
       0,
-      dayjs.duration(2, "years").asSeconds()
+      dayjs.duration(1, "years").asSeconds()
     )
 
     let batch: GatewayBatch | null = null
@@ -173,7 +173,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
 
     batch && updateDefaultBatch(batch)
     return batch
-  }, [address, beeClient, gatewayClient, gatewayType, waitAuth, updateDefaultBatch])
+  }, [beeClient, gatewayClient, gatewayType, waitAuth, updateDefaultBatch])
 
   const fetchBatch = useCallback(async () => {
     setIsFetchingBatch(true)

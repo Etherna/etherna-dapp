@@ -26,6 +26,23 @@ export const nullablePromise = async <T>(promise: Promise<T>) =>
   })
 
 /**
+ * Handle a promise withour throwing error, returning a tuple with result and error.
+ *
+ * @param promise Promise to handle
+ * @returns The promise result and error
+ */
+export const settledPromise = async <T>(
+  promise: Promise<T>
+): Promise<readonly [result: T | null, error: Error | undefined]> => {
+  try {
+    const result = await promise
+    return [result, undefined] as const
+  } catch (error: any) {
+    return [null, error as Error] as const
+  }
+}
+
+/**
  * Get & filter fullfilled promises
  *
  * @param promises Settled promises array

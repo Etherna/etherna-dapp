@@ -28,9 +28,11 @@ type FileDragProps = {
   id: string
   portal?: string
   label?: string | React.ReactNode
+  confirmChildren?: React.ReactNode | ((file: File) => React.ReactNode)
   mimeTypes?: string
-  disabled?: boolean
   uploadLimit?: number
+  showMimes?: boolean
+  disabled?: boolean
   canSelectFile?(file: File): Promise<boolean>
   onSelectFile(file: File): void
 }
@@ -53,8 +55,10 @@ const FileDragContent: React.FC<FileDragProps> = ({
   id,
   label,
   mimeTypes = "*",
-  disabled,
+  confirmChildren,
   uploadLimit,
+  showMimes,
+  disabled,
   canSelectFile,
   onSelectFile,
 }) => {
@@ -171,12 +175,23 @@ const FileDragContent: React.FC<FileDragProps> = ({
       {file ? (
         <div className="pr-3 focus:outline-none">
           <div className="flex items-start">
-            <p className="pr-6 text-gray-700 dark:text-gray-400">
-              <span>
-                You selected <span className="text-black dark:text-white">{file.name}</span>.{" "}
-              </span>
-              Are you sure you want to upload this file?
-            </p>
+            <div className="pr-6 text-gray-700 dark:text-gray-400">
+              {confirmChildren ? (
+                typeof confirmChildren === "function" ? (
+                  confirmChildren(file)
+                ) : (
+                  confirmChildren
+                )
+              ) : (
+                <p>
+                  <span>
+                    You selected <span className="text-black dark:text-white">{file.name}</span>.{" "}
+                  </span>
+                  Are you sure you want to upload this file?
+                </p>
+              )}
+            </div>
+
             <Button
               className="ml-auto p-0"
               aspect="text"
@@ -194,7 +209,7 @@ const FileDragContent: React.FC<FileDragProps> = ({
                 onClick={() => handleFileProcessing()}
                 disabled={disabled}
               >
-                Upload
+                Continue
               </Button>
             </div>
           </div>
@@ -256,12 +271,14 @@ const FileDragContent: React.FC<FileDragProps> = ({
                   )}
                 >
                   {uploadLimit && <span>{uploadLimit}MB</span>}
-                  <span>
-                    {mimeTypes
-                      .split(",")
-                      .map(mime => "." + mime.replace(/^[a-z0-9]+\//, ""))
-                      .join(" ")}
-                  </span>
+                  {showMimes && (
+                    <span>
+                      {mimeTypes
+                        .split(",")
+                        .map(mime => "." + mime.replace(/^[a-z0-9]+\//, ""))
+                        .join(" ")}
+                    </span>
+                  )}
                 </small>
               </div>
             </div>

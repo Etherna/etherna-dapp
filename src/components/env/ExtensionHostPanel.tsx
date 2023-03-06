@@ -162,9 +162,7 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
       return showError("URL Error", "Please insert a valid URL")
     }
 
-    const selectedHostIndex = extensionsList.findIndex(
-      host => host.url === editorTempExtension!.url
-    )
+    const selectedHostIndex = extensionsList.findIndex(host => host.url === editingUrl)
 
     for (const param of hostParams) {
       const key = param.key as keyof T

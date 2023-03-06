@@ -30,6 +30,7 @@ export type BatchLoadingType =
   | "propagation"
   | "saturated"
   | "not-found"
+  | "rejected"
 
 type BatchLoadingProps = {
   className?: string

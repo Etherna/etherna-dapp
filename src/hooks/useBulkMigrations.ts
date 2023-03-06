@@ -172,7 +172,6 @@ export default function useBulkMigrations(
 
         // check batch existence and usability
         const batchesHandler = new BatchesHandler({
-          address: address!,
           beeClient,
           gatewayClient,
           gatewayType,
@@ -280,7 +279,6 @@ export default function useBulkMigrations(
       }
     },
     [
-      address,
       beeClient,
       gatewayClient,
       gatewayType,

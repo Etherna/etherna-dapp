@@ -5,7 +5,7 @@ import {
   getNodesWithPrefix,
 } from "@etherna/api-js/utils"
 import produce from "immer"
-import create from "zustand"
+import { create } from "zustand"
 import { persist, devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
@@ -14,15 +14,14 @@ import { uuidv4Short } from "@/utils/uuid"
 
 import type { BatchLoadingType } from "@/components/common/BatchLoading"
 import type { ProcessedImage, Video } from "@etherna/api-js"
-import type { BeeClient, Reference } from "@etherna/api-js/clients"
+import type { BatchId, BeeClient, PostageBatch, Reference } from "@etherna/api-js/clients"
 import type { VideoQuality } from "@etherna/api-js/schemas/video"
 import type { WritableDraft } from "immer/dist/internal"
 
 export type VideoEditorPublishSourceType = "playlist" | "index"
-
 export type VideoEditorQueueSource = "source" | "thumbnail" | "caption"
-
 export type VideoEditorQueueType = "upload" | "encoding"
+export type VideoEditorProcessStatus = "idle" | "loading" | "progress" | "done" | "error"
 
 export type PublishStatus = {
   source: VideoEditorPublishSource
@@ -40,16 +39,6 @@ export type VideoEditorPublishSource = {
   add: boolean
 }
 
-export type VideoEditorQueue = {
-  id: string
-  type: VideoEditorQueueType
-  source: VideoEditorQueueSource
-  name: string
-  completion: number | null
-  size?: number
-  error?: string
-}
-
 export type VideoEditorState = {
   /** Initial main video reference (if editing a video) */
   reference: Reference | undefined
@@ -59,14 +48,28 @@ export type VideoEditorState = {
   initialized: boolean
   /** Current editor status */
   status: "creating" | "editing" | "saved" | "error"
-  /** Current batch status */
-  batchStatus?: BatchLoadingType
   /** Video manifest builder */
   builder: VideoBuilder
   /** Whether the user made come changes */
   hasChanges: boolean
-  /** Upload queue */
-  queue: VideoEditorQueue[]
+  /** upload video */
+  inputFile?: File
+  /** Encoding status */
+  encoding: {
+    status: VideoEditorProcessStatus
+    progress?: number
+  }
+  /** Upload status */
+  upload: {
+    status: VideoEditorProcessStatus
+    progress?: number
+  }
+  /** Batch status */
+  batch: {
+    status?: BatchLoadingType
+    batchId?: BatchId
+    batch?: PostageBatch | null
+  }
   /** Pin content on Swarm */
   pinContent: boolean | undefined
   /** Whether the video resources are already offered by user */
@@ -91,10 +94,17 @@ const getInitialState = (): VideoEditorState => ({
   status: "creating",
   builder: new VideoBuilder.Immerable(),
   hasChanges: false,
-  queue: [],
+  encoding: {
+    status: "idle",
+  },
+  upload: {
+    status: "idle",
+  },
+  batch: {},
   pinContent: false,
   isOffered: undefined,
   offerResources: false,
+  inputFile: undefined,
   indexData: [],
   saveTo: [],
 })
@@ -105,21 +115,18 @@ type SetFunc = (
 type GetFunc = () => VideoEditorState
 
 const actions = (set: SetFunc, get: GetFunc) => ({
-  addToQueue(type: VideoEditorQueueType, source: VideoEditorQueueSource, identifier: string) {
-    set(state => {
-      state.queue.push({
-        id: uuidv4Short(),
-        type,
-        source,
-        name: identifier,
-        completion: null,
-      })
-      state.hasChanges = true
-    })
-  },
   async addVideoSource(mp4: Uint8Array) {
     const builder = await produce(get().builder, async draft => {
       await draft.addMp4Source(mp4)
+    })
+    set(state => {
+      state.builder = builder
+      state.hasChanges = true
+    })
+  },
+  async addVideoAdaptiveSource(type: "dash" | "hls", data: Uint8Array, fileName: string) {
+    const builder = await produce(get().builder, async draft => {
+      await draft.addAdaptiveSource(type, data, fileName)
     })
     set(state => {
       state.builder = builder
@@ -150,12 +157,6 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       state.initialized = true
     })
   },
-  removeFromQueue(id: string) {
-    set(state => {
-      state.queue = state.queue.filter(q => q.id !== id)
-      state.hasChanges = true
-    })
-  },
   removeVideoSource(quality: VideoQuality) {
     const builder = produce(get().builder, draft => {
       draft.removeMp4Source(quality)
@@ -180,10 +181,15 @@ const actions = (set: SetFunc, get: GetFunc) => ({
     })
     return builder.reference
   },
-  setBatchId(batchId: string) {
+  setBatch(batchId: BatchId, loadedBatch?: PostageBatch) {
     set(state => {
       state.builder.detailsMeta.batchId = batchId
+      state.batch.batchId = batchId
       state.hasChanges = true
+
+      if (loadedBatch) {
+        state.batch.batch = loadedBatch
+      }
     })
   },
   setInitialState(ownerAddress: string, video?: Video | null) {
@@ -199,12 +205,10 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       state.status = video ? "editing" : "creating"
     })
   },
-  setQueueError(id: string, error: string) {
+  setInputFile(file: File) {
     set(state => {
-      const queueItem = state.queue.find(q => q.id === id)
-      if (queueItem) {
-        queueItem.error = error
-      }
+      state.inputFile = file
+      state.hasChanges = true
     })
   },
   setIsOffered(offered: boolean) {
@@ -237,7 +241,6 @@ const actions = (set: SetFunc, get: GetFunc) => ({
     })
     set(state => {
       state.builder = builder
-      state.queue = state.queue.filter(q => q.source === "thumbnail")
       state.hasChanges = true
     })
   },
@@ -259,9 +262,23 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       }
     })
   },
-  updateBatchStatus(status: VideoEditorState["batchStatus"]) {
+  updateEncodeStatus(status: VideoEditorProcessStatus, progress?: number) {
     set(state => {
-      state.batchStatus = status
+      state.encoding.status = status
+      state.encoding.progress = progress
+    })
+  },
+  updateBatchStatus(status: BatchLoadingType | undefined) {
+    set(state => {
+      state.batch.status = status
+    })
+  },
+  updateUploadStatus(status: VideoEditorProcessStatus, progress?: number) {
+    set(state => {
+      state.upload.status = status
+      if (progress) {
+        state.upload.progress = progress
+      }
     })
   },
   updateEditorStatus(status: "saved" | "error") {
@@ -279,50 +296,6 @@ const actions = (set: SetFunc, get: GetFunc) => ({
   updateDescription(description: string) {
     set(state => {
       state.builder.detailsMeta.description = description
-      state.hasChanges = true
-    })
-  },
-  updateQueueName(id: string, newName: string) {
-    set(state => {
-      const queueItem = state.queue.find(q => q.id === id)
-      if (queueItem) {
-        queueItem.name = newName
-      }
-    })
-  },
-  updateQueueType(id: string, type: VideoEditorQueueType) {
-    set(state => {
-      const queueItem = state.queue.find(q => q.id === id)
-      if (queueItem) {
-        queueItem.type = type
-      }
-    })
-  },
-  updateQueueCompletion(id: string, completion: number) {
-    set(state => {
-      const index = state.queue.findIndex(q => q.id === id)
-      if (index >= 0) {
-        state.queue[index].completion = completion
-      }
-      state.hasChanges = true
-    })
-  },
-  updateQueueSize(id: string, size: number) {
-    set(state => {
-      const index = state.queue.findIndex(q => q.id === id)
-      if (index >= 0) {
-        state.queue[index].size = size
-      }
-      state.hasChanges = true
-    })
-  },
-  updateQueueError(id: string, error: string | undefined) {
-    set(state => {
-      const index = state.queue.findIndex(q => q.id === id)
-      if (index >= 0) {
-        state.queue[index].error = error
-        state.queue[index].completion = 0
-      }
       state.hasChanges = true
     })
   },
@@ -345,24 +318,29 @@ const useVideoEditorStore = create<VideoEditorState & ReturnType<typeof actions>
           name: "etherna:video-editor",
           getStorage: () => sessionStorage,
           serialize(state) {
-            if (
-              state.state.batchStatus === "creating" &&
-              !state.state.builder.detailsMeta.batchId
-            ) {
-              state.state.batchStatus = undefined
-            }
+            const storeState: Omit<VideoEditorState, "builder"> & { builder: Record<string, any> } =
+              {
+                ...state.state,
+                batch: {
+                  batch: state.state.batch.batch,
+                  batchId: state.state.batch.batchId,
+                  status:
+                    state.state.batch.status === "creating" &&
+                    !state.state.builder.detailsMeta.batchId
+                      ? undefined
+                      : state.state.batch.status,
+                },
+                builder: state.state.builder.serialize(),
+                inputFile: undefined,
+              }
 
             return JSON.stringify({
               ...state,
-              state: {
-                ...state.state,
-                builder: state.state.builder.serialize(),
-                queue: [],
-              },
+              state: storeState,
             })
           },
           deserialize(str) {
-            const state = JSON.parse(str)
+            const state = JSON.parse(str) as { state: VideoEditorState }
             const serializedBuilder = state.state.builder
             state.state.builder = new VideoBuilder.Immerable()
             state.state.builder.deserialize(serializedBuilder)

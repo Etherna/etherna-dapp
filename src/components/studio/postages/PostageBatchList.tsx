@@ -75,7 +75,6 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({
   const { showError } = useErrorMessage()
   const batchesManager = useRef(
     new BatchesHandler({
-      address: address!,
       beeClient,
       gatewayClient,
       gatewayType,

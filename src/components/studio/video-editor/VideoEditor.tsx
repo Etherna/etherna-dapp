@@ -1,16 +1,17 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from "react"
+import React, { forwardRef, useImperativeHandle, useMemo } from "react"
 
 import VideoLoading from "./VideoLoading"
 import AvailabilityCard from "./cards/AvailabilityCard"
-import PostageBatchCard from "./cards/PostageBatchCard"
 import SaveToCard from "./cards/SaveToCard"
 import SavingResultCard from "./cards/SavingResultCard"
 import VideoDetailsCard from "./cards/VideoDetailsCard"
-import VideoSourcesCard from "./cards/VideoSourcesCard"
+import VideoInputCard from "./cards/VideoInputCard"
+import VideoProgressCard from "./cards/VideoProgressCard"
 import { Container } from "@/components/ui/layout"
 import useCharaterLimits from "@/hooks/useCharaterLimits"
 import useEffectOnce from "@/hooks/useEffectOnce"
 import useVideoEditor from "@/hooks/useVideoEditor"
+import useVideoProcessing from "@/hooks/useVideoProcessing"
 import useUserStore from "@/stores/user"
 import useVideoEditorStore from "@/stores/video-editor"
 import classNames from "@/utils/classnames"
@@ -32,20 +33,22 @@ type VideoEditorProps = {
 
 const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref) => {
   const address = useUserStore(state => state.address!)
-  const batchStatus = useVideoEditorStore(state => state.batchStatus)
-  const videoTitle = useVideoEditorStore(state => state.builder.previewMeta.title)
+  const batchStatus = useVideoEditorStore(state => state.batch.status)
   const batchId = useVideoEditorStore(state => state.builder.detailsMeta.batchId)
+  const videoTitle = useVideoEditorStore(state => state.builder.previewMeta.title)
   const videoDescription = useVideoEditorStore(state => state.builder.detailsMeta.description)
   const videoSources = useVideoEditorStore(state => state.builder.detailsMeta.sources)
   const editorStatus = useVideoEditorStore(state => state.status)
   const offerResources = useVideoEditorStore(state => state.offerResources)
   const pinContent = useVideoEditorStore(state => state.pinContent)
-  const queue = useVideoEditorStore(state => state.queue)
   const saveTo = useVideoEditorStore(state => state.saveTo)
+  const inputFile = useVideoEditorStore(state => state.inputFile)
   const setInitialState = useVideoEditorStore(state => state.setInitialState)
   const resetState = useVideoEditorStore(state => state.reset)
   const { characterLimits } = useCharaterLimits({ autoFetch: true })
   const { isSaving, saveVideoTo } = useVideoEditor()
+
+  useVideoProcessing()
 
   const canSubmitVideo = useMemo(() => {
     return (
@@ -65,10 +68,6 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
     videoSources.length,
   ])
 
-  const usePortal = useMemo(() => {
-    return editorStatus === "creating" && videoSources.length === 0 && queue[0]?.name === "0p"
-  }, [queue, videoSources, editorStatus])
-
   useImperativeHandle(ref, () => ({
     isEmpty: videoSources.length === 0,
     canSubmitVideo,
@@ -78,19 +77,20 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
 
   useEffectOnce(() => {
     setInitialState(address, video)
-  })
+  }, [])
 
   if (video && editorStatus === "creating") return null
 
+  const isInitialInput =
+    editorStatus === "creating" && (!inputFile || video?.details?.sources.length === 0)
+
   return (
     <>
-      {usePortal && <div id={PORTAL_ID} />}
-
       <VideoLoading video={video}>
+        {!isInitialInput && <VideoProgressCard className="mb-12" />}
+
         <Container
-          className={classNames("gap-x-4 gap-y-8 md:items-start", {
-            hidden: usePortal,
-          })}
+          className={classNames("gap-x-4 gap-y-8 md:items-start")}
           noPaddingX
           noPaddingY
           row
@@ -103,9 +103,8 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
             noPaddingY
           >
             <div className="grid grid-flow-row-dense grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-3">
-              {(editorStatus === "creating" || editorStatus === "editing") && (
+              {(editorStatus === "creating" || editorStatus === "editing") && !isInitialInput && (
                 <>
-                  <PostageBatchCard disabled={isSaving} />
                   <SaveToCard disabled={isSaving} />
                   <AvailabilityCard disabled={isSaving} />
                 </>
@@ -113,14 +112,15 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
             </div>
           </Container>
           <Container className="flex-1 space-y-6 md:order-1" noPaddingX noPaddingY>
-            {editorStatus === "creating" || editorStatus === "editing" ? (
+            {isInitialInput ? (
+              <VideoInputCard />
+            ) : editorStatus === "creating" || editorStatus === "editing" ? (
               <>
                 <VideoDetailsCard
                   maxTitleLength={characterLimits?.title}
                   maxDescriptionLength={characterLimits?.description}
                   disabled={isSaving}
                 />
-                <VideoSourcesCard disabled={isSaving} />
               </>
             ) : (
               <SavingResultCard />
