@@ -262,10 +262,13 @@ const InnerPlayer: React.FC<PlayerProps> = ({
         errorMessage: undefined,
       })
     }
+    if (isBuffering) {
+      setIsBuffering(false)
+    }
     dispatch({
       type: PlayerReducerTypes.REFRESH_BUFFERING,
     })
-  }, [dispatch, error])
+  }, [dispatch, error, isBuffering])
 
   const onTimeUpdate = useCallback(() => {
     dispatch({
@@ -286,6 +289,8 @@ const InnerPlayer: React.FC<PlayerProps> = ({
 
   const onPlaybackError = useCallback(
     async (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+      setIsBuffering(false)
+
       const currentSrc = e.currentTarget.src
       if (!currentSrc) return
 
