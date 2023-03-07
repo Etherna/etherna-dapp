@@ -1,11 +1,5 @@
 /* eslint-disable no-console */
-import type { State, StateCreator, StoreMutatorIdentifier, Mutate, StoreApi } from "zustand"
-
-interface ISyncAction<TPayload = any> {
-  type: string
-  payload?: TPayload
-  error?: Error
-}
+import type { State, StateCreator, StoreMutatorIdentifier } from "zustand"
 
 type Logger = <
   T extends State,
@@ -21,31 +15,23 @@ declare module "zustand" {
   }
 }
 
-type LoggerImpl = <T extends unknown>(
-  f: PopArgument<StateCreator<T, [], []>>
-) => PopArgument<StateCreator<T, [], []>>
+type LoggerImpl = <T extends unknown>(f: StateCreator<T, [], []>) => StateCreator<T, [], []>
 
-const logger: LoggerImpl =
-  f =>
-  (...args) => {
-    type T = ReturnType<typeof f>
+const logger: LoggerImpl = f => (set, get, store) => {
+  type T = ReturnType<typeof f>
 
-    // const store = args[0] as Mutate<StoreApi<T>, [["logger", ISyncAction]]>
-
+  const loggedSet: typeof set = (...a) => {
+    set(...a)
     if (import.meta.env.DEV) {
-      //   store.subscribe((newState, oldState) => {
-      //     console.debug("state changed", newState)
-      //   })
+      console.group(`%c${"anonymous"}`, "color: #0f0; font-weight: bold")
+      console.debug(get())
+      console.groupEnd()
     }
-
-    return f(...args)
   }
+  store.setState = loggedSet
 
-type PopArgument<T extends (...a: never[]) => unknown> = T extends (
-  ...a: [...infer A, infer _]
-) => infer R
-  ? (...a: A) => R
-  : never
+  return f(set, get, store)
+}
 
 type Write<T extends object, U extends object> = Omit<T, keyof U> & U
 type Cast<T, U> = T extends U ? T : U

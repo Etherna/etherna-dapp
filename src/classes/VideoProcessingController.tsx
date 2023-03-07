@@ -5,6 +5,7 @@ import { fileToUint8Array, getBatchSpace } from "@etherna/api-js/utils"
 import { createFFmpeg } from "@ffmpeg/ffmpeg"
 
 import { settledPromise } from "@/utils/promise"
+import { timeComponents } from "@/utils/time"
 
 import type BeeClient from "./BeeClient"
 import type GatewayClient from "./GatewayClient"
@@ -49,6 +50,7 @@ export default class VideoProcessingController {
   onEncodingProgress?: (progress: number) => void
   onEncodingComplete?: (files: { name: string; size: number }[]) => void
   onEncodingError?: (error: Error) => void
+  onEncodedThumbnail?: (thumbnail: Uint8Array) => void
   // upload events
   onUploadStart?: () => void
   onUploadProgress?: (progress: number) => void
@@ -88,15 +90,23 @@ export default class VideoProcessingController {
     // find resolution
     let height = 0
     let resolutionRatio = 0
+    let duration = 0
 
     this.ffmpeg.setLogger(({ message }) => {
+      if (!message) return
+      // check resolution
       const parsedSize = message.match(/\d{3,}x\d{3,}/)?.[0]
       if (parsedSize) {
         const [w, h] = parsedSize.split("x").map(Number)
         height = h
         resolutionRatio = w / h
       }
-      parsedSize && console.info("size", parsedSize)
+      // check duration
+      const parsedDuration = message.match(/Duration: (\d{2}:\d{2}:\d{2})/)?.[1]
+      if (parsedDuration) {
+        const [h, m, s] = parsedDuration.split(":").map(Number)
+        duration = h * 3600 + m * 60 + s
+      }
     })
 
     const [, probleError] = await settledPromise(
@@ -111,6 +121,11 @@ export default class VideoProcessingController {
       width: q * Math.round(resolutionRatio ?? 1.6),
       height: q,
     }))
+
+    const randomFrameTime = timeComponents(Math.floor(Math.random() * duration))
+    const thumbFrame = `${randomFrameTime.hours ?? "00"}:${randomFrameTime.minutes}:${
+      randomFrameTime.seconds
+    }`
 
     if (resolutionRatio === 0 || height === 0) {
       throw new Error("Failed to parse video resolution")
@@ -160,7 +175,16 @@ export default class VideoProcessingController {
         `hls`,
         `-master_pl_name`,
         `manifest.m3u8`,
-        `hls/%v.m3u8`
+        `hls/%v.m3u8`,
+        `-ss`,
+        thumbFrame,
+        `-vframes`,
+        `1`,
+        `-vf`,
+        `scale=${Math.round(720 * resolutionRatio)}:720`,
+        `-q:v`,
+        `5`,
+        `thumb.jpg`
       )
     )
 
@@ -170,8 +194,14 @@ export default class VideoProcessingController {
 
     // check if all files have been created (sometimes it exit without throwing an error)
     const dir = this.ffmpeg.FS("readdir", ".")
+
     if (!dir.includes("hls")) {
       return this.onEncodingError?.(new Error("Encoding failed unexpectedly"))
+    }
+
+    if (dir.includes("thumb.jpg")) {
+      const thumb = this.ffmpeg.FS("readFile", "thumb.jpg")
+      this.onEncodedThumbnail?.(thumb)
     }
 
     const hlsDir = this.ffmpeg.FS("readdir", "hls")

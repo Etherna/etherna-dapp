@@ -53,7 +53,8 @@ const Image: React.FC<ImageProps> = ({
   alt,
   style,
 }) => {
-  const [src, setSrc] = useState<string | undefined>(staticSrc)
+  const [src, setSrc] = useState<string | undefined>()
+  const [srcUrl, setSrcUrl] = useState<string | undefined>()
   const [imgLoaded, setImgLoaded] = useState(!blurredDataURL || placeholder === "empty")
   const [rootEl, setRootEl] = useState<HTMLDivElement>()
   const resizeObserver = useRef<ResizeObserver>()
@@ -126,7 +127,7 @@ const Image: React.FC<ImageProps> = ({
     if (!imageData || isAnimatedImage(imageData)) {
       onError()
     } else {
-      setSrc(filteredSrc)
+      setSrcUrl(filteredSrc)
       setSrc(URL.createObjectURL(new Blob([imageData])))
       setImgLoaded(true)
     }
@@ -169,7 +170,8 @@ const Image: React.FC<ImageProps> = ({
               objectFit,
             }}
             loading="lazy"
-            data-src={src}
+            crossOrigin="anonymous"
+            data-src={srcUrl}
           />
         </picture>
       )}

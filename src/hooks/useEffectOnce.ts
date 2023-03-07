@@ -18,9 +18,9 @@ import { useEffect, useRef } from "react"
 import type { EffectCallback } from "react"
 
 export default function useEffectOnce(effect: EffectCallback, deps: any[] = []) {
-  const ref = useRef<any[]>([])
+  const ref = useRef<any[]>()
   useEffect(() => {
-    if (deps.some((d, i) => d !== ref.current[i])) {
+    if (deps.some((d, i) => d !== ref.current?.[i]) || (deps.length === 0 && !ref.current)) {
       ref.current = deps
       return effect()
     }

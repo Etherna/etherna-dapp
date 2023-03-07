@@ -326,7 +326,11 @@ const useVideoEditorStore = create<VideoEditorState & ReturnType<typeof actions>
               if (value) {
                 const serializedBuilder = value.state.builder
                 value.state.builder = new VideoBuilder.Immerable()
-                value.state.builder.deserialize(serializedBuilder)
+                try {
+                  value.state.builder.deserialize(serializedBuilder)
+                } catch (error) {
+                  console.error(error)
+                }
               }
               return value
             },
@@ -335,6 +339,18 @@ const useVideoEditorStore = create<VideoEditorState & ReturnType<typeof actions>
                 builder: Record<string, any>
               } = {
                 ...value.state,
+                encoding:
+                  value.state.upload.status !== "done"
+                    ? {
+                        status: "idle",
+                      }
+                    : value.state.encoding,
+                upload:
+                  value.state.upload.status !== "done"
+                    ? {
+                        status: "idle",
+                      }
+                    : value.state.upload,
                 batch: {
                   batch: value.state.batch.batch,
                   batchId: value.state.batch.batchId,
