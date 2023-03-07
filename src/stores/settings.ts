@@ -1,4 +1,4 @@
-import create from "zustand"
+import { create } from "zustand"
 import { devtools, persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
@@ -72,7 +72,37 @@ const useSettingsStore = create<SettingsState & ReturnType<typeof actions>>()(
         })),
         {
           name: "etherna:settings",
-          getStorage: () => localStorage,
+          storage: {
+            getItem(name) {
+              const serializedValue = localStorage.getItem(name)
+              const state = serializedValue
+                ? (JSON.parse(serializedValue) as StorageValue<SettingsState & SettingsActions>)
+                : null
+              if (state) {
+                const mergedKeymap = mergeKeymaps(getDefaultKeymap(), state.state.keymap)
+                state.state.keymap = mergedKeymap
+              }
+
+              loadColorScheme(state?.state?.darkMode ?? prefersDarkColorScheme())
+
+              return state
+            },
+            setItem(name, value) {
+              localStorage.setItem(
+                name,
+                JSON.stringify({
+                  ...value,
+                  state: {
+                    ...value.state,
+                    keymap: optimizeKeymapsForStorage(value.state.keymap),
+                  },
+                })
+              )
+            },
+            removeItem(name) {
+              localStorage.removeItem(name)
+            },
+          },
           merge(persistedState, currentState) {
             if (persistedState === undefined) {
               // first time
@@ -83,24 +113,6 @@ const useSettingsStore = create<SettingsState & ReturnType<typeof actions>>()(
               ...currentState,
               ...(persistedState as StorageValue<SettingsState>),
             }
-          },
-          serialize(state) {
-            return JSON.stringify({
-              ...state,
-              state: {
-                ...state.state,
-                keymap: optimizeKeymapsForStorage(state.state.keymap),
-              },
-            })
-          },
-          deserialize(str) {
-            const state = JSON.parse(str) as StorageValue<SettingsState & SettingsActions>
-            const mergedKeymap = mergeKeymaps(getDefaultKeymap(), state.state.keymap)
-            state.state.keymap = mergedKeymap
-
-            loadColorScheme(state?.state?.darkMode ?? prefersDarkColorScheme())
-
-            return state
           },
         }
       ),

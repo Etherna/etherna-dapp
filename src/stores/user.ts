@@ -1,5 +1,5 @@
-import create from "zustand"
-import { persist, devtools } from "zustand/middleware"
+import { create } from "zustand"
+import { persist, devtools, createJSONStorage } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
@@ -91,7 +91,7 @@ const useUserStore = create<UserState & ReturnType<typeof actions>>()(
         })),
         {
           name: "etherna:user",
-          getStorage: () => sessionStorage,
+          storage: createJSONStorage(() => sessionStorage),
         }
       ),
       {

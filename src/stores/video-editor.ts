@@ -10,13 +10,13 @@ import { persist, devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
-import { uuidv4Short } from "@/utils/uuid"
 
 import type { BatchLoadingType } from "@/components/common/BatchLoading"
 import type { ProcessedImage, Video } from "@etherna/api-js"
 import type { BatchId, BeeClient, PostageBatch, Reference } from "@etherna/api-js/clients"
 import type { VideoQuality } from "@etherna/api-js/schemas/video"
 import type { WritableDraft } from "immer/dist/internal"
+import type { StorageValue } from "zustand/middleware"
 
 export type VideoEditorPublishSourceType = "playlist" | "index"
 export type VideoEditorQueueSource = "source" | "thumbnail" | "caption"
@@ -316,35 +316,47 @@ const useVideoEditorStore = create<VideoEditorState & ReturnType<typeof actions>
         })),
         {
           name: "etherna:video-editor",
-          getStorage: () => sessionStorage,
-          serialize(state) {
-            const storeState: Omit<VideoEditorState, "builder"> & { builder: Record<string, any> } =
-              {
-                ...state.state,
+          storage: {
+            getItem(name) {
+              const serializedValue = sessionStorage.getItem(name)
+              const value = serializedValue
+                ? (JSON.parse(serializedValue) as StorageValue<VideoEditorState>)
+                : null
+
+              if (value) {
+                const serializedBuilder = value.state.builder
+                value.state.builder = new VideoBuilder.Immerable()
+                value.state.builder.deserialize(serializedBuilder)
+              }
+              return value
+            },
+            setItem(name, value) {
+              const storeState: Omit<VideoEditorState, "builder"> & {
+                builder: Record<string, any>
+              } = {
+                ...value.state,
                 batch: {
-                  batch: state.state.batch.batch,
-                  batchId: state.state.batch.batchId,
+                  batch: value.state.batch.batch,
+                  batchId: value.state.batch.batchId,
                   status:
-                    state.state.batch.status === "creating" &&
-                    !state.state.builder.detailsMeta.batchId
+                    value.state.batch.status === "creating" &&
+                    !value.state.builder.detailsMeta.batchId
                       ? undefined
-                      : state.state.batch.status,
+                      : value.state.batch.status,
                 },
-                builder: state.state.builder.serialize(),
+                builder: value.state.builder.serialize(),
                 inputFile: undefined,
               }
 
-            return JSON.stringify({
-              ...state,
-              state: storeState,
-            })
-          },
-          deserialize(str) {
-            const state = JSON.parse(str) as { state: VideoEditorState }
-            const serializedBuilder = state.state.builder
-            state.state.builder = new VideoBuilder.Immerable()
-            state.state.builder.deserialize(serializedBuilder)
-            return state
+              const serializedValue = JSON.stringify({
+                version: value.version,
+                state: storeState,
+              })
+              return sessionStorage.setItem(name, serializedValue)
+            },
+            removeItem(name) {
+              return sessionStorage.removeItem(name)
+            },
           },
         }
       ),

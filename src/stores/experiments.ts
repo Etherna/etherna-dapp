@@ -1,5 +1,5 @@
-import create from "zustand"
-import { devtools, persist } from "zustand/middleware"
+import { create } from "zustand"
+import { createJSONStorage, devtools, persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
@@ -25,7 +25,7 @@ const useExperimentsStore = create<ExperimentsState & ReturnType<typeof actions>
         })),
         {
           name: "etherna:experiments",
-          getStorage: () => localStorage,
+          storage: createJSONStorage(() => localStorage),
         }
       ),
       {

@@ -1,5 +1,5 @@
-import create from "zustand"
-import { persist, devtools } from "zustand/middleware"
+import { create } from "zustand"
+import { persist, devtools, createJSONStorage } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
@@ -95,7 +95,7 @@ const useExtensionsStore = create<ExtensionsState & ReturnType<typeof actions>>(
         })),
         {
           name: "etherna:extensions",
-          getStorage: () => localStorage,
+          storage: createJSONStorage(() => localStorage),
         }
       ),
       {
