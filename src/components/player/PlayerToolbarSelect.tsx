@@ -34,7 +34,7 @@ const PlayerToolbarSelect: React.FC<PlayerToolbarSelectProps> = ({
   onSelect,
 }) => {
   const [isTouch] = useState(isTouchDevice())
-  const toggleEl = useRef<HTMLDivElement>(null)
+  const toggleEl = useRef<HTMLButtonElement>(null)
 
   const toggleOpen = useCallback(() => {
     const toggle = toggleEl.current

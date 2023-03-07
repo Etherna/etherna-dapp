@@ -66,7 +66,7 @@ const MenuButton: React.FC<ButtonProps> = props => {
     <HLMenu.Button
       as="div"
       className="relative inline-flex"
-      ref={(el: HTMLDivElement) => {
+      ref={el => {
         el && setButtonEl(el)
       }}
       onClick={(e: React.MouseEvent) => e.stopPropagation()}
