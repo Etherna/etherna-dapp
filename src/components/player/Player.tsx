@@ -15,7 +15,6 @@
  *
  */
 import React, { useRef, useState, useEffect, useCallback, useMemo } from "react"
-import Axios from "axios"
 import { filterXSS } from "xss"
 
 import PlayerBytesCounter from "./PlayerBytesCounter"
@@ -27,6 +26,7 @@ import PlayerTouchOverlay from "./PlayerTouchOverlay"
 import PlayerVideoInfo from "./PlayerVideoInfo"
 import PlayerWatchOn from "./PlayerWatchOn"
 import PlayerPlaceholder from "@/components/placeholders/PlayerPlaceholder"
+import { Spinner } from "@/components/ui/display"
 import { PlayerContextProvider, PlayerReducerTypes } from "@/context/player-context"
 import { usePlayerState } from "@/context/player-context/hooks"
 import useVideoTracking from "@/hooks/useVideoTracking"
@@ -35,7 +35,6 @@ import classNames from "@/utils/classnames"
 import http from "@/utils/request"
 
 import type { Profile, VideoSource } from "@etherna/api-js"
-import type { Canceler } from "axios"
 
 const DEFAULT_SKIP = 5
 
@@ -61,6 +60,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
 
   useVideoTracking(videoEl)
 
+  const [isBuffering, setIsBuffering] = useState(false)
   const [hiddenControls, setHiddenControls] = useState(false)
   const [idle, setIdle] = useState(false)
   const [focus, setFocus] = useState(false)
@@ -75,21 +75,34 @@ const InnerPlayer: React.FC<PlayerProps> = ({
 
   const [isTouch, floating] = useMemo(() => {
     const isTouch = isTouchDevice()
-    return [isTouch, !isTouch || embed]
+    const floating = !isTouch || embed
+    return [isTouch, floating]
   }, [embed])
 
   const showControls = useMemo(() => {
-    const defaultShow = !hiddenControls && videoElement && !error
-    if (embed) {
-      return defaultShow && currentTime > 0
-    }
-    return defaultShow
-  }, [embed, currentTime, error, hiddenControls, videoElement])
+    return !hiddenControls
+    // const defaultShow = !hiddenControls && videoElement && !error
+    // if (embed) {
+    //   return defaultShow && currentTime > 0
+    // }
+    // return defaultShow
+  }, [hiddenControls])
 
   useEffect(() => {
+    if (!sources.length) return
+
+    const sortedSources = mp4Sources
+      .sort((a, b) => parseInt(a.quality) - parseInt(b.quality))
+      .map(s => s.quality)
+    const initialQuality = sortedSources.filter(q => parseInt(q) >= 360)[0] ?? sortedSources[0]
+
     dispatch({
       type: PlayerReducerTypes.SET_SOURCE_QUALITIES,
-      qualities: mp4Sources.map(s => s.quality),
+      qualities: sortedSources.reverse(),
+    })
+    dispatch({
+      type: PlayerReducerTypes.SET_CURRENT_QUALITY,
+      currentQuality: initialQuality,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mp4Sources])
@@ -100,7 +113,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
     const sourceInfo = mp4Sources.find(s => s.quality === currentQuality) || mp4Sources[0]
     dispatch({
       type: PlayerReducerTypes.SET_SOURCE,
-      source: sourceInfo.url,
+      source: sourceInfo.url.replace(/\/?$/, "/"),
       size: sourceInfo.size || undefined,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -280,18 +293,11 @@ const InnerPlayer: React.FC<PlayerProps> = ({
 
       // get error code
       try {
-        let cancelToken: Canceler | undefined
         await http.get(currentSrc, {
           withCredentials: true,
-          onDownloadProgress: p => {
-            // cancel large responses
-            if ((p.total || 0) > 1000) {
-              cancelToken!("Network Error")
-            }
+          headers: {
+            Range: "bytes=0-1",
           },
-          cancelToken: new Axios.CancelToken(t => {
-            cancelToken = t
-          }),
         })
       } catch (error: any) {
         console.warn(error)
@@ -344,13 +350,15 @@ const InnerPlayer: React.FC<PlayerProps> = ({
           )}
           src={filterXSS(source)}
           autoPlay={false}
-          preload="metadata"
+          preload="none"
           poster={!error && thumbnailUrl ? thumbnailUrl : undefined}
           controls={false}
           onClick={isTouch ? undefined : togglePlay}
           onLoadedMetadata={onLoadMetadata}
           onProgress={onProgress}
+          onPlay={() => setIsBuffering(false)}
           onPause={stopIdleTimeout}
+          onWaiting={() => setIsBuffering(true)}
           onTimeUpdate={onTimeUpdate}
           onError={onPlaybackError}
           onMouseOver={floating ? undefined : onMouseEnter}
@@ -363,8 +371,8 @@ const InnerPlayer: React.FC<PlayerProps> = ({
           <div
             className={classNames(
               floating && {
-                "absolute inset-x-0 bottom-0 z-1 transition duration-100": true,
-                "opacity-0": currentTime === 0 || idle,
+                "absolute inset-x-0 bottom-0 z-[2] transition duration-100": true,
+                "opacity-0": idle,
                 "paused:opacity-100": currentTime > 0,
                 "group-hover:opacity-100 mouse-idle:opacity-0": isPlaying,
               },
@@ -405,7 +413,7 @@ const InnerPlayer: React.FC<PlayerProps> = ({
           </div>
         )}
 
-        {!isPlaying && currentTime === 0 && !error && (
+        {!isPlaying && currentTime === 0 && !error && !isBuffering && (
           <PlayerPlayLayer
             thumbnailUrl={thumbnailUrl}
             floating={floating}
@@ -428,6 +436,12 @@ const InnerPlayer: React.FC<PlayerProps> = ({
         )}
 
         {error && <PlayerErrorBanner />}
+
+        {isBuffering && (
+          <div className="absolute-center">
+            <Spinner size={30} />
+          </div>
+        )}
       </div>
 
       {!embed && <PlayerBytesCounter />}
