@@ -36,7 +36,7 @@ const PlayerPlayLayer: React.FC<PlayerPlayLayerProps> = ({
   return (
     <div
       className={classNames(
-        "group absolute inset-0 flex",
+        "group absolute inset-0 z-1 flex",
         "after:absolute after:inset-0 after:block after:bg-black/5",
         "after:transition-colors after:duration-200 after:ease-out hover:after:bg-black/0",
         {
