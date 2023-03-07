@@ -16,7 +16,7 @@
  */
 import React, { useMemo } from "react"
 import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
-import { extractReference, extractVideoReferences } from "@etherna/api-js/utils"
+import { extractVideoReferences } from "@etherna/api-js/utils"
 
 import { FilmIcon, PhotoIcon } from "@heroicons/react/20/solid"
 import { ReactComponent as ManifestIcon } from "@/assets/icons/manifest.svg"
@@ -41,11 +41,13 @@ const VideoExtraMenuManifest: React.FC<VideoExtraMenuManifestProps> = ({
 
   const sources = useMemo(() => {
     const references = extractVideoReferences(video)
-    return references.map(reference => ({
-      reference,
-      type: EthernaResourcesHandler.videoReferenceType(video, reference),
-      label: EthernaResourcesHandler.videoReferenceLabel(video, reference),
-    }))
+    return references
+      .filter((r, i, self) => self.indexOf(r) === i)
+      .map(reference => ({
+        reference,
+        type: EthernaResourcesHandler.videoReferenceType(video, reference),
+        label: EthernaResourcesHandler.videoReferenceLabel(video, reference),
+      }))
   }, [video])
 
   return (
