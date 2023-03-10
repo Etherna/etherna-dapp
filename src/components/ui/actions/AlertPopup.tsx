@@ -22,22 +22,25 @@ import { CheckCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/24/so
 import { isBotUserAgent } from "@/utils/browser"
 import classNames from "@/utils/classnames"
 
+import type { PropsWithChildren } from "react"
+
 export type AlertAction = {
   title: string
   type: "default" | "cancel" | "destructive"
   action: () => void
 }
 
-export type AlertPopupProps = {
+export type AlertPopupProps = PropsWithChildren<{
   show: boolean
   title?: string
   message?: string
   icon?: "error" | "success" | "info" | string | React.ReactNode
   actions?: AlertAction[]
   onAction?: (type: "default" | "cancel" | "destructive") => void
-}
+}>
 
 const AlertPopup: React.FC<AlertPopupProps> = ({
+  children,
   show,
   title,
   message,
@@ -156,25 +159,19 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
                 </Dialog.Title>
               )}
 
-              {message && (
+              {(message || children) && (
                 <Dialog.Description
                   className={classNames(
-                    "mt-2 text-center font-semibold leading-tight",
+                    "mt-2 space-y-3 text-center font-semibold leading-tight",
                     "text-gray-700 dark:text-gray-400"
                   )}
                 >
                   {message}
+                  {children}
                 </Dialog.Description>
               )}
 
               <div className="-mx-1 mt-4 flex flex-col space-y-2">
-                {(!actions || actions.length === 0) && (
-                  <AlertPopupAction
-                    title="OK"
-                    type="default"
-                    action={() => onAction?.("default")}
-                  />
-                )}
                 {actions &&
                   actions.length > 0 &&
                   actions.map((action, i) => (
