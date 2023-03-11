@@ -46,6 +46,8 @@ export default class VideoProcessingController {
   private uploadTotalSize = 0
 
   //  encoding events
+  onDecodedAspectRatio?: (aspectRatio: number) => void
+  onDecodedDuration?: (duration: number) => void
   onEncodingStart?: () => void
   onEncodingProgress?: (progress: number) => void
   onEncodingComplete?: (files: { name: string; size: number }[]) => void
@@ -89,6 +91,7 @@ export default class VideoProcessingController {
 
     // find resolution
     let height = 0
+    let width = 0
     let resolutionRatio = 0
     let duration = 0
 
@@ -99,6 +102,7 @@ export default class VideoProcessingController {
       if (parsedSize) {
         const [w, h] = parsedSize.split("x").map(Number)
         height = h
+        width = w
         resolutionRatio = w / h
       }
       // check duration
@@ -109,16 +113,26 @@ export default class VideoProcessingController {
       }
     })
 
-    const [, probleError] = await settledPromise(
+    const [, probeError] = await settledPromise(
       this.ffmpeg.run(`-i`, `${InputFileName}`, `-hide_banner`, `-f`, `null`)
     )
 
-    if (probleError) {
-      return this.onEncodingError?.(probleError)
+    if (probeError) {
+      return this.onEncodingError?.(probeError)
     }
 
+    if (!resolutionRatio || !height) {
+      throw new Error("Failed to decode video resolution")
+    }
+    if (!duration) {
+      throw new Error("Failed to decode video duration")
+    }
+
+    this.onDecodedAspectRatio?.(resolutionRatio)
+    this.onDecodedDuration?.(duration)
+
     const resolutions = DefaultQualities.filter(q => q <= height).map(q => ({
-      width: q * Math.round(resolutionRatio ?? 1.6),
+      width: q * Math.round(resolutionRatio),
       height: q,
     }))
 
@@ -126,10 +140,6 @@ export default class VideoProcessingController {
     const thumbFrame = `${randomFrameTime.hours ?? "00"}:${randomFrameTime.minutes}:${
       randomFrameTime.seconds
     }`
-
-    if (resolutionRatio === 0 || height === 0) {
-      throw new Error("Failed to parse video resolution")
-    }
 
     const dirFiles = this.ffmpeg.FS("readdir", ".")
     !dirFiles.includes("hls") && this.ffmpeg.FS("mkdir", "hls")

@@ -87,7 +87,7 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
   return (
     <>
       <VideoLoading video={video}>
-        {!isInitialInput && <VideoProgressCard className="mb-12" />}
+        {!isInitialInput && editorStatus !== "saved" && <VideoProgressCard className="mb-12" />}
 
         <Container
           className={classNames("gap-x-4 gap-y-8 md:items-start")}

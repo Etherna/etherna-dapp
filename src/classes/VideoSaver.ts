@@ -42,6 +42,7 @@ export default class VideoSaver {
 
     // save manifest
     if (opts.saveManifest && !this.validateMetadata()) return
+
     const newReference =
       opts.saveManifest || isEmptyReference(this.videoBuilder.reference)
         ? await this.uploadManifest(opts.signal)

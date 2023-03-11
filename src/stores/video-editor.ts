@@ -281,6 +281,18 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       }
     })
   },
+  updateAspectRatio(aspectRatio: number) {
+    set(state => {
+      state.builder.detailsMeta.aspectRatio = aspectRatio
+      state.hasChanges = true
+    })
+  },
+  updateDuration(duration: number) {
+    set(state => {
+      state.builder.previewMeta.duration = duration
+      state.hasChanges = true
+    })
+  },
   updateEditorStatus(status: "saved" | "error") {
     set(state => {
       state.status = status

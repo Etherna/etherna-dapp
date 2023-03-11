@@ -50,6 +50,8 @@ export default function useVideoProcessing() {
   const updateBatchStatus = useVideoEditorStore(state => state.updateBatchStatus)
   const updateEncodeStatus = useVideoEditorStore(state => state.updateEncodeStatus)
   const updateUploadStatus = useVideoEditorStore(state => state.updateUploadStatus)
+  const updateAspectRatio = useVideoEditorStore(state => state.updateAspectRatio)
+  const updateDuration = useVideoEditorStore(state => state.updateDuration)
 
   const { waitConfirmation } = useConfirmation()
   const { showError } = useErrorMessage()
@@ -77,6 +79,12 @@ export default function useVideoProcessing() {
 
       videoProcessingController = new VideoProcessingController(reference)
 
+      videoProcessingController.onDecodedDuration = duration => {
+        updateDuration(duration)
+      }
+      videoProcessingController.onDecodedAspectRatio = aspectRatio => {
+        updateAspectRatio(aspectRatio)
+      }
       videoProcessingController.onEncodingStart = () => {
         updateEncodeStatus("loading")
       }
