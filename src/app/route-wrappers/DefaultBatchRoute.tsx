@@ -34,36 +34,39 @@ const DefaultBatchRoute: React.FC = () => {
     createDefaultBatch,
   } = useDefaultBatch({
     autofetch: true,
-    saveAfterCreate: true,
+    saveAfterCreate: false,
   })
 
-  return isFetchingBatch ||
-    isCreatingBatch ||
-    isWaitingForConfirmation ||
-    isUpdatingProfile ||
-    error ? (
-    <>
-      {isUpdatingProfile ? (
-        <AlertPopup message="Saving changes..." show>
-          <Spinner className="mx-auto mt-2" size={24} />
-        </AlertPopup>
-      ) : (
-        !isWaitingForConfirmation && (
-          <BatchLoading
-            type={isCreatingBatch ? "creating" : "fetching"}
-            error={!!error}
-            message={
-              error && gatewayType === "etherna-gateway"
-                ? "Come back in a few minutes. If your batch isn't created create new one manually."
-                : error
-            }
-            onCreate={createDefaultBatch}
-          />
-        )
+  const isLoading =
+    isFetchingBatch || isCreatingBatch || isWaitingForConfirmation || isUpdatingProfile || error
+
+  return (
+    <div className="flex flex-1 flex-col">
+      {isLoading && (
+        <div className="mb-8">
+          {isUpdatingProfile ? (
+            <AlertPopup message="Saving changes..." show>
+              <Spinner className="mx-auto mt-2" size={24} />
+            </AlertPopup>
+          ) : (
+            !isWaitingForConfirmation && (
+              <BatchLoading
+                type={isCreatingBatch ? "creating" : "fetching"}
+                error={!!error}
+                message={
+                  error && gatewayType === "etherna-gateway"
+                    ? "Come back in a few minutes. If your batch isn't created create new one manually."
+                    : error
+                }
+                onCreate={createDefaultBatch}
+              />
+            )
+          )}
+        </div>
       )}
-    </>
-  ) : (
-    <Outlet />
+
+      <Outlet />
+    </div>
   )
 }
 

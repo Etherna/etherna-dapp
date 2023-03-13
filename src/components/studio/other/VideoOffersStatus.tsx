@@ -14,6 +14,7 @@ type VideoOffersStatusProps = {
   video: Video
   offersStatus: VideoOffers | undefined
   isLoading?: boolean
+  disabled?: boolean
   onOfferResources(): Promise<void>
   onUnofferResources(): Promise<void>
 }
@@ -23,6 +24,7 @@ const VideoOffersStatus: React.FC<VideoOffersStatusProps> = ({
   video,
   offersStatus,
   isLoading,
+  disabled,
   onOfferResources,
   onUnofferResources,
 }) => {
@@ -55,6 +57,7 @@ const VideoOffersStatus: React.FC<VideoOffersStatusProps> = ({
           small
           prefix={<CurrencyDollarIcon width={16} aria-hidden />}
           onClick={() => setShowOffersModal(true)}
+          disabled={disabled}
         >
           {status === "none" && "No offers"}
           {status === "full" && "Fully offered"}

@@ -24,6 +24,7 @@ export type UserState = {
 }
 
 export type UserActions = {
+  getDefaultBatch(): GatewayBatch | undefined
   setProfile(profile: Profile): void
   setCredit(credit: number | null, unlimited?: boolean): void
   setDefaultBatchId(batchId: BatchId): void
@@ -42,8 +43,12 @@ const useUserStore = create<UserState & UserActions>()(
   logger(
     devtools(
       persist(
-        immer(set => ({
+        immer((set, get) => ({
           ...getInitialState(),
+          getDefaultBatch() {
+            const { batches, defaultBatchId } = get()
+            return batches.find(batch => batch.id === defaultBatchId)
+          },
           setCredit(credit, unlimited?) {
             set(state => {
               state.credit = credit

@@ -14,6 +14,7 @@ type VideoPinningStatusProps = {
   video: VideoWithIndexes
   isLoading?: boolean
   pinStatus: SwarmResourcePinStatus | undefined
+  disabled?: boolean
   togglePinningCallback: ReturnType<typeof useUserVideosPinning>["togglePinning"]
 }
 
@@ -22,6 +23,7 @@ const VideoPinningStatus: React.FC<VideoPinningStatusProps> = ({
   video,
   isLoading,
   pinStatus,
+  disabled,
   togglePinningCallback,
 }) => {
   const { showError } = useErrorMessage()
@@ -50,6 +52,7 @@ const VideoPinningStatus: React.FC<VideoPinningStatusProps> = ({
               size="xs"
               checked={pinStatus?.isPinned === true}
               onChange={on => togglePinning(on)}
+              disabled={disabled}
             />
           )}
           {isPinning ? (
