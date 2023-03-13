@@ -49,13 +49,13 @@ import type { Profile } from "@etherna/api-js"
 
 const Videos: React.FC = () => {
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
-  const getDefaultBatch = useUserStore(state => state.getDefaultBatch)
+  const defaultBatch = useUserStore(state => state.defaultBatch)
   const profileInfo = useUserStore(state => state.profile)
   const address = useUserStore(state => state.address)
   const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
   const gatewayType = useExtensionsStore(state => state.currentGatewayType)
 
-  const canEdit = !!getDefaultBatch()
+  const canEdit = !!defaultBatch
 
   const sources = useMemo(() => {
     return [

@@ -48,8 +48,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
   const defaultBatch = useUserStore(state => state.batches.find(b => b.id === defaultBatchId))
   const isLoadingProfile = useUIStore(state => state.isLoadingProfile)
   const updateBeeClient = useClientsStore(state => state.updateBeeClient)
-  const setDefaultBatchId = useUserStore(state => state.setDefaultBatchId)
-  const setBatches = useUserStore(state => state.setBatches)
+  const setDefaultBatch = useUserStore(state => state.setDefaultBatch)
   const [error, setError] = useState<string | undefined>()
   const [isFetchingBatch, setIsFetchingBatch] = useState(false)
   const [isCreatingBatch, setIsCreatingBatch] = useState(false)
@@ -146,8 +145,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
           signer: beeClient.signer,
         })
       )
-      setBatches([batch])
-      setDefaultBatchId(batch.id)
+      setDefaultBatch(batch)
 
       if (opts.saveAfterCreate && saveProfile) {
         setIsWaitingForConfirmation(true)
@@ -185,10 +183,9 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
       address,
       profile,
       updateBeeClient,
-      setDefaultBatchId,
+      setDefaultBatch,
       waitConfirmation,
       updateProfile,
-      setBatches,
     ]
   )
 
@@ -257,6 +254,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
       await updateDefaultBatch(batch)
     } else {
       setError("No usable batch found")
+      setDefaultBatch(undefined)
     }
   }, [
     opts.autoCreate,
@@ -264,6 +262,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     fetchBestUsableBatch,
     createDefaultBatch,
     updateDefaultBatch,
+    setDefaultBatch,
   ])
 
   return {

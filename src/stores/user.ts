@@ -17,6 +17,7 @@ export type UserState = {
   ens?: string | null
   credit?: number | null
   creditUnlimited?: boolean
+  defaultBatch?: GatewayBatch
   defaultBatchId?: BatchId
   batches: GatewayBatch[]
   isSignedIn?: boolean
@@ -24,10 +25,9 @@ export type UserState = {
 }
 
 export type UserActions = {
-  getDefaultBatch(): GatewayBatch | undefined
   setProfile(profile: Profile): void
   setCredit(credit: number | null, unlimited?: boolean): void
-  setDefaultBatchId(batchId: BatchId): void
+  setDefaultBatch(batch: GatewayBatch | undefined): void
   setBatches(batches: GatewayBatch[]): void
   updateIdentity(address: EthAddress, prevAddresses: EthAddress[], wallet: WalletType): void
   updateSignedIn(isSignedIn: boolean, isSignedInGateway: boolean): void
@@ -45,10 +45,6 @@ const useUserStore = create<UserState & UserActions>()(
       persist(
         immer((set, get) => ({
           ...getInitialState(),
-          getDefaultBatch() {
-            const { batches, defaultBatchId } = get()
-            return batches.find(batch => batch.id === defaultBatchId)
-          },
           setCredit(credit, unlimited?) {
             set(state => {
               state.credit = credit
@@ -60,9 +56,13 @@ const useUserStore = create<UserState & UserActions>()(
               state.batches = batches
             })
           },
-          setDefaultBatchId(batchId) {
+          setDefaultBatch(batch) {
             set(state => {
-              state.defaultBatchId = batchId
+              state.defaultBatch = batch
+              state.defaultBatchId = batch?.id
+              state.batches = batch
+                ? [batch, ...state.batches.filter(b => b.id !== batch.id)]
+                : state.batches
             })
           },
           setProfile(profile) {

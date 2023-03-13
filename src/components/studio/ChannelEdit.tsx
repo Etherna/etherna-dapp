@@ -23,7 +23,7 @@ import routes from "@/routes"
 import useUserStore from "@/stores/user"
 
 const ChannelEdit: React.FC = () => {
-  const getDefaultBatch = useUserStore(state => state.getDefaultBatch)
+  const defaultBatch = useUserStore(state => state.defaultBatch)
   const address = useUserStore(state => state.address)
   const saveCallback = useRef<() => Promise<void>>()
 
@@ -37,7 +37,7 @@ const ChannelEdit: React.FC = () => {
     <StudioEditView
       title="Customize channel"
       saveLabel="Save"
-      canSave={!!getDefaultBatch()}
+      canSave={!!defaultBatch}
       onSave={handleSave}
     >
       <ChannelEditor
