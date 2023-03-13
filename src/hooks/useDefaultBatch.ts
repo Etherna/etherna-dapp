@@ -19,6 +19,8 @@ import { BatchUpdateType } from "@etherna/api-js/stores"
 import { getBatchSpace, parseGatewayBatch, parsePostageBatch } from "@etherna/api-js/utils"
 
 import useBeeAuthentication from "./useBeeAuthentication"
+import useConfirmation from "./useConfirmation"
+import useSwarmProfile from "./useSwarmProfile"
 import BeeClient from "@/classes/BeeClient"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
@@ -31,22 +33,35 @@ import type { GatewayBatch, PostageBatch } from "@etherna/api-js/clients"
 type UseBatchesOpts = {
   autofetch?: boolean
   autoCreate?: boolean
+  saveAfterCreate?: boolean
 }
 
+export const DEFAULT_BATCH_LABEL = "user-default-stamp"
+
 export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: false }) {
-  const [isFetchingBatch, setIsFetchingBatch] = useState(false)
-  const [isCreatingBatch, setIsCreatingBatch] = useState(false)
-  const [error, setError] = useState<string | undefined>()
   const gatewayClient = useClientsStore(state => state.gatewayClient)
   const beeClient = useClientsStore(state => state.beeClient)
   const gatewayType = useExtensionsStore(state => state.currentGatewayType)
+  const address = useUserStore(state => state.address)
+  const profile = useUserStore(state => state.profile)
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
   const defaultBatch = useUserStore(state => state.batches.find(b => b.id === defaultBatchId))
-  const updateBeeClient = useClientsStore(state => state.updateBeeClient)
-  const setDefaultBatchId = useUserStore(state => state.setDefaultBatchId)
   const isLoadingProfile = useUIStore(state => state.isLoadingProfile)
-  const { waitAuth } = useBeeAuthentication()
+  const updateBeeClient = useClientsStore(state => state.updateBeeClient)
+  const setDefaultBatch = useUserStore(state => state.setDefaultBatch)
+  const [error, setError] = useState<string | undefined>()
+  const [isFetchingBatch, setIsFetchingBatch] = useState(false)
+  const [isCreatingBatch, setIsCreatingBatch] = useState(false)
+  const [isWaitingForConfirmation, setIsWaitingForConfirmation] = useState(false)
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false)
   const timeout = useRef<number>()
+  const batchesCount = useRef(0)
+  const { updateProfile } = useSwarmProfile({
+    address: address!,
+    prefetchedProfile: profile ?? undefined,
+  })
+  const { waitAuth } = useBeeAuthentication()
+  const { waitConfirmation } = useConfirmation()
 
   useEffect(() => {
     return () => {
@@ -85,21 +100,26 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
   const fetchBestUsableBatch = useCallback(async (): Promise<GatewayBatch | null> => {
     try {
       if (gatewayType === "etherna-gateway") {
-        const batchesPreviews = await gatewayClient.users.fetchBatches()
+        const batchesPreviews = await gatewayClient.users.fetchBatches(DEFAULT_BATCH_LABEL)
+        batchesCount.current = batchesPreviews.length
 
-        for (const batchPreview of batchesPreviews) {
-          const batch = await gatewayClient.users.fetchBatch(batchPreview.batchId)
-          if (batch.usable) {
-            return batch
-          }
+        for (const batchPreview of batchesPreviews.reverse()) {
+          try {
+            const batch = await gatewayClient.users.fetchBatch(batchPreview.batchId)
+            if (batch.usable) {
+              return batch
+            }
+          } catch {}
         }
 
         return null
       } else {
         await waitAuth()
 
-        const batches = await beeClient.stamps.downloadAll()
+        const batches = await beeClient.stamps.downloadAll(DEFAULT_BATCH_LABEL)
+        batchesCount.current = batches.length
         const bestBatch = batches
+          .reverse()
           .filter(batch => batch.usable)
           .sort((a, b) => {
             const scoreA =
@@ -113,12 +133,13 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
         else return parsePostageBatch(bestBatch)
       }
     } catch (error) {
+      console.error(error)
       return null
     }
   }, [beeClient.stamps, gatewayClient.users, gatewayType, waitAuth])
 
   const updateDefaultBatch = useCallback(
-    (batch: GatewayBatch) => {
+    async (batch: GatewayBatch, saveProfile = false) => {
       updateBeeClient(
         new BeeClient(beeClient.url, {
           axios: beeClient.request,
@@ -126,9 +147,48 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
           signer: beeClient.signer,
         })
       )
-      setDefaultBatchId(batch.id)
+      setDefaultBatch(batch)
+
+      if (opts.saveAfterCreate && saveProfile) {
+        setIsWaitingForConfirmation(true)
+
+        const save = await waitConfirmation(
+          "Save changes?",
+          "You have changed your default batch. Do you want to save these changes?",
+          "Save"
+        )
+
+        setIsWaitingForConfirmation(false)
+
+        if (!save) return
+
+        setIsUpdatingProfile(true)
+
+        await updateProfile({
+          address: address!,
+          avatar: profile?.avatar ?? null,
+          cover: profile?.cover ?? null,
+          description: profile?.description ?? null,
+          name: profile?.name ?? address!,
+          birthday: profile?.birthday,
+          location: profile?.location,
+          website: profile?.website,
+          batchId: batch.id,
+        })
+
+        setIsUpdatingProfile(false)
+      }
     },
-    [beeClient, setDefaultBatchId, updateBeeClient]
+    [
+      opts.saveAfterCreate,
+      beeClient,
+      address,
+      profile,
+      updateBeeClient,
+      setDefaultBatch,
+      waitConfirmation,
+      updateProfile,
+    ]
   )
 
   const createDefaultBatch = useCallback(async (): Promise<GatewayBatch | null> => {
@@ -150,12 +210,13 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     let batch: GatewayBatch | null = null
 
     try {
+      const label = `${DEFAULT_BATCH_LABEL}-${batchesCount.current || 1}`
       if (gatewayType === "etherna-gateway") {
-        batch = await gatewayClient.users.createBatch(depth, amount)
+        batch = await gatewayClient.users.createBatch(depth, amount, label)
       } else {
         await waitAuth()
 
-        const batchId = await beeClient.stamps.create(depth, amount)
+        const batchId = await beeClient.stamps.create(depth, amount, label)
         let beeBatch = await beeClient.stamps.download(batchId)
         beeBatch = (await batchesManager.waitBatchPropagation(
           beeBatch,
@@ -171,7 +232,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
       setIsCreatingBatch(false)
     }
 
-    batch && updateDefaultBatch(batch)
+    batch && (await updateDefaultBatch(batch, true))
     return batch
   }, [beeClient, gatewayClient, gatewayType, waitAuth, updateDefaultBatch])
 
@@ -191,9 +252,10 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     setIsFetchingBatch(false)
 
     if (batch) {
-      updateDefaultBatch(batch)
+      await updateDefaultBatch(batch)
     } else {
       setError("No usable batch found")
+      setDefaultBatch(undefined)
     }
   }, [
     opts.autoCreate,
@@ -201,11 +263,14 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     fetchBestUsableBatch,
     createDefaultBatch,
     updateDefaultBatch,
+    setDefaultBatch,
   ])
 
   return {
     isCreatingBatch,
     isFetchingBatch,
+    isWaitingForConfirmation,
+    isUpdatingProfile,
     error,
     defaultBatch,
     fetchDefaultBatch,

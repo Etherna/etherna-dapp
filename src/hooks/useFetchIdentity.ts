@@ -38,7 +38,6 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
   const updateBeeClient = useClientsStore(state => state.updateBeeClient)
   const setBytesPrice = useSessionStore(state => state.setBytesPrice)
   const setCredit = useUserStore(state => state.setCredit)
-  const setDefaultBatchId = useUserStore(state => state.setDefaultBatchId)
   const setProfile = useUserStore(state => state.setProfile)
   const updateIdentity = useUserStore(state => state.updateIdentity)
   const updateSignedIn = useUserStore(state => state.updateSignedIn)
@@ -172,7 +171,6 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
       if (!profile) throw new Error("Cannot fetch profile")
 
       setProfile(profile)
-      setDefaultBatchId(profile.batchId as BatchId)
     } catch (error: any) {
       console.error(error)
     }

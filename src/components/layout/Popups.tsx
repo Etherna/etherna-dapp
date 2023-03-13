@@ -35,7 +35,13 @@ const Popups: React.FC = () => {
         icon="error"
         title={error?.title}
         message={error?.message?.substring(0, 500)}
-        onAction={hideError}
+        actions={[
+          {
+            title: "OK",
+            type: "default",
+            action: hideError,
+          },
+        ]}
       />
 
       <AlertPopup

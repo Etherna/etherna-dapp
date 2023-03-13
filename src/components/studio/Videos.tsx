@@ -57,10 +57,13 @@ import type { Profile } from "@etherna/api-js"
 
 const Videos: React.FC = () => {
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
+  const defaultBatch = useUserStore(state => state.defaultBatch)
   const profileInfo = useUserStore(state => state.profile)
   const address = useUserStore(state => state.address)
   const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
   const gatewayType = useExtensionsStore(state => state.currentGatewayType)
+
+  const canEdit = !!defaultBatch
 
   const sources = useMemo(() => {
     return [
@@ -156,7 +159,7 @@ const Videos: React.FC = () => {
           }))}
           onChange={setSource}
         />
-        <Button as="a" to={routes.studioVideoNew}>
+        <Button as="a" to={routes.studioVideoNew} disabled={!canEdit}>
           Create new video
         </Button>
       </div>
@@ -234,6 +237,7 @@ const Videos: React.FC = () => {
                 visibility={visibility[item.reference]}
                 isLoading={isFetchingVisibility}
                 toggleVisibilityCallback={toggleVideosVisibility}
+                disabled={!canEdit}
               />
             ),
           },
@@ -246,6 +250,7 @@ const Videos: React.FC = () => {
                 isLoading={isFetchingPinning}
                 pinStatus={pinningStatus[item.reference]}
                 togglePinningCallback={togglePinning}
+                disabled={!canEdit}
               />
             ),
           },
@@ -261,6 +266,7 @@ const Videos: React.FC = () => {
                     isLoading={isFetchingOffers}
                     onOfferResources={() => offerVideoResources(item)}
                     onUnofferResources={() => unofferVideoResources(item)}
+                    disabled={!canEdit}
                   />
                 ),
               },
@@ -314,6 +320,7 @@ const Videos: React.FC = () => {
                         : false,
                     }}
                     color="transparent"
+                    disabled={!canEdit}
                   >
                     <PencilIcon width={16} aria-hidden />
                   </Button>

@@ -18,6 +18,7 @@ type VideoVisibilityStatusProps = {
   video: VideoWithIndexes
   visibility: VisibilityStatus[]
   isLoading?: boolean
+  disabled?: boolean
   toggleVisibilityCallback: ReturnType<typeof useUserVideosVisibility>["toggleVideosVisibility"]
 }
 
@@ -26,6 +27,7 @@ const VideoVisibilityStatus: React.FC<VideoVisibilityStatusProps> = ({
   visibility,
   isLoading,
   video,
+  disabled,
   toggleVisibilityCallback,
 }) => {
   const [isToggling, setIsToggling] = useState(false)
@@ -80,13 +82,14 @@ const VideoVisibilityStatus: React.FC<VideoVisibilityStatusProps> = ({
 
   return (
     <Dropdown className={className}>
-      <Dropdown.Toggle>
+      <Dropdown.Toggle disabled={disabled}>
         <Button
           as="div"
-          className="rounded p-1 hover:bg-gray-500/30"
+          className={!disabled ? "rounded p-1 hover:bg-gray-500/30" : ""}
           suffix={<ChevronDownIcon width={14} />}
           aspect="text"
           color="inverted"
+          disabled={disabled}
         >
           <div className="grid auto-cols-min grid-flow-row-dense gap-1 xl:grid-cols-2">
             {visibility.map(sourceVisibility => renderBadge(sourceVisibility, true))}

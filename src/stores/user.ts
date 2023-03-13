@@ -18,6 +18,7 @@ export type UserState = {
   ens?: string | null
   credit?: number | null
   creditUnlimited?: boolean
+  defaultBatch?: GatewayBatch
   defaultBatchId?: BatchId
   batches: GatewayBatch[]
   isSignedInIndex?: boolean
@@ -56,9 +57,13 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       state.batches = batches
     })
   },
-  setDefaultBatchId(batchId: BatchId) {
+  setDefaultBatch(batch: GatewayBatch | undefined) {
     set(state => {
-      state.defaultBatchId = batchId
+      state.defaultBatch = batch
+      state.defaultBatchId = batch?.id
+      state.batches = batch
+        ? [batch, ...state.batches.filter(b => b.id !== batch.id)]
+        : state.batches
     })
   },
   setProfile(profile: Profile) {

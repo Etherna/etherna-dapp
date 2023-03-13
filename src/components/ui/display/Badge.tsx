@@ -28,6 +28,7 @@ export type BadgeProps = {
   small?: boolean
   rounded?: boolean
   title?: string
+  disabled?: boolean
   onClick?(): void
 }
 
@@ -41,6 +42,7 @@ const Badge: React.FC<BadgeProps> = ({
   small,
   rounded,
   title,
+  disabled,
   onClick,
 }) => {
   const As = onClick ? "button" : "span"
@@ -48,8 +50,9 @@ const Badge: React.FC<BadgeProps> = ({
     <As
       className={classNames(
         "inline-flex items-center",
-        "cursor-default whitespace-nowrap font-semibold",
+        "cursor-default overflow-hidden text-ellipsis whitespace-nowrap font-semibold",
         {
+          "cursor-not-allowed": disabled,
           "rounded-md px-1.5 py-1 text-xs md:text-sm": !small,
           "rounded px-1 py-0.5 text-2xs md:text-xs": small,
           "bg-primary-500 text-white": color === "primary" && variant === "fill",
@@ -73,7 +76,7 @@ const Badge: React.FC<BadgeProps> = ({
         },
         className
       )}
-      onClick={onClick}
+      onClick={!disabled ? onClick : undefined}
       title={title}
       data-component="badge"
     >

@@ -31,6 +31,7 @@ export type DropdownProps = {
 export type DropdownToggleProps = {
   children?: React.ReactNode
   className?: string
+  disabled?: boolean
 }
 
 export type DropdownMenuProps = {
@@ -56,7 +57,7 @@ export type DropdownItemProps = {
   action?(): void
 }
 
-const DropdownToggle: React.FC<DropdownToggleProps> = ({ children, className }) => {
+const DropdownToggle: React.FC<DropdownToggleProps> = ({ children, className, disabled }) => {
   const { setButtonEl } = useContext(DropdownContext)!
   return (
     <Menu.Button
@@ -67,6 +68,7 @@ const DropdownToggle: React.FC<DropdownToggleProps> = ({ children, className }) 
       ref={(el: HTMLButtonElement) => {
         el && setButtonEl(el)
       }}
+      disabled={disabled}
       data-component="dropdown-toggle"
     >
       {children}
