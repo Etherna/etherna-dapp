@@ -49,6 +49,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
   const isLoadingProfile = useUIStore(state => state.isLoadingProfile)
   const updateBeeClient = useClientsStore(state => state.updateBeeClient)
   const setDefaultBatchId = useUserStore(state => state.setDefaultBatchId)
+  const setBatches = useUserStore(state => state.setBatches)
   const [error, setError] = useState<string | undefined>()
   const [isFetchingBatch, setIsFetchingBatch] = useState(false)
   const [isCreatingBatch, setIsCreatingBatch] = useState(false)
@@ -145,6 +146,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
           signer: beeClient.signer,
         })
       )
+      setBatches([batch])
       setDefaultBatchId(batch.id)
 
       if (opts.saveAfterCreate && saveProfile) {
@@ -186,6 +188,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
       setDefaultBatchId,
       waitConfirmation,
       updateProfile,
+      setBatches,
     ]
   )
 
