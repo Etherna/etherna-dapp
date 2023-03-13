@@ -21,7 +21,6 @@ import { TrashIcon } from "@heroicons/react/24/outline"
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
 
 import StudioEditView from "./StudioEditView"
-import OnlyUsableBatch from "./other/OnlyUsableBatch"
 import VideoEditor from "./video-editor/VideoEditor"
 import { Button } from "@/components/ui/actions"
 import useConfirmation from "@/hooks/useConfirmation"
@@ -144,18 +143,16 @@ const VideoEdit: React.FC<VideoEditProps> = ({ reference, routeState }) => {
       {isLoading || (reference && !video) ? (
         <Spinner className="mx-auto mt-10 w-10 text-primary-500" />
       ) : (
-        <OnlyUsableBatch>
-          <VideoEditor
-            video={video}
-            ref={ref => {
-              if (!ref) return
+        <VideoEditor
+          video={video}
+          ref={ref => {
+            if (!ref) return
 
-              saveCallback.current = ref.submitVideo
-              ref.isEmpty !== isEmpty && setIsEmpty(ref.isEmpty)
-              ref.canSubmitVideo !== canSave && setCanSave(ref.canSubmitVideo)
-            }}
-          />
-        </OnlyUsableBatch>
+            saveCallback.current = ref.submitVideo
+            ref.isEmpty !== isEmpty && setIsEmpty(ref.isEmpty)
+            ref.canSubmitVideo !== canSave && setCanSave(ref.canSubmitVideo)
+          }}
+        />
       )}
     </StudioEditView>
   )

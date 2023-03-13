@@ -19,11 +19,11 @@ import { Navigate } from "react-router-dom"
 
 import StudioEditView from "./StudioEditView"
 import ChannelEditor from "./channel-editor/ChannelEditor"
-import OnlyUsableBatch from "./other/OnlyUsableBatch"
 import routes from "@/routes"
 import useUserStore from "@/stores/user"
 
 const ChannelEdit: React.FC = () => {
+  const defaultBatch = useUserStore(state => state.defaultBatch)
   const address = useUserStore(state => state.address)
   const saveCallback = useRef<() => Promise<void>>()
 
@@ -34,15 +34,18 @@ const ChannelEdit: React.FC = () => {
   if (!address) return <Navigate to={routes.home} />
 
   return (
-    <StudioEditView title="Customize channel" saveLabel="Save" canSave={true} onSave={handleSave}>
-      <OnlyUsableBatch>
-        <ChannelEditor
-          profileAddress={address}
-          ref={ref => {
-            saveCallback.current = ref?.handleSubmit
-          }}
-        />
-      </OnlyUsableBatch>
+    <StudioEditView
+      title="Customize channel"
+      saveLabel="Save"
+      canSave={!!defaultBatch}
+      onSave={handleSave}
+    >
+      <ChannelEditor
+        profileAddress={address}
+        ref={ref => {
+          saveCallback.current = ref?.handleSubmit
+        }}
+      />
     </StudioEditView>
   )
 }

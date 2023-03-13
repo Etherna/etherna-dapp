@@ -68,6 +68,7 @@ const Toggle: React.FC<ToggleProps> = ({
             "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-4 focus-visible:outline-none",
             "focus:ring-offset-gray-50 dark:focus:ring-offset-gray-800",
             {
+              "cursor-not-allowed": disabled,
               "h-4 w-7": size === "xs",
               "h-3 w-8": size === "sm",
               "h-4 w-11": size === "md",
