@@ -200,6 +200,11 @@ const actions = (set: SetFunc, get: GetFunc) => ({
         state.builder.initialize(video.reference, video.preview, video.details)
         state.reference = video.reference as Reference
         state.references = extractVideoReferences(video)
+        state.encoding.status = "done"
+        state.encoding.progress = 100
+        state.batch.batchId = video.details?.batchId as BatchId | undefined
+        state.upload.status = "done"
+        state.upload.progress = 100
       }
       state.builder.previewMeta.ownerAddress = ownerAddress
       state.status = video ? "editing" : "creating"

@@ -21,7 +21,7 @@ export class BatchNotFoundError extends Error {
 
 export class BatchRejectError extends Error {
   constructor() {
-    super("Batch translaction rejected")
+    super("Batch transaction rejected")
   }
 }
 
