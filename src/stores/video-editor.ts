@@ -14,7 +14,7 @@ import logger from "./middlewares/log"
 import type { BatchLoadingType } from "@/components/common/BatchLoading"
 import type { ProcessedImage, Video } from "@etherna/api-js"
 import type { BatchId, BeeClient, PostageBatch, Reference } from "@etherna/api-js/clients"
-import type { VideoQuality } from "@etherna/api-js/schemas/video"
+import type { VideoQuality, VideoSourceRaw } from "@etherna/api-js/schemas/video"
 import type { WritableDraft } from "immer/dist/internal"
 import type { StorageValue } from "zustand/middleware"
 
@@ -46,6 +46,8 @@ export type VideoEditorState = {
   references: Reference[]
   /** Whether the mantaray node has been initialized */
   initialized: boolean
+  /** Initial video sources (used to donwload original for econding) */
+  initialSources?: VideoSourceRaw[]
   /** Current editor status */
   status: "creating" | "editing" | "saved" | "error"
   /** Video manifest builder */
@@ -197,14 +199,18 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       if (state.initialized) return
 
       if (video) {
+        const needsReEncoding = video.details?.sources.every(
+          source => !["hls", "dash"].includes(source.type)
+        )
+        state.initialSources = video.details?.sources
         state.builder.initialize(video.reference, video.preview, video.details)
         state.reference = video.reference as Reference
         state.references = extractVideoReferences(video)
-        state.encoding.status = "done"
-        state.encoding.progress = 100
+        state.encoding.status = needsReEncoding ? "idle" : "done"
+        state.encoding.progress = needsReEncoding ? undefined : 100
         state.batch.batchId = video.details?.batchId as BatchId | undefined
-        state.upload.status = "done"
-        state.upload.progress = 100
+        state.upload.status = needsReEncoding ? "idle" : "done"
+        state.upload.progress = needsReEncoding ? undefined : 100
       }
       state.builder.previewMeta.ownerAddress = ownerAddress
       state.status = video ? "editing" : "creating"

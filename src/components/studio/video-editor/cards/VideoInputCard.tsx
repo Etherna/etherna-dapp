@@ -10,7 +10,6 @@ type VideoInputCardProps = {
 }
 
 const VideoInputCard: React.FC<VideoInputCardProps> = ({ disabled }) => {
-  const inputFile = useVideoEditorStore(state => state.inputFile)
   const setInputFile = useVideoEditorStore(state => state.setInputFile)
   const { showError } = useErrorMessage()
 

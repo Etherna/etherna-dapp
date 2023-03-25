@@ -2,6 +2,7 @@ import React, { forwardRef, useImperativeHandle, useMemo } from "react"
 
 import VideoLoading from "./VideoLoading"
 import AvailabilityCard from "./cards/AvailabilityCard"
+import EncodingUpgradeCard from "./cards/EncodingUpgradeCard"
 import SaveToCard from "./cards/SaveToCard"
 import SavingResultCard from "./cards/SavingResultCard"
 import VideoDetailsCard from "./cards/VideoDetailsCard"
@@ -33,6 +34,7 @@ type VideoEditorProps = {
 
 const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref) => {
   const address = useUserStore(state => state.address!)
+  const encodingStatus = useVideoEditorStore(state => state.encoding.status)
   const batchStatus = useVideoEditorStore(state => state.batch.status)
   const batchId = useVideoEditorStore(state => state.builder.detailsMeta.batchId)
   const videoTitle = useVideoEditorStore(state => state.builder.previewMeta.title)
@@ -50,10 +52,23 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
 
   useVideoProcessing()
 
+  const isInitialInput = useMemo(() => {
+    return editorStatus === "creating" && (!inputFile || video?.details?.sources.length === 0)
+  }, [editorStatus, inputFile, video?.details?.sources.length])
+
+  const needsReEncoding = useMemo(() => {
+    const isWaiting = encodingStatus === "idle"
+    return (
+      isWaiting &&
+      (video?.details?.sources.every(source => !["hls", "dash"].includes(source.type)) ?? false)
+    )
+  }, [encodingStatus, video?.details?.sources])
+
   const canSubmitVideo = useMemo(() => {
     return (
       !!batchId &&
       batchStatus === undefined &&
+      !needsReEncoding &&
       videoTitle.length > 0 &&
       videoTitle.length <= (characterLimits?.title ?? 0) &&
       videoDescription.length <= (characterLimits?.description ?? 0) &&
@@ -62,6 +77,7 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
   }, [
     batchId,
     batchStatus,
+    needsReEncoding,
     characterLimits,
     videoTitle.length,
     videoDescription.length,
@@ -81,13 +97,14 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
 
   if (video && editorStatus === "creating") return null
 
-  const isInitialInput =
-    editorStatus === "creating" && (!inputFile || video?.details?.sources.length === 0)
-
   return (
     <>
       <VideoLoading video={video}>
-        {!isInitialInput && editorStatus !== "saved" && <VideoProgressCard className="mb-12" />}
+        {!isInitialInput && !needsReEncoding && editorStatus !== "saved" && (
+          <VideoProgressCard className="mb-12" />
+        )}
+
+        {needsReEncoding && <EncodingUpgradeCard className="mb-12" />}
 
         <Container
           className={classNames("gap-x-4 gap-y-8 md:items-start")}
