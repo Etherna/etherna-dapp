@@ -126,9 +126,14 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       state.hasChanges = true
     })
   },
-  async addVideoAdaptiveSource(type: "dash" | "hls", data: Uint8Array, fileName: string) {
+  async addVideoAdaptiveSource(
+    type: "dash" | "hls",
+    data: Uint8Array,
+    fileName: string,
+    fullSize: number
+  ) {
     const builder = await produce(get().builder, async draft => {
-      await draft.addAdaptiveSource(type, data, fileName)
+      await draft.addAdaptiveSource(type, data, fileName, fullSize)
     })
     set(state => {
       state.builder = builder

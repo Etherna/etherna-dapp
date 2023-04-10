@@ -148,9 +148,14 @@ export default function useVideoProcessing() {
       }
       videoProcessingController.onFileUploaded = async (path, data, reference) => {
         const type = path.startsWith("dash") ? "dash" : "hls"
+        // remove ffmpeg folder prefix
         const fileName = path.replace(/(dash|hls)\//, "")
 
-        await addAdaptiveSource(type, data, fileName)
+        // if source manifest, find relative video size
+        const isMediaManifest = VideoProcessingController.MediaManifestNameRegex.test(fileName)
+        const size = isMediaManifest ? videoProcessingController.mediaSizeFromName(fileName) : 0
+
+        await addAdaptiveSource(type, data, fileName, size)
       }
       videoProcessingController.onUploadComplete = () => {
         updateUploadStatus("done", 100)

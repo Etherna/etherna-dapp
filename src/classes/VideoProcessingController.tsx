@@ -71,6 +71,13 @@ export default class VideoProcessingController {
 
   constructor(public reference: Reference | undefined) {}
 
+  // static
+
+  public static ManifestNameRegex = /(manifest|audio|[0-9]{3,}p)\.(mpd|m3u8)$/
+  public static MediaManifestNameRegex = /(audio|[0-9]{3,}p)\.(mpd|m3u8)$/
+  public static MediaNameRegex = (quality?: string) =>
+    new RegExp(`(${quality ?? "audio|[0-9]{3,}p"}).(ts|mp4|webm)$`)
+
   // encoding methods
 
   public async startEncoding(inputFile: File) {
@@ -467,5 +474,14 @@ export default class VideoProcessingController {
     this.uploadingFile = undefined
     this.uploadingLevel = undefined
     this.uploadingChunk = undefined
+  }
+
+  // utils
+
+  public mediaSizeFromName(name: string) {
+    const quality = name.match(VideoProcessingController.MediaManifestNameRegex)?.[1] ?? "-"
+    const regex = VideoProcessingController.MediaNameRegex(quality)
+    const media = this.filesWithSizes.find(file => regex.test(file.name))
+    return media?.size ?? 0
   }
 }
