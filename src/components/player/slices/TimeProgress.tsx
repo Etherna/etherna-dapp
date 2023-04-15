@@ -12,6 +12,24 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
  */
+import React from "react"
 
-export { default as usePlayerState } from "./usePlayerState"
+import Time from "@/components/media/Time"
+import usePlayerStore from "@/stores/player"
+
+const TimeProgress: React.FC = () => {
+  const currentTime = usePlayerStore(state => state.currentTime)
+  const duration = usePlayerStore(state => state.duration)
+
+  return (
+    <div className="text-xs font-medium tracking-tighter text-gray-200 sm:text-sm">
+      <Time duration={currentTime} />
+      <span> / </span>
+      <Time duration={duration} />
+    </div>
+  )
+}
+
+export default TimeProgress

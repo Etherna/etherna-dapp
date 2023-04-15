@@ -14,24 +14,17 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback } from "react"
+import React from "react"
 
 import { ReactComponent as FullScreenIcon } from "@/assets/icons/player/fullscreen.svg"
 
-import PlayerToolbarButton from "./PlayerToolbarButton"
-import { PlayerReducerTypes } from "@/context/player-context"
-import { usePlayerState } from "@/context/player-context/hooks"
+import ToolbarButton from "./ToolbarButton"
+import usePlayerStore from "@/stores/player"
 
-const PlayerFullScreenButton: React.FC = () => {
-  const [, dispatch] = usePlayerState()
+const FullScreenButton: React.FC = () => {
+  const toggleFullScreen = usePlayerStore(state => state.toggleFullScreen)
 
-  const toggleFullscreen = useCallback(() => {
-    dispatch({
-      type: PlayerReducerTypes.TOGGLE_FULLSCREEN,
-    })
-  }, [dispatch])
-
-  return <PlayerToolbarButton icon={<FullScreenIcon aria-hidden />} onClick={toggleFullscreen} />
+  return <ToolbarButton icon={<FullScreenIcon aria-hidden />} onClick={toggleFullScreen} />
 }
 
-export default PlayerFullScreenButton
+export default FullScreenButton

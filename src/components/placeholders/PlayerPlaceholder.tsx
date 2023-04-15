@@ -20,7 +20,7 @@ import { Skeleton } from "@/components/ui/display"
 
 const PlayerPlaceholder = () => {
   return (
-    <Skeleton className="mt-12 mb-8 w-full">
+    <Skeleton className="mb-8 w-full">
       <div className="h-32 pb-[56.25%]" />
     </Skeleton>
   )

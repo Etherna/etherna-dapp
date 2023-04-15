@@ -20,13 +20,12 @@ import { ExclamationCircleIcon } from "@heroicons/react/24/outline"
 import { LockClosedIcon } from "@heroicons/react/24/solid"
 import { ReactComponent as CreditErrorIcon } from "@/assets/icons/credit-error.svg"
 
-import { usePlayerState } from "@/context/player-context/hooks"
+import usePlayerStore from "@/stores/player"
 import classNames from "@/utils/classnames"
 
-const PlayerErrorBanner: React.FC = () => {
+const ErrorBanner: React.FC = () => {
   const [description, setDescription] = useState("")
-  const [state] = usePlayerState()
-  const { error } = state
+  const error = usePlayerStore(state => state.error)
 
   useEffect(() => {
     if (error) {
@@ -84,4 +83,4 @@ const PlayerErrorBanner: React.FC = () => {
   )
 }
 
-export default PlayerErrorBanner
+export default ErrorBanner

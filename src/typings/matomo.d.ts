@@ -34,13 +34,17 @@ type MediaAnalytics = {
   }
   mediaType: { AUDIO: "Audio"; VIDEO: "Video" }
   element: {
-    getAttribute(node: HTMLMediaElement, attribute: string): string
-    getMediaResource(node: HTMLMediaElement, actualSrc: string): string
-    getMediaTitle(node: HTMLMediaElement): string
-    hasCssClass(node: HTMLMediaElement, className: string): boolean
-    isFullscreen(node: HTMLMediaElement): boolean
-    isMediaIgnored(node: HTMLMediaElement): boolean
-    setAttribute(node: HTMLMediaElement, attribute: string, value: string): void
+    getAttribute(node: HTMLMediaElement | HTMLVmPlayerElement, attribute: string): string
+    getMediaResource(node: HTMLMediaElement | HTMLVmPlayerElement, actualSrc: string): string
+    getMediaTitle(node: HTMLMediaElement | HTMLVmPlayerElement): string
+    hasCssClass(node: HTMLMediaElement | HTMLVmPlayerElement, className: string): boolean
+    isFullscreen(node: HTMLMediaElement | HTMLVmPlayerElement): boolean
+    isMediaIgnored(node: HTMLMediaElement | HTMLVmPlayerElement): boolean
+    setAttribute(
+      node: HTMLMediaElement | HTMLVmPlayerElement,
+      attribute: string,
+      value: string
+    ): void
   }
 }
 

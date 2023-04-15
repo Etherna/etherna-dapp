@@ -18,29 +18,22 @@ import React, { useCallback, useRef, useState } from "react"
 
 import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid"
 
+import usePlayerStore from "@/stores/player"
 import classNames from "@/utils/classnames"
+import { clamp } from "@/utils/math"
 
-type PlayerTouchOverlayProps = {
-  floating?: boolean
-  isPlaying?: boolean
+type TouchOverlayProps = {
   focus?: boolean
   skipBySeconds?: number
-  onFocus?(): void
-  onPlayPause?(): void
-  onSkipPrev?(): void
-  onSkipNext?(): void
 }
 
-const PlayerTouchOverlay: React.FC<PlayerTouchOverlayProps> = ({
-  floating,
-  focus,
-  isPlaying = false,
-  skipBySeconds = 5,
-  onFocus,
-  onPlayPause,
-  onSkipPrev,
-  onSkipNext,
-}) => {
+const TouchOverlay: React.FC<TouchOverlayProps> = ({ focus, skipBySeconds = 5 }) => {
+  const isPlaying = usePlayerStore(state => state.isPlaying)
+  const currentTime = usePlayerStore(state => state.currentTime)
+  const duration = usePlayerStore(state => state.duration)
+  const floating = usePlayerStore(state => state.floating)
+  const setCurrentTime = usePlayerStore(state => state.setCurrentTime)
+  const togglePlay = usePlayerStore(state => state.togglePlay)
   const [skippedTo, setSkippedTo] = useState<"prev" | "next">()
   const clickTimer = useRef<number>()
   const skippedTimer = useRef<number>()
@@ -79,17 +72,15 @@ const PlayerTouchOverlay: React.FC<PlayerTouchOverlayProps> = ({
         const skipPrev = relativeX < container.current!.offsetWidth / 2
 
         if (skipPrev) {
-          onSkipPrev?.()
+          setCurrentTime(clamp(currentTime - skipBySeconds, 0, duration))
           showSkipped("prev")
         } else {
-          onSkipNext?.()
+          setCurrentTime(clamp(currentTime + skipBySeconds, 0, duration))
           showSkipped("next")
         }
-      } else {
-        clickTimer.current = window.setTimeout(() => onFocus?.(), 300)
       }
     },
-    [isDoubleTouch, onFocus, onSkipNext, onSkipPrev, showSkipped]
+    [skipBySeconds, currentTime, duration, showSkipped, isDoubleTouch, setCurrentTime]
   )
 
   return (
@@ -170,7 +161,7 @@ const PlayerTouchOverlay: React.FC<PlayerTouchOverlayProps> = ({
       {focus && (
         <button
           className="rounded-full bg-white p-2 text-black absolute-center"
-          onClick={onPlayPause}
+          onClick={togglePlay}
         >
           {isPlaying ? <PauseIcon width={32} /> : <PlayIcon width={32} />}
         </button>
@@ -179,4 +170,4 @@ const PlayerTouchOverlay: React.FC<PlayerTouchOverlayProps> = ({
   )
 }
 
-export default PlayerTouchOverlay
+export default TouchOverlay

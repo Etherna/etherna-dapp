@@ -12,11 +12,19 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *
  */
-import { useContext } from "react"
+import React from "react"
 
-import { PlayerContext } from ".."
+import { ReactComponent as PipIcon } from "@/assets/icons/player/pip.svg"
 
-const usePlayerState = () => useContext(PlayerContext)!
+import ToolbarButton from "./ToolbarButton"
+import usePlayerStore from "@/stores/player"
 
-export default usePlayerState
+const PiPButton: React.FC = () => {
+  const togglePiP = usePlayerStore(state => state.togglePiP)
+
+  return <ToolbarButton icon={<PipIcon aria-hidden />} onClick={togglePiP} />
+}
+
+export default PiPButton

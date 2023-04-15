@@ -19,8 +19,11 @@ import ReactDOM from "react-dom/client"
 
 import Root from "./app/Root"
 import prefetch from "./prefetch"
+import { getBasename } from "./routes"
 import unsupportedRender from "./unsupported-render"
 import { autoRedirect } from "./utils/automations"
+import { getAccessToken } from "./utils/jwt"
+import { registerSW } from "./utils/workers"
 
 // Automatically redirect from www to non-www
 autoRedirect()
@@ -38,4 +41,9 @@ unsupportedRender(async () => {
   const RootLegacy = (await import("./app/RootLegacy")).default
   const root = ReactDOM.createRoot(document.getElementById("root_legacy")!)
   root.render(<RootLegacy />)
+})
+
+// Register service workers
+registerSW(getBasename() + "/fetch-sw.js", () => {
+  navigator.serviceWorker.controller!.postMessage(JSON.stringify({ accessToken: getAccessToken() }))
 })

@@ -16,34 +16,27 @@
  */
 import React, { useCallback } from "react"
 
-import PlayerToolbarSelect from "./PlayerToolbarSelect"
-import { PlayerReducerTypes } from "@/context/player-context"
-import { usePlayerState } from "@/context/player-context/hooks"
+import PlayerToolbarSelect from "./ToolbarSelect"
+import usePlayerStore from "@/stores/player"
 
-const PlayerQuality: React.FC = () => {
-  const [state, dispatch] = usePlayerState()
-  const { currentQuality, sourceQualities, videoEl } = state
+import type { PlayerQuality } from "@/stores/player"
+
+const QualityControl: React.FC = () => {
+  const currentQuality = usePlayerStore(state => state.currentQuality)
+  const setCurrentQuality = usePlayerStore(state => state.setCurrentQuality)
+  const qualities = usePlayerStore(state => state.qualities)
 
   const updateQuality = useCallback(
     (option: { value: string }) => {
-      // Fix video element height jump
-      videoEl!.style.height = `${videoEl!.clientHeight}px`
-      setTimeout(() => {
-        videoEl!.style.height = ""
-      }, 500)
-
-      dispatch({
-        type: PlayerReducerTypes.SET_CURRENT_QUALITY,
-        currentQuality: option.value,
-      })
+      setCurrentQuality(option.value as PlayerQuality)
     },
-    [dispatch, videoEl]
+    [setCurrentQuality]
   )
 
   return (
     <PlayerToolbarSelect
       value={currentQuality ?? ""}
-      options={sourceQualities.map(quality => ({ value: quality, label: quality }))}
+      options={qualities.map(quality => ({ value: quality, label: quality }))}
       onSelect={updateQuality}
     >
       <span style={{ minWidth: "1.5rem" }}>{currentQuality}</span>
@@ -51,4 +44,4 @@ const PlayerQuality: React.FC = () => {
   )
 }
 
-export default PlayerQuality
+export default QualityControl

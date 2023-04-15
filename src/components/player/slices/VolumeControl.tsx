@@ -20,40 +20,28 @@ import { ReactComponent as MutedIcon } from "@/assets/icons/player/muted.svg"
 import { ReactComponent as VolumeLowIcon } from "@/assets/icons/player/volume-low.svg"
 import { ReactComponent as VolumeIcon } from "@/assets/icons/player/volume.svg"
 
-import PlayerToolbarButton from "./PlayerToolbarButton"
+import ToolbarButton from "./ToolbarButton"
 import { Slider } from "@/components/ui/inputs"
-import { PlayerReducerTypes } from "@/context/player-context"
-import { usePlayerState } from "@/context/player-context/hooks"
+import usePlayerStore from "@/stores/player"
 import { isTouchDevice } from "@/utils/browser"
 import classNames from "@/utils/classnames"
 
-const PlayerVolume: React.FC = () => {
+const VolumeControl: React.FC = () => {
   const [isTouch] = useState(isTouchDevice())
-  const [state, dispatch] = usePlayerState()
-  const { muted, volume } = state
-
-  const toggleMute = useCallback(
-    (e: React.MouseEvent) => {
-      dispatch({
-        type: PlayerReducerTypes.TOGGLE_MUTED,
-        muted: !muted,
-      })
-    },
-    [dispatch, muted]
-  )
+  const muted = usePlayerStore(state => state.muted)
+  const volume = usePlayerStore(state => state.volume)
+  const setVolume = usePlayerStore(state => state.setVolume)
+  const toggleMute = usePlayerStore(state => state.toggleMute)
 
   const updateVolume = useCallback(
     (value: number | number[] | null | undefined) => {
-      dispatch({
-        type: PlayerReducerTypes.UPDATE_VOLUME,
-        volume: value as number,
-      })
+      setVolume(value as number)
     },
-    [dispatch]
+    [setVolume]
   )
 
   return (
-    <PlayerToolbarButton
+    <ToolbarButton
       icon={muted === true ? <MutedIcon /> : volume < 0.25 ? <VolumeLowIcon /> : <VolumeIcon />}
       onClick={isTouch ? undefined : toggleMute}
       hasMenu
@@ -108,8 +96,8 @@ const PlayerVolume: React.FC = () => {
         )}
         onChange={updateVolume}
       />
-    </PlayerToolbarButton>
+    </ToolbarButton>
   )
 }
 
-export default PlayerVolume
+export default VolumeControl

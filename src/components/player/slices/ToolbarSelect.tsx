@@ -20,19 +20,14 @@ import { Listbox } from "@headlessui/react"
 import { isTouchDevice } from "@/utils/browser"
 import classNames from "@/utils/classnames"
 
-type PlayerToolbarSelectProps = {
+type ToolbarSelectProps = {
   children?: React.ReactNode
   value: string
   options: { value: string; label: string }[]
   onSelect?(optionValue?: string | { value: string } | undefined): void
 }
 
-const PlayerToolbarSelect: React.FC<PlayerToolbarSelectProps> = ({
-  children,
-  value,
-  options,
-  onSelect,
-}) => {
+const ToolbarSelect: React.FC<ToolbarSelectProps> = ({ children, value, options, onSelect }) => {
   const [isTouch] = useState(isTouchDevice())
   const toggleEl = useRef<HTMLButtonElement>(null)
 
@@ -112,4 +107,4 @@ const PlayerToolbarSelect: React.FC<PlayerToolbarSelectProps> = ({
   )
 }
 
-export default PlayerToolbarSelect
+export default ToolbarSelect

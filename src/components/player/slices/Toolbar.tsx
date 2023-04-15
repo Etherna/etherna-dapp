@@ -16,31 +16,33 @@
  */
 import React from "react"
 
-import PlayerFullScreenButton from "./PlayerFullScreenButton"
-import PlayerPiPButton from "./PlayerPiPButton"
-import PlayerPlayButton from "./PlayerPlayButton"
-import PlayerPlaybackSpeed from "./PlayerPlaybackSpeed"
-import PlayerQuality from "./PlayerQuality"
-import PlayerTimeProgress from "./PlayerTimeProgress"
-import PlayerToolbarProgress from "./PlayerToolbarProgress"
-import PlayerVolume from "./PlayerVolume"
+import FullScreenButton from "./FullScreenButton"
+import PiPButton from "./PiPButton"
+import PlayButton from "./PlayButton"
+import PlaybackSpeed from "./PlaybackSpeed"
+import Quality from "./QualityControl"
+import TimeProgress from "./TimeProgress"
+import VideoProgress from "./VideoProgress"
+import Volume from "./VolumeControl"
+import usePlayerStore from "@/stores/player"
 import classNames from "@/utils/classnames"
 
-type PlayerToolbarProps = {
-  floating?: boolean
-  focus?: boolean
+type ToolbarProps = {
+  focus: boolean
 }
 
-const PlayerToolbar: React.FC<PlayerToolbarProps> = ({ floating, focus }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ focus }) => {
+  const floating = usePlayerStore(state => state.floating)
+
   return (
     <div
-      className={classNames("flex flex-col", {
+      className={classNames("flex w-full flex-col", {
         "bg-slate-700 dark:bg-slate-800": !floating,
         "bg-gradient-to-t from-black to-black/0 px-3 pt-12": floating,
       })}
       data-component="player-toolbar"
     >
-      <PlayerToolbarProgress focus={focus} />
+      <VideoProgress focus={focus} />
 
       <div
         className={classNames("flex items-center space-x-3 py-1 sm:space-x-4 sm:p-3 md:space-x-8", {
@@ -49,23 +51,23 @@ const PlayerToolbar: React.FC<PlayerToolbarProps> = ({ floating, focus }) => {
         })}
       >
         <div className="mr-auto flex items-center space-x-1 sm:space-x-3">
-          <PlayerPlayButton />
-          <PlayerTimeProgress />
+          <PlayButton />
+          <TimeProgress />
         </div>
 
         <div className="flex items-center space-x-1 md:space-x-2">
-          <PlayerPlaybackSpeed />
-          <PlayerQuality />
+          <PlaybackSpeed />
+          <Quality />
         </div>
 
         <div className="flex items-center space-x-1 md:space-x-2">
-          <PlayerVolume />
-          {"pictureInPictureEnabled" in document && <PlayerPiPButton />}
-          <PlayerFullScreenButton />
+          <Volume />
+          {"pictureInPictureEnabled" in document && <PiPButton />}
+          <FullScreenButton />
         </div>
       </div>
     </div>
   )
 }
 
-export default PlayerToolbar
+export default Toolbar

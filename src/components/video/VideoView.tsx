@@ -14,7 +14,7 @@
  *  limitations under the License.
  *
  */
-import React, { useEffect, useMemo, useCallback } from "react"
+import React, { useEffect, useMemo, useCallback, useRef } from "react"
 import removeMarkdown from "remove-markdown"
 
 import VideoJsonLd from "./VideoJsonLd"
@@ -57,9 +57,9 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
   const posterUrl = useMemo(() => {
     const posterUrl = video?.preview.thumbnail?.sources.sort((a, b) => b.width - a.width)?.[0]?.url
     if (posterUrl) {
-      return posterUrl
+      return posterUrl + "?appendToken=true"
     }
-    return null
+    return undefined
   }, [video])
 
   useEffect(() => {
@@ -115,7 +115,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
           title={video?.preview.title || reference}
           owner={profile}
           sources={video?.details?.sources ?? []}
-          thumbnailUrl={posterUrl}
+          posterUrl={posterUrl}
           embed
         />
       ) : (
@@ -127,7 +127,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
                 title={video?.preview.title || reference}
                 owner={profile}
                 sources={video?.details?.sources ?? []}
-                thumbnailUrl={posterUrl}
+                posterUrl={posterUrl}
               />
 
               {video && (

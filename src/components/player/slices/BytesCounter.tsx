@@ -16,18 +16,21 @@
  */
 import React, { useMemo } from "react"
 
-import { usePlayerState } from "@/context/player-context/hooks"
+import usePlayerStore from "@/stores/player"
 import useSessionStore from "@/stores/session"
 import useUserStore from "@/stores/user"
 import classNames from "@/utils/classnames"
 import { convertTime } from "@/utils/converters"
 
-const PlayerBytesCounter: React.FC = () => {
-  const [state] = usePlayerState()
-  const { sourceSize, duration, currentTime } = state
+const BytesCounter: React.FC = () => {
+  const currentTime = usePlayerStore(state => state.currentTime)
+  const duration = usePlayerStore(state => state.duration)
+  const currentSource = usePlayerStore(state => state.currentSource)
 
   const bytePrice = useSessionStore(state => state.bytesPrice)
   const credit = useUserStore(state => state.credit)
+
+  const sourceSize = currentSource?.size
 
   const [watchablePercent, remainingSeconds] = useMemo(() => {
     if (!bytePrice || bytePrice === 0 || credit == null) return [null, null]
@@ -102,4 +105,4 @@ const PlayerBytesCounter: React.FC = () => {
   )
 }
 
-export default PlayerBytesCounter
+export default BytesCounter

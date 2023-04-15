@@ -18,17 +18,18 @@ import React, { useCallback, useMemo, useRef, useState } from "react"
 
 import Time from "@/components/media/Time"
 import { Slider } from "@/components/ui/inputs"
-import { PlayerReducerTypes } from "@/context/player-context"
-import { usePlayerState } from "@/context/player-context/hooks"
+import usePlayerStore from "@/stores/player"
 import classNames from "@/utils/classnames"
 
-type PlayerToolbarProgressProps = {
-  focus?: boolean
+type VideoProgressProps = {
+  focus: boolean
 }
 
-const PlayerToolbarProgress: React.FC<PlayerToolbarProgressProps> = ({ focus }) => {
-  const [state, dispatch] = usePlayerState()
-  const { buffering, currentTime, duration } = state
+const VideoProgress: React.FC<VideoProgressProps> = ({ focus }) => {
+  const buffered = usePlayerStore(state => state.buffered)
+  const currentTime = usePlayerStore(state => state.currentTime)
+  const duration = usePlayerStore(state => state.duration)
+  const setCurrentTime = usePlayerStore(state => state.setCurrentTime)
   const [tooltipValue, setTooltipValue] = useState<number>()
   const [isHover, setIsHover] = useState(false)
   const progressContainer = useRef<HTMLDivElement>(null)
@@ -40,14 +41,11 @@ const PlayerToolbarProgress: React.FC<PlayerToolbarProgressProps> = ({ focus }) 
   }, [isHover, tooltipValue, focus])
 
   const updateCurrentTime = useCallback(
-    (val: number) => {
+    (valPercent: number) => {
       setTooltipValue(undefined)
-      dispatch({
-        type: PlayerReducerTypes.UPDATE_PROGRESS,
-        atPercent: val / 100,
-      })
+      setCurrentTime((valPercent / 100) * duration)
     },
-    [dispatch]
+    [duration, setCurrentTime]
   )
 
   return (
@@ -59,10 +57,10 @@ const PlayerToolbarProgress: React.FC<PlayerToolbarProgressProps> = ({ focus }) 
     >
       <Slider
         className="duration-200; h-1 w-full transition"
-        value={currentTime * 100}
+        value={currentTime}
         min={0}
-        max={100}
-        step={0.001}
+        max={duration}
+        step={0.1}
         renderTrack={(_, { index, value }) => (
           <div
             className={classNames("h-full cursor-pointer bg-gray-600", {
@@ -70,8 +68,8 @@ const PlayerToolbarProgress: React.FC<PlayerToolbarProgressProps> = ({ focus }) 
             })}
             style={{
               position: "absolute",
-              left: index === 0 ? 0 : `${value}%`,
-              right: index === 1 ? 0 : `${100 - value}%`,
+              left: index === 0 ? 0 : `${(value / duration) * 100}%`,
+              right: index === 1 ? 0 : `${100 - (value / duration) * 100}%`,
             }}
             key={index}
           />
@@ -88,7 +86,7 @@ const PlayerToolbarProgress: React.FC<PlayerToolbarProgressProps> = ({ focus }) 
             )}
             style={{
               ...props.style,
-              left: `${valueNow}%`,
+              left: `${(valueNow / duration) * 100}%`,
             }}
             onMouseDown={props.onMouseDown}
             onTouchStart={props.onTouchStart}
@@ -106,12 +104,12 @@ const PlayerToolbarProgress: React.FC<PlayerToolbarProgressProps> = ({ focus }) 
           />
         )}
         onSliderClick={updateCurrentTime}
-        onChange={val => setTooltipValue(val / 100)}
+        onChange={val => setTooltipValue(val)}
         onAfterChange={updateCurrentTime}
       />
       <div
         className="pointer-events-none absolute left-0 top-0 h-full bg-primary-300/20"
-        style={{ width: `${buffering * 100}%` }}
+        style={{ width: `${(buffered / duration) * 100}%` }}
       />
       <span
         className={classNames(
@@ -124,15 +122,17 @@ const PlayerToolbarProgress: React.FC<PlayerToolbarProgressProps> = ({ focus }) 
         )}
         style={{
           left:
-            (tooltipValue ?? currentTime) * (progressContainer.current?.clientWidth ?? 0) < 16
+            ((tooltipValue ?? currentTime) / duration) *
+              (progressContainer.current?.clientWidth ?? 0) <
+            16
               ? 12
-              : `${tooltipValue ?? currentTime * 100}%`,
+              : `${((tooltipValue ?? currentTime) / duration) * 100}%`,
         }}
       >
-        <Time duration={(tooltipValue ?? currentTime) * duration} />
+        <Time duration={tooltipValue ?? currentTime} />
       </span>
     </div>
   )
 }
 
-export default PlayerToolbarProgress
+export default VideoProgress

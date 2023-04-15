@@ -16,23 +16,19 @@
  */
 import React, { useCallback } from "react"
 
-import PlayerToolbarSelect from "./PlayerToolbarSelect"
-import { PlayerReducerTypes } from "@/context/player-context"
-import { usePlayerState } from "@/context/player-context/hooks"
+import PlayerToolbarSelect from "./ToolbarSelect"
+import usePlayerStore from "@/stores/player"
 
-const PlayerPlaybackSpeed: React.FC = () => {
-  const [state, dispatch] = usePlayerState()
-  const { playbackRate } = state
+const PlaybackSpeed: React.FC = () => {
+  const playbackRate = usePlayerStore(state => state.playbackRate)
+  const setPlaybackRate = usePlayerStore(state => state.setPlaybackRate)
   const playbackTicks = [0.25, 0.5, 1, 1.25, 1.5, 1.75, 2]
 
   const updatePlaybackRate = useCallback(
     (option: { value: string }) => {
-      dispatch({
-        type: PlayerReducerTypes.UPDATE_PLAYBACK_RATE,
-        playbackRate: +option.value,
-      })
+      setPlaybackRate(+option.value)
     },
-    [dispatch]
+    [setPlaybackRate]
   )
 
   const optionLabel = useCallback((val: number) => `${val}`, [])
@@ -48,4 +44,4 @@ const PlayerPlaybackSpeed: React.FC = () => {
   )
 }
 
-export default PlayerPlaybackSpeed
+export default PlaybackSpeed

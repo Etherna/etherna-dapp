@@ -14,32 +14,31 @@
  *  limitations under the License.
  *
  */
-import React from "react"
+import React, { useCallback } from "react"
 
-import Logo from "@/components/common/Logo"
-import routes from "@/routes"
+import { ReactComponent as PauseIcon } from "@/assets/icons/player/pause.svg"
+import { ReactComponent as PlayIcon } from "@/assets/icons/player/play.svg"
+
+import usePlayerStore from "@/stores/player"
 import classNames from "@/utils/classnames"
 
-type PlayerWatchOnProps = {
-  hash: string
-}
+const PlayButton: React.FC = () => {
+  const isPlaying = usePlayerStore(state => state.isPlaying)
+  const togglePlay = usePlayerStore(state => state.togglePlay)
 
-const PlayerWatchOn: React.FC<PlayerWatchOnProps> = ({ hash }) => {
   return (
-    <a
+    <div
       className={classNames(
-        "inline-flex items-center space-x-3 p-3 sm:p-4",
-        "text-sm font-medium tracking-tight",
-        "bg-gray-800/60 text-white hover:text-white"
+        "z-0 h-6 w-6 rounded-full bg-gray-100 p-1.5 text-gray-900",
+        "md:h-8 md:w-8 md:p-2"
       )}
-      href={import.meta.env.VITE_APP_PUBLIC_URL + routes.watch(hash)}
-      target="_blank"
-      rel="noreferrer"
+      onClick={togglePlay}
+      role="button"
+      tabIndex={0}
     >
-      <span>Watch on</span>
-      <Logo className="h-5 grayscale" forceWhite />
-    </a>
+      {isPlaying ? <PauseIcon aria-hidden /> : <PlayIcon className="ml-px" aria-hidden />}
+    </div>
   )
 }
 
-export default PlayerWatchOn
+export default PlayButton

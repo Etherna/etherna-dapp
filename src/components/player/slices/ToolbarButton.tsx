@@ -18,19 +18,14 @@ import React, { useCallback, useRef } from "react"
 
 import classNames from "@/utils/classnames"
 
-type PlayerToolbarButtonProps = {
+type ToolbarButtonProps = {
   children?: React.ReactNode
   hasMenu?: boolean
   icon?: React.ReactElement<React.SVGAttributes<SVGElement>>
   onClick?(e: React.MouseEvent): void
 }
 
-const PlayerToolbarButton: React.FC<PlayerToolbarButtonProps> = ({
-  children,
-  icon,
-  hasMenu,
-  onClick,
-}) => {
+const ToolbarButton: React.FC<ToolbarButtonProps> = ({ children, icon, hasMenu, onClick }) => {
   const menuEl = useRef<HTMLDivElement>(null)
 
   const handleClick = useCallback(
@@ -80,4 +75,4 @@ const PlayerToolbarButton: React.FC<PlayerToolbarButtonProps> = ({
   )
 }
 
-export default PlayerToolbarButton
+export default ToolbarButton
