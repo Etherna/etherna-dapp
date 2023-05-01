@@ -207,7 +207,7 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
           <ExtensionHostsList
             hosts={extensionsList ?? []}
             selectedExtensionUrl={currentUrl}
-            allowDelete={host => !EthernaUrls.includes(host.url)}
+            allowEditing={host => !EthernaUrls.includes(host.url)}
             onSelect={selectHost}
             onEdit={editHost}
             onDelete={ext => askToDeleteExtension(ext.url)}

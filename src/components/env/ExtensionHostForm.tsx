@@ -14,7 +14,7 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback, useMemo } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid"
 
@@ -24,7 +24,7 @@ import { Alert, FormGroup, Label } from "@/components/ui/display"
 import type { ExtensionParamConfig } from "./ExtensionHostPanel"
 import type { GatewayExtensionHost, IndexExtensionHost } from "@/types/extension-host"
 
-const swarmExtensionUrl =
+const swarmChromeExtensionUrl =
   "https://chrome.google.com/webstore/detail/ethereum-swarm-extension/afpgelfcknfbbfnipnomfdbbnbbemnia"
 
 type ExtensionHostFormProps<T extends IndexExtensionHost | GatewayExtensionHost> = {
@@ -38,11 +38,13 @@ const ExtensionHostForm = <T extends IndexExtensionHost | GatewayExtensionHost>(
   params,
   onChange,
 }: ExtensionHostFormProps<T>) => {
+  const [swarmExtensionUrl, setSwarmExtensionUrl] = useState<string | null>()
+
   const paramsValues = useMemo(() => {
     return params.reduce(
       (values, param) => ({
         ...values,
-        [param.key]: (value?.[param.key as keyof T] ?? "") as string,
+        [param.key]: (value?.[param.key as keyof T] ?? param.default ?? "") as string,
       }),
       {} as Record<keyof T, string>
     )
@@ -61,6 +63,24 @@ const ExtensionHostForm = <T extends IndexExtensionHost | GatewayExtensionHost>(
     }
     return false
   }, [paramsValues, isGatewayExtension])
+
+  useEffect(() => {
+    if (isBeeInstanceGatewayType && swarmExtensionUrl === undefined) {
+      const exposedUrl = "http://swarm.fakeurl.localhost/bee-api"
+      fetch(exposedUrl)
+        .then(response => {
+          if (response.status === 200) {
+            setSwarmExtensionUrl(exposedUrl)
+          } else {
+            setSwarmExtensionUrl(null)
+          }
+        })
+        .catch(error => {
+          setSwarmExtensionUrl(null)
+        })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onParamChange = useCallback(
     (key: keyof T, val: string) => {
@@ -87,7 +107,22 @@ const ExtensionHostForm = <T extends IndexExtensionHost | GatewayExtensionHost>(
             />
 
             {param.key === "url" &&
+              isBeeInstanceGatewayType &&
+              swarmExtensionUrl &&
+              paramsValues.url !== swarmExtensionUrl && (
+                <span>
+                  We detected the swarm extension.{" "}
+                  <button
+                    className="font-bold"
+                    onClick={() => onParamChange(param.key as keyof T, swarmExtensionUrl)}
+                  >
+                    Import url from extension
+                  </button>
+                </span>
+              )}
+            {param.key === "url" &&
               paramsValues.url?.startsWith("http://") &&
+              paramsValues.url !== swarmExtensionUrl &&
               isBeeInstanceGatewayType && (
                 <Alert
                   color="warning"
@@ -97,7 +132,7 @@ const ExtensionHostForm = <T extends IndexExtensionHost | GatewayExtensionHost>(
                   <span>
                     To use an insecure connection, you should install the <wbr />
                     <strong>
-                      <a href={swarmExtensionUrl} target="_blank" rel="noreferrer">
+                      <a href={swarmChromeExtensionUrl} target="_blank" rel="noreferrer">
                         swarm extension
                       </a>
                     </strong>

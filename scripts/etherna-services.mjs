@@ -146,6 +146,7 @@ const execBee = () => {
     process.env.BEE_MODE === "dev" ? "dev" : "start",
     `--admin-password='${adminPassword}'`,
     `--restricted`,
+    `--cors-allowed-origins='*'`,
     ...(process.env.BEE_MODE === "testnet" ? testnetParams : []),
   ]
   const execCms = `bee ${params.join(" ")}`

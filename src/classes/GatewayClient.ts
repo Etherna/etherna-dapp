@@ -1,5 +1,5 @@
 import { EthernaGatewayClient } from "@etherna/api-js/clients"
-import { isSafeURL, urlOrigin } from "@etherna/api-js/utils"
+import { isSafeURL } from "@etherna/api-js/utils"
 
 import extensionsStore from "@/stores/extensions"
 
@@ -21,9 +21,7 @@ export default class GatewayClient extends EthernaGatewayClient {
 
   static defaultUrl(): string {
     const currentGatewayUrl = extensionsStore.getState().currentGatewayUrl
-    return urlOrigin(
-      isSafeURL(currentGatewayUrl) ? currentGatewayUrl : import.meta.env.VITE_APP_INDEX_URL
-    )!
+    return isSafeURL(currentGatewayUrl) ? currentGatewayUrl : import.meta.env.VITE_APP_INDEX_URL
   }
 
   static get apiPath(): string {
