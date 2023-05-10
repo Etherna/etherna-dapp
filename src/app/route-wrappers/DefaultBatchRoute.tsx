@@ -21,10 +21,10 @@ import BatchLoading from "@/components/common/BatchLoading"
 import { AlertPopup } from "@/components/ui/actions"
 import { Spinner } from "@/components/ui/display"
 import useDefaultBatch from "@/hooks/useDefaultBatch"
-import useExtensionsStore from "@/stores/extensions"
+import useSessionStore from "@/stores/session"
 
 const DefaultBatchRoute: React.FC = () => {
-  const gatewayType = useExtensionsStore(state => state.currentGatewayType)
+  const isFreePostageBatchConsumed = useSessionStore(state => state.isFreePostageBatchConsumed)
   const {
     isFetchingBatch,
     isCreatingBatch,
@@ -54,7 +54,7 @@ const DefaultBatchRoute: React.FC = () => {
                 type={isCreatingBatch ? "creating" : "fetching"}
                 error={!!error}
                 message={
-                  error && gatewayType === "etherna-gateway"
+                  isFreePostageBatchConsumed
                     ? "Come back in a few minutes. If your batch isn't created create new one manually."
                     : error
                 }

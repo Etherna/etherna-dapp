@@ -36,6 +36,7 @@ type UseBatchesOpts = {
   saveAfterCreate?: boolean
 }
 
+export const DEFAULT_BATCH_QUERY = "default" // this will match welcome postage with manually created ones
 export const DEFAULT_BATCH_LABEL = "user-default-stamp"
 
 export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: false }) {
@@ -98,7 +99,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
   const fetchBestUsableBatch = useCallback(async (): Promise<GatewayBatch | null> => {
     try {
       if (gatewayType === "etherna-gateway") {
-        const batchesPreviews = await gatewayClient.users.fetchBatches(DEFAULT_BATCH_LABEL)
+        const batchesPreviews = await gatewayClient.users.fetchBatches(DEFAULT_BATCH_QUERY)
         batchesCount.current = batchesPreviews.length
 
         for (const batchPreview of batchesPreviews.reverse()) {
@@ -114,7 +115,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
       } else {
         await waitAuth()
 
-        const batches = await beeClient.stamps.downloadAll(DEFAULT_BATCH_LABEL)
+        const batches = await beeClient.stamps.downloadAll(DEFAULT_BATCH_QUERY)
         batchesCount.current = batches.length
         const bestBatch = batches
           .reverse()

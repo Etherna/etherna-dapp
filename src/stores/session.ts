@@ -16,12 +16,14 @@ export type SessionState = {
     title: number
     description: number
   }
+  isFreePostageBatchConsumed?: boolean
 }
 
 export type SessionActions = {
   setApiVersion(url: string, version: string): void
   setBytesPrice(bytesPrice: number | undefined): void
   setCharaterLimits(comment: number, title: number, description: number): void
+  setFreePostageBatchConsumed(isFreePostageBatchConsumed: boolean): void
 }
 
 const getInitialState = (): SessionState => ({
@@ -56,6 +58,11 @@ const useSessionStore = create<SessionState & SessionActions>()(
                 title,
                 description,
               }
+            })
+          },
+          setFreePostageBatchConsumed(isFreePostageBatchConsumed) {
+            set(state => {
+              state.isFreePostageBatchConsumed = isFreePostageBatchConsumed
             })
           },
         })),
