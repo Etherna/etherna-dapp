@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import { ReactComponent as FullScreenIcon } from "@/assets/icons/player/fullscreen.svg"

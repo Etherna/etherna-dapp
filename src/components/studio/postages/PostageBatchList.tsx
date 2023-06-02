@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { BatchesHandler } from "@etherna/api-js/handlers"
 import { BatchUpdateType, useBatchesStore } from "@etherna/api-js/stores"

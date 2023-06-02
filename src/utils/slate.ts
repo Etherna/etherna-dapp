@@ -13,13 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import markdown from "remark-parse"
 import slate, { serialize } from "remark-slate"
 import { Editor, Element, Text, Transforms } from "slate"
 import { unified } from "unified"
 
 import type { InputNodeTypes, NodeTypes } from "remark-slate"
-import type { BaseEditor, Descendant, BaseRange, Node, NodeEntry } from "slate"
+import type { BaseEditor, BaseRange, Descendant, Node, NodeEntry } from "slate"
 import type { ReactEditor } from "slate-react"
 
 export type SlateDescendant = SlateElement | SlateText

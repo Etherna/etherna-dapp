@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useMemo, useRef, useState } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import { Transition } from "@headlessui/react"
@@ -141,7 +142,7 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
       {iconSvg && (
         <div
           className={classNames("h-5 w-5 shrink-0", {
-            "mt-0 mr-5": isSubmenu,
+            "mr-5 mt-0": isSubmenu,
           })}
         >
           {iconSvg}
@@ -215,7 +216,7 @@ const TabbarMenuItem: React.FC<TabbarMenuItemProps> = props => {
           className={classNames(
             "fixed inset-x-0 bottom-16 z-10 flex flex-col-reverse space-y-4 space-y-reverse p-4 mb-safe",
             "bg-gray-50/80 dark:bg-gray-900/80",
-            "border-t border-b border-gray-700/20 dark:border-gray-400/20",
+            "border-b border-t border-gray-700/20 dark:border-gray-400/20",
             "backdrop-blur-lg"
           )}
         >

@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { persist, devtools, createJSONStorage } from "zustand/middleware"
+import { createJSONStorage, devtools, persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"

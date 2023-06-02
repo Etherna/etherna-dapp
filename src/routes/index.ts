@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import routes from "./routes"
 
 export { default as getBasename } from "./getBasename"

@@ -1,8 +1,10 @@
-const { default: postcss } = require("postcss")
-const plugin = require("tailwindcss/plugin")
+import plugin from "tailwindcss/plugin"
 
-/** @type {import('tailwindcss/types').Config} */
-module.exports = {
+import postcss from "postcss"
+
+import type { Config } from "tailwindcss/types/config"
+
+export default {
   content: ["./index.html", "./public/**/*.html", "./src/**/*.tsx"],
   darkMode: "class",
   theme: {
@@ -104,10 +106,10 @@ module.exports = {
         },
         "tick-fade": {
           "0%": {
-            opacity: 1,
+            opacity: "1",
           },
           "100%": {
-            opacity: 0.1,
+            opacity: "0.1",
           },
         },
         spinSlow: {
@@ -124,13 +126,13 @@ module.exports = {
         },
         skip: {
           "0%": {
-            opacity: 0.2,
+            opacity: "0.2",
           },
           "70%": {
-            opacity: 1,
+            opacity: "1",
           },
           "100%": {
-            opacity: 1,
+            opacity: "1",
           },
         },
       },
@@ -150,11 +152,10 @@ module.exports = {
   plugins: [
     require("@tailwindcss/typography"),
     require("@tailwindcss/forms"),
-    require("@tailwindcss/line-clamp"),
     require("tailwind-scrollbar"),
     require("tailwindcss-safe-area"),
     require("vidstack/tailwind.cjs"),
-    plugin(({ addUtilities, addVariant, addComponents, e, matchUtilities, theme }) => {
+    plugin(({ addUtilities, addVariant, matchUtilities, theme }) => {
       const utils = {
         ".absolute-center": {
           position: "absolute",
@@ -166,7 +167,7 @@ module.exports = {
         },
       }
 
-      addUtilities(utils, ["responsive"])
+      addUtilities(utils)
 
       matchUtilities(
         {
@@ -177,33 +178,12 @@ module.exports = {
         { values: theme("textShadow") }
       )
 
-      const components = {}
-
-      addComponents(components, ["responsive"])
-
-      addVariant("landscape-touch", ({ container, separator }) => {
-        const landscapeRule = postcss.atRule({
-          name: "media",
-          params: "(orientation: landscape) and (max-width: 1024px) and (pointer: coarse)",
-        })
-        landscapeRule.append(container.nodes)
-        container.append(landscapeRule)
-        landscapeRule.walkRules(rule => {
-          rule.selector = `.${e(`landscape-touch${separator}${rule.selector.slice(1)}`)}`
-        })
-      })
-
-      addVariant("floating-sidebar", ({ modifySelectors, separator }) => {
-        modifySelectors(({ className }) => {
-          return `[data-sidebar-floating="true"] .${e(`floating-sidebar${separator}${className}`)}`
-        })
-      })
-
-      addVariant("fixed-sidebar", ({ modifySelectors, separator }) => {
-        modifySelectors(({ className }) => {
-          return `[data-sidebar-floating="false"] .${e(`fixed-sidebar${separator}${className}`)}`
-        })
-      })
+      addVariant(
+        "landscape-touch",
+        "@media (orientation: landscape) and (max-width: 1024px) and (pointer: coarse)"
+      )
+      addVariant("floating-sidebar", "[data-sidebar-floating='true'] &")
+      addVariant("fixed-sidebar", "[data-sidebar-floating='false'] &")
     }),
   ],
-}
+} satisfies Config

@@ -115,7 +115,7 @@ const VideoProgress: React.FC<VideoProgressProps> = ({ className, focus }) => {
       />
       <span
         className={classNames(
-          "absolute left-0 bottom-0 mb-5 -translate-x-1/2 rounded-sm px-1 py-0.5",
+          "absolute bottom-0 left-0 mb-5 -translate-x-1/2 rounded-sm px-1 py-0.5",
           "origin-center scale-0 transition-transform duration-200",
           "bg-gray-900 text-xs font-medium text-white",
           {

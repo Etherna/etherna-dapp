@@ -53,7 +53,7 @@ const ToolbarSelect: React.FC<ToolbarSelectProps> = ({ children, value, options,
 
       <Portal>
         <div
-          className={classNames("z-20 pt-1 pb-10 transition-opacity duration-200", {
+          className={classNames("z-20 pb-10 pt-1 transition-opacity duration-200", {
             "pointer-events-none opacity-0": !showMenu,
             "pointer-events-auto opacity-100 ": showMenu,
           })}

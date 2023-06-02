@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback } from "react"
 
 import { ReactComponent as PauseIcon } from "@/assets/icons/player/pause.svg"

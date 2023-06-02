@@ -14,8 +14,9 @@
  *  limitations under the License.
  *
  */
+
 import React, { lazy, Suspense } from "react"
-import { Routes, Route, useLocation, Navigate } from "react-router-dom"
+import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 
 import AppLayoutRoute from "./route-wrappers/AppLayoutRoute"
 import AuthenticateRoute from "./route-wrappers/AuthenticateRoute"

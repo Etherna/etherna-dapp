@@ -6,7 +6,7 @@ import {
 } from "@etherna/api-js/utils"
 import produce from "immer"
 import { create } from "zustand"
-import { persist, devtools } from "zustand/middleware"
+import { devtools, persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"

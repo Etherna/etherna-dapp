@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import { BeeClient } from "@etherna/api-js/clients"
 import { VideoDeserializer } from "@etherna/api-js/serializers"
 import { urlOrigin } from "@etherna/api-js/utils"

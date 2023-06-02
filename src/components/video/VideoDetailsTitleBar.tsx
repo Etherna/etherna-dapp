@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import classNames from "@/utils/classnames"
@@ -29,7 +30,7 @@ const VideoDetailsTitleBar: React.FC<VideoDetailsTitleBarProps> = ({ title, chil
       <h1
         className={classNames(
           "mb-0 max-w-full flex-1 flex-grow overflow-hidden",
-          "text-ellipsis text-2xl font-semibold line-clamp-4",
+          "line-clamp-4 text-ellipsis text-2xl font-semibold",
           {
             "opacity-50": !title,
           }

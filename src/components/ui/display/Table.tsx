@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useState } from "react"
 
 import { Checkbox } from "@/components/ui/inputs"
@@ -119,7 +120,7 @@ const Table = <T, A>({
               {showSelection && (
                 <th
                   className={classNames(
-                    "py-2 px-1 text-left font-medium leading-none text-gray-600 dark:text-gray-200",
+                    "px-1 py-2 text-left font-medium leading-none text-gray-600 dark:text-gray-200",
                     "border-b border-gray-300 dark:border-gray-700"
                   )}
                   style={{ width: "32px" }}

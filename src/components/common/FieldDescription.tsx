@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import Text from "@/components/ui/display/Text"

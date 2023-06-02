@@ -1,4 +1,4 @@
-import { VideoReader, VideoBuilder } from "@etherna/api-js/swarm"
+import { VideoBuilder, VideoReader } from "@etherna/api-js/swarm"
 
 const SwarmVideo = {
   Reader: VideoReader,

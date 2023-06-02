@@ -13,10 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import { PlayerKeymap } from "./keymaps/player"
 import { deepCloneObject } from "@/utils/object"
 
-import type { Shortcuts, KeymapNamespace } from "@/types/keyboard"
+import type { KeymapNamespace, Shortcuts } from "@/types/keyboard"
 
 export { PlayerActions } from "./keymaps/player"
 

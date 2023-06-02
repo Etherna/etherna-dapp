@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useMemo, useRef } from "react"
 
 import { Button, Modal } from "@/components/ui/actions"
@@ -120,7 +121,7 @@ const VideoMigrationModal: React.FC<VideoMigrationModalProps> = ({
             {videos.map(video => (
               <tr key={video.reference}>
                 <td>
-                  <span className="text-ellipsis line-clamp-1">{video.preview.title}</span>
+                  <span className="line-clamp-1 text-ellipsis">{video.preview.title}</span>
                 </td>
                 <td className="w-px whitespace-nowrap pl-4">
                   {migrationStatus[video.reference]?.status === "downloading" && (

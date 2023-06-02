@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, {
   forwardRef,
   useCallback,
@@ -25,7 +26,7 @@ import React, {
 import isHotkey from "is-hotkey"
 import { createEditor, Transforms } from "slate"
 import { withHistory } from "slate-history"
-import { withReact, Slate, Editable, useSlate } from "slate-react"
+import { Editable, Slate, useSlate, withReact } from "slate-react"
 
 import { ReactComponent as BoldIcon } from "@/assets/icons/rte/bold.svg"
 import { ReactComponent as CodeBlockIcon } from "@/assets/icons/rte/code-block.svg"
@@ -53,7 +54,7 @@ import {
   withExtra,
 } from "@/utils/slate"
 
-import type { SlateElement, TextLeaf, ElementBlockType, inferBlockTypeValue } from "@/utils/slate"
+import type { ElementBlockType, inferBlockTypeValue, SlateElement, TextLeaf } from "@/utils/slate"
 import type { Descendant } from "slate"
 
 type SlateMarkdownEditorProps = {

@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { forwardRef, useContext, useState } from "react"
 import { usePopper } from "react-popper"
 import { Menu as HLMenu } from "@headlessui/react"
@@ -225,7 +226,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
 }
 
 const MenuSeparator: React.FC = () => (
-  <hr className="my-2 -mx-2 block bg-gray-400 dark:bg-gray-600" />
+  <hr className="-mx-2 my-2 block bg-gray-400 dark:bg-gray-600" />
 )
 
 const MenuContext = React.createContext<

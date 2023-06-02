@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useState, useEffect, useMemo, useCallback } from "react"
+
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import { ReactComponent as VoteIcon } from "@/assets/icons/player/upvote.svg"
 

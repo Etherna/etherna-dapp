@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useState } from "react"
 
 import classNames from "@/utils/classnames"
@@ -154,7 +155,7 @@ const ProgressTab: React.FC<ProgressTabProps> & {
   return (
     <div
       className={classNames(
-        "flex flex-col space-y-8 md:flex-row md:space-y-0 md:space-x-6 xl:space-x-8",
+        "flex flex-col space-y-8 md:flex-row md:space-x-6 md:space-y-0 xl:space-x-8",
         className
       )}
       id={id}

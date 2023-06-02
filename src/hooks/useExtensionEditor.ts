@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import useUIStore from "@/stores/ui"
 
 export default function useExtensionEditor() {

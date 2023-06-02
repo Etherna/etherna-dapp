@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import Lang from "lang.js"
 
 import PlayerEn from "./shortcuts/player.en"

@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect } from "react"
 import Tippy from "@tippyjs/react"
 
@@ -108,7 +109,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
         <div
           className={classNames(
             "ml-4 flex w-full flex-col space-y-4 md:ml-0",
-            "md:flex-row md:items-start md:justify-between md:space-y-0 md:space-x-4"
+            "md:flex-row md:items-start md:justify-between md:space-x-4 md:space-y-0"
           )}
         >
           <Skeleton show={isLoading}>

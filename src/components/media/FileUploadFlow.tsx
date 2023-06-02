@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useState, useImperativeHandle, useEffect, useCallback } from "react"
+
+import React, { useCallback, useEffect, useImperativeHandle, useState } from "react"
 import { fileToBuffer } from "@etherna/api-js/utils"
 
 import FileDrag from "./FileDrag"

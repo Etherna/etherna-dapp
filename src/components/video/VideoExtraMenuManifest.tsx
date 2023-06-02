@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
 import { extractVideoReferences } from "@etherna/api-js/utils"

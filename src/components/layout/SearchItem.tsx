@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useMatomo } from "@datapunt/matomo-tracker-react"
@@ -55,7 +56,7 @@ const SearchItem: React.FC = () => {
   return showInput ? (
     <div
       className={classNames(
-        "absolute left-1 top-1 right-1 z-20 py-1.5 md:relative md:top-0",
+        "absolute left-1 right-1 top-1 z-20 py-1.5 md:relative md:top-0",
         "rounded-md bg-gray-200 dark:bg-gray-800"
       )}
     >

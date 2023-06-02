@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 
 import usePlayerStore from "@/stores/player"
@@ -57,7 +58,7 @@ const BytesCounter: React.FC = () => {
   return (
     <div
       className={classNames(
-        "mt-4 mb-6 flex items-center text-xs font-medium",
+        "mb-6 mt-4 flex items-center text-xs font-medium",
         "text-gray-700 dark:text-gray-300"
       )}
       data-component="player-bytes-counter"

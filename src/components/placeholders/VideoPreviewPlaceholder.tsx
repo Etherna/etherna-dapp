@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import { Skeleton } from "@/components/ui/display"
@@ -46,7 +47,7 @@ const VideoPreviewPlaceholder: React.FC<VideoPreviewPlaceholderProps> = ({
       </Skeleton>
       <div
         className={classNames("items-top mt-2 flex flex-1", {
-          "sm:mt-0 sm:ml-2": direction === "horizontal",
+          "sm:ml-2 sm:mt-0": direction === "horizontal",
         })}
       >
         {!mini && (

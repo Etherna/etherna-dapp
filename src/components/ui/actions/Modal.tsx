@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { Fragment, useCallback, useRef } from "react"
 import { Dialog, Transition } from "@headlessui/react"
 
@@ -77,7 +78,7 @@ const Modal: React.FC<ModalProps> = ({
         tabIndex={0}
         data-component="modal"
       >
-        <div className="flex min-h-screen items-center justify-center py-4 px-4 text-center">
+        <div className="flex min-h-screen items-center justify-center px-4 py-4 text-center">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -120,7 +121,7 @@ const Modal: React.FC<ModalProps> = ({
               )}
             >
               {showCloseButton && (
-                <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
+                <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                   <button
                     type="button"
                     className={classNames(
@@ -136,7 +137,7 @@ const Modal: React.FC<ModalProps> = ({
                 </div>
               )}
 
-              <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+              <div className="px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start sm:space-x-4">
                   {icon && (
                     <div

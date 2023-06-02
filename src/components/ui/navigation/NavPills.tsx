@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import classNames from "@/utils/classnames"
@@ -40,7 +41,7 @@ const NavPillsItem: React.FC<NavPillsItemProps> = ({ children, active, vertical,
         {
           "text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-800": !active,
           "bg-primary-500/70 text-gray-50 dark:bg-primary-500/50 dark:text-gray-50": active,
-          "mr-0 mb-2 w-full last:mb-0": vertical,
+          "mb-2 mr-0 w-full last:mb-0": vertical,
         }
       )}
       onClick={onClick}

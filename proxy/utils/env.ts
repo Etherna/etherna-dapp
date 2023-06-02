@@ -13,9 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import dotenv from "dotenv"
+
 import fs from "fs"
 import path from "path"
+import dotenv from "dotenv"
 
 const envPath = fs.existsSync(path.resolve("../.env.development"))
   ? path.resolve("../.env.development")

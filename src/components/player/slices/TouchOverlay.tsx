@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useRef, useState } from "react"
 
 import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid"
@@ -94,7 +95,7 @@ const TouchOverlay: React.FC<TouchOverlayProps> = ({ focus, skipBySeconds = 5 })
       <div
         className={classNames(
           "flex items-center space-x-2 px-2 py-1",
-          "absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full rounded-full",
+          "absolute left-1/2 top-0 -translate-x-1/2 -translate-y-full rounded-full",
           "border border-gray-900/20 bg-white shadow-lg shadow-gray-900/10",
           "text-xs font-medium text-gray-800",
           "transition-transform duration-200 ease-out",

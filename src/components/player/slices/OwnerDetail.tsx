@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import { Avatar } from "@/components/ui/display"
@@ -41,7 +42,7 @@ const OwnerDetail: React.FC<OwnerDetailProps> = ({ hash, title, owner }) => {
         "opacity-0": isPlaying,
       })}
     >
-      <div className="bg-gradient-to-b from-black/40 to-black/0 pt-3 pb-6 pl-3">
+      <div className="bg-gradient-to-b from-black/40 to-black/0 pb-6 pl-3 pt-3">
         <a
           className="flex items-start text-base font-medium md:text-lg"
           href={import.meta.env.VITE_APP_PUBLIC_URL + routes.watch(hash)}
@@ -53,7 +54,7 @@ const OwnerDetail: React.FC<OwnerDetailProps> = ({ hash, title, owner }) => {
               <Avatar size="fill" image={owner.avatar} address={owner.address} />
             </div>
           )}
-          <div className="pt-1 leading-tight text-white shadow-black/75 drop-shadow line-clamp-1 md:pt-3 lg:line-clamp-3">
+          <div className="line-clamp-1 pt-1 leading-tight text-white shadow-black/75 drop-shadow md:pt-3 lg:line-clamp-3">
             <span>{title}</span>
             {owner && (
               <>

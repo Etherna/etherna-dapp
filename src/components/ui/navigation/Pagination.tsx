@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useState } from "react"
 import { Listbox } from "@headlessui/react"
 
@@ -155,7 +156,7 @@ const PaginationSetting: React.FC<PaginationSettingProps> = ({
       </Listbox.Button>
       <Listbox.Options
         className={classNames(
-          "absolute top-0 left-1/2 max-h-[60vh] min-w-[4rem] -translate-y-full -translate-x-1/2 overflow-y-auto",
+          "absolute left-1/2 top-0 max-h-[60vh] min-w-[4rem] -translate-x-1/2 -translate-y-full overflow-y-auto",
           "-mt-2 flex flex-col items-center space-y-1 rounded px-3 py-2",
           "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
           "shadow-md shadow-gray-100/20 dark:shadow-gray-800/20"

@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import { urlOrigin } from "@etherna/api-js/utils"
 
 import { parseLocalStorage } from "./local-storage"

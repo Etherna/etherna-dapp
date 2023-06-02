@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useMemo } from "react"
 
 import { Label } from "@/components/ui/display"
@@ -146,7 +147,7 @@ const TextInput: React.FC<TextInputProps> & { CharactersLimit: typeof TextInputC
         <Field
           id={id}
           className={classNames(
-            "block w-full appearance-none rounded-lg border py-3 px-3 leading-tight",
+            "block w-full appearance-none rounded-lg border px-3 py-3 leading-tight",
             "border-gray-200 bg-gray-400/5 placeholder-gray-400",
             "dark:border-gray-800  dark:bg-gray-100/5 dark:placeholder-gray-500",
             "dark:focus:border-green-500 dark:focus:bg-transparent",

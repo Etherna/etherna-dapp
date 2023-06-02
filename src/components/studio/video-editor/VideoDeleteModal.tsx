@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useMemo, useState } from "react"
 
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
@@ -86,7 +87,7 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
         <div className="relative w-full sm:min-h-24 sm:w-1/3">
           {videos.slice(0, 3).map((video, i) => (
             <div
-              className={classNames("absolute top-0 left-0 z-[2] h-[80%] w-[91%]", {
+              className={classNames("absolute left-0 top-0 z-[2] h-[80%] w-[91%]", {
                 "z-[1] ml-[3%] mt-[3%]": i === 1,
                 "z-[0] ml-[6%] mt-[6%]": i === 2,
               })}

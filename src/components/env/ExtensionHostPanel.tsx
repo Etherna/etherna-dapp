@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useMemo, useState } from "react"
 import { isSafeURL } from "@etherna/api-js/utils"
 
-import { TrashIcon, PlusIcon } from "@heroicons/react/24/solid"
+import { PlusIcon, TrashIcon } from "@heroicons/react/24/solid"
 
 import ExtensionHostForm from "./ExtensionHostForm"
 import ExtensionHostsList from "./ExtensionHostsList"

@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+
 import type { State, StateCreator, StoreMutatorIdentifier } from "zustand"
 
 type Logger = <

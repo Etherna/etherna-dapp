@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { memo, useCallback } from "react"
 
 import useShortcuts from "@/hooks/useShortcuts"

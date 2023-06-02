@@ -14,8 +14,9 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
-import { MatomoProvider, createInstance } from "@datapunt/matomo-tracker-react"
+import { createInstance, MatomoProvider } from "@datapunt/matomo-tracker-react"
 
 const MatomoProviderFix = MatomoProvider as React.FC<any>
 

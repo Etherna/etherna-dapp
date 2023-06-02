@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import type { Profile, Video, VideoPreview } from "@etherna/api-js"
 

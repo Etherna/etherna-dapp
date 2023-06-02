@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { forwardRef } from "react"
 
 import VideoPreviewPlaceholder from "@/components/placeholders/VideoPreviewPlaceholder"
@@ -43,7 +44,7 @@ const VideoGrid = forwardRef<HTMLDivElement, VideoGridProps>(
     return (
       <>
         {label && (
-          <div className="mt-4 mb-3">
+          <div className="mb-3 mt-4">
             <LabelTag>{label}</LabelTag>
           </div>
         )}

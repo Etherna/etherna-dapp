@@ -14,16 +14,17 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Link, Navigate } from "react-router-dom"
 import { urlHostname } from "@etherna/api-js/utils"
 
 import {
-  TrashIcon,
-  PencilIcon,
-  InformationCircleIcon,
   BoltIcon,
   ExclamationCircleIcon,
+  InformationCircleIcon,
+  PencilIcon,
+  TrashIcon,
 } from "@heroicons/react/24/solid"
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 

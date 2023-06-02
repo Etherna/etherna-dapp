@@ -15,6 +15,7 @@
  */
 
 /* eslint-disable no-restricted-imports */
+
 import FilterTransformStream from "../classes/FilterTransformStream.js"
 import defaultProxyResponse from "./default-proxy-response.js"
 

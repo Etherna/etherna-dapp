@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import { Link } from "react-router-dom"
 
@@ -30,7 +31,7 @@ type VideoDetailsProfileProps = {
 
 const VideoDetailsProfile: React.FC<VideoDetailsProfileProps> = ({ owner }) => {
   return (
-    <div className="mt-8 mb-4">
+    <div className="mb-4 mt-8">
       {owner?.address && (
         <Link to={routes.channel(owner.address)}>
           <div className="inline-flex items-center">

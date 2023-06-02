@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
 
@@ -118,7 +119,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
           {video.preview.duration && video.preview.duration > 0 && (
             <div
               className={classNames(
-                "absolute right-0 bottom-0 left-auto top-auto m-2 px-1.5 py-1",
+                "absolute bottom-0 left-auto right-0 top-auto m-2 px-1.5 py-1",
                 "rounded-sm text-2xs font-semibold leading-none",
                 "bg-gray-900 text-gray-100 sm:py-0.5 sm:text-xs"
               )}
@@ -131,7 +132,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
       <div
         className={classNames("flex space-x-2", {
           "mt-2": direction === "vertical",
-          "mt-2 sm:mt-0 sm:ml-2 sm:flex-1": direction === "horizontal",
+          "mt-2 sm:ml-2 sm:mt-0 sm:flex-1": direction === "horizontal",
         })}
       >
         {!hideProfile && profileLink && (
@@ -160,7 +161,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
               className={classNames(
                 "flex-grow text-base font-semibold leading-tight",
                 "text-gray-900 dark:text-gray-100",
-                "max-w-full overflow-hidden text-ellipsis line-clamp-2"
+                "line-clamp-2 max-w-full overflow-hidden text-ellipsis"
               )}
               title={video.preview.title}
             >

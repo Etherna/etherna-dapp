@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useState } from "react"
 
 import { ReactComponent as MutedIcon } from "@/assets/icons/player/muted.svg"
@@ -58,7 +59,7 @@ const VolumeControl: React.FC = () => {
         step={0.01}
         invert={true}
         orientation="vertical"
-        className="my-4 mx-auto h-32 w-2 touch-none rounded-full bg-white bg-opacity-50"
+        className="mx-auto my-4 h-32 w-2 touch-none rounded-full bg-white bg-opacity-50"
         renderTrack={(_, { index, value }) => (
           <div
             className={classNames("bottom-0 w-full rounded-full", {
@@ -74,7 +75,7 @@ const VolumeControl: React.FC = () => {
         )}
         renderThumb={(props, { valueNow }) => (
           <div
-            className="-ml-1.5 -mb-1.5 h-5 w-5 rounded-full bg-white"
+            className="-mb-1.5 -ml-1.5 h-5 w-5 rounded-full bg-white"
             style={{
               ...props.style,
               bottom: `${valueNow * 100}%`,

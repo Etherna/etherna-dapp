@@ -14,12 +14,13 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useState } from "react"
 
 import { ShieldCheckIcon } from "@heroicons/react/24/outline"
 
 import { Button, Modal } from "@/components/ui/actions"
-import { FormGroup, Alert } from "@/components/ui/display"
+import { Alert, FormGroup } from "@/components/ui/display"
 import { TextInput } from "@/components/ui/inputs"
 import useBeeAuthentication from "@/hooks/useBeeAuthentication"
 import useClientsStore from "@/stores/clients"
