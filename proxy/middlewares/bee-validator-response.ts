@@ -15,8 +15,6 @@
  */
 
 /* eslint-disable no-restricted-imports */
-import { Response } from "node-fetch"
-
 import FilterTransformStream from "../classes/FilterTransformStream.js"
 import defaultProxyResponse from "./default-proxy-response.js"
 
@@ -130,13 +128,9 @@ async function limitGatewayResponse(
 
     // Process body stream.
     const reader = response.body
-    const retStream = new FilterTransformStream(maxBodySize)
+    // const retStream = new FilterTransformStream(maxBodySize)
 
-    reader.on("close", async () => {
-      await notifyEndOfLimitedRequest(validatorHost, requestId, streamedBytes, requestSecret)
-    })
-
-    return new Response(reader.pipe(retStream), {
+    return new Response(reader, {
       headers: response.headers,
       status: isPartialResponse ? 206 : 200,
     })

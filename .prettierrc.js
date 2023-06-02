@@ -41,7 +41,5 @@ module.exports = {
     "<TYPES>^@/",
     "<TYPES>",
   ],
-  importOrderSeparation: false,
-  importOrderMergeDuplicateImports: true,
   plugins: [myPlugin],
 }

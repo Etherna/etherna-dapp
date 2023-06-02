@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback, useRef, useState } from "react"
-import { Listbox } from "@headlessui/react"
 
-import { isTouchDevice } from "@/utils/browser"
+import React, { useState } from "react"
+import { usePopper } from "react-popper"
+import { Listbox, Portal } from "@headlessui/react"
+
 import classNames from "@/utils/classnames"
 
 type ToolbarSelectProps = {
@@ -28,81 +29,63 @@ type ToolbarSelectProps = {
 }
 
 const ToolbarSelect: React.FC<ToolbarSelectProps> = ({ children, value, options, onSelect }) => {
-  const [isTouch] = useState(isTouchDevice())
-  const toggleEl = useRef<HTMLButtonElement>(null)
-
-  const toggleOpen = useCallback(() => {
-    const toggle = toggleEl.current
-    const isOpen = toggle?.ariaExpanded === "true"
-
-    !isOpen && toggleEl.current?.click()
-  }, [])
-
-  const toggleExit = useCallback(() => {
-    const toggle = toggleEl.current
-    const isOpen = toggle?.ariaExpanded === "true"
-
-    isOpen && toggleEl.current?.click()
-  }, [])
+  const [showMenu, setShowMenu] = useState(false)
+  const [buttonEl, setButtonEl] = useState<HTMLButtonElement | null>(null)
+  const [menuEl, setMenuEl] = useState<HTMLDivElement | null>(null)
+  const { styles, attributes } = usePopper(buttonEl, menuEl, {
+    placement: "top",
+  })
 
   return (
-    <div
-      className="relative"
-      onMouseEnter={!isTouch ? toggleOpen : undefined}
-      onMouseLeave={!isTouch ? toggleExit : undefined}
-    >
-      <Listbox value={value} onChange={val => onSelect?.(val)}>
-        {({ open }) => (
-          <>
-            <Listbox.Button
-              as="div"
-              role="button"
-              className={classNames(
-                "flex h-5 items-center rounded px-1.5 md:h-7 md:px-3",
-                "text-center text-xs font-semibold text-gray-200",
-                "bg-gray-500/50 backdrop-blur"
-              )}
-              ref={toggleEl}
-            >
-              {children}
-            </Listbox.Button>
-
-            <div
-              className={classNames(
-                "absolute left-1/2 bottom-0 ml-0",
-                "z-20 -translate-x-1/2 transform pb-10",
-                {
-                  "invisible opacity-0": !open,
-                  "visible opacity-100 transition-opacity duration-200": open,
-                }
-              )}
-            >
-              <Listbox.Options
-                className={classNames(
-                  "flex flex-col space-y-2 rounded px-2 py-4",
-                  "bg-gray-800/75 text-gray-200 backdrop-blur"
-                )}
-                static
-              >
-                {options.map(option => (
-                  <Listbox.Option
-                    className={classNames(
-                      "cursor-pointer px-2 text-center text-sm font-semibold focus:outline-none",
-                      {
-                        "text-primary-500": option.value === value,
-                      }
-                    )}
-                    key={option.value}
-                    value={option}
-                  >
-                    {option.label}
-                  </Listbox.Option>
-                ))}
-              </Listbox.Options>
-            </div>
-          </>
+    <div>
+      <button
+        className={classNames(
+          "flex h-5 items-center rounded px-1.5 md:h-7 md:px-3",
+          "text-center text-xs font-semibold text-gray-200",
+          "bg-gray-500/50 backdrop-blur"
         )}
-      </Listbox>
+        ref={el => el && el !== buttonEl && setButtonEl(el)}
+        onMouseOver={() => setShowMenu(true)}
+        onMouseLeave={() => setShowMenu(false)}
+      >
+        {children}
+      </button>
+
+      <Portal>
+        <div
+          className={classNames("z-20 pt-1 pb-10 transition-opacity duration-200", {
+            "pointer-events-none opacity-0": !showMenu,
+            "pointer-events-auto opacity-100 ": showMenu,
+          })}
+          ref={el => el && el !== menuEl && setMenuEl(el)}
+          style={{ ...styles.popper }}
+          {...attributes.popper}
+          onMouseOver={() => setShowMenu(true)}
+          onMouseLeave={() => setShowMenu(false)}
+        >
+          <ul
+            className={classNames(
+              "flex flex-col space-y-2 rounded px-2 py-4",
+              "bg-gray-800/75 text-gray-200 backdrop-blur"
+            )}
+          >
+            {options.map(option => (
+              <li
+                className={classNames(
+                  "cursor-pointer px-2 text-center text-sm font-semibold focus:outline-none",
+                  {
+                    "text-primary-500": option.value === value,
+                  }
+                )}
+                key={option.value}
+                onClick={() => onSelect?.(option.value)}
+              >
+                {option.label}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Portal>
     </div>
   )
 }

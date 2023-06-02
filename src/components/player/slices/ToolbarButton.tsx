@@ -14,7 +14,10 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback, useRef } from "react"
+
+import React, { useCallback, useRef, useState } from "react"
+import { usePopper } from "react-popper"
+import { Portal } from "@headlessui/react"
 
 import classNames from "@/utils/classnames"
 
@@ -26,48 +29,63 @@ type ToolbarButtonProps = {
 }
 
 const ToolbarButton: React.FC<ToolbarButtonProps> = ({ children, icon, hasMenu, onClick }) => {
-  const menuEl = useRef<HTMLDivElement>(null)
+  const [showMenu, setShowMenu] = useState(false)
+  const [buttonEl, setButtonEl] = useState<HTMLDivElement | null>(null)
+  const [menuEl, setMenuEl] = useState<HTMLDivElement | null>(null)
+  const { styles, attributes } = usePopper(buttonEl, menuEl, {
+    placement: "top",
+  })
 
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
       const target = e.target as HTMLDivElement
-      if (menuEl.current?.contains(target) || target === menuEl.current) return
+      if (menuEl?.contains(target) || target === menuEl) return
 
       onClick?.(e)
     },
-    [onClick]
+    [menuEl, onClick]
   )
 
   return (
     <div
       className={classNames(
-        "group relative z-1 h-7 w-7 rounded-full p-1.5 md:h-8 md:w-8 md:p-[0.425rem]",
+        "group z-1 h-7 w-7 rounded-full p-1.5 md:h-8 md:w-8 md:p-[0.425rem]",
         "bg-gray-500/50 text-gray-200 backdrop-blur"
       )}
-      onClick={handleClick}
       role="button"
+      ref={el => el && el !== buttonEl && setButtonEl(el)}
+      onClick={handleClick}
+      onMouseOver={() => setShowMenu(true)}
+      onMouseLeave={() => setShowMenu(false)}
     >
       {icon}
 
       {hasMenu ? (
-        <div
-          className={classNames(
-            "invisible absolute left-1/2 bottom-0 opacity-0",
-            "z-20 -translate-x-1/2 transform pb-10",
-            "hover:visible hover:opacity-100 hover:transition-opacity hover:duration-200",
-            "group-hover:visible group-hover:opacity-100 group-hover:transition-opacity group-hover:duration-200"
-          )}
-        >
+        <Portal>
           <div
             className={classNames(
-              "flex flex-col space-y-2 rounded-full px-4 py-4",
-              "bg-gray-800/75 text-gray-200 backdrop-blur"
+              "pointer-events-none fixed py-1 opacity-0",
+              "z-20 pb-10 transition-opacity duration-300",
+              {
+                "pointer-events-auto opacity-100": showMenu,
+              }
             )}
-            ref={menuEl}
+            ref={el => el && el !== menuEl && setMenuEl(el)}
+            style={{ ...styles.popper }}
+            {...attributes.popper}
+            onMouseOver={() => setShowMenu(true)}
+            onMouseLeave={() => setShowMenu(false)}
           >
-            {children}
+            <div
+              className={classNames(
+                "flex flex-col space-y-2 rounded-full px-4 py-4",
+                "bg-gray-800/75 text-gray-200 backdrop-blur"
+              )}
+            >
+              {children}
+            </div>
           </div>
-        </div>
+        </Portal>
       ) : (
         children
       )}

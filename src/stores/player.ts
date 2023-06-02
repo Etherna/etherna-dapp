@@ -1,3 +1,4 @@
+import { isHLSProvider } from "vidstack"
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
@@ -7,6 +8,7 @@ import { isTouchDevice } from "@/utils/browser"
 
 import type { VideoQuality, VideoSource } from "@etherna/api-js"
 import type { WritableDraft } from "immer/dist/internal"
+import type { MediaPlayerElement } from "vidstack"
 
 export type PlayerQuality = "Auto" | "Audio" | VideoQuality
 
@@ -67,61 +69,87 @@ type SetFunc = (setFunc: (state: WritableDraft<PlayerState>) => void) => void
 type GetFunc = () => PlayerState
 
 // move out from store to improve devtools performance
-let player: HTMLVmPlayerElement
+let player: MediaPlayerElement
+
+const getHls = () => {
+  if (!player) return null
+  const provider = player.provider
+  if (isHLSProvider(provider)) return provider.instance
+  return null
+}
+
+const setHlsQuality = (quality: PlayerQuality) => {
+  const hls = getHls()
+  if (!hls) return
+  const levels = hls.levels
+  const qualityLevelIndex = levels.findIndex(l => l.height === parseInt(quality))
+  hls.currentLevel = quality === "Auto" ? -1 : qualityLevelIndex
+}
 
 const actions = (set: SetFunc, get: GetFunc) => ({
-  loadPlayer(playerInstance: HTMLVmPlayerElement) {
+  loadPlayer(playerInstance: MediaPlayerElement) {
     player = playerInstance
-    player.addEventListener("vmPausedChange", e => {
-      const event = e as CustomEvent<boolean>
+
+    player.$store.qualities()
+
+    player.addEventListener("hls-manifest-loaded", e => {
+      setHlsQuality(get().currentQuality || PLAYER_INITIAL_QUALITY)
+    })
+    player.addEventListener("play", e => {
       set(state => {
-        state.isPlaying = !event.detail
-        if (player.playing) {
-          state.isBuffering = false
-        }
+        state.isPlaying = true
+        state.isBuffering = false
       })
     })
-    player.addEventListener("vmBufferingChange", e => {
+    player.addEventListener("pause", e => {
       set(state => {
-        state.isBuffering = player.buffering
-        state.buffered = player.buffered
+        state.isPlaying = false
       })
     })
-    player.addEventListener("vmPlaybackStarted", e => {
+    player.addEventListener("waiting", e => {
+      set(state => {
+        state.isBuffering = player.$store.waiting()
+        state.buffered = player.$store.bufferedEnd()
+      })
+    })
+    player.addEventListener("user-idle-change", () => {
+      set(state => {
+        state.isIdle = player.$store.userIdle()
+      })
+    })
+    player.addEventListener("playing", e => {
       set(state => {
         state.isBuffering = false
         state.error = undefined
       })
     })
-    player.addEventListener("vmVolumeChange", e => {
+    player.addEventListener("duration-change", e => {
+      set(state => {
+        state.duration = player.$store.duration()
+      })
+    })
+    player.addEventListener("volume-change", e => {
       set(state => {
         state.volume = player.volume
         state.muted = player.muted
       })
     })
-    player.addEventListener("vmPlaybackRatesChange", e => {
+    player.addEventListener("rate-change", e => {
       set(state => {
         state.playbackRate = player.playbackRate
       })
     })
-    player.addEventListener("vmDurationChange", e => {
-      const event = e as CustomEvent<number>
+    player.addEventListener("time-update", e => {
       set(state => {
-        state.duration = event.detail
+        state.currentTime = player.$store.currentTime()
       })
     })
-    player.addEventListener("vmCurrentTimeChange", e => {
-      const event = e as CustomEvent<number>
-      set(state => {
-        state.currentTime = event.detail
-      })
-    })
-    player.addEventListener("vmPlaybackEnded", e => {
+    player.addEventListener("ended", e => {
       set(state => {
         state.isPlaying = false
       })
     })
-    player.addEventListener("vmError", e => {
+    player.addEventListener("error", e => {
       set(state => {
         state.isBuffering = false
       })
@@ -173,7 +201,7 @@ const actions = (set: SetFunc, get: GetFunc) => ({
         localStorage.setItem(QUALITY_STORAGE_KEY, quality)
       }
 
-      player.playbackQuality = quality
+      setHlsQuality(quality)
     })
   },
   setCurrentTime(time: number) {
@@ -214,7 +242,25 @@ const actions = (set: SetFunc, get: GetFunc) => ({
         player.play()
       }
 
-      state.isPlaying = player.playing
+      state.isPlaying = player.$store.playing()
+    })
+  },
+  startPlaying() {
+    set(state => {
+      if (!player) return
+
+      const onLoadStart = () => {
+        player.removeEventListener("loaded-data", onLoadStart)
+        player.play()
+        state.isPlaying = true
+      }
+
+      player.addEventListener("loaded-data", onLoadStart)
+
+      const hlsProvider = getHls()
+      if (hlsProvider) {
+        hlsProvider.startLoad()
+      }
     })
   },
   toggleMute() {
@@ -226,7 +272,7 @@ const actions = (set: SetFunc, get: GetFunc) => ({
   },
   toggleFullScreen() {
     if (!player) return
-    if (player.isFullscreenActive) {
+    if (player.$store.fullscreen()) {
       player.exitFullscreen()
     } else {
       player.enterFullscreen()
@@ -234,10 +280,10 @@ const actions = (set: SetFunc, get: GetFunc) => ({
   },
   togglePiP() {
     if (!player) return
-    if (player.isPiPActive) {
-      player.exitPiP()
+    if (player.$store.pictureInPicture()) {
+      player.exitPictureInPicture()
     } else {
-      player.enterPiP()
+      player.enterPictureInPicture()
     }
   },
 })

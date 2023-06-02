@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useMemo, useRef, useState } from "react"
 
 import Time from "@/components/media/Time"
@@ -22,10 +23,11 @@ import usePlayerStore from "@/stores/player"
 import classNames from "@/utils/classnames"
 
 type VideoProgressProps = {
+  className?: string
   focus: boolean
 }
 
-const VideoProgress: React.FC<VideoProgressProps> = ({ focus }) => {
+const VideoProgress: React.FC<VideoProgressProps> = ({ className, focus }) => {
   const buffered = usePlayerStore(state => state.buffered)
   const currentTime = usePlayerStore(state => state.currentTime)
   const duration = usePlayerStore(state => state.duration)
@@ -50,7 +52,7 @@ const VideoProgress: React.FC<VideoProgressProps> = ({ focus }) => {
 
   return (
     <div
-      className={classNames("relative w-full")}
+      className={classNames("relative w-full", className)}
       onMouseOver={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
       ref={progressContainer}

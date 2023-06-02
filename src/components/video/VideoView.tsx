@@ -14,7 +14,8 @@
  *  limitations under the License.
  *
  */
-import React, { useEffect, useMemo, useCallback, useRef } from "react"
+
+import React, { useCallback, useEffect, useMemo } from "react"
 import removeMarkdown from "remove-markdown"
 
 import VideoJsonLd from "./VideoJsonLd"
@@ -121,13 +122,14 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
       ) : (
         <div className="mb-16">
           <Container fluid align="center" noPaddingX noPaddingY>
-            <div className="col lg:w-3/4">
+            <div className="w-full lg:w-3/4">
               <Player
                 hash={reference}
                 title={video?.preview.title || reference}
                 owner={profile}
                 sources={video?.details?.sources ?? []}
                 posterUrl={posterUrl}
+                aspectRatio={video?.details?.aspectRatio}
               />
 
               {video && (

@@ -14,12 +14,13 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import FullScreenButton from "./FullScreenButton"
 import PiPButton from "./PiPButton"
-import PlayButton from "./PlayButton"
 import PlaybackSpeed from "./PlaybackSpeed"
+import PlayButton from "./PlayButton"
 import Quality from "./QualityControl"
 import TimeProgress from "./TimeProgress"
 import VideoProgress from "./VideoProgress"
@@ -38,7 +39,8 @@ const Toolbar: React.FC<ToolbarProps> = ({ focus }) => {
     <div
       className={classNames("flex w-full flex-col", {
         "bg-slate-700 dark:bg-slate-800": !floating,
-        "bg-gradient-to-t from-black to-black/0 px-3 pt-12": floating,
+        "absolute bottom-0 bg-gradient-to-t from-black to-black/0 px-3 pt-12 user-idle:hidden paused:flex":
+          floating,
       })}
       data-component="player-toolbar"
     >

@@ -1,6 +1,9 @@
 import React, { forwardRef, useCallback, useMemo, useRef, useState } from "react"
-import { ClickToPlay, Controls, Dash, File, Hls, Player, Spinner, Ui, ViewType } from "@vime/react"
+import { MediaBufferingIndicator, MediaOutlet, MediaPlayer } from "@vidstack/react"
+import { isHLSProvider } from "vidstack"
 
+import BufferingIndicator from "./slices/BufferingIndicator"
+import ClickToPlay from "./slices/ClickToPlay"
 import ErrorBanner from "./slices/ErrorBanner"
 import OwnerDetail from "./slices/OwnerDetail"
 import Toolbar from "./slices/Toolbar"
@@ -11,6 +14,7 @@ import usePlayerStore from "@/stores/player"
 import { isTouchDevice } from "@/utils/browser"
 
 import type { Profile, VideoSource } from "@etherna/api-js"
+import type { MediaPlayerElement } from "vidstack"
 
 type PlayerVideoProps = {
   title?: string
@@ -19,6 +23,7 @@ type PlayerVideoProps = {
   posterUrl?: string
   embed?: boolean
   owner: Profile | undefined | null
+  aspectRatio?: number | null
   xhrSetup?(xhr: XMLHttpRequest): void
   onPlaybackError?(): void
 }
@@ -26,11 +31,13 @@ type PlayerVideoProps = {
 const DEFAULT_SKIP = 5
 const ACTIVE_TIMEOUT = 3000
 
-const PlayerVideo = forwardRef<HTMLVmPlayerElement, PlayerVideoProps>(
-  ({ title, hash, source, posterUrl, owner, embed, xhrSetup, onPlaybackError }, ref) => {
+const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
+  (
+    { title, hash, source, posterUrl, owner, embed, aspectRatio, xhrSetup, onPlaybackError },
+    ref
+  ) => {
     const isPlaying = usePlayerStore(state => state.isPlaying)
     const currentTime = usePlayerStore(state => state.currentTime)
-    const currentQuality = usePlayerStore(state => state.currentQuality)
     const isBuffering = usePlayerStore(state => state.isBuffering)
     const error = usePlayerStore(state => state.error)
     const [isFocus, setIsFocus] = useState(false)
@@ -54,83 +61,57 @@ const PlayerVideo = forwardRef<HTMLVmPlayerElement, PlayerVideoProps>(
     }, [isTouch, startFocusTimeout])
 
     return (
-      <Player
+      <MediaPlayer
+        className="relative"
+        src={src}
+        poster={posterUrl}
+        aspectRatio={aspectRatio || 16 / 9}
+        onProviderChange={e => {
+          const provider = e.detail
+          if (isHLSProvider(provider)) {
+            provider.config.autoStartLoad = false
+            provider.config.maxBufferLength = 3
+            provider.config.xhrSetup = xhrSetup
+          }
+        }}
+        onMouseEnter={onMouseEnter}
+        onError={onPlaybackError}
         ref={ref}
-        viewType={ViewType.Video}
         data-matomo-title={title}
-        playbackQuality={currentQuality}
-        // onMouseEnter={onMouseEnter}
+        data-src={src}
       >
-        {source && (
+        <MediaOutlet className="aspect-[var(--media-aspect-ratio)] h-auto w-full [&_video]:w-full" />
+
+        {error && <ErrorBanner />}
+
+        {!error && (
           <>
-            {source.type === "mp4" && (
-              <File
-                preload="none"
-                poster={posterUrl}
-                crossOrigin="anonymous"
-                onError={onPlaybackError}
-              >
-                <source src={src} type="video/mp4" />
-              </File>
+            {currentTime === 0 && !isPlaying && !isBuffering && (
+              <VideoStarter posterUrl={posterUrl} />
             )}
-            {source.type === "hls" && (
-              <Hls
-                version="latest"
-                config={{ xhrSetup }}
-                poster={posterUrl}
-                crossOrigin="anonymous"
-                preload="none"
-                onError={onPlaybackError}
-              >
-                <source src={src} type="application/x-mpegURL" />
-              </Hls>
+
+            {(isPlaying || currentTime > 0) && (
+              <>
+                <ClickToPlay />
+                <Toolbar focus={isFocus} />
+              </>
             )}
-            {source.type === "dash" && (
-              <Dash
-                onError={onPlaybackError}
-                src={src}
-                version="latest"
-                config={{ modifyRequestHeader: xhrSetup }}
-                poster={posterUrl}
-                crossOrigin="anonymous"
-                preload="none"
-              />
+
+            {embed && (
+              <>
+                <OwnerDetail hash={hash} title={title || "Untitled"} owner={owner} />
+                <WatchOn hash={hash} />
+              </>
             )}
+
+            {isTouchDevice() && currentTime > 0 && (
+              <TouchOverlay focus={isFocus} skipBySeconds={DEFAULT_SKIP} />
+            )}
+
+            <BufferingIndicator />
           </>
         )}
-
-        <Ui>
-          {error && <ErrorBanner />}
-
-          {!error && (
-            <>
-              {currentTime === 0 && !isPlaying && !isBuffering && <VideoStarter />}
-
-              {(isPlaying || currentTime > 0) && (
-                <>
-                  <ClickToPlay />
-                  <Controls activeDuration={ACTIVE_TIMEOUT}>
-                    <Toolbar focus={isFocus} />
-                  </Controls>
-                </>
-              )}
-
-              {embed && (
-                <>
-                  <OwnerDetail hash={hash} title={title || "Untitled"} owner={owner} />
-                  <WatchOn hash={hash} />
-                </>
-              )}
-
-              {isTouchDevice() && currentTime > 0 && (
-                <TouchOverlay focus={isFocus} skipBySeconds={DEFAULT_SKIP} />
-              )}
-            </>
-          )}
-
-          <Spinner showWhenMediaLoading />
-        </Ui>
-      </Player>
+      </MediaPlayer>
     )
   }
 )

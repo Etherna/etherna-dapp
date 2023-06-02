@@ -153,6 +153,7 @@ module.exports = {
     require("@tailwindcss/line-clamp"),
     require("tailwind-scrollbar"),
     require("tailwindcss-safe-area"),
+    require("vidstack/tailwind.cjs"),
     plugin(({ addUtilities, addVariant, addComponents, e, matchUtilities, theme }) => {
       const utils = {
         ".absolute-center": {
@@ -201,24 +202,6 @@ module.exports = {
       addVariant("fixed-sidebar", ({ modifySelectors, separator }) => {
         modifySelectors(({ className }) => {
           return `[data-sidebar-floating="false"] .${e(`fixed-sidebar${separator}${className}`)}`
-        })
-      })
-
-      addVariant("playing", ({ modifySelectors, separator }) => {
-        modifySelectors(({ className }) => {
-          return `[data-playing="true"] .${e(`playing${separator}${className}`)}`
-        })
-      })
-
-      addVariant("paused", ({ modifySelectors, separator }) => {
-        modifySelectors(({ className }) => {
-          return `[data-playing="false"] .${e(`paused${separator}${className}`)}`
-        })
-      })
-
-      addVariant("mouse-idle", ({ modifySelectors, separator }) => {
-        modifySelectors(({ className }) => {
-          return `[data-mouse-idle="true"] .${e(`mouse-idle${separator}${className}`)}`
         })
       })
     }),

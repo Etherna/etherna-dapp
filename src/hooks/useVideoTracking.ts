@@ -15,7 +15,9 @@
  */
 import { useCallback, useEffect, useRef, useState } from "react"
 
-export default function useVideoTracking(mediaEl: HTMLVmPlayerElement | null | undefined) {
+import type { MediaPlayerElement } from "vidstack"
+
+export default function useVideoTracking(mediaEl: MediaPlayerElement | null | undefined) {
   const [tracker, setTracker] = useState<MediaAnalyticsTracker>()
   const resizeObserver = useRef<ResizeObserver>()
 
@@ -26,10 +28,7 @@ export default function useVideoTracking(mediaEl: HTMLVmPlayerElement | null | u
 
     const MA = window.Matomo!.MediaAnalytics
     // find the actual resource / URL of the video
-    const actualResource = MA.element.getAttribute(mediaEl, "src")
-    // a user can overwrite the actual resource by defining a "data-matomo-resource" attribute.
-    // the method `getMediaResource` will detect whether such an attribute was set
-    const resource = MA.element.getMediaResource(mediaEl, actualResource)
+    const resource = mediaEl.dataset.src || mediaEl.$store.source.src.toString()
     // update tracker
     const videoTracker = new MA.MediaTracker("EthernaPlayer", MA.mediaType.VIDEO, resource)
     setTracker(videoTracker)
@@ -79,7 +78,7 @@ export default function useVideoTracking(mediaEl: HTMLVmPlayerElement | null | u
     // we update the current made progress (time position) and duration of
     // the media. Not all players might give you that information
     tracker?.setMediaProgressInSeconds(mediaEl!.currentTime)
-    tracker?.setMediaTotalLengthInSeconds(mediaEl!.duration)
+    tracker?.setMediaTotalLengthInSeconds(mediaEl!.$store.duration)
 
     /**
      * it is important to call the tracker?.update() method regularly while the
@@ -102,7 +101,7 @@ export default function useVideoTracking(mediaEl: HTMLVmPlayerElement | null | u
     // we update the current made progress (time position) and duration of
     // the media. Not all players might give you that information
     tracker?.setMediaProgressInSeconds(mediaEl!.currentTime)
-    tracker?.setMediaTotalLengthInSeconds(mediaEl!.duration)
+    tracker?.setMediaTotalLengthInSeconds(mediaEl!.$store.duration)
 
     // "seekFinish" is needed when the player has finished seeking or buffering.
     // It will start the timer again that tracks for how long the media has been played.
@@ -110,10 +109,9 @@ export default function useVideoTracking(mediaEl: HTMLVmPlayerElement | null | u
   }, [tracker, mediaEl])
 
   const onResize = useCallback(() => {
-    const MA = window.Matomo!.MediaAnalytics
     tracker?.setWidth(mediaEl!.clientWidth)
     tracker?.setHeight(mediaEl!.clientHeight)
-    tracker?.setFullscreen(MA.element.isFullscreen(mediaEl!))
+    tracker?.setFullscreen(mediaEl!.$store.fullscreen)
   }, [tracker, mediaEl])
 
   const startTracking = useCallback(() => {
@@ -124,7 +122,7 @@ export default function useVideoTracking(mediaEl: HTMLVmPlayerElement | null | u
 
     tracker.setWidth(mediaEl.clientWidth)
     tracker.setHeight(mediaEl.clientHeight)
-    tracker.setFullscreen(MA.element.isFullscreen(mediaEl))
+    tracker.setFullscreen(mediaEl!.$store.fullscreen)
 
     // the method `getMediaTitle` will try to get a media title from a
     // "data-matomo-title", "title" or "alt" HTML attribute. Sometimes it might be possible
@@ -133,15 +131,15 @@ export default function useVideoTracking(mediaEl: HTMLVmPlayerElement | null | u
     tracker.setMediaTitle(title)
 
     // some media players let you already detect the total length of the video
-    tracker.setMediaTotalLengthInSeconds(mediaEl.duration)
+    tracker.setMediaTotalLengthInSeconds(mediaEl.$store.duration)
 
     // add event listeners
-    mediaEl.addEventListener("vmPlay", onPlay, true)
-    mediaEl.addEventListener("vmPausedChange", onPause, true)
-    mediaEl.addEventListener("vmPlaybackEnded", onEnded, true)
-    mediaEl.addEventListener("vmCurrentTimeChange", onTimeUpdate, true)
-    mediaEl.addEventListener("vmSeekingChange", onSeeking, true)
-    mediaEl.addEventListener("vmSeeked", onSeeked, true)
+    mediaEl.addEventListener("play", onPlay, true)
+    mediaEl.addEventListener("pause", onPause, true)
+    mediaEl.addEventListener("ended", onEnded, true)
+    mediaEl.addEventListener("time-update", onTimeUpdate, true)
+    mediaEl.addEventListener("seeking", onSeeking, true)
+    mediaEl.addEventListener("seeked", onSeeked, true)
     resizeObserver.current = new ResizeObserver(onResize)
     resizeObserver.current.observe(document.documentElement)
 
@@ -151,11 +149,11 @@ export default function useVideoTracking(mediaEl: HTMLVmPlayerElement | null | u
   }, [onEnded, onPause, onPlay, onResize, onSeeked, onSeeking, onTimeUpdate, tracker, mediaEl])
 
   const stopTracking = useCallback(() => {
-    mediaEl?.removeEventListener("vmPlay", onPlay, true)
-    mediaEl?.removeEventListener("vmPausedChange", onPause, true)
-    mediaEl?.removeEventListener("vmPlaybackEnded", onEnded, true)
-    mediaEl?.removeEventListener("vmCurrentTimeChange", onTimeUpdate, true)
-    mediaEl?.removeEventListener("vmSeekingChange", onSeeking, true)
-    mediaEl?.removeEventListener("vmSeeked", onSeeked, true)
+    mediaEl?.removeEventListener("play", onPlay, true)
+    mediaEl?.removeEventListener("pause", onPause, true)
+    mediaEl?.removeEventListener("ended", onEnded, true)
+    mediaEl?.removeEventListener("time-update", onTimeUpdate, true)
+    mediaEl?.removeEventListener("seeking", onSeeking, true)
+    mediaEl?.removeEventListener("seeked", onSeeked, true)
   }, [onEnded, onPause, onPlay, onSeeked, onSeeking, onTimeUpdate, mediaEl])
 }

@@ -1,5 +1,4 @@
 import React, { useCallback, useRef } from "react"
-import { ClickToPlay, Poster } from "@vime/react"
 
 import { SpeakerWaveIcon } from "@heroicons/react/24/outline"
 import { ReactComponent as PlayIcon } from "@/assets/icons/player/play.svg"
@@ -10,13 +9,14 @@ import classNames from "@/utils/classnames"
 import type { PlayerQuality } from "@/stores/player"
 
 type VideoStarterProps = {
+  posterUrl?: string
   embed?: boolean
 }
 
-const VideoStarter: React.FC<VideoStarterProps> = ({ embed }) => {
+const VideoStarter: React.FC<VideoStarterProps> = ({ posterUrl, embed }) => {
   const currentQuality = usePlayerStore(state => state.currentQuality)
   const qualities = usePlayerStore(state => state.qualities)
-  const togglePlay = usePlayerStore(state => state.togglePlay)
+  const startPlaying = usePlayerStore(state => state.startPlaying)
   const setCurrentQuality = usePlayerStore(state => state.setCurrentQuality)
 
   const selectQuality = useCallback(
@@ -29,7 +29,11 @@ const VideoStarter: React.FC<VideoStarterProps> = ({ embed }) => {
 
   return (
     <>
-      <Poster />
+      <img
+        className="absolute inset-0 h-full w-full object-cover"
+        src={posterUrl}
+        crossOrigin="anonymous"
+      />
 
       <div
         className={classNames(
@@ -39,7 +43,7 @@ const VideoStarter: React.FC<VideoStarterProps> = ({ embed }) => {
         )}
         tabIndex={0}
         role="button"
-        onClick={togglePlay}
+        onClick={startPlaying}
       >
         <div
           className={classNames(

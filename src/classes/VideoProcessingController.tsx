@@ -4,6 +4,7 @@ import { BatchUpdateType } from "@etherna/api-js/stores"
 import { fileToUint8Array, getBatchSpace } from "@etherna/api-js/utils"
 import { createFFmpeg } from "@ffmpeg/ffmpeg"
 
+import { getMaxrate } from "@/utils/media"
 import { settledPromise } from "@/utils/promise"
 import { timeComponents } from "@/utils/time"
 
@@ -118,6 +119,11 @@ export default class VideoProcessingController {
         const [h, m, s] = parsedDuration.split(":").map(Number)
         duration = h * 3600 + m * 60 + s
       }
+      // check failed conversion
+      if (message.includes("Conversion failed!")) {
+        this.onEncodingError?.(new Error("Failed to convert video"))
+        this.stopEncoding()
+      }
     })
 
     const [, probeError] = await settledPromise(
@@ -152,58 +158,70 @@ export default class VideoProcessingController {
     !dirFiles.includes("hls") && this.ffmpeg.FS("mkdir", "hls")
 
     // perform encoding
-    const [, encError] = await settledPromise(
-      this.ffmpeg.run(
-        `-y`,
-        `-hide_banner`,
-        `-i`,
-        `${InputFileName}`,
-        ...resolutions
-          .map(() => [`-map`, `0:v:0`, `-map`, `0:a:0`])
-          .concat(["-map", "0:a:0"])
-          .flat(),
-        ...resolutions
-          .map(({ width, height }, i) => [`-filter:v:${i}`, `scale=w=${width}:h=${height}`])
-          .flat(),
-        `-var_stream_map`,
-        resolutions
-          .map(({ height }, i) => `v:${i},a:${i},name:${height}p`)
-          .concat([`a:${resolutions.length},name:audio`])
-          .join(" "),
-        `-c:a`,
-        `aac`,
-        `-c:v`,
-        `libx264`,
-        `-movflags`,
-        `faststart`,
-        `-sc_threshold`,
-        `0`,
-        `-r`,
-        `25`,
-        `-hls_time`,
-        `2`,
-        `-speed`,
-        `6`,
-        `-hls_playlist_type`,
-        `vod`,
-        `-hls_flags`,
-        `single_file`,
-        `-f`,
-        `hls`,
-        `-master_pl_name`,
-        `manifest.m3u8`,
-        `hls/%v.m3u8`,
-        `-ss`,
-        thumbFrame,
-        `-vframes`,
-        `1`,
-        `-vf`,
-        `scale=${Math.round(720 * resolutionRatio)}:720`,
-        `-q:v`,
-        `5`,
-        `thumb.jpg`
-      )
-    )
+    const args = [
+      "-y",
+      "-hide_banner",
+      "-i",
+      InputFileName,
+      ...resolutions
+        .map(() => [`-map`, `0:v:0`, `-map`, `0:a:0`])
+        .concat(["-map", "0:a:0"])
+        .flat(),
+      ...resolutions
+        .map(({ width, height }, i) => [`-filter:v:${i}`, `scale=w=${width}:h=${height}`])
+        .flat(),
+      "-c:v",
+      "libx264",
+      "-c:a",
+      "aac",
+      "-var_stream_map",
+      `${resolutions
+        .map(({ height }, i) => `v:${i},a:${i},name:${height}p`)
+        .concat([`a:${resolutions.length},name:audio`])
+        .join(" ")}`,
+      ...resolutions
+        .map(({ height }, i) => [
+          `-maxrate:v:${i}`,
+          `${getMaxrate(height)}k`,
+          `-bufsize:v:${i}`,
+          `${getMaxrate(height) * 2}k`,
+        ])
+        .flat(),
+      "-movflags",
+      "faststart",
+      "-preset",
+      "fast",
+      "-threads",
+      "0",
+      "-sc_threshold",
+      "0",
+      "-r",
+      "25",
+      "-max_muxing_queue_size",
+      "1024",
+      "-f",
+      "hls",
+      "-hls_time",
+      "2",
+      "-hls_playlist_type",
+      "vod",
+      "-hls_flags",
+      "single_file",
+      "-master_pl_name",
+      "manifest.m3u8",
+      "-y",
+      "hls/%v.m3u8",
+      "-ss",
+      thumbFrame,
+      "-vframes",
+      "1",
+      "-vf",
+      `scale=${Math.round(720 * resolutionRatio)}:720`,
+      "-q:v",
+      "5",
+      "thumb.jpg",
+    ]
+    const [, encError] = await settledPromise(this.ffmpeg.run(...args))
 
     if (encError) {
       return this.onEncodingError?.(encError)

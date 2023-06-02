@@ -82,6 +82,11 @@ const videoSource = (videoObj: string | File | ArrayBuffer) =>
     ? URL.createObjectURL(videoObj)
     : URL.createObjectURL(new Blob([videoObj], { type: "video/mp4" }))
 
+/**
+ * Downlaod an image data
+ * @param imageUrl Image url
+ * @returns Image data
+ */
 export const downloadImageData = async (imageUrl: string): Promise<Uint8Array | null> => {
   try {
     const resp = await http.get(imageUrl, {
@@ -96,6 +101,11 @@ export const downloadImageData = async (imageUrl: string): Promise<Uint8Array | 
   }
 }
 
+/**
+ * Check if an image is animated
+ * @param imageData Image data
+ * @returns True if image is animated
+ */
 export const isAnimatedImage = (imageData: Uint8Array): boolean => {
   // make sure it's a gif (GIF8)
   if (
@@ -123,4 +133,27 @@ export const isAnimatedImage = (imageData: Uint8Array): boolean => {
   }
 
   return frames > 1
+}
+
+/**
+ * Get a video maxrate for encoding
+ * @param resolution Video resolution
+ * @returns Maxrate
+ */
+export const getMaxrate = (resolution: number): number => {
+  if (resolution <= 360) {
+    return 150
+  } else if (resolution <= 480) {
+    return 750
+  } else if (resolution <= 720) {
+    return 3000
+  } else if (resolution <= 1080) {
+    return 8000
+  } else if (resolution <= 1440) {
+    return 16000
+  } else if (resolution <= 2160) {
+    return 324000
+  } else {
+    return 0
+  }
 }

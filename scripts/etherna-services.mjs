@@ -157,6 +157,29 @@ const execBee = () => {
 }
 
 /**
+ * Start mongod service
+ */
+const execMongo = async () => {
+  const platform = process.platform
+  const arch = process.arch
+
+  let configPath = ""
+
+  if (platform === "darwin" && arch === "x64") {
+    configPath = "/usr/local/etc/mongod.conf"
+  } else if (platform === "darwin" && arch === "arm64") {
+    configPath = "/opt/homebrew/etc/mongod.conf"
+  } else if (platform === "linux") {
+    configPath = "/etc/mongod.conf"
+  } else if (platform === "win32") {
+    configPath = "C:\\Program Files\\MongoDB\\Server\\6.0\\bin\\mongod.cfg"
+  }
+
+  const execCms = `mongod --config ${configPath} --fork`
+  return exec(execCms, execCallback)
+}
+
+/**
  * Wait for the service to run
  * @param {string} projectPath The service project path / or the actual url
  * @param {string} name The service project name (used to log)
@@ -232,6 +255,11 @@ const run = async () => {
   const shouldRunEthernaGateway = runAllServices || args.includes("--gateway")
   const shouldRunEthernaBeehive = runAllServices || args.includes("--beehive")
   const shouldRunProxy = runAllServices || args.includes("--proxy")
+  const shouldRunMongo = args.includes("--mongo")
+
+  if (shouldRunMongo) {
+    await execMongo()
+  }
 
   if (shouldRunBeeNode) {
     const beeProcess = execBee()

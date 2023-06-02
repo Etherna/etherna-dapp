@@ -28,6 +28,7 @@ import { getAccessToken } from "@/utils/jwt"
 import http from "@/utils/request"
 
 import type { Profile, VideoSource } from "@etherna/api-js"
+import type { MediaPlayerElement } from "vidstack"
 
 type PlayerProps = {
   hash: string
@@ -36,10 +37,19 @@ type PlayerProps = {
   sources: VideoSource[]
   posterUrl?: string | null
   embed?: boolean
+  aspectRatio?: number | null
 }
 
-const Player: React.FC<PlayerProps> = ({ hash, title, owner, sources, posterUrl, embed }) => {
-  const [player, setPlayer] = useState<HTMLVmPlayerElement | null>(null)
+const Player: React.FC<PlayerProps> = ({
+  hash,
+  title,
+  owner,
+  sources,
+  posterUrl,
+  embed,
+  aspectRatio,
+}) => {
+  const [player, setPlayer] = useState<MediaPlayerElement | null>(null)
   const currentSource = usePlayerStore(state => state.currentSource)
   const isPlaying = usePlayerStore(state => state.isPlaying)
   const isIdle = usePlayerStore(state => state.isIdle)
@@ -131,6 +141,7 @@ const Player: React.FC<PlayerProps> = ({ hash, title, owner, sources, posterUrl,
                 source={currentSource}
                 posterUrl={posterUrl ?? undefined}
                 embed={embed}
+                aspectRatio={aspectRatio}
                 xhrSetup={xhrSetup}
                 onPlaybackError={onPlaybackError}
                 ref={p => p && p !== player && setPlayer(p)}

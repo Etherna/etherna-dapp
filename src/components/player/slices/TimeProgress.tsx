@@ -14,17 +14,28 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import Time from "@/components/media/Time"
 import usePlayerStore from "@/stores/player"
+import classNames from "@/utils/classnames"
 
-const TimeProgress: React.FC = () => {
+type TimeProgressProps = {
+  className?: string
+}
+
+const TimeProgress: React.FC<TimeProgressProps> = ({ className }) => {
   const currentTime = usePlayerStore(state => state.currentTime)
   const duration = usePlayerStore(state => state.duration)
 
   return (
-    <div className="text-xs font-medium tracking-tighter text-gray-200 sm:text-sm">
+    <div
+      className={classNames(
+        "text-xs font-medium tracking-tighter text-gray-200 sm:text-sm",
+        className
+      )}
+    >
       <Time duration={currentTime} />
       <span> / </span>
       <Time duration={duration} />

@@ -2,9 +2,6 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "esnext",
-    "types": [
-      "node"
-    ],
     "esModuleInterop": true,
     "importHelpers": true,
     "allowSyntheticDefaultImports": true,
