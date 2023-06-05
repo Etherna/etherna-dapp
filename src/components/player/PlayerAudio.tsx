@@ -1,23 +1,16 @@
 import React, { forwardRef, useCallback, useMemo, useRef, useState } from "react"
-import { MediaOutlet, MediaPlayer, MediaPoster } from "@vidstack/react"
-import { isHLSProvider, Poster } from "vidstack"
+import { MediaOutlet, MediaPlayButton, MediaPlayer } from "@vidstack/react"
+import { isHLSProvider } from "vidstack"
 
-import BufferingIndicator from "./slices/BufferingIndicator"
-import ClickToPlay from "./slices/ClickToPlay"
 import ErrorBanner from "./slices/ErrorBanner"
 import FullScreenButton from "./slices/FullScreenButton"
-import OwnerDetail from "./slices/OwnerDetail"
 import PiPButton from "./slices/PiPButton"
 import PlaybackSpeed from "./slices/PlaybackSpeed"
 import PlayButton from "./slices/PlayButton"
 import QualityControl from "./slices/QualityControl"
 import TimeProgress from "./slices/TimeProgress"
-import Toolbar from "./slices/Toolbar"
-import TouchOverlay from "./slices/TouchOverlay"
 import VideoProgress from "./slices/VideoProgress"
-import VideoStarter from "./slices/VideoStarter"
 import VolumeControl from "./slices/VolumeControl"
-import WatchOn from "./slices/WatchOn"
 import usePlayerStore from "@/stores/player"
 import { isTouchDevice } from "@/utils/browser"
 
@@ -35,8 +28,7 @@ type PlayerVideoProps = {
   onPlaybackError?(): void
 }
 
-const DEFAULT_SKIP = 5
-const ACTIVE_TIMEOUT = 3000
+const DEFAULT_SKIP = 15
 
 const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
   ({ title, hash, source, posterUrl, owner, embed, xhrSetup, onPlaybackError }, ref) => {
@@ -44,25 +36,10 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
     const currentTime = usePlayerStore(state => state.currentTime)
     const isBuffering = usePlayerStore(state => state.isBuffering)
     const error = usePlayerStore(state => state.error)
-    const [isFocus, setIsFocus] = useState(false)
-    const focusTimeoutRef = useRef<number>()
-    const isTouch = isTouchDevice()
 
     const src = useMemo(() => {
       return filterXSS(source.url)
     }, [source.url])
-
-    const startFocusTimeout = useCallback(() => {
-      focusTimeoutRef.current = window.setTimeout(() => {
-        setIsFocus(false)
-      }, ACTIVE_TIMEOUT)
-    }, [])
-
-    const onMouseEnter = useCallback(() => {
-      if (isTouch) {
-        startFocusTimeout()
-      }
-    }, [isTouch, startFocusTimeout])
 
     return (
       <MediaPlayer
@@ -78,7 +55,6 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
             provider.config.xhrSetup = xhrSetup
           }
         }}
-        onMouseEnter={onMouseEnter}
         onError={onPlaybackError}
         ref={ref}
         data-matomo-title={title}

@@ -28,8 +28,8 @@ const QualityControl: React.FC = () => {
   const qualities = usePlayerStore(state => state.qualities)
 
   const updateQuality = useCallback(
-    (option: { value: string }) => {
-      setCurrentQuality(option.value as PlayerQuality)
+    (option: string) => {
+      setCurrentQuality(option as PlayerQuality)
     },
     [setCurrentQuality]
   )

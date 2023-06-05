@@ -17,6 +17,7 @@
 
 import React from "react"
 import ReactDOM from "react-dom/client"
+import { urlOrigin } from "@etherna/api-js/utils"
 
 import Root from "./app/Root"
 import prefetch from "./prefetch"
@@ -47,4 +48,7 @@ unsupportedRender(async () => {
 // Register service workers
 registerSW(getBasename() + "/fetch-sw.js", () => {
   navigator.serviceWorker.controller!.postMessage(JSON.stringify({ accessToken: getAccessToken() }))
+  navigator.serviceWorker.controller!.postMessage(
+    JSON.stringify({ allowedOrigins: [urlOrigin(import.meta.env.VITE_APP_GATEWAY_URL)] })
+  )
 })

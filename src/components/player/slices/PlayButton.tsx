@@ -25,7 +25,17 @@ import classNames from "@/utils/classnames"
 
 const PlayButton: React.FC = () => {
   const isPlaying = usePlayerStore(state => state.isPlaying)
+  const startPlaying = usePlayerStore(state => state.startPlaying)
   const togglePlay = usePlayerStore(state => state.togglePlay)
+  const isWaitingToLoad = usePlayerStore(state => state.isWaitingToLoad)
+
+  const handlePlay = useCallback(() => {
+    if (!isPlaying && isWaitingToLoad()) {
+      startPlaying()
+    } else {
+      togglePlay()
+    }
+  }, [isPlaying, isWaitingToLoad, startPlaying, togglePlay])
 
   return (
     <div
@@ -33,7 +43,7 @@ const PlayButton: React.FC = () => {
         "z-0 h-6 w-6 rounded-full bg-gray-100 p-1.5 text-gray-900",
         "md:h-8 md:w-8 md:p-2"
       )}
-      onClick={togglePlay}
+      onClick={handlePlay}
       role="button"
       tabIndex={0}
     >

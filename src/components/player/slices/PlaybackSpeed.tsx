@@ -26,8 +26,8 @@ const PlaybackSpeed: React.FC = () => {
   const playbackTicks = [0.25, 0.5, 1, 1.25, 1.5, 1.75, 2]
 
   const updatePlaybackRate = useCallback(
-    (option: { value: string }) => {
-      setPlaybackRate(+option.value)
+    (option: string) => {
+      setPlaybackRate(+option)
     },
     [setPlaybackRate]
   )

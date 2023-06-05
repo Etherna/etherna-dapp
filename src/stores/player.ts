@@ -82,7 +82,9 @@ const setHlsQuality = (quality: PlayerQuality) => {
   const hls = getHls()
   if (!hls) return
   const levels = hls.levels
-  const qualityLevelIndex = levels.findIndex(l => l.height === parseInt(quality))
+  const qualityLevelIndex = levels.findIndex(
+    l => l.height === parseInt(quality) || (quality === "Audio" && l.height === 0)
+  )
   hls.currentLevel = quality === "Auto" ? -1 : qualityLevelIndex
 }
 
@@ -233,10 +235,14 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       }
     })
   },
+  isWaitingToLoad() {
+    if (!player) return true
+    return player.$store.buffered().length === 0 && !player.$store.currentTime()
+  },
   togglePlay() {
     set(state => {
       if (!player) return
-      if (state.isPlaying) {
+      if (player.$store.playing()) {
         player.pause()
       } else {
         player.play()
@@ -280,6 +286,7 @@ const actions = (set: SetFunc, get: GetFunc) => ({
   },
   togglePiP() {
     if (!player) return
+
     if (player.$store.pictureInPicture()) {
       player.exitPictureInPicture()
     } else {
