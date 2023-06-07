@@ -7,7 +7,7 @@ import logger from "./middlewares/log"
 import { isTouchDevice } from "@/utils/browser"
 
 import type { VideoQuality, VideoSource } from "@etherna/api-js"
-import type { WritableDraft } from "immer/dist/internal"
+import type { Draft } from "immer"
 import type { MediaPlayerElement } from "vidstack"
 
 export type PlayerQuality = "Auto" | "Audio" | VideoQuality
@@ -65,7 +65,7 @@ const getInitialState = (): PlayerState => ({
   playbackRate: 1,
 })
 
-type SetFunc = (setFunc: (state: WritableDraft<PlayerState>) => void) => void
+type SetFunc = (setFunc: (state: Draft<PlayerState>) => void) => void
 type GetFunc = () => PlayerState
 
 // move out from store to improve devtools performance

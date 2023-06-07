@@ -36,7 +36,7 @@ const Portal: React.FC<PortalProps> = ({ selector, children }) => {
 
   if (!container) return null
 
-  return ReactDOM.createPortal(children, container)
+  return ReactDOM.createPortal(children, container) as React.ReactNode
 }
 
 export default Portal

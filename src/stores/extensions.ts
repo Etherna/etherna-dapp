@@ -5,7 +5,7 @@ import { immer } from "zustand/middleware/immer"
 import logger from "./middlewares/log"
 
 import type { GatewayExtensionHost, GatewayType, IndexExtensionHost } from "@/types/extension-host"
-import type { WritableDraft } from "immer/dist/internal"
+import type { Draft } from "immer"
 
 export type ExtensionsState = {
   gatewaysList: GatewayExtensionHost[]
@@ -27,7 +27,7 @@ const getInitialState = (): ExtensionsState => ({
   currentCreditUrl: import.meta.env.VITE_APP_CREDIT_URL,
 })
 
-type SetFunc = (setFunc: (state: WritableDraft<ExtensionsState>) => void) => void
+type SetFunc = (setFunc: (state: Draft<ExtensionsState>) => void) => void
 type GetFunc = () => ExtensionsState
 
 const actions = (set: SetFunc, get: GetFunc) => ({

@@ -8,7 +8,7 @@ import GatewayClient from "@/classes/GatewayClient"
 import IndexClient from "@/classes/IndexClient"
 import SSOClient from "@/classes/SSOClient"
 
-import type { WritableDraft } from "immer/dist/internal"
+import type { Draft } from "immer"
 
 export type ClientsState = {
   beeClient: BeeClient
@@ -24,7 +24,7 @@ const getInitialState = (): ClientsState => ({
   beeClient: new BeeClient(GatewayClient.defaultUrl()),
 })
 
-type SetFunc = (setFunc: (state: WritableDraft<ClientsState>) => void) => void
+type SetFunc = (setFunc: (state: Draft<ClientsState>) => void) => void
 type GetFunc = () => ClientsState
 
 const actions = (set: SetFunc, get: GetFunc) => ({

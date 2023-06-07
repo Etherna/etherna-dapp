@@ -6,7 +6,7 @@ import logger from "./middlewares/log"
 
 import type { Crop } from "react-image-crop"
 import type { KeymapNamespace } from "@/types/keyboard"
-import type { WritableDraft } from "immer/dist/internal"
+import type { Draft } from "immer"
 
 export type ExtensionType = "index" | "gateway"
 
@@ -32,7 +32,7 @@ const getInitialState = (): UIState => ({
   floatingSidebar: false,
 })
 
-type SetFunc = (setFunc: (state: WritableDraft<UIState>) => void) => void
+type SetFunc = (setFunc: (state: Draft<UIState>) => void) => void
 type GetFunc = () => UIState
 
 const actions = (set: SetFunc, get: GetFunc) => ({

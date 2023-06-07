@@ -4,13 +4,13 @@ import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
 
-import type { WritableDraft } from "immer/dist/internal"
+import type { Draft } from "immer"
 
 export type ExperimentsState = {}
 
 const getInitialState = (): ExperimentsState => ({})
 
-type SetFunc = (setFunc: (state: WritableDraft<ExperimentsState>) => void) => void
+type SetFunc = (setFunc: (state: Draft<ExperimentsState>) => void) => void
 type GetFunc = () => ExperimentsState
 
 const actions = (set: SetFunc, get: GetFunc) => ({})

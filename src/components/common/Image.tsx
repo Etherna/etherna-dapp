@@ -37,6 +37,7 @@ type ImageProps = {
   objectFit?: "cover" | "contain"
   alt?: string
   style?: React.CSSProperties
+  retries?: number
 }
 
 const Image: React.FC<ImageProps> = ({
@@ -53,8 +54,10 @@ const Image: React.FC<ImageProps> = ({
   objectFit = "cover",
   alt,
   style,
+  retries,
 }) => {
-  const [src, setSrc] = useState<string | undefined>()
+  const [src, setSrc] = useState<string | undefined>(staticSrc)
+  const [currentRetry, setCurrentRetry] = useState(0)
   const [srcUrl, setSrcUrl] = useState<string | undefined>()
   const [imgLoaded, setImgLoaded] = useState(!blurredDataURL || placeholder === "empty")
   const [rootEl, setRootEl] = useState<HTMLDivElement>()
@@ -100,6 +103,13 @@ const Image: React.FC<ImageProps> = ({
   }, [])
 
   const onError = useCallback(() => {
+    if (src && retries && currentRetry < retries) {
+      const newSrc = new URL(src)
+      newSrc.searchParams.set("retry", currentRetry.toString())
+      setSrc(newSrc.toString())
+      return
+    }
+
     if (!fallbackSrc) return setImgLoaded(true)
 
     if (src !== fallbackSrc) {
@@ -107,7 +117,7 @@ const Image: React.FC<ImageProps> = ({
     } else {
       setImgLoaded(true)
     }
-  }, [fallbackSrc, src])
+  }, [fallbackSrc, src, currentRetry, retries])
 
   const loadBestImage = useCallback(async () => {
     if (!rootEl) return

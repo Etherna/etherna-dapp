@@ -25,5 +25,5 @@ import type React from "react"
  * @returns The base64 string
  */
 export const encodedSvg = (svgComponent: React.ReactElement) => {
-  return "data:image/svg+xml," + escape(ReactDOMServer.renderToStaticMarkup(svgComponent))
+  return "data:image/svg+xml," + escape(ReactDOMServer.renderToStaticMarkup(svgComponent as any))
 }

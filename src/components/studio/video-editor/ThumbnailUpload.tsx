@@ -16,7 +16,6 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { bufferToDataURL } from "@etherna/api-js/utils"
 
 import { MinusIcon } from "@heroicons/react/24/outline"
 
@@ -271,7 +270,7 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
 
       {thumbStatus === "preview" && (
         <div className="relative aspect-video w-full bg-black">
-          <Image src={beeClient.bytes.url(getThumbEntry()!)} objectFit="contain" />
+          <Image src={beeClient.bytes.url(getThumbEntry()!)} objectFit="contain" retries={3} />
         </div>
       )}
     </Card>

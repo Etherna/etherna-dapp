@@ -6,7 +6,7 @@ import logger from "./middlewares/log"
 import lang from "@/lang"
 import { checkIsMobile, isTouchDevice } from "@/utils/browser"
 
-import type { WritableDraft } from "immer/dist/internal"
+import type { Draft } from "immer"
 import type Lang from "lang.js"
 
 export type EnvironmentState = {
@@ -21,7 +21,7 @@ const getInitialState = (): EnvironmentState => ({
   isTouch: isTouchDevice(),
 })
 
-type SetFunc = (setFunc: (state: WritableDraft<EnvironmentState>) => void) => void
+type SetFunc = (setFunc: (state: Draft<EnvironmentState>) => void) => void
 type GetFunc = () => EnvironmentState
 
 const actions = (set: SetFunc, get: GetFunc) => ({})

@@ -7,7 +7,7 @@ import { getDefaultKeymap, mergeKeymaps, optimizeKeymapsForStorage } from "@/key
 import { loadColorScheme, prefersDarkColorScheme } from "@/utils/dark-mode"
 
 import type { Keymaps } from "@/keyboard"
-import type { WritableDraft } from "immer/dist/internal"
+import type { Draft } from "immer"
 
 type StorageValue<S> = {
   state: S
@@ -35,7 +35,7 @@ const getInitialState = (): SettingsState => ({
   zenMode: false,
 })
 
-type SetFunc = (setFunc: (state: WritableDraft<SettingsState>) => void) => void
+type SetFunc = (setFunc: (state: Draft<SettingsState>) => void) => void
 type GetFunc = () => SettingsState
 
 const actions = (set: SetFunc, get: GetFunc) => ({

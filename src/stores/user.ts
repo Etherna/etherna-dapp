@@ -6,7 +6,7 @@ import logger from "./middlewares/log"
 
 import type { Profile } from "@etherna/api-js"
 import type { BatchId, EthAddress, GatewayBatch } from "@etherna/api-js/clients"
-import type { WritableDraft } from "immer/dist/internal"
+import type { Draft } from "immer"
 
 export type WalletType = "etherna" | "metamask"
 
@@ -31,7 +31,7 @@ const getInitialState = (): UserState => ({
   batches: [],
 })
 
-type SetFunc = (setFunc: (state: WritableDraft<UserState>) => void) => void
+type SetFunc = (setFunc: (state: Draft<UserState>) => void) => void
 type GetFunc = () => UserState
 
 const actions = (set: SetFunc, get: GetFunc) => ({

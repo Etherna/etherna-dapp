@@ -4,7 +4,7 @@ import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
 
-import type { WritableDraft } from "immer/dist/internal"
+import type { Draft } from "immer"
 
 export type WalletType = "etherna" | "metamask"
 
@@ -29,7 +29,7 @@ const getInitialState = (): SessionState => ({
   },
 })
 
-type SetFunc = (setFunc: (state: WritableDraft<SessionState>) => void) => void
+type SetFunc = (setFunc: (state: Draft<SessionState>) => void) => void
 type GetFunc = () => SessionState
 
 const actions = (set: SetFunc, get: GetFunc) => ({

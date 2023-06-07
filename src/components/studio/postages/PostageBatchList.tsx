@@ -15,7 +15,7 @@
  *
  */
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { BatchesHandler } from "@etherna/api-js/handlers"
 import { BatchUpdateType, useBatchesStore } from "@etherna/api-js/stores"
 import { getBatchPercentUtilization, getBatchSpace, parsePostageBatch } from "@etherna/api-js/utils"
@@ -61,7 +61,6 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({
   const removeBatchUpdate = useBatchesStore(state => state.removeBatchUpdate)
   const getBatchNumber = useUserStore(state => state.getBatchNumber)
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
-  const address = useUserStore(state => state.address)
   const gatewayClient = useClientsStore(state => state.gatewayClient)
   const beeClient = useClientsStore(state => state.beeClient)
   const gatewayType = useExtensionsStore(state => state.currentGatewayType)

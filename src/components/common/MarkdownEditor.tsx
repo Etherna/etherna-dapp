@@ -204,7 +204,7 @@ const SlateMarkdownEditor = forwardRef<SlateMarkdownEditorRef, SlateMarkdownEdit
           onClick={onContainerClick}
           data-editor
         >
-          <Slate editor={editor} value={defaultValue} onChange={handleChange}>
+          <Slate editor={editor} initialValue={defaultValue} onChange={handleChange}>
             <div
               className={classNames(
                 "mb-4 flex items-center space-x-4 border-b border-gray-200 pb-4 dark:border-gray-700",

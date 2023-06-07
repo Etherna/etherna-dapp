@@ -4,7 +4,7 @@ import {
   extractVideoReferences,
   getNodesWithPrefix,
 } from "@etherna/api-js/utils"
-import produce from "immer"
+import { createDraft } from "immer"
 import { create } from "zustand"
 import { devtools, persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
@@ -15,7 +15,7 @@ import type { BatchLoadingType } from "@/components/common/BatchLoading"
 import type { ProcessedImage, Video } from "@etherna/api-js"
 import type { BatchId, BeeClient, PostageBatch, Reference } from "@etherna/api-js/clients"
 import type { VideoQuality, VideoSourceRaw } from "@etherna/api-js/schemas/video"
-import type { WritableDraft } from "immer/dist/internal"
+import type { Draft } from "immer"
 import type { StorageValue } from "zustand/middleware"
 
 export type VideoEditorPublishSourceType = "playlist" | "index"
@@ -112,15 +112,15 @@ const getInitialState = (): VideoEditorState => ({
 })
 
 type SetFunc = (
-  setFunc: Partial<VideoEditorState> | ((state: WritableDraft<VideoEditorState>) => void)
+  setFunc: Partial<VideoEditorState> | ((state: Draft<VideoEditorState>) => void)
 ) => void
 type GetFunc = () => VideoEditorState
 
 const actions = (set: SetFunc, get: GetFunc) => ({
   async addVideoSource(mp4: Uint8Array) {
-    const builder = await produce(get().builder, async draft => {
-      await draft.addMp4Source(mp4)
-    })
+    const builder = createDraft(get().builder)
+    await builder.addMp4Source(mp4)
+
     set(state => {
       state.builder = builder
       state.hasChanges = true
@@ -132,9 +132,9 @@ const actions = (set: SetFunc, get: GetFunc) => ({
     fileName: string,
     fullSize: number
   ) {
-    const builder = await produce(get().builder, async draft => {
-      await draft.addAdaptiveSource(type, data, fileName, fullSize)
-    })
+    const builder = createDraft(get().builder)
+    await builder.addAdaptiveSource(type, data, fileName, fullSize)
+
     set(state => {
       state.builder = builder
       state.hasChanges = true
@@ -156,18 +156,18 @@ const actions = (set: SetFunc, get: GetFunc) => ({
   async loadNode(beeClient: BeeClient) {
     if (get().initialized) return
 
-    const builder = await produce(get().builder, async draft => {
-      await draft.loadNode({ beeClient })
-    })
+    const builder = createDraft(get().builder)
+    await builder.loadNode({ beeClient })
+
     set(state => {
       state.builder = builder
       state.initialized = true
     })
   },
   removeVideoSource(quality: VideoQuality) {
-    const builder = produce(get().builder, draft => {
-      draft.removeMp4Source(quality)
-    })
+    const builder = createDraft(get().builder)
+    builder.removeMp4Source(quality)
+
     set(state => {
       state.builder = builder
       state.hasChanges = true
@@ -180,9 +180,9 @@ const actions = (set: SetFunc, get: GetFunc) => ({
     set(newState)
   },
   async saveNode(beeClient: BeeClient) {
-    const builder = await produce(get().builder, async draft => {
-      await draft.saveNode({ beeClient })
-    })
+    const builder = createDraft(get().builder)
+    await builder.saveNode({ beeClient })
+
     set(state => {
       state.builder = builder
     })
@@ -243,18 +243,18 @@ const actions = (set: SetFunc, get: GetFunc) => ({
     })
   },
   setThumbnail(thumbnail: ProcessedImage | null) {
-    const builder = produce(get().builder, draft => {
-      draft.previewMeta.thumbnail = thumbnail
-        ? {
-            aspectRatio: thumbnail.aspectRatio,
-            blurhash: thumbnail?.blurhash,
-            sources: [],
-          }
-        : null
-      for (const source of thumbnail?.responsiveSourcesData || []) {
-        draft.addThumbnailSource(source.data, source.width, source.type)
-      }
-    })
+    const builder = createDraft(get().builder)
+    builder.previewMeta.thumbnail = thumbnail
+      ? {
+          aspectRatio: thumbnail.aspectRatio,
+          blurhash: thumbnail?.blurhash,
+          sources: [],
+        }
+      : null
+    for (const source of thumbnail?.responsiveSourcesData || []) {
+      builder.addThumbnailSource(source.data, source.width, source.type)
+    }
+
     set(state => {
       state.builder = builder
       state.hasChanges = true
