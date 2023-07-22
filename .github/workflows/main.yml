@@ -31,25 +31,25 @@ jobs:
       GENERATE_SOURCEMAP: false
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Setup node
-      uses: actions/setup-node@v2
-      with:
-        node-version: 18
-        architecture: 'x64'
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+          architecture: "x64"
 
-    - name: Install dependencies
-      run: yarn install --ignore-optional
+      - name: Install dependencies
+        run: yarn install --ignore-optional
 
-    - name: Build app
-      run: yarn build
+      - name: Build app
+        run: yarn build
 
-    - name: Cache build artifacts
-      uses: actions/cache@v3
-      with:
-        path: '**/build'
-        key: build-artifacts-${{ github.sha }}
+      - name: Cache build artifacts
+        uses: actions/cache@v3
+        with:
+          path: "**/build"
+          key: build-artifacts-${{ github.sha }}
 
   publish_host:
     name: Publish to Host
@@ -66,7 +66,7 @@ jobs:
       - name: Restore build artifacts
         uses: actions/cache@v3
         with:
-          path: '**/build'
+          path: "**/build"
           key: build-artifacts-${{ github.sha }}
 
       - name: Upload to Host
@@ -79,30 +79,31 @@ jobs:
           remoteDir: ${{ secrets.FTP_REMOTE_DIR }}
           options: "--delete -X cgi-bin/ -X .well-known/"
 
-  # publish_swarm:
-  #   name: Publish on Swarm
-  #   runs-on: ubuntu-latest
-  #   needs: build
+  publish_swarm:
+    name: Publish on Swarm
+    runs-on: ubuntu-latest
+    needs: build
 
-  #   environment:
-  #     name: production
+    environment:
+      name: production
 
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-  #     - name: Restore build artifacts
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: '**/build'
-  #         key: build-artifacts-${{ github.sha }}
+      - name: Restore build artifacts
+        uses: actions/cache@v3
+        with:
+          path: "**/build"
+          key: build-artifacts-${{ github.sha }}
 
-  #     - name: Upload to swarm
-  #       uses: Etherna/swarm-upload-action@1.0.0
-  #       with:
-  #         gateway: https://gateway.etherna.io
-  #         localRoot: build
-  #         defaultPath: index.html
-  #         batchId: ${{ secrets.BATCH_ID }}
-  #         feedName: EthernaWebApp
-  #         feedUserPrivateKey: ${{ secrets.PRIVATE_KEY }}
+      - name: Upload to swarm
+        uses: Etherna/swarm-upload-action@2.0.0
+        with:
+          gateway: https://gateway.etherna.io
+          localRoot: build
+          defaultPath: index.html
+          errorPath: index.html
+          batchId: ${{ secrets.BATCH_ID }}
+          ethernaApiKey: ${{ secrets.ETHERNA_API_KEY }}
+          feedName: EthernaWebApp
