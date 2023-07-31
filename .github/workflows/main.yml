@@ -107,3 +107,4 @@ jobs:
           batchId: ${{ secrets.BATCH_ID }}
           ethernaApiKey: ${{ secrets.ETHERNA_API_KEY }}
           feedName: EthernaWebApp
+          feedType: epoch
