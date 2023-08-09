@@ -20,6 +20,7 @@ import { useAuth } from "react-oidc-context"
 import BeeClient from "@/classes/BeeClient"
 import SwarmProfile from "@/classes/SwarmProfile"
 import useClientsStore from "@/stores/clients"
+import useExtensionsStore from "@/stores/extensions"
 import useSessionStore from "@/stores/session"
 import useUIStore from "@/stores/ui"
 import useUserStore from "@/stores/user"
@@ -32,12 +33,14 @@ type AutoSigninOpts = {}
 export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
   const auth = useAuth()
   const fetched = useRef(false)
+  const gatewayType = useExtensionsStore(state => state.currentGatewayType)
   const indexClient = useClientsStore(state => state.indexClient)
   const gatewayClient = useClientsStore(state => state.gatewayClient)
   const ssoClient = useClientsStore(state => state.ssoClient)
   const beeClient = useClientsStore(state => state.beeClient)
   const updateBeeClient = useClientsStore(state => state.updateBeeClient)
   const setBytesPrice = useSessionStore(state => state.setBytesPrice)
+  const setFreePostageBatchConsumed = useSessionStore(state => state.setFreePostageBatchConsumed)
   const setCredit = useUserStore(state => state.setCredit)
   const setProfile = useUserStore(state => state.setProfile)
   const updateIdentity = useUserStore(state => state.updateIdentity)
@@ -85,6 +88,9 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
     }
 
     toggleProfileLoading(false)
+
+    // send asynchronusly welcome postage request
+    requestWelcomePostage()
   }
 
   const fetchAuthIdentity = async () => {
@@ -176,5 +182,23 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
     } catch (error: any) {
       console.error(error)
     }
+  }
+
+  const requestWelcomePostage = async () => {
+    if (gatewayType === "bee") return
+
+    try {
+      const { isFreePostageBatchConsumed } = await gatewayClient.users.fetchWelcome()
+
+      setFreePostageBatchConsumed(isFreePostageBatchConsumed)
+
+      if (isFreePostageBatchConsumed) return
+
+      console.info("Requesting welcome postage")
+      await gatewayClient.users.requestWelcomePostage()
+      console.info("Welcome postage requested")
+
+      setFreePostageBatchConsumed(true)
+    } catch (error: any) {}
   }
 }

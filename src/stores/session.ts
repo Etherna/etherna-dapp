@@ -18,6 +18,7 @@ export type SessionState = {
     title: number
     description: number
   }
+  isFreePostageBatchConsumed?: boolean
 }
 
 const getInitialState = (): SessionState => ({
@@ -50,6 +51,11 @@ const actions = (set: SetFunc, get: GetFunc) => ({
         title,
         description,
       }
+    })
+  },
+  setFreePostageBatchConsumed(isFreePostageBatchConsumed: boolean) {
+    set(state => {
+      state.isFreePostageBatchConsumed = isFreePostageBatchConsumed
     })
   },
 })
