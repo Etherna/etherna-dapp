@@ -333,7 +333,7 @@ export default function useBulkMigrations(
         }
       } else {
         await continueMigration()
-        console.log(deferredChannelUpdates.current)
+        console.info(deferredChannelUpdates.current)
       }
     },
     [channelPlaylist, userPlaylists, isMigrating, continueMigration, loadPlaylists, showError]

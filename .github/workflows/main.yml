@@ -31,25 +31,25 @@ jobs:
       GENERATE_SOURCEMAP: false
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Setup node
-      uses: actions/setup-node@v2
-      with:
-        node-version: 18
-        architecture: 'x64'
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+          architecture: "x64"
 
-    - name: Install dependencies
-      run: yarn install --ignore-optional
+      - name: Install dependencies
+        run: yarn install
 
-    - name: Build app
-      run: yarn build
+      - name: Build app
+        run: yarn build
 
-    - name: Cache build artifacts
-      uses: actions/cache@v3
-      with:
-        path: '**/build'
-        key: build-artifacts-${{ github.sha }}
+      - name: Cache build artifacts
+        uses: actions/cache@v3
+        with:
+          path: "**/build"
+          key: build-artifacts-${{ github.sha }}
 
   publish_host:
     name: Publish to Host
@@ -66,7 +66,7 @@ jobs:
       - name: Restore build artifacts
         uses: actions/cache@v3
         with:
-          path: '**/build'
+          path: "**/build"
           key: build-artifacts-${{ github.sha }}
 
       - name: Upload to Host

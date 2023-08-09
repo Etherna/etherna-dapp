@@ -25,7 +25,7 @@ import useUIStore from "@/stores/ui"
 import useUserStore from "@/stores/user"
 import { signMessage } from "@/utils/ethereum"
 
-import type { BatchId, EthAddress, SSOIdentity } from "@etherna/api-js/clients"
+import type { EthAddress, SSOIdentity } from "@etherna/api-js/clients"
 
 type AutoSigninOpts = {}
 
@@ -51,6 +51,7 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
 
       indexClient.accessToken = auth.user?.access_token
       gatewayClient.accessToken = auth.user?.access_token
+      ssoClient.accessToken = auth.user?.access_token
 
       fetchIdentity()
     }

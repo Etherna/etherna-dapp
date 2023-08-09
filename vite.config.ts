@@ -62,7 +62,7 @@ export default defineConfig(({ mode, command }) => {
       },
     },
     define: {
-      global: "window",
+      // global: "window",
     },
     resolve: {
       alias: [{ find: "@", replacement: resolve(__dirname, "src") }],

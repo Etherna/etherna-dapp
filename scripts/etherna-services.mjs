@@ -13,15 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import bcrypt from "bcryptjs"
-import chalk from "chalk"
+
 import { exec } from "child_process"
 import fs from "fs"
 import path from "path"
 import url from "url"
+import bcrypt from "bcryptjs"
+import chalk from "chalk"
 import waitOn from "wait-on"
 
 import "./env.mjs"
+
 import proxyBeeOverHttps from "./bee-https-proxy.mjs"
 import { createPostageBatch } from "./create-postage-batch.mjs"
 import { loadSeed } from "./swarm-seed.mjs"
@@ -146,6 +148,7 @@ const execBee = () => {
     process.env.BEE_MODE === "dev" ? "dev" : "start",
     `--admin-password='${adminPassword}'`,
     `--restricted`,
+    `--cors-allowed-origins='*'`,
     ...(process.env.BEE_MODE === "testnet" ? testnetParams : []),
   ]
   const execCms = `bee ${params.join(" ")}`

@@ -20,6 +20,7 @@ type PlayerVideoProps = {
   title?: string
   hash: string
   source: VideoSource
+  sourceType?: "mp4" | "auto"
   posterUrl?: string
   embed?: boolean
   owner: Profile | undefined | null
@@ -33,7 +34,18 @@ const ACTIVE_TIMEOUT = 3000
 
 const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
   (
-    { title, hash, source, posterUrl, owner, embed, aspectRatio, xhrSetup, onPlaybackError },
+    {
+      title,
+      hash,
+      source,
+      sourceType,
+      posterUrl,
+      owner,
+      embed,
+      aspectRatio,
+      xhrSetup,
+      onPlaybackError,
+    },
     ref
   ) => {
     const isPlaying = usePlayerStore(state => state.isPlaying)
@@ -47,6 +59,8 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
     const src = useMemo(() => {
       return filterXSS(source.url)
     }, [source.url])
+
+    console.log(hash, src, source)
 
     const startFocusTimeout = useCallback(() => {
       focusTimeoutRef.current = window.setTimeout(() => {
@@ -63,7 +77,14 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
     return (
       <MediaPlayer
         className="relative"
-        src={src}
+        src={
+          sourceType === "mp4"
+            ? {
+                type: "video/mp4",
+                src,
+              }
+            : src
+        }
         poster={posterUrl}
         aspectRatio={aspectRatio || 16 / 9}
         onProviderChange={e => {

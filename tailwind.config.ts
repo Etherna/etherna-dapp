@@ -1,7 +1,5 @@
 import plugin from "tailwindcss/plugin"
 
-import postcss from "postcss"
-
 import type { Config } from "tailwindcss/types/config"
 
 export default {

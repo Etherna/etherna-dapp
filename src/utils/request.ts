@@ -15,7 +15,6 @@
  */
 
 import axios, { AxiosError } from "axios"
-import { ZodError } from "zod"
 
 import type { AxiosRequestConfig, AxiosResponse } from "axios"
 import type { ZodIssue } from "zod"

@@ -59,6 +59,10 @@ const Player: React.FC<PlayerProps> = ({
   const showError = usePlayerStore(state => state.showError)
   useVideoTracking(player)
 
+  const isMp4Source = useMemo(() => {
+    return currentSource?.type === "mp4"
+  }, [currentSource])
+
   const isAudioSource = useMemo(() => {
     return currentSource?.type !== "mp4" && /audio.(mpd|m3u8)$/.test(currentSource?.path ?? "")
   }, [currentSource])
@@ -140,6 +144,7 @@ const Player: React.FC<PlayerProps> = ({
                 hash={hash}
                 owner={owner}
                 source={currentSource}
+                sourceType={isMp4Source ? "mp4" : "auto"}
                 posterUrl={posterUrl ?? undefined}
                 embed={embed}
                 aspectRatio={aspectRatio}

@@ -22,7 +22,7 @@ export default class GatewayClient extends EthernaGatewayClient {
   static defaultUrl(): string {
     const currentGatewayUrl = extensionsStore.getState().currentGatewayUrl
     return urlOrigin(
-      isSafeURL(currentGatewayUrl) ? currentGatewayUrl : import.meta.env.VITE_APP_INDEX_URL
+      isSafeURL(currentGatewayUrl) ? currentGatewayUrl : import.meta.env.VITE_APP_GATEWAY_URL
     )!
   }
 
