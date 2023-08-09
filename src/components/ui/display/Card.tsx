@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type CardProps = {
   children: React.ReactNode
@@ -36,7 +36,7 @@ const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <div
-      className={classNames(
+      className={cn(
         "flex flex-col rounded-lg p-4",
         {
           "border border-gray-200": variant === "bordered",

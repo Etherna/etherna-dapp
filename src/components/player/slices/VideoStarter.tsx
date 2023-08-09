@@ -4,7 +4,7 @@ import { SpeakerWaveIcon } from "@heroicons/react/24/outline"
 import { ReactComponent as PlayIcon } from "@/assets/icons/player/play.svg"
 
 import usePlayerStore from "@/stores/player"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 import type { PlayerQuality } from "@/stores/player"
 
@@ -36,7 +36,7 @@ const VideoStarter: React.FC<VideoStarterProps> = ({ posterUrl, embed }) => {
       />
 
       <div
-        className={classNames(
+        className={cn(
           "group pointer-events-auto absolute inset-0 z-1 flex",
           "after:absolute after:inset-0 after:block after:bg-black/5",
           "after:transition-colors after:duration-200 after:ease-out hover:after:bg-black/0"
@@ -46,7 +46,7 @@ const VideoStarter: React.FC<VideoStarterProps> = ({ posterUrl, embed }) => {
         onClick={startPlaying}
       >
         <div
-          className={classNames(
+          className={cn(
             "m-auto rotate-45 rounded bg-white p-3 text-gray-700 shadow-lg sm:p-4",
             "transition-colors duration-200 ease-out",
             "group-hover:text-primary-500"
@@ -61,7 +61,7 @@ const VideoStarter: React.FC<VideoStarterProps> = ({ posterUrl, embed }) => {
           {qualities.map(quality => (
             <li key={quality}>
               <button
-                className={classNames(
+                className={cn(
                   "flex items-center rounded bg-gray-500 px-2 text-sm text-white transition-colors hover:bg-primary-400 sm:px-2",
                   {
                     "bg-primary-500": quality === currentQuality,

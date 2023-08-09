@@ -16,7 +16,7 @@
  */
 
 import React, { useMemo } from "react"
-import { urlOrigin } from "@etherna/api-js/utils"
+import { urlOrigin } from "@etherna/sdk-js/utils"
 
 import UserCreditBadge from "./UserCreditBadge"
 import { Button } from "@/components/ui/actions"

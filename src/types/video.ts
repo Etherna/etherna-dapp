@@ -16,7 +16,7 @@
  */
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
-import type { Profile, Video, VideoPreview } from "@etherna/api-js"
+import type { Profile, Video, VideoPreview } from "@etherna/sdk-js"
 
 export type WithOwner<V extends Video | VideoPreview> = V & { owner: Profile | undefined }
 

@@ -25,7 +25,7 @@ import { ReactComponent as BugIcon } from "@/assets/icons/bug.svg"
 
 import useLocalStorage from "@/hooks/useLocalStorage"
 import { isBotUserAgent } from "@/utils/browser"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type AlphaWarningActionProps = {
   children: React.ReactNode
@@ -65,7 +65,7 @@ const AlphaWarning: React.FC = () => {
   return (
     <>
       <button
-        className={classNames(
+        className={cn(
           "flex items-center rounded-full px-2.5 py-0.5 md:absolute-center",
           "text-sm font-semibold tracking-tight",
           "border border-orange-500 bg-orange-400 text-orange-800",
@@ -98,7 +98,7 @@ const AlphaWarning: React.FC = () => {
             leaveTo="opacity-0"
           >
             <Dialog.Backdrop
-              className={classNames(
+              className={cn(
                 "fixed inset-0 z-1 backdrop-blur-sm transition-opacity",
                 "bg-gray-500/75 dark:bg-gray-800/50"
               )}
@@ -115,7 +115,7 @@ const AlphaWarning: React.FC = () => {
             leaveTo="opacity-0 -translate-y-full scale-0"
           >
             <Dialog.Panel
-              className={classNames(
+              className={cn(
                 "z-1 mx-auto mt-0 w-full max-w-xs overflow-hidden rounded-lg p-4 md:my-auto",
                 "bg-orange-500 shadow-lg shadow-orange-500/20"
               )}
@@ -183,7 +183,7 @@ const AlphaWarningAction: React.FC<AlphaWarningActionProps> = ({
 }) => {
   return (
     <As
-      className={classNames(
+      className={cn(
         "flex items-center justify-center rounded px-3 py-3 text-sm font-semibold",
         "[&_svg]:mr-2 [&_svg]:h-[1.25em] [&_svg]:w-[1.25em]",
         {

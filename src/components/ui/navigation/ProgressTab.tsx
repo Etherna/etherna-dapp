@@ -17,7 +17,7 @@
 
 import React, { useState } from "react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type ProgressTabProps = {
   children?: React.ReactNode
@@ -61,14 +61,11 @@ const ProgressTabLink: React.FC<ProgressTabLinkProps> = ({
 }) => {
   return (
     <button
-      className={classNames(
-        "flex h-16 flex-col justify-center rounded p-4 text-sm font-medium md:w-44",
-        {
-          "text-gray-800  dark:text-gray-300": !active,
-          "bg-gray-200/50 dark:bg-gray-700/50": !active,
-          "bg-blue-400 text-gray-50": active,
-        }
-      )}
+      className={cn("flex h-16 flex-col justify-center rounded p-4 text-sm font-medium md:w-44", {
+        "text-gray-800  dark:text-gray-300": !active,
+        "bg-gray-200/50 dark:bg-gray-700/50": !active,
+        "bg-blue-400 text-gray-50": active,
+      })}
       onClick={() => onSelect?.(tabKey)}
       data-component="progresstab-link"
     >
@@ -77,7 +74,7 @@ const ProgressTabLink: React.FC<ProgressTabLinkProps> = ({
         <span className="inline-block">{children ?? title}</span>
         {text && (
           <p
-            className={classNames("mt-1.5 w-full text-left text-xs font-normal italic", {
+            className={cn("mt-1.5 w-full text-left text-xs font-normal italic", {
               "text-gray-500/75": !active,
               "text-gray-50/75": active,
             })}
@@ -90,7 +87,7 @@ const ProgressTabLink: React.FC<ProgressTabLinkProps> = ({
         <span className="mt-2 flex w-full items-center space-x-1">
           {progressList.map(({ progress, completed }, i) => (
             <div
-              className={classNames(
+              className={cn(
                 "relative h-1.5 w-4 flex-shrink overflow-hidden rounded-sm",
                 "transition-[width,flex-grow] duration-300",
                 {
@@ -104,7 +101,7 @@ const ProgressTabLink: React.FC<ProgressTabLinkProps> = ({
             >
               {typeof progress === "number" && !completed && (
                 <span
-                  className={classNames(
+                  className={cn(
                     "absolute inset-y-0 left-0 rounded-sm",
                     "transition-[width] duration-100 motion-safe:animate-pulse",
                     {
@@ -128,7 +125,7 @@ ProgressTabLink.displayName = "ProgressTabLink"
 const ProgressTabContent: React.FC<ProgressTabContentProps> = ({ children, active }) => {
   return (
     <div
-      className={classNames({
+      className={cn({
         hidden: !active,
       })}
       data-component="progresstab-content"
@@ -154,7 +151,7 @@ const ProgressTab: React.FC<ProgressTabProps> & {
 
   return (
     <div
-      className={classNames(
+      className={cn(
         "flex flex-col space-y-8 md:flex-row md:space-x-6 md:space-y-0 xl:space-x-8",
         className
       )}
@@ -162,7 +159,7 @@ const ProgressTab: React.FC<ProgressTabProps> & {
       data-component="progress-tab"
     >
       <nav
-        className={classNames(
+        className={cn(
           "flex flex-1 space-x-3 overflow-x-auto scrollbar-none",
           "md:flex-initial md:flex-col md:space-x-0 md:space-y-3 md:overflow-x-visible"
         )}

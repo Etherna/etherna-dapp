@@ -1,12 +1,12 @@
 import React, { useMemo } from "react"
-import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
-import { extractVideoReferences } from "@etherna/api-js/utils"
+import { EthernaResourcesHandler } from "@etherna/sdk-js/handlers"
+import { extractVideoReferences } from "@etherna/sdk-js/utils"
 import Tippy from "@tippyjs/react"
 
 import { Spinner } from "@/components/ui/display"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
-import type { Video } from "@etherna/api-js"
+import type { Video } from "@etherna/sdk-js"
 
 type ResourcesSupportStatusProps = {
   className?: string
@@ -29,7 +29,7 @@ const ResourcesSupportStatus: React.FC<ResourcesSupportStatusProps> = ({
   }, [video])
 
   return (
-    <div className={classNames(className)}>
+    <div className={cn(className)}>
       <table className="mt-4 w-full">
         <thead>
           <tr>
@@ -64,7 +64,7 @@ const ResourcesSupportStatus: React.FC<ResourcesSupportStatusProps> = ({
                     content={`This resource is offered by ${globalSupportCount(reference)} users`}
                   >
                     <span
-                      className={classNames(
+                      className={cn(
                         "relative inline-flex h-4 min-w-[1rem] rounded-full px-1 text-xs font-semibold",
                         {
                           "bg-gray-200 text-gray-600 dark:bg-gray-400 dark:text-gray-800":

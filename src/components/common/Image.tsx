@@ -18,10 +18,10 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { filterXSS } from "xss"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { downloadImageData, isAnimatedImage } from "@/utils/media"
 
-import type { ImageSource } from "@etherna/api-js"
+import type { ImageSource } from "@etherna/sdk-js"
 
 type ImageProps = {
   className?: string
@@ -155,7 +155,7 @@ const Image: React.FC<ImageProps> = ({
 
   return (
     <div
-      className={classNames(
+      className={cn(
         {
           relative: layout !== "fill",
           "absolute inset-0": layout === "fill",
@@ -173,7 +173,7 @@ const Image: React.FC<ImageProps> = ({
       {src && (
         <picture onError={onError} onLoad={onLoadImage}>
           <img
-            className={classNames("absolute inset-0 h-full w-full", imgClassName)}
+            className={cn("absolute inset-0 h-full w-full", imgClassName)}
             src={src}
             alt={alt}
             style={{
@@ -187,7 +187,7 @@ const Image: React.FC<ImageProps> = ({
         </picture>
       )}
       <div
-        className={classNames(
+        className={cn(
           "absolute inset-0 transition-opacity duration-300",
           "bg-gray-400 bg-cover bg-no-repeat dark:bg-gray-600",
           {

@@ -19,7 +19,7 @@ import React, { useMemo } from "react"
 import { marked } from "marked"
 import { filterXSS } from "xss"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type MarkdownPreviewProps = {
   value: string
@@ -55,7 +55,7 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({
 
   return (
     <As
-      className={classNames(
+      className={cn(
         "prose max-w-none dark:prose-invert",
         "prose-a:text-primary-500 prose-a:no-underline hover:prose-a:text-primary-400",
         {

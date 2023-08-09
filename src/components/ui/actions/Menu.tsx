@@ -22,7 +22,7 @@ import { Menu as HLMenu } from "@headlessui/react"
 import UIButton from "./Button"
 import { Drawer } from "@/components/ui/display"
 import { Breakpoint } from "@/components/ui/layout"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 import type { ButtonProps } from "./Button"
 import type { Placement } from "@popperjs/core"
@@ -114,7 +114,7 @@ const MenuItems: React.FC<MenuItemsProps> = ({ children, width, height, placemen
           </Breakpoint.Zero>
           <Breakpoint.Sm>
             <div
-              className={classNames(
+              className={cn(
                 "outline-hidden z-100 min-w-[8rem] rounded-md p-2",
                 "bg-gray-50 shadow-lg dark:bg-gray-900",
                 "border border-gray-100 dark:border-gray-700",
@@ -149,7 +149,7 @@ const MenuArrow = forwardRef<HTMLSpanElement, MenuArrowProps>(
     if (!placement) return null
     return (
       <span
-        className={classNames(
+        className={cn(
           "block h-3 w-3",
           "before:absolute before:-left-0.5 before:bottom-0 before:block before:h-0 before:w-0",
           "before:border-[8px] before:border-transparent before:border-t-transparent",
@@ -191,7 +191,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
     <HLMenu.Item>
       {({ active }) => (
         <As
-          className={classNames(
+          className={cn(
             "flex cursor-pointer items-center rounded px-2.5 py-2 text-center text-sm sm:text-left",
             "text-gray-500 dark:text-gray-300",
             {
@@ -249,11 +249,7 @@ const Menu: React.FC<MenuProps> & {
   const [panelEl, setPanelEl] = useState<HTMLElement>()
 
   return (
-    <HLMenu
-      as="div"
-      className={classNames("relative inline-flex", className)}
-      data-component="menu"
-    >
+    <HLMenu as="div" className={cn("relative inline-flex", className)} data-component="menu">
       <MenuContext.Provider
         value={{
           buttonEl,

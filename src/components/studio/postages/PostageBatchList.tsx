@@ -16,9 +16,9 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { BatchesHandler } from "@etherna/api-js/handlers"
-import { BatchUpdateType, useBatchesStore } from "@etherna/api-js/stores"
-import { getBatchPercentUtilization, getBatchSpace, parsePostageBatch } from "@etherna/api-js/utils"
+import { BatchesHandler } from "@etherna/sdk-js/handlers"
+import { BatchUpdateType, useBatchesStore } from "@etherna/sdk-js/stores"
+import { getBatchPercentUtilization, getBatchSpace, parsePostageBatch } from "@etherna/sdk-js/utils"
 
 import { CogIcon } from "@heroicons/react/24/outline"
 import { CheckCircleIcon, InformationCircleIcon } from "@heroicons/react/24/solid"
@@ -31,11 +31,11 @@ import useErrorMessage from "@/hooks/useErrorMessage"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { convertBytes } from "@/utils/converters"
 import dayjs from "@/utils/dayjs"
 
-import type { GatewayBatch } from "@etherna/api-js/clients"
+import type { GatewayBatch } from "@etherna/sdk-js/clients"
 
 type PostageBatchListProps = {
   page: number
@@ -221,7 +221,7 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({
               <div className="">
                 <p className="leading-none">{getBatchName(batch, getBatchNumber(batch.id))}</p>
                 <small
-                  className={classNames(
+                  className={cn(
                     "mt-1 inline-block w-40 overflow-hidden xl:w-auto",
                     "truncate text-xs leading-none text-gray-600 dark:text-gray-400"
                   )}
@@ -239,7 +239,7 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({
               const isExpired = isBatchExpired(batch)
               const notFound = isBatchNotFound(batch)
               return (
-                <span className={classNames("text-sm", { "text-red-500": isExpired })}>
+                <span className={cn("text-sm", { "text-red-500": isExpired })}>
                   {notFound ? "not found" : expiration}
                 </span>
               )
@@ -320,7 +320,7 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({
             {status && (
               <div className="mt-3">
                 <small
-                  className={classNames(
+                  className={cn(
                     "flex items-center text-sm leading-none text-gray-900 dark:text-gray-100"
                   )}
                 >

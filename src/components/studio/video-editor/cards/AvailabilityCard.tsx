@@ -16,7 +16,7 @@
  */
 
 import React, { useCallback, useEffect, useRef } from "react"
-import { EthernaPinningHandler } from "@etherna/api-js/handlers"
+import { EthernaPinningHandler } from "@etherna/sdk-js/handlers"
 
 import FieldDescription from "@/components/common/FieldDescription"
 import { Card, FormGroup, Spinner } from "@/components/ui/display"

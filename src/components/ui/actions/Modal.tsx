@@ -22,7 +22,7 @@ import { XMarkIcon } from "@heroicons/react/24/solid"
 
 import Button from "./Button"
 import { isBotUserAgent } from "@/utils/browser"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type ModalProps = {
   children?: React.ReactNode
@@ -71,7 +71,7 @@ const Modal: React.FC<ModalProps> = ({
       <Dialog
         as="div"
         static
-        className={classNames("fixed inset-0 z-50 overflow-y-auto")}
+        className={cn("fixed inset-0 z-50 overflow-y-auto")}
         initialFocus={cancelButtonRef}
         open={show}
         onClose={() => (autoClose ? handleCancel() : () => {})}
@@ -89,9 +89,7 @@ const Modal: React.FC<ModalProps> = ({
             leaveTo="opacity-0"
           >
             <Dialog.Overlay
-              className={classNames(
-                "fixed inset-0 bg-black/30 backdrop-blur-sm transition-opacity"
-              )}
+              className={cn("fixed inset-0 bg-black/30 backdrop-blur-sm transition-opacity")}
             />
           </Transition.Child>
 
@@ -112,7 +110,7 @@ const Modal: React.FC<ModalProps> = ({
             afterLeave={onDisappeared}
           >
             <div
-              className={classNames(
+              className={cn(
                 "relative inline-block w-full overflow-hidden rounded-lg text-left align-middle sm:my-8 sm:max-w-lg",
                 "bg-white shadow-xl dark:bg-gray-700",
                 {
@@ -124,7 +122,7 @@ const Modal: React.FC<ModalProps> = ({
                 <div className="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
                   <button
                     type="button"
-                    className={classNames(
+                    className={cn(
                       "rounded-md bg-transparent text-gray-400 hover:text-gray-500",
                       "focus:outline-none focus:ring-2 focus:ring-offset-2",
                       "focus:ring-green-500 focus:ring-offset-white dark:focus:ring-offset-gray-700"
@@ -141,7 +139,7 @@ const Modal: React.FC<ModalProps> = ({
                 <div className="sm:flex sm:items-start sm:space-x-4">
                   {icon && (
                     <div
-                      className={classNames(
+                      className={cn(
                         "mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full",
                         "bg-gray-100 text-gray-500 dark:bg-gray-600 dark:text-gray-200",
                         "sm:mx-0 sm:h-10 sm:w-10 [&_svg]:w-6",
@@ -156,7 +154,7 @@ const Modal: React.FC<ModalProps> = ({
                     </div>
                   )}
                   <div
-                    className={classNames("flex-1 space-y-2 text-center sm:text-left", {
+                    className={cn("flex-1 space-y-2 text-center sm:text-left", {
                       "sm:max-w-[calc(100%-1rem-3rem)]": !!icon,
                     })}
                   >
@@ -177,7 +175,7 @@ const Modal: React.FC<ModalProps> = ({
               </div>
 
               <div
-                className={classNames(
+                className={cn(
                   "flex flex-col space-y-3 bg-gray-50 px-4 py-3 dark:bg-gray-900/30",
                   "sm:flex-row-reverse sm:px-6 sm:py-4",
                   "sm:space-x-3 sm:space-y-0 sm:space-x-reverse"

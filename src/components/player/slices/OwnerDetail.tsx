@@ -20,10 +20,10 @@ import React from "react"
 import { Avatar } from "@/components/ui/display"
 import routes from "@/routes"
 import usePlayerStore from "@/stores/player"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { shortenEthAddr } from "@/utils/ethereum"
 
-import type { Profile } from "@etherna/api-js"
+import type { Profile } from "@etherna/sdk-js"
 
 type OwnerDetailProps = {
   hash: string
@@ -36,7 +36,7 @@ const OwnerDetail: React.FC<OwnerDetailProps> = ({ hash, title, owner }) => {
 
   return (
     <div
-      className={classNames("absolute inset-x-0 top-0 z-1", {
+      className={cn("absolute inset-x-0 top-0 z-1", {
         "group-hover:opacity-100": true,
         "opacity-100": !isPlaying,
         "opacity-0": isPlaying,

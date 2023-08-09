@@ -13,7 +13,7 @@ import WatchOn from "./slices/WatchOn"
 import usePlayerStore from "@/stores/player"
 import { isTouchDevice } from "@/utils/browser"
 
-import type { Profile, VideoSource } from "@etherna/api-js"
+import type { Profile, VideoSource } from "@etherna/sdk-js"
 import type { MediaPlayerElement } from "vidstack"
 
 type PlayerVideoProps = {

@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-import { BeeClient } from "@etherna/api-js/clients"
-import { VideoDeserializer } from "@etherna/api-js/serializers"
-import { urlOrigin } from "@etherna/api-js/utils"
+import { BeeClient } from "@etherna/sdk-js/clients"
+import { VideoDeserializer } from "@etherna/sdk-js/serializers"
+import { urlOrigin } from "@etherna/sdk-js/utils"
 
 import SwarmProfile from "@/classes/SwarmProfile"
 import SwarmVideo from "@/classes/SwarmVideo"
@@ -24,8 +24,8 @@ import clientsStore from "@/stores/clients"
 import { nullablePromise } from "@/utils/promise"
 
 import type { VideoWithIndexes } from "@/types/video"
-import type { Profile } from "@etherna/api-js"
-import type { EthAddress, IndexVideo, Reference } from "@etherna/api-js/clients"
+import type { Profile } from "@etherna/sdk-js"
+import type { EthAddress, IndexVideo, Reference } from "@etherna/sdk-js/clients"
 
 const match = /\/watch\/([^/]+)/
 

@@ -15,14 +15,14 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
-import { VideoDeserializer } from "@etherna/api-js/serializers"
+import { EthernaResourcesHandler } from "@etherna/sdk-js/handlers"
+import { VideoDeserializer } from "@etherna/sdk-js/serializers"
 
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
 
-import type { Video, VideoRaw, VideoSource } from "@etherna/api-js"
-import type { Reference } from "@etherna/api-js/clients"
+import type { Video, VideoRaw, VideoSource } from "@etherna/sdk-js"
+import type { Reference } from "@etherna/sdk-js/clients"
 
 export type VideoOffersStatus = {
   offersStatus: "full" | "partial" | "sources" | "none"
@@ -142,8 +142,8 @@ export const parseReaderStatus = (
     userOffersStatus: getStatus(handler, video, userAddress ?? "0x0"),
     globalOffers: handlerVideoResources,
     userOfferedResourses: userAddress
-      ? (handlerVideoResources.map(status => status.reference) ?? []).filter(reference =>
-          handler.getReferenceStatus(reference)?.offeredBy.includes(userAddress)
+      ? (handlerVideoResources.map(status => status.reference) ?? []).filter(
+          reference => handler.getReferenceStatus(reference)?.offeredBy.includes(userAddress)
         )
       : [],
     userUnOfferedResourses: userAddress

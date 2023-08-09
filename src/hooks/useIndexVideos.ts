@@ -15,8 +15,8 @@
  */
 
 import { startTransition, useCallback, useEffect, useState } from "react"
-import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
-import { VideoDeserializer } from "@etherna/api-js/serializers"
+import { EthernaResourcesHandler } from "@etherna/sdk-js/handlers"
+import { VideoDeserializer } from "@etherna/sdk-js/serializers"
 
 import useSmartFetchCount from "./useSmartFetchCount"
 import { parseReaderStatus } from "./useVideoOffers"
@@ -28,8 +28,8 @@ import { wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
 
 import type { WithIndexes, WithOffersStatus, WithOwner } from "@/types/video"
-import type { Video } from "@etherna/api-js"
-import type { EthAddress, Reference } from "@etherna/api-js/clients"
+import type { Video } from "@etherna/sdk-js"
+import type { EthAddress, Reference } from "@etherna/sdk-js/clients"
 
 type SwarmVideosOptions = {
   gridRef?: React.RefObject<HTMLElement>
@@ -82,16 +82,17 @@ export default function useIndexVideos(opts: SwarmVideosOptions = {}) {
         await handler.fetchOffers({ withByWhom: false })
 
         const fetchedVideosReferences = videos.map(video => video.reference)
-        setVideos(videos =>
-          videos?.map(video => {
-            const offers = fetchedVideosReferences.includes(video.reference)
-              ? parseReaderStatus(handler, video, undefined)
-              : video.offers
-            return {
-              ...video,
-              offers,
-            }
-          })
+        setVideos(
+          videos =>
+            videos?.map(video => {
+              const offers = fetchedVideosReferences.includes(video.reference)
+                ? parseReaderStatus(handler, video, undefined)
+                : video.offers
+              return {
+                ...video,
+                offers,
+              }
+            })
         )
       } catch (error) {
         console.error(error)

@@ -25,7 +25,7 @@ import VideoStatusBadge from "./VideoStatusBadge"
 import useVideoOffers from "@/hooks/useVideoOffers"
 import useVideoPinning from "@/hooks/useVideoPinning"
 import useExtensionsStore from "@/stores/extensions"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
@@ -60,7 +60,7 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
       </div>
 
       <div
-        className={classNames(
+        className={cn(
           "-mx-container flex max-w-[100vw] flex-wrap px-container py-container md:mx-0 md:rounded-md",
           "bg-gray-400/10 dark:bg-gray-700/50"
         )}

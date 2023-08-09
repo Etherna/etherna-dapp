@@ -17,7 +17,7 @@
 
 import React from "react"
 import ReactDOM from "react-dom/client"
-import { urlOrigin } from "@etherna/api-js/utils"
+import { urlOrigin } from "@etherna/sdk-js/utils"
 
 import Root from "./app/Root"
 import prefetch from "./prefetch"

@@ -10,7 +10,7 @@ import useErrorMessage from "@/hooks/useErrorMessage"
 import useClientsStore from "@/stores/clients"
 import useVideoEditorStore from "@/stores/video-editor"
 
-import type { VideoSourceRaw } from "@etherna/api-js"
+import type { VideoSourceRaw } from "@etherna/sdk-js"
 
 type EncodingUpgradeCardProps = {
   className?: string

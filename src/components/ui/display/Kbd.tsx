@@ -17,7 +17,7 @@
 
 import React, { useEffect, useMemo, useRef } from "react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type KbdProps = {
   shortcut: string
@@ -81,11 +81,11 @@ const Kbd: React.FC<KbdProps> = ({ shortcut, className }) => {
   }, [shortcut])
 
   return (
-    <span className={classNames("flex items-center justify-center", className)} ref={kbdWrapper}>
+    <span className={cn("flex items-center justify-center", className)} ref={kbdWrapper}>
       {multiKeys.map((k, i) => (
         <React.Fragment key={i}>
           <kbd
-            className={classNames(
+            className={cn(
               "inline-block whitespace-nowrap rounded px-2 text-center font-bold",
               "border-b-2 border-gray-300 dark:border-gray-700",
               "bg-gray-200 text-gray-600 dark:bg-gray-800 dark:text-gray-300"

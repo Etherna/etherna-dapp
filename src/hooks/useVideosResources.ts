@@ -15,7 +15,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
+import { EthernaResourcesHandler } from "@etherna/sdk-js/handlers"
 
 import useMounted from "./useMounted"
 import { parseReaderStatus } from "./useVideoOffers"
@@ -24,7 +24,7 @@ import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
 
 import type { VideoOffersStatus } from "./useVideoOffers"
-import type { Video } from "@etherna/api-js"
+import type { Video } from "@etherna/sdk-js"
 
 type UseVideosResourcesOptions = {
   autoFetch?: boolean

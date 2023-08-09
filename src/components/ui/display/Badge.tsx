@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type BadgeProps = {
   children: React.ReactNode
@@ -49,7 +49,7 @@ const Badge: React.FC<BadgeProps> = ({
   const As = onClick ? "button" : "span"
   return (
     <As
-      className={classNames(
+      className={cn(
         "inline-flex items-center",
         "cursor-default overflow-hidden text-ellipsis whitespace-nowrap font-semibold",
         {

@@ -1,5 +1,5 @@
-import { EthernaPinningHandler, EthernaResourcesHandler } from "@etherna/api-js/handlers"
-import { isEmptyReference } from "@etherna/api-js/utils"
+import { EthernaPinningHandler, EthernaResourcesHandler } from "@etherna/sdk-js/handlers"
+import { isEmptyReference } from "@etherna/sdk-js/utils"
 
 import SwarmPlaylist from "./SwarmPlaylist"
 import SwarmUserPlaylists from "./SwarmUserPlaylists"
@@ -9,9 +9,9 @@ import { getResponseErrorMessage } from "@/utils/request"
 
 import type BeeClient from "./BeeClient"
 import type { PublishStatus, VideoEditorPublishSource } from "@/stores/video-editor"
-import type { Playlist, UserPlaylists, Video } from "@etherna/api-js"
-import type { EthernaGatewayClient, EthernaIndexClient, Reference } from "@etherna/api-js/clients"
-import type { VideoBuilder } from "@etherna/api-js/swarm"
+import type { Playlist, UserPlaylists, Video } from "@etherna/sdk-js"
+import type { EthernaGatewayClient, EthernaIndexClient, Reference } from "@etherna/sdk-js/clients"
+import type { VideoBuilder } from "@etherna/sdk-js/swarm"
 import type { AxiosError } from "axios"
 
 type VideoSaverOptions = {
@@ -35,7 +35,10 @@ type VideoSaverRequestOptions = {
 }
 
 export default class VideoSaver {
-  constructor(private videoBuilder: VideoBuilder, private options: VideoSaverOptions) {}
+  constructor(
+    private videoBuilder: VideoBuilder,
+    private options: VideoSaverOptions
+  ) {}
 
   async save(opts: VideoSaverRequestOptions) {
     const { initialReference, previusReferences, saveTo } = this.options

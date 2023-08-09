@@ -3,11 +3,11 @@ import React, { useCallback } from "react"
 import { Spinner } from "@/components/ui/display"
 import { Toggle } from "@/components/ui/inputs"
 import useErrorMessage from "@/hooks/useErrorMessage"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 import type useUserVideosPinning from "@/hooks/useUserVideosPinning"
 import type { VideoWithIndexes } from "@/types/video"
-import type { SwarmResourcePinStatus } from "@etherna/api-js/handlers/pinning/types"
+import type { SwarmResourcePinStatus } from "@etherna/sdk-js/handlers/pinning/types"
 
 type VideoPinningStatusProps = {
   className?: string
@@ -41,7 +41,7 @@ const VideoPinningStatus: React.FC<VideoPinningStatusProps> = ({
   const isPinning = pinStatus?.isPinningInProgress
 
   return (
-    <div className={classNames("flex flex-wrap items-center", className)}>
+    <div className={cn("flex flex-wrap items-center", className)}>
       {isLoading ? (
         <Spinner size={20} />
       ) : (

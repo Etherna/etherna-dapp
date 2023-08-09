@@ -7,7 +7,7 @@ import { Alert, Card, Text } from "@/components/ui/display"
 import useVideoEditor from "@/hooks/useVideoEditor"
 import routes from "@/routes"
 import useVideoEditorStore from "@/stores/video-editor"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 import type { PublishStatus } from "@/stores/video-editor"
 
@@ -88,7 +88,7 @@ const ResultStatus: React.FC<{ result: PublishStatus }> = ({ result }) => {
         )}
         {!isSaving && (
           <Text
-            className={classNames("ml-auto", {
+            className={cn("ml-auto", {
               "text-green-600 dark:text-green-500": result.ok,
               "text-yellow-600 dark:text-yellow-500": !result.ok,
             })}

@@ -17,7 +17,7 @@
 
 import React, { useEffect, useRef } from "react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { clamp } from "@/utils/math"
 
 export type ProgressBarProps = {
@@ -65,7 +65,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 
   return (
     <div
-      className={classNames(
+      className={cn(
         "relative block h-1 w-full overflow-hidden rounded-full bg-gray-300/50 dark:bg-gray-700/50",
         className
       )}
@@ -73,7 +73,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       data-component="progress-bar"
     >
       <div
-        className={classNames("h-full rounded-full transition-[width] duration-300", {
+        className={cn("h-full rounded-full transition-[width] duration-300", {
           "bg-primary-500 text-primary-500": color === "primary",
           "bg-green-500 text-green-500": color === "success",
           "bg-red-500 text-red-500": color === "error",

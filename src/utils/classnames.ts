@@ -3,6 +3,6 @@ import { twMerge } from "tailwind-merge"
 
 import type { ClassValue } from "clsx"
 
-export default function classNames(...args: ClassValue[]) {
+export function cn(...args: ClassValue[]) {
   return twMerge(clsx(args))
 }

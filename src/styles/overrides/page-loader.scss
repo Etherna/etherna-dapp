@@ -21,11 +21,13 @@ $bar-height: 2px;
   @apply pointer-events-none;
 
   .bar {
-    @apply fixed top-0 left-0 z-50 w-full bg-primary-500;
+    @apply fixed left-0 top-0 z-50 w-full bg-primary-500;
     height: $bar-height;
   }
   .peg {
     @apply absolute right-0 block h-full w-full opacity-100;
-    box-shadow: 0 0 10px $color, 0 0 5px $color;
+    box-shadow:
+      0 0 10px $color,
+      0 0 5px $color;
   }
 }

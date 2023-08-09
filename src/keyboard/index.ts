@@ -34,7 +34,7 @@ export const optimizeKeymapsForStorage = (keymaps: Keymaps) => {
 
   for (const [namespace, keymap] of Object.entries(optimizedKeymap) as [
     n: KeymapNamespace,
-    s: Shortcuts
+    s: Shortcuts,
   ][]) {
     for (const [key, shortcut] of Object.entries(keymap)) {
       if (shortcut === "") {
@@ -58,7 +58,7 @@ export const mergeKeymaps = (baseKeymaps: Keymaps, keymaps: Keymaps | undefined)
 
   for (const [namespace, keymap] of Object.entries(keymaps) as [
     n: KeymapNamespace,
-    s: Shortcuts
+    s: Shortcuts,
   ][]) {
     for (const [key, shortcut] of Object.entries(keymap)) {
       mergedKeymap[namespace][key] = shortcut

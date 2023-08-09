@@ -20,7 +20,7 @@ import { usePopper } from "react-popper"
 import { Link } from "react-router-dom"
 import { Menu } from "@headlessui/react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 import type { Placement } from "@popperjs/core"
 
@@ -62,10 +62,7 @@ const DropdownToggle: React.FC<DropdownToggleProps> = ({ children, className, di
   const { setButtonEl } = useContext(DropdownContext)!
   return (
     <Menu.Button
-      className={classNames(
-        "z-1 inline-flex cursor-pointer text-gray-800 dark:text-gray-100",
-        className
-      )}
+      className={cn("z-1 inline-flex cursor-pointer text-gray-800 dark:text-gray-100", className)}
       ref={(el: HTMLButtonElement) => {
         el && setButtonEl(el)
       }}
@@ -109,7 +106,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
     <Menu.Items
       as="div"
       className={({ open }) =>
-        classNames(
+        cn(
           "absolute right-0 z-1 w-72 max-w-[90vw] rounded-md py-1 shadow-lg",
           "origin-top-right ring-1 ring-black ring-opacity-5 focus:outline-none",
           "border border-transparent dark:border-gray-700",
@@ -161,7 +158,7 @@ const DropdownItem: React.FC<DropdownItemProps> = ({
   return (
     <Menu.Item as="div" disabled={disabled || inactive} data-component="dropdown-item">
       {({ active }) => {
-        const btnClassName = classNames(
+        const btnClassName = cn(
           "relative flex items-center w-full px-8 py-1 sm:py-2 whitespace-nowrap",
           "text-sm font-semibold text-gray-700 dark:text-gray-100 transition-colors",
           {
@@ -204,10 +201,7 @@ const DropdownItem: React.FC<DropdownItemProps> = ({
 
 const DropdownGroup: React.FC<DropdownGroupProps> = ({ children, className }) => {
   return (
-    <div
-      className={classNames("flex flex-col py-1 sm:py-2", className)}
-      data-component="dropdown-group"
-    >
+    <div className={cn("flex flex-col py-1 sm:py-2", className)} data-component="dropdown-group">
       {children}
     </div>
   )
@@ -238,11 +232,7 @@ const Dropdown: React.FC<DropdownProps> & {
   const [menuEl, setMenuEl] = useState<HTMLElement>()
 
   return (
-    <Menu
-      as="div"
-      className={classNames("relative inline-flex", className)}
-      data-component="dropdown"
-    >
+    <Menu as="div" className={cn("relative inline-flex", className)} data-component="dropdown">
       <DropdownContext.Provider
         value={{
           buttonEl,

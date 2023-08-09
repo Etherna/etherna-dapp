@@ -41,7 +41,7 @@ import SlateBlock from "./SlateBlock"
 import SlateLeaf from "./SlateLeaf"
 import { Label } from "@/components/ui/display"
 import { TextInput } from "@/components/ui/inputs"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import {
   decorate,
   HOTKEYS,
@@ -185,11 +185,11 @@ const SlateMarkdownEditor = forwardRef<SlateMarkdownEditorRef, SlateMarkdownEdit
     }))
 
     return (
-      <div className={classNames(className)}>
+      <div className={cn(className)}>
         {label && <Label htmlFor={id}>{label}</Label>}
 
         <div
-          className={classNames(
+          className={cn(
             "relative block w-full appearance-none rounded-lg border leading-tight",
             "min-h-24 px-3 py-3",
             "border-gray-200 bg-gray-400/5 text-gray-700",
@@ -206,7 +206,7 @@ const SlateMarkdownEditor = forwardRef<SlateMarkdownEditorRef, SlateMarkdownEdit
         >
           <Slate editor={editor} initialValue={defaultValue} onChange={handleChange}>
             <div
-              className={classNames(
+              className={cn(
                 "mb-4 flex items-center space-x-4 border-b border-gray-200 pb-4 dark:border-gray-700",
                 toolbarClassName
               )}
@@ -306,7 +306,7 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({ children, blockType, bloc
 
   return (
     <button
-      className={classNames("rounded p-1.5", {
+      className={cn("rounded p-1.5", {
         "bg-gray-400/20 dark:bg-gray-500/20": isActive,
       })}
       type="button"

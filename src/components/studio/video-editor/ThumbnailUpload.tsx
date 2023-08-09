@@ -33,7 +33,7 @@ import useVideoEditorStore from "@/stores/video-editor"
 import { isAnimatedImage } from "@/utils/media"
 import { isMimeWebCompatible } from "@/utils/mime-types"
 
-import type { BatchId } from "@etherna/api-js/clients"
+import type { BatchId } from "@etherna/sdk-js/clients"
 
 type ThumbnailUploadProps = {
   disabled?: boolean

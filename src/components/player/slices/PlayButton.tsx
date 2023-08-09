@@ -21,7 +21,7 @@ import { ReactComponent as PauseIcon } from "@/assets/icons/player/pause.svg"
 import { ReactComponent as PlayIcon } from "@/assets/icons/player/play.svg"
 
 import usePlayerStore from "@/stores/player"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 const PlayButton: React.FC = () => {
   const isPlaying = usePlayerStore(state => state.isPlaying)
@@ -39,7 +39,7 @@ const PlayButton: React.FC = () => {
 
   return (
     <div
-      className={classNames(
+      className={cn(
         "z-0 h-6 w-6 rounded-full bg-gray-100 p-1.5 text-gray-900",
         "md:h-8 md:w-8 md:p-2"
       )}

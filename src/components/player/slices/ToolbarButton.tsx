@@ -19,7 +19,7 @@ import React, { useCallback, useRef, useState } from "react"
 import { usePopper } from "react-popper"
 import { Portal } from "@headlessui/react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type ToolbarButtonProps = {
   children?: React.ReactNode
@@ -48,7 +48,7 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({ children, icon, hasMenu, 
 
   return (
     <div
-      className={classNames(
+      className={cn(
         "group z-1 h-7 w-7 rounded-full p-1.5 md:h-8 md:w-8 md:p-[0.425rem]",
         "bg-gray-500/50 text-gray-200 backdrop-blur"
       )}
@@ -63,7 +63,7 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({ children, icon, hasMenu, 
       {hasMenu ? (
         <Portal>
           <div
-            className={classNames(
+            className={cn(
               "pointer-events-none fixed py-1 opacity-0",
               "z-20 pb-10 transition-opacity duration-300",
               {
@@ -77,7 +77,7 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({ children, icon, hasMenu, 
             onMouseLeave={() => setShowMenu(false)}
           >
             <div
-              className={classNames(
+              className={cn(
                 "flex flex-col space-y-2 rounded-full px-4 py-4",
                 "bg-gray-800/75 text-gray-200 backdrop-blur"
               )}

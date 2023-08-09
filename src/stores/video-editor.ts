@@ -1,9 +1,9 @@
-import { VideoBuilder } from "@etherna/api-js/swarm"
+import { VideoBuilder } from "@etherna/sdk-js/swarm"
 import {
   bytesReferenceToReference,
   extractVideoReferences,
   getNodesWithPrefix,
-} from "@etherna/api-js/utils"
+} from "@etherna/sdk-js/utils"
 import { createDraft } from "immer"
 import { create } from "zustand"
 import { devtools, persist } from "zustand/middleware"
@@ -12,9 +12,9 @@ import { immer } from "zustand/middleware/immer"
 import logger from "./middlewares/log"
 
 import type { BatchLoadingType } from "@/components/common/BatchLoading"
-import type { ProcessedImage, Video } from "@etherna/api-js"
-import type { BatchId, BeeClient, PostageBatch, Reference } from "@etherna/api-js/clients"
-import type { VideoQuality, VideoSourceRaw } from "@etherna/api-js/schemas/video"
+import type { ProcessedImage, Video } from "@etherna/sdk-js"
+import type { BatchId, BeeClient, PostageBatch, Reference } from "@etherna/sdk-js/clients"
+import type { VideoQuality, VideoSourceRaw } from "@etherna/sdk-js/schemas/video"
 import type { Draft } from "immer"
 import type { StorageValue } from "zustand/middleware"
 

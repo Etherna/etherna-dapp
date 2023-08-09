@@ -20,7 +20,7 @@ import React, { useMemo } from "react"
 import usePlayerStore from "@/stores/player"
 import useSessionStore from "@/stores/session"
 import useUserStore from "@/stores/user"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { convertTime } from "@/utils/converters"
 
 const BytesCounter: React.FC = () => {
@@ -57,7 +57,7 @@ const BytesCounter: React.FC = () => {
 
   return (
     <div
-      className={classNames(
+      className={cn(
         "mb-6 mt-4 flex items-center text-xs font-medium",
         "text-gray-700 dark:text-gray-300"
       )}
@@ -65,7 +65,7 @@ const BytesCounter: React.FC = () => {
     >
       <span className="relative mr-1 flex h-3 w-3">
         <span
-          className={classNames(
+          className={cn(
             "absolute inline-flex h-full w-full animate-[ping_1s_ease-out_1s_3] rounded-full",
             {
               "bg-gray-400/75 dark:bg-gray-400/75": unknown,
@@ -75,7 +75,7 @@ const BytesCounter: React.FC = () => {
           )}
         />
         <span
-          className={classNames("relative inline-flex h-3 w-3 rounded-full", {
+          className={cn("relative inline-flex h-3 w-3 rounded-full", {
             "bg-gray-300 dark:bg-gray-500": unknown,
             "bg-amber-400 dark:bg-amber-500": limited,
             "bg-red-500 dark:bg-red-500": zero,
@@ -89,7 +89,7 @@ const BytesCounter: React.FC = () => {
           <>
             <span>With your credit you can only enjoy the remaining </span>
             <span
-              className={classNames(
+              className={cn(
                 "relative font-semibold text-gray-900 dark:text-gray-50",
                 "after:absolute after:inset-x-0 after:top-full after:h-px after:bg-gray-50"
               )}

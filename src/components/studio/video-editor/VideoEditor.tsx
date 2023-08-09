@@ -15,9 +15,9 @@ import useVideoEditor from "@/hooks/useVideoEditor"
 import useVideoProcessing from "@/hooks/useVideoProcessing"
 import useUserStore from "@/stores/user"
 import useVideoEditorStore from "@/stores/video-editor"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
-import type { Video } from "@etherna/api-js"
+import type { Video } from "@etherna/sdk-js"
 
 export const PORTAL_ID = "video-drag-portal"
 
@@ -107,7 +107,7 @@ const VideoEditor = forwardRef<VideoEditorRef, VideoEditorProps>(({ video }, ref
         {needsReEncoding && <EncodingUpgradeCard className="mb-12" />}
 
         <Container
-          className={classNames("gap-x-4 gap-y-8 md:items-start")}
+          className={cn("gap-x-4 gap-y-8 md:items-start")}
           noPaddingX
           noPaddingY
           row

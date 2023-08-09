@@ -16,9 +16,9 @@
  */
 
 import React from "react"
-import { urlHostname } from "@etherna/api-js/utils"
+import { urlHostname } from "@etherna/sdk-js/utils"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type ExtensionHostStatusProps = {
   title: string
@@ -39,14 +39,12 @@ const ExtensionHostStatus: React.FC<ExtensionHostStatusProps> = ({
 }) => {
   return (
     <div
-      className={classNames(
-        "flex flex-grow items-center justify-items-center lg:justify-items-stretch"
-      )}
+      className={cn("flex flex-grow items-center justify-items-center lg:justify-items-stretch")}
       onClick={onClick}
     >
       {iconSvg && (
         <span
-          className={classNames("block h-6 w-6 lg:h-5 lg:w-5", {
+          className={cn("block h-6 w-6 lg:h-5 lg:w-5", {
             "mr-2.5 lg:mr-4": compactMobile,
             "mr-5": !compactMobile,
           })}
@@ -56,7 +54,7 @@ const ExtensionHostStatus: React.FC<ExtensionHostStatusProps> = ({
       )}
 
       <div
-        className={classNames("flex flex-col items-start leading-none", {
+        className={cn("flex flex-col items-start leading-none", {
           "hidden lg:flex": compactMobile,
           "floating-sidebar:flex": compactMobile,
         })}
@@ -68,7 +66,7 @@ const ExtensionHostStatus: React.FC<ExtensionHostStatusProps> = ({
       </div>
 
       <span
-        className={classNames("h-1.5 w-1.5 rounded-full bg-gray-300", {
+        className={cn("h-1.5 w-1.5 rounded-full bg-gray-300", {
           "ml-auto": !compactMobile,
           "floating-sidebar:ml-auto lg:ml-auto": compactMobile,
           "bg-green-500 dark:bg-green-400": isConnected,

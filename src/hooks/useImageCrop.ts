@@ -15,7 +15,7 @@
  */
 
 import { useCallback } from "react"
-import { fileToDataURL } from "@etherna/api-js/utils"
+import { fileToDataURL } from "@etherna/sdk-js/utils"
 
 import useUIStore from "@/stores/ui"
 

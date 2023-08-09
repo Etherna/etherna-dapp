@@ -22,13 +22,13 @@ import Image from "@/components/common/Image"
 import { Skeleton } from "@/components/ui/display"
 import useErrorMessage from "@/hooks/useErrorMessage"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { shortenEthAddr } from "@/utils/ethereum"
 import makeBlockies from "@/utils/make-blockies"
 import { getResponseErrorMessage } from "@/utils/request"
 
-import type { Profile } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
+import type { Profile } from "@etherna/sdk-js"
+import type { EthAddress } from "@etherna/sdk-js/clients"
 
 type ProfileInfoProps = {
   children: React.ReactNode
@@ -85,9 +85,9 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
       </div>
 
       <header className="flex w-full items-start p-4">
-        <div className={classNames("-mt-8 shrink-0 md:w-56 md:pr-8")}>
+        <div className={cn("-mt-8 shrink-0 md:w-56 md:pr-8")}>
           <span
-            className={classNames(
+            className={cn(
               "relative mx-auto flex overflow-hidden rounded-full border-4",
               "h-24 w-24 sm:h-32 sm:w-32 md:h-40 md:w-40",
               "border-white bg-gray-200 dark:border-gray-700/30 dark:bg-gray-700"
@@ -107,7 +107,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
           </span>
         </div>
         <div
-          className={classNames(
+          className={cn(
             "ml-4 flex w-full flex-col space-y-4 md:ml-0",
             "md:flex-row md:items-start md:justify-between md:space-x-4 md:space-y-0"
           )}
@@ -115,7 +115,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
           <Skeleton show={isLoading}>
             <Tippy content={profile?.name ?? profileAddress}>
               <h1
-                className={classNames(
+                className={cn(
                   "mb-0 flex-grow overflow-hidden break-all",
                   "text-left text-2xl font-semibold leading-[2.25rem]",
                   "text-gray-900 dark:text-gray-100"

@@ -26,7 +26,7 @@ import TimeProgress from "./TimeProgress"
 import VideoProgress from "./VideoProgress"
 import Volume from "./VolumeControl"
 import usePlayerStore from "@/stores/player"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type ToolbarProps = {
   focus: boolean
@@ -37,7 +37,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ focus }) => {
 
   return (
     <div
-      className={classNames("flex w-full flex-col", {
+      className={cn("flex w-full flex-col", {
         "bg-slate-700 dark:bg-slate-800": !floating,
         "absolute bottom-0 bg-gradient-to-t from-black to-black/0 px-3 pt-12 user-idle:hidden paused:flex":
           floating,
@@ -47,7 +47,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ focus }) => {
       <VideoProgress focus={focus} />
 
       <div
-        className={classNames("flex items-center space-x-3 py-1 sm:space-x-4 sm:p-3 md:space-x-8", {
+        className={cn("flex items-center space-x-3 py-1 sm:space-x-4 sm:p-3 md:space-x-8", {
           "px-1.5 xs:px-container": !floating,
           "px-0 xs:px-0": floating,
         })}

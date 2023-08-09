@@ -20,7 +20,7 @@ import { usePopper } from "react-popper"
 import { Popover } from "@headlessui/react"
 
 import useSidebar from "@/hooks/useSidebar"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 import type { Placement } from "@popperjs/core"
 
@@ -82,14 +82,14 @@ const Popup: React.FC<PopupProps> = ({
         <>
           <Popover.Button
             as="div"
-            className={classNames("appearance-none bg-transparent", toggleClassName)}
+            className={cn("appearance-none bg-transparent", toggleClassName)}
             ref={setReferenceElement}
           >
             {toggle}
           </Popover.Button>
 
           <Popover.Panel
-            className={classNames("absolute z-20", {
+            className={cn("absolute z-20", {
               hidden: !open,
               flex: open,
             })}
@@ -98,7 +98,7 @@ const Popup: React.FC<PopupProps> = ({
             {...attributes.popper}
           >
             <div
-              className={classNames(
+              className={cn(
                 "min-w-[240px] rounded-md px-6 py-4 shadow-xl sm:max-w-[98vw]",
                 "bg-white dark:bg-gray-800",
                 contentClassName
@@ -127,7 +127,7 @@ const PopupArrow = forwardRef<HTMLSpanElement, PopupArrowProps>(
     if (!placement) return null
     return (
       <span
-        className={classNames("block origin-center", className)}
+        className={cn("block origin-center", className)}
         style={{
           ...style,
           width: size,
@@ -140,7 +140,7 @@ const PopupArrow = forwardRef<HTMLSpanElement, PopupArrowProps>(
         ref={ref}
       >
         <span
-          className={classNames(
+          className={cn(
             "absolute -left-0.5 bottom-0 block h-0 w-0 origin-center",
             "border border-transparent border-t-transparent",
             "border-b-white dark:border-b-gray-800",
@@ -151,7 +151,7 @@ const PopupArrow = forwardRef<HTMLSpanElement, PopupArrowProps>(
           style={{ borderWidth: size / 2 + 2 }}
         />
         <span
-          className={classNames(
+          className={cn(
             "absolute block h-0 w-0",
             "border border-transparent",
             "border-b-white dark:border-b-gray-800",

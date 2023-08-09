@@ -22,7 +22,7 @@ import { ReactComponent as DragIcon } from "@/assets/icons/drag.svg"
 import { Button } from "@/components/ui/actions"
 import { Portal } from "@/components/ui/layout"
 import useErrorMessage from "@/hooks/useErrorMessage"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { isMimeCompatible } from "@/utils/mime-types"
 
 type FileDragProps = {
@@ -236,7 +236,7 @@ const FileDragContent: React.FC<FileDragProps> = ({
             />
             <div className="flex flex-col items-center space-y-3">
               <DragIcon
-                className={classNames(
+                className={cn(
                   "h-12 w-12 text-gray-500 transition-colors duration-200 dark:text-gray-300",
                   {
                     "text-blue-400 dark:text-blue-300": isDragOver,
@@ -250,13 +250,9 @@ const FileDragContent: React.FC<FileDragProps> = ({
               </span>
 
               <div
-                className={classNames(
-                  "flex flex-col items-center",
-                  "transition-colors duration-200",
-                  {
-                    "opacity-20": isDragOver,
-                  }
-                )}
+                className={cn("flex flex-col items-center", "transition-colors duration-200", {
+                  "opacity-20": isDragOver,
+                })}
               >
                 <span className="font-medium text-gray-600 dark:text-gray-400">
                   <span className="text-sm font-normal">or</span>
@@ -266,7 +262,7 @@ const FileDragContent: React.FC<FileDragProps> = ({
                 </Button>
 
                 <small
-                  className={classNames(
+                  className={cn(
                     "mt-4 flex flex-col items-center",
                     "text-xs font-medium text-gray-600 dark:text-gray-400"
                   )}

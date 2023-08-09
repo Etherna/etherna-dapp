@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type VideoDetailsButtonProps = {
   children?: React.ReactNode
@@ -34,7 +34,7 @@ const VideoDetailsButton: React.FC<VideoDetailsButtonProps> = ({
 }) => {
   return (
     <button
-      className={classNames(
+      className={cn(
         "inline-flex items-center whitespace-nowrap bg-transparent",
         "rounded border-none px-2 py-1 font-medium",
         "text-gray-800 active:bg-gray-300 dark:text-gray-200 dark:active:bg-gray-700",

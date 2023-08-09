@@ -27,7 +27,7 @@ import routes from "@/routes"
 import { shortenEthAddr } from "@/utils/ethereum"
 
 import type { VideoWithAll } from "@/types/video"
-import type { EthAddress } from "@etherna/api-js/clients"
+import type { EthAddress } from "@etherna/sdk-js/clients"
 
 type ProfilePreviewProps = {
   profileAddress: EthAddress
@@ -49,7 +49,7 @@ const ProfilePreview: React.FC<ProfilePreviewProps> = ({ profileAddress }) => {
           ...video,
           indexesStatus: {},
           offers: undefined,
-        } as VideoWithAll)
+        }) as VideoWithAll
     )
   }, [videos])
 

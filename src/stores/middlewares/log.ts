@@ -5,7 +5,7 @@ import type { State, StateCreator, StoreMutatorIdentifier } from "zustand"
 type Logger = <
   T extends State,
   Mps extends [StoreMutatorIdentifier, unknown][] = [],
-  Mcs extends [StoreMutatorIdentifier, unknown][] = []
+  Mcs extends [StoreMutatorIdentifier, unknown][] = [],
 >(
   f: StateCreator<T, [...Mps, ["logger", unknown]], Mcs>
 ) => StateCreator<T, Mps, [["logger", unknown], ...Mcs]>

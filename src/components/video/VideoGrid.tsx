@@ -19,10 +19,10 @@ import React, { forwardRef } from "react"
 
 import VideoPreviewPlaceholder from "@/components/placeholders/VideoPreviewPlaceholder"
 import VideoPreview from "@/components/video/VideoPreview"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 import type { WithIndexes, WithOffersStatus, WithOwner } from "@/types/video"
-import type { Video } from "@etherna/api-js"
+import type { Video } from "@etherna/sdk-js"
 
 type VideoGridProps = {
   label?: string
@@ -49,7 +49,7 @@ const VideoGrid = forwardRef<HTMLDivElement, VideoGridProps>(
           </div>
         )}
         <div
-          className={classNames(
+          className={cn(
             "mx-auto grid max-w-[2560px] grid-flow-row-dense gap-4",
             singleColumn
               ? {

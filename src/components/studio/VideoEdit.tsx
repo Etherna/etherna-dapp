@@ -32,7 +32,7 @@ import useUserStore from "@/stores/user"
 import useVideoEditorStore from "@/stores/video-editor"
 
 import type { VideoWithIndexes } from "@/types/video"
-import type { Video } from "@etherna/api-js"
+import type { Video } from "@etherna/sdk-js"
 
 type VideoEditProps = {
   reference: string | undefined

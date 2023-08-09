@@ -23,7 +23,7 @@ import SEO from "@/components/layout/SEO"
 import ProfileView from "@/components/profile/ProfileView"
 import { Container } from "@/components/ui/layout"
 
-import type { EthAddress } from "@etherna/api-js/clients"
+import type { EthAddress } from "@etherna/sdk-js/clients"
 
 const ChannelPage = () => {
   const { id } = useParams<{ id: EthAddress }>()

@@ -15,7 +15,7 @@
  */
 
 import { useEffect, useRef } from "react"
-import { calcBatchPrice, getBatchCapacity } from "@etherna/api-js/utils"
+import { calcBatchPrice, getBatchCapacity } from "@etherna/sdk-js/utils"
 
 import useConfirmation from "./useConfirmation"
 import useErrorMessage from "./useErrorMessage"
@@ -28,7 +28,7 @@ import useExtensionsStore from "@/stores/extensions"
 import useVideoEditorStore from "@/stores/video-editor"
 import { convertBytes } from "@/utils/converters"
 
-import type { Reference } from "@etherna/api-js/clients"
+import type { Reference } from "@etherna/sdk-js/clients"
 
 // controller instance should be global to avoid duplicate events
 export let videoProcessingController = new VideoProcessingController("0".repeat(64) as Reference)

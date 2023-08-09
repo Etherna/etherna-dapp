@@ -28,7 +28,7 @@ import useExtensionsStore from "@/stores/extensions"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import type { VideoWithIndexes } from "@/types/video"
-import type { Profile } from "@etherna/api-js"
+import type { Profile } from "@etherna/sdk-js"
 
 type VideoDetailsProps = {
   video: VideoWithIndexes

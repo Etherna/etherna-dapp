@@ -15,7 +15,7 @@
  */
 
 import { useCallback, useRef, useState } from "react"
-import { parsePostageBatch } from "@etherna/api-js/utils"
+import { parsePostageBatch } from "@etherna/sdk-js/utils"
 
 import useBeeAuthentication from "./useBeeAuthentication"
 import useClientsStore from "@/stores/clients"
@@ -27,7 +27,7 @@ import type {
   GatewayBatch,
   GatewayBatchPreview,
   PostageBatch,
-} from "@etherna/api-js/clients"
+} from "@etherna/sdk-js/clients"
 
 type UseBatchesOpts = {
   limit?: number

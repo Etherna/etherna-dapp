@@ -57,16 +57,19 @@ const routePaths = {
 
 const withOrigin = (paths: typeof routePaths): typeof routePaths => {
   const routeNames = Object.keys(paths) as (keyof typeof routePaths)[]
-  const withOriginRoutes = routeNames.reduce((acc, routeName) => {
-    const routePath = paths[routeName]
-    return {
-      ...acc,
-      [routeName]:
-        typeof routePath === "string"
-          ? `${window.location.origin}${paths[routeName]}`
-          : (...args: any[]) => `${window.location.origin}${routePath(args as any)}`,
-    }
-  }, {} as typeof routePaths)
+  const withOriginRoutes = routeNames.reduce(
+    (acc, routeName) => {
+      const routePath = paths[routeName]
+      return {
+        ...acc,
+        [routeName]:
+          typeof routePath === "string"
+            ? `${window.location.origin}${paths[routeName]}`
+            : (...args: any[]) => `${window.location.origin}${routePath(args as any)}`,
+      }
+    },
+    {} as typeof routePaths
+  )
   return withOriginRoutes
 }
 

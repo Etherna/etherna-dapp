@@ -22,7 +22,7 @@ import axios from "axios"
 import { Button } from "@/components/ui/actions"
 import { Alert, FormGroup } from "@/components/ui/display"
 import { TextInput } from "@/components/ui/inputs"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 const whatChoices = [
   {
@@ -109,7 +109,7 @@ const AlphaPassForm: React.FC = () => {
 
   return success ? (
     <div
-      className={classNames(
+      className={cn(
         "max-w-screen-md text-lg",
         "prose text-gray-900 prose-a:text-primary-500 dark:text-gray-100"
       )}

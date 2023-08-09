@@ -20,7 +20,7 @@ import React, { useCallback, useRef, useState } from "react"
 import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid"
 
 import usePlayerStore from "@/stores/player"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { clamp } from "@/utils/math"
 
 type TouchOverlayProps = {
@@ -86,14 +86,14 @@ const TouchOverlay: React.FC<TouchOverlayProps> = ({ focus, skipBySeconds = 5 })
 
   return (
     <div
-      className={classNames("absolute inset-0 bottom-[40px] md:bottom-15", {
+      className={cn("absolute inset-0 bottom-[40px] md:bottom-15", {
         "bottom-0": floating,
       })}
       onClick={handleClick}
       ref={container}
     >
       <div
-        className={classNames(
+        className={cn(
           "flex items-center space-x-2 px-2 py-1",
           "absolute left-1/2 top-0 -translate-x-1/2 -translate-y-full rounded-full",
           "border border-gray-900/20 bg-white shadow-lg shadow-gray-900/10",
@@ -106,7 +106,7 @@ const TouchOverlay: React.FC<TouchOverlayProps> = ({ focus, skipBySeconds = 5 })
       >
         <span className="flex rotate-180 items-center">
           <PlayIcon
-            className={classNames("text-gray-800 opacity-20", {
+            className={cn("text-gray-800 opacity-20", {
               "animate-skip": skippedTo === "prev",
             })}
             width={16}
@@ -114,7 +114,7 @@ const TouchOverlay: React.FC<TouchOverlayProps> = ({ focus, skipBySeconds = 5 })
             style={{ animationDelay: "200ms" }}
           />
           <PlayIcon
-            className={classNames("text-gray-800 opacity-20", {
+            className={cn("text-gray-800 opacity-20", {
               "animate-skip": skippedTo === "prev",
             })}
             width={16}
@@ -122,7 +122,7 @@ const TouchOverlay: React.FC<TouchOverlayProps> = ({ focus, skipBySeconds = 5 })
             style={{ animationDelay: "300ms" }}
           />
           <PlayIcon
-            className={classNames("text-gray-800 opacity-20", {
+            className={cn("text-gray-800 opacity-20", {
               "animate-skip": skippedTo === "prev",
             })}
             width={16}
@@ -133,7 +133,7 @@ const TouchOverlay: React.FC<TouchOverlayProps> = ({ focus, skipBySeconds = 5 })
         <span>{skipBySeconds} seconds</span>
         <span className="flex items-center">
           <PlayIcon
-            className={classNames("text-gray-800 opacity-20", {
+            className={cn("text-gray-800 opacity-20", {
               "animate-skip": skippedTo === "next",
             })}
             width={16}
@@ -141,7 +141,7 @@ const TouchOverlay: React.FC<TouchOverlayProps> = ({ focus, skipBySeconds = 5 })
             style={{ animationDelay: "200ms" }}
           />
           <PlayIcon
-            className={classNames("text-gray-800 opacity-20", {
+            className={cn("text-gray-800 opacity-20", {
               "animate-skip": skippedTo === "next",
             })}
             width={16}
@@ -149,7 +149,7 @@ const TouchOverlay: React.FC<TouchOverlayProps> = ({ focus, skipBySeconds = 5 })
             style={{ animationDelay: "300ms" }}
           />
           <PlayIcon
-            className={classNames("text-gray-800 opacity-20", {
+            className={cn("text-gray-800 opacity-20", {
               "animate-skip": skippedTo === "next",
             })}
             width={16}

@@ -23,7 +23,7 @@ import useConfirmation from "@/hooks/useConfirmation"
 import useErrorMessage from "@/hooks/useErrorMessage"
 
 import type { MigrationStatus } from "@/hooks/useBulkMigrations"
-import type { Video } from "@etherna/api-js"
+import type { Video } from "@etherna/sdk-js"
 
 type VideoMigrationModalProps = {
   show: boolean

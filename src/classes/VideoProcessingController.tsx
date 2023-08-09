@@ -1,7 +1,7 @@
-import { ChunksUploader } from "@etherna/api-js/classes"
-import { BatchesHandler } from "@etherna/api-js/handlers"
-import { BatchUpdateType } from "@etherna/api-js/stores"
-import { fileToUint8Array, getBatchSpace } from "@etherna/api-js/utils"
+import { ChunksUploader } from "@etherna/sdk-js/classes"
+import { BatchesHandler } from "@etherna/sdk-js/handlers"
+import { BatchUpdateType } from "@etherna/sdk-js/stores"
+import { fileToUint8Array, getBatchSpace } from "@etherna/sdk-js/utils"
 import { createFFmpeg } from "@ffmpeg/ffmpeg"
 
 import { getMaxrate } from "@/utils/media"
@@ -11,7 +11,7 @@ import { timeComponents } from "@/utils/time"
 import type BeeClient from "./BeeClient"
 import type GatewayClient from "./GatewayClient"
 import type { GatewayType } from "@/types/extension-host"
-import type { BatchId, PostageBatch, Reference } from "@etherna/api-js/clients"
+import type { BatchId, PostageBatch, Reference } from "@etherna/sdk-js/clients"
 import type { FFmpeg } from "@ffmpeg/ffmpeg"
 
 export class BatchNotFoundError extends Error {

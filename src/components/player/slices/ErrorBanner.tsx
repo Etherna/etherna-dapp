@@ -22,7 +22,7 @@ import { LockClosedIcon } from "@heroicons/react/24/solid"
 import { ReactComponent as CreditErrorIcon } from "@/assets/icons/credit-error.svg"
 
 import usePlayerStore from "@/stores/player"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 const ErrorBanner: React.FC = () => {
   const [description, setDescription] = useState("")
@@ -70,7 +70,7 @@ const ErrorBanner: React.FC = () => {
       data-component="player-error-banner"
     >
       <div
-        className={classNames("mx-auto w-8 text-gray-50 md:w-12 lg:w-16", {
+        className={cn("mx-auto w-8 text-gray-50 md:w-12 lg:w-16", {
           "text-red-500": error?.code === 500,
           "text-orange-400": error?.code === 402,
         })}

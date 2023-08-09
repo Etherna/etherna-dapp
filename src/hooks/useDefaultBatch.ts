@@ -15,9 +15,9 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { BatchesHandler } from "@etherna/api-js/handlers"
-import { BatchUpdateType } from "@etherna/api-js/stores"
-import { getBatchSpace, parseGatewayBatch, parsePostageBatch } from "@etherna/api-js/utils"
+import { BatchesHandler } from "@etherna/sdk-js/handlers"
+import { BatchUpdateType } from "@etherna/sdk-js/stores"
+import { getBatchSpace, parseGatewayBatch, parsePostageBatch } from "@etherna/sdk-js/utils"
 
 import useBeeAuthentication from "./useBeeAuthentication"
 import useConfirmation from "./useConfirmation"
@@ -29,7 +29,7 @@ import useUIStore from "@/stores/ui"
 import useUserStore from "@/stores/user"
 import dayjs from "@/utils/dayjs"
 
-import type { GatewayBatch, PostageBatch } from "@etherna/api-js/clients"
+import type { GatewayBatch, PostageBatch } from "@etherna/sdk-js/clients"
 
 type UseBatchesOpts = {
   autofetch?: boolean

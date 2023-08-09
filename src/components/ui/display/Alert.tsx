@@ -19,7 +19,7 @@ import React, { useCallback, useMemo } from "react"
 
 import { XMarkIcon } from "@heroicons/react/24/outline"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type AlertProps = {
   children?: React.ReactNode
@@ -49,7 +49,7 @@ const Alert: React.FC<AlertProps> = ({
   const styleButton = useCallback(
     (element: JSX.Element) => {
       return React.cloneElement(element, {
-        className: classNames(
+        className: cn(
           "font-medium whitespace-nowrap",
           "focus:outline-none focus:ring-2 focus:ring-offset-2",
           {
@@ -75,7 +75,7 @@ const Alert: React.FC<AlertProps> = ({
   const styledIcon = useMemo(() => {
     if (!icon) return undefined
     return React.cloneElement(icon, {
-      className: classNames({
+      className: cn({
         "text-green-400 dark:text-green-600": color === "success",
         "text-red-400 dark:text-red-600": color === "error",
         "text-yellow-500 dark:text-yellow-600": color === "warning",
@@ -96,7 +96,7 @@ const Alert: React.FC<AlertProps> = ({
 
   return (
     <div
-      className={classNames("rounded-md p-4", className, {
+      className={cn("rounded-md p-4", className, {
         "bg-green-100": color === "success",
         "bg-red-100": color === "error",
         "bg-yellow-100": color === "warning",
@@ -106,10 +106,10 @@ const Alert: React.FC<AlertProps> = ({
     >
       <div className="flex">
         <div className="flex-shrink-0">{styledIcon}</div>
-        <div className={classNames({ "ml-3": styledIcon })}>
+        <div className={cn({ "ml-3": styledIcon })}>
           {title && (
             <h3
-              className={classNames("mb-2 text-sm font-semibold", {
+              className={cn("mb-2 text-sm font-semibold", {
                 "text-green-800": color === "success",
                 "text-red-800": color === "error",
                 "text-yellow-800": color === "warning",
@@ -120,7 +120,7 @@ const Alert: React.FC<AlertProps> = ({
             </h3>
           )}
           <div
-            className={classNames("text-sm", {
+            className={cn("text-sm", {
               "text-green-700": color === "success",
               "text-red-700": color === "error",
               "text-yellow-700": color === "warning",

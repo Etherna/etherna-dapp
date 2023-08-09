@@ -26,7 +26,7 @@ import useUIStore from "@/stores/ui"
 import useUserStore from "@/stores/user"
 import { signMessage } from "@/utils/ethereum"
 
-import type { EthAddress, SSOIdentity } from "@etherna/api-js/clients"
+import type { EthAddress, SSOIdentity } from "@etherna/sdk-js/clients"
 
 type AutoSigninOpts = {}
 

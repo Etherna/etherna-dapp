@@ -29,8 +29,8 @@ import routes from "@/routes"
 import useEnvironmentStore from "@/stores/env"
 import useUserStore from "@/stores/user"
 
-import type { Profile } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
+import type { Profile } from "@etherna/sdk-js"
+import type { EthAddress } from "@etherna/sdk-js/clients"
 
 type ProfileViewProps = {
   profileAddress: EthAddress

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react"
-import { urlHostname } from "@etherna/api-js/utils"
+import { urlHostname } from "@etherna/sdk-js/utils"
 import { Portal } from "@headlessui/react"
 
 import { ChevronDownIcon } from "@heroicons/react/24/solid"

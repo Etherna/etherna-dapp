@@ -4,8 +4,8 @@ import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
 
-import type { Profile } from "@etherna/api-js"
-import type { BatchId, EthAddress, GatewayBatch } from "@etherna/api-js/clients"
+import type { Profile } from "@etherna/sdk-js"
+import type { BatchId, EthAddress, GatewayBatch } from "@etherna/sdk-js/clients"
 import type { Draft } from "immer"
 
 export type WalletType = "etherna" | "metamask"

@@ -20,7 +20,7 @@ import React from "react"
 import Logo from "@/components/common/Logo"
 import routes from "@/routes"
 import usePlayerStore from "@/stores/player"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type WatchOnProps = {
   hash: string
@@ -32,7 +32,7 @@ const WatchOn: React.FC<WatchOnProps> = ({ hash }) => {
 
   return (
     <div
-      className={classNames(
+      className={cn(
         "absolute left-0 z-1 -translate-x-full",
         "transition-transform duration-200 ease-out",
         {
@@ -43,7 +43,7 @@ const WatchOn: React.FC<WatchOnProps> = ({ hash }) => {
       )}
     >
       <a
-        className={classNames(
+        className={cn(
           "inline-flex items-center space-x-3 p-3 sm:p-4",
           "text-sm font-medium tracking-tight",
           "bg-gray-800/60 text-white hover:text-white"

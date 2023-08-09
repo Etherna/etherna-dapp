@@ -19,7 +19,7 @@ import React, { useState } from "react"
 import { usePopper } from "react-popper"
 import { Listbox, Portal } from "@headlessui/react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type ToolbarSelectProps = {
   children?: React.ReactNode
@@ -39,7 +39,7 @@ const ToolbarSelect: React.FC<ToolbarSelectProps> = ({ children, value, options,
   return (
     <div>
       <button
-        className={classNames(
+        className={cn(
           "flex h-5 items-center rounded px-1.5 md:h-7 md:px-3",
           "text-center text-xs font-semibold text-gray-200",
           "bg-gray-500/50 backdrop-blur"
@@ -53,7 +53,7 @@ const ToolbarSelect: React.FC<ToolbarSelectProps> = ({ children, value, options,
 
       <Portal>
         <div
-          className={classNames("z-20 pb-10 pt-1 transition-opacity duration-200", {
+          className={cn("z-20 pb-10 pt-1 transition-opacity duration-200", {
             "pointer-events-none opacity-0": !showMenu,
             "pointer-events-auto opacity-100 ": showMenu,
           })}
@@ -64,14 +64,14 @@ const ToolbarSelect: React.FC<ToolbarSelectProps> = ({ children, value, options,
           onMouseLeave={() => setShowMenu(false)}
         >
           <ul
-            className={classNames(
+            className={cn(
               "flex flex-col space-y-2 rounded px-2 py-4",
               "bg-gray-800/75 text-gray-200 backdrop-blur"
             )}
           >
             {options.map(option => (
               <li
-                className={classNames(
+                className={cn(
                   "cursor-pointer px-2 text-center text-sm font-semibold focus:outline-none",
                   {
                     "text-primary-500": option.value === value,

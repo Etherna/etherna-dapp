@@ -16,7 +16,7 @@
  */
 
 import React, { useCallback, useMemo, useState } from "react"
-import { isSafeURL } from "@etherna/api-js/utils"
+import { isSafeURL } from "@etherna/sdk-js/utils"
 
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/solid"
 

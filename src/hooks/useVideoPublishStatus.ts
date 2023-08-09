@@ -21,7 +21,7 @@ import IndexClient from "@/classes/IndexClient"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import useClientsStore from "@/stores/clients"
 
-import type { EthAddress } from "@etherna/api-js/clients"
+import type { EthAddress } from "@etherna/sdk-js/clients"
 
 export type UseVideoPublishStatusOptions = {
   reference?: string | undefined

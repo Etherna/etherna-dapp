@@ -16,12 +16,12 @@
  */
 
 import React from "react"
-import { getBitrate } from "@etherna/api-js/utils"
+import { getBitrate } from "@etherna/sdk-js/utils"
 
 import MediaStats from "@/components/media/MediaStats"
 import { convertBirate, convertBytes } from "@/utils/converters"
 
-import type { VideoSource } from "@etherna/api-js"
+import type { VideoSource } from "@etherna/sdk-js"
 
 type VideoSourceStatsProps = {
   source: VideoSource | undefined

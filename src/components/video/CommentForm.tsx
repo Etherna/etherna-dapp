@@ -26,9 +26,9 @@ import useCharaterLimits from "@/hooks/useCharaterLimits"
 import useErrorMessage from "@/hooks/useErrorMessage"
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
-import type { IndexVideoComment } from "@etherna/api-js/clients"
+import type { IndexVideoComment } from "@etherna/sdk-js/clients"
 
 type CommentFormProps = {
   indexReference: string
@@ -98,13 +98,13 @@ const CommentForm: React.FC<CommentFormProps> = ({ indexReference, onCommentPost
       </div>
 
       <MarkdownEditor
-        className={classNames("flex-1 [&_.DraftEditor-editorContainer]:min-h-4", {
+        className={cn("flex-1 [&_.DraftEditor-editorContainer]:min-h-4", {
           "pb-0": !isFocused,
         })}
-        toolbarClassName={classNames({
+        toolbarClassName={cn({
           hidden: !isFocused,
         })}
-        charLimitClassName={classNames({
+        charLimitClassName={cn({
           hidden: !isFocused,
         })}
         placeholder="Add a public comment"

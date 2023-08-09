@@ -15,7 +15,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import { VideoDeserializer } from "@etherna/api-js/serializers"
+import { VideoDeserializer } from "@etherna/sdk-js/serializers"
 
 import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
@@ -23,7 +23,7 @@ import useExtensionsStore from "@/stores/extensions"
 import { nullablePromise } from "@/utils/promise"
 
 import type { VideoWithIndexes } from "@/types/video"
-import type { IndexVideo, Reference } from "@etherna/api-js/clients"
+import type { IndexVideo, Reference } from "@etherna/sdk-js/clients"
 
 type SwarmVideoOptions = {
   reference: string

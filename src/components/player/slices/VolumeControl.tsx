@@ -25,7 +25,7 @@ import ToolbarButton from "./ToolbarButton"
 import { Slider } from "@/components/ui/inputs"
 import usePlayerStore from "@/stores/player"
 import { isTouchDevice } from "@/utils/browser"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 const VolumeControl: React.FC = () => {
   const [isTouch] = useState(isTouchDevice())
@@ -62,7 +62,7 @@ const VolumeControl: React.FC = () => {
         className="mx-auto my-4 h-32 w-2 touch-none rounded-full bg-white bg-opacity-50"
         renderTrack={(_, { index, value }) => (
           <div
-            className={classNames("bottom-0 w-full rounded-full", {
+            className={cn("bottom-0 w-full rounded-full", {
               "bg-white": index === 0,
             })}
             style={{

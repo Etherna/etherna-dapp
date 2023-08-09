@@ -15,7 +15,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { urlOrigin } from "@etherna/api-js/utils"
+import { urlOrigin } from "@etherna/sdk-js/utils"
 
 import useErrorMessage from "./useErrorMessage"
 import IndexClient from "@/classes/IndexClient"
@@ -27,7 +27,7 @@ import { getResponseErrorMessage } from "@/utils/request"
 
 import type { UseUserVideosOptions, VideosSource } from "./useUserVideos"
 import type { VideoWithIndexes } from "@/types/video"
-import type { Playlist, PlaylistVideo, Video } from "@etherna/api-js"
+import type { Playlist, PlaylistVideo, Video } from "@etherna/sdk-js"
 import type { AxiosError } from "axios"
 
 export type VisibilityStatus = {
@@ -156,12 +156,15 @@ export default function useUserVideosVisibility(
         })
       )
 
-      videosVisibility = results.reduce((acc, val, i) => {
-        if (val.status === "fulfilled") {
-          return { ...acc, [videos[i].reference]: val.value }
-        }
-        return acc
-      }, {} as typeof visibility)
+      videosVisibility = results.reduce(
+        (acc, val, i) => {
+          if (val.status === "fulfilled") {
+            return { ...acc, [videos[i].reference]: val.value }
+          }
+          return acc
+        },
+        {} as typeof visibility
+      )
     } catch (error) {
       console.error(error)
     } finally {
@@ -179,21 +182,24 @@ export default function useUserVideosVisibility(
       }
       setVisibility(visibility => ({
         ...visibility,
-        ...videos.reduce((acc, video) => {
-          return {
-            ...acc,
-            [video.reference]: visibility[video.reference].map(visibility => ({
-              ...visibility,
-              status:
-                (visibility.sourceType === "playlist" && source.type === "channel") ||
-                (visibility.sourceType === "index" &&
-                  source.type === "index" &&
-                  visibility.sourceIdentifier === source.indexUrl)
-                  ? status
-                  : visibility.status,
-            })),
-          }
-        }, {} as typeof visibility),
+        ...videos.reduce(
+          (acc, video) => {
+            return {
+              ...acc,
+              [video.reference]: visibility[video.reference].map(visibility => ({
+                ...visibility,
+                status:
+                  (visibility.sourceType === "playlist" && source.type === "channel") ||
+                  (visibility.sourceType === "index" &&
+                    source.type === "index" &&
+                    visibility.sourceIdentifier === source.indexUrl)
+                    ? status
+                    : visibility.status,
+              })),
+            }
+          },
+          {} as typeof visibility
+        ),
       }))
     },
     []
@@ -210,7 +216,7 @@ export default function useUserVideosVisibility(
               reference: video.reference,
               title: video.preview.title,
               addedAt: +new Date(),
-            } as PlaylistVideo)
+            }) as PlaylistVideo
         ),
       ].filter((video, i, self) => self.findIndex(v => v.reference === video.reference) === i)
 

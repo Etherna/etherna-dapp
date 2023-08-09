@@ -21,7 +21,7 @@ import Tippy from "@tippyjs/react"
 import { CheckIcon } from "@heroicons/react/24/outline"
 import { ClipboardIcon } from "@heroicons/react/24/solid"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type CopyTextProps = {
   children?: string
@@ -61,15 +61,15 @@ const CopyText: React.FC<CopyTextProps> = ({ children, label, onCopy }) => {
 
         <Tippy content="Copy" delay={100}>
           <button
-            className={classNames(
+            className={cn(
               "relative ml-3 inline-flex items-center rounded border-none bg-transparent p-1",
               "bg-gray-300 text-gray-500 active:bg-gray-700/40 dark:bg-gray-500 dark:text-gray-300 dark:active:bg-gray-700/20"
             )}
             onClick={copy}
           >
-            <ClipboardIcon className={classNames({ "opacity-0": copied })} width={20} aria-hidden />
+            <ClipboardIcon className={cn({ "opacity-0": copied })} width={20} aria-hidden />
             <CheckIcon
-              className={classNames("text-green-500 absolute-center", {
+              className={cn("text-green-500 absolute-center", {
                 hidden: !copied,
                 block: copied,
               })}

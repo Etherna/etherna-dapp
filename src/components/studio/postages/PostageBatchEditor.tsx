@@ -21,7 +21,7 @@ import {
   calcDilutedTTL,
   getBatchCapacity,
   ttlToAmount,
-} from "@etherna/api-js/utils"
+} from "@etherna/sdk-js/utils"
 
 import GatewayClient from "@/classes/GatewayClient"
 import { FormGroup, Spinner } from "@/components/ui/display"
@@ -31,8 +31,8 @@ import dayjs from "@/utils/dayjs"
 import { clamp } from "@/utils/math"
 
 import type { GatewayType } from "@/types/extension-host"
-import type { GatewayBatch } from "@etherna/api-js/clients"
-import type { BatchesHandler } from "@etherna/api-js/handlers"
+import type { GatewayBatch } from "@etherna/sdk-js/clients"
+import type { BatchesHandler } from "@etherna/sdk-js/handlers"
 
 type PostageBatchEditorProps = {
   batch: GatewayBatch

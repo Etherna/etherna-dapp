@@ -25,7 +25,7 @@ import useShortcutsEditor from "@/hooks/useShortcutsEditor"
 import useEnvironmentStore from "@/stores/env"
 import useSettingsStore from "@/stores/settings"
 import useUIStore from "@/stores/ui"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { keyEventToString } from "@/utils/keyboard"
 
 type ShortcutModalProsp = {
@@ -106,7 +106,7 @@ const ShortcutModal: React.FC<ShortcutModalProsp> = ({ show = false }) => {
     >
       <div
         ref={editorRef}
-        className={classNames(
+        className={cn(
           "relative my-5 flex w-full rounded-lg p-12",
           "bg-gray-200 dark:bg-gray-800",
           "focus:outline-none focus:ring",
@@ -120,7 +120,7 @@ const ShortcutModal: React.FC<ShortcutModalProsp> = ({ show = false }) => {
       >
         {shortcut && (
           <Kbd
-            className={classNames(
+            className={cn(
               "pointer-events-none w-full text-center text-6xl text-gray-500 absolute-center",
               "[&>*]:align-baseline [&>*]:leading-none",
               "[&_kbd]:border-b-0"

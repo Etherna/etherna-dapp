@@ -25,8 +25,8 @@ import useClientsStore from "@/stores/clients"
 import { getResponseErrorMessage } from "@/utils/request"
 
 import type { WithOwner } from "@/types/video"
-import type { Playlist, Profile, Video } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
+import type { Playlist, Profile, Video } from "@etherna/sdk-js"
+import type { EthAddress } from "@etherna/sdk-js/clients"
 
 type VideoWithOwner = WithOwner<Video>
 
@@ -79,7 +79,7 @@ export default function usePlaylistVideos(
           ({
             ...video,
             owner: opts.owner,
-          } as VideoWithOwner)
+          }) as VideoWithOwner
       )
     },
     [opts.owner]

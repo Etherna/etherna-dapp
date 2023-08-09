@@ -5,7 +5,7 @@ import { Card, ProgressBar } from "@/components/ui/display"
 import useVideoEditorResume from "@/hooks/useVideoEditorResume"
 import { videoProcessingController } from "@/hooks/useVideoProcessing"
 import useVideoEditorStore from "@/stores/video-editor"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 import type { PropsWithChildren } from "react"
 
@@ -29,7 +29,7 @@ const VideoProgressCard: React.FC<VideoProgressCardProps> = ({ className, disabl
   const { resumeBatchLoading, resumeUpload } = useVideoEditorResume()
 
   return (
-    <div className={classNames("[&_h4]:mb-2 [&_h4]:text-sm [&_h4]:font-semibold", className)}>
+    <div className={cn("[&_h4]:mb-2 [&_h4]:text-sm [&_h4]:font-semibold", className)}>
       <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
         <ProgressCard
           title="Encoding"

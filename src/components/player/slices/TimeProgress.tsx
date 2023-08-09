@@ -19,7 +19,7 @@ import React from "react"
 
 import Time from "@/components/media/Time"
 import usePlayerStore from "@/stores/player"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type TimeProgressProps = {
   className?: string
@@ -30,12 +30,7 @@ const TimeProgress: React.FC<TimeProgressProps> = ({ className }) => {
   const duration = usePlayerStore(state => state.duration)
 
   return (
-    <div
-      className={classNames(
-        "text-xs font-medium tracking-tighter text-gray-200 sm:text-sm",
-        className
-      )}
-    >
+    <div className={cn("text-xs font-medium tracking-tighter text-gray-200 sm:text-sm", className)}>
       <Time duration={currentTime} />
       <span> / </span>
       <Time duration={duration} />

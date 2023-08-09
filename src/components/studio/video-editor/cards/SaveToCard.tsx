@@ -16,7 +16,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo } from "react"
-import { urlHostname } from "@etherna/api-js/utils"
+import { urlHostname } from "@etherna/sdk-js/utils"
 
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import FieldDescription from "@/components/common/FieldDescription"

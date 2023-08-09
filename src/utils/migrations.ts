@@ -1,4 +1,4 @@
-import type { VideoPreviewRaw } from "@etherna/api-js"
+import type { VideoPreviewRaw } from "@etherna/sdk-js"
 
 export const requiresMigration = (version: VideoPreviewRaw["v"]) => {
   if (!version) return true

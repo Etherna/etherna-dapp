@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { BatchesHandler } from "@etherna/api-js/handlers"
-import { extractVideoReferences } from "@etherna/api-js/utils"
+import { BatchesHandler } from "@etherna/sdk-js/handlers"
+import { extractVideoReferences } from "@etherna/sdk-js/utils"
 
 import useErrorMessage from "./useErrorMessage"
 import useUserPlaylists from "./useUserPlaylists"
@@ -16,9 +16,9 @@ import { requiresMigration } from "@/utils/migrations"
 import type { VideoOffersStatus } from "./useVideoOffers"
 import type { VideoEditorPublishSource } from "@/stores/video-editor"
 import type { VideoWithIndexes } from "@/types/video"
-import type { Playlist, Video } from "@etherna/api-js"
-import type { BatchId, Reference } from "@etherna/api-js/clients"
-import type { SwarmResourcePinStatus } from "@etherna/api-js/handlers"
+import type { Playlist, Video } from "@etherna/sdk-js"
+import type { BatchId, Reference } from "@etherna/sdk-js/clients"
+import type { SwarmResourcePinStatus } from "@etherna/sdk-js/handlers"
 
 export type MigrationStatus = {
   downloadProgress: number

@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type NavPillsProps = {
   children?: React.ReactNode
@@ -35,7 +35,7 @@ export type NavPillsItemProps = {
 const NavPillsItem: React.FC<NavPillsItemProps> = ({ children, active, vertical, onClick }) => {
   return (
     <div
-      className={classNames(
+      className={cn(
         "cursor-pointer rounded-full px-4 py-1.5 text-center font-semibold transition duration-200",
         "mr-2 last:mr-0",
         {
@@ -59,7 +59,7 @@ const NavPills: React.FC<NavPillsProps> & { Item: typeof NavPillsItem } = ({
 }) => {
   return (
     <nav
-      className={classNames(
+      className={cn(
         "flex",
         {
           "flex-col": vertical,

@@ -20,8 +20,8 @@ import SwarmVideo from "@/classes/SwarmVideo"
 import clientsStore from "@/stores/clients"
 import { fullfilledPromisesResult } from "@/utils/promise"
 
-import type { Profile, Video } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
+import type { Profile, Video } from "@etherna/sdk-js"
+import type { EthAddress } from "@etherna/sdk-js/clients"
 
 const match = /\/profile\/([^/]+)/
 

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import { urlOrigin } from "@etherna/api-js/utils"
+import { urlOrigin } from "@etherna/sdk-js/utils"
 
 import { parseLocalStorage } from "./local-storage"
 

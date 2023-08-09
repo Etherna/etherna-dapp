@@ -21,7 +21,7 @@ import { Listbox } from "@headlessui/react"
 
 import { ChevronUpDownIcon } from "@heroicons/react/24/solid"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type DropdownSidebarProps = {
   children?: React.ReactNode
@@ -69,14 +69,14 @@ const DropdownSidebar: React.FC<DropdownSidebarProps> = ({ className, defaultTit
   return (
     <Listbox
       as="aside"
-      className={classNames("relative mb-10 lg:mb-0", className)}
+      className={cn("relative mb-10 lg:mb-0", className)}
       value={pathname}
       onChange={goTo}
     >
       {({ open }) => (
         <>
           <Listbox.Button
-            className={classNames(
+            className={cn(
               "flex w-full items-center rounded px-4 py-3 lg:hidden",
               "border border-gray-400 dark:border-gray-600",
               "transition-colors duration-75 active:bg-gray-500/10"
@@ -88,7 +88,7 @@ const DropdownSidebar: React.FC<DropdownSidebarProps> = ({ className, defaultTit
           </Listbox.Button>
 
           <Listbox.Options
-            className={classNames(
+            className={cn(
               "absolute inset-x-0 top-full z-10 mt-2 flex-col space-y-2 rounded p-4",
               "bg-gray-50 dark:bg-gray-800",
               "border border-gray-100 shadow-lg dark:border-gray-700",
@@ -109,7 +109,7 @@ const DropdownSidebar: React.FC<DropdownSidebarProps> = ({ className, defaultTit
                 key={i}
               >
                 {({ active }) => (
-                  <span className={classNames({ "ring-blue-200": active })}>
+                  <span className={cn({ "ring-blue-200": active })}>
                     {React.cloneElement(item, { to: undefined })}
                   </span>
                 )}

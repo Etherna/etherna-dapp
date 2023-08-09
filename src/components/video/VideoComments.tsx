@@ -23,7 +23,7 @@ import VideoCommentsItem from "./VideoCommentsItem"
 import CommentForm from "@/components/video/CommentForm"
 import useClientsStore from "@/stores/clients"
 
-import type { IndexVideoComment } from "@etherna/api-js/clients"
+import type { IndexVideoComment } from "@etherna/sdk-js/clients"
 
 type VideoCommentsProps = {
   indexReference: string

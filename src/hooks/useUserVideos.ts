@@ -15,8 +15,8 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { VideoDeserializer } from "@etherna/api-js/serializers"
-import { urlOrigin } from "@etherna/api-js/utils"
+import { VideoDeserializer } from "@etherna/sdk-js/serializers"
+import { urlOrigin } from "@etherna/sdk-js/utils"
 
 import useErrorMessage from "./useErrorMessage"
 import IndexClient from "@/classes/IndexClient"
@@ -29,8 +29,8 @@ import { wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
 
 import type { VideoWithIndexes } from "@/types/video"
-import type { Playlist, Profile } from "@etherna/api-js"
-import type { Reference } from "@etherna/api-js/clients"
+import type { Playlist, Profile } from "@etherna/sdk-js"
+import type { Reference } from "@etherna/sdk-js/clients"
 
 export type VideosSource =
   | {

@@ -20,8 +20,8 @@ import SwarmProfile from "@/classes/SwarmProfile"
 import useClientsStore from "@/stores/clients"
 import { wait } from "@/utils/promise"
 
-import type { Profile } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
+import type { Profile } from "@etherna/sdk-js"
+import type { EthAddress } from "@etherna/sdk-js/clients"
 
 type SwarmProfileOptions = {
   address: EthAddress

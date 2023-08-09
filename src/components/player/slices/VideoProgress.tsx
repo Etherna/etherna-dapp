@@ -20,7 +20,7 @@ import React, { useCallback, useMemo, useRef, useState } from "react"
 import Time from "@/components/media/Time"
 import { Slider } from "@/components/ui/inputs"
 import usePlayerStore from "@/stores/player"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type VideoProgressProps = {
   className?: string
@@ -52,7 +52,7 @@ const VideoProgress: React.FC<VideoProgressProps> = ({ className, focus }) => {
 
   return (
     <div
-      className={classNames("relative w-full", className)}
+      className={cn("relative w-full", className)}
       onMouseOver={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
       ref={progressContainer}
@@ -65,7 +65,7 @@ const VideoProgress: React.FC<VideoProgressProps> = ({ className, focus }) => {
         step={0.1}
         renderTrack={(_, { index, value }) => (
           <div
-            className={classNames("h-full cursor-pointer bg-gray-600", {
+            className={cn("h-full cursor-pointer bg-gray-600", {
               "z-1 bg-primary-500": index === 0,
             })}
             style={{
@@ -78,7 +78,7 @@ const VideoProgress: React.FC<VideoProgressProps> = ({ className, focus }) => {
         )}
         renderThumb={(props, { valueNow }) => (
           <div
-            className={classNames(
+            className={cn(
               "mt-0.5 h-5 w-5 rounded-full",
               "-translate-x-1/2 -translate-y-1/2  bg-primary-500",
               "opacity-0 transition-opacity duration-200",
@@ -114,7 +114,7 @@ const VideoProgress: React.FC<VideoProgressProps> = ({ className, focus }) => {
         style={{ width: `${(buffered / duration) * 100}%` }}
       />
       <span
-        className={classNames(
+        className={cn(
           "absolute bottom-0 left-0 mb-5 -translate-x-1/2 rounded-sm px-1 py-0.5",
           "origin-center scale-0 transition-transform duration-200",
           "bg-gray-900 text-xs font-medium text-white",

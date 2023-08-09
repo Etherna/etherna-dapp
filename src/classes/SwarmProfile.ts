@@ -1,4 +1,4 @@
-import { ProfileReader, ProfileWriter } from "@etherna/api-js/swarm"
+import { ProfileReader, ProfileWriter } from "@etherna/sdk-js/swarm"
 
 const SwarmProfile = {
   Reader: ProfileReader,

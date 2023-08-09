@@ -17,7 +17,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Link, Navigate } from "react-router-dom"
-import { urlHostname } from "@etherna/api-js/utils"
+import { urlHostname } from "@etherna/sdk-js/utils"
 
 import {
   BoltIcon,
@@ -47,14 +47,14 @@ import useVideosResources from "@/hooks/useVideosResources"
 import routes from "@/routes"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
 import { encodedSvg } from "@/utils/svg"
 
 import type { VideosSource } from "@/hooks/useUserVideos"
 import type { VideoWithIndexes } from "@/types/video"
-import type { Profile } from "@etherna/api-js"
+import type { Profile } from "@etherna/sdk-js"
 
 const Videos: React.FC = () => {
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
@@ -179,7 +179,7 @@ const Videos: React.FC = () => {
             render: item => (
               <div className="flex items-center space-x-2">
                 <div
-                  className={classNames(
+                  className={cn(
                     "relative w-14 shrink-0 overflow-hidden md:w-20 lg:w-24 xl:w-28",
                     "bg-gray-300 after:block after:pb-[56.25%] dark:bg-gray-600"
                   )}

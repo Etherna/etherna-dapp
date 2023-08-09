@@ -23,8 +23,8 @@ import useUserStore from "@/stores/user"
 import { deepCloneArray } from "@/utils/array"
 import { deepCloneObject } from "@/utils/object"
 
-import type { Playlist, PlaylistVideo, UserPlaylists, Video } from "@etherna/api-js"
-import type { EthAddress, Reference } from "@etherna/api-js/clients"
+import type { Playlist, PlaylistVideo, UserPlaylists, Video } from "@etherna/sdk-js"
+import type { EthAddress, Reference } from "@etherna/sdk-js/clients"
 
 interface UseUserPlaylistsOptions {
   fetchChannel?: boolean
@@ -226,7 +226,7 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
               title: video.preview.title,
               addedAt: +new Date(),
               publishedAt: publishedAt,
-            } as PlaylistVideo)
+            }) as PlaylistVideo
         ),
         ...(newPlaylist.videos ?? []),
       ].filter((vid, i, self) => self.findIndex(vid2 => vid2.reference === vid.reference) === i)

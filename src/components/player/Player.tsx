@@ -24,11 +24,11 @@ import PlayerShortcuts from "./slices/PlayerShortcuts"
 import PlayerPlaceholder from "@/components/placeholders/PlayerPlaceholder"
 import useVideoTracking from "@/hooks/useVideoTracking"
 import usePlayerStore from "@/stores/player"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { getAccessToken } from "@/utils/jwt"
 import http from "@/utils/request"
 
-import type { Profile, VideoSource } from "@etherna/api-js"
+import type { Profile, VideoSource } from "@etherna/sdk-js"
 import type { MediaPlayerElement } from "vidstack"
 
 type PlayerProps = {
@@ -114,7 +114,7 @@ const Player: React.FC<PlayerProps> = ({
   return (
     <PlayerShortcuts>
       <div
-        className={classNames("relative z-0 flex flex-col overflow-hidden", {
+        className={cn("relative z-0 flex flex-col overflow-hidden", {
           "-mx-4 mb-6 md:mx-0 lg:mt-6": !embed,
           "landscape-touch:fixed landscape-touch:inset-0 landscape-touch:z-10": !embed,
           "landscape-touch:mb-0 landscape-touch:pb-15": !embed,

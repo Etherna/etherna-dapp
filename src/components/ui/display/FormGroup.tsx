@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type FormGroupProps = {
   children?: React.ReactNode
@@ -30,7 +30,7 @@ export type FormGroupProps = {
 const FormGroup: React.FC<FormGroupProps> = ({ children, className, label, labelFor, error }) => {
   return (
     <div
-      className={classNames("mb-6 flex flex-col last-of-type:mb-0", className)}
+      className={cn("mb-6 flex flex-col last-of-type:mb-0", className)}
       data-component="form-group"
     >
       {label && (

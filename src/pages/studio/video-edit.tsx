@@ -23,7 +23,7 @@ import VideoEdit from "@/components/studio/VideoEdit"
 import { Container } from "@/components/ui/layout"
 import useRouteState from "@/hooks/useRouteState"
 
-import type { Video } from "@etherna/api-js"
+import type { Video } from "@etherna/sdk-js"
 
 const StudioVideoEdit = () => {
   const params = useParams<{ id: string }>()

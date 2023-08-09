@@ -23,7 +23,7 @@ import Tippy from "@tippyjs/react"
 import { ArrowTopRightOnSquareIcon, PlayIcon } from "@heroicons/react/20/solid"
 
 import { Popup } from "@/components/ui/display"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type SidebarProps = {
   children?: React.ReactNode
@@ -113,7 +113,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   const Wrapper: React.FC<{ children: React.ReactNode }> = useMemo(() => {
     return ({ children }) => (
       <As
-        className={classNames(
+        className={cn(
           "flex items-center justify-items-center lg:justify-items-stretch",
           "w-full space-x-3 rounded-md",
           "text-sm text-gray-800 dark:text-gray-200",
@@ -142,7 +142,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     <Wrapper>
       {iconSvg && (
         <div
-          className={classNames(
+          className={cn(
             "h-6 w-6 lg:h-5 lg:w-5",
             "floating-sidebar:mx-0 floating-sidebar:h-5 floating-sidebar:w-5",
             {
@@ -156,7 +156,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       )}
       {title && (
         <span
-          className={classNames(
+          className={cn(
             "inline text-sm lg:font-semibold",
             "floating-sidebar:inline floating-sidebar:font-semibold",
             {
@@ -191,7 +191,7 @@ const SidebarLinksToggle: React.FC = () => {
 const SidebarLinksList: React.FC<SidebarLinksListProps> = ({ children, className }) => {
   return (
     <div
-      className={classNames("pointer-events-auto flex flex-col flex-wrap lg:flex-row", className)}
+      className={cn("pointer-events-auto flex flex-col flex-wrap lg:flex-row", className)}
       data-component="sidebar-links-list"
     >
       {children}
@@ -225,7 +225,7 @@ const SidebarLinksItem: React.FC<SidebarLinksItemProps> = ({
   const Wrapper: React.FC<{ children: React.ReactNode }> = useMemo(() => {
     return ({ children }) => (
       <As
-        className={classNames(
+        className={cn(
           "block px-0 py-1.5",
           "text-left text-gray-600 dark:text-gray-400",
           "py-0 lg:inline-block lg:w-auto lg:px-0",
@@ -328,7 +328,7 @@ const SidebarSpace: React.FC<SidebarSpaceProps> = ({ flexible, customHeight }) =
   const height = flexible ? "auto" : customHeight ?? "2.25rem"
   return (
     <div
-      className={classNames({ "flex-grow": flexible })}
+      className={cn({ "flex-grow": flexible })}
       style={{ height }}
       data-component="sidebar-space"
     />
@@ -375,7 +375,7 @@ const Sidebar: React.FC<SidebarProps> & {
         </Transition>
       )}
       <aside
-        className={classNames(
+        className={cn(
           "hidden bg-gray-100 px-2.5 py-3 dark:bg-gray-800",
           "md:fixed md:inset-y-0 md:left-0 md:flex md:w-20 lg:w-52 xl:w-64",
           {

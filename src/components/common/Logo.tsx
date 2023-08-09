@@ -21,7 +21,7 @@ import { omit } from "lodash"
 import { ReactComponent as EthernaSymbol } from "@/assets/logo-symbol.svg"
 import { ReactComponent as EthernaLogo } from "@/assets/logo.svg"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type LogoProps = React.SVGAttributes<SVGElement> & {
   compact?: boolean
@@ -33,7 +33,7 @@ const Logo: React.FC<LogoProps> = props => {
     <EthernaSymbol
       aria-label="Etherna"
       {...omit(props, "compact", "white")}
-      className={classNames(
+      className={cn(
         "[&>.svg-symbol]:fill-primary-500 [&>.svg-symbol]:dark:fill-gray-50",
         {
           dark: props.forceWhite,
@@ -45,7 +45,7 @@ const Logo: React.FC<LogoProps> = props => {
     <EthernaLogo
       aria-label="Etherna"
       {...omit(props, "compact", "white")}
-      className={classNames(
+      className={cn(
         {
           "[&>.svg-symbol]:fill-primary-500 [&>.svg-text]:fill-[#7797A3]": !props.forceWhite,
           "[&>.svg-symbol]:dark:fill-gray-50 [&>.svg-text]:dark:fill-gray-50": !props.forceWhite,

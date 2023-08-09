@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type ContainerProps = {
   children: React.ReactNode
@@ -46,7 +46,7 @@ const Container: React.FC<ContainerProps> = ({
 }) => {
   return (
     <As
-      className={classNames(
+      className={cn(
         "relative flex flex-grow",
         {
           "max-w-screen-xl": !fluid,

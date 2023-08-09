@@ -17,7 +17,7 @@
 
 import React from "react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type SkeletonProps = {
   children: React.ReactNode
@@ -44,7 +44,7 @@ const Skeleton: React.FC<SkeletonProps> = ({
 
   return (
     <span
-      className={classNames(
+      className={cn(
         "inline-flex animate-pulse bg-gray-200 dark:bg-gray-600",
         "[&>*]:invisible",
         {

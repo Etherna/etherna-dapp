@@ -22,11 +22,11 @@ import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-p
 import Image from "@/components/common/Image"
 import { Button, Modal } from "@/components/ui/actions"
 import useErrorMessage from "@/hooks/useErrorMessage"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { encodedSvg } from "@/utils/svg"
 
 import type { VideosSource } from "@/hooks/useUserVideos"
-import type { Video } from "@etherna/api-js"
+import type { Video } from "@etherna/sdk-js"
 
 type VideoDeleteModalProps = {
   source: VideosSource
@@ -87,7 +87,7 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
         <div className="relative w-full sm:min-h-24 sm:w-1/3">
           {videos.slice(0, 3).map((video, i) => (
             <div
-              className={classNames("absolute left-0 top-0 z-[2] h-[80%] w-[91%]", {
+              className={cn("absolute left-0 top-0 z-[2] h-[80%] w-[91%]", {
                 "z-[1] ml-[3%] mt-[3%]": i === 1,
                 "z-[0] ml-[6%] mt-[6%]": i === 2,
               })}

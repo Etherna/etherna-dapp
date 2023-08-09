@@ -4,7 +4,7 @@ import { Spinner } from "@/components/ui/display"
 import useClientsStore from "@/stores/clients"
 import useVideoEditorStore from "@/stores/video-editor"
 
-import type { Video } from "@etherna/api-js"
+import type { Video } from "@etherna/sdk-js"
 
 type VideoLoadingProps = {
   children: React.ReactNode

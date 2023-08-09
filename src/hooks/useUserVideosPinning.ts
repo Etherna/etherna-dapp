@@ -15,15 +15,15 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import { EthernaPinningHandler } from "@etherna/api-js/handlers"
-import { extractVideoReferences } from "@etherna/api-js/utils"
+import { EthernaPinningHandler } from "@etherna/sdk-js/handlers"
+import { extractVideoReferences } from "@etherna/sdk-js/utils"
 
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 
-import type { Video } from "@etherna/api-js"
-import type { Reference } from "@etherna/api-js/clients"
-import type { SwarmResourcePinStatus } from "@etherna/api-js/handlers/pinning/types"
+import type { Video } from "@etherna/sdk-js"
+import type { Reference } from "@etherna/sdk-js/clients"
+import type { SwarmResourcePinStatus } from "@etherna/sdk-js/handlers/pinning/types"
 
 export type VideoStatus = "public" | "processing" | "unindexed" | "error"
 

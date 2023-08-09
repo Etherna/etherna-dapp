@@ -26,14 +26,14 @@ import Time from "@/components/media/Time"
 import { Avatar, Badge, Skeleton } from "@/components/ui/display"
 import routes from "@/routes"
 import useExtensionsStore from "@/stores/extensions"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
 import { encodedSvg } from "@/utils/svg"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import type { WithIndexes, WithOwner } from "@/types/video"
-import type { Video } from "@etherna/api-js"
+import type { Video } from "@etherna/sdk-js"
 
 const thumbnailPreview = encodedSvg(<ThumbPlaceholder />)
 
@@ -90,23 +90,20 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
 
   return (
     <div
-      className={classNames("flex w-full", {
+      className={cn("flex w-full", {
         "flex-col": direction === "vertical",
         "flex-col sm:flex-row": direction === "horizontal",
       })}
     >
       <Link
-        className={classNames("block", {
+        className={cn("block", {
           "w-full shrink-0 sm:w-1/3": direction === "horizontal",
         })}
         to={routes.watch(videoLink)}
         state={{ video, ownerProfile: video.owner, videoOffers }}
       >
         <div
-          className={classNames(
-            "relative flex w-full overflow-hidden rounded-sm before:pb-[56.25%]",
-            {}
-          )}
+          className={cn("relative flex w-full overflow-hidden rounded-sm before:pb-[56.25%]", {})}
         >
           <Image
             className="bg-gray-200 dark:bg-gray-700"
@@ -118,7 +115,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
           />
           {video.preview.duration && video.preview.duration > 0 && (
             <div
-              className={classNames(
+              className={cn(
                 "absolute bottom-0 left-auto right-0 top-auto m-2 px-1.5 py-1",
                 "rounded-sm text-2xs font-semibold leading-none",
                 "bg-gray-900 text-gray-100 sm:py-0.5 sm:text-xs"
@@ -130,14 +127,14 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
         </div>
       </Link>
       <div
-        className={classNames("flex space-x-2", {
+        className={cn("flex space-x-2", {
           "mt-2": direction === "vertical",
           "mt-2 sm:ml-2 sm:mt-0 sm:flex-1": direction === "horizontal",
         })}
       >
         {!hideProfile && profileLink && (
           <div
-            className={classNames({
+            className={cn({
               "sm:hidden": direction === "horizontal",
             })}
           >
@@ -149,7 +146,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
           </div>
         )}
         <div
-          className={classNames("flex flex-grow flex-col overflow-hidden", {
+          className={cn("flex flex-grow flex-col overflow-hidden", {
             "sm:space-y-2": direction === "horizontal",
           })}
         >
@@ -158,7 +155,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
             state={{ video, ownerProfile: video.owner, videoOffers }}
           >
             <h4
-              className={classNames(
+              className={cn(
                 "flex-grow text-base font-semibold leading-tight",
                 "text-gray-900 dark:text-gray-100",
                 "line-clamp-2 max-w-full overflow-hidden text-ellipsis"
@@ -180,7 +177,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
                 )}
                 <Skeleton show={isLoadingProfile}>
                   <h5
-                    className={classNames(
+                    className={cn(
                       "max-w-full flex-grow overflow-hidden text-ellipsis text-sm font-semibold",
                       "text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300",
                       "transition-colors duration-200"
@@ -197,7 +194,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
               {dayjs.duration(dayjs(video.preview.createdAt).diff(dayjs())).humanize(true)}
             </div>
           )}
-          <div className={classNames("mt-2 grid auto-cols-max grid-flow-col gap-3 empty:mt-0")}>
+          <div className={cn("mt-2 grid auto-cols-max grid-flow-col gap-3 empty:mt-0")}>
             {isVideoOffered && (
               <Badge prefix={<CreditIcon width={16} aria-hidden />} color="primary" small>
                 Free to watch

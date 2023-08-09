@@ -18,7 +18,7 @@
 import React, { useCallback, useMemo } from "react"
 import { Switch } from "@headlessui/react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type ToggleProps = {
   className?: string
@@ -44,7 +44,7 @@ const Toggle: React.FC<ToggleProps> = ({
   const styledIcon = useCallback((icon: React.ReactElement) => {
     return icon
       ? React.cloneElement(icon, {
-          className: classNames("w-3.5 h-3.5 m-0", icon.props.className),
+          className: cn("w-3.5 h-3.5 m-0", icon.props.className),
         })
       : undefined
   }, [])
@@ -59,12 +59,12 @@ const Toggle: React.FC<ToggleProps> = ({
 
   return (
     <Switch.Group>
-      <div className={classNames("flex items-center", className)} data-component="toggle">
+      <div className={cn("flex items-center", className)} data-component="toggle">
         {label && <Switch.Label className="mr-4">{label}</Switch.Label>}
         <Switch
           checked={checked}
           onChange={onChange}
-          className={classNames(
+          className={cn(
             "relative inline-flex items-center rounded-full transition-colors",
             "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-4 focus-visible:outline-none",
             "focus:ring-offset-gray-50 dark:focus:ring-offset-gray-800",
@@ -80,7 +80,7 @@ const Toggle: React.FC<ToggleProps> = ({
           disabled={disabled}
         >
           <span
-            className={classNames(
+            className={cn(
               "flex items-center justify-center",
               "rounded-full bg-white text-gray-600",
               "border border-gray-200 dark:border-gray-700",

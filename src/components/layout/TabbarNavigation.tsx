@@ -16,7 +16,7 @@
  */
 
 import React from "react"
-import { urlOrigin, urlPath } from "@etherna/api-js/utils"
+import { urlOrigin, urlPath } from "@etherna/sdk-js/utils"
 
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline"
 import { BookmarkIcon, HomeIcon, UserIcon } from "@heroicons/react/24/solid"

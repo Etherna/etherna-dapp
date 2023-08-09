@@ -15,13 +15,13 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { EthernaPinningHandler } from "@etherna/api-js/handlers"
+import { EthernaPinningHandler } from "@etherna/sdk-js/handlers"
 
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
 
-import type { Video, VideoSource } from "@etherna/api-js"
+import type { Video, VideoSource } from "@etherna/sdk-js"
 
 export type VideoPinningStatus = {
   pinningStatus: "full" | "partial" | "sources" | "none"
@@ -112,8 +112,8 @@ function parseReaderStatus(
       pinnedBy: status.pinnedBy ?? [],
     })),
     userPinnedResourses: userAddress
-      ? (handlerVideoResources.map(status => status.reference) ?? []).filter(reference =>
-          handler.getReferenceStatus(reference)?.pinnedBy?.includes(userAddress)
+      ? (handlerVideoResources.map(status => status.reference) ?? []).filter(
+          reference => handler.getReferenceStatus(reference)?.pinnedBy?.includes(userAddress)
         )
       : [],
     userUnPinnedResourses: userAddress

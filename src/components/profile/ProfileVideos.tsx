@@ -49,7 +49,7 @@ const ProfileVideos: React.FC<ProfileVideosProps> = ({
           ...video,
           indexesStatus: {},
           offers: undefined,
-        } as VideoWithAll)
+        }) as VideoWithAll
     )
   }, [videos])
 

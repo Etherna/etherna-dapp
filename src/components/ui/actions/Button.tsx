@@ -19,7 +19,7 @@ import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
 
 import { Spinner } from "@/components/ui/display"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type ButtonProps = {
   children?: React.ReactNode
@@ -105,7 +105,7 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <As
-      className={classNames(
+      className={cn(
         "relative inline-flex items-center justify-center whitespace-nowrap leading-4",
         "focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-50 dark:ring-offset-gray-800",
         {
@@ -189,7 +189,7 @@ const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
     >
       <span
-        className={classNames("flex items-center justify-center", {
+        className={cn("flex items-center justify-center", {
           invisible: loading,
         })}
       >

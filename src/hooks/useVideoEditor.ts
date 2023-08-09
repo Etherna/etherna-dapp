@@ -15,7 +15,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import { VideoBuilder } from "@etherna/api-js/swarm"
+import { VideoBuilder } from "@etherna/sdk-js/swarm"
 import { immerable } from "immer"
 
 import useUserPlaylists from "./useUserPlaylists"

@@ -6,7 +6,7 @@ import { immer } from "zustand/middleware/immer"
 import logger from "./middlewares/log"
 import { isTouchDevice } from "@/utils/browser"
 
-import type { VideoQuality, VideoSource } from "@etherna/api-js"
+import type { VideoQuality, VideoSource } from "@etherna/sdk-js"
 import type { Draft } from "immer"
 import type { MediaPlayerElement } from "vidstack"
 
