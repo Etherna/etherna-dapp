@@ -17,8 +17,9 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { BatchesHandler } from "@etherna/sdk-js/handlers"
-import { BatchUpdateType, useBatchesStore } from "@etherna/sdk-js/stores"
+import { batchesStore, BatchUpdateType } from "@etherna/sdk-js/stores"
 import { getBatchPercentUtilization, getBatchSpace, parsePostageBatch } from "@etherna/sdk-js/utils"
+import { useStore } from "zustand"
 
 import { CogIcon } from "@heroicons/react/24/outline"
 import { CheckCircleIcon, InformationCircleIcon } from "@heroicons/react/24/solid"
@@ -36,6 +37,10 @@ import { convertBytes } from "@/utils/converters"
 import dayjs from "@/utils/dayjs"
 
 import type { GatewayBatch } from "@etherna/sdk-js/clients"
+import type { BatchesState } from "@etherna/sdk-js/stores"
+
+const useBatchesStore = <U,>(selector: (state: BatchesState) => U) =>
+  useStore(batchesStore, selector)
 
 type PostageBatchListProps = {
   page: number

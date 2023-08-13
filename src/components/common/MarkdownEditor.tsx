@@ -243,7 +243,7 @@ const SlateMarkdownEditor = forwardRef<SlateMarkdownEditorRef, SlateMarkdownEdit
 
             <Editable
               id={id}
-              className="font-normal [&>*+*]:mt-2"
+              className="font-normal focus-visible:outline-none [&>*+*]:mt-2"
               renderElement={renderElement}
               renderLeaf={renderLeaf}
               decorate={decorate}
