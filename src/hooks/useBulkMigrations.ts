@@ -12,6 +12,8 @@ import VideoSaver from "@/classes/VideoSaver"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
+import { withAccessToken } from "@/utils/jwt"
+import { getVideoAspectRatio } from "@/utils/media"
 import { requiresMigration } from "@/utils/migrations"
 
 import type { VideoOffersStatus } from "./useVideoOffers"
@@ -179,6 +181,11 @@ export default function useBulkMigrations(
           gatewayType,
           network: import.meta.env.DEV ? "testnet" : "mainnet",
         })
+
+        if (!video.details.aspectRatio) {
+          const src = withAccessToken(video.details.sources[0].url)
+          video.details.aspectRatio = await getVideoAspectRatio(src)
+        }
 
         if (video.details.batchId) {
           const [batch] = await batchesHandler.loadBatches([video.details.batchId as BatchId])

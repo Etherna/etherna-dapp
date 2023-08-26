@@ -72,6 +72,33 @@ export const getVideoResolution = (videoObj: string | File | ArrayBuffer) => {
 }
 
 /**
+ * Get a video aspect ratio
+ *
+ * @param videoObj Video file object or encoded buffer
+ * @returns Video resolution
+ */
+export const getVideoAspectRatio = (videoObj: string | File | ArrayBuffer) => {
+  return new Promise<number>((resolve, reject) => {
+    const video = document.createElement("video")
+    video.preload = "metadata"
+    video.onerror = error => {
+      reject(error)
+    }
+    video.onloadedmetadata = () => {
+      try {
+        window.URL.revokeObjectURL(video.src)
+        const aspectRatio = video.videoWidth / video.videoHeight
+
+        resolve(aspectRatio)
+      } catch (error: any) {
+        reject(error)
+      }
+    }
+    video.src = videoSource(videoObj)
+  })
+}
+
+/**
  * Get video source *
  *
  * @param videoObj Video source/buffer/file
