@@ -16,5 +16,5 @@
 
 import routes from "./routes"
 
-export { default as getBasename } from "./getBasename"
+export { getBasename, getBaseOrigin } from "./utils"
 export default routes

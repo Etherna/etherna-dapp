@@ -15,9 +15,8 @@
  */
 
 import { useEffect, useRef } from "react"
-import { calcBatchPrice, getBatchCapacity } from "@etherna/sdk-js/utils"
 
-import useConfirmation from "./useConfirmation"
+import useBatchPaymentConfirmation from "./useBatchPaymentConfirmation"
 import useErrorMessage from "./useErrorMessage"
 import VideoProcessingController, {
   BatchNotFoundError,
@@ -26,7 +25,6 @@ import VideoProcessingController, {
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useVideoEditorStore from "@/stores/video-editor"
-import { convertBytes } from "@/utils/converters"
 
 import type { Reference } from "@etherna/sdk-js/clients"
 
@@ -54,8 +52,8 @@ export default function useVideoProcessing() {
   const updateAspectRatio = useVideoEditorStore(state => state.updateAspectRatio)
   const updateDuration = useVideoEditorStore(state => state.updateDuration)
 
-  const { waitConfirmation } = useConfirmation()
   const { showError } = useErrorMessage()
+  const { waitPaymentConfirmation } = useBatchPaymentConfirmation()
 
   useEffect(() => {
     // TODO: add event for tab closing while encode/upload is in progress
@@ -107,14 +105,7 @@ export default function useVideoProcessing() {
         updateBatchStatus("updating")
       }
       videoProcessingController.onBatchPayingRequest = async (depth, amount) => {
-        return await waitConfirmation(
-          "A postage batch transaction is needed",
-          `To create/update a postage batch, a transaction is needed. The transaction will cost ${calcBatchPrice(
-            depth,
-            amount
-          )} for a batch of size ~${convertBytes(getBatchCapacity(depth)).readable}.`,
-          "Proceed"
-        )
+        return await waitPaymentConfirmation(depth, amount)
       }
       videoProcessingController.onBatchCreated = batchId => {
         setBatch(batchId)

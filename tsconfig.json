@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    // "types": ["vite/client", "react", "react-dom", "vidstack/globals"],
     "allowJs": false,
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,

@@ -20,6 +20,8 @@ import { AuthProvider, useAuth } from "react-oidc-context"
 import { Outlet, useNavigate } from "react-router-dom"
 import { WebStorageStateStore } from "oidc-client-ts"
 
+import { getBaseOrigin } from "@/routes"
+
 import type { User } from "oidc-client-ts"
 
 const IdentityRoute: React.FC = () => {
@@ -36,12 +38,12 @@ const IdentityRoute: React.FC = () => {
     <AuthProvider
       authority={import.meta.env.VITE_APP_SSO_URL}
       client_id={"ethernaDappClientId"}
-      redirect_uri={window.location.origin + "/callback"}
+      redirect_uri={getBaseOrigin() + "/callback"}
       automaticSilentRenew={true}
       max_age={3600 * 24 * 30}
       userStore={new WebStorageStateStore({ store: window.localStorage })}
-      onSigninCallback={onSigninCallback}
       scope="openid profile offline_access ether_accounts userApi.gateway userApi.index userApi.credit"
+      onSigninCallback={onSigninCallback}
     >
       <IdentityRouteSilentRenew />
     </AuthProvider>

@@ -121,7 +121,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
                   "text-gray-900 dark:text-gray-100"
                 )}
               >
-                {profile?.name ?? shortenEthAddr(profileAddress)}
+                {profile?.name || shortenEthAddr(profileAddress)}
               </h1>
             </Tippy>
           </Skeleton>

@@ -29,7 +29,7 @@ import { getAccessToken } from "@/utils/jwt"
 import http from "@/utils/request"
 
 import type { Profile, VideoSource } from "@etherna/sdk-js"
-import type { MediaPlayerElement } from "vidstack"
+import type { MediaErrorEvent, MediaPlayerElement } from "vidstack"
 
 type PlayerProps = {
   hash: string
@@ -78,27 +78,32 @@ const Player: React.FC<PlayerProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sources])
 
-  const onPlaybackError = useCallback(async () => {
-    if (!currentSource) return
+  const onPlaybackError = useCallback(
+    async (err: MediaErrorEvent) => {
+      console.error(err)
 
-    // get error code
-    try {
-      await http.get(currentSource.url, {
-        headers: {
-          Range: "bytes=0-1",
-          Authorization: `Bearer ${getAccessToken()}`,
-        },
-      })
-    } catch (error: any) {
-      console.warn(error)
+      if (!currentSource) return
 
-      if (error.response) {
-        showError(error.response.status, error.response.data.message || error.response.data)
-      } else {
-        showError(500, error.message)
+      // get error code
+      try {
+        await http.get(currentSource.url, {
+          headers: {
+            Range: "bytes=0-0",
+            Authorization: `Bearer ${getAccessToken()}`,
+          },
+        })
+      } catch (error: any) {
+        console.warn(error)
+
+        if (error.response) {
+          showError(error.response.status, error.response.data.message || error.response.data)
+        } else {
+          showError(500, error.message)
+        }
       }
-    }
-  }, [currentSource, showError])
+    },
+    [currentSource, showError]
+  )
 
   const xhrSetup = useCallback((xhr: XMLHttpRequest) => {
     const token = getAccessToken()

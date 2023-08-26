@@ -3,7 +3,6 @@ import React from "react"
 import { Button } from "@/components/ui/actions"
 import { Card, ProgressBar } from "@/components/ui/display"
 import useVideoEditorResume from "@/hooks/useVideoEditorResume"
-import { videoProcessingController } from "@/hooks/useVideoProcessing"
 import useVideoEditorStore from "@/stores/video-editor"
 import { cn } from "@/utils/classnames"
 

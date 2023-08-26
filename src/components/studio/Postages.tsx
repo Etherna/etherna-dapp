@@ -23,10 +23,8 @@ import PostageBatchList from "./postages/PostageBatchList"
 import BatchLoading from "@/components/common/BatchLoading"
 import { Alert, Spinner } from "@/components/ui/display"
 import useBatches from "@/hooks/useBatches"
-import useExtensionsStore from "@/stores/extensions"
 
 const Postages: React.FC = () => {
-  const gatewayType = useExtensionsStore(state => state.currentGatewayType)
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(20)
   const { batches, total, isFetchingBatches, isCreatingFirstBatch, error, fetchPage, updateBatch } =

@@ -15,7 +15,7 @@ import usePlayerStore from "@/stores/player"
 import { isTouchDevice } from "@/utils/browser"
 
 import type { Profile, VideoSource } from "@etherna/sdk-js"
-import type { MediaPlayerElement } from "vidstack"
+import type { MediaErrorEvent, MediaPlayerElement } from "vidstack"
 
 type PlayerVideoProps = {
   title?: string
@@ -25,7 +25,7 @@ type PlayerVideoProps = {
   embed?: boolean
   owner: Profile | undefined | null
   xhrSetup?(xhr: XMLHttpRequest): void
-  onPlaybackError?(): void
+  onPlaybackError?(err: MediaErrorEvent): void
 }
 
 const DEFAULT_SKIP = 15

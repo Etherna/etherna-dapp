@@ -1,5 +1,4 @@
 import React, { useCallback, useRef, useState } from "react"
-import axios from "axios"
 
 import { ArrowUpTrayIcon, CloudArrowDownIcon, XMarkIcon } from "@heroicons/react/24/outline"
 

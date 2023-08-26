@@ -16,6 +16,7 @@
  */
 
 import React, { useCallback, useMemo, useRef, useState } from "react"
+import { MediaTimeSlider } from "@vidstack/react"
 
 import Time from "@/components/media/Time"
 import { Slider } from "@/components/ui/inputs"
@@ -43,11 +44,11 @@ const VideoProgress: React.FC<VideoProgressProps> = ({ className, focus }) => {
   }, [isHover, tooltipValue, focus])
 
   const updateCurrentTime = useCallback(
-    (valPercent: number) => {
+    (time: number) => {
       setTooltipValue(undefined)
-      setCurrentTime((valPercent / 100) * duration)
+      setCurrentTime(time)
     },
-    [duration, setCurrentTime]
+    [setCurrentTime]
   )
 
   return (
@@ -58,7 +59,7 @@ const VideoProgress: React.FC<VideoProgressProps> = ({ className, focus }) => {
       ref={progressContainer}
     >
       <Slider
-        className="duration-200; h-1 w-full transition"
+        className="h-1 w-full transition duration-200"
         value={currentTime}
         min={0}
         max={duration}
@@ -105,7 +106,6 @@ const VideoProgress: React.FC<VideoProgressProps> = ({ className, focus }) => {
             key={props.key}
           />
         )}
-        onSliderClick={updateCurrentTime}
         onChange={val => setTooltipValue(val)}
         onAfterChange={updateCurrentTime}
       />

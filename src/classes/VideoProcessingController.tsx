@@ -456,7 +456,9 @@ export default class VideoProcessingController {
       )
       .map(({ name }) => name)
 
-    const chunksUploader = new ChunksUploader(this.beeClient, ConcurrentChunks)
+    const concurrents = import.meta.env.DEV ? -1 : ConcurrentChunks
+
+    const chunksUploader = new ChunksUploader(this.beeClient, concurrents)
 
     for (const path of filesToUpload) {
       const data = this.ffmpeg.FS("readFile", path)

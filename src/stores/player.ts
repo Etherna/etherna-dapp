@@ -1,4 +1,4 @@
-import { isHLSProvider } from "vidstack"
+import { isHLSProvider, isVideoProvider } from "vidstack"
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
@@ -71,15 +71,22 @@ type GetFunc = () => PlayerState
 // move out from store to improve devtools performance
 let player: MediaPlayerElement
 
-const getHls = () => {
+const getHlsProvider = () => {
   if (!player) return null
   const provider = player.provider
   if (isHLSProvider(provider)) return provider.instance
   return null
 }
 
+const getVideoProvider = () => {
+  if (!player) return null
+  const provider = player.provider
+  if (isVideoProvider(provider) && provider.type === "video") return provider
+  return null
+}
+
 const setHlsQuality = (quality: PlayerQuality) => {
-  const hls = getHls()
+  const hls = getHlsProvider()
   if (!hls) return
   const levels = hls.levels
   const qualityLevelIndex = levels.findIndex(
@@ -91,8 +98,6 @@ const setHlsQuality = (quality: PlayerQuality) => {
 const actions = (set: SetFunc, get: GetFunc) => ({
   loadPlayer(playerInstance: MediaPlayerElement) {
     player = playerInstance
-
-    player.$store.qualities()
 
     player.addEventListener("hls-manifest-loaded", e => {
       setHlsQuality(get().currentQuality || PLAYER_INITIAL_QUALITY)
@@ -143,7 +148,7 @@ const actions = (set: SetFunc, get: GetFunc) => ({
     })
     player.addEventListener("time-update", e => {
       set(state => {
-        state.currentTime = player.$store.currentTime()
+        state.currentTime = player.$store.currentTime() || player.currentTime
       })
     })
     player.addEventListener("ended", e => {
@@ -263,9 +268,19 @@ const actions = (set: SetFunc, get: GetFunc) => ({
 
       player.addEventListener("loaded-data", onLoadStart)
 
-      const hlsProvider = getHls()
+      const hlsProvider = getHlsProvider()
+      const videoProvider = getVideoProvider()
       if (hlsProvider) {
         hlsProvider.startLoad()
+      } else if (videoProvider) {
+        // it's an mp4 source
+        if (player.$store.canPlay()) {
+          onLoadStart()
+        } else {
+          console.error("Cannot play video")
+        }
+      } else {
+        alert("Unknown media provider")
       }
     })
   },

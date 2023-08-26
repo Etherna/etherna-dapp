@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-const getBasename = () => {
+export const getBasename = () => {
   const bzzPattern = /\/bzz\/([^/]+)/
   const basename = bzzPattern.test(window.location.pathname)
     ? window.location.pathname.match(bzzPattern)![0]
@@ -22,4 +22,8 @@ const getBasename = () => {
   return basename
 }
 
-export default getBasename
+export const getBaseOrigin = () => {
+  const origin = window.location.origin
+  const basename = getBasename()
+  return `${origin}${basename}`
+}

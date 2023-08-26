@@ -47,12 +47,12 @@ const VideoStarter: React.FC<VideoStarterProps> = ({ posterUrl, embed }) => {
       >
         <div
           className={cn(
-            "m-auto rotate-45 rounded bg-white p-3 text-gray-700 shadow-lg sm:p-4",
+            "m-auto h-16 w-16 rounded-full bg-black/60 p-3 text-gray-200 shadow-lg sm:p-4",
             "transition-colors duration-200 ease-out",
             "group-hover:text-primary-500"
           )}
         >
-          <PlayIcon className="h-4 w-4 -rotate-45 sm:h-6 sm:w-6 md:h-8 md:w-8" aria-hidden />
+          <PlayIcon className="ml-0.5 h-4 w-4 sm:h-6 sm:w-6 md:h-8 md:w-8" aria-hidden />
         </div>
       </div>
 

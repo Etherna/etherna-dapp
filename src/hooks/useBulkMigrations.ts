@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { BatchesHandler } from "@etherna/sdk-js/handlers"
 import { extractVideoReferences } from "@etherna/sdk-js/utils"
 
+import useBatchPaymentConfirmation from "./useBatchPaymentConfirmation"
 import useErrorMessage from "./useErrorMessage"
 import useUserPlaylists from "./useUserPlaylists"
 import useWallet from "./useWallet"
@@ -50,6 +51,7 @@ export default function useBulkMigrations(
   const migrationArgs = useRef<{ videos: VideoWithIndexes[]; signal: AbortSignal }>()
   const shouldContinueMigration = useRef(false)
   const { showError } = useErrorMessage()
+  const { waitPaymentConfirmation } = useBatchPaymentConfirmation()
 
   const { channelPlaylist, userPlaylists, loadPlaylists, updateVideosInPlaylist } =
     useUserPlaylists(address!, {
@@ -198,6 +200,13 @@ export default function useBulkMigrations(
             video.details.sources,
             video.preview.duration
           )
+
+          const { depth, amount } = await batchesHandler.calcDepthAmount(batchSize)
+
+          if (!(await waitPaymentConfirmation(depth, amount))) {
+            return abortController.current?.abort()
+          }
+
           const batch = await batchesHandler.createBatchForSize(batchSize)
 
           video.details.batchId = batchesHandler.getBatchId(batch)
@@ -286,6 +295,7 @@ export default function useBulkMigrations(
       indexClient,
       opts.offersStatus,
       opts.pinningStatus,
+      waitPaymentConfirmation,
     ]
   )
 

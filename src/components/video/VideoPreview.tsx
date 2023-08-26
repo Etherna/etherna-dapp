@@ -29,6 +29,7 @@ import useExtensionsStore from "@/stores/extensions"
 import { cn } from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
+import { withAccessToken } from "@/utils/jwt"
 import { encodedSvg } from "@/utils/svg"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
@@ -107,7 +108,11 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
         >
           <Image
             className="bg-gray-200 dark:bg-gray-700"
-            sources={videoThumbnail?.sources}
+            sources={
+              videoThumbnail?.sources
+                ? videoThumbnail.sources.map(s => ({ ...s, url: withAccessToken(s.url) }))
+                : undefined
+            }
             placeholder="blur"
             blurredDataURL={videoThumbnail?.blurredBase64}
             layout="fill"

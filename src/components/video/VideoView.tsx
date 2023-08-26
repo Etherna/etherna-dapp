@@ -29,6 +29,7 @@ import useResetRouteState from "@/hooks/useResetRouteState"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
 import useSwarmVideo from "@/hooks/useSwarmVideo"
 import routes from "@/routes"
+import { withAccessToken } from "@/utils/jwt"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import type { VideoWithIndexes } from "@/types/video"
@@ -58,7 +59,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
   const posterUrl = useMemo(() => {
     const posterUrl = video?.preview.thumbnail?.sources.sort((a, b) => b.width - a.width)?.[0]?.url
     if (posterUrl) {
-      return posterUrl + "?appendToken=true"
+      return withAccessToken(posterUrl)
     }
     return undefined
   }, [video])
@@ -127,7 +128,10 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
                 hash={reference}
                 title={video?.preview.title || reference}
                 owner={profile}
-                sources={video?.details?.sources ?? []}
+                sources={(video?.details?.sources ?? []).map(s => ({
+                  ...s,
+                  url: withAccessToken(s.url),
+                }))}
                 posterUrl={posterUrl}
                 aspectRatio={video?.details?.aspectRatio}
               />

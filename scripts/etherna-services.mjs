@@ -18,7 +18,7 @@ import { exec } from "child_process"
 import fs from "fs"
 import path from "path"
 import url from "url"
-import bcrypt from "bcryptjs"
+import { hashSync } from "bcrypt-ts"
 import chalk from "chalk"
 import waitOn from "wait-on"
 
@@ -136,7 +136,7 @@ const execProject = projectPath => {
  * Run the bee instance
  */
 const execBee = () => {
-  const adminPassword = bcrypt.hashSync(process.env.BEE_ADMIN_PASSWORD)
+  const adminPassword = hashSync(process.env.BEE_ADMIN_PASSWORD)
   const testnetParams = [
     `--mainnet=false`,
     `--password='${process.env.BEE_PASSWORD}'`,
