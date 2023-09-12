@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@datapunt/matomo-tracker-react": "0.5.1",
-    "@etherna/sdk-js": "1.0.0",
+    "@etherna/sdk-js": "1.0.1",
     "@ffmpeg/ffmpeg": "0.11.6",
     "@headlessui/react": "1.7.17",
     "@heroicons/react": "2.0.18",
@@ -65,7 +65,7 @@
     "tailwind-merge": "1.14.0",
     "unified": "10.1.2",
     "uuid": "9.0.0",
-    "vidstack": "0.6.1",
+    "vidstack": "0.6.13",
     "xss": "1.0.14",
     "zod": "3.22.2",
     "zustand": "4.4.1"

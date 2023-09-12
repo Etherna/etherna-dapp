@@ -78,6 +78,7 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
             {indexStatus && (
               <VideoRating
                 videoId={indexStatus.indexReference}
+                userVote={indexStatus.userVote}
                 upvotes={indexStatus.totUpvotes}
                 downvotes={indexStatus.totDownvotes}
               />

@@ -25,3 +25,13 @@ export const withAccessToken = (url: string) => {
   urlObj.searchParams.set("appendToken", "true")
   return urlObj.toString()
 }
+
+/**
+ * Remove appendToken from url
+ * @param url resource url
+ */
+export const withoutAccessToken = (url: string) => {
+  const urlObj = new URL(url)
+  urlObj.searchParams.delete("appendToken")
+  return urlObj.toString()
+}

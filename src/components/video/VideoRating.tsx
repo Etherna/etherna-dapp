@@ -26,15 +26,16 @@ import type { VoteValue } from "@etherna/sdk-js/clients"
 
 type VideoRatingProps = {
   videoId: string
+  userVote?: VoteValue | null
   upvotes?: number
   downvotes?: number
 }
 
-const VideoRating: React.FC<VideoRatingProps> = ({ videoId, upvotes, downvotes }) => {
+const VideoRating: React.FC<VideoRatingProps> = ({ videoId, upvotes, downvotes, userVote }) => {
   const [currentUpvotes, setCurrentUpvotes] = useState(upvotes ?? 0)
   const [currentDownvotes, setCurrentDownvotes] = useState(downvotes ?? 0)
   const [isUpdatingVote, setIsUpdatingVote] = useState(false)
-  const [currentVote, setCurrentVote] = useState<VoteValue>("Neutral")
+  const [currentVote, setCurrentVote] = useState<VoteValue>(userVote ?? "Neutral")
   const indexClient = useClientsStore(state => state.indexClient)
 
   const progress = useMemo(() => {

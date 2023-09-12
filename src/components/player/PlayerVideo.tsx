@@ -12,6 +12,7 @@ import VideoStarter from "./slices/VideoStarter"
 import WatchOn from "./slices/WatchOn"
 import usePlayerStore from "@/stores/player"
 import { isTouchDevice } from "@/utils/browser"
+import { withoutAccessToken } from "@/utils/jwt"
 
 import type { Profile, VideoSource } from "@etherna/sdk-js"
 import type { MediaErrorEvent, MediaPlayerElement } from "vidstack"
@@ -81,13 +82,14 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
                 type: "video/mp4",
                 src,
               }
-            : src
+            : withoutAccessToken(src)
         }
         poster={posterUrl}
         aspectRatio={aspectRatio || 16 / 9}
         onProviderChange={e => {
           const provider = e.detail
           if (isHLSProvider(provider)) {
+            provider.library = () => import("hls.js")
             provider.config.autoStartLoad = false
             provider.config.maxBufferLength = 3
             provider.config.xhrSetup = xhrSetup
@@ -99,7 +101,7 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
         data-matomo-title={title}
         data-src={src}
       >
-        <MediaOutlet className="aspect-[var(--media-aspect-ratio)] h-auto w-full [&_video]:w-full" />
+        <MediaOutlet className="aspect-[var(--media-aspect-ratio)] [&_video]:max-h-[80vh] [&_video]:w-full" />
 
         {error && <ErrorBanner />}
 

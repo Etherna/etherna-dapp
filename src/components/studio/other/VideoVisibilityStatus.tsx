@@ -91,7 +91,7 @@ const VideoVisibilityStatus: React.FC<VideoVisibilityStatusProps> = ({
           color="inverted"
           disabled={disabled}
         >
-          <div className="grid auto-cols-min grid-flow-row-dense gap-1 xl:grid-cols-2">
+          <div className="flex flex-wrap gap-1">
             {visibility.map(sourceVisibility => renderBadge(sourceVisibility, true))}
           </div>
         </Button>

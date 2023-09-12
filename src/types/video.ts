@@ -17,6 +17,7 @@
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import type { Profile, Video, VideoPreview } from "@etherna/sdk-js"
+import type { IndexVideo } from "@etherna/sdk-js/clients"
 
 export type WithOwner<V extends Video | VideoPreview> = V & { owner: Profile | undefined }
 
@@ -36,8 +37,9 @@ export type IndexesStatus = {
   [url: string]:
     | {
         indexReference: string
-        totUpvotes: number
-        totDownvotes: number
+        userVote?: IndexVideo["currentVoteValue"]
+        totUpvotes?: number
+        totDownvotes?: number
       }
     | undefined
 }

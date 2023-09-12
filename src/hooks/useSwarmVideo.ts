@@ -114,6 +114,7 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
           indexReference: indexVideo.id,
           totDownvotes: indexVideo.totDownvotes,
           totUpvotes: indexVideo.totUpvotes,
+          userVote: indexVideo.currentVoteValue,
         }
       }
 

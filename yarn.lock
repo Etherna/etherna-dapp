@@ -3968,10 +3968,10 @@ mdast-util-to-string@^3.1.0:
   resolved "https://registry.yarnpkg.com/mdast-util-to-string/-/mdast-util-to-string-3.1.0.tgz#56c506d065fbf769515235e577b5a261552d56e9"
   integrity sha512-n4Vypz/DZgwo0iMHLQL49dJzlp7YtAJP+N07MZHpjPf/5XJuHUWstviF4Mn2jEiR/GNmtnRRqnwsXExk3igfFA==
 
-media-captions@0.0.13:
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/media-captions/-/media-captions-0.0.13.tgz#a30d8ef7314518e4691af6c6de8924d7b5176f70"
-  integrity sha512-arrPBL46F/fO6fH+OI4VTxdYP2o5/3kfoivBIBy9WywcXvgeYXYlTFXg/PA9hTyjr4uBHzv1RIHzFkVwOKMD2w==
+media-captions@0.0.18:
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/media-captions/-/media-captions-0.0.18.tgz#ad2de78b06d6d222407057279a1595f8b0408a7e"
+  integrity sha512-JW18P6FuHdyLSGwC4TQ0kF3WdNj/+wMw2cKOb8BnmY6vSJGtnwJ+vkYj+IjHOV34j3XMc70HDeB/QYKR7E7fuQ==
 
 merge-stream@^2.0.0:
   version "2.0.0"
@@ -5855,13 +5855,13 @@ vfile@^5.0.0:
     unist-util-stringify-position "^3.0.0"
     vfile-message "^3.0.0"
 
-vidstack@0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/vidstack/-/vidstack-0.6.1.tgz#2bcd7834753b94dcca2ee12867ed310f468723ab"
-  integrity sha512-4vqcwgyNnV27RUiF+J4EMgQ1laQ9CBFoX9WLYIqDqbGKf6zZm7r5aRlAHME5TCBLHi8u0pAMl5RFPNIig1i3Pg==
+vidstack@0.6.13:
+  version "0.6.13"
+  resolved "https://registry.yarnpkg.com/vidstack/-/vidstack-0.6.13.tgz#026e8876db454c7a2f9e610a6bf02eebcc6e999c"
+  integrity sha512-g5wH6Hfc4EQqOI0Mm7qW4D1DWPZfQnlATLZuqpuVAKI8HOz4UGfd1v48MLK9cR+ZfPjVL4/iZLu7YOIdSX3L2g==
   dependencies:
     maverick.js "0.37.0"
-    media-captions "0.0.13"
+    media-captions "0.0.18"
     type-fest "^3.8.0"
 
 vite-plugin-checker@0.6.2:

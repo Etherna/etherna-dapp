@@ -173,6 +173,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
                   indexReference: indexVideo.id,
                   totDownvotes: indexVideo.totDownvotes,
                   totUpvotes: indexVideo.totUpvotes,
+                  userVote: indexVideo.currentVoteValue,
                 },
               },
             }

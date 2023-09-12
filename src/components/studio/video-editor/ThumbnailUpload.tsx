@@ -30,6 +30,7 @@ import useErrorMessage from "@/hooks/useErrorMessage"
 import { videoProcessingController } from "@/hooks/useVideoProcessing"
 import useClientsStore from "@/stores/clients"
 import useVideoEditorStore from "@/stores/video-editor"
+import { withAccessToken } from "@/utils/jwt"
 import { isAnimatedImage } from "@/utils/media"
 import { isMimeWebCompatible } from "@/utils/mime-types"
 
@@ -270,7 +271,11 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
 
       {thumbStatus === "preview" && (
         <div className="relative aspect-video w-full bg-black">
-          <Image src={beeClient.bytes.url(getThumbEntry()!)} objectFit="contain" retries={3} />
+          <Image
+            src={withAccessToken(beeClient.bytes.url(getThumbEntry()!))}
+            objectFit="contain"
+            retries={3}
+          />
         </div>
       )}
     </Card>

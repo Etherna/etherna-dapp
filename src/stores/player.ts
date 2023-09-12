@@ -74,7 +74,7 @@ let player: MediaPlayerElement
 const getHlsProvider = () => {
   if (!player) return null
   const provider = player.provider
-  if (isHLSProvider(provider)) return provider.instance
+  if (isHLSProvider(provider)) return provider
   return null
 }
 
@@ -87,12 +87,12 @@ const getVideoProvider = () => {
 
 const setHlsQuality = (quality: PlayerQuality) => {
   const hls = getHlsProvider()
-  if (!hls) return
-  const levels = hls.levels
+  if (!hls?.instance) return
+  const levels = hls.instance.levels
   const qualityLevelIndex = levels.findIndex(
     l => l.height === parseInt(quality) || (quality === "Audio" && l.height === 0)
   )
-  hls.currentLevel = quality === "Auto" ? -1 : qualityLevelIndex
+  hls.instance.currentLevel = quality === "Auto" ? -1 : qualityLevelIndex
 }
 
 const actions = (set: SetFunc, get: GetFunc) => ({
@@ -197,6 +197,14 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       state.qualities = qualities
       state.currentQuality = quality
       state.currentSource = getCurrentSource(sources, quality)
+      // first load -> reset
+      state.isPlaying = false
+      state.buffered = 0
+      state.isBuffering = false
+      state.isActive = false
+      state.isIdle = true
+      state.duration = 0
+      state.currentTime = 0
     })
   },
   setCurrentQuality(quality: PlayerQuality) {
@@ -263,15 +271,17 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       const onLoadStart = () => {
         player.removeEventListener("loaded-data", onLoadStart)
         player.play()
-        state.isPlaying = true
       }
 
       player.addEventListener("loaded-data", onLoadStart)
 
       const hlsProvider = getHlsProvider()
       const videoProvider = getVideoProvider()
+
       if (hlsProvider) {
-        hlsProvider.startLoad()
+        hlsProvider.onInstance(hls => {
+          hls.startLoad()
+        })
       } else if (videoProvider) {
         // it's an mp4 source
         if (player.$store.canPlay()) {
