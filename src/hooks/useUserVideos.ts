@@ -220,7 +220,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
     [opts.limit, fetchVideos, showError]
   )
 
-  const invalidatePage = useCallback(
+  const invalidate = useCallback(
     async (page: number) => {
       channelPlaylist.current = await playlistResover!()
       await fetchPage(page)
@@ -233,6 +233,6 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
     total,
     videos,
     fetchPage,
-    invalidatePage,
+    invalidate,
   }
 }

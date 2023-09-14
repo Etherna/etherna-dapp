@@ -94,21 +94,39 @@ const Videos: React.FC = () => {
     }
   }, [address, profileInfo, defaultBatchId])
 
-  const { isFetching, videos, total, fetchPage, invalidatePage } = useUserVideos({
+  const {
+    isFetching,
+    videos,
+    total,
+    fetchPage,
+    invalidate: invalidatePage,
+  } = useUserVideos({
     fetchSource: currentSource,
     sources,
     profile,
     limit: perPage,
   })
-  const { isFetchingVisibility, visibility, toggleVideosVisibility } = useUserVideosVisibility(
-    videos,
-    { sources }
-  )
-  const { isFetchingPinning, pinningStatus, togglePinning } = useUserVideosPinning(videos)
-  const { videosOffersStatus, isFetchingOffers, offerVideoResources, unofferVideoResources } =
-    useVideosResources(videos, {
-      autoFetch: true,
-    })
+  const {
+    isFetchingVisibility,
+    visibility,
+    toggleVideosVisibility,
+    invalidate: invalidateVisibility,
+  } = useUserVideosVisibility(videos, { sources })
+  const {
+    isFetchingPinning,
+    pinningStatus,
+    togglePinning,
+    invalidate: invalidatePinning,
+  } = useUserVideosPinning(videos)
+  const {
+    videosOffersStatus,
+    isFetchingOffers,
+    offerVideoResources,
+    unofferVideoResources,
+    invalidate: invalidateOffers,
+  } = useVideosResources(videos, {
+    autoFetch: true,
+  })
   const {
     videosToMigrate,
     migrationStatus,
@@ -119,6 +137,7 @@ const Videos: React.FC = () => {
     sourceType: currentSource.type,
     pinningStatus,
     offersStatus: videosOffersStatus,
+    visibilityStatus: visibility,
   })
 
   const selectedVideosToMigrate = useMemo(() => {
@@ -135,6 +154,13 @@ const Videos: React.FC = () => {
     fetchPage(page)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
+
+  const invalidate = useCallback(() => {
+    invalidatePage(page)
+    invalidateVisibility()
+    invalidatePinning()
+    invalidateOffers()
+  }, [invalidateOffers, invalidatePage, invalidatePinning, invalidateVisibility, page])
 
   const deleteSelectedVideos = useCallback(async () => {
     await toggleVideosVisibility(selectedVideos, currentSource, "unpublished")
@@ -337,6 +363,9 @@ const Videos: React.FC = () => {
                 color="inverted"
                 aspect="text"
                 large
+                disabled={
+                  isMigrating || isFetchingVisibility || isFetchingPinning || isFetchingOffers
+                }
                 onClick={() => setShowMigrationModal(true)}
               >
                 <BoltIcon className="mr-1" width={20} aria-hidden />
@@ -373,7 +402,7 @@ const Videos: React.FC = () => {
           setShowMigrationModal(false)
           resetMigration()
           setSelectedVideos([])
-          invalidatePage(page)
+          invalidate()
         }}
         onCancel={() => {
           setShowMigrationModal(false)

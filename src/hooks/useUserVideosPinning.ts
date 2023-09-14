@@ -32,7 +32,7 @@ export default function useUserVideosPinning(videos: Video[] | undefined) {
   const gatewayClient = useClientsStore(state => state.gatewayClient)
   const gatewayClientType = useExtensionsStore(state => state.currentGatewayType)
   const [isFetchingPinning, setIsFetchingPinning] = useState(false)
-  const [pinningStatus, setPinningStatus] = useState<Record<string, SwarmResourcePinStatus>>({})
+  const [pinningStatus, setPinningStatus] = useState<Record<Reference, SwarmResourcePinStatus>>({})
 
   useEffect(() => {
     if (videos?.length && !isFetchingPinning) {
@@ -118,9 +118,16 @@ export default function useUserVideosPinning(videos: Video[] | undefined) {
     [beeClient, gatewayClient, gatewayClientType]
   )
 
+  const invalidate = useCallback(() => {
+    if (videos?.length) {
+      fetchVideosStatus()
+    }
+  }, [fetchVideosStatus, videos])
+
   return {
     isFetchingPinning,
     pinningStatus,
     togglePinning,
+    invalidate,
   }
 }

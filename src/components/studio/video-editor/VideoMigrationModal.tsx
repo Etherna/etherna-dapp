@@ -118,40 +118,44 @@ const VideoMigrationModal: React.FC<VideoMigrationModalProps> = ({
       <div className="overflow-y-auto">
         {(isMigrating || isDone) && (
           <table className="w-full">
-            {videos.map(video => (
-              <tr key={video.reference}>
-                <td>
-                  <span className="line-clamp-1 text-ellipsis">{video.preview.title}</span>
-                </td>
-                <td className="w-px whitespace-nowrap pl-4">
-                  {migrationStatus[video.reference]?.status === "downloading" && (
-                    <span>Downloading infos...</span>
-                  )}
-                  {migrationStatus[video.reference]?.status === "saving" && <span>Saving...</span>}
-                  {migrationStatus[video.reference]?.status === "batchId" && (
-                    <span>Creating batch id...</span>
-                  )}
-                </td>
-                <td className="w-px whitespace-nowrap pl-4">
-                  {migrationStatus[video.reference]?.status === "error" ? (
-                    <Badge color="error" small>
-                      error
-                    </Badge>
-                  ) : migrationStatus[video.reference]?.status === "done" ? (
-                    <Badge color="success" small>
-                      saved
-                    </Badge>
-                  ) : migrationStatus[video.reference]?.status === "downloading" ? (
-                    <ProgressBar
-                      className="w-10"
-                      progress={migrationStatus[video.reference]?.downloadProgress ?? 0}
-                    />
-                  ) : (
-                    <Spinner size={16} />
-                  )}
-                </td>
-              </tr>
-            ))}
+            <tbody>
+              {videos.map(video => (
+                <tr key={video.reference}>
+                  <td>
+                    <span className="line-clamp-1 text-ellipsis">{video.preview.title}</span>
+                  </td>
+                  <td className="w-px whitespace-nowrap pl-4">
+                    {migrationStatus[video.reference]?.status === "downloading" && (
+                      <span>Downloading infos...</span>
+                    )}
+                    {migrationStatus[video.reference]?.status === "saving" && (
+                      <span>Saving...</span>
+                    )}
+                    {migrationStatus[video.reference]?.status === "batchId" && (
+                      <span>Creating batch id...</span>
+                    )}
+                  </td>
+                  <td className="w-px whitespace-nowrap pl-4">
+                    {migrationStatus[video.reference]?.status === "error" ? (
+                      <Badge color="error" small>
+                        error
+                      </Badge>
+                    ) : migrationStatus[video.reference]?.status === "done" ? (
+                      <Badge color="success" small>
+                        saved
+                      </Badge>
+                    ) : migrationStatus[video.reference]?.status === "downloading" ? (
+                      <ProgressBar
+                        className="w-10"
+                        progress={migrationStatus[video.reference]?.downloadProgress ?? 0}
+                      />
+                    ) : (
+                      <Spinner size={16} />
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         )}
       </div>

@@ -25,6 +25,7 @@ import useUserStore from "@/stores/user"
 
 import type { VideoOffersStatus } from "./useVideoOffers"
 import type { Video } from "@etherna/sdk-js"
+import type { Reference } from "@etherna/sdk-js/clients"
 
 type UseVideosResourcesOptions = {
   autoFetch?: boolean
@@ -38,8 +39,9 @@ export default function useVideosResources(
   const gatewayType = useExtensionsStore(state => state.currentGatewayType)
   const address = useUserStore(state => state.address)
   const [isFetchingOffers, setIsFetchingOffers] = useState(false)
-  const [videosOffersStatus, setVideosOffersStatus] = useState<Record<string, VideoOffersStatus>>()
-  const videosQueue = useRef<string[]>([])
+  const [videosOffersStatus, setVideosOffersStatus] =
+    useState<Record<Reference, VideoOffersStatus>>()
+  const videosQueue = useRef<Reference[]>([])
   const mounted = useMounted()
 
   useEffect(() => {
@@ -109,11 +111,18 @@ export default function useVideosResources(
     [videosOffersStatus, address, gatewayClient]
   )
 
+  const invalidate = useCallback(async () => {
+    if (videos?.length) {
+      await fetchVideosStatus()
+    }
+  }, [fetchVideosStatus, videos?.length])
+
   return {
     isFetchingOffers,
     videosOffersStatus,
     fetchVideosStatus,
     offerVideoResources,
     unofferVideoResources,
+    invalidate,
   }
 }

@@ -16,9 +16,9 @@ import { withAccessToken } from "@/utils/jwt"
 import { getVideoAspectRatio } from "@/utils/media"
 import { requiresMigration } from "@/utils/migrations"
 
+import type { VisibilityStatus } from "./useUserVideosVisibility"
 import type { VideoOffersStatus } from "./useVideoOffers"
 import type { VideoEditorPublishSource } from "@/stores/video-editor"
-import type { VideoWithIndexes } from "@/types/video"
 import type { Playlist, Video } from "@etherna/sdk-js"
 import type { BatchId, Reference } from "@etherna/sdk-js/clients"
 import type { SwarmResourcePinStatus } from "@etherna/sdk-js/handlers"
@@ -31,14 +31,12 @@ export type MigrationStatus = {
 
 type BulkMigrationOptions = {
   sourceType: "channel" | "index"
-  pinningStatus: Record<string, SwarmResourcePinStatus>
-  offersStatus: Record<string, VideoOffersStatus> | undefined
+  pinningStatus: Record<Reference, SwarmResourcePinStatus>
+  offersStatus: Record<Reference, VideoOffersStatus> | undefined
+  visibilityStatus: Record<Reference, VisibilityStatus[]>
 }
 
-export default function useBulkMigrations(
-  videos: VideoWithIndexes[] | undefined,
-  opts: BulkMigrationOptions
-) {
+export default function useBulkMigrations(videos: Video[] | undefined, opts: BulkMigrationOptions) {
   const address = useUserStore(state => state.address)
   const gatewayType = useExtensionsStore(state => state.currentGatewayType)
   const beeClient = useClientsStore(state => state.beeClient)
@@ -47,10 +45,10 @@ export default function useBulkMigrations(
   const [isLoading, setIsLoading] = useState(false)
   const [isMigrating, setIsMigrating] = useState(false)
   const [videosToMigrate, setVideosToMigrate] = useState<Reference[]>([])
-  const [migrationStatus, setMigrationStatus] = useState<Record<string, MigrationStatus>>({})
+  const [migrationStatus, setMigrationStatus] = useState<Record<Reference, MigrationStatus>>({})
   const deferredChannelUpdates = useRef<{ remove: Reference; add: Video }[]>([])
   const abortController = useRef<AbortController>()
-  const migrationArgs = useRef<{ videos: VideoWithIndexes[]; signal: AbortSignal }>()
+  const migrationArgs = useRef<{ videos: Video[]; signal: AbortSignal }>()
   const shouldContinueMigration = useRef(false)
   const { showError } = useErrorMessage()
   const { waitPaymentConfirmation } = useBatchPaymentConfirmation()
@@ -130,7 +128,7 @@ export default function useBulkMigrations(
   }, [beeClient, isLoading, opts.sourceType, videos])
 
   const migrateVideo = useCallback(
-    async (video: VideoWithIndexes, channelPlaylist: Playlist, signal: AbortSignal) => {
+    async (video: Video, channelPlaylist: Playlist, signal: AbortSignal) => {
       try {
         setMigrationStatus(state => ({
           ...state,
@@ -233,16 +231,17 @@ export default function useBulkMigrations(
         const previusReferences = extractVideoReferences(video)
         const isWalletConnected = !isLocked
         const isInChannel = channelPlaylist.videos.some(vid => vid.reference === initialReference)
+        const visibility = opts.visibilityStatus[initialReference] ?? []
         const saveTo = [
-          ...Object.keys(video.indexesStatus)
-            .filter(indexId => !!video.indexesStatus[indexId])
-            .map<VideoEditorPublishSource>(indexId => ({
+          ...visibility
+            .filter(v => v.sourceType === "index" && v.status !== "unindexed" && v.identifier)
+            .map<VideoEditorPublishSource>(v => ({
               source: "index",
-              identifier: indexId,
+              identifier: v.sourceIdentifier,
               add: true,
               description: "",
               name: "",
-              videoId: video.indexesStatus[indexId]!.indexReference,
+              videoId: v.identifier!,
             })),
         ]
 
@@ -302,6 +301,7 @@ export default function useBulkMigrations(
       indexClient,
       opts.offersStatus,
       opts.pinningStatus,
+      opts.visibilityStatus,
       waitPaymentConfirmation,
     ]
   )
@@ -327,7 +327,7 @@ export default function useBulkMigrations(
   }, [channelPlaylist, migrateVideo, updateVideosInPlaylist])
 
   const migrate = useCallback(
-    async (videos: VideoWithIndexes[], signal: AbortSignal) => {
+    async (videos: Video[], signal: AbortSignal) => {
       deferredChannelUpdates.current = []
       migrationArgs.current = { videos, signal }
 

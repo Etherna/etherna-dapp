@@ -28,11 +28,13 @@ import { getResponseErrorMessage } from "@/utils/request"
 import type { UseUserVideosOptions, VideosSource } from "./useUserVideos"
 import type { VideoWithIndexes } from "@/types/video"
 import type { Playlist, PlaylistVideo, Video } from "@etherna/sdk-js"
+import type { Reference } from "@etherna/sdk-js/clients"
 import type { AxiosError } from "axios"
 
 export type VisibilityStatus = {
   sourceType: "index" | "playlist"
   sourceIdentifier: string
+  identifier: string | null
   status: VideoStatus
   errors?: string[]
 }
@@ -54,7 +56,7 @@ export default function useUserVideosVisibility(
   const address = useUserStore(state => state.address)
   const [isFetchingVisibility, setIsFetchingVisibility] = useState(false)
   const [togglingSource, setTogglingSource] = useState<VideosSource>()
-  const [visibility, setVisibility] = useState<Record<string, VisibilityStatus[]>>({})
+  const [visibility, setVisibility] = useState<Record<Reference, VisibilityStatus[]>>({})
   const channelPlaylist = useRef<Playlist>()
   const indexClients = useRef<IndexClient[]>()
   const { showError } = useErrorMessage()
@@ -113,6 +115,7 @@ export default function useUserVideosVisibility(
           const channelVisibility: VisibilityStatus = {
             sourceType: "playlist",
             sourceIdentifier: SwarmPlaylist.Reader.channelPlaylistId,
+            identifier: video.reference,
             status: channel.videos.some(v => v.reference === video.reference)
               ? "public"
               : "unindexed",
@@ -137,6 +140,7 @@ export default function useUserVideosVisibility(
                 errors: indexValidation?.errorDetails.length
                   ? indexValidation?.errorDetails.map(e => e.errorMessage)
                   : undefined,
+                identifier: indexValidation?.videoId ?? null,
               }
               return indexVisibility
             })
@@ -148,6 +152,7 @@ export default function useUserVideosVisibility(
                 sourceType: "index",
                 sourceIdentifier: urlOrigin(indexClients.current![i].url)!,
                 status: "error",
+                identifier: null,
               }
             }
           })
@@ -342,10 +347,17 @@ export default function useUserVideosVisibility(
     ]
   )
 
+  const invalidate = useCallback(async () => {
+    if (videos?.length) {
+      fetchVideosStatus()
+    }
+  }, [fetchVideosStatus, videos?.length])
+
   return {
     isFetchingVisibility,
     visibility,
     togglingSource,
     toggleVideosVisibility,
+    invalidate,
   }
 }
