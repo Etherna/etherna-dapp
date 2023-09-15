@@ -16,7 +16,7 @@
  */
 
 import React from "react"
-import { omit } from "lodash"
+import omit from "lodash/omit"
 
 import { ReactComponent as EthernaSymbol } from "@/assets/logo-symbol.svg"
 import { ReactComponent as EthernaLogo } from "@/assets/logo.svg"

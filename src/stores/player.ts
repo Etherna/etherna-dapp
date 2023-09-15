@@ -42,10 +42,15 @@ const getCurrentSource = (sources: VideoSource[], quality: PlayerQuality) => {
     return sources.find(s => s.type !== "mp4" && s.path.match(/audio\.(mpd|m3u8)$/))
   }
   const isAdaptive = sources.some(s => s.type !== "mp4")
-  if (quality === "Auto" || isAdaptive) {
+  if (isAdaptive) {
     return sources.find(s => s.type !== "mp4" && s.path.match(/manifest\.(mpd|m3u8)$/))
   }
-  return sources.find(s => s.type === "mp4" && s.quality === quality)
+  const mp4Source =
+    sources.find(s => s.type === "mp4" && s.quality === quality) ??
+    sources.find(s => s.type === "mp4" && s.quality === PLAYER_INITIAL_QUALITY) ??
+    sources.find(s => s.type === "mp4")
+
+  return mp4Source
 }
 
 const getInitialState = (): PlayerState => ({
@@ -192,11 +197,24 @@ const actions = (set: SetFunc, get: GetFunc) => ({
         closestQuality ||
         preferredQuality ||
         (isAdaptive ? "Auto" : qualities[0])
+      const currentSource = getCurrentSource(sources, quality)
 
       state.sources = sources
       state.qualities = qualities
       state.currentQuality = quality
-      state.currentSource = getCurrentSource(sources, quality)
+      state.currentSource = currentSource ?? {
+        type: "mp4",
+        path: "",
+        quality: "0p",
+        size: 0,
+        url: "",
+      }
+      state.error = currentSource
+        ? undefined
+        : {
+            code: 404,
+            message: "No video sources found",
+          }
       // first load -> reset
       state.isPlaying = false
       state.buffered = 0

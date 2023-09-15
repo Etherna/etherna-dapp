@@ -33,19 +33,24 @@ const ErrorBanner: React.FC = () => {
       switch (error.code) {
         case 401:
           setDescription(
-            "This is a pay to watch video. To watch this content you need to signin and have some credit available."
+            error.message ||
+              "This is a pay to watch video. To watch this content you need to signin and have some credit available."
           )
           break
         case 402:
           setDescription(
-            "You don't have enough credit. Please add some more to enjoin this content."
+            error.message ||
+              "You don't have enough credit. Please add some more to enjoin this content."
           )
           break
         case 403:
-          setDescription("You don't have permission to access this resource.")
+          setDescription(error.message || "You don't have permission to access this resource.")
+          break
+        case 404:
+          setDescription(error.message || "This video doesn't exist.")
           break
         default:
-          setDescription(error.message)
+          setDescription(error.message || "Cannot play this video.")
           break
       }
     }

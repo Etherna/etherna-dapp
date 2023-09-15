@@ -82,7 +82,7 @@ const Player: React.FC<PlayerProps> = ({
     async (err: MediaErrorEvent) => {
       console.error(err)
 
-      if (!currentSource) return
+      if (!currentSource || !currentSource.url) return
 
       // get error code
       try {
@@ -96,7 +96,7 @@ const Player: React.FC<PlayerProps> = ({
         console.warn(error)
 
         if (error.response) {
-          showError(error.response.status, error.response.data.message || error.response.data)
+          showError(error.response.status, "")
         } else {
           showError(500, error.message)
         }
