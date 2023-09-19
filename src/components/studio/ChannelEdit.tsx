@@ -14,11 +14,12 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useRef } from "react"
 import { Navigate } from "react-router-dom"
 
-import StudioEditView from "./StudioEditView"
 import ChannelEditor from "./channel-editor/ChannelEditor"
+import StudioEditView from "./StudioEditView"
 import routes from "@/routes"
 import useUserStore from "@/stores/user"
 

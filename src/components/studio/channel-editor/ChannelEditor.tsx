@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, {
   forwardRef,
   useCallback,
@@ -37,12 +38,12 @@ import useSwarmProfile from "@/hooks/useSwarmProfile"
 import useWallet from "@/hooks/useWallet"
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import makeBlockies from "@/utils/make-blockies"
 import { isAnimatedImage } from "@/utils/media"
 
-import type { Image, Profile } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
+import type { Image, Profile } from "@etherna/sdk-js"
+import type { EthAddress } from "@etherna/sdk-js/clients"
 
 type ImageType = "avatar" | "cover"
 
@@ -231,13 +232,9 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
       [cropImage, handleUploadImage, showError]
     )
 
-    const swarmImageUrl = useCallback(
-      (image: Image | null | undefined) => {
-        const reference = SwarmImage.Reader.getOriginalSourceReference(image)
-        return reference ? beeClient.bzz.url(reference) : undefined
-      },
-      [beeClient]
-    )
+    const swarmImageUrl = useCallback((image: Image | null | undefined, maxWidth?: number) => {
+      return image ? SwarmImage.Reader.getBestImageUrl(image, maxWidth) : undefined
+    }, [])
 
     return (
       <div className="flex flex-col flex-wrap space-y-6">
@@ -245,7 +242,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
 
         <div className="relative min-h-44 w-full overflow-hidden rounded-md bg-gray-200/90 dark:bg-gray-800/50">
           <label
-            className={classNames("absolute inset-0 m-0 overflow-hidden", {
+            className={cn("absolute inset-0 m-0 overflow-hidden", {
               "h-auto": !!profileCover,
             })}
             htmlFor="cover-input"
@@ -270,13 +267,13 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
               onChange={e => handleImageChange(e, "cover")}
             />
             <div
-              className={classNames(
+              className={cn(
                 "absolute bottom-0 right-0 mb-3 mr-3 flex items-center justify-center space-x-2"
               )}
             >
               {profileCover && (
                 <Button
-                  className={classNames(
+                  className={cn(
                     "h-8 cursor-pointer rounded-full normal-case",
                     "w-8 justify-center p-0"
                   )}
@@ -290,7 +287,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
               <Button
                 as="div"
                 color="muted"
-                className={classNames("h-8 cursor-pointer rounded-full py-1 normal-case")}
+                className={cn("h-8 cursor-pointer rounded-full py-1 normal-case")}
               >
                 Change cover
               </Button>
@@ -301,7 +298,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
         <div className="w-full">
           <label className="inline-block w-auto" htmlFor="avatar-input">
             <div
-              className={classNames(
+              className={cn(
                 "group relative h-40 w-40 cursor-pointer overflow-hidden rounded-full border-4",
                 "border-white bg-gray-200 dark:border-gray-900 dark:bg-gray-700"
               )}
@@ -322,7 +319,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
                 onChange={e => handleImageChange(e, "avatar")}
               />
               <span
-                className={classNames(
+                className={cn(
                   "z-10 text-center leading-none absolute-center",
                   "shadow-black text-shadow",
                   "hidden transition-opacity duration-200 group-hover:block"

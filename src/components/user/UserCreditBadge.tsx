@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React, { useEffect, useState } from "react"
 
 import { isTouchDevice } from "@/utils/browser"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { getDecimalParts } from "@/utils/math"
 
 type UserCreditBadgeProps = {
@@ -44,7 +45,7 @@ const UserCreditBadge: React.FC<UserCreditBadgeProps> = ({ credit }) => {
 
   return (
     <div
-      className={classNames(
+      className={cn(
         "relative flex h-9 cursor-pointer items-baseline overflow-hidden rounded-full px-4 py-1.5",
         "bg-gray-200/70 backdrop-blur dark:bg-gray-800/70",
         {
@@ -61,14 +62,14 @@ const UserCreditBadge: React.FC<UserCreditBadgeProps> = ({ credit }) => {
     >
       {/* <span className="hidden xs:inline text-xs tracking-tighter text-gray-600 dark:text-gray-400 mr-1">xDAI</span> */}
       <div
-        className={classNames(
+        className={cn(
           "relative flex items-baseline overflow-hidden",
           "text-gray-900 dark:text-gray-200"
         )}
       >
         <span className="text-xl font-semibold">{integer}.</span>
         <span
-          className={classNames(
+          className={cn(
             "inline-block text-base font-medium opacity-60",
             "transition-[max-width] duration-300",
             "md:!max-w-[unset]"

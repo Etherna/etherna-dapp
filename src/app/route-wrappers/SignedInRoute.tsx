@@ -14,18 +14,17 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
+import { useAuth } from "react-oidc-context"
 import { Outlet } from "react-router-dom"
 
 import SigninMessage from "@/components/common/SigninMessage"
-import useUserStore from "@/stores/user"
 
 const SignedInRoute: React.FC = () => {
-  const isSignedIn = useUserStore(state => state.isSignedIn)
-  const isSigningIn = isSignedIn === undefined
-  const isFullySignedIn = isSignedIn === true
+  const { isAuthenticated, isLoading } = useAuth()
 
-  return isSigningIn ? null : isFullySignedIn ? <Outlet /> : <SigninMessage />
+  return isLoading ? null : isAuthenticated ? <Outlet /> : <SigninMessage />
 }
 
 export default SignedInRoute

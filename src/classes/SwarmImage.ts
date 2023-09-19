@@ -1,4 +1,4 @@
-import { ImageReader, ImageWriter } from "@etherna/api-js/swarm"
+import { ImageReader, ImageWriter } from "@etherna/sdk-js/swarm"
 
 const SwarmImage = {
   Reader: ImageReader,

@@ -14,11 +14,12 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useState } from "react"
 
 import { Checkbox } from "@/components/ui/inputs"
 import { Pagination } from "@/components/ui/navigation"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type TableProps<T = any> = {
   className?: string
@@ -91,13 +92,13 @@ const Table = <T, A>({
   )
 
   return (
-    <div className={classNames("w-full", className)} data-component="table">
+    <div className={cn("w-full", className)} data-component="table">
       {(title || selectionActions) && (
         <div className="flex flex-wrap items-center py-1">
           {(title || selectionActions) && <h2 className="text-lg lg:text-xl">{title}</h2>}
           {selectionActions && (
             <div
-              className={classNames("ml-auto items-center space-x-3", {
+              className={cn("ml-auto items-center space-x-3", {
                 "hidden lg:invisible lg:flex": selectedItems.length === 0,
                 "visible flex": selectedItems.length > 0,
               })}
@@ -110,7 +111,7 @@ const Table = <T, A>({
 
       <div className="w-full overflow-x-auto">
         <table
-          className={classNames("min-w-full text-sm transition-opacity duration-200 ease-out", {
+          className={cn("min-w-full text-sm transition-opacity duration-200 ease-out", {
             "pointer-events-none opacity-30": isLoading,
           })}
         >
@@ -118,8 +119,8 @@ const Table = <T, A>({
             <tr>
               {showSelection && (
                 <th
-                  className={classNames(
-                    "py-2 px-1 text-left font-medium leading-none text-gray-600 dark:text-gray-200",
+                  className={cn(
+                    "px-1 py-2 text-left font-medium leading-none text-gray-600 dark:text-gray-200",
                     "border-b border-gray-300 dark:border-gray-700"
                   )}
                   style={{ width: "32px" }}
@@ -134,7 +135,7 @@ const Table = <T, A>({
                 if (!col) return null
                 return (
                   <th
-                    className={classNames(
+                    className={cn(
                       "py-2 text-left font-medium leading-none text-gray-600 dark:text-gray-300",
                       "border-b border-gray-300 dark:border-gray-700",
                       {
@@ -165,7 +166,7 @@ const Table = <T, A>({
                   if (!col) return null
                   return (
                     <td
-                      className={classNames(
+                      className={cn(
                         "border-t border-gray-200 px-1 py-2 group-first:border-t-0 dark:border-gray-800",
                         {
                           "hidden lg:table-cell": col.hideOnMobile,

@@ -13,14 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmProfile from "@/classes/SwarmProfile"
 import SwarmVideo from "@/classes/SwarmVideo"
 import clientsStore from "@/stores/clients"
 import { fullfilledPromisesResult } from "@/utils/promise"
 
-import type { Profile, Video } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
+import type { Profile, Video } from "@etherna/sdk-js"
+import type { EthAddress } from "@etherna/sdk-js/clients"
 
 const match = /\/profile\/([^/]+)/
 
@@ -64,7 +65,7 @@ const fetch = async () => {
           beeClient,
           indexClient,
         })
-        return reader.download()
+        return reader.download({ mode: "preview" })
       })
     )
 

@@ -14,11 +14,11 @@
  *  limitations under the License.
  *
  */
-import React, { useEffect, useMemo, useCallback } from "react"
+
+import React, { useCallback, useEffect, useMemo } from "react"
 import removeMarkdown from "remove-markdown"
 
 import VideoJsonLd from "./VideoJsonLd"
-import SwarmImage from "@/classes/SwarmImage"
 import NotFound from "@/components/common/NotFound"
 import SEO from "@/components/layout/SEO"
 import Player from "@/components/player/Player"
@@ -29,12 +29,12 @@ import useResetRouteState from "@/hooks/useResetRouteState"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
 import useSwarmVideo from "@/hooks/useSwarmVideo"
 import routes from "@/routes"
-import useClientsStore from "@/stores/clients"
+import { withAccessToken } from "@/utils/jwt"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import type { VideoWithIndexes } from "@/types/video"
-import type { Profile } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
+import type { Profile } from "@etherna/sdk-js"
+import type { EthAddress } from "@etherna/sdk-js/clients"
 
 type VideoViewProps = {
   reference: string
@@ -51,22 +51,21 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
     fetchIndexStatus: true,
   })
   const { profile, loadProfile } = useSwarmProfile({
-    address: video?.ownerAddress as EthAddress,
+    address: video?.preview.ownerAddress as EthAddress,
     prefetchedProfile: routeState?.ownerProfile,
   })
-  const beeClient = useClientsStore(state => state.beeClient)
   const { showError } = useErrorMessage()
 
   const posterUrl = useMemo(() => {
-    const thumbReference = SwarmImage.Reader.getOriginalSourceReference(video?.thumbnail)
-    if (thumbReference) {
-      return beeClient.bzz.url(thumbReference)
+    const posterUrl = video?.preview.thumbnail?.sources.sort((a, b) => b.width - a.width)?.[0]?.url
+    if (posterUrl) {
+      return withAccessToken(posterUrl)
     }
-    return null
-  }, [video, beeClient])
+    return undefined
+  }, [video])
 
   useEffect(() => {
-    if (!video) {
+    if (!video?.details) {
       fetchVideo()
     } else if (!profile) {
       loadProfile()
@@ -90,22 +89,24 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
   return (
     <>
       <SEO
-        title={`${video?.title ?? reference} | ${profile?.name || video?.ownerAddress}`}
-        description={removeMarkdown(video?.description ?? "").replace(/\n/g, "")}
+        title={`${video?.preview.title ?? reference} | ${
+          profile?.name || video?.preview.ownerAddress
+        }`}
+        description={removeMarkdown(video?.details?.description ?? "").replace(/\n/g, "")}
         type="video.other"
-        image={video?.thumbnail?.src}
+        image={video?.preview.thumbnail?.url}
         canonicalUrl={video ? routes.withOrigin.watch(video.reference) : undefined}
       >
-        {video && (
+        {video && video.details && (
           <VideoJsonLd
-            title={video.title ?? ""}
-            description={video.description ?? ""}
-            thumbnailUrl={video.thumbnail?.src}
+            title={video.preview.title ?? ""}
+            description={video.details.description ?? ""}
+            thumbnailUrl={video.preview.thumbnail?.url}
             canonicalUrl={routes.withOrigin.watch(video.reference)}
-            contentUrl={video.sources[0].source}
+            contentUrl={video.details.sources[0].url}
             embedUrl={routes.withOrigin.embed(video.reference)}
-            duration={video.duration}
-            datePublished={video.createdAt ? new Date(video.createdAt) : undefined}
+            duration={video.preview.duration}
+            datePublished={video.preview.createdAt ? new Date(video.preview.createdAt) : undefined}
           />
         )}
       </SEO>
@@ -113,24 +114,26 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
       {embed ? (
         <Player
           hash={reference}
-          title={video?.title || reference}
+          title={video?.preview.title || reference}
           owner={profile}
-          sources={video?.sources ?? []}
-          originalQuality={video?.originalQuality}
-          thumbnailUrl={posterUrl}
+          sources={video?.details?.sources ?? []}
+          posterUrl={posterUrl}
           embed
         />
       ) : (
         <div className="mb-16">
           <Container fluid align="center" noPaddingX noPaddingY>
-            <div className="col lg:w-3/4">
+            <div className="w-full lg:w-3/4">
               <Player
                 hash={reference}
-                title={video?.title || reference}
+                title={video?.preview.title || reference}
                 owner={profile}
-                sources={video?.sources ?? []}
-                originalQuality={video?.originalQuality}
-                thumbnailUrl={posterUrl}
+                sources={(video?.details?.sources ?? []).map(s => ({
+                  ...s,
+                  url: withAccessToken(s.url),
+                }))}
+                posterUrl={posterUrl}
+                aspectRatio={video?.details?.aspectRatio}
               />
 
               {video && (

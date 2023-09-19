@@ -14,13 +14,14 @@
  *  limitations under the License.
  *
  */
+
 import React, { Fragment, useCallback, useEffect, useMemo } from "react"
 import { Dialog, Transition } from "@headlessui/react"
 
 import { CheckCircleIcon, ExclamationTriangleIcon } from "@heroicons/react/24/solid"
 
 import { isBotUserAgent } from "@/utils/browser"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 import type { PropsWithChildren } from "react"
 
@@ -106,7 +107,7 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
     <Transition show={show} as={Fragment} appear>
       <Dialog
         as="div"
-        className={classNames(
+        className={cn(
           "fixed inset-0 flex items-center justify-center bg-gray-900/0",
           "z-200 transition duration-300",
           "focus:outline-none focus-visible:outline-none",
@@ -131,7 +132,7 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
           leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-90"
         >
           <Dialog.Panel
-            className={classNames(
+            className={cn(
               "-m-2 flex max-w-full flex-shrink flex-grow-0 basis-72 flex-col rounded-lg p-5 shadow-2xl",
               "border border-gray-400 bg-gray-100 dark:border-gray-600 dark:bg-gray-800"
             )}
@@ -139,7 +140,7 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
             <div className="m-2">
               {icon && (
                 <figure
-                  className={classNames(
+                  className={cn(
                     "mx-auto mb-3 flex h-16 w-16 items-center justify-center",
                     "text-gray-600 dark:text-gray-300"
                   )}
@@ -150,7 +151,7 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
 
               {title && (
                 <Dialog.Title
-                  className={classNames(
+                  className={cn(
                     "text-center text-lg font-bold leading-tight",
                     "text-gray-900 dark:text-gray-100"
                   )}
@@ -161,7 +162,7 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
 
               {(message || children) && (
                 <Dialog.Description
-                  className={classNames(
+                  className={cn(
                     "mt-2 space-y-3 text-center font-semibold leading-tight",
                     "text-gray-700 dark:text-gray-400"
                   )}
@@ -193,7 +194,7 @@ const AlertPopup: React.FC<AlertPopupProps> = ({
 
 const AlertPopupAction: React.FC<AlertAction> = ({ title, type, action }) => (
   <button
-    className={classNames(
+    className={cn(
       "m-1 flex-1 rounded-md p-1.5 text-sm font-semibold",
       "bg-gray-500 text-gray-100 active:bg-gray-700",
       "transition-colors duration-200 focus:outline-none focus:ring-0",

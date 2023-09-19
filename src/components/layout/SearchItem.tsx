@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useMatomo } from "@datapunt/matomo-tracker-react"
@@ -24,7 +25,7 @@ import { XMarkIcon } from "@heroicons/react/24/solid"
 import { TextInput } from "@/components/ui/inputs"
 import { Topbar } from "@/components/ui/navigation"
 import routes from "@/routes"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 const SearchItem: React.FC = () => {
   const navigate = useNavigate()
@@ -54,8 +55,8 @@ const SearchItem: React.FC = () => {
 
   return showInput ? (
     <div
-      className={classNames(
-        "absolute left-1 top-1 right-1 z-20 py-1.5 md:relative md:top-0",
+      className={cn(
+        "absolute left-1 right-1 top-1 z-20 py-1.5 md:relative md:top-0",
         "rounded-md bg-gray-200 dark:bg-gray-800"
       )}
     >
@@ -63,7 +64,7 @@ const SearchItem: React.FC = () => {
         <MagnifyingGlassIcon width={22} strokeWidth={3} aria-hidden />
         <TextInput
           className="w-full md:w-auto"
-          inputClassName={classNames(
+          inputClassName={cn(
             "px-0 h-8 pr-8 md:pr-0",
             "bg-transparent dark:bg-transparent",
             "focus:ring-0 focus:border-none"

@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import Text from "@/components/ui/display/Text"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type FieldDescriptionProps = {
   children?: React.ReactNode
@@ -29,7 +30,7 @@ const FieldDescription: React.FC<FieldDescriptionProps> = ({ children, className
   return (
     <Text
       size="xs"
-      className={classNames(
+      className={cn(
         "mt-1.5 text-gray-500 dark:text-gray-400",
         {
           "max-w-md": !smaller,

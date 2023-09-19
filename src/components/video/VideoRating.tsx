@@ -14,26 +14,28 @@
  *  limitations under the License.
  *
  */
-import React, { useState, useEffect, useMemo, useCallback } from "react"
+
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import { ReactComponent as VoteIcon } from "@/assets/icons/player/upvote.svg"
 
 import useClientsStore from "@/stores/clients"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
-import type { VoteValue } from "@etherna/api-js/clients"
+import type { VoteValue } from "@etherna/sdk-js/clients"
 
 type VideoRatingProps = {
   videoId: string
+  userVote?: VoteValue | null
   upvotes?: number
   downvotes?: number
 }
 
-const VideoRating: React.FC<VideoRatingProps> = ({ videoId, upvotes, downvotes }) => {
+const VideoRating: React.FC<VideoRatingProps> = ({ videoId, upvotes, downvotes, userVote }) => {
   const [currentUpvotes, setCurrentUpvotes] = useState(upvotes ?? 0)
   const [currentDownvotes, setCurrentDownvotes] = useState(downvotes ?? 0)
   const [isUpdatingVote, setIsUpdatingVote] = useState(false)
-  const [currentVote, setCurrentVote] = useState<VoteValue>("Neutral")
+  const [currentVote, setCurrentVote] = useState<VoteValue>(userVote ?? "Neutral")
   const indexClient = useClientsStore(state => state.indexClient)
 
   const progress = useMemo(() => {
@@ -107,14 +109,14 @@ const VideoRating: React.FC<VideoRatingProps> = ({ videoId, upvotes, downvotes }
 
   return (
     <div
-      className={classNames("inline-block min-w-[128px] transition-opacity duration-75", {
+      className={cn("inline-block min-w-[128px] transition-opacity duration-75", {
         "pointer-events-none opacity-0": isUpdatingVote,
       })}
     >
       <div className="flex justify-between">
         {["Up", "Down"].map(vote => (
           <button
-            className={classNames(
+            className={cn(
               "flex appearance-none items-center rounded-sm border-none bg-transparent px-1.5 py-0.5 shadow-none",
               "text-gray-500 dark:text-gray-400",
               "hover:bg-gray-200 dark:hover:bg-gray-800",
@@ -130,7 +132,7 @@ const VideoRating: React.FC<VideoRatingProps> = ({ videoId, upvotes, downvotes }
             key={vote}
           >
             <span className="inline-block h-5 w-5">
-              <VoteIcon className={classNames({ "rotate-180": vote === "Down" })} aria-hidden />
+              <VoteIcon className={cn({ "rotate-180": vote === "Down" })} aria-hidden />
             </span>
             <span className="ml-2 text-sm font-semibold">
               {vote === "Up" ? shortNumber(currentUpvotes) : shortNumber(currentDownvotes)}

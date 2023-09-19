@@ -13,80 +13,131 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { useCallback, useEffect, useRef, useState } from "react"
-import { parsePostageBatch } from "@etherna/api-js/utils"
+
+import { useCallback, useRef, useState } from "react"
+import { parsePostageBatch } from "@etherna/sdk-js/utils"
 
 import useBeeAuthentication from "./useBeeAuthentication"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
-import useUIStore from "@/stores/ui"
 import useUserStore from "@/stores/user"
 
-import type { GatewayBatch } from "@etherna/api-js/clients"
+import type {
+  BatchId,
+  GatewayBatch,
+  GatewayBatchPreview,
+  PostageBatch,
+} from "@etherna/sdk-js/clients"
 
 type UseBatchesOpts = {
-  autofetch?: boolean
+  limit?: number
 }
 
-export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) {
+export default function useBatches(opts?: UseBatchesOpts) {
   const [isFetchingBatches, setIsFetchingBatches] = useState(false)
   const [error, setError] = useState<string | undefined>()
+  const [total, setTotal] = useState(0)
+  const [isCreatingFirstBatch, setIsCreatingFirstBatch] = useState(false)
+  const [batches, setBatches] = useState<GatewayBatch[]>()
+  const previewList = useRef<GatewayBatchPreview[]>()
 
   const gatewayClient = useClientsStore(state => state.gatewayClient)
   const beeClient = useClientsStore(state => state.beeClient)
   const gatewayType = useExtensionsStore(state => state.currentGatewayType)
-  const batches = useUserStore(state => state.batches)
-  const isLoadingProfile = useUIStore(state => state.isLoadingProfile)
-  const setBatches = useUserStore(state => state.setBatches)
+  const defaultBatchId = useUserStore(state => state.defaultBatchId)
+  const storeBatches = useUserStore(state => state.batches)
+  const addBatches = useUserStore(state => state.addBatches)
 
   const { waitAuth } = useBeeAuthentication()
-  const timeout = useRef<number>()
 
-  useEffect(() => {
-    return () => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      clearTimeout(timeout.current)
-    }
-  }, [])
+  const fetchPage = useCallback(
+    async (page: number) => {
+      setIsFetchingBatches(true)
 
-  useEffect(() => {
-    if (!opts.autofetch) return
-    if (isLoadingProfile) return
+      let pageBatches: GatewayBatch[] = []
+      const limit = opts?.limit ?? 25
 
-    fetchAllBatches()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts.autofetch, isLoadingProfile])
+      const batchId = (batch: GatewayBatchPreview | PostageBatch) =>
+        "batchId" in batch ? batch.batchId : batch.batchID
+      const defaultBatchAtFirst = (batch: GatewayBatchPreview | PostageBatch) =>
+        batchId(batch) === defaultBatchId ? -1 : 0
 
-  const fetchAllBatches = useCallback(async () => {
-    setIsFetchingBatches(true)
+      try {
+        if (gatewayType === "etherna-gateway") {
+          previewList.current =
+            previewList.current ??
+            (await gatewayClient.users.fetchBatches()).sort(defaultBatchAtFirst)
+          const pageList = previewList.current.slice((page - 1) * limit, page * limit)
 
-    let batches: GatewayBatch[] = []
-
-    try {
-      if (gatewayType === "etherna-gateway") {
-        const batchesPreview = await gatewayClient.users.fetchBatches()
-        const batchesResults = await Promise.allSettled(
-          batchesPreview.map(async batchPreview =>
-            gatewayClient.users.fetchBatch(batchPreview.batchId)
+          const batchesResults = await Promise.allSettled(
+            pageList.map(batchPreview => {
+              const cachedBatch = storeBatches.find(b => b.id === batchPreview.batchId)
+              if (cachedBatch) {
+                return Promise.resolve(cachedBatch)
+              } else {
+                return gatewayClient.users.fetchBatch(batchPreview.batchId)
+              }
+            })
           )
-        )
-        batches = batchesResults
-          // @ts-ignore
-          .filter<PromiseFulfilledResult<GatewayBatch>>(result => result.status === "fulfilled")
-          .map(result => result.value)
-      } else {
-        await waitAuth()
+          pageBatches = batchesResults.map((result, i) =>
+            result.status === "fulfilled"
+              ? result.value
+              : ({
+                  id: pageList[i].batchId,
+                  amount: "0",
+                  amountPaid: 0,
+                  batchTTL: -1,
+                  blockNumber: -1,
+                  bucketDepth: -1,
+                  depth: 0,
+                  exists: false,
+                  immutableFlag: false,
+                  normalisedBalance: 0,
+                  usable: false,
+                  utilization: 0,
+                  label: "",
+                } as GatewayBatch)
+          )
+          addBatches(pageBatches)
+          setTotal(previewList.current.length)
 
-        batches = (await beeClient.stamps.downloadAll()).map(batch => parsePostageBatch(batch))
+          if (previewList.current.length === 0) {
+            setIsCreatingFirstBatch(true)
+          }
+        } else {
+          if (storeBatches.length > 0) {
+            // assuming batches have laready been downloaded from bee node
+            pageBatches = storeBatches.slice((page - 1) * limit, page * limit)
+          }
+          await waitAuth()
+
+          const beeBatches = (await beeClient.stamps.downloadAll())
+            .sort(defaultBatchAtFirst)
+            .map(parsePostageBatch)
+          addBatches(beeBatches)
+          setTotal(beeBatches.length)
+
+          pageBatches = beeBatches.slice((page - 1) * limit, page * limit)
+        }
+
+        setBatches(pageBatches)
+      } catch (error: any) {
+        setError(error.message)
       }
 
-      setBatches(batches)
-    } catch (error: any) {
-      setError(error.message)
-    }
-
-    setIsFetchingBatches(false)
-  }, [gatewayClient, beeClient, gatewayType, waitAuth, setBatches])
+      setIsFetchingBatches(false)
+    },
+    [
+      opts?.limit,
+      defaultBatchId,
+      gatewayType,
+      gatewayClient,
+      beeClient,
+      storeBatches,
+      waitAuth,
+      addBatches,
+    ]
+  )
 
   const updateBatch = useCallback(
     (batch: GatewayBatch) => {
@@ -102,9 +153,12 @@ export default function useBatches(opts: UseBatchesOpts = { autofetch: false }) 
   )
 
   return {
+    batches,
+    total,
     isFetchingBatches,
     error,
-    fetchAllBatches,
+    isCreatingFirstBatch,
+    fetchPage,
     updateBatch,
   }
 }

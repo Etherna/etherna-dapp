@@ -15,7 +15,6 @@
  */
 
 /* eslint-disable no-restricted-imports */
-import fetch, { Response } from "node-fetch"
 
 import parseBody from "../utils/parse-body.js"
 import saveSeedData from "./save-seed-data.js"

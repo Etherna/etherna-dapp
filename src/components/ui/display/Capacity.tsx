@@ -14,9 +14,10 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { clamp } from "@/utils/math"
 
 export type CapacityProps = {
@@ -42,7 +43,7 @@ const Capacity: React.FC<CapacityProps> = ({
 
   return (
     <div
-      className={classNames(
+      className={cn(
         "relative h-2.5 w-14 overflow-hidden rounded bg-gray-200 dark:bg-gray-700",
         className
       )}
@@ -56,7 +57,7 @@ const Capacity: React.FC<CapacityProps> = ({
       data-component="capacity"
     >
       <span
-        className={classNames("absolute bg-primary-400", {
+        className={cn("absolute bg-primary-400", {
           "inset-y-0 left-0": !isLoading,
           "inset-0 w-full animate-slide": isLoading,
           "bg-yellow-400 dark:bg-yellow-400": color === undefined && percent > 40,

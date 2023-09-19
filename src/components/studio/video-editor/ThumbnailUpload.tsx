@@ -14,26 +14,27 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback, useMemo, useRef, useState } from "react"
+
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { MinusIcon } from "@heroicons/react/24/outline"
 
 import SwarmImage from "@/classes/SwarmImage"
+import Image from "@/components/common/Image"
 import FileDrag from "@/components/media/FileDrag"
 import FileUploadProgress from "@/components/media/FileUploadProgress"
-import ImageSourcePreview from "@/components/media/ImageSourcePreview"
 import { Button } from "@/components/ui/actions"
-import { Card, Text } from "@/components/ui/display"
+import { Alert, Card, Text } from "@/components/ui/display"
 import useConfirmation from "@/hooks/useConfirmation"
 import useErrorMessage from "@/hooks/useErrorMessage"
-import useVideoEditorQueue from "@/hooks/useVideoEditorQueue"
+import { videoProcessingController } from "@/hooks/useVideoProcessing"
 import useClientsStore from "@/stores/clients"
 import useVideoEditorStore from "@/stores/video-editor"
+import { withAccessToken } from "@/utils/jwt"
 import { isAnimatedImage } from "@/utils/media"
 import { isMimeWebCompatible } from "@/utils/mime-types"
 
-import type { Image } from "@etherna/api-js"
-import type { BatchId } from "@etherna/api-js/clients"
+import type { BatchId } from "@etherna/sdk-js/clients"
 
 type ThumbnailUploadProps = {
   disabled?: boolean
@@ -43,84 +44,120 @@ export const THUMBNAIL_QUEUE_NAME = "thumbnail"
 
 const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
   const beeClient = useClientsStore(state => state.beeClient)
-  const batchStatus = useVideoEditorStore(state => state.batchStatus)
+  const batchStatus = useVideoEditorStore(state => state.batch.status)
   const pinContent = useVideoEditorStore(state => state.pinContent)
-  const batchId = useVideoEditorStore(state => state.video.batchId)
-  const thumbnail = useVideoEditorStore(state => state.video.thumbnail)
-  const [selectedFile, setSelectedFile] = useState<File>()
+  const thumbnail = useVideoEditorStore(state => state.builder.previewMeta.thumbnail)
+  const batchId = useVideoEditorStore(state => state.builder.detailsMeta.batchId)
+
+  const [selectedFile, setSelectedFile] = useState<File | Blob>()
+  const [frameThumbnail, setFrameThumbnail] = useState<Uint8Array>()
+  const [error, setError] = useState<string>()
+  const [uploadProgress, setUploadProgress] = useState<number>()
   const [isProcessingImages, setIsProcessingImages] = useState(false)
   const abortController = useRef<AbortController>()
 
-  const addToQueue = useVideoEditorStore(state => state.addToQueue)
-  const removeFromQueue = useVideoEditorStore(state => state.removeFromQueue)
-  const updateQueueCompletion = useVideoEditorStore(state => state.updateQueueCompletion)
-  const updateQueueSize = useVideoEditorStore(state => state.updateQueueSize)
-  const setQueueError = useVideoEditorStore(state => state.setQueueError)
   const setThumbnail = useVideoEditorStore(state => state.setThumbnail)
+  const getThumbEntry = useVideoEditorStore(state => state.getThumbEntry)
   const { showError } = useErrorMessage()
   const { waitConfirmation } = useConfirmation()
 
+  const waitingForBatch = useMemo(() => {
+    return !batchId || batchStatus !== undefined
+  }, [batchId, batchStatus])
+
+  const thumbStatus = useMemo(() => {
+    if (thumbnail) return "preview"
+    if (isProcessingImages) return "processing"
+    if (typeof uploadProgress === "number") return "upload"
+    if (selectedFile && waitingForBatch) return "waiting"
+    return "select"
+  }, [isProcessingImages, selectedFile, thumbnail, uploadProgress, waitingForBatch])
+
+  useEffect(() => {
+    videoProcessingController.onEncodedThumbnail = thumb => {
+      setFrameThumbnail(thumb)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (thumbnail) return
+    if (!selectedFile || !frameThumbnail) return
+    if (batchId && batchStatus === undefined) {
+      uploadThumbnail()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [batchId, batchStatus])
+
   const uploadThumbnail = useCallback(
-    async (queueId: string, progressCallback: (p: number) => void) => {
-      if (!selectedFile) {
-        return setQueueError(queueId, "Can't upload. No file selected.")
+    async (file?: File) => {
+      setError(undefined)
+
+      const thumbFile = file ?? selectedFile ?? new Blob([frameThumbnail!], { type: "image/jpeg" })
+      setSelectedFile(thumbFile)
+
+      if (waitingForBatch) return
+
+      if (!thumbFile && !frameThumbnail) {
+        return setError("Can't upload. No file selected.")
       }
-      if (isAnimatedImage(new Uint8Array(await selectedFile.arrayBuffer()))) {
+      if (thumbFile && isAnimatedImage(new Uint8Array(await thumbFile.arrayBuffer()))) {
         return showError("Animated images are not allowed")
       }
 
       abortController.current = new AbortController()
 
-      const imageWriter = new SwarmImage.Writer(selectedFile, {
-        batchId: batchId as BatchId,
+      const imageWriter = new SwarmImage.Writer(thumbFile, {
         beeClient,
         responsiveSizes: SwarmImage.Writer.thumbnailResponsiveSizes,
       })
 
       setIsProcessingImages(true)
-      const totalSize = await imageWriter.pregenerateImages()
+      const processedImage = await imageWriter.pregenerateImages()
       setIsProcessingImages(false)
 
-      updateQueueSize(queueId, totalSize)
+      const totalSize = processedImage.responsiveSourcesData.reduce(
+        (acc, { data }) => acc + data.length,
+        0
+      )
 
-      const image = await imageWriter.upload({
-        signal: abortController.current.signal,
-        pin: pinContent,
-        onUploadProgress: p => {
-          progressCallback(p)
-        },
-      })
+      try {
+        setUploadProgress(0)
 
-      const imageReader = new SwarmImage.Reader(image, { beeClient })
+        let totalCompletion = 0
+        await Promise.all(
+          processedImage.responsiveSourcesData.map(({ data }) => {
+            beeClient.bytes.upload(data, {
+              batchId: batchId as BatchId,
+              pin: pinContent,
+              signal: abortController.current?.signal,
+              onUploadProgress(completion) {
+                totalCompletion += completion
+                setUploadProgress((totalCompletion / totalSize) * 100)
+              },
+            })
+          })
+        )
 
-      // remove data
-      setSelectedFile(undefined)
+        // remove data
+        setSelectedFile(undefined)
 
-      // will also be removed from queue
-      setThumbnail(imageReader.image)
+        // will also be removed from queue
+        setThumbnail(processedImage)
+      } catch (error) {
+        setError("There was a problem uploading the thumbnail")
+        setUploadProgress(undefined)
+      }
     },
     [
-      batchId,
-      beeClient,
+      waitingForBatch,
       selectedFile,
+      frameThumbnail,
+      beeClient,
+      batchId,
       pinContent,
-      setQueueError,
-      setThumbnail,
       showError,
-      updateQueueSize,
+      setThumbnail,
     ]
-  )
-
-  const processingOptions = useMemo(() => {
-    return {
-      hasSelectedFile: !!selectedFile,
-      onUpload: uploadThumbnail,
-    }
-  }, [selectedFile, uploadThumbnail])
-
-  const { processingStatus, currentQueue } = useVideoEditorQueue<Image>(
-    THUMBNAIL_QUEUE_NAME,
-    processingOptions
   )
 
   const canSelectFile = useCallback(
@@ -143,15 +180,19 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
   const handleFileSelected = useCallback(
     (file: File) => {
       setSelectedFile(file)
-      addToQueue("upload", "thumbnail", THUMBNAIL_QUEUE_NAME)
+
+      uploadThumbnail(file)
+      if (batchId && batchStatus === undefined) {
+        uploadThumbnail(file)
+      }
     },
-    [addToQueue]
+    [batchId, batchStatus, uploadThumbnail]
   )
 
   const handleCancelUpload = useCallback(() => {
     abortController.current?.abort("User canceled the upload.")
-    currentQueue && updateQueueCompletion(currentQueue.id, 0)
-  }, [currentQueue, updateQueueCompletion])
+    setUploadProgress(undefined)
+  }, [])
 
   const handleRemove = useCallback(async () => {
     if (
@@ -163,15 +204,10 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
       )
     ) {
       handleCancelUpload()
-      currentQueue?.id && removeFromQueue(currentQueue.id)
       setThumbnail(null)
       setSelectedFile(undefined)
     }
-  }, [currentQueue?.id, handleCancelUpload, removeFromQueue, setThumbnail, waitConfirmation])
-
-  const waitingForBatch = useMemo(() => {
-    return !batchId || batchStatus !== undefined
-  }, [batchId, batchStatus])
+  }, [handleCancelUpload, setThumbnail, waitConfirmation])
 
   return (
     <Card
@@ -179,7 +215,12 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
       variant="fill"
       actions={
         <>
-          {processingStatus !== "select" && (
+          {thumbStatus === "select" && frameThumbnail && !selectedFile && (
+            <Button className="mx-auto" color="inverted" small onClick={() => uploadThumbnail()}>
+              Use random frame
+            </Button>
+          )}
+          {thumbStatus !== "select" && (
             <Button
               color="warning"
               aspect="outline"
@@ -188,13 +229,19 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
               small
               onClick={handleRemove}
             >
-              {processingStatus === "preview" ? "Remove" : "Cancel"}
+              {thumbStatus === "preview" ? "Remove" : "Cancel"}
             </Button>
           )}
         </>
       }
     >
-      {processingStatus === "select" && !selectedFile && (
+      {error && (
+        <Alert className="mb-4" color="error">
+          {error}
+        </Alert>
+      )}
+
+      {thumbStatus === "select" && (
         <FileDrag
           id={THUMBNAIL_QUEUE_NAME}
           label={
@@ -212,29 +259,25 @@ const ThumbnailUpload: React.FC<ThumbnailUploadProps> = ({ disabled }) => {
         />
       )}
 
-      {processingStatus === "queued" && (
-        <Text size="sm">Qeued. Waiting for other uploads to finish...</Text>
+      {thumbStatus === "waiting" && <Text size="sm">Waiting postage batch creation...</Text>}
+
+      {thumbStatus === "upload" && (
+        <FileUploadProgress
+          isPreloading={isProcessingImages}
+          progress={uploadProgress ?? 0}
+          preloadingText={"Processing images..."}
+        />
       )}
 
-      {processingStatus === "upload" && (
-        <>
-          {waitingForBatch ? (
-            <Text size="sm">Waiting postage batch creation...</Text>
-          ) : (
-            <FileUploadProgress
-              isPreloading={isProcessingImages}
-              progress={currentQueue?.completion ?? 0}
-              preloadingText={"Processing images..."}
-            />
-          )}
-        </>
+      {thumbStatus === "preview" && (
+        <div className="relative aspect-video w-full bg-black">
+          <Image
+            src={withAccessToken(beeClient.bytes.url(getThumbEntry()!))}
+            objectFit="contain"
+            retries={3}
+          />
+        </div>
       )}
-
-      {processingStatus === "encoding" && (
-        <FileUploadProgress progress={currentQueue?.completion ?? 0} color="rainbow" />
-      )}
-
-      {processingStatus === "preview" && <ImageSourcePreview image={thumbnail} />}
     </Card>
   )
 }

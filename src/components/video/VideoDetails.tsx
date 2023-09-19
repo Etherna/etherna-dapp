@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 
 import VideoComments from "./VideoComments"
@@ -22,11 +23,12 @@ import VideoDetailsInfoBar from "./VideoDetailsInfoBar"
 import VideoDetailsProfile from "./VideoDetailsProfile"
 import VideoDetailsTitleBar from "./VideoDetailsTitleBar"
 import VideoExtraMenu from "./VideoExtraMenu"
+import VideoDetailsPlaceholder from "@/components/placeholders/VideoDetailsPlaceholder"
 import useExtensionsStore from "@/stores/extensions"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import type { VideoWithIndexes } from "@/types/video"
-import type { Profile } from "@etherna/api-js"
+import type { Profile } from "@etherna/sdk-js"
 
 type VideoDetailsProps = {
   video: VideoWithIndexes
@@ -40,9 +42,9 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video, owner, videoOffers }
     return video.indexesStatus[indexUrl]?.indexReference
   }, [indexUrl, video.indexesStatus])
 
-  return (
+  return video.details ? (
     <div>
-      <VideoDetailsTitleBar title={video.title}>
+      <VideoDetailsTitleBar title={video.preview.title}>
         <VideoExtraMenu video={video} />
       </VideoDetailsTitleBar>
 
@@ -50,12 +52,17 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video, owner, videoOffers }
 
       <VideoDetailsProfile owner={owner} />
 
-      <VideoDetailsDescription description={video.description} />
+      <VideoDetailsDescription description={video.details?.description} />
 
       {indexReference && (
-        <VideoComments indexReference={indexReference} videoAuthorAddress={video.ownerAddress} />
+        <VideoComments
+          indexReference={indexReference}
+          videoAuthorAddress={video.preview.ownerAddress}
+        />
       )}
     </div>
+  ) : (
+    <VideoDetailsPlaceholder />
   )
 }
 

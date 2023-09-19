@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
@@ -21,7 +22,7 @@ import { ExclamationCircleIcon, PlusIcon, SparklesIcon } from "@heroicons/react/
 
 import { Button } from "@/components/ui/actions"
 import { ProgressBar } from "@/components/ui/display"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type BatchLoadingType =
   | "fetching"
@@ -30,6 +31,7 @@ export type BatchLoadingType =
   | "propagation"
   | "saturated"
   | "not-found"
+  | "rejected"
 
 type BatchLoadingProps = {
   className?: string
@@ -67,7 +69,7 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
 
   return (
     <div
-      className={classNames(
+      className={cn(
         "w-full max-w-sm self-start rounded bg-gray-100 p-4 dark:bg-gray-800",
         className
       )}
@@ -77,7 +79,7 @@ const BatchLoading: React.FC<BatchLoadingProps> = ({
       <div className="flex items-center">
         {(error || type === "creating") && (
           <span
-            className={classNames("mr-2 h-5 w-5 shrink-0", {
+            className={cn("mr-2 h-5 w-5 shrink-0", {
               "animate-pulse": type === "creating",
               "text-red-500": !!error,
             })}

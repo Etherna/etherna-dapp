@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import { ArrowUpTrayIcon, Bars2Icon, PlusIcon } from "@heroicons/react/24/outline"
@@ -29,7 +30,7 @@ import useUIStore from "@/stores/ui"
 import useUserStore from "@/stores/user"
 
 const TopbarNavigation: React.FC = () => {
-  const isSignedIn = useUserStore(state => state.isSignedIn)
+  const isSignedInGateway = useUserStore(state => state.isSignedInGateway)
   const isLoadingProfile = useUIStore(state => state.isLoadingProfile)
   const floatingSidebar = useUIStore(state => state.floatingSidebar)
   const toggleSidebar = useUIStore(state => state.toggleSidebar)
@@ -65,7 +66,7 @@ const TopbarNavigation: React.FC = () => {
       <Topbar.Space flexible />
 
       <Topbar.Group>
-        {isSignedIn === true && !isLoadingProfile && (
+        {isSignedInGateway === true && !isLoadingProfile && (
           <Topbar.Item ignoreHoverState noPadding>
             <UserCredit />
           </Topbar.Item>

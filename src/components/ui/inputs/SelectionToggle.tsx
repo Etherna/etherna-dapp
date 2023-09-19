@@ -14,13 +14,14 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import { Switch } from "@headlessui/react"
 
 import { CheckIcon } from "@heroicons/react/24/solid"
 
 import { Spinner } from "@/components/ui/display"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type SelectionToggleProps = {
   className?: string
@@ -46,7 +47,7 @@ const SelectionToggle: React.FC<SelectionToggleProps> = ({
       <Switch
         checked={checked}
         onChange={onChange}
-        className={classNames(
+        className={cn(
           "flex items-start rounded-lg border p-2",
           {
             "border-gray-400 hover:border-sky-300 dark:border-gray-600 dark:hover:border-sky-700":
@@ -63,7 +64,7 @@ const SelectionToggle: React.FC<SelectionToggleProps> = ({
             <Spinner size={20} />
           ) : (
             <div
-              className={classNames("flex h-5 w-5 rounded-md border p-0.5", {
+              className={cn("flex h-5 w-5 rounded-md border p-0.5", {
                 "border-gray-400 dark:border-gray-600": !checked,
                 "border-sky-500 text-sky-500 dark:border-sky-500": checked,
               })}
@@ -78,7 +79,7 @@ const SelectionToggle: React.FC<SelectionToggleProps> = ({
         <div className="ml-3 flex flex-grow flex-col text-left">
           {label && (
             <Switch.Label
-              className={classNames(
+              className={cn(
                 "text-base font-semibold leading-tight text-gray-800 dark:text-gray-200",
                 "max-w-full flex-grow cursor-pointer overflow-hidden text-ellipsis"
               )}
@@ -88,7 +89,7 @@ const SelectionToggle: React.FC<SelectionToggleProps> = ({
           )}
           {description && (
             <Switch.Description
-              className={classNames(
+              className={cn(
                 "text-ellipsis text-sm leading-tight text-gray-600 dark:text-gray-400",
                 "max-w-full flex-grow overflow-hidden"
               )}

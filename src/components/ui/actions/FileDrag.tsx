@@ -14,11 +14,12 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useState } from "react"
 
 import { FilmIcon, PlusIcon } from "@heroicons/react/24/outline"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type FileDragProps = {
   label?: string
@@ -82,7 +83,7 @@ const FileDrag: React.FC<FileDragProps> = ({
       onDrop={handleDrop}
     >
       <div
-        className={classNames(
+        className={cn(
           "flex w-full flex-col items-center justify-center rounded-lg border-2 border-gray-200 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-900",
           {
             "border-primary-500 dark:border-primary-500": dragEnter,

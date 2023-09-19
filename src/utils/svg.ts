@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import ReactDOMServer from "react-dom/server"
 
 import type React from "react"
@@ -24,5 +25,5 @@ import type React from "react"
  * @returns The base64 string
  */
 export const encodedSvg = (svgComponent: React.ReactElement) => {
-  return "data:image/svg+xml," + escape(ReactDOMServer.renderToStaticMarkup(svgComponent))
+  return "data:image/svg+xml," + escape(ReactDOMServer.renderToStaticMarkup(svgComponent as any))
 }

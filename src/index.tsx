@@ -14,19 +14,21 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import ReactDOM from "react-dom/client"
+import { urlOrigin } from "@etherna/sdk-js/utils"
 
 import Root from "./app/Root"
 import prefetch from "./prefetch"
+import { getBasename } from "./routes"
 import unsupportedRender from "./unsupported-render"
-import { autoRedirect, autoSigninSignout } from "./utils/automations"
+import { autoRedirect } from "./utils/automations"
+import { getAccessToken } from "./utils/jwt"
+import { registerSW } from "./utils/workers"
 
 // Automatically redirect from www to non-www
 autoRedirect()
-
-// Automatically redirect to signin/signout page
-autoSigninSignout()
 
 // Prefetch data for SEO
 // Once the data has been set to a window variable call RenderDOM
@@ -41,4 +43,12 @@ unsupportedRender(async () => {
   const RootLegacy = (await import("./app/RootLegacy")).default
   const root = ReactDOM.createRoot(document.getElementById("root_legacy")!)
   root.render(<RootLegacy />)
+})
+
+// Register service workers
+registerSW(getBasename() + "/fetch-sw.js", () => {
+  navigator.serviceWorker.controller!.postMessage(JSON.stringify({ accessToken: getAccessToken() }))
+  navigator.serviceWorker.controller!.postMessage(
+    JSON.stringify({ allowedOrigins: [urlOrigin(import.meta.env.VITE_APP_GATEWAY_URL)] })
+  )
 })

@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useState } from "react"
 
 import { ReactComponent as Spinner } from "@/assets/animated/spinner.svg"
@@ -22,7 +23,7 @@ import VideoCommentsItem from "./VideoCommentsItem"
 import CommentForm from "@/components/video/CommentForm"
 import useClientsStore from "@/stores/clients"
 
-import type { IndexVideoComment } from "@etherna/api-js/clients"
+import type { IndexVideoComment } from "@etherna/sdk-js/clients"
 
 type VideoCommentsProps = {
   indexReference: string

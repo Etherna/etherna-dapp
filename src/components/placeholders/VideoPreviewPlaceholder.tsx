@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import { Skeleton } from "@/components/ui/display"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type VideoPreviewPlaceholderProps = {
   mini?: boolean
@@ -30,13 +31,13 @@ const VideoPreviewPlaceholder: React.FC<VideoPreviewPlaceholderProps> = ({
 }) => {
   return (
     <div
-      className={classNames("flex w-full", {
+      className={cn("flex w-full", {
         "flex-col": direction === "vertical",
         "flex-col sm:flex-row": direction === "horizontal",
       })}
     >
       <Skeleton
-        className={classNames({
+        className={cn({
           "w-full": direction === "vertical",
           "w-full sm:w-1/3": direction === "horizontal",
         })}
@@ -45,13 +46,13 @@ const VideoPreviewPlaceholder: React.FC<VideoPreviewPlaceholderProps> = ({
         <div className="w-full pb-[56.25%]" />
       </Skeleton>
       <div
-        className={classNames("items-top mt-2 flex flex-1", {
-          "sm:mt-0 sm:ml-2": direction === "horizontal",
+        className={cn("items-top mt-2 flex flex-1", {
+          "sm:ml-2 sm:mt-0": direction === "horizontal",
         })}
       >
         {!mini && (
           <Skeleton
-            className={classNames("h-8 w-8 shrink-0", {
+            className={cn("h-8 w-8 shrink-0", {
               "sm:hidden": direction === "horizontal",
             })}
             roundedFull
@@ -60,7 +61,7 @@ const VideoPreviewPlaceholder: React.FC<VideoPreviewPlaceholderProps> = ({
           </Skeleton>
         )}
         <div
-          className={classNames("mt-1 flex flex-grow flex-col", {
+          className={cn("mt-1 flex flex-grow flex-col", {
             "ml-2": !mini,
             "sm:space-y-2": direction === "horizontal",
           })}

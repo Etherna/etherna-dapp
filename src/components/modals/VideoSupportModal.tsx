@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useMemo, useState } from "react"
 
 import ResourcesSupportStatus from "@/components/common/ResourcesSupportStatus"
@@ -24,7 +25,7 @@ import useUserStore from "@/stores/user"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import type { VideoPinningStatus } from "@/hooks/useVideoPinning"
-import type { Video } from "@etherna/api-js"
+import type { Video } from "@etherna/sdk-js"
 
 type VideoSupportModalProps = {
   show: boolean

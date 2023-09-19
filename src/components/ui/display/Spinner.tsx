@@ -14,9 +14,10 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type SpinnerProps = {
   className?: string
@@ -33,7 +34,7 @@ const Spinner: React.FC<SpinnerProps> = ({ className, size, height, type = "spin
     case "spinner":
       return (
         <div
-          className={classNames("relative", className)}
+          className={cn("relative", className)}
           style={{
             width: size,
             height: size,
@@ -44,7 +45,7 @@ const Spinner: React.FC<SpinnerProps> = ({ className, size, height, type = "spin
             .map((_, i) => {
               return (
                 <div
-                  className={classNames(
+                  className={cn(
                     "absolute right-1/2 h-1/2 origin-bottom scale-95 transform animate-tick-fade",
                     "after:absolute after:inset-x-0 after:top-0 after:h-1/2 after:rounded-full after:bg-current"
                   )}
@@ -66,10 +67,7 @@ const Spinner: React.FC<SpinnerProps> = ({ className, size, height, type = "spin
     case "bouncing-line":
       return (
         <div
-          className={classNames(
-            "relative flex h-1 overflow-hidden rounded-sm bg-gray-500/20",
-            className
-          )}
+          className={cn("relative flex h-1 overflow-hidden rounded-sm bg-gray-500/20", className)}
           style={{ width: size, height }}
         >
           <span className="mx-auto w-1/2 animate-tick-bounce rounded-sm bg-current" />

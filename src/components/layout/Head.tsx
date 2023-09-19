@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import { createPortal } from "react-dom"
 
 import type React from "react"
@@ -23,7 +24,7 @@ type HeadProps = {
 }
 
 const Head: React.FC<HeadProps> = ({ children }) => {
-  return createPortal(children, document.head)
+  return createPortal(children, document.head) as React.ReactElement
 }
 
 export default Head

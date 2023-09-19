@@ -14,10 +14,12 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { BatchesHandler } from "@etherna/api-js/handlers"
-import { BatchUpdateType, useBatchesStore } from "@etherna/api-js/stores"
-import { getBatchPercentUtilization, getBatchSpace, parsePostageBatch } from "@etherna/api-js/utils"
+
+import React, { useCallback, useEffect, useRef, useState } from "react"
+import { BatchesHandler } from "@etherna/sdk-js/handlers"
+import { batchesStore, BatchUpdateType } from "@etherna/sdk-js/stores"
+import { getBatchPercentUtilization, getBatchSpace, parsePostageBatch } from "@etherna/sdk-js/utils"
+import { useStore } from "zustand"
 
 import { CogIcon } from "@heroicons/react/24/outline"
 import { CheckCircleIcon, InformationCircleIcon } from "@heroicons/react/24/solid"
@@ -30,28 +32,43 @@ import useErrorMessage from "@/hooks/useErrorMessage"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { convertBytes } from "@/utils/converters"
 import dayjs from "@/utils/dayjs"
 
-import type { GatewayBatch } from "@etherna/api-js/clients"
+import type { GatewayBatch } from "@etherna/sdk-js/clients"
+import type { BatchesState } from "@etherna/sdk-js/stores"
+
+const useBatchesStore = <U,>(selector: (state: BatchesState) => U) =>
+  useStore(batchesStore, selector)
 
 type PostageBatchListProps = {
+  page: number
+  perPage: number
+  total: number
   batches: GatewayBatch[]
+  isLoading?: boolean
   onBatchUpdate?(batch: GatewayBatch): void
+  onPageChange?(page: number, perPage?: number): void
 }
 
-const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpdate }) => {
+const PostageBatchList: React.FC<PostageBatchListProps> = ({
+  page,
+  perPage,
+  total,
+  batches,
+  isLoading,
+  onBatchUpdate,
+  onPageChange,
+}) => {
   const updatingBatches = useBatchesStore(state => state.updatingBatches)
   const addBatchUpdate = useBatchesStore(state => state.addBatchUpdate)
   const removeBatchUpdate = useBatchesStore(state => state.removeBatchUpdate)
+  const getBatchNumber = useUserStore(state => state.getBatchNumber)
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
-  const address = useUserStore(state => state.address)
   const gatewayClient = useClientsStore(state => state.gatewayClient)
   const beeClient = useClientsStore(state => state.beeClient)
   const gatewayType = useExtensionsStore(state => state.currentGatewayType)
-  const [page, setPage] = useState(1)
-  const [perPage, setPerPage] = useState(25)
   const [editingBatch, setEditingBatch] = useState<GatewayBatch>()
   const [showBatchEditor, setShowBatchEditor] = useState(false)
   const [editorDepth, setEditorDepth] = useState<number>()
@@ -63,7 +80,6 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
   const { showError } = useErrorMessage()
   const batchesManager = useRef(
     new BatchesHandler({
-      address: address!,
       beeClient,
       gatewayClient,
       gatewayType,
@@ -71,27 +87,9 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
     })
   )
 
-  const filteredBatches = useMemo(() => {
-    return batches.filter(batch => {
-      switch (filter) {
-        case "all":
-          return true
-        case "active":
-          return batch.batchTTL > 0
-        case "expiring":
-          return batch.batchTTL > 0 && dayjs.duration(batch.batchTTL, "second").asDays() <= 31
-        case "expired":
-          return batch.batchTTL === -1 && !batch.usable
-      }
-    })
-  }, [batches, filter])
-
-  const pageBatches = useMemo(() => {
-    return filteredBatches.slice((page - 1) * perPage, page * perPage)
-  }, [filteredBatches, perPage, page])
-
   useEffect(() => {
-    setPage(1)
+    onPageChange?.(1)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter])
 
   useEffect(() => {
@@ -194,6 +192,10 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
     return isExpired
   }, [])
 
+  const isBatchNotFound = useCallback((batch: GatewayBatch) => {
+    return !batch.exists && batch.depth === 0
+  }, [])
+
   return (
     <>
       <FormGroup>
@@ -212,18 +214,19 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
 
       <Table
         page={page}
-        total={filteredBatches.length}
+        total={total}
         itemsPerPage={perPage}
-        items={pageBatches}
+        items={batches}
+        isLoading={isLoading}
         columns={[
           {
             title: "Name",
             width: "1fr",
             render: batch => (
               <div className="">
-                <p className="leading-none">{getBatchName(batch, batches.indexOf(batch))}</p>
+                <p className="leading-none">{getBatchName(batch, getBatchNumber(batch.id))}</p>
                 <small
-                  className={classNames(
+                  className={cn(
                     "mt-1 inline-block w-40 overflow-hidden xl:w-auto",
                     "truncate text-xs leading-none text-gray-600 dark:text-gray-400"
                   )}
@@ -239,9 +242,10 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
             render: batch => {
               const expiration = getBatchExpiration(batch)
               const isExpired = isBatchExpired(batch)
+              const notFound = isBatchNotFound(batch)
               return (
-                <span className={classNames("text-sm", { "text-red-500": isExpired })}>
-                  {expiration}
+                <span className={cn("text-sm", { "text-red-500": isExpired })}>
+                  {notFound ? "not found" : expiration}
                 </span>
               )
             },
@@ -251,6 +255,9 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
             width: "240px",
             render: batch => {
               const { total, used } = getBatchSpace(batch)
+
+              if (isBatchNotFound(batch)) return null
+
               return (
                 <div className="flex items-center">
                   <Capacity
@@ -282,10 +289,7 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
             ),
           },
         ]}
-        onPageChange={(page, perPage) => {
-          setPage(page)
-          perPage && setPerPage(perPage)
-        }}
+        onPageChange={onPageChange}
       />
 
       <Modal
@@ -321,7 +325,7 @@ const PostageBatchList: React.FC<PostageBatchListProps> = ({ batches, onBatchUpd
             {status && (
               <div className="mt-3">
                 <small
-                  className={classNames(
+                  className={cn(
                     "flex items-center text-sm leading-none text-gray-900 dark:text-gray-100"
                   )}
                 >

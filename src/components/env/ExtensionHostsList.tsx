@@ -14,8 +14,9 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useState } from "react"
-import { urlHostname } from "@etherna/api-js/utils"
+import { urlHostname } from "@etherna/sdk-js/utils"
 
 import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline"
 import {
@@ -29,7 +30,7 @@ import GatewayClient from "@/classes/GatewayClient"
 import IndexClient from "@/classes/IndexClient"
 import { Menu } from "@/components/ui/actions"
 import { Spinner, Tooltip } from "@/components/ui/display"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 import type { ExtensionType } from "@/stores/ui"
 import type {
@@ -132,7 +133,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
           const isDisabled = editing && host.url !== selectedExtensionUrl
           return (
             <button
-              className={classNames(
+              className={cn(
                 "relative flex snap-start flex-col rounded-md px-3 py-3",
                 "border-2 text-sm font-medium",
                 "transition-colors duration-100",
@@ -150,7 +151,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
             >
               <div className="flex w-full items-center justify-between">
                 <span
-                  className={classNames(
+                  className={cn(
                     "flex items-center whitespace-nowrap font-semibold text-gray-500 dark:text-gray-400",
                     {
                       "text-gray-900 dark:text-gray-50": isActive,
@@ -161,7 +162,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
                   {isVerifiedOrigin(host.url) && (
                     <Tooltip text="Verified origin">
                       <span
-                        className={classNames("ml-0.5 inline-block", {
+                        className={cn("ml-0.5 inline-block", {
                           "text-primary-500 dark:text-primary-400": isActive,
                         })}
                       >
@@ -209,12 +210,9 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
                 </Menu>
               </div>
               <span
-                className={classNames(
-                  "flex flex-col items-start text-xs text-gray-400 dark:text-gray-50",
-                  {
-                    "text-gray-900 dark:text-gray-50": isActive,
-                  }
-                )}
+                className={cn("flex flex-col items-start text-xs text-gray-400 dark:text-gray-50", {
+                  "text-gray-900 dark:text-gray-50": isActive,
+                })}
               >
                 <span>{urlHostname(host.url)}</span>
                 {/* {"type" in host && (

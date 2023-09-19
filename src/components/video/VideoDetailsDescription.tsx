@@ -14,13 +14,14 @@
  *  limitations under the License.
  *
  */
+
 import React, { useEffect, useState } from "react"
 
 import { ChevronDownIcon } from "@heroicons/react/24/solid"
 
 import MarkdownPreview from "@/components/common/MarkdownPreview"
 import { Button } from "@/components/ui/actions"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type VideoDetailsDescriptionProps = {
   description?: string | null
@@ -52,9 +53,9 @@ const VideoDetailsDescription: React.FC<VideoDetailsDescriptionProps> = ({ descr
   }, [descriptionEl])
 
   return (
-    <div className={classNames("flex flex-col")}>
+    <div className={cn("flex flex-col")}>
       <div
-        className={classNames(
+        className={cn(
           "relative mt-4 text-gray-800 dark:text-gray-200",
           shouldCompress && {
             "after:absolute after:inset-x-0 after:bottom-0 after:block after:h-20": true,
@@ -87,7 +88,7 @@ const VideoDetailsDescription: React.FC<VideoDetailsDescriptionProps> = ({ descr
           prefix={
             <ChevronDownIcon
               width={20}
-              className={classNames({
+              className={cn({
                 "rotate-180": showMore,
               })}
               aria-hidden

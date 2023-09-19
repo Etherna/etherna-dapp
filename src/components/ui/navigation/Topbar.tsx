@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import omit from "lodash/omit"
@@ -21,7 +22,7 @@ import omit from "lodash/omit"
 import { ChevronDownIcon } from "@heroicons/react/24/outline"
 
 import { Popup } from "@/components/ui/display"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type TopbarProps = {
   children?: React.ReactNode
@@ -95,7 +96,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
   const Wrapper: React.FC<{ children: React.ReactNode }> = useMemo(() => {
     return ({ children }) => (
       <As
-        className={classNames(
+        className={cn(
           "items-center justify-items-center lg:justify-items-stretch",
           "h-8 cursor-pointer space-x-2 rounded-md md:h-9",
           "text-gray-800 transition-colors duration-300 dark:text-gray-200",
@@ -137,7 +138,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
     <Wrapper>
       {prefix && (
         <div
-          className={classNames({
+          className={cn({
             "mr-1": title || children,
           })}
         >
@@ -148,7 +149,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
       {children}
       {suffix && (
         <div
-          className={classNames({
+          className={cn({
             "ml-1": title || children,
           })}
         >
@@ -201,7 +202,7 @@ const TopbarGroup: React.FC<TopbarGroupProps> = ({
 }) => {
   return (
     <div
-      className={classNames(
+      className={cn(
         "flex items-center space-x-1 sm:space-x-2 md:space-x-4",
         {
           "-ml-3": leftCorrection,
@@ -225,7 +226,7 @@ const TopbarLogo: React.FC<TopbarLogoProps> = ({ className, logo, logoCompact, f
 
   return (
     <TopbarItem
-      className={classNames(
+      className={cn(
         {
           "md:hidden": !floating,
           "md:block": floating,
@@ -236,7 +237,7 @@ const TopbarLogo: React.FC<TopbarLogoProps> = ({ className, logo, logoCompact, f
       ignoreHoverState
     >
       <figure
-        className={classNames(
+        className={cn(
           "h-[26px] text-gray-900 dark:text-gray-100 lg:mr-4 [&_svg]:h-full",
           "hover:text-gray-900 dark:hover:text-gray-100"
         )}
@@ -251,9 +252,7 @@ const TopbarLogo: React.FC<TopbarLogoProps> = ({ className, logo, logoCompact, f
 
 const TopbarSpace: React.FC<TopbarSpaceProps> = ({ flexible, customWidth }) => {
   const height = flexible ? "auto" : customWidth ?? "1.5rem"
-  return (
-    <div className={classNames("topbar-space", { "flex-grow": flexible })} style={{ height }} />
-  )
+  return <div className={cn("topbar-space", { "flex-grow": flexible })} style={{ height }} />
 }
 
 const Topbar: React.FC<TopbarProps> & {
@@ -265,7 +264,7 @@ const Topbar: React.FC<TopbarProps> & {
 } = ({ children }) => {
   return (
     <nav
-      className={classNames(
+      className={cn(
         "fixed inset-x-0 top-0 z-10 flex h-14 items-center px-container py-2.5 lg:h-16",
         "md:fixed-sidebar:left-20 lg:fixed-sidebar:left-52 xl:fixed-sidebar:left-64",
         "floating-sidebar:left-0",

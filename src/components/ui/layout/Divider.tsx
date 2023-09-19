@@ -14,11 +14,12 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import { ReactComponent as DividerPattern } from "@/assets/backgrounds/divider.svg"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type DividerProps = {
   children?: React.ReactNode
@@ -29,11 +30,7 @@ export type DividerProps = {
 
 const Divider: React.FC<DividerProps> = ({ children, className, top, bottom }) => {
   return (
-    <div
-      className={classNames("flex flex-col py-6", className)}
-      aria-hidden
-      data-component="divider"
-    >
+    <div className={cn("flex flex-col py-6", className)} aria-hidden data-component="divider">
       {top && (
         <span className="h-12 w-full text-gray-400 dark:text-gray-700">
           <DividerPattern height={48} />

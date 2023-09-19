@@ -13,14 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { EthernaPinningHandler } from "@etherna/api-js/handlers"
+import { EthernaPinningHandler } from "@etherna/sdk-js/handlers"
 
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
 
-import type { Video } from "@etherna/api-js"
+import type { Video, VideoSource } from "@etherna/sdk-js"
 
 export type VideoPinningStatus = {
   pinningStatus: "full" | "partial" | "sources" | "none"
@@ -111,8 +112,8 @@ function parseReaderStatus(
       pinnedBy: status.pinnedBy ?? [],
     })),
     userPinnedResourses: userAddress
-      ? (handlerVideoResources.map(status => status.reference) ?? []).filter(reference =>
-          handler.getReferenceStatus(reference)?.pinnedBy?.includes(userAddress)
+      ? (handlerVideoResources.map(status => status.reference) ?? []).filter(
+          reference => handler.getReferenceStatus(reference)?.pinnedBy?.includes(userAddress)
         )
       : [],
     userUnPinnedResourses: userAddress
@@ -129,18 +130,23 @@ function getStatus(handler: EthernaPinningHandler, video: Video, byAddress?: str
     r => !byAddress || r.pinnedBy?.includes(byAddress)
   )
   const resourcesCount = resourcesStatus.length
-  const offeredResourcesCount = resourcesStatus.filter(status => status.isPinned).length
-  const allSourcesOffered =
-    video.sources.length > 0 &&
-    video.sources
-      .map(source => handler.getReferenceStatus(source.reference))
-      .every(status => status?.isPinned && (!byAddress || status.pinnedBy?.includes(byAddress)))
-  const fullyOffered = offeredResourcesCount === resourcesCount
+  const pinnedResourcesCount = resourcesStatus.filter(status => status.isPinned).length
+  const videoSourcesStatus = video.details?.sources.length
+    ? (
+        video.details.sources.filter(
+          source => source.type === "mp4" && source.reference
+        ) as (VideoSource & { type: "mp4" })[]
+      ).map(source => handler.getReferenceStatus(source.reference!))
+    : []
+  const allSourcesPinned = videoSourcesStatus.every(
+    status => status?.isPinned && (!byAddress || status.pinnedBy?.includes(byAddress))
+  )
+  const fullyPinned = pinnedResourcesCount === resourcesCount
 
-  return offeredResourcesCount > 0
-    ? fullyOffered
+  return pinnedResourcesCount > 0
+    ? fullyPinned
       ? "full"
-      : allSourcesOffered
+      : allSourcesPinned
       ? "sources"
       : "partial"
     : "none"

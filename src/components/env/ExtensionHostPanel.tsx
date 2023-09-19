@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback, useMemo, useState } from "react"
-import { isSafeURL } from "@etherna/api-js/utils"
 
-import { TrashIcon, PlusIcon } from "@heroicons/react/24/solid"
+import React, { useCallback, useMemo, useState } from "react"
+import { isSafeURL } from "@etherna/sdk-js/utils"
+
+import { PlusIcon, TrashIcon } from "@heroicons/react/24/solid"
 
 import ExtensionHostForm from "./ExtensionHostForm"
 import ExtensionHostsList from "./ExtensionHostsList"
@@ -162,9 +163,7 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
       return showError("URL Error", "Please insert a valid URL")
     }
 
-    const selectedHostIndex = extensionsList.findIndex(
-      host => host.url === editorTempExtension!.url
-    )
+    const selectedHostIndex = extensionsList.findIndex(host => host.url === editingUrl)
 
     for (const param of hostParams) {
       const key = param.key as keyof T

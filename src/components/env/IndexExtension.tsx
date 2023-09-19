@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import { ReactComponent as IndexIcon } from "@/assets/icons/navigation/index.svg"
@@ -33,7 +34,7 @@ const IndexExtension: React.FC<IndexExtensionProps> = ({
   compactMobile = false,
 }) => {
   const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
-  const isSignedIn = useUserStore(state => state.isSignedIn)
+  const isSignedInIndex = useUserStore(state => state.isSignedInIndex)
 
   const { showEditor } = useExtensionEditor()
 
@@ -41,7 +42,7 @@ const IndexExtension: React.FC<IndexExtensionProps> = ({
     <ExtensionHostStatus
       title="Index"
       host={indexUrl}
-      isConnected={isSignedIn}
+      isConnected={isSignedInIndex}
       iconSvg={!noIcon && <IndexIcon />}
       onClick={() => showEditor("index")}
       compactMobile={compactMobile}

@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
@@ -29,11 +30,11 @@ import useSwarmProfile from "@/hooks/useSwarmProfile"
 import routes from "@/routes"
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
 
-import type { EthAddress, IndexVideoComment } from "@etherna/api-js/clients"
+import type { EthAddress, IndexVideoComment } from "@etherna/sdk-js/clients"
 
 type VideoCommentsItemProps = {
   comment: IndexVideoComment
@@ -98,7 +99,7 @@ const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({
         <div className="flex items-center">
           <Link
             to={routes.channel(ownerAddress)}
-            className={classNames(
+            className={cn(
               "text-sm font-semibold",
               "text-gray-800 hover:text-black dark:text-gray-300 dark:hover:text-gray-100",
               {
@@ -138,7 +139,7 @@ const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({
           )}
         </div>
         <MarkdownPreview
-          className={classNames("mt-1 break-all", {
+          className={cn("mt-1 break-all", {
             "text-gray-400 dark:text-gray-500": comment.isFrozen,
           })}
           value={text}

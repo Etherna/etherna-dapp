@@ -13,9 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import react from "@vitejs/plugin-react"
+
 import fs from "fs"
 import { resolve } from "path"
+import react from "@vitejs/plugin-react"
 import { defineConfig, loadEnv } from "vite"
 import checker from "vite-plugin-checker"
 import { dynamicBase } from "vite-plugin-dynamic-base"
@@ -55,9 +56,13 @@ export default defineConfig(({ mode, command }) => {
         cert: fs.readFileSync("proxy/sslcert/cert.pem"),
       },
       port: 3000,
+      headers: {
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cross-Origin-Opener-Policy": "same-origin",
+      },
     },
     define: {
-      global: "window",
+      // global: "window",
     },
     resolve: {
       alias: [{ find: "@", replacement: resolve(__dirname, "src") }],

@@ -14,17 +14,19 @@
  *  limitations under the License.
  *
  */
+
 import React, { forwardRef } from "react"
 
 import VideoPreviewPlaceholder from "@/components/placeholders/VideoPreviewPlaceholder"
 import VideoPreview from "@/components/video/VideoPreview"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
-import type { VideoWithIndexes, VideoWithOffersStatus, VideoWithOwner } from "@/types/video"
+import type { WithIndexes, WithOffersStatus, WithOwner } from "@/types/video"
+import type { Video } from "@etherna/sdk-js"
 
 type VideoGridProps = {
   label?: string
-  videos?: (VideoWithOwner & VideoWithIndexes & VideoWithOffersStatus)[]
+  videos?: WithOwner<WithIndexes<WithOffersStatus<Video>>>[]
   isFetching?: boolean
   fetchingPreviewCount?: number
   mini?: boolean
@@ -42,13 +44,13 @@ const VideoGrid = forwardRef<HTMLDivElement, VideoGridProps>(
     return (
       <>
         {label && (
-          <div className="mt-4 mb-3">
+          <div className="mb-3 mt-4">
             <LabelTag>{label}</LabelTag>
           </div>
         )}
         <div
-          className={classNames(
-            "grid grid-flow-row-dense gap-4",
+          className={cn(
+            "mx-auto grid max-w-[2560px] grid-flow-row-dense gap-4",
             singleColumn
               ? {
                   "sm:gap-6": true,

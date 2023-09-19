@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback } from "react"
 
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline"
@@ -21,7 +22,7 @@ import { CurrencyDollarIcon } from "@heroicons/react/24/outline"
 import { Badge } from "@/components/ui/display"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
-import type { Video } from "@etherna/api-js"
+import type { Video } from "@etherna/sdk-js"
 
 type VideoOffersBadgeProps = {
   video: Video | null | undefined

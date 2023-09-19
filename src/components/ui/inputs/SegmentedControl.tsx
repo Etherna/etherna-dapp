@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback } from "react"
 import Tippy from "@tippyjs/react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type SegmentedControlProps = {
   entries: Array<{ value: string; label: string; tip?: string }>
@@ -43,7 +44,7 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
 
   return (
     <div
-      className={classNames(
+      className={cn(
         "relative flex w-full select-none rounded-lg font-semibold",
         "bg-gray-400/5 text-white dark:bg-gray-100/5"
       )}
@@ -69,7 +70,7 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
             visible={entry.tip ? undefined : false}
           >
             <label
-              className={classNames(
+              className={cn(
                 "m-1 flex-1 rounded-md px-2 py-1 text-center",
                 "text-gray-600 dark:text-gray-300",
                 {

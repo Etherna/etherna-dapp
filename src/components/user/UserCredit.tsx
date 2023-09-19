@@ -14,8 +14,9 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
-import { urlOrigin } from "@etherna/api-js/utils"
+import { urlOrigin } from "@etherna/sdk-js/utils"
 
 import UserCreditBadge from "./UserCreditBadge"
 import { Button } from "@/components/ui/actions"
@@ -58,7 +59,7 @@ const UserCredit: React.FC = () => {
               videos reprodution.
             </p>
           )}
-          <div className="mt-8 mb-4">
+          <div className="mb-4 mt-8">
             <Button
               as="a"
               to={urlOrigin(creditUrl)! + "/manage/deposit"}

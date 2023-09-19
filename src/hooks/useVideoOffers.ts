@@ -13,14 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import { useCallback, useEffect, useState } from "react"
-import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
-import { VideoDeserializer } from "@etherna/api-js/serializers"
+import { EthernaResourcesHandler } from "@etherna/sdk-js/handlers"
+import { VideoDeserializer } from "@etherna/sdk-js/serializers"
 
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
 
-import type { Video, VideoRaw } from "@etherna/api-js"
+import type { Video, VideoRaw, VideoSource } from "@etherna/sdk-js"
+import type { Reference } from "@etherna/sdk-js/clients"
 
 export type VideoOffersStatus = {
   offersStatus: "full" | "partial" | "sources" | "none"
@@ -70,9 +72,19 @@ export default function useVideoOffers(
     }
 
     if (isRawVideo) {
-      return new VideoDeserializer(beeClient.url).deserialize(JSON.stringify(video), {
+      const videoDeserializer = new VideoDeserializer(beeClient.url)
+      const preview = videoDeserializer.deserializePreview(JSON.stringify(video), {
         reference: opts!.reference!,
       })
+      const details = videoDeserializer.deserializeDetails(JSON.stringify(video), {
+        reference: opts!.reference!,
+      })
+
+      return {
+        reference: opts!.reference! as Reference,
+        preview,
+        details,
+      }
     }
 
     return video
@@ -130,8 +142,8 @@ export const parseReaderStatus = (
     userOffersStatus: getStatus(handler, video, userAddress ?? "0x0"),
     globalOffers: handlerVideoResources,
     userOfferedResourses: userAddress
-      ? (handlerVideoResources.map(status => status.reference) ?? []).filter(reference =>
-          handler.getReferenceStatus(reference)?.offeredBy.includes(userAddress)
+      ? (handlerVideoResources.map(status => status.reference) ?? []).filter(
+          reference => handler.getReferenceStatus(reference)?.offeredBy.includes(userAddress)
         )
       : [],
     userUnOfferedResourses: userAddress
@@ -149,11 +161,17 @@ function getStatus(handler: EthernaResourcesHandler, video: Video, byAddress?: s
   )
   const resourcesCount = resourcesStatus.length
   const offeredResourcesCount = resourcesStatus.filter(status => status.isOffered).length
-  const allSourcesOffered =
-    video.sources.length > 0 &&
-    video.sources
-      .map(source => handler.getReferenceStatus(source.reference))
-      .every(status => status?.isOffered && (!byAddress || status.offeredBy.includes(byAddress)))
+  const details = "details" in video ? video.details : null
+  const videoSourcesReferences: string[] = details?.sources.length
+    ? (
+        details.sources.filter(
+          source => source.type === "mp4" && source.reference
+        ) as (VideoSource & { type: "mp4" })[]
+      ).map(source => source.reference!)
+    : []
+  const allSourcesOffered = videoSourcesReferences
+    .map(reference => handler.getReferenceStatus(reference))
+    .every(status => status?.isOffered && (!byAddress || status.offeredBy.includes(byAddress)))
   const fullyOffered = offeredResourcesCount === resourcesCount
 
   return offeredResourcesCount > 0

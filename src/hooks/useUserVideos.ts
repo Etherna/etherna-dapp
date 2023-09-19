@@ -13,9 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import { useCallback, useEffect, useRef, useState } from "react"
-import { VideoDeserializer } from "@etherna/api-js/serializers"
-import { urlOrigin } from "@etherna/api-js/utils"
+import { VideoDeserializer } from "@etherna/sdk-js/serializers"
+import { urlOrigin } from "@etherna/sdk-js/utils"
 
 import useErrorMessage from "./useErrorMessage"
 import IndexClient from "@/classes/IndexClient"
@@ -28,7 +29,8 @@ import { wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
 
 import type { VideoWithIndexes } from "@/types/video"
-import type { Playlist, Profile, Video } from "@etherna/api-js"
+import type { Playlist, Profile } from "@etherna/sdk-js"
+import type { Reference } from "@etherna/sdk-js/clients"
 
 export type VideosSource =
   | {
@@ -108,18 +110,29 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
 
       const from = page * limit
       const to = from + limit
-      const references = playlist.videos?.slice(from, to) ?? []
+      const vids = playlist.videos?.slice(from, to) ?? []
       const videos = await Promise.all(
-        references.map(async playlistVid => {
+        vids.map(async playlistVid => {
           const reader = new SwarmVideo.Reader(playlistVid.reference, {
             beeClient,
           })
-          const video = await reader.download()
+          const video = await reader.download({ mode: "preview" })
           return video
         })
       )
-      const videosIndexes = videos.filter(Boolean).map<VideoWithIndexes>(video => ({
-        ...(video as Video),
+      const videosIndexes = videos.map<VideoWithIndexes>((video, i) => ({
+        reference: video?.reference ?? (vids[i]!.reference as Reference),
+        preview: video?.preview ?? {
+          reference: "",
+          title: vids[i]!.title,
+          createdAt: vids[i]!.addedAt,
+          duration: 0,
+          ownerAddress: address ?? "0x0",
+          thumbnail: null,
+          updatedAt: null,
+          v: "1.0",
+        },
+        details: video?.details,
         indexesStatus: {},
       }))
 
@@ -127,7 +140,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
 
       return videosIndexes
     },
-    [beeClient, getPlaylist]
+    [address, beeClient, getPlaylist]
   )
 
   const fetchIndexVideos = useCallback(
@@ -139,25 +152,37 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
       return resp.elements
         .filter(vid => vid.lastValidManifest)
         .map(indexVideo => {
-          const videoReader = new SwarmVideo.Reader(indexVideo.lastValidManifest!.hash, {
-            beeClient,
-          })
-          const rawVideo = JSON.stringify(videoReader.indexVideoToRaw(indexVideo))
-          const video = new VideoDeserializer(beeClient.url).deserialize(rawVideo, {
-            reference: indexVideo.lastValidManifest!.hash,
-          })
-          const videoIndexes: VideoWithIndexes = {
-            ...video,
-            indexesStatus: {
-              [currentIndexUrl]: {
-                indexReference: indexVideo.id,
-                totDownvotes: indexVideo.totDownvotes,
-                totUpvotes: indexVideo.totUpvotes,
+          try {
+            const videoReader = new SwarmVideo.Reader(indexVideo.lastValidManifest!.hash, {
+              beeClient,
+            })
+            const rawVideo = videoReader.indexVideoToRaw(indexVideo)
+            const deserializer = new VideoDeserializer(beeClient.url)
+            const preview = deserializer.deserializePreview(JSON.stringify(rawVideo.preview), {
+              reference: indexVideo.lastValidManifest!.hash,
+            })
+            const details = deserializer.deserializeDetails(JSON.stringify(rawVideo.details), {
+              reference: indexVideo.lastValidManifest!.hash,
+            })
+            const videoIndexes: VideoWithIndexes = {
+              reference: indexVideo.lastValidManifest!.hash as Reference,
+              preview,
+              details,
+              indexesStatus: {
+                [currentIndexUrl]: {
+                  indexReference: indexVideo.id,
+                  totDownvotes: indexVideo.totDownvotes,
+                  totUpvotes: indexVideo.totUpvotes,
+                  userVote: indexVideo.currentVoteValue,
+                },
               },
-            },
+            }
+            return videoIndexes
+          } catch (error) {
+            return null
           }
-          return videoIndexes
         })
+        .filter(Boolean) as VideoWithIndexes[]
     },
     [address, beeClient, currentIndexUrl]
   )
@@ -195,10 +220,19 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
     [opts.limit, fetchVideos, showError]
   )
 
+  const invalidate = useCallback(
+    async (page: number) => {
+      channelPlaylist.current = await playlistResover!()
+      await fetchPage(page)
+    },
+    [fetchPage]
+  )
+
   return {
     isFetching,
     total,
     videos,
     fetchPage,
+    invalidate,
   }
 }

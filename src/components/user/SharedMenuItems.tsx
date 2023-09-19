@@ -14,7 +14,9 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback } from "react"
+import { useAuth } from "react-oidc-context"
 
 // import { ReactComponent as IndexIcon } from "@/assets/icons/navigation/index.svg"
 import { MoonIcon, ShieldCheckIcon } from "@heroicons/react/24/solid"
@@ -27,12 +29,11 @@ import GatewayExtension from "@/components/env/GatewayExtension"
 import { Dropdown } from "@/components/ui/actions"
 import useDarkMode from "@/hooks/useDarkMode"
 import routes from "@/routes"
-import useUserStore from "@/stores/user"
 
 type SharedMenuItemsProps = {}
 
 const SharedMenuItems: React.FC<SharedMenuItemsProps> = () => {
-  const isSignedIn = useUserStore(state => state.isSignedIn)
+  const { isAuthenticated } = useAuth()
   const { darkMode, toggleDarkMode } = useDarkMode()
 
   const handleDarkModeChange = useCallback(() => {
@@ -41,7 +42,7 @@ const SharedMenuItems: React.FC<SharedMenuItemsProps> = () => {
 
   return (
     <>
-      {!isSignedIn && (
+      {!isAuthenticated && (
         <>
           <Dropdown.Group>
             <Dropdown.Item href={routes.alphaPasss} icon={<ShieldCheckIcon />}>

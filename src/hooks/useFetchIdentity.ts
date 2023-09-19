@@ -13,7 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import { useEffect } from "react"
+
+import { useEffect, useRef } from "react"
+import { useAuth } from "react-oidc-context"
 
 import BeeClient from "@/classes/BeeClient"
 import SwarmProfile from "@/classes/SwarmProfile"
@@ -22,18 +24,15 @@ import useExtensionsStore from "@/stores/extensions"
 import useSessionStore from "@/stores/session"
 import useUIStore from "@/stores/ui"
 import useUserStore from "@/stores/user"
-import { loginRedirect } from "@/utils/automations"
 import { signMessage } from "@/utils/ethereum"
 
-import type { EthAddress, SSOIdentity } from "@etherna/api-js/clients"
+import type { EthAddress, SSOIdentity } from "@etherna/sdk-js/clients"
 
-type AutoSigninOpts = {
-  forceSignin?: boolean
-  service?: "index" | "gateway"
-  isStatusPage?: boolean
-}
+type AutoSigninOpts = {}
 
 export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
+  const auth = useAuth()
+  const fetched = useRef(false)
   const gatewayType = useExtensionsStore(state => state.currentGatewayType)
   const indexClient = useClientsStore(state => state.indexClient)
   const gatewayClient = useClientsStore(state => state.gatewayClient)
@@ -49,20 +48,22 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
   const toggleProfileLoading = useUIStore(state => state.toggleProfileLoading)
 
   useEffect(() => {
-    // status page doesn't need current user info
-    if (opts.isStatusPage) return
+    if (fetched.current) return
+    if (!auth.isLoading) {
+      fetched.current = true
 
-    if (opts.forceSignin) {
-      // Launch login
-      loginRedirect(opts.service)
-    } else {
-      // fetch signed in user with profile info
+      indexClient.accessToken = auth.user?.access_token
+      gatewayClient.accessToken = auth.user?.access_token
+      ssoClient.accessToken = auth.user?.access_token
+
       fetchIdentity()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [auth.isLoading, auth.user])
 
   const fetchIdentity = async () => {
+    if (!auth.user) return
+
     toggleProfileLoading(true)
 
     const [identityResult, currentUserResult, hasCreditResult] = await Promise.allSettled([
@@ -76,10 +77,10 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
     const currentUser = currentUserResult.status === "fulfilled" && currentUserResult.value
     const hasCredit = hasCreditResult.status === "fulfilled" && hasCreditResult.value
 
-    const isSignedIn = !!currentUser
+    const isSignedInIndex = !!currentUser
     const isSignedInGateway = hasCredit
 
-    updateSignedIn(isSignedIn, isSignedInGateway)
+    updateSignedIn(isSignedInIndex, isSignedInGateway)
 
     if (currentUser && identity) {
       const address = identity.etherAddress as EthAddress

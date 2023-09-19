@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import { ArrowUpTrayIcon } from "@heroicons/react/24/outline"
-import { UserCircleIcon, PencilIcon, SparklesIcon } from "@heroicons/react/24/solid"
+import { PencilIcon, SparklesIcon, UserCircleIcon } from "@heroicons/react/24/solid"
 
 import { Dropdown } from "@/components/ui/actions"
 import { Avatar } from "@/components/ui/display"

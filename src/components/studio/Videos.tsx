@@ -14,23 +14,32 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Link, Navigate } from "react-router-dom"
-import { urlHostname } from "@etherna/api-js/utils"
+import { urlHostname } from "@etherna/sdk-js/utils"
 
-import { TrashIcon, PencilIcon, InformationCircleIcon } from "@heroicons/react/24/solid"
+import {
+  BoltIcon,
+  ExclamationCircleIcon,
+  InformationCircleIcon,
+  PencilIcon,
+  TrashIcon,
+} from "@heroicons/react/24/solid"
 import { ReactComponent as ThumbPlaceholder } from "@/assets/backgrounds/thumb-placeholder.svg"
 
 import VideoOffersStatus from "./other/VideoOffersStatus"
 import VideoPinningStatus from "./other/VideoPinningStatus"
 import VideoVisibilityStatus from "./other/VideoVisibilityStatus"
 import VideoDeleteModal from "./video-editor/VideoDeleteModal"
+import VideoMigrationModal from "./video-editor/VideoMigrationModal"
 import Image from "@/components/common/Image"
 import Time from "@/components/media/Time"
 import TableVideoPlaceholder from "@/components/placeholders/TableVideoPlaceholder"
 import { Button } from "@/components/ui/actions"
 import { Badge, Table, Tooltip } from "@/components/ui/display"
 import { Select } from "@/components/ui/inputs"
+import useBulkMigrations from "@/hooks/useBulkMigrations"
 import useUserVideos from "@/hooks/useUserVideos"
 import useUserVideosPinning from "@/hooks/useUserVideosPinning"
 import useUserVideosVisibility from "@/hooks/useUserVideosVisibility"
@@ -38,14 +47,14 @@ import useVideosResources from "@/hooks/useVideosResources"
 import routes from "@/routes"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
 import { encodedSvg } from "@/utils/svg"
 
 import type { VideosSource } from "@/hooks/useUserVideos"
 import type { VideoWithIndexes } from "@/types/video"
-import type { Profile } from "@etherna/api-js"
+import type { Profile } from "@etherna/sdk-js"
 
 const Videos: React.FC = () => {
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
@@ -68,6 +77,7 @@ const Videos: React.FC = () => {
   const [perPage, setPerPage] = useState(10)
   const [selectedVideos, setSelectedVideos] = useState<VideoWithIndexes[]>([])
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showMigrationModal, setShowMigrationModal] = useState(false)
 
   const currentSource = useMemo(() => {
     return sources.find(s => s.id === source)!
@@ -84,19 +94,55 @@ const Videos: React.FC = () => {
     }
   }, [address, profileInfo, defaultBatchId])
 
-  const { isFetching, videos, total, fetchPage } = useUserVideos({
+  const {
+    isFetching,
+    videos,
+    total,
+    fetchPage,
+    invalidate: invalidatePage,
+  } = useUserVideos({
     fetchSource: currentSource,
     sources,
     profile,
     limit: perPage,
   })
-  const { isFetchingVisibility, visibility, toggleVideosVisibility } = useUserVideosVisibility(
-    videos,
-    { sources }
-  )
-  const { isFetchingPinning, pinningStatus, togglePinning } = useUserVideosPinning(videos)
-  const { videosOffersStatus, isFetchingOffers, offerVideoResources, unofferVideoResources } =
-    useVideosResources(videos, { autoFetch: true })
+  const {
+    isFetchingVisibility,
+    visibility,
+    toggleVideosVisibility,
+    invalidate: invalidateVisibility,
+  } = useUserVideosVisibility(videos, { sources })
+  const {
+    isFetchingPinning,
+    pinningStatus,
+    togglePinning,
+    invalidate: invalidatePinning,
+  } = useUserVideosPinning(videos)
+  const {
+    videosOffersStatus,
+    isFetchingOffers,
+    offerVideoResources,
+    unofferVideoResources,
+    invalidate: invalidateOffers,
+  } = useVideosResources(videos, {
+    autoFetch: true,
+  })
+  const {
+    videosToMigrate,
+    migrationStatus,
+    isMigrating,
+    migrate,
+    reset: resetMigration,
+  } = useBulkMigrations(videos, {
+    sourceType: currentSource.type,
+    pinningStatus,
+    offersStatus: videosOffersStatus,
+    visibilityStatus: visibility,
+  })
+
+  const selectedVideosToMigrate = useMemo(() => {
+    return selectedVideos.filter(vid => videosToMigrate.includes(vid.reference))
+  }, [selectedVideos, videosToMigrate])
 
   useEffect(() => {
     setPage(1)
@@ -108,6 +154,13 @@ const Videos: React.FC = () => {
     fetchPage(page)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
+
+  const invalidate = useCallback(() => {
+    invalidatePage(page)
+    invalidateVisibility()
+    invalidatePinning()
+    invalidateOffers()
+  }, [invalidateOffers, invalidatePage, invalidatePinning, invalidateVisibility, page])
 
   const deleteSelectedVideos = useCallback(async () => {
     await toggleVideosVisibility(selectedVideos, currentSource, "unpublished")
@@ -152,21 +205,21 @@ const Videos: React.FC = () => {
             render: item => (
               <div className="flex items-center space-x-2">
                 <div
-                  className={classNames(
+                  className={cn(
                     "relative w-14 shrink-0 overflow-hidden md:w-20 lg:w-24 xl:w-28",
                     "bg-gray-300 after:block after:pb-[56.25%] dark:bg-gray-600"
                   )}
                 >
                   <Image
-                    sources={item.thumbnail?.sources}
+                    sources={item.preview.thumbnail?.sources}
                     placeholder="blur"
-                    blurredDataURL={item.thumbnail?.blurredBase64}
+                    blurredDataURL={item.preview.thumbnail?.blurredBase64}
                     fallbackSrc={encodedSvg(<ThumbPlaceholder />)}
                     layout="fill"
                   />
                   <span className="absolute bottom-0 right-0 rounded-sm bg-black leading-none">
                     <span className="px-1 text-2xs font-semibold text-white dark:text-white">
-                      <Time duration={item.duration} />
+                      <Time duration={item.preview.duration} />
                     </span>
                   </span>
                 </div>
@@ -179,7 +232,9 @@ const Videos: React.FC = () => {
                       ]?.indexReference || item.reference
                     )}
                   >
-                    <h3 className="text-sm font-bold leading-tight xl:text-base">{item.title}</h3>
+                    <h3 className="text-sm font-bold leading-tight xl:text-base">
+                      {item.preview.title}
+                    </h3>
                   </Link>
                   <div className="grid auto-cols-max grid-flow-col gap-2 lg:hidden">
                     <VideoVisibilityStatus
@@ -246,13 +301,13 @@ const Videos: React.FC = () => {
             title: "Date",
             hideOnMobile: true,
             render: item =>
-              item.createdAt ? (
+              item.preview.createdAt ? (
                 <span>
                   <span className="text-sm leading-none xl:hidden">
-                    {dayjs(item.createdAt).format("LL")}
+                    {dayjs(item.preview.createdAt).format("LL")}
                   </span>
                   <span className="hidden text-sm leading-none xl:inline">
-                    {dayjs(item.createdAt).format("LLL")}
+                    {dayjs(item.preview.createdAt).format("LLL")}
                   </span>
                 </span>
               ) : (
@@ -264,8 +319,8 @@ const Videos: React.FC = () => {
             width: "1%",
             render: item => (
               <div className="flex items-center">
-                {!item.batchId && (
-                  <Tooltip text="Missing postage batch">
+                {videosToMigrate.includes(item.reference) && (
+                  <Tooltip text="Upgrade required. Re-save this video to update to the latest version">
                     <div>
                       <Badge color="warning" rounded>
                         <InformationCircleIcon width={12} />
@@ -273,29 +328,54 @@ const Videos: React.FC = () => {
                     </div>
                   </Tooltip>
                 )}
-                <Button
-                  to={routes.studioVideoEdit(item.reference)}
-                  routeState={{
-                    video: item,
-                    hasOffers: videosOffersStatus
-                      ? videosOffersStatus[item.reference]?.offersStatus !== "none"
-                      : false,
-                  }}
-                  color="transparent"
-                  disabled={!canEdit}
-                >
-                  <PencilIcon width={16} aria-hidden />
-                </Button>
+                {item.preview.reference === "" && (
+                  <Tooltip text="Cannot download video metadata">
+                    <div>
+                      <Badge color="error" rounded>
+                        <ExclamationCircleIcon width={12} />
+                      </Badge>
+                    </div>
+                  </Tooltip>
+                )}
+                {item.preview.reference !== "" && (
+                  <Button
+                    to={routes.studioVideoEdit(item.reference)}
+                    routeState={{
+                      video: item,
+                      hasOffers: videosOffersStatus
+                        ? videosOffersStatus[item.reference]?.offersStatus !== "none"
+                        : false,
+                    }}
+                    color="transparent"
+                    disabled={!canEdit}
+                  >
+                    <PencilIcon width={16} aria-hidden />
+                  </Button>
+                )}
               </div>
             ),
           },
         ]}
         selectionActions={
-          <>
-            <Button color="inverted" aspect="text" large onClick={() => setShowDeleteModal(true)}>
+          <div className="flex items-center space-x-4 md:space-x-6">
+            {selectedVideosToMigrate.length > 0 && (
+              <Button
+                color="inverted"
+                aspect="text"
+                large
+                disabled={
+                  isMigrating || isFetchingVisibility || isFetchingPinning || isFetchingOffers
+                }
+                onClick={() => setShowMigrationModal(true)}
+              >
+                <BoltIcon className="mr-1" width={20} aria-hidden />
+                Upgrade
+              </Button>
+            )}
+            <Button color="error" aspect="text" large onClick={() => setShowDeleteModal(true)}>
               <TrashIcon width={20} aria-hidden />
             </Button>
-          </>
+          </div>
         }
         onSelectionChange={setSelectedVideos}
         onPageChange={(page, perPage) => {
@@ -306,11 +386,29 @@ const Videos: React.FC = () => {
       />
 
       <VideoDeleteModal
-        source={currentSource}
         show={showDeleteModal}
+        source={currentSource}
         videos={selectedVideos}
         deleteHandler={deleteSelectedVideos}
         onCancel={() => setShowDeleteModal(false)}
+      />
+      <VideoMigrationModal
+        show={showMigrationModal}
+        videos={selectedVideosToMigrate}
+        isMigrating={isMigrating}
+        migrationStatus={migrationStatus}
+        migrateHandler={signal => migrate(selectedVideosToMigrate, signal)}
+        onMigrationCompleted={() => {
+          setShowMigrationModal(false)
+          resetMigration()
+          setSelectedVideos([])
+          invalidate()
+        }}
+        onCancel={() => {
+          setShowMigrationModal(false)
+          resetMigration()
+          setSelectedVideos([])
+        }}
       />
     </>
   )

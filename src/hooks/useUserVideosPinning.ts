@@ -13,16 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import { useCallback, useEffect, useState } from "react"
-import { EthernaPinningHandler } from "@etherna/api-js/handlers"
-import { extractVideoReferences } from "@etherna/api-js/utils"
+import { EthernaPinningHandler } from "@etherna/sdk-js/handlers"
+import { extractVideoReferences } from "@etherna/sdk-js/utils"
 
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 
-import type { Video } from "@etherna/api-js"
-import type { Reference } from "@etherna/api-js/clients"
-import type { SwarmResourcePinStatus } from "@etherna/api-js/handlers/pinning/types"
+import type { Video } from "@etherna/sdk-js"
+import type { Reference } from "@etherna/sdk-js/clients"
+import type { SwarmResourcePinStatus } from "@etherna/sdk-js/handlers/pinning/types"
 
 export type VideoStatus = "public" | "processing" | "unindexed" | "error"
 
@@ -31,7 +32,7 @@ export default function useUserVideosPinning(videos: Video[] | undefined) {
   const gatewayClient = useClientsStore(state => state.gatewayClient)
   const gatewayClientType = useExtensionsStore(state => state.currentGatewayType)
   const [isFetchingPinning, setIsFetchingPinning] = useState(false)
-  const [pinningStatus, setPinningStatus] = useState<Record<string, SwarmResourcePinStatus>>({})
+  const [pinningStatus, setPinningStatus] = useState<Record<Reference, SwarmResourcePinStatus>>({})
 
   useEffect(() => {
     if (videos?.length && !isFetchingPinning) {
@@ -117,9 +118,16 @@ export default function useUserVideosPinning(videos: Video[] | undefined) {
     [beeClient, gatewayClient, gatewayClientType]
   )
 
+  const invalidate = useCallback(() => {
+    if (videos?.length) {
+      fetchVideosStatus()
+    }
+  }, [fetchVideosStatus, videos])
+
   return {
     isFetchingPinning,
     pinningStatus,
     togglePinning,
+    invalidate,
   }
 }

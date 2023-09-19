@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
-import React, { useCallback, Fragment, useEffect, useState } from "react"
+
+import React, { Fragment, useCallback, useEffect, useState } from "react"
 import { Dialog, Transition } from "@headlessui/react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type DrawerProps = {
   children: React.ReactNode
@@ -51,7 +52,7 @@ const Drawer: React.FC<DrawerProps> = ({
     <Transition.Root show={isShown} as={Fragment} afterLeave={onAnimationDone}>
       <Dialog
         as="div"
-        className={classNames("fixed inset-0 z-50", className)}
+        className={cn("fixed inset-0 z-50", className)}
         onClose={handleClose}
         data-component="drawer"
       >

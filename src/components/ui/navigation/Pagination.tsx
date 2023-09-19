@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useState } from "react"
 import { Listbox } from "@headlessui/react"
 
@@ -24,7 +25,7 @@ import {
 } from "@heroicons/react/24/outline"
 
 import { Button } from "@/components/ui/actions"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { clamp } from "@/utils/math"
 
 export type PaginationProps = {
@@ -73,7 +74,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <div
-      className={classNames(
+      className={cn(
         "flex flex-col items-center space-y-4 sm:flex-row sm:items-center sm:space-y-0",
         className
       )}
@@ -154,8 +155,8 @@ const PaginationSetting: React.FC<PaginationSettingProps> = ({
         <ChevronUpDownIcon className="ml-2 h-[1.2em]" aria-hidden />
       </Listbox.Button>
       <Listbox.Options
-        className={classNames(
-          "absolute top-0 left-1/2 max-h-[60vh] min-w-[4rem] -translate-y-full -translate-x-1/2 overflow-y-auto",
+        className={cn(
+          "absolute left-1/2 top-0 max-h-[60vh] min-w-[4rem] -translate-x-1/2 -translate-y-full overflow-y-auto",
           "-mt-2 flex flex-col items-center space-y-1 rounded px-3 py-2",
           "bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
           "shadow-md shadow-gray-100/20 dark:shadow-gray-800/20"
@@ -165,7 +166,7 @@ const PaginationSetting: React.FC<PaginationSettingProps> = ({
           <Listbox.Option className="w-full cursor-pointer" value={val} key={val}>
             {({ active, selected }) => (
               <span
-                className={classNames("block w-full rounded px-2 py-1 text-center font-semibold", {
+                className={cn("block w-full rounded px-2 py-1 text-center font-semibold", {
                   "text-primary-600 dark:text-primary-400": selected,
                   "bg-gray-400/20 dark:bg-gray-500/20": active,
                 })}

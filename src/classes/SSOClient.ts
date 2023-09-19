@@ -1,6 +1,6 @@
-import { EthernaSSOClient } from "@etherna/api-js/clients"
+import { EthernaSSOClient } from "@etherna/sdk-js/clients"
 
-import type { SSOClientOptions } from "@etherna/api-js/clients"
+import type { SSOClientOptions } from "@etherna/sdk-js/clients"
 
 export default class SSOClient extends EthernaSSOClient {
   constructor(host: string, opts?: Omit<SSOClientOptions, "url">) {

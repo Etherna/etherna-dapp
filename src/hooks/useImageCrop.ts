@@ -13,8 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import { useCallback } from "react"
-import { fileToDataURL } from "@etherna/api-js/utils"
+import { fileToDataURL } from "@etherna/sdk-js/utils"
 
 import useUIStore from "@/stores/ui"
 
@@ -79,7 +80,7 @@ const applyImageCropping = (src: string, cropData: Partial<Crop>) =>
     }
   })
 
-const getCroppedBlob = (image: CanvasImageSource, crop: Partial<Crop>, fileName = "image") => {
+const getCroppedBlob = (image: HTMLImageElement, crop: Partial<Crop>, fileName = "image") => {
   const canvas = document.createElement("canvas")
   canvas.width = crop.width || +image.width
   canvas.height = crop.height || +image.height

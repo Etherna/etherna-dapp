@@ -14,8 +14,9 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback } from "react"
-import { urlOrigin, urlPath } from "@etherna/api-js/utils"
+import { urlOrigin, urlPath } from "@etherna/sdk-js/utils"
 
 import { BookmarkIcon, HomeIcon, UserIcon } from "@heroicons/react/24/solid"
 import { ReactComponent as FramesIcon } from "@/assets/icons/navigation/frames.svg"

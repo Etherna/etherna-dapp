@@ -14,12 +14,14 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import Tippy from "@tippyjs/react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 import type { Placement } from "@popperjs/core"
+
 import "tippy.js/dist/tippy.css"
 
 export type TooltipProps = {
@@ -49,7 +51,7 @@ const Tooltip: React.FC<TooltipProps> = ({
 }) => {
   return (
     <Tippy
-      className={classNames(
+      className={cn(
         "w-auto max-w-xxs rounded-md px-3 py-2 font-normal normal-case leading-normal",
         "shadow-2xl shadow-gray-500/20 dark:shadow-white/40",
         {

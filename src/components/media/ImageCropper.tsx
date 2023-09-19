@@ -14,11 +14,12 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useRef, useState } from "react"
 import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop"
 
 import { Slider } from "@/components/ui/inputs"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 import type { Crop } from "react-image-crop"
 
@@ -159,7 +160,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
 
   return (
     <div
-      className={classNames("flex flex-col justify-center overflow-hidden", className, {
+      className={cn("flex flex-col justify-center overflow-hidden", className, {
         // prettier-ignore
         "[&_.ReactCrop\\_\\_crop-selection]:pointer-events-none": circular,
       })}

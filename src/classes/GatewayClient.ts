@@ -1,9 +1,9 @@
-import { EthernaGatewayClient } from "@etherna/api-js/clients"
-import { isSafeURL, urlOrigin } from "@etherna/api-js/utils"
+import { EthernaGatewayClient } from "@etherna/sdk-js/clients"
+import { isSafeURL, urlOrigin } from "@etherna/sdk-js/utils"
 
 import extensionsStore from "@/stores/extensions"
 
-import type { GatewayClientOptions } from "@etherna/api-js/clients"
+import type { GatewayClientOptions } from "@etherna/sdk-js/clients"
 
 export default class GatewayClient extends EthernaGatewayClient {
   constructor(host: string, opts?: Omit<GatewayClientOptions, "url">) {
@@ -22,7 +22,7 @@ export default class GatewayClient extends EthernaGatewayClient {
   static defaultUrl(): string {
     const currentGatewayUrl = extensionsStore.getState().currentGatewayUrl
     return urlOrigin(
-      isSafeURL(currentGatewayUrl) ? currentGatewayUrl : import.meta.env.VITE_APP_INDEX_URL
+      isSafeURL(currentGatewayUrl) ? currentGatewayUrl : import.meta.env.VITE_APP_GATEWAY_URL
     )!
   }
 

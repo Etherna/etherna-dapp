@@ -14,11 +14,12 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
 
 import { Spinner } from "@/components/ui/display"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type ButtonProps = {
   children?: React.ReactNode
@@ -104,7 +105,7 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <As
-      className={classNames(
+      className={cn(
         "relative inline-flex items-center justify-center whitespace-nowrap leading-4",
         "focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-gray-50 dark:ring-offset-gray-800",
         {
@@ -112,9 +113,9 @@ const Button: React.FC<ButtonProps> = ({
           "font-semibold": !small,
           "text-sm": !small && !large,
           "px-3.5 py-2.5": !small && !large && aspect !== "text",
-          "py-1 px-3": small && aspect !== "text",
+          "px-3 py-1": small && aspect !== "text",
           "text-base": large,
-          "py-3 px-8": large && aspect !== "text",
+          "px-8 py-3": large && aspect !== "text",
           border: aspect === "outline",
         },
         isRoundable
@@ -188,7 +189,7 @@ const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
     >
       <span
-        className={classNames("flex items-center justify-center", {
+        className={cn("flex items-center justify-center", {
           invisible: loading,
         })}
       >

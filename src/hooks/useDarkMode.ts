@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import useSettingsStore from "@/stores/settings"
 
 export default function useDarkMode() {

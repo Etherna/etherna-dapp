@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": ["vite/client", "react/next", "react-dom/next"],
     "allowJs": false,
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
@@ -26,7 +25,7 @@
     "typeRoots": ["src/typings"]
   },
   "include": ["*.ts", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx"],
-  "exclude": ["build", "node_modules", "public", "scripts"],
+  "exclude": ["build", "public", "scripts"],
   "references": [
     {
       "path": "./tsconfig.node.json"

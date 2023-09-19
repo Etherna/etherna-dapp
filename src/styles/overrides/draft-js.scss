@@ -20,12 +20,12 @@
 
 .public-DraftEditorPlaceholder-root {
   @apply pointer-events-none;
-  @apply absolute top-3 left-3;
+  @apply absolute left-3 top-3;
   @apply text-gray-400;
   @apply dark:text-gray-500;
 }
 
 .DraftEditor-editorContainer {
-  @apply py-3 px-3;
+  @apply px-3 py-3;
   @apply min-h-44;
 }

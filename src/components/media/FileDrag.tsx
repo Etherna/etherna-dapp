@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useRef, useState } from "react"
 
 import { ReactComponent as DragIcon } from "@/assets/icons/drag.svg"
@@ -21,16 +22,18 @@ import { ReactComponent as DragIcon } from "@/assets/icons/drag.svg"
 import { Button } from "@/components/ui/actions"
 import { Portal } from "@/components/ui/layout"
 import useErrorMessage from "@/hooks/useErrorMessage"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { isMimeCompatible } from "@/utils/mime-types"
 
 type FileDragProps = {
   id: string
   portal?: string
   label?: string | React.ReactNode
+  confirmChildren?: React.ReactNode | ((file: File) => React.ReactNode)
   mimeTypes?: string
-  disabled?: boolean
   uploadLimit?: number
+  showMimes?: boolean
+  disabled?: boolean
   canSelectFile?(file: File): Promise<boolean>
   onSelectFile(file: File): void
 }
@@ -53,8 +56,10 @@ const FileDragContent: React.FC<FileDragProps> = ({
   id,
   label,
   mimeTypes = "*",
-  disabled,
+  confirmChildren,
   uploadLimit,
+  showMimes,
+  disabled,
   canSelectFile,
   onSelectFile,
 }) => {
@@ -171,12 +176,23 @@ const FileDragContent: React.FC<FileDragProps> = ({
       {file ? (
         <div className="pr-3 focus:outline-none">
           <div className="flex items-start">
-            <p className="pr-6 text-gray-700 dark:text-gray-400">
-              <span>
-                You selected <span className="text-black dark:text-white">{file.name}</span>.{" "}
-              </span>
-              Are you sure you want to upload this file?
-            </p>
+            <div className="pr-6 text-gray-700 dark:text-gray-400">
+              {confirmChildren ? (
+                typeof confirmChildren === "function" ? (
+                  confirmChildren(file)
+                ) : (
+                  confirmChildren
+                )
+              ) : (
+                <p>
+                  <span>
+                    You selected <span className="text-black dark:text-white">{file.name}</span>.{" "}
+                  </span>
+                  Are you sure you want to upload this file?
+                </p>
+              )}
+            </div>
+
             <Button
               className="ml-auto p-0"
               aspect="text"
@@ -194,7 +210,7 @@ const FileDragContent: React.FC<FileDragProps> = ({
                 onClick={() => handleFileProcessing()}
                 disabled={disabled}
               >
-                Upload
+                Continue
               </Button>
             </div>
           </div>
@@ -220,7 +236,7 @@ const FileDragContent: React.FC<FileDragProps> = ({
             />
             <div className="flex flex-col items-center space-y-3">
               <DragIcon
-                className={classNames(
+                className={cn(
                   "h-12 w-12 text-gray-500 transition-colors duration-200 dark:text-gray-300",
                   {
                     "text-blue-400 dark:text-blue-300": isDragOver,
@@ -234,13 +250,9 @@ const FileDragContent: React.FC<FileDragProps> = ({
               </span>
 
               <div
-                className={classNames(
-                  "flex flex-col items-center",
-                  "transition-colors duration-200",
-                  {
-                    "opacity-20": isDragOver,
-                  }
-                )}
+                className={cn("flex flex-col items-center", "transition-colors duration-200", {
+                  "opacity-20": isDragOver,
+                })}
               >
                 <span className="font-medium text-gray-600 dark:text-gray-400">
                   <span className="text-sm font-normal">or</span>
@@ -250,18 +262,20 @@ const FileDragContent: React.FC<FileDragProps> = ({
                 </Button>
 
                 <small
-                  className={classNames(
+                  className={cn(
                     "mt-4 flex flex-col items-center",
                     "text-xs font-medium text-gray-600 dark:text-gray-400"
                   )}
                 >
                   {uploadLimit && <span>{uploadLimit}MB</span>}
-                  <span>
-                    {mimeTypes
-                      .split(",")
-                      .map(mime => "." + mime.replace(/^[a-z0-9]+\//, ""))
-                      .join(" ")}
-                  </span>
+                  {showMimes && (
+                    <span>
+                      {mimeTypes
+                        .split(",")
+                        .map(mime => "." + mime.replace(/^[a-z0-9]+\//, ""))
+                        .join(" ")}
+                    </span>
+                  )}
                 </small>
               </div>
             </div>

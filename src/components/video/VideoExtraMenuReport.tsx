@@ -14,12 +14,13 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useState } from "react"
 
 import { AlertPopup, Button, Modal } from "@/components/ui/actions"
 import useErrorMessage from "@/hooks/useErrorMessage"
 import useClientsStore from "@/stores/clients"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type VideoExtraMenuReportProps = {
   videoId: string
@@ -82,7 +83,7 @@ const VideoExtraMenuReport: React.FC<VideoExtraMenuReportProps> = ({
           {Object.keys(CODES).map(key => (
             <label className="flex items-center" htmlFor={key} key={key}>
               <input
-                className={classNames(
+                className={cn(
                   "mr-3 border-gray-400 bg-gray-200 dark:border-gray-600 dark:bg-gray-800",
                   "checked:bg-primary-500 checked:dark:bg-primary-600",
                   "checked:hover:bg-primary-500 checked:dark:hover:bg-primary-600",

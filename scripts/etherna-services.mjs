@@ -13,15 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import bcrypt from "bcryptjs"
-import chalk from "chalk"
+
 import { exec } from "child_process"
 import fs from "fs"
 import path from "path"
 import url from "url"
+import { hashSync } from "bcrypt-ts"
+import chalk from "chalk"
 import waitOn from "wait-on"
 
 import "./env.mjs"
+
 import proxyBeeOverHttps from "./bee-https-proxy.mjs"
 import { createPostageBatch } from "./create-postage-batch.mjs"
 import { loadSeed } from "./swarm-seed.mjs"
@@ -134,7 +136,7 @@ const execProject = projectPath => {
  * Run the bee instance
  */
 const execBee = () => {
-  const adminPassword = bcrypt.hashSync(process.env.BEE_ADMIN_PASSWORD)
+  const adminPassword = hashSync(process.env.BEE_ADMIN_PASSWORD)
   const testnetParams = [
     `--mainnet=false`,
     `--password='${process.env.BEE_PASSWORD}'`,
@@ -146,6 +148,7 @@ const execBee = () => {
     process.env.BEE_MODE === "dev" ? "dev" : "start",
     `--admin-password='${adminPassword}'`,
     `--restricted`,
+    `--cors-allowed-origins='*'`,
     ...(process.env.BEE_MODE === "testnet" ? testnetParams : []),
   ]
   const execCms = `bee ${params.join(" ")}`
@@ -154,6 +157,29 @@ const execBee = () => {
     proxyBeeOverHttps()
   }
   return childProcess
+}
+
+/**
+ * Start mongod service
+ */
+const execMongo = async () => {
+  const platform = process.platform
+  const arch = process.arch
+
+  let configPath = ""
+
+  if (platform === "darwin" && arch === "x64") {
+    configPath = "/usr/local/etc/mongod.conf"
+  } else if (platform === "darwin" && arch === "arm64") {
+    configPath = "/opt/homebrew/etc/mongod.conf"
+  } else if (platform === "linux") {
+    configPath = "/etc/mongod.conf"
+  } else if (platform === "win32") {
+    configPath = "C:\\Program Files\\MongoDB\\Server\\6.0\\bin\\mongod.cfg"
+  }
+
+  const execCms = `mongod --config ${configPath} --fork`
+  return exec(execCms, execCallback)
 }
 
 /**
@@ -232,6 +258,11 @@ const run = async () => {
   const shouldRunEthernaGateway = runAllServices || args.includes("--gateway")
   const shouldRunEthernaBeehive = runAllServices || args.includes("--beehive")
   const shouldRunProxy = runAllServices || args.includes("--proxy")
+  const shouldRunMongo = args.includes("--mongo")
+
+  if (shouldRunMongo) {
+    await execMongo()
+  }
 
   if (shouldRunBeeNode) {
     const beeProcess = execBee()

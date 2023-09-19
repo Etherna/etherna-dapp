@@ -14,11 +14,12 @@
  *  limitations under the License.
  *
  */
+
 import React, { useRef, useState } from "react"
 
 import { ChevronDownIcon } from "@heroicons/react/24/outline"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type MediaStatsProps = {
   stats: Array<{ label: string; value: string | JSX.Element }>
@@ -37,7 +38,7 @@ const MediaStats: React.FC<MediaStatsProps> = ({
   return (
     <div>
       <button
-        className={classNames(
+        className={cn(
           "flex items-center space-x-2 border-none bg-transparent px-0 py-0",
           "text-sm font-medium text-gray-500 active:text-gray-600 dark:text-gray-300 dark:active:text-gray-200",
           "transition-colors duration-200",
@@ -50,7 +51,7 @@ const MediaStats: React.FC<MediaStatsProps> = ({
         <span>{expanded ? hideText : showText}</span>
         <span className="transform transition-transform duration-200">
           <ChevronDownIcon
-            className={classNames("h-[1.1em]", {
+            className={cn("h-[1.1em]", {
               "rotate-180": expanded,
             })}
             strokeWidth={2.5}
@@ -65,7 +66,7 @@ const MediaStats: React.FC<MediaStatsProps> = ({
         ref={container}
       >
         <div className="py-1" />
-        <table className={classNames("w-full table-fixed transition")}>
+        <table className={cn("w-full table-fixed transition")}>
           <tbody>
             {stats.map((stat, i) => (
               <tr className="truncate text-left text-xs" key={i}>

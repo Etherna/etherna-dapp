@@ -1,4 +1,4 @@
-import create from "zustand"
+import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
@@ -8,17 +8,13 @@ import GatewayClient from "@/classes/GatewayClient"
 import IndexClient from "@/classes/IndexClient"
 import SSOClient from "@/classes/SSOClient"
 
+import type { Draft } from "immer"
+
 export type ClientsState = {
   beeClient: BeeClient
   indexClient: IndexClient
   gatewayClient: GatewayClient
   ssoClient: SSOClient
-}
-
-export type ClientsActions = {
-  updateIndexClient(client: IndexClient): void
-  updateGatewayClient(client: GatewayClient): void
-  updateBeeClient(client: BeeClient): void
 }
 
 const getInitialState = (): ClientsState => ({
@@ -28,26 +24,33 @@ const getInitialState = (): ClientsState => ({
   beeClient: new BeeClient(GatewayClient.defaultUrl()),
 })
 
-const useClientsStore = create<ClientsState & ClientsActions>()(
+type SetFunc = (setFunc: (state: Draft<ClientsState>) => void) => void
+type GetFunc = () => ClientsState
+
+const actions = (set: SetFunc, get: GetFunc) => ({
+  updateIndexClient: (client: IndexClient) => {
+    set(state => {
+      state.indexClient = client
+    })
+  },
+  updateGatewayClient: (client: GatewayClient) => {
+    set(state => {
+      state.gatewayClient = client
+    })
+  },
+  updateBeeClient: (client: BeeClient) => {
+    set(state => {
+      state.beeClient = client
+    })
+  },
+})
+
+const useClientsStore = create<ClientsState & ReturnType<typeof actions>>()(
   logger(
     devtools(
-      immer(set => ({
+      immer((set, get) => ({
         ...getInitialState(),
-        updateIndexClient: (client: IndexClient) => {
-          set(state => {
-            state.indexClient = client
-          })
-        },
-        updateGatewayClient: (client: GatewayClient) => {
-          set(state => {
-            state.gatewayClient = client
-          })
-        },
-        updateBeeClient: (client: BeeClient) => {
-          set(state => {
-            state.beeClient = client
-          })
-        },
+        ...actions(set, get),
       })),
       {
         name: "clients",

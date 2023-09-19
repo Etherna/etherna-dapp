@@ -14,12 +14,13 @@
  *  limitations under the License.
  *
  */
+
 import React, { Fragment, useCallback, useMemo } from "react"
 import { Listbox, Transition } from "@headlessui/react"
 
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/24/solid"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type Option = {
   label: string | JSX.Element
@@ -55,13 +56,14 @@ const Select: React.FC<SelectProps> = ({
   )
 
   return (
-    <Listbox value={value} onChange={handleChange} disabled={disabled} data-component="select">
+    <Listbox value={value} onChange={handleChange} disabled={disabled}>
       {({ open }) => (
         <>
           <div
-            className={classNames("relative", {
+            className={cn("relative", {
               "pointer-events-none cursor-default opacity-50": disabled,
             })}
+            data-component="select"
           >
             <div className="inline-flex items-center rounded-lg border border-gray-500 dark:border-gray-400">
               {label && (
@@ -69,7 +71,7 @@ const Select: React.FC<SelectProps> = ({
               )}
               {selectedRender && <div className="inline">{selectedRender}</div>}
               <Listbox.Button
-                className={classNames(
+                className={cn(
                   "relative inline-flex items-center rounded-lg bg-transparent px-2 py-1.5",
                   "text-sm font-medium text-gray-900 hover:bg-gray-500/5 dark:text-gray-100",
                   "transition-colors duration-200"
@@ -77,7 +79,7 @@ const Select: React.FC<SelectProps> = ({
               >
                 {!selectedRender && currentOption?.label}
                 <ChevronDownIcon
-                  className={classNames(
+                  className={cn(
                     "ml-3 h-5 w-6 pl-1",
                     "border-l border-gray-500 text-gray-900 dark:border-gray-400 dark:text-gray-100"
                   )}
@@ -94,7 +96,7 @@ const Select: React.FC<SelectProps> = ({
               leaveTo="opacity-0"
             >
               <Listbox.Options
-                className={classNames(
+                className={cn(
                   "absolute left-0 mt-2 w-72 origin-top-left rounded-lg shadow-lg",
                   "divide-y border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900",
                   "divide-gray-200 ring-1 ring-black/5 dark:divide-gray-700",
@@ -106,8 +108,8 @@ const Select: React.FC<SelectProps> = ({
                   <Listbox.Option
                     key={option.value}
                     className={({ active }) =>
-                      classNames(
-                        "relative cursor-default select-none p-4 text-sm text-gray-900 dark:text-gray-100",
+                      cn(
+                        "relative cursor-default select-none p-3 text-sm text-gray-900 dark:text-gray-100",
                         {
                           "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-50": active,
                         }
@@ -118,10 +120,13 @@ const Select: React.FC<SelectProps> = ({
                     {({ active, selected }) => (
                       <div className="flex flex-col">
                         <div
-                          className={classNames("flex justify-between text-base font-semibold", {
-                            "font-semibold": selected,
-                            "text-gray-900 dark:text-gray-50": active,
-                          })}
+                          className={cn(
+                            "flex justify-between text-base font-semibold leading-none",
+                            {
+                              "font-semibold": selected,
+                              "text-gray-900 dark:text-gray-50": active,
+                            }
+                          )}
                         >
                           <span>{option.label}</span>
 
@@ -129,7 +134,7 @@ const Select: React.FC<SelectProps> = ({
                         </div>
 
                         {option.description && (
-                          <p className="mt-0.5 text-gray-500 dark:text-gray-400">
+                          <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
                             {option.description}
                           </p>
                         )}

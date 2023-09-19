@@ -14,15 +14,16 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import { Link } from "react-router-dom"
 
 import { Avatar } from "@/components/ui/display"
 import routes from "@/routes"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import { shortenEthAddr } from "@/utils/ethereum"
 
-import type { Profile } from "@etherna/api-js"
+import type { Profile } from "@etherna/sdk-js"
 
 type VideoDetailsProfileProps = {
   owner?: Profile | null
@@ -30,13 +31,13 @@ type VideoDetailsProfileProps = {
 
 const VideoDetailsProfile: React.FC<VideoDetailsProfileProps> = ({ owner }) => {
   return (
-    <div className="mt-8 mb-4">
+    <div className="mb-4 mt-8">
       {owner?.address && (
         <Link to={routes.channel(owner.address)}>
           <div className="inline-flex items-center">
             <Avatar image={owner.avatar} address={owner.address} />
             <h3
-              className={classNames(
+              className={cn(
                 "mb-0 ml-2 text-base font-semibold",
                 "text-gray-800 dark:text-gray-300"
               )}

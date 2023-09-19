@@ -36,11 +36,11 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v2
         with:
-          node-version: 18
+          node-version: 20
           architecture: "x64"
 
       - name: Install dependencies
-        run: yarn install --ignore-optional
+        run: yarn install
 
       - name: Build app
         run: yarn build

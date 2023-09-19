@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 
 import VideoOffersBadge from "./VideoOffersBadge"
@@ -24,7 +25,7 @@ import VideoStatusBadge from "./VideoStatusBadge"
 import useVideoOffers from "@/hooks/useVideoOffers"
 import useVideoPinning from "@/hooks/useVideoPinning"
 import useExtensionsStore from "@/stores/extensions"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
@@ -59,15 +60,15 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
       </div>
 
       <div
-        className={classNames(
+        className={cn(
           "-mx-container flex max-w-[100vw] flex-wrap px-container py-container md:mx-0 md:rounded-md",
           "bg-gray-400/10 dark:bg-gray-700/50"
         )}
       >
         <div className="flex w-full items-center py-2 md:w-auto">
-          {video.createdAt && (
+          {video.preview.createdAt && (
             <span className="font-medium; text-gray-700 dark:text-gray-200">
-              {dayjs(video.createdAt).format("LLL")}
+              {dayjs(video.preview.createdAt).format("LLL")}
             </span>
           )}
         </div>
@@ -77,6 +78,7 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
             {indexStatus && (
               <VideoRating
                 videoId={indexStatus.indexReference}
+                userVote={indexStatus.userVote}
                 upvotes={indexStatus.totUpvotes}
                 downvotes={indexStatus.totDownvotes}
               />

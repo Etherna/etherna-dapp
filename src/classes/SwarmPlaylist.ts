@@ -1,4 +1,4 @@
-import { PlaylistReader, PlaylistWriter } from "@etherna/api-js/swarm"
+import { PlaylistReader, PlaylistWriter } from "@etherna/sdk-js/swarm"
 
 const SwarmPlaylist = {
   Reader: PlaylistReader,

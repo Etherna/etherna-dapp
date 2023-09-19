@@ -13,8 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import type { IncomingMessage } from "http"
-import type { Response } from "node-fetch"
 
 export default function fixResponseHeaders(
   req: IncomingMessage,
@@ -22,7 +22,7 @@ export default function fixResponseHeaders(
 ): Record<string, string | string[]> {
   const origin = (req.headers.referer || "https://localhost:3000").replace(/\/$/, "")
   const respHeaders: Record<string, string | string[]> = {
-    ...response?.headers.raw(),
+    ...Object.fromEntries(response?.headers.entries() ?? []),
     "access-control-allow-credentials": ["true"],
     "access-control-allow-origin": [origin],
     "access-control-allow-headers": [req.headers["access-control-request-headers"] || "*"],
@@ -33,3 +33,9 @@ export default function fixResponseHeaders(
 
   return respHeaders
 }
+new Response(null, {
+  status: 200,
+  headers: {
+    test: "ciao",
+  },
+})

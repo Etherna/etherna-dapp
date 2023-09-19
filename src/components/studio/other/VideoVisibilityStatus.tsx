@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react"
-import { urlHostname } from "@etherna/api-js/utils"
+import { urlHostname } from "@etherna/sdk-js/utils"
 import { Portal } from "@headlessui/react"
 
 import { ChevronDownIcon } from "@heroicons/react/24/solid"
@@ -91,7 +91,7 @@ const VideoVisibilityStatus: React.FC<VideoVisibilityStatusProps> = ({
           color="inverted"
           disabled={disabled}
         >
-          <div className="grid auto-cols-min grid-flow-row-dense gap-1 xl:grid-cols-2">
+          <div className="flex flex-wrap gap-1">
             {visibility.map(sourceVisibility => renderBadge(sourceVisibility, true))}
           </div>
         </Button>

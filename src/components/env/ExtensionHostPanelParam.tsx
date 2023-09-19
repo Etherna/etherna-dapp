@@ -14,13 +14,14 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import { RadioGroup } from "@headlessui/react"
 
 import { CheckCircleIcon } from "@heroicons/react/24/solid"
 
 import { TextInput } from "@/components/ui/inputs"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 import type { ExtensionParamConfig } from "./ExtensionHostPanel"
 
@@ -55,7 +56,7 @@ const ExtensionHostPanelParam: React.FC<ExtensionHostPanelParamProps> = ({
             <RadioGroup.Option value={config.value} key={config.value}>
               {({ active, checked }) => (
                 <div
-                  className={classNames(
+                  className={cn(
                     "flex items-start justify-between",
                     "border border-gray-400 dark:border-gray-400",
                     "cursor-pointer rounded-md px-2.5 py-2",

@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useMemo, useRef, useState } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import { Transition } from "@headlessui/react"
@@ -22,7 +23,7 @@ import omit from "lodash/omit"
 import { Bars2Icon } from "@heroicons/react/24/outline"
 import { ChevronDownIcon } from "@heroicons/react/24/solid"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type TabbarProps = {
   children?: React.ReactNode
@@ -96,7 +97,7 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
   const Wrapper: React.FC<{ children: React.ReactNode }> = useMemo(() => {
     return ({ children }) => (
       <As
-        className={classNames(
+        className={cn(
           "w-full flex-shrink-0 flex-grow",
           "flex items-center rounded-md px-4",
           "cursor-pointer transition-colors duration-300",
@@ -140,8 +141,8 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
     <Wrapper>
       {iconSvg && (
         <div
-          className={classNames("h-5 w-5 shrink-0", {
-            "mt-0 mr-5": isSubmenu,
+          className={cn("h-5 w-5 shrink-0", {
+            "mr-5 mt-0": isSubmenu,
           })}
         >
           {iconSvg}
@@ -150,7 +151,7 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
 
       {title && (
         <span
-          className={classNames("whitespace-nowrap font-semibold", {
+          className={cn("whitespace-nowrap font-semibold", {
             "text-2xs": !isSubmenu,
             "text-sm": isSubmenu,
           })}
@@ -158,7 +159,7 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
           {title}
           {isAccordion && (
             <ChevronDownIcon
-              className={classNames("ml-2 inline", { "rotate-180": accordionOpen })}
+              className={cn("ml-2 inline", { "rotate-180": accordionOpen })}
               height={16}
             />
           )}
@@ -167,7 +168,7 @@ const TabbarItem: React.FC<TabbarItemProps> = ({
 
       {children && (
         <div
-          className={classNames("flex w-full items-center", {
+          className={cn("flex w-full items-center", {
             "flex max-h-0 w-full flex-col items-stretch overflow-hidden pl-6": isAccordion,
             "transition-[max-height] duration-300 ease-in-out": isAccordion,
           })}
@@ -212,10 +213,10 @@ const TabbarMenuItem: React.FC<TabbarMenuItemProps> = props => {
         static
       >
         <div
-          className={classNames(
+          className={cn(
             "fixed inset-x-0 bottom-16 z-10 flex flex-col-reverse space-y-4 space-y-reverse p-4 mb-safe",
             "bg-gray-50/80 dark:bg-gray-900/80",
-            "border-t border-b border-gray-700/20 dark:border-gray-400/20",
+            "border-b border-t border-gray-700/20 dark:border-gray-400/20",
             "backdrop-blur-lg"
           )}
         >
@@ -232,7 +233,7 @@ const Tabbar: React.FC<TabbarProps> & {
 } = ({ children, className }) => {
   return (
     <nav
-      className={classNames(
+      className={cn(
         "fixed inset-x-0 bottom-0 z-10 flex md:hidden",
         "bg-white/80 backdrop-blur-xl backdrop-filter dark:bg-gray-900/80",
         "pb-safe",

@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
@@ -22,7 +23,7 @@ import { ExclamationCircleIcon } from "@heroicons/react/24/solid"
 import { Alert } from "@/components/ui/display"
 import VideoGrid from "@/components/video/VideoGrid"
 
-import type { VideoWithIndexes, VideoWithOffersStatus, VideoWithOwner } from "@/types/video"
+import type { VideoWithAll, VideoWithOwner } from "@/types/video"
 
 type ProfileVideosProps = {
   videos: VideoWithOwner[] | null | undefined
@@ -48,7 +49,7 @@ const ProfileVideos: React.FC<ProfileVideosProps> = ({
           ...video,
           indexesStatus: {},
           offers: undefined,
-        } as VideoWithIndexes & VideoWithOwner & VideoWithOffersStatus)
+        }) as VideoWithAll
     )
   }, [videos])
 

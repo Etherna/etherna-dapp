@@ -13,10 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import { useCallback, useEffect, useRef, useState } from "react"
-import { BatchesHandler } from "@etherna/api-js/handlers"
-import { BatchUpdateType } from "@etherna/api-js/stores"
-import { getBatchSpace, parseGatewayBatch, parsePostageBatch } from "@etherna/api-js/utils"
+import { BatchesHandler } from "@etherna/sdk-js/handlers"
+import { BatchUpdateType } from "@etherna/sdk-js/stores"
+import { getBatchSpace, parseGatewayBatch, parsePostageBatch } from "@etherna/sdk-js/utils"
 
 import useBeeAuthentication from "./useBeeAuthentication"
 import useConfirmation from "./useConfirmation"
@@ -28,7 +29,7 @@ import useUIStore from "@/stores/ui"
 import useUserStore from "@/stores/user"
 import dayjs from "@/utils/dayjs"
 
-import type { GatewayBatch, PostageBatch } from "@etherna/api-js/clients"
+import type { GatewayBatch, PostageBatch } from "@etherna/sdk-js/clients"
 
 type UseBatchesOpts = {
   autofetch?: boolean
@@ -73,11 +74,13 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
 
   useEffect(() => {
     if (!opts.autofetch) return
-    if (isLoadingProfile) return
+    if (isLoadingProfile || isFetchingBatch) return
+    // wait for the auth token
+    if (!gatewayClient.accessToken) return
 
     fetchBatch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts.autofetch, isLoadingProfile])
+  }, [opts.autofetch, isLoadingProfile, gatewayClient])
 
   const fetchDefaultBatch = useCallback(async () => {
     if (!defaultBatchId) return null
@@ -94,7 +97,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     } catch {
       return null
     }
-  }, [beeClient.stamps, defaultBatchId, gatewayClient.users, gatewayType, waitAuth])
+  }, [beeClient, gatewayClient, defaultBatchId, gatewayType, waitAuth])
 
   const fetchBestUsableBatch = useCallback(async (): Promise<GatewayBatch | null> => {
     try {
@@ -195,7 +198,6 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     setError(undefined)
 
     const batchesManager = new BatchesHandler({
-      address: address!,
       beeClient,
       gatewayClient,
       gatewayType,
@@ -234,7 +236,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
 
     batch && (await updateDefaultBatch(batch, true))
     return batch
-  }, [address, beeClient, gatewayClient, gatewayType, waitAuth, updateDefaultBatch])
+  }, [beeClient, gatewayClient, gatewayType, waitAuth, updateDefaultBatch])
 
   const fetchBatch = useCallback(async () => {
     setIsFetchingBatch(true)

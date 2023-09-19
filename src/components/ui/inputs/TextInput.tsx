@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useMemo } from "react"
 
 import { Label } from "@/components/ui/display"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type TextInputProps = {
   id?: string
@@ -67,7 +68,7 @@ const TextInputCharsLimit: React.FC<TextInputCharsLimitProps> = ({
 }) => {
   return (
     <span
-      className={classNames(
+      className={cn(
         "absolute bottom-2 right-2 text-xs font-medium",
         "text-gray-800/25 dark:text-gray-100/25",
         {
@@ -142,11 +143,11 @@ const TextInput: React.FC<TextInputProps> & { CharactersLimit: typeof TextInputC
   return (
     <>
       {label && <Label htmlFor={id}>{label}</Label>}
-      <div className={classNames("relative", className)}>
+      <div className={cn("relative", className)}>
         <Field
           id={id}
-          className={classNames(
-            "block w-full appearance-none rounded-lg border py-3 px-3 leading-tight",
+          className={cn(
+            "block w-full appearance-none rounded-lg border px-3 py-3 leading-tight",
             "border-gray-200 bg-gray-400/5 placeholder-gray-400",
             "dark:border-gray-800  dark:bg-gray-100/5 dark:placeholder-gray-500",
             "dark:focus:border-green-500 dark:focus:bg-transparent",

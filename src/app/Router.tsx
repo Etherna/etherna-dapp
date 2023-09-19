@@ -14,20 +14,20 @@
  *  limitations under the License.
  *
  */
+
 import React, { lazy, Suspense } from "react"
-import { Routes, Route, useLocation, Navigate } from "react-router-dom"
+import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 
 import AppLayoutRoute from "./route-wrappers/AppLayoutRoute"
 import AuthenticateRoute from "./route-wrappers/AuthenticateRoute"
-import BatchesRoute from "./route-wrappers/BatchesRoute"
 import DefaultBatchRoute from "./route-wrappers/DefaultBatchRoute"
+import IdentityRoute from "./route-wrappers/IdentityRoute"
 import SignedInRoute from "./route-wrappers/SignedInRoute"
 import StoreCleanupRoute from "./route-wrappers/StoreCleanupRoute"
 import StudioLayoutRoute from "./route-wrappers/StudioLayoutRoute"
 import VideoRoute from "./route-wrappers/VideoRoute"
 import { PageLoader } from "@/components/ui/layout"
 import AlphaPassRedirect from "@/pages/alpha-pass"
-import PartyRedirectPage from "@/pages/devcon-party"
 
 const AsyncHome = lazy(() => import("@/pages/home"))
 const AsyncFrames = lazy(() => import("@/pages/frames"))
@@ -127,6 +127,10 @@ const NotFound = () => (
   </Suspense>
 )
 
+const Callback = () => {
+  return null
+}
+
 const Router = () => {
   const location = useLocation() as any
   const backgroundLocation = location.state?.backgroundLocation
@@ -134,33 +138,34 @@ const Router = () => {
   return (
     <>
       <Routes location={backgroundLocation || location}>
-        <Route path="" element={<StoreCleanupRoute />}>
-          <Route path="" element={<AuthenticateRoute />}>
-            <Route path="" element={<AppLayoutRoute />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/request-alpha-pass" element={<AlphaPassRedirect />} />
-              <Route path="/frames" element={<Frames />} />
-              <Route path="/following" element={<Following />} />
-              <Route path="/playlists" element={<Playlists />} />
-              <Route path="/saved" element={<Saved />} />
-              <Route path="/channel/:id" element={<Channel />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/shortcuts" element={<Shortcuts />} />
-              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="" element={<IdentityRoute />}>
+          <Route path="" element={<StoreCleanupRoute />}>
+            <Route path="" element={<AuthenticateRoute />}>
+              <Route path="" element={<AppLayoutRoute />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/callback" element={<Callback />} />
+                <Route path="/request-alpha-pass" element={<AlphaPassRedirect />} />
+                <Route path="/frames" element={<Frames />} />
+                <Route path="/following" element={<Following />} />
+                <Route path="/playlists" element={<Playlists />} />
+                <Route path="/saved" element={<Saved />} />
+                <Route path="/channel/:id" element={<Channel />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/shortcuts" element={<Shortcuts />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
-              <Route path="/watch" element={<VideoRoute />}>
-                <Route path=":hash" element={<Watch />} />
-              </Route>
+                <Route path="/watch" element={<VideoRoute />}>
+                  <Route path=":hash" element={<Watch />} />
+                </Route>
 
-              <Route path="/studio" element={<SignedInRoute />}>
-                <Route path="" element={<StudioLayoutRoute />}>
-                  <Route path="" element={<Navigate replace to="/studio/videos" />} />
-                  <Route path="" element={<DefaultBatchRoute />}>
-                    <Route path="videos" element={<VideosList />} />
-                    <Route path="videos/:id" element={<VideoEdit />} />
-                    <Route path="channel" element={<ChannelEdit />} />
-                  </Route>
-                  <Route path="" element={<BatchesRoute />}>
+                <Route path="/studio" element={<SignedInRoute />}>
+                  <Route path="" element={<StudioLayoutRoute />}>
+                    <Route path="" element={<Navigate replace to="/studio/videos" />} />
+                    <Route path="" element={<DefaultBatchRoute />}>
+                      <Route path="videos" element={<VideosList />} />
+                      <Route path="videos/:id" element={<VideoEdit />} />
+                      <Route path="channel" element={<ChannelEdit />} />
+                    </Route>
                     <Route path="postages" element={<Postages />} />
                   </Route>
                 </Route>
@@ -172,8 +177,6 @@ const Router = () => {
         <Route path="/embed" element={<VideoRoute />}>
           <Route path=":hash" element={<Embed />} />
         </Route>
-
-        <Route path="/devconvi-party" element={<PartyRedirectPage />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

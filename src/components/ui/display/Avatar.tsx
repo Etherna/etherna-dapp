@@ -14,13 +14,14 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import Image from "@/components/common/Image"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import makeBlockies from "@/utils/make-blockies"
 
-import type { Image as SwarmImage } from "@etherna/api-js"
+import type { Image as SwarmImage } from "@etherna/sdk-js"
 
 export type AvatarProps = {
   image?: string | SwarmImage | null
@@ -36,7 +37,7 @@ const Avatar: React.FC<AvatarProps> = ({ image, address, size = 40, showBadge, c
 
   return (
     <div
-      className={classNames(
+      className={cn(
         "relative flex shrink-0",
         {
           "h-full w-full": size === "fill",
@@ -64,7 +65,7 @@ const Avatar: React.FC<AvatarProps> = ({ image, address, size = 40, showBadge, c
 
       {showBadge && (
         <span
-          className={classNames(
+          className={cn(
             "absolute right-0 top-0 h-3 w-3 rounded-full",
             "border border-white bg-blue-600 dark:border-gray-900"
           )}

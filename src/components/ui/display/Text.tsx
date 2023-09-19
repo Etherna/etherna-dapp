@@ -14,9 +14,10 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type TextSize =
   | "xs"
@@ -139,7 +140,7 @@ const Text: React.FC<TextProps> = ({
 
   return (
     <As
-      className={classNames(className, {
+      className={cn(className, {
         "text-xs": config.size === "xs",
         "md:text-xs": config.sizeMd === "xs",
         "lg:text-xs": config.sizeLg === "xs",

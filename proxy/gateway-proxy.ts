@@ -13,11 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import fs from "fs"
 import https from "https"
 import path from "path"
 
 import "./utils/env.js"
+
 import beeValidatorResponse from "./middlewares/bee-validator-response.js"
 import defaultProxyResponse from "./middlewares/default-proxy-response.js"
 import fixResponseHeaders from "./utils/fix-response-headers.js"

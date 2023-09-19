@@ -14,20 +14,32 @@
  *  limitations under the License.
  *
  */
-import React from "react"
+
+import React, { useEffect, useState } from "react"
 
 import { InformationCircleIcon } from "@heroicons/react/24/solid"
 
 import PostageBatchList from "./postages/PostageBatchList"
+import BatchLoading from "@/components/common/BatchLoading"
 import { Alert, Spinner } from "@/components/ui/display"
 import useBatches from "@/hooks/useBatches"
-import useExtensionsStore from "@/stores/extensions"
-import useUserStore from "@/stores/user"
 
 const Postages: React.FC = () => {
-  const gatewayType = useExtensionsStore(state => state.currentGatewayType)
-  const batches = useUserStore(state => state.batches)
-  const { updateBatch } = useBatches()
+  const [page, setPage] = useState(1)
+  const [perPage, setPerPage] = useState(20)
+  const { batches, total, isFetchingBatches, isCreatingFirstBatch, error, fetchPage, updateBatch } =
+    useBatches({
+      limit: perPage,
+    })
+
+  useEffect(() => {
+    fetchPage(page)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page])
+
+  if (error) {
+    return <BatchLoading type="fetching" message={error} error />
+  }
 
   return (
     <div className="flex max-w-screen-lg flex-col">
@@ -45,7 +57,7 @@ const Postages: React.FC = () => {
         </div>
       </Alert>
 
-      {(!batches || !batches.length) && (
+      {(!batches || !batches.length) && !isFetchingBatches && (
         <Alert title="No batches found" color="error">
           <p>
             {`You don't have any postage batch on this gateway, or
@@ -54,14 +66,27 @@ const Postages: React.FC = () => {
           <p>{`Without a postage batch you won't be able to upload any data.`}</p>
         </Alert>
       )}
-      {!batches?.length && gatewayType === "etherna-gateway" && (
+      {isCreatingFirstBatch && (
         <p className="mx-auto flex items-center font-medium text-gray-500 dark:text-gray-400">
           <Spinner size={20} className="mr-2" /> We are creating your first storage on Etherna.
           Refresh this page in a few seconds.
         </p>
       )}
       {batches && batches.length > 0 && (
-        <PostageBatchList batches={batches} onBatchUpdate={updateBatch} />
+        <div>
+          <PostageBatchList
+            page={page}
+            perPage={perPage}
+            total={total}
+            batches={batches}
+            isLoading={isFetchingBatches}
+            onBatchUpdate={updateBatch}
+            onPageChange={(page, perPage) => {
+              setPage(page)
+              perPage && setPerPage(perPage)
+            }}
+          />
+        </div>
       )}
     </div>
   )

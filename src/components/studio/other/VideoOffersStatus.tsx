@@ -7,7 +7,7 @@ import { Badge, Spinner } from "@/components/ui/display"
 import useExtensionsStore from "@/stores/extensions"
 
 import type { VideoOffersStatus as VideoOffers } from "@/hooks/useVideoOffers"
-import type { Video } from "@etherna/api-js"
+import type { Video } from "@etherna/sdk-js"
 
 type VideoOffersStatusProps = {
   className?: string

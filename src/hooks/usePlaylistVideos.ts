@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import useErrorMessage from "./useErrorMessage"
@@ -23,9 +24,11 @@ import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
 import { getResponseErrorMessage } from "@/utils/request"
 
-import type { VideoWithOwner } from "@/types/video"
-import type { Playlist, Profile, Video } from "@etherna/api-js"
-import type { EthAddress } from "@etherna/api-js/clients"
+import type { WithOwner } from "@/types/video"
+import type { Playlist, Profile, Video } from "@etherna/sdk-js"
+import type { EthAddress } from "@etherna/sdk-js/clients"
+
+type VideoWithOwner = WithOwner<Video>
 
 type PlaylistVideosOptions = {
   gridRef?: React.RefObject<HTMLElement>
@@ -76,7 +79,7 @@ export default function usePlaylistVideos(
           ({
             ...video,
             owner: opts.owner,
-          } as VideoWithOwner)
+          }) as VideoWithOwner
       )
     },
     [opts.owner]
@@ -133,7 +136,7 @@ export default function usePlaylistVideos(
               beeClient,
               indexClient,
             })
-            return reader.download()
+            return reader.download({ mode: "preview" })
           })
         )
 

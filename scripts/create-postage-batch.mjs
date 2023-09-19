@@ -1,7 +1,7 @@
+import { fileURLToPath } from "url"
 import axios from "axios"
 import chalk from "chalk"
 import prompt from "prompt"
-import { fileURLToPath } from "url"
 
 export async function createPostageBatch(amount = 10000000, depth = 20) {
   console.log(chalk.blueBright(`Authenticating...`))

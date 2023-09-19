@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import { useCallback, useEffect, useMemo, useState } from "react"
 
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
@@ -22,8 +23,8 @@ import useUserStore from "@/stores/user"
 import { deepCloneArray } from "@/utils/array"
 import { deepCloneObject } from "@/utils/object"
 
-import type { Playlist, PlaylistVideo, UserPlaylists, Video } from "@etherna/api-js"
-import type { EthAddress, Reference } from "@etherna/api-js/clients"
+import type { Playlist, PlaylistVideo, UserPlaylists, Video } from "@etherna/sdk-js"
+import type { EthAddress, Reference } from "@etherna/sdk-js/clients"
 
 interface UseUserPlaylistsOptions {
   fetchChannel?: boolean
@@ -113,6 +114,7 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
       setIsFetchingPlaylists(false)
 
       return {
+        userPlaylists: playlists,
         channelPlaylist: channelPlaylist,
         savedPlaylist: savedPlaylist,
         customPlaylists: customPlaylists,
@@ -221,10 +223,10 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
           video =>
             ({
               reference: video.reference,
-              title: video.title,
+              title: video.preview.title,
               addedAt: +new Date(),
               publishedAt: publishedAt,
-            } as PlaylistVideo)
+            }) as PlaylistVideo
         ),
         ...(newPlaylist.videos ?? []),
       ].filter((vid, i, self) => self.findIndex(vid2 => vid2.reference === vid.reference) === i)
@@ -250,10 +252,42 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
 
       newPlaylist.videos!.splice(index, 1, {
         reference: newVideo.reference,
-        title: newVideo.title || "",
+        title: newVideo.preview.title || "",
         addedAt: newPlaylist.videos![index].addedAt,
         publishedAt: newPlaylist.videos![index].publishedAt,
       })
+
+      newPlaylist.videos = [...(newPlaylist.videos ?? [])].filter(
+        (vid, i, self) => self.findIndex(vid2 => vid2.reference === vid.reference) === i
+      )
+
+      await updatePlaylistAndUser(initialPlaylist, newPlaylist)
+    },
+    [allPlaylists, updatePlaylistAndUser]
+  )
+
+  const updateVideosInPlaylist = useCallback(
+    async (playlistId: string, operations: { remove: Reference; add: Video }[]) => {
+      const initialPlaylist = allPlaylists.find(playlist => playlist.id === playlistId)
+
+      if (!initialPlaylist) throw new Error("Playlist not loaded")
+
+      const newPlaylist = deepCloneObject(initialPlaylist)
+
+      for (const operation of operations) {
+        const index = newPlaylist.videos?.findIndex(video => video.reference === operation.remove)
+        const vid: PlaylistVideo = {
+          reference: operation.add.reference,
+          title: operation.add.preview.title || "",
+          addedAt: newPlaylist.videos![index].addedAt,
+          publishedAt: newPlaylist.videos![index].publishedAt,
+        }
+        if (index >= 0) {
+          newPlaylist.videos!.splice(index, 1, vid)
+        } else {
+          newPlaylist.videos!.push(vid)
+        }
+      }
 
       newPlaylist.videos = [...(newPlaylist.videos ?? [])].filter(
         (vid, i, self) => self.findIndex(vid2 => vid2.reference === vid.reference) === i
@@ -281,6 +315,7 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
   )
 
   return {
+    userPlaylists,
     isFetchingPlaylists,
     channelPlaylist,
     savedPlaylist,
@@ -288,6 +323,7 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
     loadPlaylists,
     addVideosToPlaylist,
     updateVideoInPlaylist,
+    updateVideosInPlaylist,
     removeVideosFromPlaylist,
     playlistHasVideo,
   }

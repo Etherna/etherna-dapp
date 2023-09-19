@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, {
   forwardRef,
   useCallback,
@@ -25,7 +26,7 @@ import React, {
 import isHotkey from "is-hotkey"
 import { createEditor, Transforms } from "slate"
 import { withHistory } from "slate-history"
-import { withReact, Slate, Editable, useSlate } from "slate-react"
+import { Editable, Slate, useSlate, withReact } from "slate-react"
 
 import { ReactComponent as BoldIcon } from "@/assets/icons/rte/bold.svg"
 import { ReactComponent as CodeBlockIcon } from "@/assets/icons/rte/code-block.svg"
@@ -40,7 +41,7 @@ import SlateBlock from "./SlateBlock"
 import SlateLeaf from "./SlateLeaf"
 import { Label } from "@/components/ui/display"
 import { TextInput } from "@/components/ui/inputs"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import {
   decorate,
   HOTKEYS,
@@ -53,7 +54,7 @@ import {
   withExtra,
 } from "@/utils/slate"
 
-import type { SlateElement, TextLeaf, ElementBlockType, inferBlockTypeValue } from "@/utils/slate"
+import type { ElementBlockType, inferBlockTypeValue, SlateElement, TextLeaf } from "@/utils/slate"
 import type { Descendant } from "slate"
 
 type SlateMarkdownEditorProps = {
@@ -184,11 +185,11 @@ const SlateMarkdownEditor = forwardRef<SlateMarkdownEditorRef, SlateMarkdownEdit
     }))
 
     return (
-      <div className={classNames(className)}>
+      <div className={cn(className)}>
         {label && <Label htmlFor={id}>{label}</Label>}
 
         <div
-          className={classNames(
+          className={cn(
             "relative block w-full appearance-none rounded-lg border leading-tight",
             "min-h-24 px-3 py-3",
             "border-gray-200 bg-gray-400/5 text-gray-700",
@@ -203,9 +204,9 @@ const SlateMarkdownEditor = forwardRef<SlateMarkdownEditorRef, SlateMarkdownEdit
           onClick={onContainerClick}
           data-editor
         >
-          <Slate editor={editor} value={defaultValue} onChange={handleChange}>
+          <Slate editor={editor} initialValue={defaultValue} onChange={handleChange}>
             <div
-              className={classNames(
+              className={cn(
                 "mb-4 flex items-center space-x-4 border-b border-gray-200 pb-4 dark:border-gray-700",
                 toolbarClassName
               )}
@@ -242,7 +243,7 @@ const SlateMarkdownEditor = forwardRef<SlateMarkdownEditorRef, SlateMarkdownEdit
 
             <Editable
               id={id}
-              className="font-normal [&>*+*]:mt-2"
+              className="font-normal focus-visible:outline-none [&>*+*]:mt-2"
               renderElement={renderElement}
               renderLeaf={renderLeaf}
               decorate={decorate}
@@ -305,7 +306,7 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({ children, blockType, bloc
 
   return (
     <button
-      className={classNames("rounded p-1.5", {
+      className={cn("rounded p-1.5", {
         "bg-gray-400/20 dark:bg-gray-500/20": isActive,
       })}
       type="button"

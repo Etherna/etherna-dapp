@@ -15,13 +15,13 @@
  */
 
 /* eslint-disable no-restricted-imports */
+
 import fs from "fs"
 import path from "path"
 
 import parseJSON from "../utils/parse-json.js"
 
 import type { IncomingMessage } from "http"
-import type { Response } from "node-fetch"
 
 const SeedDataFolder = path.resolve(process.cwd() + "/../") + "/seed"
 
@@ -42,7 +42,7 @@ export default async function saveSeedData(
   // Check if request is seedable
   if (!shouldSaveSeedData) return
   if (req.method !== "POST") return
-  if (!/^\/(soc|bzz|feeds)/.test(req.url)) return
+  if (!/^\/(soc|bzz|bytes|chunks|feeds)/.test(req.url)) return
 
   // create folders
   if (!fs.existsSync(SeedDataFolder)) fs.mkdirSync(SeedDataFolder)

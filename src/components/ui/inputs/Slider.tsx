@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 import ReactSliderLib from "react-slider"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 import type { ReactSliderProps } from "react-slider"
 
@@ -27,14 +28,14 @@ const SimpleSlider: React.FC<ReactSliderProps> = props => {
   return (
     <ReactSlider
       {...props}
-      className={classNames("h-5 w-full", props.className)}
+      className={cn("h-5 w-full", props.className)}
       renderTrack={(_, { index, value }) => {
         const minFix = props.min ? +props.min : 0
         const maxFix = props.max ? +props.max : 100
         const valuePercent = ((value - minFix) / (maxFix - minFix)) * 100
         return (
           <div
-            className={classNames("mt-2 h-1 rounded-full bg-gray-300 dark:bg-gray-600", {
+            className={cn("mt-2 h-1 rounded-full bg-gray-300 dark:bg-gray-600", {
               "bg-gray-800 dark:bg-gray-50": index === 0,
             })}
             style={{

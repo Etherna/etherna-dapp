@@ -1,8 +1,10 @@
-import create from "zustand"
-import { persist, devtools } from "zustand/middleware"
+import { create } from "zustand"
+import { createJSONStorage, devtools, persist } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
+
+import type { Draft } from "immer"
 
 export type WalletType = "etherna" | "metamask"
 
@@ -19,13 +21,6 @@ export type SessionState = {
   isFreePostageBatchConsumed?: boolean
 }
 
-export type SessionActions = {
-  setApiVersion(url: string, version: string): void
-  setBytesPrice(bytesPrice: number | undefined): void
-  setCharaterLimits(comment: number, title: number, description: number): void
-  setFreePostageBatchConsumed(isFreePostageBatchConsumed: boolean): void
-}
-
 const getInitialState = (): SessionState => ({
   apiVersion: {
     [import.meta.env.VITE_APP_SSO_URL]: import.meta.env.VITE_APP_API_VERSION,
@@ -35,40 +30,47 @@ const getInitialState = (): SessionState => ({
   },
 })
 
-const useSessionStore = create<SessionState & SessionActions>()(
+type SetFunc = (setFunc: (state: Draft<SessionState>) => void) => void
+type GetFunc = () => SessionState
+
+const actions = (set: SetFunc, get: GetFunc) => ({
+  setApiVersion(url: string, version: string) {
+    set(state => {
+      state.apiVersion[url] = version
+    })
+  },
+  setBytesPrice(bytesPrice: number | undefined) {
+    set(state => {
+      state.bytesPrice = bytesPrice
+    })
+  },
+  setCharaterLimits(comment: number, title: number, description: number) {
+    set(state => {
+      state.characterLimits = {
+        comment,
+        title,
+        description,
+      }
+    })
+  },
+  setFreePostageBatchConsumed(isFreePostageBatchConsumed: boolean) {
+    set(state => {
+      state.isFreePostageBatchConsumed = isFreePostageBatchConsumed
+    })
+  },
+})
+
+const useSessionStore = create<SessionState & ReturnType<typeof actions>>()(
   logger(
     devtools(
       persist(
-        immer(set => ({
+        immer((set, get) => ({
           ...getInitialState(),
-          setApiVersion(url, version) {
-            set(state => {
-              state.apiVersion[url] = version
-            })
-          },
-          setBytesPrice(bytesPrice) {
-            set(state => {
-              state.bytesPrice = bytesPrice
-            })
-          },
-          setCharaterLimits(comment, title, description) {
-            set(state => {
-              state.characterLimits = {
-                comment,
-                title,
-                description,
-              }
-            })
-          },
-          setFreePostageBatchConsumed(isFreePostageBatchConsumed) {
-            set(state => {
-              state.isFreePostageBatchConsumed = isFreePostageBatchConsumed
-            })
-          },
+          ...actions(set, get),
         })),
         {
           name: "etherna:session",
-          getStorage: () => sessionStorage,
+          storage: createJSONStorage(() => sessionStorage),
         }
       ),
       {

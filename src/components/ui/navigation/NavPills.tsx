@@ -14,9 +14,10 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type NavPillsProps = {
   children?: React.ReactNode
@@ -34,13 +35,13 @@ export type NavPillsItemProps = {
 const NavPillsItem: React.FC<NavPillsItemProps> = ({ children, active, vertical, onClick }) => {
   return (
     <div
-      className={classNames(
+      className={cn(
         "cursor-pointer rounded-full px-4 py-1.5 text-center font-semibold transition duration-200",
         "mr-2 last:mr-0",
         {
           "text-gray-500 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-800": !active,
           "bg-primary-500/70 text-gray-50 dark:bg-primary-500/50 dark:text-gray-50": active,
-          "mr-0 mb-2 w-full last:mb-0": vertical,
+          "mb-2 mr-0 w-full last:mb-0": vertical,
         }
       )}
       onClick={onClick}
@@ -58,7 +59,7 @@ const NavPills: React.FC<NavPillsProps> & { Item: typeof NavPillsItem } = ({
 }) => {
   return (
     <nav
-      className={classNames(
+      className={cn(
         "flex",
         {
           "flex-col": vertical,

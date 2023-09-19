@@ -14,10 +14,11 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
 import { Label } from "@/components/ui/display"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 export type CheckboxProps = {
   id?: string
@@ -41,14 +42,15 @@ const Checkbox: React.FC<CheckboxProps> = ({
   return (
     <>
       {label && <Label htmlFor={id}>{label}</Label>}
-      <div className={classNames("relative", className)}>
+      <div className={cn("relative", className)}>
         <input
           id={id}
-          className={classNames(
+          className={cn(
             "rounded-md p-0.5",
             "bg-gray-200 text-primary-600 dark:bg-gray-700",
             "border-gray-300 dark:border-gray-600",
             "checked:border-primary-600 checked:bg-primary-600 checked:dark:border-primary-600 checked:dark:bg-primary-600",
+            "focus:ring-offset-gray-50 dark:focus:ring-offset-gray-900",
             inputClassName
           )}
           type="checkbox"

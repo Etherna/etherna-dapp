@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useMemo } from "react"
 import { Link } from "react-router-dom"
 
@@ -25,18 +26,20 @@ import Time from "@/components/media/Time"
 import { Avatar, Badge, Skeleton } from "@/components/ui/display"
 import routes from "@/routes"
 import useExtensionsStore from "@/stores/extensions"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
 import { shortenEthAddr } from "@/utils/ethereum"
+import { withAccessToken } from "@/utils/jwt"
 import { encodedSvg } from "@/utils/svg"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
-import type { VideoWithIndexes, VideoWithOwner } from "@/types/video"
+import type { WithIndexes, WithOwner } from "@/types/video"
+import type { Video } from "@etherna/sdk-js"
 
 const thumbnailPreview = encodedSvg(<ThumbPlaceholder />)
 
 type VideoPreviewProps = {
-  video: VideoWithIndexes & VideoWithOwner
+  video: WithIndexes<WithOwner<Video>>
   videoOffers?: VideoOffersStatus
   hideProfile?: boolean
   decentralizedLink?: boolean
@@ -53,10 +56,10 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
 
   const [ownerAddress, profileName] = useMemo(() => {
-    const ownerAddress = video.ownerAddress
+    const ownerAddress = video.preview.ownerAddress
     const profileName = video.owner?.name || shortenEthAddr(ownerAddress)
     return [ownerAddress, profileName]
-  }, [video.ownerAddress, video.owner])
+  }, [video.preview.ownerAddress, video.owner?.name])
 
   const profileAvatar = useMemo(() => {
     const profileAvatar = video.owner?.avatar
@@ -64,8 +67,8 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   }, [video.owner?.avatar])
 
   const videoThumbnail = useMemo(() => {
-    return video.thumbnail
-  }, [video.thumbnail])
+    return video.preview.thumbnail
+  }, [video.preview.thumbnail])
 
   const isLoadingProfile = useMemo(() => {
     return !video.owner
@@ -88,49 +91,55 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
 
   return (
     <div
-      className={classNames("flex w-full", {
+      className={cn("flex w-full", {
         "flex-col": direction === "vertical",
         "flex-col sm:flex-row": direction === "horizontal",
       })}
     >
       <Link
-        className={classNames("block", {
+        className={cn("block", {
           "w-full shrink-0 sm:w-1/3": direction === "horizontal",
         })}
         to={routes.watch(videoLink)}
         state={{ video, ownerProfile: video.owner, videoOffers }}
       >
-        <div className={classNames("relative flex w-full before:pb-[56.25%]", {})}>
+        <div
+          className={cn("relative flex w-full overflow-hidden rounded-sm before:pb-[56.25%]", {})}
+        >
           <Image
             className="bg-gray-200 dark:bg-gray-700"
-            sources={videoThumbnail?.sources}
+            sources={
+              videoThumbnail?.sources
+                ? videoThumbnail.sources.map(s => ({ ...s, url: withAccessToken(s.url) }))
+                : undefined
+            }
             placeholder="blur"
             blurredDataURL={videoThumbnail?.blurredBase64}
             layout="fill"
             fallbackSrc={thumbnailPreview}
           />
-          {video.duration && video.duration > 0 && (
+          {video.preview.duration && video.preview.duration > 0 && (
             <div
-              className={classNames(
-                "absolute right-0 bottom-0 left-auto top-auto m-2 px-1.5 py-1",
+              className={cn(
+                "absolute bottom-0 left-auto right-0 top-auto m-2 px-1.5 py-1",
                 "rounded-sm text-2xs font-semibold leading-none",
                 "bg-gray-900 text-gray-100 sm:py-0.5 sm:text-xs"
               )}
             >
-              <Time duration={video.duration} />
+              <Time duration={video.preview.duration} />
             </div>
           )}
         </div>
       </Link>
       <div
-        className={classNames("flex space-x-2", {
+        className={cn("flex space-x-2", {
           "mt-2": direction === "vertical",
-          "mt-2 sm:mt-0 sm:ml-2 sm:flex-1": direction === "horizontal",
+          "mt-2 sm:ml-2 sm:mt-0 sm:flex-1": direction === "horizontal",
         })}
       >
         {!hideProfile && profileLink && (
           <div
-            className={classNames({
+            className={cn({
               "sm:hidden": direction === "horizontal",
             })}
           >
@@ -142,7 +151,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
           </div>
         )}
         <div
-          className={classNames("flex flex-grow flex-col overflow-hidden", {
+          className={cn("flex flex-grow flex-col overflow-hidden", {
             "sm:space-y-2": direction === "horizontal",
           })}
         >
@@ -151,14 +160,14 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
             state={{ video, ownerProfile: video.owner, videoOffers }}
           >
             <h4
-              className={classNames(
+              className={cn(
                 "flex-grow text-base font-semibold leading-tight",
                 "text-gray-900 dark:text-gray-100",
-                "max-w-full overflow-hidden text-ellipsis line-clamp-2"
+                "line-clamp-2 max-w-full overflow-hidden text-ellipsis"
               )}
-              title={video.title}
+              title={video.preview.title}
             >
-              {video.title || "???"}
+              {video.preview.title || "???"}
             </h4>
           </Link>
           {!hideProfile && profileLink && (
@@ -173,7 +182,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
                 )}
                 <Skeleton show={isLoadingProfile}>
                   <h5
-                    className={classNames(
+                    className={cn(
                       "max-w-full flex-grow overflow-hidden text-ellipsis text-sm font-semibold",
                       "text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300",
                       "transition-colors duration-200"
@@ -185,12 +194,12 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
               </div>
             </Link>
           )}
-          {video.createdAt && (
+          {video.preview.createdAt && (
             <div className="text-xs text-gray-600 dark:text-gray-500">
-              {dayjs.duration(dayjs(video.createdAt).diff(dayjs())).humanize(true)}
+              {dayjs.duration(dayjs(video.preview.createdAt).diff(dayjs())).humanize(true)}
             </div>
           )}
-          <div className={classNames("mt-2 grid auto-cols-max grid-flow-col gap-3 empty:mt-0")}>
+          <div className={cn("mt-2 grid auto-cols-max grid-flow-col gap-3 empty:mt-0")}>
             {isVideoOffered && (
               <Badge prefix={<CreditIcon width={16} aria-hidden />} color="primary" small>
                 Free to watch

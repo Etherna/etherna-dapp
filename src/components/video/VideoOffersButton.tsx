@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useState } from "react"
 
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline"
@@ -23,7 +24,7 @@ import VideoSupportModal from "@/components/modals/VideoSupportModal"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import type { VideoPinningStatus } from "@/hooks/useVideoPinning"
-import type { Video } from "@etherna/api-js"
+import type { Video } from "@etherna/sdk-js"
 
 type VideoOffersButtonProps = {
   video: Video | null | undefined

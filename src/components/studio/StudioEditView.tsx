@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { useCallback, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 
@@ -21,7 +22,7 @@ import { ArrowSmallLeftIcon } from "@heroicons/react/24/solid"
 
 import { Button } from "@/components/ui/actions"
 import useMounted from "@/hooks/useMounted"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 type StudioEditViewProps = {
   children?: React.ReactNode
@@ -75,7 +76,7 @@ const StudioEditView: React.FC<StudioEditViewProps> = ({
         {backTo && (
           <Link
             to={backTo}
-            className={classNames(
+            className={cn(
               "mr-3 flex h-8 w-8 rounded-full p-1",
               "bg-gray-200 text-gray-700 hover:text-inherit dark:bg-gray-700 dark:text-gray-100"
             )}

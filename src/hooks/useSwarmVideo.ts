@@ -13,8 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import { useCallback, useEffect, useState } from "react"
-import { VideoDeserializer } from "@etherna/api-js/serializers"
+import { VideoDeserializer } from "@etherna/sdk-js/serializers"
 
 import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
@@ -22,7 +23,7 @@ import useExtensionsStore from "@/stores/extensions"
 import { nullablePromise } from "@/utils/promise"
 
 import type { VideoWithIndexes } from "@/types/video"
-import type { IndexVideo } from "@etherna/api-js/clients"
+import type { IndexVideo, Reference } from "@etherna/sdk-js/clients"
 
 type SwarmVideoOptions = {
   reference: string
@@ -57,46 +58,50 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
         indexClient,
       })
 
-      let [video, indexVideo] = await Promise.all([
-        videoReader.download() as Promise<VideoWithIndexes>,
+      const mode = video?.preview ? "details" : "full"
+      let [newVideo, indexVideo] = await Promise.all([
+        videoReader.download({ mode, previewData: video?.preview }) as Promise<VideoWithIndexes>,
         isSwarmReference
           ? nullablePromise(indexClient.videos.fetchVideoFromHash(reference))
           : Promise.resolve(null),
       ])
 
-      if (!video && !indexVideo?.lastValidManifest?.sources.length) {
+      if (!newVideo && !indexVideo?.lastValidManifest?.sources.length) {
         throw new Error("Video not found")
       }
 
-      if (!video && indexVideo?.lastValidManifest?.sources.length) {
-        const videoParsed = new VideoDeserializer(beeClient.url).deserialize(
-          JSON.stringify({
-            ownerAddress: indexVideo.ownerAddress,
-            title: indexVideo.lastValidManifest.title,
-            description: indexVideo.lastValidManifest.description,
-            thumbnail: indexVideo.lastValidManifest.thumbnail,
-            batchId: indexVideo.lastValidManifest.batchId ?? null,
-            duration: indexVideo.lastValidManifest.duration,
-            originalQuality: indexVideo.lastValidManifest.originalQuality,
-            sources: indexVideo.lastValidManifest.sources,
-            createdAt: new Date(indexVideo.creationDateTime).getTime(),
-            updatedAt: indexVideo.lastValidManifest.updatedAt ?? null,
-          }),
-          {
-            reference: indexVideo.lastValidManifest.hash,
-          }
-        )
-        video = {
-          ...videoParsed,
+      if (!newVideo && indexVideo?.lastValidManifest?.sources.length) {
+        const deserializer = new VideoDeserializer(beeClient.url)
+        const rawVideo = JSON.stringify({
+          ownerAddress: indexVideo.ownerAddress,
+          title: indexVideo.lastValidManifest.title,
+          description: indexVideo.lastValidManifest.description,
+          thumbnail: indexVideo.lastValidManifest.thumbnail,
+          batchId: indexVideo.lastValidManifest.batchId ?? null,
+          duration: indexVideo.lastValidManifest.duration,
+          sources: indexVideo.lastValidManifest.sources,
+          createdAt: new Date(indexVideo.creationDateTime).getTime(),
+          updatedAt: indexVideo.lastValidManifest.updatedAt ?? null,
+        })
+        const preview = deserializer.deserializePreview(rawVideo, {
+          reference: indexVideo.lastValidManifest.hash,
+        })
+        const details = deserializer.deserializeDetails(rawVideo, {
+          reference: indexVideo.lastValidManifest.hash,
+        })
+        newVideo = {
+          reference: indexVideo.lastValidManifest.hash as Reference,
+          preview,
+          details,
           indexesStatus: {},
         }
       }
 
-      if (!video) {
+      if (!newVideo) {
         throw new Error("Video not found")
       }
 
-      video.indexesStatus = {}
+      newVideo.indexesStatus = {}
 
       indexVideo =
         indexVideo ??
@@ -105,21 +110,22 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
           : null)
 
       if (indexVideo) {
-        video.indexesStatus[indexUrl] = {
+        newVideo.indexesStatus[indexUrl] = {
           indexReference: indexVideo.id,
           totDownvotes: indexVideo.totDownvotes,
           totUpvotes: indexVideo.totUpvotes,
+          userVote: indexVideo.currentVoteValue,
         }
       }
 
-      setVideo(video)
+      setVideo(newVideo)
     } catch (error) {
       console.error(error)
       setNotFound(true)
     } finally {
       setIsloading(false)
     }
-  }, [beeClient, indexClient, indexUrl, reference])
+  }, [beeClient, indexClient, indexUrl, reference, video?.preview])
 
   return {
     video,

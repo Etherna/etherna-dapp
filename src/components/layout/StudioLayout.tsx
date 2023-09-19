@@ -14,9 +14,10 @@
  *  limitations under the License.
  *
  */
+
 import React from "react"
 
-import { SparklesIcon, UserCircleIcon, FilmIcon, BanknotesIcon } from "@heroicons/react/24/solid"
+import { BanknotesIcon, FilmIcon, SparklesIcon, UserCircleIcon } from "@heroicons/react/24/solid"
 
 import SEO from "./SEO"
 import { Text } from "@/components/ui/display"
@@ -37,7 +38,7 @@ const StudioLayout: React.FC<StudioLayoutProps> = ({ children }) => {
         <SparklesIcon className="mr-2 h-[1em]" aria-hidden /> Creator Studio
       </Text>
 
-      <div className="flex flex-col space-y-4 lg:flex-row lg:space-y-0 lg:space-x-6 xl:space-x-14">
+      <div className="flex flex-col space-y-4 lg:flex-row lg:space-x-6 lg:space-y-0 xl:space-x-14">
         <DropdownSidebar className="lg:sticky lg:top-20 lg:self-start">
           <Sidebar.Item
             to={routes.studioVideos}

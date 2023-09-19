@@ -13,8 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 import { useCallback, useEffect, useRef, useState } from "react"
-import { EthernaResourcesHandler } from "@etherna/api-js/handlers"
+import { EthernaResourcesHandler } from "@etherna/sdk-js/handlers"
 
 import useMounted from "./useMounted"
 import { parseReaderStatus } from "./useVideoOffers"
@@ -23,7 +24,8 @@ import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
 
 import type { VideoOffersStatus } from "./useVideoOffers"
-import type { Video } from "@etherna/api-js"
+import type { Video } from "@etherna/sdk-js"
+import type { Reference } from "@etherna/sdk-js/clients"
 
 type UseVideosResourcesOptions = {
   autoFetch?: boolean
@@ -37,8 +39,9 @@ export default function useVideosResources(
   const gatewayType = useExtensionsStore(state => state.currentGatewayType)
   const address = useUserStore(state => state.address)
   const [isFetchingOffers, setIsFetchingOffers] = useState(false)
-  const [videosOffersStatus, setVideosOffersStatus] = useState<Record<string, VideoOffersStatus>>()
-  const videosQueue = useRef<string[]>([])
+  const [videosOffersStatus, setVideosOffersStatus] =
+    useState<Record<Reference, VideoOffersStatus>>()
+  const videosQueue = useRef<Reference[]>([])
   const mounted = useMounted()
 
   useEffect(() => {
@@ -108,11 +111,18 @@ export default function useVideosResources(
     [videosOffersStatus, address, gatewayClient]
   )
 
+  const invalidate = useCallback(async () => {
+    if (videos?.length) {
+      await fetchVideosStatus()
+    }
+  }, [fetchVideosStatus, videos?.length])
+
   return {
     isFetchingOffers,
     videosOffersStatus,
     fetchVideosStatus,
     offerVideoResources,
     unofferVideoResources,
+    invalidate,
   }
 }

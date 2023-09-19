@@ -14,6 +14,7 @@
  *  limitations under the License.
  *
  */
+
 import React, { forwardRef, useContext, useState } from "react"
 import { usePopper } from "react-popper"
 import { Menu as HLMenu } from "@headlessui/react"
@@ -21,7 +22,7 @@ import { Menu as HLMenu } from "@headlessui/react"
 import UIButton from "./Button"
 import { Drawer } from "@/components/ui/display"
 import { Breakpoint } from "@/components/ui/layout"
-import classNames from "@/utils/classnames"
+import { cn } from "@/utils/classnames"
 
 import type { ButtonProps } from "./Button"
 import type { Placement } from "@popperjs/core"
@@ -66,7 +67,7 @@ const MenuButton: React.FC<ButtonProps> = props => {
     <HLMenu.Button
       as="div"
       className="relative inline-flex"
-      ref={(el: HTMLDivElement) => {
+      ref={el => {
         el && setButtonEl(el)
       }}
       onClick={(e: React.MouseEvent) => e.stopPropagation()}
@@ -113,7 +114,7 @@ const MenuItems: React.FC<MenuItemsProps> = ({ children, width, height, placemen
           </Breakpoint.Zero>
           <Breakpoint.Sm>
             <div
-              className={classNames(
+              className={cn(
                 "outline-hidden z-100 min-w-[8rem] rounded-md p-2",
                 "bg-gray-50 shadow-lg dark:bg-gray-900",
                 "border border-gray-100 dark:border-gray-700",
@@ -148,7 +149,7 @@ const MenuArrow = forwardRef<HTMLSpanElement, MenuArrowProps>(
     if (!placement) return null
     return (
       <span
-        className={classNames(
+        className={cn(
           "block h-3 w-3",
           "before:absolute before:-left-0.5 before:bottom-0 before:block before:h-0 before:w-0",
           "before:border-[8px] before:border-transparent before:border-t-transparent",
@@ -190,7 +191,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
     <HLMenu.Item>
       {({ active }) => (
         <As
-          className={classNames(
+          className={cn(
             "flex cursor-pointer items-center rounded px-2.5 py-2 text-center text-sm sm:text-left",
             "text-gray-500 dark:text-gray-300",
             {
@@ -225,7 +226,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
 }
 
 const MenuSeparator: React.FC = () => (
-  <hr className="my-2 -mx-2 block bg-gray-400 dark:bg-gray-600" />
+  <hr className="-mx-2 my-2 block bg-gray-400 dark:bg-gray-600" />
 )
 
 const MenuContext = React.createContext<
@@ -248,11 +249,7 @@ const Menu: React.FC<MenuProps> & {
   const [panelEl, setPanelEl] = useState<HTMLElement>()
 
   return (
-    <HLMenu
-      as="div"
-      className={classNames("relative inline-flex", className)}
-      data-component="menu"
-    >
+    <HLMenu as="div" className={cn("relative inline-flex", className)} data-component="menu">
       <MenuContext.Provider
         value={{
           buttonEl,
