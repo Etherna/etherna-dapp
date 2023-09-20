@@ -40,7 +40,7 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
   const beeClient = useClientsStore(state => state.beeClient)
   const updateBeeClient = useClientsStore(state => state.updateBeeClient)
   const setBytesPrice = useSessionStore(state => state.setBytesPrice)
-  const setFreePostageBatchConsumed = useSessionStore(state => state.setFreePostageBatchConsumed)
+  const setFreePostageBatchConsumed = useUserStore(state => state.setFreePostageBatchConsumed)
   const setCredit = useUserStore(state => state.setCredit)
   const setProfile = useUserStore(state => state.setProfile)
   const updateIdentity = useUserStore(state => state.updateIdentity)

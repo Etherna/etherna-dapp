@@ -34,6 +34,7 @@ const UserMenu: React.FC = () => {
   const avatar = useUserStore(state => state.profile?.avatar)
   const address = useUserStore(state => state.address)
   const isLoadingProfile = useUIStore(state => state.isLoadingProfile)
+  const signout = useUserStore(state => state.signout)
 
   const isSigningIn = isLoading || isLoadingProfile
 
@@ -69,7 +70,12 @@ const UserMenu: React.FC = () => {
                 <Dropdown.Separator />
                 <Dropdown.Group>
                   <Dropdown.Item
-                    action={() => signoutRedirect()}
+                    action={() => {
+                      signout()
+                      setTimeout(() => {
+                        signoutRedirect()
+                      }, 100)
+                    }}
                     icon={<ArrowRightOnRectangleIcon strokeWidth={2} />}
                   >
                     Sign out
