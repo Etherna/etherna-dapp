@@ -22,10 +22,10 @@ import BatchLoading from "@/components/common/BatchLoading"
 import { AlertPopup } from "@/components/ui/actions"
 import { Spinner } from "@/components/ui/display"
 import useDefaultBatch from "@/hooks/useDefaultBatch"
-import useSessionStore from "@/stores/session"
+import useUserStore from "@/stores/user"
 
 const DefaultBatchRoute: React.FC = () => {
-  const isFreePostageBatchConsumed = useSessionStore(state => state.isFreePostageBatchConsumed)
+  const isFreePostageBatchConsumed = useUserStore(state => state.isFreePostageBatchConsumed)
   const {
     isFetchingBatch,
     isCreatingBatch,

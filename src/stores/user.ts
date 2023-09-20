@@ -23,6 +23,7 @@ export type UserState = {
   batches: GatewayBatch[]
   isSignedInIndex?: boolean
   isSignedInGateway?: boolean
+  isFreePostageBatchConsumed?: boolean
 }
 
 const getInitialState = (): UserState => ({
@@ -71,6 +72,11 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       state.profile = profile
     })
   },
+  setFreePostageBatchConsumed(isFreePostageBatchConsumed: boolean) {
+    set(state => {
+      state.isFreePostageBatchConsumed = isFreePostageBatchConsumed
+    })
+  },
   updateIdentity(address: EthAddress, prevAddresses: EthAddress[], wallet: WalletType) {
     set(state => {
       state.address = address
@@ -82,6 +88,23 @@ const actions = (set: SetFunc, get: GetFunc) => ({
     set(state => {
       state.isSignedInIndex = isSignedInIndex
       state.isSignedInGateway = isSignedInGateway
+    })
+  },
+  signout() {
+    set(state => {
+      state.address = undefined
+      state.profile = undefined
+      state.prevAddresses = undefined
+      state.currentWallet = undefined
+      state.ens = undefined
+      state.credit = undefined
+      state.creditUnlimited = undefined
+      state.defaultBatch = undefined
+      state.defaultBatchId = undefined
+      state.batches = []
+      state.isSignedInIndex = false
+      state.isSignedInGateway = false
+      state.isFreePostageBatchConsumed = false
     })
   },
 })
