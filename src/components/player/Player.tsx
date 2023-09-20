@@ -37,6 +37,7 @@ type PlayerProps = {
   owner: Profile | undefined | null
   sources: VideoSource[]
   posterUrl?: string | null
+  posterBlurDataURL?: string | null
   embed?: boolean
   aspectRatio?: number | null
 }
@@ -47,10 +48,12 @@ const Player: React.FC<PlayerProps> = ({
   owner,
   sources,
   posterUrl,
+  posterBlurDataURL,
   embed,
   aspectRatio,
 }) => {
   const [player, setPlayer] = useState<MediaPlayerElement | null>(null)
+  const currentHash = usePlayerStore(state => state.hash)
   const currentSource = usePlayerStore(state => state.currentSource)
   const isPlaying = usePlayerStore(state => state.isPlaying)
   const isIdle = usePlayerStore(state => state.isIdle)
@@ -74,15 +77,17 @@ const Player: React.FC<PlayerProps> = ({
   }, [player])
 
   useEffect(() => {
-    setSources(sources)
+    if (hash && sources.length > 0) {
+      setSources(hash, sources)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sources])
+  }, [hash, sources])
 
   const onPlaybackError = useCallback(
     async (err: MediaErrorEvent) => {
       console.error(err)
 
-      if (!currentSource || !currentSource.url) return
+      if (!currentSource?.url) return
 
       // get error code
       try {
@@ -112,7 +117,7 @@ const Player: React.FC<PlayerProps> = ({
     }
   }, [])
 
-  if (!currentSource) {
+  if (!currentSource || !currentHash || currentHash !== hash) {
     return !embed ? <PlayerPlaceholder /> : null
   }
 
@@ -138,6 +143,7 @@ const Player: React.FC<PlayerProps> = ({
                 owner={owner}
                 source={currentSource}
                 posterUrl={posterUrl ?? undefined}
+                posterBlurDataURL={posterBlurDataURL ?? undefined}
                 embed={embed}
                 xhrSetup={xhrSetup}
                 onPlaybackError={onPlaybackError}
@@ -151,6 +157,7 @@ const Player: React.FC<PlayerProps> = ({
                 source={currentSource}
                 sourceType={isMp4Source ? "mp4" : "auto"}
                 posterUrl={posterUrl ?? undefined}
+                posterBlurDataURL={posterBlurDataURL ?? undefined}
                 embed={embed}
                 aspectRatio={aspectRatio}
                 xhrSetup={xhrSetup}

@@ -783,10 +783,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.49.0.tgz#86f79756004a97fa4df866835093f1df3d03c333"
   integrity sha512-1S8uAY/MTJqVx0SC4epBq+N2yhuwtNwLbJYNZyhL2pO1ZVKn5HFXav5T41Ryzy9K9V7ZId2JB2oy/W4aCd9/2w==
 
-"@etherna/sdk-js@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@etherna/sdk-js/-/sdk-js-1.0.2.tgz#304eeefc4bc8267311d7749369963ea6d5cff728"
-  integrity sha512-RODPe7ORjGOCvFTvLu6cLkGZQYYCdXG1kWP3aUBPjf8TVt44c4VYc65GnMfBBJlJLTB1/FVCleFrJotL3pfotQ==
+"@etherna/sdk-js@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@etherna/sdk-js/-/sdk-js-1.0.3.tgz#12b2e700cd8a7004eb03951034f1c506f20dedb1"
+  integrity sha512-klmPW4UryEm5qBB875qkh7b+G+Awq4ExT7HQAXH90MDWIeX7i31NCYdH7zRv4fmT1BWUeTNMqaBz8lh3mgmakg==
 
 "@ffmpeg/ffmpeg@0.11.6":
   version "0.11.6"

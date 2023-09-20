@@ -23,6 +23,7 @@ type PlayerVideoProps = {
   source: VideoSource
   sourceType?: "mp4" | "auto"
   posterUrl?: string
+  posterBlurDataURL?: string
   embed?: boolean
   owner: Profile | undefined | null
   aspectRatio?: number | null
@@ -41,6 +42,7 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
       source,
       sourceType,
       posterUrl,
+      posterBlurDataURL,
       owner,
       embed,
       aspectRatio,
@@ -107,11 +109,11 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
 
         {!error && (
           <>
-            {currentTime === 0 && !isPlaying && !isBuffering && (
-              <VideoStarter posterUrl={posterUrl} />
+            {!isPlaying && currentTime < 0.01 && (
+              <VideoStarter posterUrl={posterUrl} posterBlurDataURL={posterBlurDataURL} />
             )}
 
-            {(isPlaying || currentTime > 0) && (
+            {(isPlaying || currentTime > 0.01) && (
               <>
                 <ClickToPlay />
                 <Toolbar focus={isFocus} />

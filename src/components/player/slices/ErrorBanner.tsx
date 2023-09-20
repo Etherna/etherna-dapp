@@ -47,7 +47,7 @@ const ErrorBanner: React.FC = () => {
           setDescription(error.message || "You don't have permission to access this resource.")
           break
         case 404:
-          setDescription(error.message || "This video doesn't exist.")
+          setDescription(error.message || "Video source not found.")
           break
         default:
           setDescription(error.message || "Cannot play this video.")
