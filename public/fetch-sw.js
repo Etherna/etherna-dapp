@@ -21,7 +21,7 @@ self.addEventListener("fetch", function (event) {
       mode: "cors",
       headers: {
         ...event.request.headers,
-        "Authorization": `Bearer ${self.accessToken}`
+        "Authorization": self.accessToken ? `Bearer ${self.accessToken}` : undefined,
       }
     })
     : event.request

@@ -44,6 +44,7 @@ type VideoViewProps = {
 
 const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) => {
   useResetRouteState()
+  const { showError } = useErrorMessage()
 
   const { video, notFound, loadVideo } = useSwarmVideo({
     reference,
@@ -54,7 +55,16 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
     address: video?.preview.ownerAddress as EthAddress,
     prefetchedProfile: routeState?.ownerProfile,
   })
-  const { showError } = useErrorMessage()
+
+  const sources = useMemo(() => {
+    if (!video?.details) {
+      return []
+    }
+    return video.details.sources.map(s => ({
+      ...s,
+      url: withAccessToken(s.url),
+    }))
+  }, [video])
 
   const posterUrl = useMemo(() => {
     const posterUrl = video?.preview.thumbnail?.sources.sort((a, b) => b.width - a.width)?.[0]?.url
@@ -116,8 +126,9 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
           hash={reference}
           title={video?.preview.title || reference}
           owner={profile}
-          sources={video?.details?.sources ?? []}
+          sources={sources}
           posterUrl={posterUrl}
+          posterBlurDataURL={video?.preview.thumbnail?.blurredBase64}
           embed
         />
       ) : (
@@ -128,11 +139,9 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
                 hash={reference}
                 title={video?.preview.title || reference}
                 owner={profile}
-                sources={(video?.details?.sources ?? []).map(s => ({
-                  ...s,
-                  url: withAccessToken(s.url),
-                }))}
+                sources={sources}
                 posterUrl={posterUrl}
+                posterBlurDataURL={video?.preview.thumbnail?.blurredBase64}
                 aspectRatio={video?.details?.aspectRatio}
               />
 

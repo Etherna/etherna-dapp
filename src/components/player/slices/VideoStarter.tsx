@@ -3,6 +3,7 @@ import React, { useCallback, useRef } from "react"
 import { SpeakerWaveIcon } from "@heroicons/react/24/outline"
 import { ReactComponent as PlayIcon } from "@/assets/icons/player/play.svg"
 
+import Image from "@/components/common/Image"
 import usePlayerStore from "@/stores/player"
 import { cn } from "@/utils/classnames"
 
@@ -10,10 +11,11 @@ import type { PlayerQuality } from "@/stores/player"
 
 type VideoStarterProps = {
   posterUrl?: string
+  posterBlurDataURL?: string
   embed?: boolean
 }
 
-const VideoStarter: React.FC<VideoStarterProps> = ({ posterUrl, embed }) => {
+const VideoStarter: React.FC<VideoStarterProps> = ({ posterUrl, posterBlurDataURL, embed }) => {
   const currentQuality = usePlayerStore(state => state.currentQuality)
   const qualities = usePlayerStore(state => state.qualities)
   const startPlaying = usePlayerStore(state => state.startPlaying)
@@ -28,11 +30,12 @@ const VideoStarter: React.FC<VideoStarterProps> = ({ posterUrl, embed }) => {
   )
 
   return (
-    <>
-      <img
+    <div className="z-10">
+      <Image
         className="absolute inset-0 h-full w-full object-cover"
         src={posterUrl}
-        crossOrigin="anonymous"
+        blurredDataURL={posterBlurDataURL}
+        placeholder={posterBlurDataURL ? "blur" : "empty"}
       />
 
       <div
@@ -76,7 +79,7 @@ const VideoStarter: React.FC<VideoStarterProps> = ({ posterUrl, embed }) => {
           ))}
         </ul>
       </div>
-    </>
+    </div>
   )
 }
 

@@ -13,6 +13,7 @@ import type { MediaPlayerElement } from "vidstack"
 export type PlayerQuality = "Auto" | "Audio" | VideoQuality
 
 export type PlayerState = {
+  hash: string
   sources: VideoSource[]
   qualities: PlayerQuality[]
   currentSource?: VideoSource
@@ -54,6 +55,7 @@ const getCurrentSource = (sources: VideoSource[], quality: PlayerQuality) => {
 }
 
 const getInitialState = (): PlayerState => ({
+  hash: "",
   sources: [],
   qualities: [],
   currentQuality: (localStorage.getItem(QUALITY_STORAGE_KEY) as PlayerQuality) || undefined,
@@ -167,7 +169,7 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       })
     })
   },
-  setSources(sources: VideoSource[]) {
+  setSources(hash: string, sources: VideoSource[]) {
     set(state => {
       const getAdaptiveSourceQuality = (source: VideoSource & { type: "hls" | "dash" }) => {
         if (source.path.match(/audio\.(mpd|m3u8)$/)) return "Audio"
@@ -199,6 +201,7 @@ const actions = (set: SetFunc, get: GetFunc) => ({
         (isAdaptive ? "Auto" : qualities[0])
       const currentSource = getCurrentSource(sources, quality)
 
+      state.hash = hash
       state.sources = sources
       state.qualities = qualities
       state.currentQuality = quality

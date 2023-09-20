@@ -110,7 +110,9 @@ const Image: React.FC<ImageProps> = ({
       return
     }
 
-    if (!fallbackSrc) return setImgLoaded(true)
+    if (!fallbackSrc) {
+      return
+    }
 
     if (src !== fallbackSrc) {
       setSrc(fallbackSrc)
@@ -129,7 +131,7 @@ const Image: React.FC<ImageProps> = ({
       return onError()
     }
     if (newSrc === src) {
-      return
+      return setImgLoaded(true)
     }
 
     const filteredSrc = filterXSS(newSrc)
@@ -170,7 +172,7 @@ const Image: React.FC<ImageProps> = ({
       ref={el => el && setRootEl(el)}
       data-loaded={imgLoaded}
     >
-      {src && (
+      {src && imgLoaded && (
         <picture onError={onError} onLoad={onLoadImage}>
           <img
             className={cn("absolute inset-0 h-full w-full", imgClassName)}

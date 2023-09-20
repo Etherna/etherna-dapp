@@ -16,7 +16,6 @@
  */
 
 import React, { useCallback, useMemo, useRef, useState } from "react"
-import { MediaTimeSlider } from "@vidstack/react"
 
 import Time from "@/components/media/Time"
 import { Slider } from "@/components/ui/inputs"
@@ -57,6 +56,8 @@ const VideoProgress: React.FC<VideoProgressProps> = ({ className, focus }) => {
       onMouseOver={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
       ref={progressContainer}
+      aria-valuenow={currentTime}
+      aria-valuemax={duration}
     >
       <Slider
         className="h-1 w-full transition duration-200"
@@ -74,6 +75,8 @@ const VideoProgress: React.FC<VideoProgressProps> = ({ className, focus }) => {
               left: index === 0 ? 0 : `${(value / duration) * 100}%`,
               right: index === 1 ? 0 : `${100 - (value / duration) * 100}%`,
             }}
+            data-index={index}
+            data-value={value}
             key={index}
           />
         )}

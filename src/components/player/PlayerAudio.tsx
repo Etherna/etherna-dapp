@@ -1,5 +1,5 @@
-import React, { forwardRef, useCallback, useMemo, useRef, useState } from "react"
-import { MediaOutlet, MediaPlayButton, MediaPlayer } from "@vidstack/react"
+import React, { forwardRef, useMemo } from "react"
+import { MediaOutlet, MediaPlayer } from "@vidstack/react"
 import { isHLSProvider } from "vidstack"
 
 import ErrorBanner from "./slices/ErrorBanner"
@@ -11,8 +11,8 @@ import QualityControl from "./slices/QualityControl"
 import TimeProgress from "./slices/TimeProgress"
 import VideoProgress from "./slices/VideoProgress"
 import VolumeControl from "./slices/VolumeControl"
+import Image from "@/components/common/Image"
 import usePlayerStore from "@/stores/player"
-import { isTouchDevice } from "@/utils/browser"
 
 import type { Profile, VideoSource } from "@etherna/sdk-js"
 import type { MediaErrorEvent, MediaPlayerElement } from "vidstack"
@@ -22,6 +22,7 @@ type PlayerVideoProps = {
   hash: string
   source: VideoSource
   posterUrl?: string
+  posterBlurDataURL?: string
   embed?: boolean
   owner: Profile | undefined | null
   xhrSetup?(xhr: XMLHttpRequest): void
@@ -31,10 +32,10 @@ type PlayerVideoProps = {
 const DEFAULT_SKIP = 15
 
 const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
-  ({ title, hash, source, posterUrl, owner, embed, xhrSetup, onPlaybackError }, ref) => {
-    const isPlaying = usePlayerStore(state => state.isPlaying)
-    const currentTime = usePlayerStore(state => state.currentTime)
-    const isBuffering = usePlayerStore(state => state.isBuffering)
+  (
+    { title, hash, source, posterUrl, posterBlurDataURL, owner, embed, xhrSetup, onPlaybackError },
+    ref
+  ) => {
     const error = usePlayerStore(state => state.error)
 
     const src = useMemo(() => {
@@ -68,10 +69,11 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
           {!error && (
             <div className="flex flex-wrap items-center xs:flex-nowrap">
               <div className="flex w-full pl-3 xs:w-auto sm:pl-0">
-                <img
-                  src={posterUrl}
+                <Image
                   className="mx-auto h-auto w-16 overflow-hidden rounded-lg sm:w-32"
-                  crossOrigin="anonymous"
+                  src={posterUrl}
+                  blurredDataURL={posterBlurDataURL}
+                  placeholder={posterBlurDataURL ? "blur" : "empty"}
                 />
               </div>
 
