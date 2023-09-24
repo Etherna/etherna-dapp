@@ -53,7 +53,6 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
   ) => {
     const isPlaying = usePlayerStore(state => state.isPlaying)
     const currentTime = usePlayerStore(state => state.currentTime)
-    const isBuffering = usePlayerStore(state => state.isBuffering)
     const error = usePlayerStore(state => state.error)
     const [isFocus, setIsFocus] = useState(false)
     const focusTimeoutRef = useRef<number>()
@@ -102,6 +101,8 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
         ref={ref}
         data-matomo-title={title}
         data-src={src}
+        crossorigin="anonymous"
+        preload="none"
       >
         <MediaOutlet className="aspect-[var(--media-aspect-ratio)] [&_video]:max-h-[80vh] [&_video]:w-full" />
 
@@ -109,11 +110,11 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
 
         {!error && (
           <>
-            {!isPlaying && currentTime < 0.01 && (
+            {!isPlaying && currentTime <= 0.1 && (
               <VideoStarter posterUrl={posterUrl} posterBlurDataURL={posterBlurDataURL} />
             )}
 
-            {(isPlaying || currentTime > 0.01) && (
+            {(isPlaying || currentTime > 0.1) && (
               <>
                 <ClickToPlay />
                 <Toolbar focus={isFocus} />
@@ -127,7 +128,7 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
               </>
             )}
 
-            {isTouchDevice() && currentTime > 0 && (
+            {isTouchDevice() && currentTime > 0.1 && (
               <TouchOverlay focus={isFocus} skipBySeconds={DEFAULT_SKIP} />
             )}
 

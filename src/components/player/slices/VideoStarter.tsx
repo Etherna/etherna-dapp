@@ -50,12 +50,12 @@ const VideoStarter: React.FC<VideoStarterProps> = ({ posterUrl, posterBlurDataUR
       >
         <div
           className={cn(
-            "m-auto h-16 w-16 rounded-full bg-black/60 p-3 text-gray-200 shadow-lg sm:p-4",
+            "m-auto h-16 w-16 rounded-full bg-black/60 p-4 text-gray-200 shadow-lg",
             "transition-colors duration-200 ease-out",
             "group-hover:text-primary-500"
           )}
         >
-          <PlayIcon className="ml-0.5 h-4 w-4 sm:h-6 sm:w-6 md:h-8 md:w-8" aria-hidden />
+          <PlayIcon className="ml-0.5 h-8 w-8" aria-hidden />
         </div>
       </div>
 
