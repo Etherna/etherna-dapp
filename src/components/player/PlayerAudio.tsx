@@ -60,6 +60,8 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
         ref={ref}
         data-matomo-title={title}
         data-src={src}
+        crossorigin="anonymous"
+        preload="none"
       >
         <MediaOutlet className="hidden" />
 

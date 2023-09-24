@@ -28,19 +28,7 @@ self.addEventListener("fetch", function (event) {
 
   event.respondWith(
     fetch(newRequest).then((response) => {
-      // Respond to the original request with the fetched response
-      const headers = new Headers(response.headers)
-      if (isValidOrigin) {
-        headers.set("Cross-Origin-Embedder-Policy", "require-corp")
-        headers.set("Cross-Origin-Opener-Policy", "same-origin")
-        headers.set("Cross-Origin-Resource-Policy", "cross-origin")
-      }
-
-      return new Response(response.body, {
-        headers,
-        status: response.status,
-        statusText: response.statusText,
-      })
+      return response
     }).catch((error) => {
       console.warn(`SW fetch error for '${url}': ${error}`)
       // If the fetch fails, try to respond with a cached response
@@ -51,8 +39,6 @@ self.addEventListener("fetch", function (event) {
 
 self.addEventListener("message", function (event) {
   var data = JSON.parse(event.data)
-
-  // console.debug("SW Received Message:", data)
 
   if (data.accessToken) {
     self.accessToken = data.accessToken
