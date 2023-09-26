@@ -214,7 +214,11 @@ const Videos: React.FC = () => {
                     sources={item.preview.thumbnail?.sources}
                     placeholder="blur"
                     blurredDataURL={item.preview.thumbnail?.blurredBase64}
-                    fallbackSrc={encodedSvg(<ThumbPlaceholder />)}
+                    fallbackSrc={
+                      item.preview.thumbnail?.blurredBase64
+                        ? undefined
+                        : encodedSvg(<ThumbPlaceholder />)
+                    }
                     layout="fill"
                   />
                   <span className="absolute bottom-0 right-0 rounded-sm bg-black leading-none">
