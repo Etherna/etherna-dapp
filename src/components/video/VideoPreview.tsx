@@ -116,7 +116,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
             placeholder="blur"
             blurredDataURL={videoThumbnail?.blurredBase64}
             layout="fill"
-            fallbackSrc={thumbnailPreview}
+            fallbackSrc={videoThumbnail?.blurredBase64 ? undefined : thumbnailPreview}
           />
           {video.preview.duration && video.preview.duration > 0 && (
             <div
