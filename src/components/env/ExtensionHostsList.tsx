@@ -50,7 +50,7 @@ type ExtensionHostsListProps = {
   selectedExtensionUrl: string
   editing?: boolean
   type: ExtensionType
-  allowDelete?(host: IndexExtensionHost | GatewayExtensionHost): boolean
+  allowEditing?(host: IndexExtensionHost | GatewayExtensionHost): boolean
   onSelect?(host: ExtensionHost): void
   onDelete?(host: ExtensionHost): void
   onEdit?(host: ExtensionHost): void
@@ -61,7 +61,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
   selectedExtensionUrl,
   editing,
   type,
-  allowDelete,
+  allowEditing,
   onSelect,
   onDelete,
   onEdit,
@@ -131,6 +131,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
         {hosts?.map((host, i) => {
           const isActive = host.url === selectedExtensionUrl
           const isDisabled = editing && host.url !== selectedExtensionUrl
+          const isEditable = allowEditing?.(host) ?? true
           return (
             <button
               className={cn(
@@ -146,7 +147,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
                   "pointer-events-none opacity-30": isDisabled,
                 }
               )}
-              onClick={() => onSelect?.(host)}
+              onClick={() => isEditable && onSelect?.(host)}
               key={i}
             >
               <div className="flex w-full items-center justify-between">
@@ -172,21 +173,22 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
                   )}
                 </span>
 
-                <Menu>
-                  <Menu.Button
-                    as="div"
-                    className="border-none p-0"
-                    aspect="text"
-                    color="inverted"
-                    small
-                  >
-                    <EllipsisHorizontalIcon className="mr-0 h-5" aria-hidden />
-                  </Menu.Button>
-                  <Menu.Items>
-                    <Menu.Item prefix={<PencilIcon />} onClick={() => onEdit?.(host)}>
-                      Edit
-                    </Menu.Item>
-                    {allowDelete?.(host) && (
+                {isEditable && (
+                  <Menu>
+                    <Menu.Button
+                      as="div"
+                      className="border-none p-0"
+                      aspect="text"
+                      color="inverted"
+                      small
+                    >
+                      <EllipsisHorizontalIcon className="mr-0 h-5" aria-hidden />
+                    </Menu.Button>
+
+                    <Menu.Items>
+                      <Menu.Item prefix={<PencilIcon />} onClick={() => onEdit?.(host)}>
+                        Edit
+                      </Menu.Item>
                       <Menu.Item
                         prefix={<TrashIcon />}
                         color="error"
@@ -194,20 +196,20 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
                       >
                         Delete
                       </Menu.Item>
-                    )}
-                    {isAuthHost(host) && hostsSignedIn[host.url] === false && (
-                      <>
-                        <Menu.Separator />
-                        <Menu.Item
-                          prefix={<ArrowLeftOnRectangleIcon />}
-                          onClick={() => signinHost(host)}
-                        >
-                          Sign in
-                        </Menu.Item>
-                      </>
-                    )}
-                  </Menu.Items>
-                </Menu>
+                      {isAuthHost(host) && hostsSignedIn[host.url] === false && (
+                        <>
+                          <Menu.Separator />
+                          <Menu.Item
+                            prefix={<ArrowLeftOnRectangleIcon />}
+                            onClick={() => signinHost(host)}
+                          >
+                            Sign in
+                          </Menu.Item>
+                        </>
+                      )}
+                    </Menu.Items>
+                  </Menu>
+                )}
               </div>
               <span
                 className={cn("flex flex-col items-start text-xs text-gray-400 dark:text-gray-50", {
