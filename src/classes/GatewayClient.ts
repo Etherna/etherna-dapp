@@ -2,6 +2,7 @@ import { EthernaGatewayClient } from "@etherna/sdk-js/clients"
 import { isSafeURL, urlOrigin } from "@etherna/sdk-js/utils"
 
 import extensionsStore from "@/stores/extensions"
+import { getAccessToken } from "@/utils/jwt"
 
 import type { GatewayClientOptions } from "@etherna/sdk-js/clients"
 
@@ -10,6 +11,7 @@ export default class GatewayClient extends EthernaGatewayClient {
     super({
       url: host,
       apiPath: GatewayClient.apiPath,
+      accessToken: getAccessToken(),
       loginPath: opts?.loginPath,
       logoutPath: opts?.logoutPath,
     })

@@ -18,7 +18,6 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { urlHostname } from "@etherna/sdk-js/utils"
 
-import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline"
 import {
   CheckBadgeIcon,
   EllipsisHorizontalIcon,
@@ -68,41 +67,41 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
 }) => {
   const [hostsSignedIn, sethostsSignedIn] = useState<Record<string, boolean>>({})
 
-  useEffect(() => {
-    const controllers: AbortController[] = []
+  // useEffect(() => {
+  //   const controllers: AbortController[] = []
 
-    sethostsSignedIn({})
+  //   sethostsSignedIn({})
 
-    hosts.forEach(host => {
-      if ("type" in host && host.type === "bee") {
-        return
-      }
+  //   hosts.forEach(host => {
+  //     if ("type" in host && host.type === "bee") {
+  //       return
+  //     }
 
-      const controller = new AbortController()
-      controllers.push(controller)
+  //     const controller = new AbortController()
+  //     controllers.push(controller)
 
-      const client = type === "index" ? new IndexClient(host.url) : new GatewayClient(host.url)
+  //     const client = type === "index" ? new IndexClient(host.url) : new GatewayClient(host.url)
 
-      client.users
-        .fetchCurrentUser({ signal: controller.signal })
-        .then(() => {
-          sethostsSignedIn(hostsSignedIn => ({
-            ...hostsSignedIn,
-            [host.url]: true,
-          }))
-        })
-        .catch(() => {
-          sethostsSignedIn(hostsSignedIn => ({
-            ...hostsSignedIn,
-            [host.url]: false,
-          }))
-        })
-    })
+  //     client.users
+  //       .fetchCurrentUser({ signal: controller.signal })
+  //       .then(() => {
+  //         sethostsSignedIn(hostsSignedIn => ({
+  //           ...hostsSignedIn,
+  //           [host.url]: true,
+  //         }))
+  //       })
+  //       .catch(() => {
+  //         sethostsSignedIn(hostsSignedIn => ({
+  //           ...hostsSignedIn,
+  //           [host.url]: false,
+  //         }))
+  //       })
+  //   })
 
-    return () => {
-      controllers.forEach(controller => controller.abort())
-    }
-  }, [hosts, type])
+  //   return () => {
+  //     controllers.forEach(controller => controller.abort())
+  //   }
+  // }, [hosts, type])
 
   const isVerifiedOrigin = useCallback((url: string | null) => {
     const verifiedOrigins = import.meta.env.VITE_APP_VERIFIED_ORIGINS.split(";")
@@ -196,17 +195,6 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
                       >
                         Delete
                       </Menu.Item>
-                      {isAuthHost(host) && hostsSignedIn[host.url] === false && (
-                        <>
-                          <Menu.Separator />
-                          <Menu.Item
-                            prefix={<ArrowLeftOnRectangleIcon />}
-                            onClick={() => signinHost(host)}
-                          >
-                            Sign in
-                          </Menu.Item>
-                        </>
-                      )}
                     </Menu.Items>
                   </Menu>
                 )}
@@ -220,17 +208,17 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
                 {/* {"type" in host && (
                   <span> - {GatewayTypeLabel[host.type]}</span>
                 )} */}
-                {isAuthHost(host) && hostsSignedIn[host.url] === undefined && (
+                {/* {isAuthHost(host) && hostsSignedIn[host.url] === undefined && (
                   <Spinner className="mt-1" type="bouncing-line" size={24} />
-                )}
-                {hostsSignedIn[host.url] === true && (
+                )} */}
+                {/* {hostsSignedIn[host.url] === true && (
                   <small className="mt-1 block text-xs font-medium text-green-500">signed in</small>
                 )}
                 {hostsSignedIn[host.url] === false && (
                   <small className="mt-1 block text-xs font-medium text-yellow-500">
                     signed out
                   </small>
-                )}
+                )} */}
               </span>
             </button>
           )
