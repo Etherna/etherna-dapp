@@ -18,7 +18,6 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { urlHostname } from "@etherna/sdk-js/utils"
 
-import { ArrowLeftOnRectangleIcon } from "@heroicons/react/24/outline"
 import {
   CheckBadgeIcon,
   EllipsisHorizontalIcon,
@@ -50,7 +49,7 @@ type ExtensionHostsListProps = {
   selectedExtensionUrl: string
   editing?: boolean
   type: ExtensionType
-  allowDelete?(host: IndexExtensionHost | GatewayExtensionHost): boolean
+  allowEditing?(host: IndexExtensionHost | GatewayExtensionHost): boolean
   onSelect?(host: ExtensionHost): void
   onDelete?(host: ExtensionHost): void
   onEdit?(host: ExtensionHost): void
@@ -61,48 +60,48 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
   selectedExtensionUrl,
   editing,
   type,
-  allowDelete,
+  allowEditing,
   onSelect,
   onDelete,
   onEdit,
 }) => {
   const [hostsSignedIn, sethostsSignedIn] = useState<Record<string, boolean>>({})
 
-  useEffect(() => {
-    const controllers: AbortController[] = []
+  // useEffect(() => {
+  //   const controllers: AbortController[] = []
 
-    sethostsSignedIn({})
+  //   sethostsSignedIn({})
 
-    hosts.forEach(host => {
-      if ("type" in host && host.type === "bee") {
-        return
-      }
+  //   hosts.forEach(host => {
+  //     if ("type" in host && host.type === "bee") {
+  //       return
+  //     }
 
-      const controller = new AbortController()
-      controllers.push(controller)
+  //     const controller = new AbortController()
+  //     controllers.push(controller)
 
-      const client = type === "index" ? new IndexClient(host.url) : new GatewayClient(host.url)
+  //     const client = type === "index" ? new IndexClient(host.url) : new GatewayClient(host.url)
 
-      client.users
-        .fetchCurrentUser({ signal: controller.signal })
-        .then(() => {
-          sethostsSignedIn(hostsSignedIn => ({
-            ...hostsSignedIn,
-            [host.url]: true,
-          }))
-        })
-        .catch(() => {
-          sethostsSignedIn(hostsSignedIn => ({
-            ...hostsSignedIn,
-            [host.url]: false,
-          }))
-        })
-    })
+  //     client.users
+  //       .fetchCurrentUser({ signal: controller.signal })
+  //       .then(() => {
+  //         sethostsSignedIn(hostsSignedIn => ({
+  //           ...hostsSignedIn,
+  //           [host.url]: true,
+  //         }))
+  //       })
+  //       .catch(() => {
+  //         sethostsSignedIn(hostsSignedIn => ({
+  //           ...hostsSignedIn,
+  //           [host.url]: false,
+  //         }))
+  //       })
+  //   })
 
-    return () => {
-      controllers.forEach(controller => controller.abort())
-    }
-  }, [hosts, type])
+  //   return () => {
+  //     controllers.forEach(controller => controller.abort())
+  //   }
+  // }, [hosts, type])
 
   const isVerifiedOrigin = useCallback((url: string | null) => {
     const verifiedOrigins = import.meta.env.VITE_APP_VERIFIED_ORIGINS.split(";")
@@ -131,6 +130,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
         {hosts?.map((host, i) => {
           const isActive = host.url === selectedExtensionUrl
           const isDisabled = editing && host.url !== selectedExtensionUrl
+          const isEditable = allowEditing?.(host) ?? true
           return (
             <button
               className={cn(
@@ -146,7 +146,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
                   "pointer-events-none opacity-30": isDisabled,
                 }
               )}
-              onClick={() => onSelect?.(host)}
+              onClick={() => isEditable && onSelect?.(host)}
               key={i}
             >
               <div className="flex w-full items-center justify-between">
@@ -172,21 +172,22 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
                   )}
                 </span>
 
-                <Menu>
-                  <Menu.Button
-                    as="div"
-                    className="border-none p-0"
-                    aspect="text"
-                    color="inverted"
-                    small
-                  >
-                    <EllipsisHorizontalIcon className="mr-0 h-5" aria-hidden />
-                  </Menu.Button>
-                  <Menu.Items>
-                    <Menu.Item prefix={<PencilIcon />} onClick={() => onEdit?.(host)}>
-                      Edit
-                    </Menu.Item>
-                    {allowDelete?.(host) && (
+                {isEditable && (
+                  <Menu>
+                    <Menu.Button
+                      as="div"
+                      className="border-none p-0"
+                      aspect="text"
+                      color="inverted"
+                      small
+                    >
+                      <EllipsisHorizontalIcon className="mr-0 h-5" aria-hidden />
+                    </Menu.Button>
+
+                    <Menu.Items>
+                      <Menu.Item prefix={<PencilIcon />} onClick={() => onEdit?.(host)}>
+                        Edit
+                      </Menu.Item>
                       <Menu.Item
                         prefix={<TrashIcon />}
                         color="error"
@@ -194,20 +195,9 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
                       >
                         Delete
                       </Menu.Item>
-                    )}
-                    {isAuthHost(host) && hostsSignedIn[host.url] === false && (
-                      <>
-                        <Menu.Separator />
-                        <Menu.Item
-                          prefix={<ArrowLeftOnRectangleIcon />}
-                          onClick={() => signinHost(host)}
-                        >
-                          Sign in
-                        </Menu.Item>
-                      </>
-                    )}
-                  </Menu.Items>
-                </Menu>
+                    </Menu.Items>
+                  </Menu>
+                )}
               </div>
               <span
                 className={cn("flex flex-col items-start text-xs text-gray-400 dark:text-gray-50", {
@@ -218,17 +208,17 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
                 {/* {"type" in host && (
                   <span> - {GatewayTypeLabel[host.type]}</span>
                 )} */}
-                {isAuthHost(host) && hostsSignedIn[host.url] === undefined && (
+                {/* {isAuthHost(host) && hostsSignedIn[host.url] === undefined && (
                   <Spinner className="mt-1" type="bouncing-line" size={24} />
-                )}
-                {hostsSignedIn[host.url] === true && (
+                )} */}
+                {/* {hostsSignedIn[host.url] === true && (
                   <small className="mt-1 block text-xs font-medium text-green-500">signed in</small>
                 )}
                 {hostsSignedIn[host.url] === false && (
                   <small className="mt-1 block text-xs font-medium text-yellow-500">
                     signed out
                   </small>
-                )}
+                )} */}
               </span>
             </button>
           )

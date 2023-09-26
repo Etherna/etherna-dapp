@@ -1,5 +1,7 @@
 import { EthernaSSOClient } from "@etherna/sdk-js/clients"
 
+import { getAccessToken } from "@/utils/jwt"
+
 import type { SSOClientOptions } from "@etherna/sdk-js/clients"
 
 export default class SSOClient extends EthernaSSOClient {
@@ -7,6 +9,7 @@ export default class SSOClient extends EthernaSSOClient {
     super({
       url: host,
       apiPath: SSOClient.apiPath,
+      accessToken: getAccessToken(),
       loginPath: opts?.loginPath,
       logoutPath: opts?.logoutPath,
     })
