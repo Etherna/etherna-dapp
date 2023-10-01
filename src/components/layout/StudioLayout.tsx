@@ -54,13 +54,6 @@ const StudioLayout: React.FC<StudioLayoutProps> = ({ children }) => {
             isActive={pathname => /\/studio\/channel/.test(pathname)}
             isResponsive={false}
           />
-          <Sidebar.Item
-            to={routes.studioPostages}
-            title="Postages"
-            iconSvg={<BanknotesIcon />}
-            isActive={pathname => /\/studio\/postages/.test(pathname)}
-            isResponsive={false}
-          />
         </DropdownSidebar>
 
         {children}

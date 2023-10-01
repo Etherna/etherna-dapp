@@ -134,9 +134,14 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
     setShowEditorModal(true)
   }, [])
 
+  const isHostEditable = useCallback((host: T) => {
+    return !EthernaUrls.includes(host.url) ?? true
+  }, [])
+
   const selectHost = useCallback(
     (newHost: T) => {
-      if (newHost.url === editingUrl) {
+      const isEditable = isHostEditable(newHost)
+      if (newHost.url === editingUrl && isEditable) {
         editHost(newHost)
         return
       }
@@ -145,7 +150,7 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
       setEditingUrl(extensionsList![selectedHostIndex].url)
       setCurrentUrl(extensionsList![selectedHostIndex].url)
     },
-    [editingUrl, extensionsList, setCurrentUrl, editHost]
+    [editingUrl, extensionsList, isHostEditable, setCurrentUrl, editHost]
   )
 
   const addHost = useCallback(() => {
@@ -206,7 +211,7 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
           <ExtensionHostsList
             hosts={extensionsList ?? []}
             selectedExtensionUrl={currentUrl}
-            allowEditing={host => !EthernaUrls.includes(host.url)}
+            editableHost={isHostEditable}
             onSelect={selectHost}
             onEdit={editHost}
             onDelete={ext => askToDeleteExtension(ext.url)}

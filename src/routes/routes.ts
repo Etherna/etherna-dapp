@@ -39,6 +39,8 @@ const routePaths = {
   alphaPasss: `/request-alpha-pass`,
   /** `/shortcuts` */
   shortcuts: `/shortcuts`,
+  /** `/postages` */
+  postages: `/postages`,
   /** `/privacy-policy` */
   privacyPolicy: `/privacy-policy`,
   /** `/studio` */
@@ -53,7 +55,7 @@ const routePaths = {
   studioChannel: `/studio/channel`,
   /** `/studio/postages` */
   studioPostages: `/studio/postages`,
-}
+} as const
 
 const withOrigin = (paths: typeof routePaths): typeof routePaths => {
   const routeNames = Object.keys(paths) as (keyof typeof routePaths)[]
