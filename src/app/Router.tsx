@@ -38,11 +38,11 @@ const AsyncChannel = lazy(() => import("@/pages/channel"))
 const AsyncChannelEdit = lazy(() => import("@/pages/studio/channel-edit"))
 const AsyncVideosList = lazy(() => import("@/pages/studio/videos-list"))
 const AsyncVideoEdit = lazy(() => import("@/pages/studio/video-edit"))
-const AsyncPostages = lazy(() => import("@/pages/studio/postages"))
 const AsyncWatch = lazy(() => import("@/pages/watch"))
 const AsyncEmbed = lazy(() => import("@/pages/embed"))
 const AsyncSearch = lazy(() => import("@/pages/search"))
 const AsyncShortcuts = lazy(() => import("@/pages/shortcuts"))
+const AsyncPostages = lazy(() => import("@/pages/postages"))
 const AsyncPrivacyPolicy = lazy(() => import("@/pages/privacy-policy"))
 const AsyncNotFound = lazy(() => import("@/pages/404"))
 
@@ -101,14 +101,14 @@ const VideoEdit = () => (
     <AsyncVideoEdit />
   </Suspense>
 )
-const Postages = () => (
-  <Suspense fallback={<PageLoader />}>
-    <AsyncPostages />
-  </Suspense>
-)
 const Shortcuts = () => (
   <Suspense fallback={<PageLoader />}>
     <AsyncShortcuts />
+  </Suspense>
+)
+const Postages = () => (
+  <Suspense fallback={<PageLoader />}>
+    <AsyncPostages />
   </Suspense>
 )
 const Search = () => (
@@ -152,6 +152,7 @@ const Router = () => {
                 <Route path="/channel/:id" element={<Channel />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/shortcuts" element={<Shortcuts />} />
+                <Route path="/postages" element={<Postages />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
                 <Route path="/watch" element={<VideoRoute />}>
@@ -166,7 +167,6 @@ const Router = () => {
                       <Route path="videos/:id" element={<VideoEdit />} />
                       <Route path="channel" element={<ChannelEdit />} />
                     </Route>
-                    <Route path="postages" element={<Postages />} />
                   </Route>
                 </Route>
               </Route>

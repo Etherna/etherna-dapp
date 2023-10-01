@@ -27,7 +27,7 @@ const Shortcuts = () => (
   <AppLayoutWrapper>
     <SEO title="Shortcuts" />
 
-    <Container className="my-8">
+    <Container className="mb-8">
       <Text as="h1">Shortcuts</Text>
 
       <Text as="h2">Player</Text>

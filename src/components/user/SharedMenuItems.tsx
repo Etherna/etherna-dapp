@@ -19,7 +19,7 @@ import React, { useCallback } from "react"
 import { useAuth } from "react-oidc-context"
 
 // import { ReactComponent as IndexIcon } from "@/assets/icons/navigation/index.svg"
-import { MoonIcon, ShieldCheckIcon } from "@heroicons/react/24/solid"
+import { BanknotesIcon, MoonIcon, ShieldCheckIcon } from "@heroicons/react/24/solid"
 import { ReactComponent as GatewayIcon } from "@/assets/icons/navigation/gateway.svg"
 import { ReactComponent as ShortcutsIcon } from "@/assets/icons/shortcuts.svg"
 
@@ -61,6 +61,9 @@ const SharedMenuItems: React.FC<SharedMenuItemsProps> = () => {
       </Dropdown.Item> */}
         <Dropdown.Item icon={<GatewayIcon />}>
           <GatewayExtension noIcon />
+        </Dropdown.Item>
+        <Dropdown.Item href={routes.postages} icon={<BanknotesIcon />}>
+          Postages
         </Dropdown.Item>
       </Dropdown.Group>
 

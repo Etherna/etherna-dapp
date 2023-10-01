@@ -15,7 +15,7 @@
  *
  */
 
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useState } from "react"
 import { urlHostname } from "@etherna/sdk-js/utils"
 
 import {
@@ -28,7 +28,7 @@ import {
 import GatewayClient from "@/classes/GatewayClient"
 import IndexClient from "@/classes/IndexClient"
 import { Menu } from "@/components/ui/actions"
-import { Spinner, Tooltip } from "@/components/ui/display"
+import { Tooltip } from "@/components/ui/display"
 import { cn } from "@/utils/classnames"
 
 import type { ExtensionType } from "@/stores/ui"
@@ -49,7 +49,7 @@ type ExtensionHostsListProps = {
   selectedExtensionUrl: string
   editing?: boolean
   type: ExtensionType
-  allowEditing?(host: IndexExtensionHost | GatewayExtensionHost): boolean
+  editableHost?(host: IndexExtensionHost | GatewayExtensionHost): boolean
   onSelect?(host: ExtensionHost): void
   onDelete?(host: ExtensionHost): void
   onEdit?(host: ExtensionHost): void
@@ -60,7 +60,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
   selectedExtensionUrl,
   editing,
   type,
-  allowEditing,
+  editableHost,
   onSelect,
   onDelete,
   onEdit,
@@ -130,7 +130,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
         {hosts?.map((host, i) => {
           const isActive = host.url === selectedExtensionUrl
           const isDisabled = editing && host.url !== selectedExtensionUrl
-          const isEditable = allowEditing?.(host) ?? true
+          const isEditable = editableHost?.(host) ?? true
           return (
             <button
               className={cn(
@@ -146,7 +146,7 @@ const ExtensionHostsList: React.FC<ExtensionHostsListProps> = ({
                   "pointer-events-none opacity-30": isDisabled,
                 }
               )}
-              onClick={() => isEditable && onSelect?.(host)}
+              onClick={() => onSelect?.(host)}
               key={i}
             >
               <div className="flex w-full items-center justify-between">

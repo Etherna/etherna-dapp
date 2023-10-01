@@ -19,7 +19,7 @@ import React, { useEffect, useState } from "react"
 
 import { InformationCircleIcon } from "@heroicons/react/24/solid"
 
-import PostageBatchList from "./postages/PostageBatchList"
+import PostageBatchList from "./PostageBatchList"
 import BatchLoading from "@/components/common/BatchLoading"
 import { Alert, Spinner } from "@/components/ui/display"
 import useBatches from "@/hooks/useBatches"

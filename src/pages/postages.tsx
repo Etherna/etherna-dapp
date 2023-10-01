@@ -18,17 +18,20 @@
 import React from "react"
 
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
-import Postages from "@/components/studio/Postages"
+import SEO from "@/components/layout/SEO"
+import Postages from "@/components/settings/Postages"
+import { Text } from "@/components/ui/display"
 import { Container } from "@/components/ui/layout"
 
-const PostagesPage = () => {
-  return (
-    <AppLayoutWrapper floatingSidebar>
-      <Container noPaddingX noPaddingY fluid>
-        <Postages />
-      </Container>
-    </AppLayoutWrapper>
-  )
-}
+const Shortcuts = () => (
+  <AppLayoutWrapper>
+    <SEO title="Postages" />
 
-export default PostagesPage
+    <Container className="mb-8">
+      <Text as="h1">Postages</Text>
+      <Postages />
+    </Container>
+  </AppLayoutWrapper>
+)
+
+export default Shortcuts
