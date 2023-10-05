@@ -1,6 +1,5 @@
 import React, { forwardRef, useMemo } from "react"
-import { MediaOutlet, MediaPlayer } from "@vidstack/react"
-import { isHLSProvider } from "vidstack"
+import { isHLSProvider, MediaPlayer, MediaProvider } from "@vidstack/react"
 
 import ErrorBanner from "./slices/ErrorBanner"
 import FullScreenButton from "./slices/FullScreenButton"
@@ -15,7 +14,7 @@ import Image from "@/components/common/Image"
 import usePlayerStore from "@/stores/player"
 
 import type { Profile, VideoSource } from "@etherna/sdk-js"
-import type { MediaErrorEvent, MediaPlayerElement } from "vidstack"
+import type { MediaErrorDetail, MediaErrorEvent, MediaPlayerInstance } from "@vidstack/react"
 
 type PlayerVideoProps = {
   title?: string
@@ -26,12 +25,12 @@ type PlayerVideoProps = {
   embed?: boolean
   owner: Profile | undefined | null
   xhrSetup?(xhr: XMLHttpRequest): void
-  onPlaybackError?(err: MediaErrorEvent): void
+  onPlaybackError?(err: MediaErrorDetail, event: MediaErrorEvent): void
 }
 
 const DEFAULT_SKIP = 15
 
-const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
+const PlayerVideo = forwardRef<MediaPlayerInstance, PlayerVideoProps>(
   (
     { title, hash, source, posterUrl, posterBlurDataURL, owner, embed, xhrSetup, onPlaybackError },
     ref
@@ -48,8 +47,7 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
         src={src}
         poster={posterUrl}
         viewType="audio"
-        onProviderChange={e => {
-          const provider = e.detail
+        onProviderChange={provider => {
           if (isHLSProvider(provider)) {
             provider.config.autoStartLoad = false
             provider.config.maxBufferLength = 3
@@ -63,7 +61,7 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
         crossorigin="anonymous"
         preload="none"
       >
-        <MediaOutlet className="hidden" />
+        <MediaProvider className="hidden" />
 
         <div className="flex flex-col">
           {error && <ErrorBanner />}
@@ -71,12 +69,14 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
           {!error && (
             <div className="flex flex-wrap items-center xs:flex-nowrap">
               <div className="flex w-full pl-3 xs:w-auto sm:pl-0">
-                <Image
-                  className="mx-auto h-auto w-16 overflow-hidden rounded-lg sm:w-32"
-                  src={posterUrl}
-                  blurredDataURL={posterBlurDataURL}
-                  placeholder={posterBlurDataURL ? "blur" : "empty"}
-                />
+                <div className="relative mx-auto aspect-video w-16 overflow-hidden rounded-lg xs:mx-0 sm:w-32">
+                  <Image
+                    src={posterUrl}
+                    blurredDataURL={posterBlurDataURL}
+                    placeholder={posterBlurDataURL ? "blur" : "empty"}
+                    layout="fill"
+                  />
+                </div>
               </div>
 
               <div className="flex flex-1 flex-grow flex-col items-center p-3">

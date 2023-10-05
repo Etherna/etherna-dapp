@@ -1,6 +1,5 @@
 import React, { forwardRef, useCallback, useMemo, useRef, useState } from "react"
-import { MediaOutlet, MediaPlayer } from "@vidstack/react"
-import { isHLSProvider } from "vidstack"
+import { isHLSProvider, MediaPlayer, MediaProvider } from "@vidstack/react"
 
 import BufferingIndicator from "./slices/BufferingIndicator"
 import ClickToPlay from "./slices/ClickToPlay"
@@ -10,12 +9,13 @@ import Toolbar from "./slices/Toolbar"
 import TouchOverlay from "./slices/TouchOverlay"
 import VideoStarter from "./slices/VideoStarter"
 import WatchOn from "./slices/WatchOn"
+import Fraction from "@/classes/Fraction"
 import usePlayerStore from "@/stores/player"
 import { isTouchDevice } from "@/utils/browser"
 import { withoutAccessToken } from "@/utils/jwt"
 
 import type { Profile, VideoSource } from "@etherna/sdk-js"
-import type { MediaErrorEvent, MediaPlayerElement } from "vidstack"
+import type { MediaErrorDetail, MediaErrorEvent, MediaPlayerInstance } from "@vidstack/react"
 
 type PlayerVideoProps = {
   title?: string
@@ -28,13 +28,13 @@ type PlayerVideoProps = {
   owner: Profile | undefined | null
   aspectRatio?: number | null
   xhrSetup?(xhr: XMLHttpRequest): void
-  onPlaybackError?(err: MediaErrorEvent): void
+  onPlaybackError?(err: MediaErrorDetail, event: MediaErrorEvent): void
 }
 
 const DEFAULT_SKIP = 5
 const ACTIVE_TIMEOUT = 3000
 
-const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
+const PlayerVideo = forwardRef<MediaPlayerInstance, PlayerVideoProps>(
   (
     {
       title,
@@ -86,9 +86,8 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
             : withoutAccessToken(src)
         }
         poster={posterUrl}
-        aspectRatio={aspectRatio || 16 / 9}
-        onProviderChange={e => {
-          const provider = e.detail
+        aspectRatio={aspectRatio ? Fraction.fromDecimal(aspectRatio).toString() : "16 / 9"}
+        onProviderChange={provider => {
           if (isHLSProvider(provider)) {
             provider.library = () => import("hls.js")
             provider.config.autoStartLoad = false
@@ -104,7 +103,7 @@ const PlayerVideo = forwardRef<MediaPlayerElement, PlayerVideoProps>(
         crossorigin="anonymous"
         preload="none"
       >
-        <MediaOutlet className="aspect-[var(--media-aspect-ratio)] [&_video]:max-h-[80vh] [&_video]:w-full" />
+        <MediaProvider className="aspect-[var(--media-aspect-ratio)] [&_video]:max-h-[80vh] [&_video]:w-full" />
 
         {error && <ErrorBanner />}
 

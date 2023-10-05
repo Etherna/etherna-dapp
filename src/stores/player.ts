@@ -1,4 +1,4 @@
-import { isHLSProvider, isVideoProvider } from "vidstack"
+import { isHLSProvider, isVideoProvider } from "@vidstack/react"
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
@@ -7,8 +7,8 @@ import logger from "./middlewares/log"
 import { isTouchDevice } from "@/utils/browser"
 
 import type { VideoQuality, VideoSource } from "@etherna/sdk-js"
+import type { MediaPlayerInstance } from "@vidstack/react"
 import type { Draft } from "immer"
-import type { MediaPlayerElement } from "vidstack"
 
 export type PlayerQuality = "Auto" | "Audio" | VideoQuality
 
@@ -76,7 +76,7 @@ type SetFunc = (setFunc: (state: Draft<PlayerState>) => void) => void
 type GetFunc = () => PlayerState
 
 // move out from store to improve devtools performance
-let player: MediaPlayerElement
+let player: MediaPlayerInstance
 
 const getHlsProvider = () => {
   if (!player) return null
@@ -103,7 +103,7 @@ const setHlsQuality = (quality: PlayerQuality) => {
 }
 
 const actions = (set: SetFunc, get: GetFunc) => ({
-  loadPlayer(playerInstance: MediaPlayerElement) {
+  loadPlayer(playerInstance: MediaPlayerInstance) {
     player = playerInstance
 
     player.addEventListener("hls-manifest-loaded", e => {
@@ -122,13 +122,13 @@ const actions = (set: SetFunc, get: GetFunc) => ({
     })
     player.addEventListener("waiting", e => {
       set(state => {
-        state.isBuffering = player.$store.waiting()
-        state.buffered = player.$store.bufferedEnd()
+        state.isBuffering = player.state.waiting
+        state.buffered = player.state.bufferedEnd
       })
     })
     player.addEventListener("user-idle-change", () => {
       set(state => {
-        state.isIdle = player.$store.userIdle()
+        // state.isIdle = player.state.userIdle
       })
     })
     player.addEventListener("playing", e => {
@@ -139,7 +139,7 @@ const actions = (set: SetFunc, get: GetFunc) => ({
     })
     player.addEventListener("duration-change", e => {
       set(state => {
-        state.duration = player.$store.duration()
+        state.duration = player.state.duration
       })
     })
     player.addEventListener("volume-change", e => {
@@ -155,7 +155,7 @@ const actions = (set: SetFunc, get: GetFunc) => ({
     })
     player.addEventListener("time-update", e => {
       set(state => {
-        state.currentTime = player.$store.currentTime() || player.currentTime
+        state.currentTime = player.state.currentTime || player.currentTime
       })
     })
     player.addEventListener("ended", e => {
@@ -271,18 +271,18 @@ const actions = (set: SetFunc, get: GetFunc) => ({
   },
   isWaitingToLoad() {
     if (!player) return true
-    return player.$store.buffered().length === 0 && !player.$store.currentTime()
+    return player.state.buffered.length === 0 && !player.state.currentTime
   },
   togglePlay() {
     set(state => {
       if (!player) return
-      if (player.$store.playing()) {
+      if (player.state.playing) {
         player.pause()
       } else {
         player.play()
       }
 
-      state.isPlaying = player.$store.playing()
+      state.isPlaying = player.state.playing
     })
   },
   startPlaying() {
@@ -305,7 +305,7 @@ const actions = (set: SetFunc, get: GetFunc) => ({
         })
       } else if (videoProvider) {
         // it's an mp4 source
-        if (player.$store.canPlay()) {
+        if (player.state.canPlay) {
           onLoadStart()
         } else {
           console.error("Cannot play video")
@@ -324,7 +324,7 @@ const actions = (set: SetFunc, get: GetFunc) => ({
   },
   toggleFullScreen() {
     if (!player) return
-    if (player.$store.fullscreen()) {
+    if (player.state.fullscreen) {
       player.exitFullscreen()
     } else {
       player.enterFullscreen()
@@ -333,7 +333,7 @@ const actions = (set: SetFunc, get: GetFunc) => ({
   togglePiP() {
     if (!player) return
 
-    if (player.$store.pictureInPicture()) {
+    if (player.state.pictureInPicture) {
       player.exitPictureInPicture()
     } else {
       player.enterPictureInPicture()

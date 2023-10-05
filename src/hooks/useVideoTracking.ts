@@ -16,9 +16,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import type { MediaPlayerElement } from "vidstack"
+import type { MediaPlayerInstance } from "@vidstack/react"
 
-export default function useVideoTracking(mediaEl: MediaPlayerElement | null | undefined) {
+export default function useVideoTracking(mediaEl: MediaPlayerInstance | null | undefined) {
   const [tracker, setTracker] = useState<MediaAnalyticsTracker>()
   const resizeObserver = useRef<ResizeObserver>()
 
@@ -29,7 +29,7 @@ export default function useVideoTracking(mediaEl: MediaPlayerElement | null | un
 
     const MA = window.Matomo!.MediaAnalytics
     // find the actual resource / URL of the video
-    const resource = mediaEl.dataset.src || mediaEl.$store.source().src.toString()
+    const resource = mediaEl.el?.dataset.src || mediaEl.state.source.src.toString()
     // update tracker
     const videoTracker = new MA.MediaTracker("EthernaPlayer", MA.mediaType.VIDEO, resource)
     setTracker(videoTracker)
@@ -79,7 +79,7 @@ export default function useVideoTracking(mediaEl: MediaPlayerElement | null | un
     // we update the current made progress (time position) and duration of
     // the media. Not all players might give you that information
     tracker?.setMediaProgressInSeconds(mediaEl!.currentTime)
-    tracker?.setMediaTotalLengthInSeconds(mediaEl!.$store.duration())
+    tracker?.setMediaTotalLengthInSeconds(mediaEl!.state.duration)
 
     /**
      * it is important to call the tracker?.update() method regularly while the
@@ -102,7 +102,7 @@ export default function useVideoTracking(mediaEl: MediaPlayerElement | null | un
     // we update the current made progress (time position) and duration of
     // the media. Not all players might give you that information
     tracker?.setMediaProgressInSeconds(mediaEl!.currentTime)
-    tracker?.setMediaTotalLengthInSeconds(mediaEl!.$store.duration())
+    tracker?.setMediaTotalLengthInSeconds(mediaEl!.state.duration)
 
     // "seekFinish" is needed when the player has finished seeking or buffering.
     // It will start the timer again that tracks for how long the media has been played.
@@ -110,9 +110,9 @@ export default function useVideoTracking(mediaEl: MediaPlayerElement | null | un
   }, [tracker, mediaEl])
 
   const onResize = useCallback(() => {
-    tracker?.setWidth(mediaEl!.clientWidth)
-    tracker?.setHeight(mediaEl!.clientHeight)
-    tracker?.setFullscreen(mediaEl!.$store.fullscreen())
+    tracker?.setWidth(mediaEl!.el!.clientWidth)
+    tracker?.setHeight(mediaEl!.el!.clientHeight)
+    tracker?.setFullscreen(mediaEl!.state.fullscreen)
   }, [tracker, mediaEl])
 
   const startTracking = useCallback(() => {
@@ -121,9 +121,9 @@ export default function useVideoTracking(mediaEl: MediaPlayerElement | null | un
 
     const MA = window.Matomo!.MediaAnalytics
 
-    tracker.setWidth(mediaEl.clientWidth)
-    tracker.setHeight(mediaEl.clientHeight)
-    tracker.setFullscreen(mediaEl!.$store.fullscreen())
+    tracker.setWidth(mediaEl.el!.clientWidth)
+    tracker.setHeight(mediaEl.el!.clientHeight)
+    tracker.setFullscreen(mediaEl!.state.fullscreen)
 
     // the method `getMediaTitle` will try to get a media title from a
     // "data-matomo-title", "title" or "alt" HTML attribute. Sometimes it might be possible
@@ -132,7 +132,7 @@ export default function useVideoTracking(mediaEl: MediaPlayerElement | null | un
     tracker.setMediaTitle(title)
 
     // some media players let you already detect the total length of the video
-    tracker.setMediaTotalLengthInSeconds(mediaEl.$store.duration())
+    tracker.setMediaTotalLengthInSeconds(mediaEl.state.duration)
 
     // add event listeners
     mediaEl.addEventListener("play", onPlay, true)

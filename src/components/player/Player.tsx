@@ -29,7 +29,7 @@ import { getAccessToken } from "@/utils/jwt"
 import http from "@/utils/request"
 
 import type { Profile, VideoSource } from "@etherna/sdk-js"
-import type { MediaErrorEvent, MediaPlayerElement } from "vidstack"
+import type { MediaErrorDetail, MediaErrorEvent, MediaPlayerInstance } from "@vidstack/react"
 
 type PlayerProps = {
   hash: string
@@ -52,7 +52,7 @@ const Player: React.FC<PlayerProps> = ({
   embed,
   aspectRatio,
 }) => {
-  const [player, setPlayer] = useState<MediaPlayerElement | null>(null)
+  const [player, setPlayer] = useState<MediaPlayerInstance | null>(null)
   const currentHash = usePlayerStore(state => state.hash)
   const currentSource = usePlayerStore(state => state.currentSource)
   const isPlaying = usePlayerStore(state => state.isPlaying)
@@ -84,7 +84,7 @@ const Player: React.FC<PlayerProps> = ({
   }, [hash, sources])
 
   const onPlaybackError = useCallback(
-    async (err: MediaErrorEvent) => {
+    async (err: MediaErrorDetail, event: MediaErrorEvent) => {
       console.error(err)
 
       if (!currentSource?.url) return
