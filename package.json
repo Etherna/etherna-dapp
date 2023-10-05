@@ -26,7 +26,7 @@
     "@popperjs/core": "2.11.8",
     "@tippyjs/react": "4.2.6",
     "@types/mime-types": "2.1.1",
-    "@vidstack/react": "0.6.13",
+    "@vidstack/react": "1.1.6",
     "axios": "1.5.0",
     "blurhash": "2.0.5",
     "clsx": "2.0.0",
@@ -64,7 +64,6 @@
     "tailwind-merge": "1.14.0",
     "unified": "10.1.2",
     "uuid": "9.0.1",
-    "vidstack": "0.6.13",
     "xss": "1.0.14",
     "zod": "3.22.2",
     "zustand": "4.4.1"

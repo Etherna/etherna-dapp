@@ -152,7 +152,7 @@ export default {
     require("@tailwindcss/forms"),
     require("tailwind-scrollbar"),
     require("tailwindcss-safe-area"),
-    require("vidstack/tailwind.cjs"),
+    require("@vidstack/react/tailwind.cjs"),
     plugin(({ addUtilities, addVariant, matchUtilities, theme }) => {
       const utils = {
         ".absolute-center": {

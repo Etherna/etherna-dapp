@@ -39,7 +39,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ focus }) => {
     <div
       className={cn("flex w-full flex-col", {
         "bg-slate-700 dark:bg-slate-800": !floating,
-        "absolute bottom-0 bg-gradient-to-t from-black to-black/0 px-3 pt-12 user-idle:hidden paused:flex":
+        "user-idle:hidden paused:flex absolute bottom-0 bg-gradient-to-t from-black to-black/0 px-3 pt-12":
           floating,
       })}
       data-component="player-toolbar"
