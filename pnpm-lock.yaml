@@ -2179,8 +2179,8 @@ packages:
       which: 2.0.2
     dev: true
 
-  /crypto-js@4.1.1:
-    resolution: {integrity: sha512-o2JlM7ydqd3Qk9CA0L4NL6mTzU2sdx96a+oOfPu8Mkl/PK51vSyoi8/rQ8NknZtk44vq15lmhAj9CIAGwgeWKw==}
+  /crypto-js@4.2.0:
+    resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
     dev: false
 
   /crypto-ts@1.0.2(@angular/common@16.2.9)(@angular/core@16.2.9):
@@ -4079,7 +4079,7 @@ packages:
     resolution: {integrity: sha512-omAHoLdFcylnwZeHJahOnJBwd0r78JzhmVAmsQjLGrexAnQKiHW9Ilr9FlRD5qjMikmabvaucI4k49AbQLXhmQ==}
     engines: {node: '>=12.13.0'}
     dependencies:
-      crypto-js: 4.1.1
+      crypto-js: 4.2.0
       jwt-decode: 3.1.2
     dev: false
 
