@@ -108,7 +108,6 @@ export default function useIndexVideos(opts: SwarmVideosOptions = {}) {
         .map(video => video.preview.ownerAddress)
         .filter((address, index, self) => address && self.indexOf(address) === index) as string[]
 
-      console.log(beeClient.request.defaults)
       const profiles = await Promise.all(
         addresses.map(async address => {
           const profileReader = new SwarmProfile.Reader(address as EthAddress, {
