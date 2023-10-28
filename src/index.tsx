@@ -49,6 +49,11 @@ unsupportedRender(async () => {
 registerSW(getBasename() + "/fetch-sw.js", () => {
   navigator.serviceWorker.controller!.postMessage(JSON.stringify({ accessToken: getAccessToken() }))
   navigator.serviceWorker.controller!.postMessage(
-    JSON.stringify({ allowedOrigins: [urlOrigin(import.meta.env.VITE_APP_GATEWAY_URL)] })
+    JSON.stringify({
+      allowedOrigins: [
+        urlOrigin(import.meta.env.VITE_APP_GATEWAY_URL),
+        import.meta.env.VITE_APP_MATOMO_URL ? urlOrigin(import.meta.env.VITE_APP_MATOMO_URL) : null,
+      ].filter(Boolean),
+    })
   )
 })

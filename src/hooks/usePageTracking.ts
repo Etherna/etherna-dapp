@@ -16,11 +16,12 @@
 
 import { useEffect } from "react"
 import { useLocation } from "react-router-dom"
-import { useMatomo } from "@datapunt/matomo-tracker-react"
+
+import { useAnalytics } from "@/packages/analytics"
 
 export default function usePageTracking() {
   const { pathname, search } = useLocation()
-  const { trackPageView } = useMatomo()
+  const { trackPageView } = useAnalytics()
 
   useEffect(() => {
     trackPageView({

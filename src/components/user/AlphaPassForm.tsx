@@ -16,12 +16,12 @@
  */
 
 import React, { useCallback, useState } from "react"
-import { useMatomo } from "@datapunt/matomo-tracker-react"
 import axios from "axios"
 
 import { Button } from "@/components/ui/actions"
 import { Alert, FormGroup } from "@/components/ui/display"
 import { TextInput } from "@/components/ui/inputs"
+import { useAnalytics } from "@/packages/analytics"
 import { cn } from "@/utils/classnames"
 
 const whatChoices = [
@@ -40,7 +40,7 @@ const whatChoices = [
 ]
 
 const AlphaPassForm: React.FC = () => {
-  const { trackEvent } = useMatomo()
+  const { trackEvent } = useAnalytics()
 
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")

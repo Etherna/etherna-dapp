@@ -17,19 +17,19 @@
 
 import React, { useCallback, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { useMatomo } from "@datapunt/matomo-tracker-react"
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { XMarkIcon } from "@heroicons/react/24/solid"
 
 import { TextInput } from "@/components/ui/inputs"
 import { Topbar } from "@/components/ui/navigation"
+import { useAnalytics } from "@/packages/analytics"
 import routes from "@/routes"
 import { cn } from "@/utils/classnames"
 
 const SearchItem: React.FC = () => {
   const navigate = useNavigate()
-  const { trackSiteSearch } = useMatomo()
+  const { trackSiteSearch } = useAnalytics()
   const [showInput, setShowInput] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
 

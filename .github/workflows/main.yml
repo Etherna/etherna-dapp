@@ -39,11 +39,16 @@ jobs:
           node-version: 20
           architecture: "x64"
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
       - name: Build app
-        run: yarn build
+        run: pnpm build
 
       - name: Cache build artifacts
         uses: actions/cache@v3
