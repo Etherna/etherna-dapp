@@ -16,9 +16,11 @@
  */
 
 import React from "react"
-import { createInstance, MatomoProvider } from "@datapunt/matomo-tracker-react"
 
-const MatomoProviderFix = MatomoProvider as React.FC<any>
+import {
+  AnalyticsProvider as AnalyticsProviderInstance,
+  createInstance,
+} from "@/packages/analytics"
 
 const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   if (import.meta.env.VITE_APP_MATOMO_URL && import.meta.env.VITE_APP_MATOMO_SITE_ID) {
@@ -32,7 +34,7 @@ const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       },
     })
 
-    return <MatomoProviderFix value={instance}>{children}</MatomoProviderFix>
+    return <AnalyticsProviderInstance value={instance}>{children}</AnalyticsProviderInstance>
   }
 
   return <>{children}</>

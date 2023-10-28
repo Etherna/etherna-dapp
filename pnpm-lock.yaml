@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@datapunt/matomo-tracker-react':
-        specifier: 0.5.1
-        version: 0.5.1(react@18.2.0)
       '@etherna/sdk-js':
         specifier: 1.0.3
         version: 1.0.3(axios@1.5.0)(immer@10.0.2)(zustand@4.4.1)
@@ -599,19 +596,6 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
-
-  /@datapunt/matomo-tracker-js@0.5.1:
-    resolution: {integrity: sha512-9/MW9vt/BA5Db7tO6LqCeQKtuvBNjyq51faF3AzUmPMlYsJCnASIxcut3VqJKiribhUoey7aYbPIYuj9x4DLPA==}
-    dev: false
-
-  /@datapunt/matomo-tracker-react@0.5.1(react@18.2.0):
-    resolution: {integrity: sha512-lrNYM9hFL6XK0VAdtMb7MwZrLWhaAconx4c7gOGAMvoWuoVm+ZZIYFuKtfYdYMeBf0avxWtmKRwjZEg7T8jV2A==}
-    peerDependencies:
-      react: '>= 16.8.0'
-    dependencies:
-      '@datapunt/matomo-tracker-js': 0.5.1
-      react: 18.2.0
-    dev: false
 
   /@esbuild/android-arm64@0.18.20:
     resolution: {integrity: sha512-Nz4rJcchGDtENV0eMKUNa6L12zz2zBDXuhj/Vjh18zGqB44Bi7MBMSXjgunJgjRhCmKOjnPuZp4Mb6OKqtMHLQ==}

@@ -38,9 +38,6 @@ declare global {
       showCollectorDialog?: () => void
     }
 
-    // matomo
-    Matomo?: Matomo
-
     // polyfills
     webkitRequestAnimationFrame?: typeof window.requestAnimationFrame
     mozRequestAnimationFrame?: typeof window.requestAnimationFrame

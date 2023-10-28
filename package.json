@@ -19,7 +19,6 @@
     "tscheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@datapunt/matomo-tracker-react": "0.5.1",
     "@etherna/sdk-js": "1.0.3",
     "@ffmpeg/ffmpeg": "0.11.6",
     "@headlessui/react": "1.7.17",

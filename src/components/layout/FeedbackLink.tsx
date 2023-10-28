@@ -37,6 +37,7 @@ const FeedbackLink: React.FC<FeedbackLinkProps> = ({ wrapper: Wrapper, ...props 
       const script = document.createElement("script")
       script.src = import.meta.env.VITE_APP_FEEDBACK_URL
       script.async = true
+      script.crossOrigin = "anonymous"
       script.onload = () => {
         window.ATL_JQ_PAGE_PROPS = {
           triggerFunction: showCollectorDialog => {

@@ -15,8 +15,10 @@ self.addEventListener("fetch", function (event) {
 
   url.searchParams.delete("appendToken")
 
-  const newRequest = shouldAppendToken && isValidOrigin
-    ? new Request(url, {
+  let request = event.request
+
+  if (shouldAppendToken && isValidOrigin) {
+    request = new Request(url, {
       ...event.request,
       mode: "cors",
       headers: {
@@ -24,10 +26,16 @@ self.addEventListener("fetch", function (event) {
         "Authorization": self.accessToken ? `Bearer ${self.accessToken}` : undefined,
       }
     })
-    : event.request
+  }
+  if (url.pathname === "/matomo.js" && isValidOrigin) {
+    request = new Request(url, {
+      ...event.request,
+      mode: "no-cors",
+    })
+  }
 
   event.respondWith(
-    fetch(newRequest).then((response) => {
+    fetch(request).then((response) => {
       return response
     }).catch((error) => {
       console.warn(`SW fetch error for '${url}': ${error}`)

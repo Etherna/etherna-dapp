@@ -16,6 +16,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 
+import type { MediaAnalyticsTracker } from "@/packages/analytics"
 import type { MediaPlayerInstance } from "@vidstack/react"
 
 export default function useVideoTracking(mediaEl: MediaPlayerInstance | null | undefined) {
@@ -128,7 +129,7 @@ export default function useVideoTracking(mediaEl: MediaPlayerInstance | null | u
     // the method `getMediaTitle` will try to get a media title from a
     // "data-matomo-title", "title" or "alt" HTML attribute. Sometimes it might be possible
     // to retrieve the media title directly from the video or audio player
-    const title = MA.element.getMediaTitle(mediaEl)
+    const title = MA.element.getMediaTitle(mediaEl as any)
     tracker.setMediaTitle(title)
 
     // some media players let you already detect the total length of the video
