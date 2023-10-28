@@ -11,7 +11,7 @@ self.addEventListener("fetch", function (event) {
   const url = new URL(event.request.url)
 
   const isValidOrigin = self.allowedOrigins && self.allowedOrigins.includes(url.origin)
-  const shouldAppendToken = url.searchParams.has("appendToken") && !!self.accessToken
+  const shouldAppendToken = url.searchParams.has("appendToken") && !!self.accessToken && !event.request.headers.has("Authorization")
 
   url.searchParams.delete("appendToken")
 
