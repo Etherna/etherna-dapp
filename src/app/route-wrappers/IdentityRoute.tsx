@@ -42,7 +42,7 @@ const IdentityRoute: React.FC = () => {
       automaticSilentRenew={true}
       max_age={3600 * 24 * 30}
       userStore={new WebStorageStateStore({ store: window.localStorage })}
-      scope="openid profile offline_access ether_accounts userApi.gateway userApi.index userApi.credit"
+      scope="openid profile offline_access ether_accounts userApi.sso userApi.gateway userApi.index userApi.credit"
       onSigninCallback={onSigninCallback}
     >
       <IdentityRouteSilentRenew />
