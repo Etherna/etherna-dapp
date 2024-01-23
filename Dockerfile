@@ -5,7 +5,7 @@ WORKDIR /app
 COPY . .
 
 ENV VITE_APP_NAME="Etherna"
-ENV VITE_APP_TAGLINE="Eyes wide open"
+ENV VITE_APP_TAGLINE="Web3.0 Video Explorer"
 ENV VITE_APP_PUBLIC_URL="http://localhost:80"
 ENV VITE_APP_CMS_URL="https://cms.etherna.com"
 ENV VITE_APP_VERIFIED_ORIGINS="localhost;etherna.io"
