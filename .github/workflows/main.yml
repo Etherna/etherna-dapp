@@ -16,7 +16,7 @@ jobs:
 
     env:
       VITE_APP_NAME: "Etherna"
-      VITE_APP_TAGLINE: "Eyes wide open"
+      VITE_APP_TAGLINE: "Web3.0 Video Explorer"
       VITE_APP_PUBLIC_URL: ${{ secrets.PUBLIC_URL }}
       VITE_APP_CMS_URL: ${{ secrets.CMS_URL }}
       VITE_APP_VERIFIED_ORIGINS: "etherna.io"
