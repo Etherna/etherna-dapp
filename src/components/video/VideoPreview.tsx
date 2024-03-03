@@ -57,9 +57,9 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
 
   const [ownerAddress, profileName] = useMemo(() => {
     const ownerAddress = video.preview.ownerAddress
-    const profileName = video.owner?.name || shortenEthAddr(ownerAddress)
+    const profileName = video.owner?.name || video.owner?.ens || shortenEthAddr(ownerAddress)
     return [ownerAddress, profileName]
-  }, [video.preview.ownerAddress, video.owner?.name])
+  }, [video.preview.ownerAddress, video.owner?.name, video.owner?.ens])
 
   const profileAvatar = useMemo(() => {
     const profileAvatar = video.owner?.avatar
@@ -79,9 +79,10 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   }, [videoOffers])
 
   const profileLink = useMemo(() => {
-    const profileLink = ownerAddress ? routes.channel(ownerAddress) : null
+    const channelAddress = video.owner?.ens || ownerAddress
+    const profileLink = ownerAddress ? routes.channel(channelAddress) : null
     return profileLink
-  }, [ownerAddress])
+  }, [ownerAddress, video.owner?.ens])
 
   const videoLink = useMemo(() => {
     return decentralizedLink
@@ -104,7 +105,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
         state={{ video, ownerProfile: video.owner, videoOffers }}
       >
         <div
-          className={cn("relative flex w-full overflow-hidden rounded-sm before:pb-[56.25%]", {})}
+          className={cn("relative flex w-full overflow-hidden rounded-md before:pb-[56.25%]", {})}
         >
           <Image
             className="bg-gray-200 dark:bg-gray-700"
@@ -122,7 +123,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
             <div
               className={cn(
                 "absolute bottom-0 left-auto right-0 top-auto m-2 px-1.5 py-1",
-                "rounded-sm text-2xs font-semibold leading-none",
+                "rounded text-2xs font-semibold leading-none",
                 "bg-gray-900 text-gray-100 sm:py-0.5 sm:text-xs"
               )}
             >

@@ -16,23 +16,23 @@
  */
 
 import React, { useCallback, useEffect } from "react"
-import Tippy from "@tippyjs/react"
+import { isEthAddress } from "@etherna/sdk-js/utils"
 
 import Image from "@/components/common/Image"
 import { Skeleton } from "@/components/ui/display"
 import useErrorMessage from "@/hooks/useErrorMessage"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
+import routes from "@/routes"
 import { cn } from "@/utils/classnames"
-import { shortenEthAddr } from "@/utils/ethereum"
 import makeBlockies from "@/utils/make-blockies"
 import { getResponseErrorMessage } from "@/utils/request"
 
 import type { Profile } from "@etherna/sdk-js"
-import type { EthAddress } from "@etherna/sdk-js/clients"
+import type { EnsAddress, EthAddress } from "@etherna/sdk-js/clients"
 
 type ProfileInfoProps = {
   children: React.ReactNode
-  profileAddress: EthAddress
+  profileAddress: EthAddress | EnsAddress
   nav?: React.ReactNode
   actions?: React.ReactNode
   onFetchedProfile: (profile: Profile | null) => void
@@ -56,6 +56,10 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
 
   useEffect(() => {
     onFetchedProfile(profile)
+
+    if (isEthAddress(profileAddress) && profile?.ens) {
+      window.history.replaceState({}, "", routes.channel(profile.ens))
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile])
 
@@ -69,11 +73,14 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   }, [loadProfile, showError])
 
   return (
-    <div className="flex flex-wrap" data-component="profile-info">
-      <div className="flex min-h-24 w-full items-center overflow-hidden bg-gray-200 dark:bg-gray-800">
+    <div
+      className="mx-auto flex w-full max-w-screen-2xl flex-col px-4"
+      data-component="profile-info"
+    >
+      <div className="relative flex min-h-24 flex-grow items-center overflow-hidden rounded-xl bg-gray-200 dark:bg-gray-800 lg:min-h-32">
         {profile?.cover && (
           <Image
-            className="h-auto w-full"
+            className="absolute inset-0"
             sources={profile.cover.sources}
             placeholder="blur"
             blurredDataURL={profile.cover.blurredBase64}
@@ -84,8 +91,8 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
         )}
       </div>
 
-      <header className="flex w-full items-start p-4">
-        <div className={cn("-mt-8 shrink-0 md:w-56 md:pr-8")}>
+      <header className="mt-4 flex w-full items-start">
+        <div className={cn("shrink-0 md:w-56")}>
           <span
             className={cn(
               "relative mx-auto flex overflow-hidden rounded-full border-4",
@@ -112,19 +119,25 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
             "md:flex-row md:items-start md:justify-between md:space-x-4 md:space-y-0"
           )}
         >
-          <Skeleton show={isLoading}>
-            <Tippy content={profile?.name ?? profileAddress}>
+          <div className="flex flex-grow flex-col items-start">
+            <Skeleton show={isLoading}>
               <h1
                 className={cn(
-                  "mb-0 flex-grow overflow-hidden break-all",
-                  "text-left text-2xl font-semibold leading-[2.25rem]",
-                  "text-gray-900 dark:text-gray-100"
+                  "mb-0 overflow-hidden break-all",
+                  "text-left text-2xl/none font-semibold",
+                  "text-gray-900 dark:text-gray-100",
+                  {
+                    "text-gray-400 dark:text-gray-500": !profile?.name,
+                  }
                 )}
               >
-                {profile?.name || shortenEthAddr(profileAddress)}
+                {profile?.name || "Unknown channel name"}
               </h1>
-            </Tippy>
-          </Skeleton>
+            </Skeleton>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              @{profile?.ens || profileAddress}
+            </p>
+          </div>
           <div className="grid shrink-0 auto-cols-min gap-3">
             <div className="flex">{actions}</div>
           </div>

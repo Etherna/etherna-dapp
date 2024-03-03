@@ -26,13 +26,13 @@ import useRouteState from "@/hooks/useRouteState"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import type { VideoWithIndexes } from "@/types/video"
-import type { Profile } from "@etherna/sdk-js"
+import type { ProfileWithEns } from "@etherna/sdk-js"
 
 const WatchPage = () => {
   const { hash } = useParams()
   const routeState = useRouteState<{
     video: VideoWithIndexes
-    ownerProfile?: Profile
+    ownerProfile?: ProfileWithEns
     videoOffers: VideoOffersStatus
   }>()
 

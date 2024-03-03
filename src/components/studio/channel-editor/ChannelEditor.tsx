@@ -150,7 +150,10 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
         }
 
         await updateSwarmProfile(profileInfo)
-        updateProfile(profileInfo)
+        updateProfile({
+          ...profileInfo,
+          ens: profile?.ens ?? null,
+        })
 
         // clear prefetch
         window.prefetchData = undefined
@@ -159,6 +162,7 @@ const ChannelEditor = forwardRef<ChannelEditorHandler, ChannelEditorProps>(
         showError("Cannot save profile", error.message)
       }
     }, [
+      profile?.ens,
       profileAddress,
       defaultBatchId,
       hasExceededLimit,

@@ -135,7 +135,7 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
   }, [])
 
   const isHostEditable = useCallback((host: T) => {
-    return !EthernaUrls.includes(host.url) ?? true
+    return !EthernaUrls.includes(host.url)
   }, [])
 
   const selectHost = useCallback(

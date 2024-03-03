@@ -13,7 +13,13 @@ import logger from "./middlewares/log"
 
 import type { BatchLoadingType } from "@/components/common/BatchLoading"
 import type { ProcessedImage, Video } from "@etherna/sdk-js"
-import type { BatchId, BeeClient, PostageBatch, Reference } from "@etherna/sdk-js/clients"
+import type {
+  BatchId,
+  BeeClient,
+  EthAddress,
+  PostageBatch,
+  Reference,
+} from "@etherna/sdk-js/clients"
 import type { VideoQuality, VideoSourceRaw } from "@etherna/sdk-js/schemas/video"
 import type { Draft } from "immer"
 import type { StorageValue } from "zustand/middleware"
@@ -199,7 +205,7 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       }
     })
   },
-  setInitialState(ownerAddress: string, video?: Video | null) {
+  setInitialState(ownerAddress: EthAddress, video?: Video | null) {
     set(state => {
       if (state.initialized) return
 
@@ -208,7 +214,7 @@ const actions = (set: SetFunc, get: GetFunc) => ({
           source => !["hls", "dash"].includes(source.type)
         )
         state.initialSources = video.details?.sources
-        state.builder.initialize(video.reference, video.preview, video.details)
+        state.builder.initialize(ownerAddress, video.preview, video.details)
         state.reference = video.reference as Reference
         state.references = extractVideoReferences(video)
         state.encoding.status = needsReEncoding ? "idle" : "done"
