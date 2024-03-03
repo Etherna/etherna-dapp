@@ -4,7 +4,7 @@
   "version": "0.3.0",
   "author": "Mattia Dalzocchio",
   "license": "Apache-2.0",
-  "packageManager": "pnpm@8.9.2",
+  "packageManager": "pnpm@8.15.4",
   "scripts": {
     "dev": "vite --host",
     "start": "node scripts/etherna-services.mjs",
@@ -16,10 +16,10 @@
     "preview": "vite preview --port 3000",
     "format": "prettier --write src",
     "lint": "eslint \"**/*.{ts,tsx}\"",
-    "tscheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@etherna/sdk-js": "1.0.3",
+    "@etherna/sdk-js": "1.1.0",
     "@ffmpeg/ffmpeg": "0.11.6",
     "@headlessui/react": "1.7.17",
     "@heroicons/react": "2.0.18",

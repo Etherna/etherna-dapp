@@ -57,9 +57,9 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
 
   const [ownerAddress, profileName] = useMemo(() => {
     const ownerAddress = video.preview.ownerAddress
-    const profileName = video.owner?.name || shortenEthAddr(ownerAddress)
+    const profileName = video.owner?.name || video.owner?.ens || shortenEthAddr(ownerAddress)
     return [ownerAddress, profileName]
-  }, [video.preview.ownerAddress, video.owner?.name])
+  }, [video.preview.ownerAddress, video.owner?.name, video.owner?.ens])
 
   const profileAvatar = useMemo(() => {
     const profileAvatar = video.owner?.avatar
@@ -79,9 +79,10 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   }, [videoOffers])
 
   const profileLink = useMemo(() => {
-    const profileLink = ownerAddress ? routes.channel(ownerAddress) : null
+    const channelAddress = video.owner?.ens || ownerAddress
+    const profileLink = ownerAddress ? routes.channel(channelAddress) : null
     return profileLink
-  }, [ownerAddress])
+  }, [ownerAddress, video.owner?.ens])
 
   const videoLink = useMemo(() => {
     return decentralizedLink

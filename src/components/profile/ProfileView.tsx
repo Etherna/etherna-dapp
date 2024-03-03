@@ -30,10 +30,10 @@ import useEnvironmentStore from "@/stores/env"
 import useUserStore from "@/stores/user"
 
 import type { Profile } from "@etherna/sdk-js"
-import type { EthAddress } from "@etherna/sdk-js/clients"
+import type { EnsAddress, EthAddress } from "@etherna/sdk-js/clients"
 
 type ProfileViewProps = {
-  profileAddress: EthAddress
+  profileAddress: EthAddress | EnsAddress
 }
 
 const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {

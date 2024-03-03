@@ -20,17 +20,17 @@ import SwarmProfile from "@/classes/SwarmProfile"
 import useClientsStore from "@/stores/clients"
 import { wait } from "@/utils/promise"
 
-import type { Profile } from "@etherna/sdk-js"
-import type { EthAddress } from "@etherna/sdk-js/clients"
+import type { Profile, ProfileWithEns } from "@etherna/sdk-js"
+import type { EnsAddress, EthAddress } from "@etherna/sdk-js/clients"
 
 type SwarmProfileOptions = {
-  address: EthAddress
-  prefetchedProfile?: Profile
+  address: EthAddress | EnsAddress
+  prefetchedProfile?: ProfileWithEns
 }
 
 export default function useSwarmProfile(opts: SwarmProfileOptions) {
   const beeClient = useClientsStore(state => state.beeClient)
-  const [profile, setProfile] = useState<Profile | null>(opts.prefetchedProfile ?? null)
+  const [profile, setProfile] = useState<ProfileWithEns | null>(opts.prefetchedProfile ?? null)
   const [isLoading, setIsloading] = useState(false)
 
   // Returns
@@ -41,7 +41,7 @@ export default function useSwarmProfile(opts: SwarmProfileOptions) {
       beeClient,
     })
 
-    let profile: Profile = profileReader.emptyProfile()
+    let profile: ProfileWithEns | null = null
 
     try {
       const profileInfo = await profileReader.download()
@@ -52,6 +52,11 @@ export default function useSwarmProfile(opts: SwarmProfileOptions) {
       }
     } catch (error) {
       console.error(error)
+    }
+
+    if (!profile) {
+      // now empty profile might have fetched ENS name
+      profile = profileReader.emptyProfile()
     }
 
     setProfile(profile)

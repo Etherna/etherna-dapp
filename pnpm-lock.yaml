@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@etherna/sdk-js':
-        specifier: 1.0.3
-        version: 1.0.3(axios@1.6.0)(immer@10.0.3)(zustand@4.4.4)
+        specifier: link:/Users/mattia/Developer/Projects/Etherna/@etherna:sdk-js/dist
+        version: link:../@etherna:sdk-js/dist
       '@ffmpeg/ffmpeg':
         specifier: 0.11.6
         version: 0.11.6
@@ -831,18 +831,6 @@ packages:
     resolution: {integrity: sha512-mjZVbpaeMZludF2fsWLD0Z9gCref1Tk4i9+wddjRvpUNqqcndPkBD09N/Mapey0b3jaXbLm2kICwFv2E64QinA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
-
-  /@etherna/sdk-js@1.0.3(axios@1.6.0)(immer@10.0.3)(zustand@4.4.4):
-    resolution: {integrity: sha512-klmPW4UryEm5qBB875qkh7b+G+Awq4ExT7HQAXH90MDWIeX7i31NCYdH7zRv4fmT1BWUeTNMqaBz8lh3mgmakg==}
-    peerDependencies:
-      axios: '>=1.4'
-      immer: '>=10.0'
-      zustand: '>=4.3'
-    dependencies:
-      axios: 1.6.0
-      immer: 10.0.3
-      zustand: 4.4.4(@types/react@18.2.33)(immer@10.0.3)(react@18.2.0)
-    dev: false
 
   /@ffmpeg/ffmpeg@0.11.6:
     resolution: {integrity: sha512-uN8J8KDjADEavPhNva6tYO9Fj0lWs9z82swF3YXnTxWMBoFLGq3LZ6FLlIldRKEzhOBKnkVfA8UnFJuvGvNxcA==}
