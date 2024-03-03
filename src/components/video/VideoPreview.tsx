@@ -105,7 +105,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
         state={{ video, ownerProfile: video.owner, videoOffers }}
       >
         <div
-          className={cn("relative flex w-full overflow-hidden rounded-sm before:pb-[56.25%]", {})}
+          className={cn("relative flex w-full overflow-hidden rounded-md before:pb-[56.25%]", {})}
         >
           <Image
             className="bg-gray-200 dark:bg-gray-700"
@@ -123,7 +123,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
             <div
               className={cn(
                 "absolute bottom-0 left-auto right-0 top-auto m-2 px-1.5 py-1",
-                "rounded-sm text-2xs font-semibold leading-none",
+                "rounded text-2xs font-semibold leading-none",
                 "bg-gray-900 text-gray-100 sm:py-0.5 sm:text-xs"
               )}
             >

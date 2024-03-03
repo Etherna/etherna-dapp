@@ -73,11 +73,14 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   }, [loadProfile, showError])
 
   return (
-    <div className="flex flex-wrap" data-component="profile-info">
-      <div className="flex min-h-24 w-full items-center overflow-hidden bg-gray-200 dark:bg-gray-800">
+    <div
+      className="mx-auto flex w-full max-w-screen-2xl flex-col px-4"
+      data-component="profile-info"
+    >
+      <div className="relative flex min-h-24 flex-grow items-center overflow-hidden rounded-xl bg-gray-200 dark:bg-gray-800 lg:min-h-32">
         {profile?.cover && (
           <Image
-            className="h-auto w-full"
+            className="absolute inset-0"
             sources={profile.cover.sources}
             placeholder="blur"
             blurredDataURL={profile.cover.blurredBase64}
@@ -88,8 +91,8 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
         )}
       </div>
 
-      <header className="flex w-full items-start p-4">
-        <div className={cn("-mt-8 shrink-0 md:w-56 md:pr-8")}>
+      <header className="mt-4 flex w-full items-start">
+        <div className={cn("shrink-0 md:w-56")}>
           <span
             className={cn(
               "relative mx-auto flex overflow-hidden rounded-full border-4",
@@ -121,7 +124,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
               <h1
                 className={cn(
                   "mb-0 overflow-hidden break-all",
-                  "text-left text-2xl font-semibold leading-[2.25rem]",
+                  "text-left text-2xl/none font-semibold",
                   "text-gray-900 dark:text-gray-100",
                   {
                     "text-gray-400 dark:text-gray-500": !profile?.name,
