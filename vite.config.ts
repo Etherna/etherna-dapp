@@ -51,10 +51,12 @@ export default defineConfig(({ mode, command }) => {
       outDir: "build",
     },
     server: {
-      https: useHTTPS && {
-        key: fs.readFileSync("proxy/sslcert/key.pem"),
-        cert: fs.readFileSync("proxy/sslcert/cert.pem"),
-      },
+      https: useHTTPS
+        ? {
+            key: fs.readFileSync("proxy/sslcert/key.pem"),
+            cert: fs.readFileSync("proxy/sslcert/cert.pem"),
+          }
+        : undefined,
       port: 3000,
       headers: {
         "Cross-Origin-Embedder-Policy": "require-corp",
@@ -70,7 +72,10 @@ export default defineConfig(({ mode, command }) => {
     plugins: [
       htmlPlugin(env),
       react(),
-      svgr(),
+      svgr({
+        svgrOptions: { exportType: "named", ref: true, svgo: false, titleProp: true },
+        include: "**/*.svg",
+      }),
       eslintPlugin({ cache: false }),
       checker({
         typescript: true,

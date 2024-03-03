@@ -17,7 +17,6 @@
 
 import React, { useCallback, useEffect } from "react"
 import { isEthAddress } from "@etherna/sdk-js/utils"
-import Tippy from "@tippyjs/react"
 
 import Image from "@/components/common/Image"
 import { Skeleton } from "@/components/ui/display"
@@ -25,7 +24,6 @@ import useErrorMessage from "@/hooks/useErrorMessage"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
 import routes from "@/routes"
 import { cn } from "@/utils/classnames"
-import { shortenEthAddr } from "@/utils/ethereum"
 import makeBlockies from "@/utils/make-blockies"
 import { getResponseErrorMessage } from "@/utils/request"
 

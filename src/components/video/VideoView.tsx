@@ -33,12 +33,16 @@ import { withAccessToken } from "@/utils/jwt"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import type { VideoWithIndexes } from "@/types/video"
-import type { Profile } from "@etherna/sdk-js"
+import type { ProfileWithEns } from "@etherna/sdk-js"
 import type { EthAddress } from "@etherna/sdk-js/clients"
 
 type VideoViewProps = {
   reference: string
-  routeState?: { video: VideoWithIndexes; ownerProfile?: Profile; videoOffers: VideoOffersStatus }
+  routeState?: {
+    video: VideoWithIndexes
+    ownerProfile?: ProfileWithEns
+    videoOffers: VideoOffersStatus
+  }
   embed?: boolean
 }
 

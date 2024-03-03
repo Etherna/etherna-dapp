@@ -4,14 +4,14 @@ import { immer } from "zustand/middleware/immer"
 
 import logger from "./middlewares/log"
 
-import type { Profile } from "@etherna/sdk-js"
+import type { ProfileWithEns } from "@etherna/sdk-js"
 import type { BatchId, EthAddress, GatewayBatch } from "@etherna/sdk-js/clients"
 import type { Draft } from "immer"
 
 export type WalletType = "etherna" | "metamask"
 
 export type UserState = {
-  profile: Profile | undefined | null
+  profile: ProfileWithEns | undefined | null
   address: EthAddress | undefined
   currentWallet?: WalletType | null
   prevAddresses?: string[]
@@ -67,9 +67,10 @@ const actions = (set: SetFunc, get: GetFunc) => ({
         : state.batches
     })
   },
-  setProfile(profile: Profile) {
+  setProfile(profile: ProfileWithEns) {
     set(state => {
       state.profile = profile
+      state.ens = profile.ens
     })
   },
   setFreePostageBatchConsumed(isFreePostageBatchConsumed: boolean) {

@@ -42,7 +42,8 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({
 }) => {
   const markdown = useMemo(() => {
     const formattedMarkdown = forceNewLine ? value.replace(/\n/g, "<br />") : value
-    const html = filterXSS(marked(formattedMarkdown))
+    let html = marked(formattedMarkdown, { async: false }) as string
+    html = filterXSS(html)
     const safeLinksHtml = html.replace(
       /<a href="(.*?)">(.*?)<\/a>/g,
       (_, href: string, text: string) => {
