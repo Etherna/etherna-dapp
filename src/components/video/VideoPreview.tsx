@@ -194,11 +194,11 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
               </div>
             </Link>
           )}
-          {video.preview.createdAt && (
-            <div className="text-xs text-gray-600 dark:text-gray-500">
-              {dayjs.duration(dayjs(video.preview.createdAt).diff(dayjs())).humanize(true)}
-            </div>
-          )}
+          <div className="text-xs text-gray-600 dark:text-gray-500">
+            {video.preview.createdAt
+              ? dayjs.duration(dayjs(video.preview.createdAt).diff(dayjs())).humanize(true)
+              : "unknown publish date"}
+          </div>
           <div className={cn("mt-2 grid auto-cols-max grid-flow-col gap-3 empty:mt-0")}>
             {isVideoOffered && (
               <Badge prefix={<CreditIcon width={16} aria-hidden />} color="primary" small>
