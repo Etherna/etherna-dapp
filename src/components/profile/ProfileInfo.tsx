@@ -134,7 +134,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
                 {profile?.name || "Unknown channel name"}
               </h1>
             </Skeleton>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
               @{profile?.ens || profileAddress}
             </p>
           </div>
@@ -146,7 +146,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
 
       <div className="flex w-full flex-col md:flex-row">
         <div className="w-full shrink-0 p-4 md:max-w-xxs">{nav}</div>
-        <div className="flex-1 p-4">
+        <div className="flex-1 overflow-x-hidden py-4">
           {/* Main content */}
           {children}
         </div>

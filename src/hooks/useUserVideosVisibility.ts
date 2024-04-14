@@ -15,7 +15,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { urlOrigin } from "@etherna/sdk-js/utils"
+import { isInvalidReference, urlOrigin } from "@etherna/sdk-js/utils"
 
 import useErrorMessage from "./useErrorMessage"
 import IndexClient from "@/classes/IndexClient"
@@ -49,7 +49,7 @@ type UseUserVideosVisibilityOptions = Omit<
 let playlistResover: (() => Promise<Playlist>) | undefined
 
 export default function useUserVideosVisibility(
-  videos: Video[] | undefined,
+  videos: VideoWithIndexes[] | undefined,
   opts: UseUserVideosVisibilityOptions
 ) {
   const beeClient = useClientsStore(state => state.beeClient)
@@ -123,16 +123,20 @@ export default function useUserVideosVisibility(
           const indexesResults = await Promise.allSettled(
             indexClients.current!.map(async indexClient => {
               const indexValidation = await nullablePromise(
-                indexClient.videos.fetchHashValidation(video.reference)
+                isInvalidReference(video.reference)
+                  ? indexClient.videos.fetchValidations(
+                      video.indexesStatus[indexClient.url]?.indexReference ?? "0"
+                    )
+                  : indexClient.videos.fetchHashValidation(video.reference)
               )
               const status =
                 indexValidation === null
                   ? "unindexed"
                   : indexValidation.isValid === null
-                  ? "processing"
-                  : indexValidation.isValid
-                  ? "public"
-                  : "error"
+                    ? "processing"
+                    : indexValidation.isValid
+                      ? "public"
+                      : "error"
               const indexVisibility: VisibilityStatus = {
                 sourceType: "index",
                 sourceIdentifier: urlOrigin(indexClient.url)!,

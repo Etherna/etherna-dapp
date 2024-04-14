@@ -61,7 +61,7 @@ const SearchItem: React.FC = () => {
       )}
     >
       <div className="flex items-center space-x-2 px-2">
-        <MagnifyingGlassIcon width={22} strokeWidth={3} aria-hidden />
+        <MagnifyingGlassIcon width={20} strokeWidth={2.5} aria-hidden />
         <TextInput
           className="w-full md:w-auto"
           inputClassName={cn(
@@ -83,7 +83,7 @@ const SearchItem: React.FC = () => {
   ) : (
     <Topbar.Item
       as="div"
-      prefix={<MagnifyingGlassIcon width={22} strokeWidth={3} aria-hidden />}
+      prefix={<MagnifyingGlassIcon width={20} strokeWidth={2.5} aria-hidden />}
       onClick={() => setShowInput(true)}
     />
   )

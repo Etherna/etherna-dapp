@@ -19,13 +19,15 @@ import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
 import type { ProfileWithEns, Video, VideoPreview } from "@etherna/sdk-js"
 import type { IndexVideo } from "@etherna/sdk-js/clients"
 
-export type WithOwner<V extends Video | VideoPreview> = V & { owner: ProfileWithEns | undefined }
+export type WithOwner<V extends Video | VideoPreview> = Prettify<
+  V & { owner: ProfileWithEns | undefined }
+>
 
 export type WithOffersStatus<V extends Video | VideoPreview> = V & {
   offers: VideoOffersStatus | undefined
 }
 
-export type WithIndexes<V extends Video | VideoPreview> = V & { indexesStatus: IndexesStatus }
+export type WithIndexes<V extends Video | VideoPreview> = Prettify<V & IndexesStatus>
 
 export type VideoWithIndexes = WithIndexes<Video>
 
@@ -34,12 +36,14 @@ export type VideoWithOwner = WithOwner<Video>
 export type VideoWithAll = WithIndexes<WithOffersStatus<WithOwner<Video>>>
 
 export type IndexesStatus = {
-  [url: string]:
-    | {
-        indexReference: string
-        userVote?: IndexVideo["currentVoteValue"]
-        totUpvotes?: number
-        totDownvotes?: number
-      }
-    | undefined
+  indexesStatus: {
+    [url: string]:
+      | {
+          indexReference: string
+          userVote?: IndexVideo["currentVoteValue"]
+          totUpvotes?: number
+          totDownvotes?: number
+        }
+      | undefined
+  }
 }

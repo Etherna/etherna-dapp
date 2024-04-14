@@ -29,13 +29,14 @@ import { getResponseErrorMessage } from "@/utils/request"
 
 import type { WithIndexes, WithOffersStatus, WithOwner } from "@/types/video"
 import type { Video } from "@etherna/sdk-js"
-import type { EthAddress, Reference } from "@etherna/sdk-js/clients"
+import type { EthAddress } from "@etherna/sdk-js/clients"
 
 type SwarmVideosOptions = {
   gridRef?: React.RefObject<HTMLElement>
   query?: string
   seedLimit?: number
   fetchLimit?: number
+  source?: string
 }
 
 type VideoWithAll = WithOwner<WithIndexes<WithOffersStatus<Video>>>
@@ -44,7 +45,8 @@ export default function useIndexVideos(opts: SwarmVideosOptions = {}) {
   const indexClient = useClientsStore(state => state.indexClient)
   const beeClient = useClientsStore(state => state.beeClient)
   const gatewayClient = useClientsStore(state => state.gatewayClient)
-  const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
+  const currentIndexUrl = useExtensionsStore(state => state.currentIndexUrl)
+  const [indexUrl, setIndexUrl] = useState(opts.source ?? currentIndexUrl)
   const [videos, setVideos] = useState<VideoWithAll[]>()
   const [page, setPage] = useState(0)
   const [isFetching, setIsFetching] = useState(false)
@@ -64,7 +66,7 @@ export default function useIndexVideos(opts: SwarmVideosOptions = {}) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts.query])
+  }, [indexUrl, opts.query])
 
   useEffect(() => {
     if (!fetchCount) return
@@ -82,17 +84,16 @@ export default function useIndexVideos(opts: SwarmVideosOptions = {}) {
         await handler.fetchOffers({ withByWhom: false })
 
         const fetchedVideosReferences = videos.map(video => video.reference)
-        setVideos(
-          videos =>
-            videos?.map(video => {
-              const offers = fetchedVideosReferences.includes(video.reference)
-                ? parseReaderStatus(handler, video, undefined)
-                : video.offers
-              return {
-                ...video,
-                offers,
-              }
-            })
+        setVideos(videos =>
+          videos?.map(video => {
+            const offers = fetchedVideosReferences.includes(video.reference)
+              ? parseReaderStatus(handler, video, undefined)
+              : video.offers
+            return {
+              ...video,
+              offers,
+            }
+          })
         )
       } catch (error) {
         console.error(error)

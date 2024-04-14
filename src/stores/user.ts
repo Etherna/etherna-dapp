@@ -24,12 +24,14 @@ export type UserState = {
   isSignedInIndex?: boolean
   isSignedInGateway?: boolean
   isFreePostageBatchConsumed?: boolean
+  needsFunds: boolean
 }
 
 const getInitialState = (): UserState => ({
   address: undefined,
   profile: undefined,
   batches: [],
+  needsFunds: false,
 })
 
 type SetFunc = (setFunc: (state: Draft<UserState>) => void) => void
@@ -51,6 +53,7 @@ const actions = (set: SetFunc, get: GetFunc) => ({
     set(state => {
       state.credit = credit
       state.creditUnlimited = unlimited
+      state.needsFunds = (!credit || credit <= 0) && !unlimited
     })
   },
   setBatches(batches: GatewayBatch[]) {
@@ -89,6 +92,7 @@ const actions = (set: SetFunc, get: GetFunc) => ({
     set(state => {
       state.isSignedInIndex = isSignedInIndex
       state.isSignedInGateway = isSignedInGateway
+      state.needsFunds = !isSignedInGateway
     })
   },
   signout() {
@@ -106,6 +110,7 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       state.isSignedInIndex = false
       state.isSignedInGateway = false
       state.isFreePostageBatchConsumed = false
+      state.needsFunds = true
     })
   },
 })

@@ -28,7 +28,7 @@ const SigninButton: React.FC<SigninButtonProps> = ({ children }) => {
   const { signinRedirect } = useAuth()
 
   return (
-    <Button type="button" onClick={() => signinRedirect()} lighter>
+    <Button type="button" onClick={() => signinRedirect()}>
       {children}
     </Button>
   )

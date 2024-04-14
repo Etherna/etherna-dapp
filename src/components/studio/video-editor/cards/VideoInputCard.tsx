@@ -40,7 +40,10 @@ const VideoInputCard: React.FC<VideoInputCardProps> = ({ disabled }) => {
           onSelectFile={setInputFile}
           disabled={disabled}
           confirmChildren={({ name }) => (
-            <div>
+            <div className="flex flex-col items-start space-y-2">
+              <div className="rounded bg-gradient-to-r from-rose-500 via-fuchsia-500 to-indigo-500 px-2 py-0.5 text-sm font-semibold text-white">
+                Experimental encoding
+              </div>
               <p>
                 You selected <span className="text-black dark:text-white">{name}</span>.{" "}
               </p>

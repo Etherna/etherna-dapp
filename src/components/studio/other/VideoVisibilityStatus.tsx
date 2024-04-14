@@ -38,8 +38,8 @@ const VideoVisibilityStatus: React.FC<VideoVisibilityStatusProps> = ({
           sourceVisibility.status === "public"
             ? "success"
             : sourceVisibility.status === "processing"
-            ? "info"
-            : "muted"
+              ? "info"
+              : "muted"
         }
         variant="outline"
         small

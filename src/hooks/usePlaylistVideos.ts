@@ -16,7 +16,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import useErrorMessage from "./useErrorMessage"
 import useSmartFetchCount from "./useSmartFetchCount"
 import BeeClient from "@/classes/BeeClient"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"

@@ -62,7 +62,12 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
   }, [auth.isLoading, auth.user])
 
   const fetchIdentity = async () => {
-    if (!auth.user) return
+    if (!auth.user) {
+      updateSignedIn(false, false)
+      setCredit(null, false)
+
+      return
+    }
 
     toggleProfileLoading(true)
 
