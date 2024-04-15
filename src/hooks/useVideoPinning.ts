@@ -112,8 +112,8 @@ function parseReaderStatus(
       pinnedBy: status.pinnedBy ?? [],
     })),
     userPinnedResourses: userAddress
-      ? (handlerVideoResources.map(status => status.reference) ?? []).filter(
-          reference => handler.getReferenceStatus(reference)?.pinnedBy?.includes(userAddress)
+      ? (handlerVideoResources.map(status => status.reference) ?? []).filter(reference =>
+          handler.getReferenceStatus(reference)?.pinnedBy?.includes(userAddress)
         )
       : [],
     userUnPinnedResourses: userAddress
@@ -147,7 +147,7 @@ function getStatus(handler: EthernaPinningHandler, video: Video, byAddress?: str
     ? fullyPinned
       ? "full"
       : allSourcesPinned
-      ? "sources"
-      : "partial"
+        ? "sources"
+        : "partial"
     : "none"
 }

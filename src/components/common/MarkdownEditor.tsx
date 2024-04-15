@@ -301,8 +301,8 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({ children, blockType, bloc
   const isActive = mark
     ? isMarkActive(editor, mark)
     : blockType
-    ? isBlockActive(editor, blockType, blockValue!)
-    : false
+      ? isBlockActive(editor, blockType, blockValue!)
+      : false
 
   return (
     <button

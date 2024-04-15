@@ -38,12 +38,12 @@ const VideoProgressCard: React.FC<VideoProgressCardProps> = ({ className, disabl
             encoding.status === "progress"
               ? "progress-rainbow"
               : encoding.status === "loading"
-              ? "progress"
-              : encoding.status === "done"
-              ? "done"
-              : encoding.status === "error"
-              ? "error"
-              : undefined
+                ? "progress"
+                : encoding.status === "done"
+                  ? "done"
+                  : encoding.status === "error"
+                    ? "error"
+                    : undefined
           }
         />
         <ProgressCard
@@ -56,21 +56,21 @@ const VideoProgressCard: React.FC<VideoProgressCardProps> = ({ className, disabl
             batch.status === undefined && batch.batchId
               ? "done"
               : batch.status === "not-found" || batch.status === "rejected"
-              ? "error"
-              : ["creating", "updating", "fetching", "propagation"].includes(batch.status!)
-              ? "progress"
-              : undefined
+                ? "error"
+                : ["creating", "updating", "fetching", "propagation"].includes(batch.status!)
+                  ? "progress"
+                  : undefined
           }
           message={
             batch.status === "creating"
               ? "Creating postage batch"
               : batch.status === "updating"
-              ? "Updating batch"
-              : batch.status === "fetching"
-              ? "Loading batch"
-              : batch.status === "propagation"
-              ? "Waiting for batch propagation"
-              : undefined
+                ? "Updating batch"
+                : batch.status === "fetching"
+                  ? "Loading batch"
+                  : batch.status === "propagation"
+                    ? "Waiting for batch propagation"
+                    : undefined
           }
         >
           {(batch.status === "not-found" || batch.status === "rejected") && (
@@ -88,10 +88,10 @@ const VideoProgressCard: React.FC<VideoProgressCardProps> = ({ className, disabl
             upload.status === "progress"
               ? "progress"
               : upload.status === "done"
-              ? "done"
-              : upload.status === "error"
-              ? "error"
-              : undefined
+                ? "done"
+                : upload.status === "error"
+                  ? "error"
+                  : undefined
           }
         >
           {upload.status === "error" && (
@@ -121,12 +121,12 @@ const ProgressCard: React.FC<ProgressCardProps> = ({
           status === "progress"
             ? "primary"
             : status === "progress-rainbow"
-            ? "rainbow"
-            : status === "done"
-            ? "success"
-            : status === "error"
-            ? "error"
-            : "muted"
+              ? "rainbow"
+              : status === "done"
+                ? "success"
+                : status === "error"
+                  ? "error"
+                  : "muted"
         }
         progress={progress}
         indeterminate={indeterminate}
