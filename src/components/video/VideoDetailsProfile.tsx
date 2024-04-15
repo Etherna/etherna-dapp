@@ -32,17 +32,17 @@ type VideoDetailsProfileProps = {
 const VideoDetailsProfile: React.FC<VideoDetailsProfileProps> = ({ owner }) => {
   return (
     <div className="mb-4 mt-8">
-      {owner?.address && (
-        <Link to={routes.channel(owner.address)}>
+      {owner?.preview.address && (
+        <Link to={routes.channel(owner.preview.address)}>
           <div className="inline-flex items-center">
-            <Avatar image={owner.avatar} address={owner.address} />
+            <Avatar image={owner.preview.avatar} address={owner.preview.address} />
             <h3
               className={cn(
                 "mb-0 ml-2 text-base font-semibold",
                 "text-gray-800 dark:text-gray-300"
               )}
             >
-              {owner.name || shortenEthAddr(owner.address)}
+              {owner.preview.name || shortenEthAddr(owner.preview.address)}
             </h3>
           </div>
         </Link>

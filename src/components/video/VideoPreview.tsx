@@ -57,14 +57,15 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
 
   const [ownerAddress, profileName] = useMemo(() => {
     const ownerAddress = video.preview.ownerAddress
-    const profileName = video.owner?.name || video.owner?.ens || shortenEthAddr(ownerAddress)
+    const profileName =
+      video.owner?.preview.name || video.owner?.ens || shortenEthAddr(ownerAddress)
     return [ownerAddress, profileName]
-  }, [video.preview.ownerAddress, video.owner?.name, video.owner?.ens])
+  }, [video.preview.ownerAddress, video.owner?.preview.name, video.owner?.ens])
 
   const profileAvatar = useMemo(() => {
-    const profileAvatar = video.owner?.avatar
+    const profileAvatar = video.owner?.preview.avatar
     return profileAvatar
-  }, [video.owner?.avatar])
+  }, [video.owner?.preview.avatar])
 
   const videoThumbnail = useMemo(() => {
     return video.preview.thumbnail

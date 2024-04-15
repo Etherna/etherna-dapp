@@ -44,7 +44,6 @@ export type VideosSource =
 export type UseUserVideosOptions = {
   sources: VideosSource[]
   fetchSource: VideosSource
-  profile: Profile
   limit?: number
 }
 

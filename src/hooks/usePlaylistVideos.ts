@@ -102,7 +102,7 @@ export default function usePlaylistVideos(
       const reader = new SwarmPlaylist.Reader(reference, {
         beeClient,
         playlistId: id,
-        playlistOwner: opts.owner?.address as EthAddress,
+        playlistOwner: opts.owner?.preview.address,
       })
 
       const playlist = await reader.download()

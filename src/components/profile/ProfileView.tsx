@@ -69,7 +69,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
 
   return (
     <>
-      <SEO title={profile?.name ?? profileAddress} />
+      <SEO title={profile?.preview.name ?? profileAddress} />
       <ProfileInfo
         profileAddress={profileAddress}
         nav={
@@ -116,8 +116,8 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
         {activeTab === "about" && (
           <ProfileAbout
             address={profileAddress}
-            description={profile?.description}
-            name={profile?.name}
+            description={profile?.details?.description}
+            name={profile?.preview.name}
           />
         )}
       </ProfileInfo>

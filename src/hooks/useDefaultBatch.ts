@@ -17,12 +17,18 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { BatchesHandler } from "@etherna/sdk-js/handlers"
 import { BatchUpdateType } from "@etherna/sdk-js/stores"
-import { getBatchSpace, parseGatewayBatch, parsePostageBatch } from "@etherna/sdk-js/utils"
+import {
+  EmptyReference,
+  getBatchSpace,
+  parseGatewayBatch,
+  parsePostageBatch,
+} from "@etherna/sdk-js/utils"
 
 import useBeeAuthentication from "./useBeeAuthentication"
 import useConfirmation from "./useConfirmation"
 import useSwarmProfile from "./useSwarmProfile"
 import BeeClient from "@/classes/BeeClient"
+import SwarmProfile from "@/classes/SwarmProfile"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useUIStore from "@/stores/ui"
@@ -58,9 +64,9 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false)
   const timeout = useRef<number>()
   const batchesCount = useRef(0)
-  const { updateProfile } = useSwarmProfile({
+  const { builder, updateProfile } = useSwarmProfile({
+    mode: "full",
     address: address!,
-    prefetchedProfile: profile ?? undefined,
   })
   const { waitAuth } = useBeeAuthentication()
   const { waitConfirmation } = useConfirmation()
@@ -166,17 +172,44 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
 
         setIsUpdatingProfile(true)
 
-        await updateProfile({
-          address: address!,
-          avatar: profile?.avatar ?? null,
-          cover: profile?.cover ?? null,
-          description: profile?.description ?? null,
-          name: profile?.name ?? address!,
-          birthday: profile?.birthday,
-          location: profile?.location,
-          website: profile?.website,
-          batchId: batch.id,
-        })
+        let preview = profile
+        let details
+        let reference
+
+        if (profile) {
+          const reader = new SwarmProfile.Reader(address!, {
+            beeClient,
+            prefetchData: {
+              preview: profile,
+            },
+          })
+          const fullProfile = await reader.download({ mode: "full" })
+
+          reference = fullProfile?.reference
+          preview = fullProfile?.preview
+          details = fullProfile?.details
+        }
+
+        if (!preview) {
+          preview = {
+            address: address!,
+            avatar: profile?.avatar ?? null,
+            name: profile?.name ?? "",
+            batchId: batch.id,
+          }
+        }
+        if (!details) {
+          details = {
+            cover: null,
+            description: null,
+          }
+        }
+
+        preview.batchId = batch.id
+
+        builder.initialize(reference ?? EmptyReference, preview, details)
+
+        await updateProfile(builder)
 
         setIsUpdatingProfile(false)
       }
@@ -184,8 +217,9 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     [
       opts.saveAfterCreate,
       beeClient,
-      address,
       profile,
+      builder,
+      address,
       updateBeeClient,
       setDefaultBatch,
       waitConfirmation,

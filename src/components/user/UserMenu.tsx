@@ -18,7 +18,7 @@
 import React from "react"
 import { useAuth } from "react-oidc-context"
 
-import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline"
+import { ArrowRightEndOnRectangleIcon } from "@heroicons/react/24/outline"
 import { EllipsisVerticalIcon } from "@heroicons/react/24/solid"
 
 import SharedMenuItems from "./SharedMenuItems"
@@ -76,7 +76,7 @@ const UserMenu: React.FC = () => {
                         signoutRedirect()
                       }, 100)
                     }}
-                    icon={<ArrowRightOnRectangleIcon strokeWidth={2} />}
+                    icon={<ArrowRightEndOnRectangleIcon strokeWidth={2} />}
                   >
                     Sign out
                   </Dropdown.Item>

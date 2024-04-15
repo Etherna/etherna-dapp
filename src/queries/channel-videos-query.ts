@@ -117,7 +117,7 @@ export const useChannelVideosQuery = (opts: ChannelVideosQueryOptions) => {
       } else if (opts.source === "channel") {
         if (!channelPlaylist.current) {
           const ownerAddress =
-            opts.profile?.address ??
+            opts.profile?.preview.address ??
             (isEnsAddress(opts.address) ? await fetchAddressFromEns(opts.address) : opts.address)
 
           if (!ownerAddress) {

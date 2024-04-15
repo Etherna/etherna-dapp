@@ -179,11 +179,13 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
 
     try {
       const profileReader = new SwarmProfile.Reader(address, { beeClient })
-      const profile = await profileReader.download()
+      const profile = await profileReader.download({
+        mode: "preview",
+      })
 
       if (!profile) throw new Error("Cannot fetch profile")
 
-      setProfile(profile)
+      setProfile(profile.preview, profile.ens)
     } catch (error: any) {
       console.error(error)
     }

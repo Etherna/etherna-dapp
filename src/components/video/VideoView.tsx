@@ -56,6 +56,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
     fetchIndexStatus: true,
   })
   const { profile, loadProfile } = useSwarmProfile({
+    mode: "preview",
     address: video?.preview.ownerAddress as EthAddress,
     prefetchedProfile: routeState?.ownerProfile,
   })
@@ -104,7 +105,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
     <>
       <SEO
         title={`${video?.preview.title ?? reference} | ${
-          profile?.name || video?.preview.ownerAddress
+          profile?.preview.name || video?.preview.ownerAddress
         }`}
         description={removeMarkdown(video?.details?.description ?? "").replace(/\n/g, "")}
         type="video.other"

@@ -83,17 +83,6 @@ const Videos: React.FC = () => {
     return sources.find(s => s.id === source)!
   }, [source, sources])
 
-  const profile: Profile = useMemo(() => {
-    return {
-      batchId: defaultBatchId!,
-      address: address!,
-      avatar: profileInfo?.avatar ?? null,
-      cover: profileInfo?.cover ?? null,
-      name: profileInfo?.name ?? shortenEthAddr(address),
-      description: profileInfo?.description ?? null,
-    }
-  }, [address, profileInfo, defaultBatchId])
-
   const {
     isFetching,
     videos,
@@ -103,7 +92,6 @@ const Videos: React.FC = () => {
   } = useUserVideos({
     fetchSource: currentSource,
     sources,
-    profile,
     limit: perPage,
   })
   const {

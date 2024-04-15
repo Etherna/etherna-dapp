@@ -17,6 +17,7 @@
 import { startTransition, useCallback, useEffect, useState } from "react"
 import { EthernaResourcesHandler } from "@etherna/sdk-js/handlers"
 import { VideoDeserializer } from "@etherna/sdk-js/serializers"
+import { EmptyReference } from "@etherna/sdk-js/utils"
 
 import useSmartFetchCount from "./useSmartFetchCount"
 import { parseReaderStatus } from "./useVideoOffers"
@@ -114,8 +115,10 @@ export default function useIndexVideos(opts: SwarmVideosOptions = {}) {
           const profileReader = new SwarmProfile.Reader(address as EthAddress, {
             beeClient,
           })
-          const profile = await profileReader.download()
-          return profile ?? profileReader.emptyProfile()
+          const profile = await profileReader.download({
+            mode: "preview",
+          })
+          return profile ?? profileReader.emptyProfile(EmptyReference)
         })
       )
       import.meta.env.DEV && (await wait(1000))
@@ -125,10 +128,10 @@ export default function useIndexVideos(opts: SwarmVideosOptions = {}) {
         for (const video of updatedVideos) {
           if (!video.owner) {
             const profile =
-              profiles.find(profile => profile?.address === video.preview.ownerAddress) ??
+              profiles.find(profile => profile?.preview.address === video.preview.ownerAddress) ??
               new SwarmProfile.Reader(video.preview.ownerAddress as EthAddress, {
                 beeClient,
-              }).emptyProfile()
+              }).emptyProfile(EmptyReference)
             video.owner = profile
           }
         }

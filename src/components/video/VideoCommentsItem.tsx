@@ -51,6 +51,7 @@ const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({
   const indexClient = useClientsStore(state => state.indexClient)
   const { creationDateTime, text, ownerAddress } = comment
   const { profile, isLoading, loadProfile } = useSwarmProfile({
+    mode: "preview",
     address: ownerAddress as EthAddress,
   })
   const [isDeleting, setIsDeleting] = useState(false)
@@ -58,7 +59,7 @@ const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({
   const { showError } = useErrorMessage()
 
   useEffect(() => {
-    if (!profile || ownerAddress !== profile.address) {
+    if (!profile || ownerAddress !== profile.preview.address) {
       loadProfile()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -93,7 +94,7 @@ const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({
   return (
     <div className="mb-3 flex items-start">
       <div className="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-700">
-        <Avatar className="h-full w-full" image={profile?.avatar} address={ownerAddress} />
+        <Avatar className="h-full w-full" image={profile?.preview.avatar} address={ownerAddress} />
       </div>
       <div className="ml-2 flex-1">
         <div className="flex items-center">
@@ -109,7 +110,7 @@ const VideoCommentsItem: React.FC<VideoCommentsItemProps> = ({
               }
             )}
           >
-            {profile?.name || shortenEthAddr(ownerAddress)}
+            {profile?.preview.name || shortenEthAddr(ownerAddress)}
           </Link>
           <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">
             {dayjs.duration(dayjs(creationDateTime).diff(dayjs())).humanize(true)}
