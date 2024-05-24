@@ -72,16 +72,17 @@ export default function useVideoOffers(
     }
 
     if (isRawVideo) {
+      const reference = opts!.reference as Reference
       const videoDeserializer = new VideoDeserializer(beeClient.url)
       const preview = videoDeserializer.deserializePreview(JSON.stringify(video), {
-        reference: opts!.reference!,
+        reference: reference,
       })
       const details = videoDeserializer.deserializeDetails(JSON.stringify(video), {
-        reference: opts!.reference!,
+        reference: reference,
       })
 
       return {
-        reference: opts!.reference! as Reference,
+        reference,
         preview,
         details,
       }

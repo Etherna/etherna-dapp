@@ -120,7 +120,7 @@ export default class VideoSaver {
       }
 
       const newVideo: Video = {
-        ...this.videoBuilder.getVideo("http://localhost:1633"),
+        ...this.videoBuilder.getVideo(this.options.beeClient.url),
         reference: newReference,
       }
 

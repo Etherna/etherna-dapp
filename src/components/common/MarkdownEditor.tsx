@@ -21,6 +21,7 @@ import React, {
   useEffect,
   useImperativeHandle,
   useMemo,
+  useRef,
   useState,
 } from "react"
 import isHotkey from "is-hotkey"
@@ -111,6 +112,7 @@ const SlateMarkdownEditor = forwardRef<SlateMarkdownEditorRef, SlateMarkdownEdit
     ref
   ) => {
     const editor = useMemo(() => withExtra(withHistory(withReact(createEditor()))), [])
+    const loaded = useRef(false)
     const [hasFocus, setHasFocus] = useState(false)
     const [charactersCount, setCharactersCount] = useState(0)
     const [hasExceededLimit, setHasExceededLimit] = useState(false)
@@ -148,15 +150,21 @@ const SlateMarkdownEditor = forwardRef<SlateMarkdownEditorRef, SlateMarkdownEdit
     )
 
     useEffect(() => {
-      if (initialValue) {
+      if (initialValue && !loaded.current) {
         updateCharactersCount(initialValue)
         // replace content
         markdownToSlate(initialValue).then(value => {
           try {
+            Transforms.setSelection(editor, {
+              anchor: { path: [0, 0], offset: 0 },
+              focus: { path: [0, 0], offset: 0 },
+            })
             editor.children = value
             editor.normalizeNode([editor, []])
           } catch (error) {}
         })
+
+        loaded.current = true
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [initialValue, editor])

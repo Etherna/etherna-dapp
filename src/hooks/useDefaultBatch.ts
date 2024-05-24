@@ -19,6 +19,7 @@ import { BatchesHandler } from "@etherna/sdk-js/handlers"
 import { BatchUpdateType } from "@etherna/sdk-js/stores"
 import {
   EmptyReference,
+  getBatchPercentUtilization,
   getBatchSpace,
   parseGatewayBatch,
   parsePostageBatch,
@@ -55,7 +56,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
   const defaultBatch = useUserStore(state => state.batches.find(b => b.id === defaultBatchId))
   const isLoadingProfile = useUIStore(state => state.isLoadingProfile)
-  const updateBeeClient = useClientsStore(state => state.updateBeeClient)
+  const updateBeeClientBatches = useClientsStore(state => state.updateBeeClientBatches)
   const setDefaultBatch = useUserStore(state => state.setDefaultBatch)
   const [error, setError] = useState<string | undefined>()
   const [isFetchingBatch, setIsFetchingBatch] = useState(false)
@@ -91,18 +92,23 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
   const fetchDefaultBatch = useCallback(async () => {
     if (!defaultBatchId) return null
 
+    let batch
+
     try {
       if (gatewayType === "etherna-gateway") {
-        return await gatewayClient.users.fetchBatch(defaultBatchId)
+        batch = await gatewayClient.users.fetchBatch(defaultBatchId)
       } else {
         await waitAuth()
 
-        const batch = await beeClient.stamps.download(defaultBatchId)
-        return parsePostageBatch(batch)
+        batch = parsePostageBatch(await beeClient.stamps.download(defaultBatchId))
       }
-    } catch {
-      return null
+    } catch {}
+
+    if (batch && batch.usable && getBatchPercentUtilization(batch) < 1) {
+      return batch
     }
+
+    return null
   }, [beeClient, gatewayClient, defaultBatchId, gatewayType, waitAuth])
 
   const fetchBestUsableBatch = useCallback(async (): Promise<GatewayBatch | null> => {
@@ -148,13 +154,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
 
   const updateDefaultBatch = useCallback(
     async (batch: GatewayBatch, saveProfile = false) => {
-      updateBeeClient(
-        new BeeClient(beeClient.url, {
-          axios: beeClient.request,
-          postageBatches: [parseGatewayBatch(batch)],
-          signer: beeClient.signer,
-        })
-      )
+      updateBeeClientBatches([parseGatewayBatch(batch)])
       setDefaultBatch(batch)
 
       if (opts.saveAfterCreate && saveProfile) {
@@ -220,7 +220,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
       profile,
       builder,
       address,
-      updateBeeClient,
+      updateBeeClientBatches,
       setDefaultBatch,
       waitConfirmation,
       updateProfile,

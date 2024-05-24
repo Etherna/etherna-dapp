@@ -17,7 +17,6 @@
 import { useEffect, useRef } from "react"
 import { useAuth } from "react-oidc-context"
 
-import BeeClient from "@/classes/BeeClient"
 import SwarmProfile from "@/classes/SwarmProfile"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
@@ -38,7 +37,7 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
   const gatewayClient = useClientsStore(state => state.gatewayClient)
   const ssoClient = useClientsStore(state => state.ssoClient)
   const beeClient = useClientsStore(state => state.beeClient)
-  const updateBeeClient = useClientsStore(state => state.updateBeeClient)
+  const updateBeeClientSigner = useClientsStore(state => state.updateBeeClientSigner)
   const setBytesPrice = useSessionStore(state => state.setBytesPrice)
   const setFreePostageBatchConsumed = useUserStore(state => state.setFreePostageBatchConsumed)
   const setCredit = useUserStore(state => state.setCredit)
@@ -152,29 +151,23 @@ export default function useFetchIdentity(opts: AutoSigninOpts = {}) {
 
   const fetchProfile = async (address: EthAddress, identity?: SSOIdentity) => {
     // update bee client with signer for feed update
-    if (identity?.accountType === "web2") {
-      const beeClientSigner = new BeeClient(beeClient.url, {
-        signer: identity.etherManagedPrivateKey!,
-      })
-      updateBeeClient(beeClientSigner)
-    } else if (identity?.accountType === "web3") {
-      const beeClientSigner = new BeeClient(beeClient.url, {
-        signer: {
-          address: address as EthAddress,
-          sign: async digest => {
-            try {
+    if (identity?.etherManagedPrivateKey) {
+      updateBeeClientSigner(identity.etherManagedPrivateKey)
+    } else {
+      updateBeeClientSigner({
+        address: address as EthAddress,
+        sign: async digest => {
+          try {
+            return await signMessage(digest, address)
+          } catch (error: any) {
+            if (error.code === -32602) {
               return await signMessage(digest, address)
-            } catch (error: any) {
-              if (error.code === -32602) {
-                return await signMessage(digest, address)
-              } else {
-                throw error
-              }
+            } else {
+              throw error
             }
-          },
+          }
         },
       })
-      updateBeeClient(beeClientSigner)
     }
 
     try {

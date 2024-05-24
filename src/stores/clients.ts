@@ -8,6 +8,7 @@ import GatewayClient from "@/classes/GatewayClient"
 import IndexClient from "@/classes/IndexClient"
 import SSOClient from "@/classes/SSOClient"
 
+import type { PostageBatch, Signer } from "@etherna/sdk-js/clients"
 import type { Draft } from "immer"
 
 export type ClientsState = {
@@ -38,9 +39,14 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       state.gatewayClient = client
     })
   },
-  updateBeeClient: (client: BeeClient) => {
+  updateBeeClientSigner: (signer: Signer | string) => {
     set(state => {
-      state.beeClient = client
+      state.beeClient.updateSigner(signer)
+    })
+  },
+  updateBeeClientBatches: (batches: PostageBatch[]) => {
+    set(state => {
+      state.beeClient.postageBatches = batches
     })
   },
 })
