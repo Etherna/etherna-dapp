@@ -131,7 +131,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
       const videosIndexes = videos.map<VideoWithIndexes>((video, i) => ({
         reference: video?.reference ?? (vids[i]!.reference as Reference),
         preview: video?.preview ?? {
-          reference: "",
+          reference: "" as Reference,
           title: vids[i]!.title,
           createdAt: vids[i]!.addedAt,
           duration: 0,
