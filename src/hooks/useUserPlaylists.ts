@@ -15,6 +15,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { EmptyReference } from "@etherna/sdk-js/utils"
 
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmUserPlaylists from "@/classes/SwarmUserPlaylists"
@@ -149,7 +150,7 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
   const uploadPlaylist = useCallback(
     async (playlist: Playlist) => {
       if (playlist.reference === "") {
-        playlist.reference = "0".repeat(64)
+        playlist.reference = EmptyReference
       }
       const playlistWriter = new SwarmPlaylist.Writer(playlist, {
         beeClient,

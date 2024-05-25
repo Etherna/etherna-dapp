@@ -17,6 +17,7 @@
 
 import React, { lazy, Suspense } from "react"
 import { Navigate, Route, Routes, useLocation } from "react-router-dom"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import AppLayoutRoute from "./route-wrappers/AppLayoutRoute"
 import AuthenticateRoute from "./route-wrappers/AuthenticateRoute"
@@ -131,12 +132,20 @@ const Callback = () => {
   return null
 }
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+})
+
 const Router = () => {
   const location = useLocation() as any
   const backgroundLocation = location.state?.backgroundLocation
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <Routes location={backgroundLocation || location}>
         <Route path="" element={<IdentityRoute />}>
           <Route path="" element={<StoreCleanupRoute />}>
@@ -194,7 +203,7 @@ const Router = () => {
           />
         </Routes>
       )}
-    </>
+    </QueryClientProvider>
   )
 }
 

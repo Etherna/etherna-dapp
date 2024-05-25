@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { BatchesHandler } from "@etherna/sdk-js/handlers"
-import { extractVideoReferences } from "@etherna/sdk-js/utils"
+import { extractVideoReferences, isInvalidReference } from "@etherna/sdk-js/utils"
 
 import useBatchPaymentConfirmation from "./useBatchPaymentConfirmation"
 import useErrorMessage from "./useErrorMessage"
@@ -89,7 +89,10 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
       const videosResults = await Promise.allSettled(
         videos
           // empty reference is a not found video
-          .filter(video => !!video.preview.reference)
+          .filter(
+            video =>
+              !!video.preview.reference && !isInvalidReference(video.preview.reference as Reference)
+          )
           .map(video => {
             const swarmVideoReader = new SwarmVideo.Reader(video.reference, {
               beeClient,

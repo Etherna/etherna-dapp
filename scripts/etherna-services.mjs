@@ -139,16 +139,19 @@ const execBee = () => {
   const adminPassword = hashSync(process.env.BEE_ADMIN_PASSWORD)
   const testnetParams = [
     `--mainnet=false`,
-    `--password='${process.env.BEE_PASSWORD}'`,
     `--full-node=true`,
-    `--swap-endpoint='${process.env.BEE_SWAP_ENDPOINT}'`,
+    `--password='${process.env.BEE_PASSWORD}'`,
+    `--blockchain-rpc-endpoint='${process.env.BEE_SWAP_ENDPOINT}'`,
     `--debug-api-enable=true`,
+    `--swap-enable=true`,
+    `--network-id=10`,
   ]
   const params = [
     process.env.BEE_MODE === "dev" ? "dev" : "start",
     `--admin-password='${adminPassword}'`,
     `--restricted`,
     `--cors-allowed-origins='*'`,
+    `--verbosity=5`,
     ...(process.env.BEE_MODE === "testnet" ? testnetParams : []),
   ]
   const execCms = `bee ${params.join(" ")}`

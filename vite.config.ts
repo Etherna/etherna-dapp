@@ -23,18 +23,6 @@ import { dynamicBase } from "vite-plugin-dynamic-base"
 import eslintPlugin from "vite-plugin-eslint"
 import svgr from "vite-plugin-svgr"
 
-function htmlPlugin(env: ReturnType<typeof loadEnv>) {
-  return {
-    name: "html-transform",
-    transformIndexHtml: {
-      enforce: "pre" as const,
-      transform: (html: string) => {
-        return html.replace(/\{\{(.*?)\}\}/g, (match, p1) => env[p1] ?? match)
-      },
-    },
-  }
-}
-
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, "")
@@ -70,7 +58,6 @@ export default defineConfig(({ mode, command }) => {
       alias: [{ find: "@", replacement: resolve(__dirname, "src") }],
     },
     plugins: [
-      htmlPlugin(env),
       react(),
       svgr({
         svgrOptions: { exportType: "named", ref: true, svgo: false, titleProp: true },

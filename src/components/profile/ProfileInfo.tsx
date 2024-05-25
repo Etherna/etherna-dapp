@@ -45,8 +45,11 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   actions,
   onFetchedProfile,
 }) => {
-  const { profile, isLoading, loadProfile } = useSwarmProfile({ address: profileAddress })
-  const profileName = profile?.name ? profile.name : profileAddress
+  const { profile, isLoading, loadProfile } = useSwarmProfile({
+    mode: "full",
+    address: profileAddress,
+  })
+  const profileName = profile?.preview.name ? profile?.preview.name : profileAddress
   const { showError } = useErrorMessage()
 
   useEffect(() => {
@@ -78,14 +81,14 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
       data-component="profile-info"
     >
       <div className="relative flex min-h-24 flex-grow items-center overflow-hidden rounded-xl bg-gray-200 dark:bg-gray-800 lg:min-h-32">
-        {profile?.cover && (
+        {profile?.details?.cover && (
           <Image
             className="absolute inset-0"
-            sources={profile.cover.sources}
+            sources={profile.details.cover.sources}
             placeholder="blur"
-            blurredDataURL={profile.cover.blurredBase64}
+            blurredDataURL={profile.details.cover.blurredBase64}
             layout="responsive"
-            aspectRatio={profile.cover.aspectRatio}
+            aspectRatio={profile.details.cover.aspectRatio}
             alt={profileName}
           />
         )}
@@ -103,9 +106,9 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
             <Skeleton show={isLoading}>
               <Image
                 className="mx-auto object-cover"
-                sources={profile?.avatar?.sources}
+                sources={profile?.preview.avatar?.sources}
                 placeholder="blur"
-                blurredDataURL={profile?.avatar?.blurredBase64}
+                blurredDataURL={profile?.preview.avatar?.blurredBase64}
                 layout="fill"
                 fallbackSrc={makeBlockies(profileAddress)}
                 alt={profileName}
@@ -127,14 +130,14 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
                   "text-left text-2xl/none font-semibold",
                   "text-gray-900 dark:text-gray-100",
                   {
-                    "text-gray-400 dark:text-gray-500": !profile?.name,
+                    "text-gray-400 dark:text-gray-500": !profile?.preview.name,
                   }
                 )}
               >
-                {profile?.name || "Unknown channel name"}
+                {profile?.preview.name || "Unknown channel name"}
               </h1>
             </Skeleton>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
               @{profile?.ens || profileAddress}
             </p>
           </div>
@@ -146,7 +149,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
 
       <div className="flex w-full flex-col md:flex-row">
         <div className="w-full shrink-0 p-4 md:max-w-xxs">{nav}</div>
-        <div className="flex-1 p-4">
+        <div className="flex-1 overflow-x-hidden py-4">
           {/* Main content */}
           {children}
         </div>

@@ -17,6 +17,7 @@
 import { startTransition, useCallback, useEffect, useState } from "react"
 import { EthernaResourcesHandler } from "@etherna/sdk-js/handlers"
 import { VideoDeserializer } from "@etherna/sdk-js/serializers"
+import { EmptyReference } from "@etherna/sdk-js/utils"
 
 import useSmartFetchCount from "./useSmartFetchCount"
 import { parseReaderStatus } from "./useVideoOffers"
@@ -29,13 +30,14 @@ import { getResponseErrorMessage } from "@/utils/request"
 
 import type { WithIndexes, WithOffersStatus, WithOwner } from "@/types/video"
 import type { Video } from "@etherna/sdk-js"
-import type { EthAddress, Reference } from "@etherna/sdk-js/clients"
+import type { EthAddress } from "@etherna/sdk-js/clients"
 
 type SwarmVideosOptions = {
   gridRef?: React.RefObject<HTMLElement>
   query?: string
   seedLimit?: number
   fetchLimit?: number
+  source?: string
 }
 
 type VideoWithAll = WithOwner<WithIndexes<WithOffersStatus<Video>>>
@@ -44,7 +46,8 @@ export default function useIndexVideos(opts: SwarmVideosOptions = {}) {
   const indexClient = useClientsStore(state => state.indexClient)
   const beeClient = useClientsStore(state => state.beeClient)
   const gatewayClient = useClientsStore(state => state.gatewayClient)
-  const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
+  const currentIndexUrl = useExtensionsStore(state => state.currentIndexUrl)
+  const [indexUrl, setIndexUrl] = useState(opts.source ?? currentIndexUrl)
   const [videos, setVideos] = useState<VideoWithAll[]>()
   const [page, setPage] = useState(0)
   const [isFetching, setIsFetching] = useState(false)
@@ -64,7 +67,7 @@ export default function useIndexVideos(opts: SwarmVideosOptions = {}) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts.query])
+  }, [indexUrl, opts.query])
 
   useEffect(() => {
     if (!fetchCount) return
@@ -82,17 +85,16 @@ export default function useIndexVideos(opts: SwarmVideosOptions = {}) {
         await handler.fetchOffers({ withByWhom: false })
 
         const fetchedVideosReferences = videos.map(video => video.reference)
-        setVideos(
-          videos =>
-            videos?.map(video => {
-              const offers = fetchedVideosReferences.includes(video.reference)
-                ? parseReaderStatus(handler, video, undefined)
-                : video.offers
-              return {
-                ...video,
-                offers,
-              }
-            })
+        setVideos(videos =>
+          videos?.map(video => {
+            const offers = fetchedVideosReferences.includes(video.reference)
+              ? parseReaderStatus(handler, video, undefined)
+              : video.offers
+            return {
+              ...video,
+              offers,
+            }
+          })
         )
       } catch (error) {
         console.error(error)
@@ -113,8 +115,10 @@ export default function useIndexVideos(opts: SwarmVideosOptions = {}) {
           const profileReader = new SwarmProfile.Reader(address as EthAddress, {
             beeClient,
           })
-          const profile = await profileReader.download()
-          return profile ?? profileReader.emptyProfile()
+          const profile = await profileReader.download({
+            mode: "preview",
+          })
+          return profile ?? profileReader.emptyProfile(EmptyReference)
         })
       )
       import.meta.env.DEV && (await wait(1000))
@@ -124,10 +128,10 @@ export default function useIndexVideos(opts: SwarmVideosOptions = {}) {
         for (const video of updatedVideos) {
           if (!video.owner) {
             const profile =
-              profiles.find(profile => profile?.address === video.preview.ownerAddress) ??
+              profiles.find(profile => profile?.preview.address === video.preview.ownerAddress) ??
               new SwarmProfile.Reader(video.preview.ownerAddress as EthAddress, {
                 beeClient,
-              }).emptyProfile()
+              }).emptyProfile(EmptyReference)
             video.owner = profile
           }
         }

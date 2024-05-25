@@ -101,8 +101,8 @@ export const isMarkActive = (editor: BaseEditor, format: TextLeaf) => {
 export type inferBlockTypeValue<T> = T extends "type"
   ? SlateElementType
   : T extends "align"
-  ? TextAlignment
-  : never
+    ? TextAlignment
+    : never
 
 export const toggleBlock = (editor: BaseEditor, blockType: ElementBlockType, value: string) => {
   const isActive = isBlockActive(editor, blockType, value)

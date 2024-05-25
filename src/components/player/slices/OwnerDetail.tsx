@@ -51,7 +51,7 @@ const OwnerDetail: React.FC<OwnerDetailProps> = ({ hash, title, owner }) => {
         >
           {owner && (
             <div className="relative mr-3 h-8 w-8 shrink-0 rounded-full shadow-sm shadow-black/25 md:h-12 md:w-12">
-              <Avatar size="fill" image={owner.avatar} address={owner.address} />
+              <Avatar size="fill" image={owner.preview.avatar} address={owner.preview.address} />
             </div>
           )}
           <div className="line-clamp-1 pt-1 leading-tight text-white shadow-black/75 drop-shadow md:pt-3 lg:line-clamp-3">
@@ -59,7 +59,7 @@ const OwnerDetail: React.FC<OwnerDetailProps> = ({ hash, title, owner }) => {
             {owner && (
               <>
                 <span> | </span>
-                <span>{owner.name || shortenEthAddr(owner.address)}</span>
+                <span>{owner.preview.name || shortenEthAddr(owner.preview.address)}</span>
               </>
             )}
           </div>

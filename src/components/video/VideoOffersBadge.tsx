@@ -53,10 +53,10 @@ const VideoOffersBadge: React.FC<VideoOffersBadgeProps> = ({ video, offersStatus
         offersStatus === "full"
           ? "primary"
           : offersStatus === "partial"
-          ? "indigo"
-          : offersStatus === "sources"
-          ? "info"
-          : "muted"
+            ? "indigo"
+            : offersStatus === "sources"
+              ? "info"
+              : "muted"
       }
     >
       {getLabel()}

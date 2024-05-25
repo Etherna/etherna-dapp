@@ -16,6 +16,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { EthernaResourcesHandler } from "@etherna/sdk-js/handlers"
+import { isInvalidReference } from "@etherna/sdk-js/utils"
 
 import useMounted from "./useMounted"
 import { parseReaderStatus } from "./useVideoOffers"
@@ -62,7 +63,9 @@ export default function useVideosResources(
     try {
       const videosToFetch = videos.filter(
         video =>
-          !videosOffersStatus?.[video.reference] && !videosQueue.current.includes(video.reference)
+          !videosOffersStatus?.[video.reference] &&
+          !videosQueue.current.includes(video.reference) &&
+          !isInvalidReference(video.reference)
       )
 
       videosQueue.current = [...videosQueue.current, ...videosToFetch.map(video => video.reference)]

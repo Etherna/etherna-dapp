@@ -24,7 +24,7 @@ import clientsStore from "@/stores/clients"
 import { nullablePromise } from "@/utils/promise"
 
 import type { VideoWithIndexes } from "@/types/video"
-import type { Profile } from "@etherna/sdk-js"
+import type { Profile, ProfileWithEns } from "@etherna/sdk-js"
 import type { EthAddress, IndexVideo, Reference } from "@etherna/sdk-js/clients"
 
 const match = /\/watch\/([^/]+)/
@@ -100,7 +100,9 @@ const fetch = async () => {
 
       const owner = video!.preview.ownerAddress as EthAddress
       const profileReader = new SwarmProfile.Reader(owner, { beeClient })
-      const profile = await profileReader.download()
+      const profile = await profileReader.download({
+        mode: "preview",
+      })
 
       // set prefetch data
       window.prefetchData = {}
@@ -121,7 +123,7 @@ const videoPrefetcher = {
 }
 
 export type VideoPrefetch = {
-  ownerProfile?: Profile | null
+  ownerProfile?: ProfileWithEns | null
   video?: VideoWithIndexes | null
 }
 

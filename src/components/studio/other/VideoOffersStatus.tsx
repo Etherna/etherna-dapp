@@ -49,10 +49,10 @@ const VideoOffersStatus: React.FC<VideoOffersStatusProps> = ({
             status === "full"
               ? "success"
               : status === "partial"
-              ? "indigo"
-              : status === "sources"
-              ? "info"
-              : "muted"
+                ? "indigo"
+                : status === "sources"
+                  ? "info"
+                  : "muted"
           }
           small
           prefix={<CurrencyDollarIcon width={16} aria-hidden />}

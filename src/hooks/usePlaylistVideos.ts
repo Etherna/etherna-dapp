@@ -16,7 +16,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import useErrorMessage from "./useErrorMessage"
 import useSmartFetchCount from "./useSmartFetchCount"
 import BeeClient from "@/classes/BeeClient"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
@@ -103,7 +102,7 @@ export default function usePlaylistVideos(
       const reader = new SwarmPlaylist.Reader(reference, {
         beeClient,
         playlistId: id,
-        playlistOwner: opts.owner?.address as EthAddress,
+        playlistOwner: opts.owner?.preview.address,
       })
 
       const playlist = await reader.download()

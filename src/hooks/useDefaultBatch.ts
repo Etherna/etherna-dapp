@@ -17,12 +17,19 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { BatchesHandler } from "@etherna/sdk-js/handlers"
 import { BatchUpdateType } from "@etherna/sdk-js/stores"
-import { getBatchSpace, parseGatewayBatch, parsePostageBatch } from "@etherna/sdk-js/utils"
+import {
+  EmptyReference,
+  getBatchPercentUtilization,
+  getBatchSpace,
+  parseGatewayBatch,
+  parsePostageBatch,
+} from "@etherna/sdk-js/utils"
 
 import useBeeAuthentication from "./useBeeAuthentication"
 import useConfirmation from "./useConfirmation"
 import useSwarmProfile from "./useSwarmProfile"
 import BeeClient from "@/classes/BeeClient"
+import SwarmProfile from "@/classes/SwarmProfile"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useUIStore from "@/stores/ui"
@@ -49,7 +56,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
   const defaultBatch = useUserStore(state => state.batches.find(b => b.id === defaultBatchId))
   const isLoadingProfile = useUIStore(state => state.isLoadingProfile)
-  const updateBeeClient = useClientsStore(state => state.updateBeeClient)
+  const updateBeeClientBatches = useClientsStore(state => state.updateBeeClientBatches)
   const setDefaultBatch = useUserStore(state => state.setDefaultBatch)
   const [error, setError] = useState<string | undefined>()
   const [isFetchingBatch, setIsFetchingBatch] = useState(false)
@@ -58,9 +65,9 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false)
   const timeout = useRef<number>()
   const batchesCount = useRef(0)
-  const { updateProfile } = useSwarmProfile({
+  const { builder, updateProfile } = useSwarmProfile({
+    mode: "full",
     address: address!,
-    prefetchedProfile: profile ?? undefined,
   })
   const { waitAuth } = useBeeAuthentication()
   const { waitConfirmation } = useConfirmation()
@@ -85,18 +92,23 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
   const fetchDefaultBatch = useCallback(async () => {
     if (!defaultBatchId) return null
 
+    let batch
+
     try {
       if (gatewayType === "etherna-gateway") {
-        return await gatewayClient.users.fetchBatch(defaultBatchId)
+        batch = await gatewayClient.users.fetchBatch(defaultBatchId)
       } else {
         await waitAuth()
 
-        const batch = await beeClient.stamps.download(defaultBatchId)
-        return parsePostageBatch(batch)
+        batch = parsePostageBatch(await beeClient.stamps.download(defaultBatchId))
       }
-    } catch {
-      return null
+    } catch {}
+
+    if (batch && batch.usable && getBatchPercentUtilization(batch) < 1) {
+      return batch
     }
+
+    return null
   }, [beeClient, gatewayClient, defaultBatchId, gatewayType, waitAuth])
 
   const fetchBestUsableBatch = useCallback(async (): Promise<GatewayBatch | null> => {
@@ -142,13 +154,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
 
   const updateDefaultBatch = useCallback(
     async (batch: GatewayBatch, saveProfile = false) => {
-      updateBeeClient(
-        new BeeClient(beeClient.url, {
-          axios: beeClient.request,
-          postageBatches: [parseGatewayBatch(batch)],
-          signer: beeClient.signer,
-        })
-      )
+      updateBeeClientBatches([parseGatewayBatch(batch)])
       setDefaultBatch(batch)
 
       if (opts.saveAfterCreate && saveProfile) {
@@ -166,17 +172,44 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
 
         setIsUpdatingProfile(true)
 
-        await updateProfile({
-          address: address!,
-          avatar: profile?.avatar ?? null,
-          cover: profile?.cover ?? null,
-          description: profile?.description ?? null,
-          name: profile?.name ?? address!,
-          birthday: profile?.birthday,
-          location: profile?.location,
-          website: profile?.website,
-          batchId: batch.id,
-        })
+        let preview = profile
+        let details
+        let reference
+
+        if (profile) {
+          const reader = new SwarmProfile.Reader(address!, {
+            beeClient,
+            prefetchData: {
+              preview: profile,
+            },
+          })
+          const fullProfile = await reader.download({ mode: "full" })
+
+          reference = fullProfile?.reference
+          preview = fullProfile?.preview
+          details = fullProfile?.details
+        }
+
+        if (!preview) {
+          preview = {
+            address: address!,
+            avatar: profile?.avatar ?? null,
+            name: profile?.name ?? "",
+            batchId: batch.id,
+          }
+        }
+        if (!details) {
+          details = {
+            cover: null,
+            description: null,
+          }
+        }
+
+        preview.batchId = batch.id
+
+        builder.initialize(reference ?? EmptyReference, preview, details)
+
+        await updateProfile(builder)
 
         setIsUpdatingProfile(false)
       }
@@ -184,9 +217,10 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     [
       opts.saveAfterCreate,
       beeClient,
-      address,
       profile,
-      updateBeeClient,
+      builder,
+      address,
+      updateBeeClientBatches,
       setDefaultBatch,
       waitConfirmation,
       updateProfile,

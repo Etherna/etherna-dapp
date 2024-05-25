@@ -21,7 +21,10 @@ import type { TransformOptions } from "stream"
 export default class FilterTransformStream extends Transform {
   streamedBytes: number
 
-  constructor(public maxBodySize: number, public options?: TransformOptions) {
+  constructor(
+    public maxBodySize: number,
+    public options?: TransformOptions
+  ) {
     super(options)
   }
 

@@ -72,16 +72,17 @@ export default function useVideoOffers(
     }
 
     if (isRawVideo) {
+      const reference = opts!.reference as Reference
       const videoDeserializer = new VideoDeserializer(beeClient.url)
       const preview = videoDeserializer.deserializePreview(JSON.stringify(video), {
-        reference: opts!.reference!,
+        reference: reference,
       })
       const details = videoDeserializer.deserializeDetails(JSON.stringify(video), {
-        reference: opts!.reference!,
+        reference: reference,
       })
 
       return {
-        reference: opts!.reference! as Reference,
+        reference,
         preview,
         details,
       }
@@ -142,8 +143,8 @@ export const parseReaderStatus = (
     userOffersStatus: getStatus(handler, video, userAddress ?? "0x0"),
     globalOffers: handlerVideoResources,
     userOfferedResourses: userAddress
-      ? (handlerVideoResources.map(status => status.reference) ?? []).filter(
-          reference => handler.getReferenceStatus(reference)?.offeredBy.includes(userAddress)
+      ? (handlerVideoResources.map(status => status.reference) ?? []).filter(reference =>
+          handler.getReferenceStatus(reference)?.offeredBy.includes(userAddress)
         )
       : [],
     userUnOfferedResourses: userAddress
@@ -178,7 +179,7 @@ function getStatus(handler: EthernaResourcesHandler, video: Video, byAddress?: s
     ? fullyOffered
       ? "full"
       : allSourcesOffered
-      ? "sources"
-      : "partial"
+        ? "sources"
+        : "partial"
     : "none"
 }

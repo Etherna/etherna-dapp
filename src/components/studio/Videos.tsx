@@ -83,17 +83,6 @@ const Videos: React.FC = () => {
     return sources.find(s => s.id === source)!
   }, [source, sources])
 
-  const profile: Profile = useMemo(() => {
-    return {
-      batchId: defaultBatchId!,
-      address: address!,
-      avatar: profileInfo?.avatar ?? null,
-      cover: profileInfo?.cover ?? null,
-      name: profileInfo?.name ?? shortenEthAddr(address),
-      description: profileInfo?.description ?? null,
-    }
-  }, [address, profileInfo, defaultBatchId])
-
   const {
     isFetching,
     videos,
@@ -103,7 +92,6 @@ const Videos: React.FC = () => {
   } = useUserVideos({
     fetchSource: currentSource,
     sources,
-    profile,
     limit: perPage,
   })
   const {
@@ -206,8 +194,16 @@ const Videos: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <div
                   className={cn(
-                    "relative w-14 shrink-0 overflow-hidden md:w-20 lg:w-24 xl:w-28",
-                    "bg-gray-300 after:block after:pb-[56.25%] dark:bg-gray-600"
+                    "relative w-14 shrink-0 overflow-hidden rounded-sm md:w-20 lg:w-24 xl:w-28",
+                    "bg-gray-300 after:block after:pb-[56.25%] dark:bg-gray-600",
+                    {
+                      "border-red-500 bg-red-100 dark:bg-red-800": visibility[item.reference]?.some(
+                        v => v.status === "error"
+                      ),
+                      "border-blue-500 bg-blue-100 dark:bg-blue-800": visibility[
+                        item.reference
+                      ]?.some(v => v.status === "processing"),
+                    }
                   )}
                 >
                   <Image
@@ -221,7 +217,7 @@ const Videos: React.FC = () => {
                     }
                     layout="fill"
                   />
-                  <span className="absolute bottom-0 right-0 rounded-sm bg-black leading-none">
+                  <span className="absolute bottom-0.5 right-0.5 rounded-sm bg-black leading-none">
                     <span className="px-1 text-2xs font-semibold text-white dark:text-white">
                       <Time duration={item.preview.duration} />
                     </span>
@@ -236,8 +232,16 @@ const Videos: React.FC = () => {
                       ]?.indexReference || item.reference
                     )}
                   >
-                    <h3 className="text-sm font-bold leading-tight xl:text-base">
-                      {item.preview.title}
+                    <h3
+                      className={cn("text-sm font-bold leading-tight xl:text-base", {
+                        "font-medium text-red-500": visibility[item.reference]?.some(
+                          v => v.status === "error"
+                        ),
+                      })}
+                    >
+                      {visibility[item.reference]?.some(v => v.status === "error")
+                        ? "Validation error"
+                        : item.preview.title}
                     </h3>
                   </Link>
                   <div className="grid auto-cols-max grid-flow-col gap-2 lg:hidden">

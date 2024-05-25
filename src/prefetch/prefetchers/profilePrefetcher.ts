@@ -14,13 +14,15 @@
  *  limitations under the License.
  */
 
+import { EmptyReference } from "@etherna/sdk-js/utils"
+
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmProfile from "@/classes/SwarmProfile"
 import SwarmVideo from "@/classes/SwarmVideo"
 import clientsStore from "@/stores/clients"
 import { fullfilledPromisesResult } from "@/utils/promise"
 
-import type { Profile, Video } from "@etherna/sdk-js"
+import type { Profile, ProfileWithEns, Video } from "@etherna/sdk-js"
 import type { EthAddress } from "@etherna/sdk-js/clients"
 
 const match = /\/profile\/([^/]+)/
@@ -41,20 +43,27 @@ const fetch = async () => {
     const profileReader = new SwarmProfile.Reader(address, { beeClient })
 
     const [profileResult, channelResult] = await Promise.allSettled([
-      profileReader.download(),
+      profileReader.download({
+        mode: "full",
+      }),
       playlistReader.download(),
     ])
     const profile =
       profileResult.status === "fulfilled"
         ? profileResult.value
         : ({
-            address,
-            name: "",
-            batchId: null,
-            avatar: null,
-            cover: null,
-            description: null,
-          } as Profile)
+            reference: EmptyReference,
+            ens: null,
+            preview: {
+              name: "",
+              avatar: null,
+              batchId: null,
+            },
+            details: {
+              cover: null,
+              description: null,
+            },
+          } as ProfileWithEns)
 
     // Fetch channel playlists videos
     const playlistVideos = channelResult.status === "fulfilled" ? channelResult.value.videos : []
@@ -84,7 +93,7 @@ const profilePrefetcher = {
 }
 
 export type ProfilePrefetch = {
-  profile?: Profile | null
+  profile?: ProfileWithEns | null
   videos?: Video[] | null
 }
 

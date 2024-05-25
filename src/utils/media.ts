@@ -107,8 +107,8 @@ const videoSource = (videoObj: string | File | ArrayBuffer) =>
   typeof videoObj === "string"
     ? videoObj
     : videoObj instanceof File
-    ? URL.createObjectURL(videoObj)
-    : URL.createObjectURL(new Blob([videoObj], { type: "video/mp4" }))
+      ? URL.createObjectURL(videoObj)
+      : URL.createObjectURL(new Blob([videoObj], { type: "video/mp4" }))
 
 /**
  * Downlaod an image data

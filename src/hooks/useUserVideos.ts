@@ -28,7 +28,7 @@ import useUserStore from "@/stores/user"
 import { wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
 
-import type { VideoWithIndexes } from "@/types/video"
+import type { IndexesStatus, VideoWithIndexes } from "@/types/video"
 import type { Playlist, Profile } from "@etherna/sdk-js"
 import type { Reference } from "@etherna/sdk-js/clients"
 
@@ -44,11 +44,10 @@ export type VideosSource =
 export type UseUserVideosOptions = {
   sources: VideosSource[]
   fetchSource: VideosSource
-  profile: Profile
   limit?: number
 }
 
-let playlistResover: (() => Promise<Playlist>) | undefined
+let playlistResolver: (() => Promise<Playlist>) | undefined
 
 export default function useUserVideos(opts: UseUserVideosOptions) {
   const beeClient = useClientsStore(state => state.beeClient)
@@ -74,7 +73,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
         beeClient,
       })
 
-      playlistResover = () => reader.download()
+      playlistResolver = () => reader.download()
     }
 
     indexClients.current = opts.sources
@@ -99,14 +98,23 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
   const getPlaylist = useCallback(async () => {
     if (channelPlaylist.current) return channelPlaylist.current
 
-    const playlist = await playlistResover!()
-    channelPlaylist.current = playlist
-    return playlist
+    try {
+      const playlist = await playlistResolver!()
+      channelPlaylist.current = playlist
+      return playlist
+    } catch (error) {
+      console.error(error)
+      return null
+    }
   }, [])
 
   const fetchPlaylistVideos = useCallback(
     async (page: number, limit: number): Promise<VideoWithIndexes[]> => {
       const playlist = await getPlaylist()
+
+      if (!playlist) {
+        return []
+      }
 
       const from = page * limit
       const to = from + limit
@@ -123,7 +131,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
       const videosIndexes = videos.map<VideoWithIndexes>((video, i) => ({
         reference: video?.reference ?? (vids[i]!.reference as Reference),
         preview: video?.preview ?? {
-          reference: "",
+          reference: "" as Reference,
           title: vids[i]!.title,
           createdAt: vids[i]!.addedAt,
           duration: 0,
@@ -179,10 +187,31 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
             }
             return videoIndexes
           } catch (error) {
-            return null
+            const fakeReference = Math.random().toString(36).substring(2) as Reference
+
+            return {
+              reference: fakeReference,
+              preview: {
+                v: "1.0",
+                title: "",
+                ownerAddress: address!,
+                duration: 0,
+                reference: fakeReference,
+                thumbnail: null,
+                createdAt: Date.now(),
+                updatedAt: null,
+              },
+              indexesStatus: {
+                [currentIndexUrl]: {
+                  indexReference: indexVideo.id,
+                  totDownvotes: indexVideo.totDownvotes,
+                  totUpvotes: indexVideo.totUpvotes,
+                  userVote: indexVideo.currentVoteValue,
+                },
+              },
+            } satisfies VideoWithIndexes
           }
         })
-        .filter(Boolean) as VideoWithIndexes[]
     },
     [address, beeClient, currentIndexUrl]
   )
@@ -222,7 +251,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
 
   const invalidate = useCallback(
     async (page: number) => {
-      channelPlaylist.current = await playlistResover!()
+      channelPlaylist.current = await playlistResolver!()
       await fetchPage(page)
     },
     [fetchPage]

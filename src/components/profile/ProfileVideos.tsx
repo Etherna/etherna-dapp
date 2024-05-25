@@ -22,15 +22,17 @@ import { ExclamationCircleIcon } from "@heroicons/react/24/solid"
 
 import { Alert } from "@/components/ui/display"
 import VideoGrid from "@/components/video/VideoGrid"
+import { FundsMissingError } from "@/errors/funds-missing-error"
 
 import type { VideoWithAll, VideoWithOwner } from "@/types/video"
 
 type ProfileVideosProps = {
   videos: VideoWithOwner[] | null | undefined
-  error?: string
+  error?: Error | null
   isFetching: boolean
   hasMoreVideos: boolean
   fetchingPreviewCount?: number
+  gridRef?: React.RefObject<HTMLDivElement>
   onLoadMore(): void
 }
 
@@ -40,6 +42,7 @@ const ProfileVideos: React.FC<ProfileVideosProps> = ({
   isFetching,
   hasMoreVideos,
   fetchingPreviewCount,
+  gridRef,
   onLoadMore,
 }) => {
   const videosWithIndexes = useMemo(() => {
@@ -55,7 +58,7 @@ const ProfileVideos: React.FC<ProfileVideosProps> = ({
 
   return (
     <>
-      {!isFetching && videos?.length === 0 && (
+      {!isFetching && videos && videos.length === 0 && !error && (
         <p className="my-16 text-center text-gray-500">This profile has yet to upload a video</p>
       )}
 
@@ -66,13 +69,20 @@ const ProfileVideos: React.FC<ProfileVideosProps> = ({
         scrollThreshold={30}
         loader={<div />}
       >
-        {error && (
+        {error && !(error instanceof FundsMissingError) && (
           <Alert color="error" icon={<ExclamationCircleIcon />}>
-            {error}
+            {error.message}
+          </Alert>
+        )}
+        {error && error instanceof FundsMissingError && (
+          <Alert color="error" icon={<ExclamationCircleIcon />}>
+            <p className="text-lg/none font-semibold">{error.title}</p>
+            <p className="mt-2 text-sm">{error.message}</p>
           </Alert>
         )}
 
         <VideoGrid
+          ref={gridRef}
           videos={videosWithIndexes}
           mini={true}
           isFetching={isFetching}

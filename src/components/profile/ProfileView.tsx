@@ -15,18 +15,20 @@
  *
  */
 
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
+import { z } from "zod"
 
 import ProfileAbout from "./ProfileAbout"
 import ProfileVideos from "./ProfileVideos"
-import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SEO from "@/components/layout/SEO"
 import ProfileInfo from "@/components/profile/ProfileInfo"
 import { Button } from "@/components/ui/actions"
 import { NavPills } from "@/components/ui/navigation"
-import usePlaylistVideos from "@/hooks/usePlaylistVideos"
+import useSmartFetchCount from "@/hooks/useSmartFetchCount"
+import { useChannelVideosQuery } from "@/queries/channel-videos-query"
 import routes from "@/routes"
 import useEnvironmentStore from "@/stores/env"
+import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
 
 import type { Profile } from "@etherna/sdk-js"
@@ -37,59 +39,53 @@ type ProfileViewProps = {
 }
 
 const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
-  const [profile, setProfile] = useState<Profile | null>(null)
-  const [activeTab, setActiveTab] = useState("videos")
+  const indexesList = useExtensionsStore(state => state.indexesList)
   const address = useUserStore(state => state.address)
+  const needsFunds = useUserStore(state => state.needsFunds)
   const isMobile = useEnvironmentStore(state => state.isMobile)
-  const {
-    playlist,
-    videos,
-    error,
-    hasMore,
-    isFetching,
-    isLoadingPlaylist,
-    smartFetchCount,
-    loadMore,
-    loadPlaylist,
-  } = usePlaylistVideos(SwarmPlaylist.Reader.channelPlaylistId, {
-    owner: profile,
+  const gridRef = useRef<HTMLDivElement>(null)
+  const [profile, setProfile] = useState<Profile | null>(null)
+  const [activeTab, setActiveTab] = useState(needsFunds ? indexesList[0].url : "channel")
+  const fetchCount = useSmartFetchCount(gridRef)
+  const videosQuery = useChannelVideosQuery({
+    address: profileAddress,
+    profile,
+    source: activeTab,
+    firstFetchCount: fetchCount ?? 48,
+    sequentialFetchCount: 12,
   })
-
-  const isLoading = useMemo(() => {
-    return isFetching || !profile || isLoadingPlaylist
-  }, [isFetching, profile, isLoadingPlaylist])
+  const isIndexTab = z.string().url().safeParse(activeTab).success
 
   useEffect(() => {
     setProfile(null)
   }, [profileAddress])
 
   useEffect(() => {
-    if (profile) {
-      loadPlaylist()
+    if (needsFunds && activeTab === "channel") {
+      setActiveTab(indexesList[0].url)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile])
-
-  useEffect(() => {
-    if (profile && playlist) {
-      loadMore()
-    }
-  }, [playlist, profile, smartFetchCount, loadMore])
-
-  const handleFetchedProfile = useCallback((profile: Profile | null) => {
-    setProfile(profile)
-  }, [])
+  }, [needsFunds])
 
   return (
     <>
-      <SEO title={profile?.name ?? profileAddress} />
+      <SEO title={profile?.preview.name ?? profileAddress} />
       <ProfileInfo
         profileAddress={profileAddress}
         nav={
           <NavPills vertical={!isMobile}>
-            <NavPills.Item active={activeTab === "videos"} onClick={() => setActiveTab("videos")}>
-              Videos
+            <NavPills.Item active={activeTab === "channel"} onClick={() => setActiveTab("channel")}>
+              Channel
             </NavPills.Item>
+            {indexesList.map(index => (
+              <NavPills.Item
+                key={index.url}
+                active={activeTab === index.url}
+                onClick={() => setActiveTab(index.url)}
+              >
+                {index.name}
+              </NavPills.Item>
+            ))}
             <NavPills.Item active={activeTab === "about"} onClick={() => setActiveTab("about")}>
               About
             </NavPills.Item>
@@ -104,23 +100,24 @@ const ProfileView: React.FC<ProfileViewProps> = ({ profileAddress }) => {
             )}
           </div>
         }
-        onFetchedProfile={handleFetchedProfile}
+        onFetchedProfile={setProfile}
       >
-        {activeTab === "videos" && (
+        {(activeTab === "channel" || isIndexTab) && (
           <ProfileVideos
-            videos={videos}
-            error={error}
-            hasMoreVideos={hasMore}
-            isFetching={isLoading}
-            onLoadMore={loadMore}
-            fetchingPreviewCount={smartFetchCount || 9}
+            gridRef={gridRef}
+            videos={videosQuery.data?.pages.flat()}
+            error={videosQuery.error}
+            hasMoreVideos={videosQuery.hasNextPage}
+            isFetching={videosQuery.isFetching || videosQuery.isLoading}
+            onLoadMore={videosQuery.fetchNextPage}
+            fetchingPreviewCount={fetchCount || 12}
           />
         )}
         {activeTab === "about" && (
           <ProfileAbout
             address={profileAddress}
-            description={profile?.description}
-            name={profile?.name}
+            description={profile?.details?.description}
+            name={profile?.preview.name}
           />
         )}
       </ProfileInfo>
