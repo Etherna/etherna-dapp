@@ -66,7 +66,7 @@ const VideoVisibilityStatus: React.FC<VideoVisibilityStatusProps> = ({
       const nextStatus = currentStatus.status === "public" ? "unpublished" : "published"
       const source: VideosSource =
         currentStatus.sourceType === "playlist"
-          ? { type: "channel" }
+          ? { type: "playlist", id: currentStatus.sourceIdentifier }
           : { type: "index", indexUrl: currentStatus.sourceIdentifier }
       await toggleVisibilityCallback([video], source, nextStatus)
       setIsToggling(false)

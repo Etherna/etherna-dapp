@@ -15,9 +15,12 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { parsePlaylistIdFromTopic } from "@etherna/sdk-js/swarm"
 import { EmptyReference } from "@etherna/sdk-js/utils"
 
+import useSwarmProfile from "./useSwarmProfile"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
+import SwarmProfile from "@/classes/SwarmProfile"
 import SwarmUserPlaylists from "@/classes/SwarmUserPlaylists"
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
@@ -28,43 +31,45 @@ import type { Playlist, PlaylistVideo, UserPlaylists, Video } from "@etherna/sdk
 import type { EthAddress, Reference } from "@etherna/sdk-js/clients"
 
 interface UseUserPlaylistsOptions {
-  fetchChannel?: boolean
-  fetchSaved?: boolean
-  fetchCustom?: boolean
+  mode: "channel" | "all"
 }
 
-export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlaylistsOptions) {
+export default function useChannelPlaylists(owner: EthAddress, opts?: UseUserPlaylistsOptions) {
   const address = useUserStore(state => state.address)
   const beeClient = useClientsStore(state => state.beeClient)
+  const swarmProfile = useSwarmProfile({
+    address: owner,
+    mode: "full",
+  })
   const [isFetchingPlaylists, setIsFetchingPlaylists] = useState(false)
-  const [userPlaylists, setUserPlaylists] = useState<UserPlaylists>()
   const [channelPlaylist, setChannelPlaylist] = useState<Playlist>()
-  const [savedPlaylist, setSavedPlaylist] = useState<Playlist>()
-  const [customPlaylists, setCustomPlaylists] = useState<Playlist[]>()
+  const [channelPlaylists, setChannelPlaylists] = useState<Playlist[]>()
 
   const allPlaylists = useMemo(() => {
-    return [channelPlaylist ?? false, savedPlaylist ?? false, ...(customPlaylists ?? [])].filter(
-      Boolean
-    ) as Playlist[]
-  }, [channelPlaylist, savedPlaylist, customPlaylists])
+    return [channelPlaylist ?? null, ...(channelPlaylists ?? [])].filter(Boolean)
+  }, [channelPlaylist, channelPlaylists])
 
   useEffect(() => {
-    setUserPlaylists(undefined)
     setChannelPlaylist(undefined)
-    setSavedPlaylist(undefined)
-    setCustomPlaylists(undefined)
+    setChannelPlaylists(undefined)
   }, [owner])
 
   const fetchPlaylist = useCallback(
-    async (
-      reference: string | undefined | null,
-      id: string | undefined,
-      owner: EthAddress | undefined
-    ) => {
-      const playlistReader = new SwarmPlaylist.Reader(reference as Reference, {
+    async (opts: { id: string; owner: EthAddress } | { rootManifest: Reference }) => {
+      let id: string
+      let owner: EthAddress
+
+      if ("rootManifest" in opts) {
+        const feed = await beeClient.feed.parseFeedFromRootManifest(opts.rootManifest)
+        id = parsePlaylistIdFromTopic(feed.topic)
+        owner = `0x${feed.owner}`
+      } else {
+        id = opts.id
+        owner = opts.owner
+      }
+
+      const playlistReader = new SwarmPlaylist.Reader(id, owner, {
         beeClient,
-        playlistId: id,
-        playlistOwner: owner,
       })
       return await playlistReader.download()
     },
@@ -74,65 +79,43 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
   const loadPlaylists = useCallback(async () => {
     setIsFetchingPlaylists(true)
     try {
-      const reader = new SwarmUserPlaylists.Reader(owner, {
-        beeClient,
-      })
+      const { details } =
+        opts?.mode === "all" ? await swarmProfile.loadProfile() : { details: undefined }
+      const playlistsReferences = details?.playlists ?? []
 
-      const playlists = await reader.download()
-
-      setUserPlaylists(playlists)
-
-      const [channelResult, savedResult, customResult] = await Promise.allSettled([
-        opts?.fetchChannel
-          ? fetchPlaylist(playlists.channel, SwarmPlaylist.Reader.channelPlaylistId, owner)
-          : undefined,
-        opts?.fetchSaved
-          ? fetchPlaylist(playlists.saved, SwarmPlaylist.Reader.savedPlaylistId, owner)
-          : undefined,
-        opts?.fetchCustom
-          ? Promise.all(
-              playlists.custom.map(async playlistReference => {
-                return await fetchPlaylist(playlistReference, undefined, undefined)
-              })
-            )
-          : undefined,
+      const [channelResult, playlistsResult] = await Promise.allSettled([
+        fetchPlaylist({ id: SwarmPlaylist.Reader.channelPlaylistId, owner }),
+        Promise.all(
+          playlistsReferences.map(async rootManifest => {
+            return await fetchPlaylist({
+              rootManifest,
+            })
+          })
+        ),
       ])
 
       const channelPlaylist = channelResult.status === "fulfilled" ? channelResult.value : undefined
-      const savedPlaylist = savedResult.status === "fulfilled" ? savedResult.value : undefined
-      const customPlaylists = customResult.status === "fulfilled" ? customResult.value : undefined
+      const channelPlaylists =
+        playlistsResult.status === "fulfilled" ? playlistsResult.value : undefined
 
-      opts?.fetchChannel &&
-        setChannelPlaylist(
-          channelPlaylist ?? SwarmUserPlaylists.Writer.defaultChannelPlaylists(address!)
-        )
-      opts?.fetchSaved &&
-        setSavedPlaylist(
-          savedPlaylist ?? SwarmUserPlaylists.Writer.defaultChannelPlaylists(address!)
-        )
-      opts?.fetchCustom && setCustomPlaylists(customPlaylists ?? [])
+      setChannelPlaylist(
+        channelPlaylist ?? SwarmUserPlaylists.Writer.defaultChannelPlaylists(address!)
+      )
 
-      setIsFetchingPlaylists(false)
+      if (opts?.mode === "all") {
+        setChannelPlaylists(channelPlaylists ?? [])
+      }
 
       return {
-        userPlaylists: playlists,
-        channelPlaylist: channelPlaylist,
-        savedPlaylist: savedPlaylist,
-        customPlaylists: customPlaylists,
+        channelPlaylist,
+        channelPlaylists,
       }
     } catch (error: any) {
       console.error(error)
+    } finally {
       setIsFetchingPlaylists(false)
     }
-  }, [
-    beeClient,
-    address,
-    owner,
-    opts?.fetchChannel,
-    opts?.fetchSaved,
-    opts?.fetchCustom,
-    fetchPlaylist,
-  ])
+  }, [opts?.mode, swarmProfile, fetchPlaylist, owner, address])
 
   const playlistHasVideo = useCallback(
     (playlistId: string, reference: string) => {
@@ -149,23 +132,10 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
 
   const uploadPlaylist = useCallback(
     async (playlist: Playlist) => {
-      if (playlist.reference === "") {
-        playlist.reference = EmptyReference
-      }
       const playlistWriter = new SwarmPlaylist.Writer(playlist, {
         beeClient,
       })
       return await playlistWriter.upload()
-    },
-    [beeClient]
-  )
-
-  const updateUserPlaylists = useCallback(
-    async (userPlaylists: UserPlaylists) => {
-      const userPlaylistsWriter = new SwarmUserPlaylists.Writer(userPlaylists, {
-        beeClient,
-      })
-      await userPlaylistsWriter.upload()
     },
     [beeClient]
   )
@@ -175,41 +145,19 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
       // update & get new reference
       const reference = await uploadPlaylist(newPlaylist)
       newPlaylist.reference = reference
-      // update raw with new reference
-      const updatedUserPlaylists: UserPlaylists = userPlaylists
-        ? deepCloneObject(userPlaylists)
-        : {
-            channel: null,
-            saved: null,
-            custom: [],
-          }
-      if (newPlaylist.id === channelPlaylist?.id) {
-        updatedUserPlaylists.channel = reference
-        setChannelPlaylist(newPlaylist)
-      } else if (newPlaylist.id === savedPlaylist?.id) {
-        updatedUserPlaylists.saved = reference
-        setSavedPlaylist(newPlaylist)
-      } else {
-        const index = updatedUserPlaylists.custom!.findIndex(
-          ref => ref === initialPlaylist.reference
-        )
-        updatedUserPlaylists.custom![index] = reference
 
-        const newCustomPlaylists = [...customPlaylists!]
-        newCustomPlaylists[index] = newPlaylist
-        setCustomPlaylists(newCustomPlaylists)
+      // update raw with new referenc
+      if (newPlaylist.id === channelPlaylist?.id) {
+        setChannelPlaylist(newPlaylist)
+      } else {
+        setChannelPlaylists(
+          channelPlaylists?.map(playlist =>
+            playlist.id === newPlaylist.id ? newPlaylist : playlist
+          )
+        )
       }
-      // update user playlists
-      await updateUserPlaylists(updatedUserPlaylists)
     },
-    [
-      userPlaylists,
-      customPlaylists,
-      channelPlaylist?.id,
-      savedPlaylist?.id,
-      updateUserPlaylists,
-      uploadPlaylist,
-    ]
+    [channelPlaylist?.id, channelPlaylists, uploadPlaylist]
   )
 
   const addVideosToPlaylist = useCallback(
@@ -316,11 +264,10 @@ export default function useUserPlaylists(owner: EthAddress, opts?: UseUserPlayli
   )
 
   return {
-    userPlaylists,
     isFetchingPlaylists,
     channelPlaylist,
-    savedPlaylist,
-    customPlaylists,
+    channelPlaylists,
+    allPlaylists,
     loadPlaylists,
     addVideosToPlaylist,
     updateVideoInPlaylist,

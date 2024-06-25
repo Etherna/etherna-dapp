@@ -63,9 +63,7 @@ export default function useUserVideosVisibility(
 
   useEffect(() => {
     if (!channelPlaylist.current) {
-      const reader = new SwarmPlaylist.Reader(undefined, {
-        playlistId: SwarmPlaylist.Reader.channelPlaylistId,
-        playlistOwner: address,
+      const reader = new SwarmPlaylist.Reader(SwarmPlaylist.Reader.channelPlaylistId, address!, {
         beeClient,
       })
 
@@ -88,15 +86,13 @@ export default function useUserVideosVisibility(
   const getPlaylist = useCallback(async () => {
     if (channelPlaylist.current) return channelPlaylist.current
 
-    const playlist = await playlistResover!()
-    channelPlaylist.current = playlist
-    return playlist
+    const downloadedPlaylist = await playlistResover!()
+    channelPlaylist.current = downloadedPlaylist
+    return downloadedPlaylist
   }, [])
 
   const reloadPlaylist = useCallback(async () => {
-    const reader = new SwarmPlaylist.Reader(undefined, {
-      playlistId: SwarmPlaylist.Reader.channelPlaylistId,
-      playlistOwner: address,
+    const reader = new SwarmPlaylist.Reader(SwarmPlaylist.Reader.channelPlaylistId, address!, {
       beeClient,
     })
     channelPlaylist.current = await reader.download()
@@ -198,7 +194,7 @@ export default function useUserVideosVisibility(
               [video.reference]: visibility[video.reference].map(visibility => ({
                 ...visibility,
                 status:
-                  (visibility.sourceType === "playlist" && source.type === "channel") ||
+                  (visibility.sourceType === "playlist" && source.type === "playlist") ||
                   (visibility.sourceType === "index" &&
                     source.type === "index" &&
                     visibility.sourceIdentifier === source.indexUrl)
@@ -236,7 +232,11 @@ export default function useUserVideosVisibility(
       await writer.upload()
       await reloadPlaylist()
 
-      updateVideosStatus(videosToAdd, { type: "channel" }, "public")
+      updateVideosStatus(
+        videosToAdd,
+        { type: "playlist", id: SwarmPlaylist.Reader.channelPlaylistId },
+        "public"
+      )
     },
     [beeClient, getPlaylist, reloadPlaylist, updateVideosStatus]
   )
@@ -255,7 +255,11 @@ export default function useUserVideosVisibility(
       await writer.upload()
       await reloadPlaylist()
 
-      updateVideosStatus(videosToDelete, { type: "channel" }, "unindexed")
+      updateVideosStatus(
+        videosToDelete,
+        { type: "playlist", id: SwarmPlaylist.Reader.channelPlaylistId },
+        "unindexed"
+      )
     },
     [beeClient, getPlaylist, reloadPlaylist, updateVideosStatus]
   )
@@ -327,9 +331,9 @@ export default function useUserVideosVisibility(
     ) => {
       setTogglingSource(source)
       try {
-        if (source.type === "channel" && visibility === "published") {
+        if (source.type === "playlist" && visibility === "published") {
           await addVideosToChannel(videos)
-        } else if (source.type === "channel" && visibility === "unpublished") {
+        } else if (source.type === "playlist" && visibility === "unpublished") {
           await deleteVideosFromChannel(videos)
         } else if (source.type === "index" && visibility === "published") {
           await addVideosToIndex(videos, source.indexUrl)

@@ -15,8 +15,8 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import { parsePlaylistIdFromTopic } from "@etherna/sdk-js/swarm"
 
-import useSmartFetchCount from "./useSmartFetchCount"
 import BeeClient from "@/classes/BeeClient"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmVideo from "@/classes/SwarmVideo"
@@ -25,25 +25,23 @@ import { getResponseErrorMessage } from "@/utils/request"
 
 import type { WithOwner } from "@/types/video"
 import type { Playlist, Profile, Video } from "@etherna/sdk-js"
-import type { EthAddress } from "@etherna/sdk-js/clients"
+import type { EthAddress, Reference } from "@etherna/sdk-js/clients"
 
 type VideoWithOwner = WithOwner<Video>
 
 type PlaylistVideosOptions = {
-  gridRef?: React.RefObject<HTMLElement>
   owner?: Profile | null
-  limit?: number
+  seedLimit?: number
+  loadMoreLimit?: number
 }
 
 export default function usePlaylistVideos(
-  playlistReference: Playlist | string | undefined,
-  opts: PlaylistVideosOptions = { limit: -1 }
+  identification: { id: string; owner: EthAddress } | Reference,
+  opts: PlaylistVideosOptions
 ) {
   const beeClient = useClientsStore(state => state.beeClient)
   const indexClient = useClientsStore(state => state.indexClient)
-  const [playlist, setPlaylist] = useState<Playlist | undefined>(
-    typeof playlistReference === "string" ? undefined : playlistReference
-  )
+  const [playlist, setPlaylist] = useState<Playlist>()
   const [videos, setVideos] = useState<VideoWithOwner[]>()
   const [isFetching, setIsFetching] = useState(false)
   const [isLoadingPlaylist, setIsLoadingPlaylist] = useState(false)
@@ -52,7 +50,6 @@ export default function usePlaylistVideos(
   const [error, setError] = useState<string>()
   const [isEncrypted, setIsEncrypted] = useState(playlist?.type === "private" && !playlist.videos)
   const fetchingPage = useRef<number>()
-  const smartFetchCount = useSmartFetchCount(opts.gridRef)
 
   useEffect(() => {
     if (opts.owner) return
@@ -60,7 +57,7 @@ export default function usePlaylistVideos(
     setVideos(undefined)
     setHasMore(false)
     setIsEncrypted(false)
-  }, [playlistReference, opts.owner])
+  }, [identification, opts.owner])
 
   useEffect(() => {
     if (playlist) {
@@ -85,24 +82,27 @@ export default function usePlaylistVideos(
   )
 
   const loadPlaylist = useCallback(async () => {
-    if (typeof playlistReference !== "string") return
-    if (!opts.owner) return
-
     setTotal(0)
     setVideos(undefined)
     setError(undefined)
 
     setIsLoadingPlaylist(true)
 
-    const isReference = BeeClient.isValidHash(playlistReference)
-    const reference = isReference ? playlistReference : undefined
-    const id = isReference ? undefined : playlistReference
-
     try {
-      const reader = new SwarmPlaylist.Reader(reference, {
+      let id: string
+      let owner: EthAddress
+
+      if (typeof identification === "string") {
+        const feed = await beeClient.feed.parseFeedFromRootManifest(identification)
+        id = parsePlaylistIdFromTopic(feed.topic)
+        owner = `0x${feed.owner}`
+      } else {
+        id = identification.id
+        owner = identification.owner
+      }
+
+      const reader = new SwarmPlaylist.Reader(id, owner, {
         beeClient,
-        playlistId: id,
-        playlistOwner: opts.owner?.preview.address,
       })
 
       const playlist = await reader.download()
@@ -114,7 +114,7 @@ export default function usePlaylistVideos(
     } finally {
       setIsLoadingPlaylist(false)
     }
-  }, [beeClient, opts.owner, playlistReference])
+  }, [beeClient, identification])
 
   const fetchVideos = useCallback(
     async (from: number, to: number): Promise<Video[]> => {
@@ -156,7 +156,7 @@ export default function usePlaylistVideos(
     async (page: number) => {
       if (fetchingPage.current === page) return
 
-      const limit = opts.limit
+      const limit = opts.seedLimit || 9
       if (!limit || limit < 1) throw new Error("Limit must be set to be greater than 1")
       const from = (page - 1) * limit
       const to = from + limit
@@ -166,7 +166,7 @@ export default function usePlaylistVideos(
       setVideos(applyOwnerToVideos(newVideos))
       fetchingPage.current = undefined
     },
-    [applyOwnerToVideos, fetchVideos, opts.limit]
+    [applyOwnerToVideos, fetchVideos, opts]
   )
 
   const loadMore = useCallback(async () => {
@@ -178,13 +178,13 @@ export default function usePlaylistVideos(
 
     if (playlist?.videos == null) return
 
-    const limit = smartFetchCount || 9
+    const limit = opts.loadMoreLimit || 9
     const from = videos?.length ?? 0
     const to = from + (limit === -1 ? playlist.videos.length ?? 0 : limit)
     const newVideos = await fetchVideos(from, to)
     setHasMore(to < playlist.videos.length)
     setVideos(applyOwnerToVideos([...(videos ?? []), ...newVideos]))
-  }, [applyOwnerToVideos, fetchVideos, hasMore, isFetching, smartFetchCount, playlist, videos])
+  }, [applyOwnerToVideos, fetchVideos, hasMore, isFetching, opts, playlist, videos])
 
   return {
     playlist,
@@ -195,7 +195,6 @@ export default function usePlaylistVideos(
     isLoadingPlaylist,
     isEncrypted,
     hasMore,
-    smartFetchCount,
     loadPlaylist,
     loadMore,
     fetchPage,

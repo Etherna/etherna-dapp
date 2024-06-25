@@ -3,8 +3,8 @@ import { BatchesHandler } from "@etherna/sdk-js/handlers"
 import { extractVideoReferences, isInvalidReference } from "@etherna/sdk-js/utils"
 
 import useBatchPaymentConfirmation from "./useBatchPaymentConfirmation"
+import useChannelPlaylists from "./useChannelPlaylists"
 import useErrorMessage from "./useErrorMessage"
-import useUserPlaylists from "./useUserPlaylists"
 import useWallet from "./useWallet"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmVideo from "@/classes/SwarmVideo"
@@ -53,18 +53,17 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
   const { showError } = useErrorMessage()
   const { waitPaymentConfirmation } = useBatchPaymentConfirmation()
 
-  const { channelPlaylist, userPlaylists, loadPlaylists, updateVideosInPlaylist } =
-    useUserPlaylists(address!, {
-      fetchChannel: true,
-    })
+  const { channelPlaylist, loadPlaylists, updateVideosInPlaylist } = useChannelPlaylists(address!, {
+    mode: "channel",
+  })
   const { isLocked } = useWallet()
 
   useEffect(() => {
-    if (channelPlaylist && userPlaylists && shouldContinueMigration.current) {
+    if (channelPlaylist && shouldContinueMigration.current) {
       continueMigration()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [channelPlaylist, userPlaylists])
+  }, [channelPlaylist])
 
   useEffect(() => {
     if (videos) {
@@ -257,7 +256,7 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
           indexClient,
           gatewayClient,
           channelPlaylist,
-          userPlaylists: { channel: null, saved: null, custom: [] },
+          channelPlaylists: [],
           initialReference,
           previusReferences,
           isWalletConnected,
@@ -345,7 +344,7 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
 
       shouldContinueMigration.current = true
 
-      if (!channelPlaylist || !userPlaylists) {
+      if (!channelPlaylist) {
         const { channelPlaylist: channel } = (await loadPlaylists()) ?? {}
         if (!channel) {
           setIsMigrating(false)
@@ -356,7 +355,7 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
         console.info(deferredChannelUpdates.current)
       }
     },
-    [channelPlaylist, userPlaylists, isMigrating, continueMigration, loadPlaylists, showError]
+    [channelPlaylist, isMigrating, continueMigration, loadPlaylists, showError]
   )
 
   const reset = useCallback(() => {

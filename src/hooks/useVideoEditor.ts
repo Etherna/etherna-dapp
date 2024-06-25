@@ -17,7 +17,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { VideoBuilder } from "@etherna/sdk-js/swarm"
 
-import useUserPlaylists from "./useUserPlaylists"
+import useChannelPlaylists from "./useChannelPlaylists"
 import useWallet from "./useWallet"
 import VideoSaver from "@/classes/VideoSaver"
 import useClientsStore from "@/stores/clients"
@@ -47,8 +47,8 @@ export default function useVideoEditor() {
   const { isLocked } = useWallet()
   const [isSaving, setIsSaving] = useState(false)
 
-  const { userPlaylists, channelPlaylist, loadPlaylists } = useUserPlaylists(address!, {
-    fetchChannel: true,
+  const { channelPlaylist, channelPlaylists, loadPlaylists } = useChannelPlaylists(address!, {
+    mode: "all",
   })
 
   useEffect(() => {
@@ -73,9 +73,9 @@ export default function useVideoEditor() {
         gatewayClient,
         indexClient,
         channelPlaylist,
+        channelPlaylists,
         initialReference,
         previusReferences,
-        userPlaylists,
         isWalletConnected: !isLocked,
         saveTo: saveToSources,
       })
@@ -95,16 +95,16 @@ export default function useVideoEditor() {
       }
     },
     [
-      beeClient,
       builder,
-      channelPlaylist,
+      beeClient,
       gatewayClient,
       indexClient,
+      channelPlaylist,
+      channelPlaylists,
       initialReference,
-      isLocked,
       previusReferences,
+      isLocked,
       publishingResults,
-      userPlaylists,
       setPublishingResults,
       updateEditorStatus,
     ]

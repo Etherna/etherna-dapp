@@ -19,7 +19,7 @@ type VideoSaverOptions = {
   previusReferences: Reference[]
   saveTo: VideoEditorPublishSource[]
   channelPlaylist: Playlist | undefined
-  userPlaylists: UserPlaylists | undefined
+  channelPlaylists: Playlist[] | undefined
   isWalletConnected: boolean
   beeClient: BeeClient
   gatewayClient: EthernaGatewayClient
@@ -190,7 +190,7 @@ export default class VideoSaver {
         publishedAt: undefined,
       })
 
-      await this.updateChannelAndUser(playlist, signal)
+      await this.updateChannelPlaylist(playlist, signal)
 
       return true
     } catch (error) {
@@ -206,7 +206,7 @@ export default class VideoSaver {
     try {
       const playlist = deepCloneObject(this.options.channelPlaylist!)
       playlist.videos = playlist.videos.filter(video => video.reference !== reference)
-      await this.updateChannelAndUser(playlist, signal)
+      await this.updateChannelPlaylist(playlist, signal)
       return true
     } catch (error) {
       console.error(error)
@@ -214,25 +214,12 @@ export default class VideoSaver {
     }
   }
 
-  async updateChannelAndUser(channel: Playlist, signal?: AbortSignal) {
+  async updateChannelPlaylist(channel: Playlist, signal?: AbortSignal) {
     // save playlist
     const playlistWriter = new SwarmPlaylist.Writer(channel, {
       beeClient: this.options.beeClient,
     })
-    const reference = await playlistWriter.upload({ signal })
-    // save user playlists
-    const userPlaylists: UserPlaylists = {
-      ...(this.options.userPlaylists ?? {
-        channel: null,
-        saved: null,
-        custom: [],
-      }),
-      channel: reference,
-    }
-    const userPlaylistsWriter = new SwarmUserPlaylists.Writer(userPlaylists, {
-      beeClient: this.options.beeClient,
-    })
-    await userPlaylistsWriter.upload({ signal })
+    await playlistWriter.upload({ signal })
   }
 
   async addToIndex(initialVideoId: string | undefined, video: Video, signal?: AbortSignal) {

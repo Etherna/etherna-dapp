@@ -122,7 +122,7 @@ const Videos: React.FC = () => {
     migrate,
     reset: resetMigration,
   } = useBulkMigrations(videos, {
-    sourceType: currentSource.type,
+    sourceType: currentSource.type === "playlist" ? "channel" : "index",
     pinningStatus,
     offersStatus: videosOffersStatus,
     visibilityStatus: visibility,
@@ -168,9 +168,9 @@ const Videos: React.FC = () => {
           value={source}
           options={sources.map(source => ({
             value: source.id,
-            label: source.type === "channel" ? "Public channel" : `Index`,
+            label: source.type === "playlist" ? "Public channel" : `Index`,
             description:
-              source.type === "channel" ? "Decentralized feed" : urlHostname(source.indexUrl),
+              source.type === "playlist" ? "Decentralized feed" : urlHostname(source.indexUrl),
           }))}
           onChange={setSource}
         />

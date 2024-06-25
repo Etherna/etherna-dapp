@@ -124,11 +124,13 @@ export const useChannelVideosQuery = (opts: ChannelVideosQueryOptions) => {
             throw new Error("ENS address not found")
           }
 
-          const reader = new SwarmPlaylist.Reader(undefined, {
-            beeClient,
-            playlistId: SwarmPlaylist.Reader.channelPlaylistId,
-            playlistOwner: ownerAddress,
-          })
+          const reader = new SwarmPlaylist.Reader(
+            SwarmPlaylist.Reader.channelPlaylistId,
+            ownerAddress,
+            {
+              beeClient,
+            }
+          )
 
           try {
             channelPlaylist.current = await reader.download()

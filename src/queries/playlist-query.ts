@@ -1,3 +1,4 @@
+import { parsePlaylistIdFromTopic } from "@etherna/sdk-js/swarm"
 import { isValidReference } from "@etherna/sdk-js/utils"
 import { useQuery } from "@tanstack/react-query"
 
@@ -23,10 +24,18 @@ export const usePlaylistQuery = (opts: ChannelPlaylistOptions) => {
     queryKey: ["channel-playlist"],
     queryFn: async () => {
       const reference = isValidReference(opts.playlist) ? opts.playlist : undefined
-      const reader = new SwarmPlaylist.Reader(reference, {
+
+      let id: string
+
+      if (reference) {
+        const { topic } = await beeClient.feed.parseFeedFromRootManifest(reference)
+        id = parsePlaylistIdFromTopic(topic)
+      } else {
+        id = opts.playlist
+      }
+
+      const reader = new SwarmPlaylist.Reader(id, opts.owner, {
         beeClient,
-        playlistId: opts.playlist,
-        playlistOwner: opts.owner,
       })
 
       const playlist = await reader.download()

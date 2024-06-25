@@ -202,6 +202,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
           details = {
             cover: null,
             description: null,
+            playlists: [],
           }
         }
 

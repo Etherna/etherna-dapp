@@ -78,10 +78,8 @@ export default function useVideoPublishStatus(opts: UseVideoPublishStatusOptions
     const videoPlaylistsStatus: Record<string, PublishStatus> = {}
 
     for (const playlistId of opts.playlistIds) {
-      const reader = new SwarmPlaylist.Reader(undefined, {
+      const reader = new SwarmPlaylist.Reader(playlistId, opts.ownerAddress, {
         beeClient,
-        playlistId: playlistId,
-        playlistOwner: opts.ownerAddress,
       })
 
       const publishStatus: PublishStatus = {

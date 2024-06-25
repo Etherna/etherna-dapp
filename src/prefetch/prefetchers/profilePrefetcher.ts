@@ -35,11 +35,13 @@ const fetch = async () => {
     const address = matches[1] as EthAddress
 
     // Fetch channel playlist & profile
-    const playlistReader = new SwarmPlaylist.Reader(undefined, {
-      beeClient,
-      playlistId: SwarmPlaylist.Reader.channelPlaylistId,
-      playlistOwner: address,
-    })
+    const playlistReader = new SwarmPlaylist.Reader(
+      SwarmPlaylist.Reader.channelPlaylistId,
+      address,
+      {
+        beeClient,
+      }
+    )
     const profileReader = new SwarmProfile.Reader(address, { beeClient })
 
     const [profileResult, channelResult] = await Promise.allSettled([
