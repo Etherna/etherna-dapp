@@ -26,6 +26,7 @@ export const usePlaylistQuery = (opts: ChannelPlaylistOptions) => {
       const reference = isValidReference(opts.playlist) ? opts.playlist : undefined
 
       let id: string
+      const owner = opts.owner
 
       if (reference) {
         const { topic } = await beeClient.feed.parseFeedFromRootManifest(reference)
@@ -34,9 +35,12 @@ export const usePlaylistQuery = (opts: ChannelPlaylistOptions) => {
         id = opts.playlist
       }
 
-      const reader = new SwarmPlaylist.Reader(id, opts.owner, {
-        beeClient,
-      })
+      const reader = new SwarmPlaylist.Reader(
+        { id, owner },
+        {
+          beeClient,
+        }
+      )
 
       const playlist = await reader.download()
 

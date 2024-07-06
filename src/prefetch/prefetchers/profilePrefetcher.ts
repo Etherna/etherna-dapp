@@ -36,8 +36,7 @@ const fetch = async () => {
 
     // Fetch channel playlist & profile
     const playlistReader = new SwarmPlaylist.Reader(
-      SwarmPlaylist.Reader.channelPlaylistId,
-      address,
+      { id: SwarmPlaylist.Reader.channelPlaylistId, owner: address },
       {
         beeClient,
       }

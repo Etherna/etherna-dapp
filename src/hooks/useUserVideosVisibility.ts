@@ -15,7 +15,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { isInvalidReference, urlOrigin } from "@etherna/sdk-js/utils"
+import { EmptyReference, isInvalidReference, urlOrigin } from "@etherna/sdk-js/utils"
 
 import useErrorMessage from "./useErrorMessage"
 import IndexClient from "@/classes/IndexClient"
@@ -63,11 +63,34 @@ export default function useUserVideosVisibility(
 
   useEffect(() => {
     if (!channelPlaylist.current) {
-      const reader = new SwarmPlaylist.Reader(SwarmPlaylist.Reader.channelPlaylistId, address!, {
-        beeClient,
-      })
+      const reader = new SwarmPlaylist.Reader(
+        { id: SwarmPlaylist.Reader.channelPlaylistId, owner: address! },
+        {
+          beeClient,
+        }
+      )
 
-      playlistResover = () => reader.download()
+      playlistResover = async () => {
+        try {
+          return await reader.download()
+        } catch (error) {
+          const feed = await nullablePromise(reader.getPlaylistFeed())
+
+          return {
+            reference: feed
+              ? (await beeClient.feed.makeRootManifest(feed)).reference
+              : EmptyReference,
+            id: SwarmPlaylist.Reader.channelPlaylistId,
+            name: "",
+            type: "public",
+            description: "",
+            owner: address!,
+            createdAt: +new Date(),
+            updatedAt: +new Date(),
+            videos: [],
+          } satisfies Playlist
+        }
+      }
     }
 
     indexClients.current = opts.sources
@@ -92,9 +115,12 @@ export default function useUserVideosVisibility(
   }, [])
 
   const reloadPlaylist = useCallback(async () => {
-    const reader = new SwarmPlaylist.Reader(SwarmPlaylist.Reader.channelPlaylistId, address!, {
-      beeClient,
-    })
+    const reader = new SwarmPlaylist.Reader(
+      { id: SwarmPlaylist.Reader.channelPlaylistId, owner: address! },
+      {
+        beeClient,
+      }
+    )
     channelPlaylist.current = await reader.download()
   }, [address, beeClient])
 
@@ -341,7 +367,15 @@ export default function useUserVideosVisibility(
           await deleteVideosFromIndex(videos, source.indexUrl)
         }
       } catch (error: any) {
-        showError(`Cannot delete the video: ${error.name}`, getResponseErrorMessage(error))
+        const actionName = (() => {
+          switch (visibility) {
+            case "published":
+              return "add"
+            case "unpublished":
+              return "delete"
+          }
+        })()
+        showError(`Cannot ${actionName} the video`, getResponseErrorMessage(error))
       } finally {
         setTogglingSource(undefined)
       }

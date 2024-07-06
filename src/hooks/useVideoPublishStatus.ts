@@ -78,9 +78,12 @@ export default function useVideoPublishStatus(opts: UseVideoPublishStatusOptions
     const videoPlaylistsStatus: Record<string, PublishStatus> = {}
 
     for (const playlistId of opts.playlistIds) {
-      const reader = new SwarmPlaylist.Reader(playlistId, opts.ownerAddress, {
-        beeClient,
-      })
+      const reader = new SwarmPlaylist.Reader(
+        { id: playlistId, owner: opts.ownerAddress },
+        {
+          beeClient,
+        }
+      )
 
       const publishStatus: PublishStatus = {
         status: "unindexed",

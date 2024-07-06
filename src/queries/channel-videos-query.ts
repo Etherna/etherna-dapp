@@ -125,8 +125,7 @@ export const useChannelVideosQuery = (opts: ChannelVideosQueryOptions) => {
           }
 
           const reader = new SwarmPlaylist.Reader(
-            SwarmPlaylist.Reader.channelPlaylistId,
-            ownerAddress,
+            { id: SwarmPlaylist.Reader.channelPlaylistId, owner: ownerAddress },
             {
               beeClient,
             }

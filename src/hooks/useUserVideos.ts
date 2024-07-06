@@ -25,7 +25,7 @@ import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
-import { wait } from "@/utils/promise"
+import { nullablePromise, wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
 
 import type { VideoWithIndexes } from "@/types/video"
@@ -48,7 +48,7 @@ export type UseUserVideosOptions = {
   limit?: number
 }
 
-let playlistResolver: (() => Promise<Playlist>) | undefined
+let playlistResolver: (() => Promise<Playlist | null>) | undefined
 
 export default function useUserVideos(opts: UseUserVideosOptions) {
   const beeClient = useClientsStore(state => state.beeClient)
@@ -57,7 +57,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
   const [isFetching, setIsFetching] = useState(false)
   const [total, setTotal] = useState(0)
   const [videos, setVideos] = useState<VideoWithIndexes[]>()
-  const playlist = useRef<Playlist>()
+  const playlist = useRef<Playlist | null>()
   const indexClients = useRef<IndexClient[]>()
   const currentIndexClient = useRef<IndexClient>()
   const { showError } = useErrorMessage()
@@ -68,11 +68,14 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
     }
 
     if (!playlist.current && opts.fetchSource.type === "playlist") {
-      const reader = new SwarmPlaylist.Reader(opts.fetchSource.id, address!, {
-        beeClient,
-      })
+      const reader = new SwarmPlaylist.Reader(
+        { id: opts.fetchSource.id, owner: address! },
+        {
+          beeClient,
+        }
+      )
 
-      playlistResolver = () => reader.download()
+      playlistResolver = () => nullablePromise(reader.download())
     }
 
     indexClients.current = opts.sources

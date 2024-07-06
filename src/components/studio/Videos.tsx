@@ -17,6 +17,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Link, Navigate } from "react-router-dom"
+import { PlaylistReader } from "@etherna/sdk-js/swarm"
 import { urlHostname } from "@etherna/sdk-js/utils"
 
 import {
@@ -49,12 +50,10 @@ import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
 import { cn } from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
-import { shortenEthAddr } from "@/utils/ethereum"
 import { encodedSvg } from "@/utils/svg"
 
 import type { VideosSource } from "@/hooks/useUserVideos"
 import type { VideoWithIndexes } from "@/types/video"
-import type { Profile } from "@etherna/sdk-js"
 
 const Videos: React.FC = () => {
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
@@ -68,9 +67,9 @@ const Videos: React.FC = () => {
 
   const sources = useMemo(() => {
     return [
-      { id: "channel", type: "channel" },
+      { id: PlaylistReader.channelPlaylistId, type: "playlist" },
       { id: indexUrl, type: "index", indexUrl },
-    ] as (VideosSource & { id: string })[]
+    ] satisfies (VideosSource & { id: string })[]
   }, [indexUrl])
   const [source, setSource] = useState(sources[0].id)
   const [page, setPage] = useState(1)

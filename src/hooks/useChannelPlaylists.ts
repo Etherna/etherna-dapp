@@ -55,20 +55,8 @@ export default function useChannelPlaylists(owner: EthAddress, opts?: UseUserPla
   }, [owner])
 
   const fetchPlaylist = useCallback(
-    async (opts: { id: string; owner: EthAddress } | { rootManifest: Reference }) => {
-      let id: string
-      let owner: EthAddress
-
-      if ("rootManifest" in opts) {
-        const feed = await beeClient.feed.parseFeedFromRootManifest(opts.rootManifest)
-        id = parsePlaylistIdFromTopic(feed.topic)
-        owner = `0x${feed.owner}`
-      } else {
-        id = opts.id
-        owner = opts.owner
-      }
-
-      const playlistReader = new SwarmPlaylist.Reader(id, owner, {
+    async (identification: { id: string; owner: EthAddress } | { rootManifest: Reference }) => {
+      const playlistReader = new SwarmPlaylist.Reader(identification, {
         beeClient,
       })
       return await playlistReader.download()

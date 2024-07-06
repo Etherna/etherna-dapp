@@ -101,9 +101,12 @@ export default function usePlaylistVideos(
         owner = identification.owner
       }
 
-      const reader = new SwarmPlaylist.Reader(id, owner, {
-        beeClient,
-      })
+      const reader = new SwarmPlaylist.Reader(
+        { id, owner },
+        {
+          beeClient,
+        }
+      )
 
       const playlist = await reader.download()
       setPlaylist(playlist)
