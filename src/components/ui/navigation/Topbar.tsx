@@ -270,7 +270,7 @@ const Topbar: React.FC<TopbarProps> & {
         "floating-sidebar:left-0",
         "bg-white/80 backdrop-blur-xl dark:bg-gray-900/80",
         "border-b border-white/80 dark:border-black/20",
-        "[&~main]:mt-16 [&~main]:lg:mt-20"
+        "[&~main]:min-h-dvh [&~main]:pt-16 [&~main]:lg:pt-20"
       )}
       data-topbar
     >

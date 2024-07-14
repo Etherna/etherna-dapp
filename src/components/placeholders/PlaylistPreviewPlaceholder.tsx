@@ -12,19 +12,22 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
-
-import { v4 } from "uuid"
-
-/**
- * Generate a random uuid
  *
- * @returns UUID v4 string
  */
-export default function uuidv4() {
-  return v4()
+
+import React from "react"
+
+import { Skeleton } from "@/components/ui/display"
+import { cn } from "@/utils/classnames"
+
+const PlaylistPreviewPlaceholder = ({ className, ...props }: React.ComponentProps<"div">) => {
+  return (
+    <div className={cn("w-full space-y-0.5", className)} {...props}>
+      <Skeleton className="mx-4 block h-1 rounded-none rounded-t" />
+      <Skeleton className="mx-2 block h-1.5 rounded-none rounded-t" />
+      <Skeleton className="block h-40 rounded-md" />
+    </div>
+  )
 }
 
-export const uuidv4Short = () => {
-  return uuidv4().split("-")[0]
-}
+export default PlaylistPreviewPlaceholder

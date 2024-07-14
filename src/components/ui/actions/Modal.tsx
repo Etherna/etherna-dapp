@@ -111,7 +111,7 @@ const Modal: React.FC<ModalProps> = ({
           >
             <div
               className={cn(
-                "relative inline-block w-full overflow-hidden rounded-lg text-left align-middle sm:my-8 sm:max-w-lg",
+                "relative inline-block w-full rounded-lg text-left align-middle sm:my-8 sm:max-w-lg",
                 "bg-white shadow-xl dark:bg-gray-700",
                 {
                   "sm:max-w-xl": large,

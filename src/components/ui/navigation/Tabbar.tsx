@@ -237,7 +237,6 @@ const Tabbar: React.FC<TabbarProps> & {
         "fixed inset-x-0 bottom-0 z-10 flex md:hidden",
         "bg-white/80 backdrop-blur-xl backdrop-filter dark:bg-gray-900/80",
         "pb-safe",
-        "[&~main]:mb-20 lg:[&~main]:mb-0",
         className
       )}
       data-tabbar

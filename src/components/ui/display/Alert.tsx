@@ -97,10 +97,10 @@ const Alert: React.FC<AlertProps> = ({
   return (
     <div
       className={cn("rounded-md p-4", className, {
-        "bg-green-100": color === "success",
-        "bg-red-100": color === "error",
-        "bg-yellow-100": color === "warning",
-        "bg-sky-100": color === "info",
+        "bg-green-500/10": color === "success",
+        "bg-red-500/10": color === "error",
+        "bg-yellow-500/10": color === "warning",
+        "bg-sky-500/10": color === "info",
       })}
       data-component="alert"
     >
@@ -110,10 +110,10 @@ const Alert: React.FC<AlertProps> = ({
           {title && (
             <h3
               className={cn("mb-2 text-sm font-semibold", {
-                "text-green-800": color === "success",
-                "text-red-800": color === "error",
-                "text-yellow-800": color === "warning",
-                "text-sky-800": color === "info",
+                "text-green-500": color === "success",
+                "text-red-500": color === "error",
+                "text-yellow-500": color === "warning",
+                "text-sky-500": color === "info",
               })}
             >
               {title}
@@ -121,10 +121,10 @@ const Alert: React.FC<AlertProps> = ({
           )}
           <div
             className={cn("text-sm", {
-              "text-green-700": color === "success",
-              "text-red-700": color === "error",
-              "text-yellow-700": color === "warning",
-              "text-sky-700": color === "info",
+              "text-green-500": color === "success",
+              "text-red-500": color === "error",
+              "text-yellow-500": color === "warning",
+              "text-sky-500": color === "info",
             })}
           >
             {children}

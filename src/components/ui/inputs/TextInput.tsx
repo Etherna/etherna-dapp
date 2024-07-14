@@ -131,7 +131,7 @@ const TextInput: React.FC<TextInputProps> & { CharactersLimit: typeof TextInputC
       (
         <>
           {multiline ? (
-            <textarea {...props} rows={6} ref={elRef} />
+            <textarea {...props} rows={4} ref={elRef} />
           ) : (
             <input {...props} ref={elRef} />
           )}

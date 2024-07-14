@@ -15,9 +15,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { parsePlaylistIdFromTopic } from "@etherna/sdk-js/swarm"
 
-import BeeClient from "@/classes/BeeClient"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
@@ -36,7 +34,7 @@ type PlaylistVideosOptions = {
 }
 
 export default function usePlaylistVideos(
-  identification: { id: string; owner: EthAddress } | Reference,
+  identification: { id: string; owner: EthAddress } | { rootManifest: Reference },
   opts: PlaylistVideosOptions
 ) {
   const beeClient = useClientsStore(state => state.beeClient)
@@ -89,24 +87,9 @@ export default function usePlaylistVideos(
     setIsLoadingPlaylist(true)
 
     try {
-      let id: string
-      let owner: EthAddress
-
-      if (typeof identification === "string") {
-        const feed = await beeClient.feed.parseFeedFromRootManifest(identification)
-        id = parsePlaylistIdFromTopic(feed.topic)
-        owner = `0x${feed.owner}`
-      } else {
-        id = identification.id
-        owner = identification.owner
-      }
-
-      const reader = new SwarmPlaylist.Reader(
-        { id, owner },
-        {
-          beeClient,
-        }
-      )
+      const reader = new SwarmPlaylist.Reader(identification, {
+        beeClient,
+      })
 
       const playlist = await reader.download()
       setPlaylist(playlist)

@@ -97,7 +97,7 @@ const Select: React.FC<SelectProps> = ({
             >
               <Listbox.Options
                 className={cn(
-                  "absolute left-0 mt-2 w-72 origin-top-left rounded-lg shadow-lg",
+                  "absolute left-0 mt-2 w-72 origin-top-left overflow-hidden rounded-lg shadow-lg",
                   "divide-y border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900",
                   "divide-gray-200 ring-1 ring-black/5 dark:divide-gray-700",
                   "z-10 focus:outline-none"
@@ -116,17 +116,15 @@ const Select: React.FC<SelectProps> = ({
                       )
                     }
                     value={option.value}
+                    disabled={option.disabled}
                   >
                     {({ active, selected }) => (
                       <div className="flex flex-col">
                         <div
-                          className={cn(
-                            "flex justify-between text-base font-semibold leading-none",
-                            {
-                              "font-semibold": selected,
-                              "text-gray-900 dark:text-gray-50": active,
-                            }
-                          )}
+                          className={cn("flex justify-between text-base font-medium leading-none", {
+                            "text-gray-900 dark:text-gray-50": active,
+                            "cursor-not-allowed text-gray-500 dark:text-gray-400": option.disabled,
+                          })}
                         >
                           <span>{option.label}</span>
 

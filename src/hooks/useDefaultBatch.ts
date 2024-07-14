@@ -311,6 +311,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     error,
     defaultBatch,
     fetchDefaultBatch,
+    fetchBestUsableBatch,
     createDefaultBatch,
   }
 }

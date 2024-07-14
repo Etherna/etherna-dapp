@@ -16,26 +16,30 @@
  */
 
 import React from "react"
-import { useAuth } from "react-oidc-context"
+import { useParams } from "react-router-dom"
 
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
 import SEO from "@/components/layout/SEO"
-import UnauthenticatedPlaceholder from "@/components/placeholders/UnauthenticatedPlaceholder"
-import UserPlaylistsView from "@/components/playlist/UserPlaylistsView"
+import PlaylistView from "@/components/playlist/PlaylistView"
 import { Container } from "@/components/ui/layout"
 
-const PlaylistsPage = () => {
-  const { isAuthenticated, isLoading } = useAuth()
+import type { Reference } from "@etherna/sdk-js/clients"
+
+const PlaylistPage = () => {
+  const { hash } = useParams()
 
   return (
     <AppLayoutWrapper>
-      <SEO title="Playlists" />
-      <Container fluid>
-        {isAuthenticated && <UserPlaylistsView />}
-        {!isAuthenticated && !isLoading && <UnauthenticatedPlaceholder />}
+      <SEO title="Playlist" />
+      <Container className="mx-auto" noPaddingY>
+        <PlaylistView
+          identification={{
+            rootManifest: hash as Reference,
+          }}
+        />
       </Container>
     </AppLayoutWrapper>
   )
 }
 
-export default PlaylistsPage
+export default PlaylistPage

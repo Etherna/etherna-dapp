@@ -15,19 +15,16 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { parsePlaylistIdFromTopic } from "@etherna/sdk-js/swarm"
-import { EmptyReference } from "@etherna/sdk-js/utils"
 
 import useSwarmProfile from "./useSwarmProfile"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
-import SwarmProfile from "@/classes/SwarmProfile"
 import SwarmUserPlaylists from "@/classes/SwarmUserPlaylists"
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
 import { deepCloneArray } from "@/utils/array"
 import { deepCloneObject } from "@/utils/object"
 
-import type { Playlist, PlaylistVideo, UserPlaylists, Video } from "@etherna/sdk-js"
+import type { Playlist, PlaylistVideo, Video } from "@etherna/sdk-js"
 import type { EthAddress, Reference } from "@etherna/sdk-js/clients"
 
 interface UseUserPlaylistsOptions {

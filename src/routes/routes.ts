@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import type { Reference } from "@etherna/sdk-js/clients"
+
 const routePaths = {
   /** `/` */
   home: `/`,
@@ -27,6 +29,8 @@ const routePaths = {
   saved: `/saved`,
   /** `/playlists` */
   playlists: `/playlists`,
+  /** `/playlist/{rootManifest}` */
+  playlist: (rootManifest: Reference) => `/playlists/${rootManifest}`,
   /** `/channels/{id}` */
   channel: (id: string) => `/channel/${id}`,
   /** `/watch/{hash}` */

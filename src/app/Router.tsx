@@ -34,6 +34,7 @@ const AsyncHome = lazy(() => import("@/pages/home"))
 const AsyncFrames = lazy(() => import("@/pages/frames"))
 const AsyncFollowing = lazy(() => import("@/pages/following"))
 const AsyncPlaylists = lazy(() => import("@/pages/playlists"))
+const AsyncPlaylist = lazy(() => import("@/pages/playlist"))
 const AsyncSaved = lazy(() => import("@/pages/saved"))
 const AsyncChannel = lazy(() => import("@/pages/channel"))
 const AsyncChannelEdit = lazy(() => import("@/pages/studio/channel-edit"))
@@ -65,6 +66,11 @@ const Following = () => (
 const Playlists = () => (
   <Suspense fallback={<PageLoader />}>
     <AsyncPlaylists />
+  </Suspense>
+)
+const Playlist = () => (
+  <Suspense fallback={<PageLoader />}>
+    <AsyncPlaylist />
   </Suspense>
 )
 const Saved = () => (
@@ -136,6 +142,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+      retry: false,
     },
   },
 })
@@ -157,6 +164,7 @@ const Router = () => {
                 <Route path="/frames" element={<Frames />} />
                 <Route path="/following" element={<Following />} />
                 <Route path="/playlists" element={<Playlists />} />
+                <Route path="/playlists/:hash" element={<Playlist />} />
                 <Route path="/saved" element={<Saved />} />
                 <Route path="/channel/:id" element={<Channel />} />
                 <Route path="/search" element={<Search />} />
