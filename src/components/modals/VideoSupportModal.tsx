@@ -109,12 +109,12 @@ const VideoSupportModal: React.FC<VideoSupportModalProps> = ({
   const isSupportedByUser = useCallback(
     (reference: string) => {
       return supportTab === "offers"
-        ? offersStatus?.globalOffers
+        ? (offersStatus?.globalOffers
             .find(status => status.reference === reference)
-            ?.offeredBy.includes(address ?? "") ?? false
-        : pinningStatus?.globalPinning
+            ?.offeredBy.includes(address ?? "") ?? false)
+        : (pinningStatus?.globalPinning
             .find(status => status.reference === reference)
-            ?.pinnedBy.includes(address ?? "") ?? false
+            ?.pinnedBy.includes(address ?? "") ?? false)
     },
     [address, supportTab, offersStatus, pinningStatus]
   )
@@ -134,10 +134,10 @@ const VideoSupportModal: React.FC<VideoSupportModalProps> = ({
   const globalSupportCount = useCallback(
     (reference: string) => {
       return supportTab === "offers"
-        ? offersStatus?.globalOffers.find(status => status.reference === reference)?.offeredBy
-            .length ?? 0
-        : pinningStatus?.globalPinning.find(status => status.reference === reference)?.pinnedBy
-            .length ?? 0
+        ? (offersStatus?.globalOffers.find(status => status.reference === reference)?.offeredBy
+            .length ?? 0)
+        : (pinningStatus?.globalPinning.find(status => status.reference === reference)?.pinnedBy
+            .length ?? 0)
     },
     [supportTab, offersStatus, pinningStatus]
   )

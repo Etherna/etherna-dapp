@@ -17,16 +17,22 @@
 
 import React from "react"
 
+import { cn } from "@/utils/classnames"
+
 type LabelProps = {
   children?: React.ReactNode
+  className?: string
   htmlFor?: string
   title?: string
 }
 
-const Label: React.FC<LabelProps> = ({ children, htmlFor, title }) => {
+const Label: React.FC<LabelProps> = ({ children, className, htmlFor, title }) => {
   return (
     <label
-      className="mb-2 block text-sm font-semibold tracking-wide text-gray-700 dark:text-gray-400"
+      className={cn(
+        "mb-2 block text-sm font-semibold tracking-wide text-gray-700 dark:text-gray-400",
+        className
+      )}
       htmlFor={htmlFor}
       title={title}
     >
