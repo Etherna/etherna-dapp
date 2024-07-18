@@ -17,7 +17,7 @@
 
 import React from "react"
 import { Link } from "react-router-dom"
-import { EmptyReference } from "@etherna/sdk-js/utils"
+import { blurHashToDataURL, EmptyReference } from "@etherna/sdk-js/utils"
 
 import { ExclamationCircleIcon } from "@heroicons/react/24/solid"
 
@@ -27,6 +27,7 @@ import { Alert } from "@/components/ui/display"
 import { usePlaylistRootManifest } from "@/hooks/usePlaylistRootManifest"
 import { usePlaylistPreviewQuery } from "@/queries/playlist-preview-query"
 import routes from "@/routes"
+import useClientsStore from "@/stores/clients"
 
 import type { EnsAddress, EthAddress, Reference } from "@etherna/sdk-js/clients"
 
@@ -43,6 +44,7 @@ type PlaylistPreviewProps = {
 }
 
 const PlaylistPreview: React.FC<PlaylistPreviewProps> = ({ identification, owner }) => {
+  const beeClient = useClientsStore(state => state.beeClient)
   const playlistQuery = usePlaylistPreviewQuery({
     owner,
     playlistIdentification: identification,
@@ -72,10 +74,18 @@ const PlaylistPreview: React.FC<PlaylistPreviewProps> = ({ identification, owner
               }}
             />
             <Image
-              className="rounded-md bg-gray-200 dark:bg-gray-700"
-              src={playlistQuery.data.thumb?.path}
+              className="overflow-hidden rounded-md bg-gray-200 dark:bg-gray-700"
+              src={
+                playlistQuery.data.thumb?.path
+                  ? beeClient.bzz.url("", playlistQuery.data.thumb.path)
+                  : ""
+              }
               placeholder="blur"
-              blurredDataURL={playlistQuery.data.thumb?.blurhash}
+              blurredDataURL={
+                playlistQuery.data.thumb?.blurhash
+                  ? blurHashToDataURL(playlistQuery.data.thumb.blurhash)
+                  : undefined
+              }
               aspectRatio={16 / 9}
               layout="responsive"
             />

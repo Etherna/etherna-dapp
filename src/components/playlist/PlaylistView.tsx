@@ -16,7 +16,7 @@
  */
 
 import React, { useMemo, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { PlaylistBuilder } from "@etherna/sdk-js/swarm"
 import { dateToTimestamp } from "@etherna/sdk-js/utils"
 import { Portal } from "@headlessui/react"
@@ -25,19 +25,23 @@ import { useQueryClient } from "@tanstack/react-query"
 import { ChevronDownIcon } from "@heroicons/react/24/solid"
 
 import PlaylistEditModal from "./PlaylistEditModal"
+import PlaylistViewVideos from "./PlaylistViewVideos"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmUserPlaylists from "@/classes/SwarmUserPlaylists"
 import { Button, Dropdown } from "@/components/ui/actions"
-import { Alert, Skeleton } from "@/components/ui/display"
+import { Alert, Avatar, Skeleton } from "@/components/ui/display"
 import useConfirmation from "@/hooks/useConfirmation"
 import useDefaultBatch from "@/hooks/useDefaultBatch"
 import useErrorMessage from "@/hooks/useErrorMessage"
 import { usePlaylistRootManifest } from "@/hooks/usePlaylistRootManifest"
 import { usePlaylistQuery } from "@/queries/playlist-query"
+import { useProfilePreviewQuery } from "@/queries/profile-preview-query"
 import { useUserPlaylistsQuery } from "@/queries/user-playlists-query"
 import routes from "@/routes"
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
+import { cn } from "@/utils/classnames"
+import { shortenEthAddr } from "@/utils/ethereum"
 
 import type { Playlist } from "@etherna/sdk-js"
 import type { PlaylistIdentification } from "@etherna/sdk-js/swarm"
@@ -55,8 +59,11 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
     autofetch: !defaultBatchId,
     saveAfterCreate: false,
   })
+
   const playlistQuery = usePlaylistQuery({ playlistIdentification: identification })
   const userPlaylistsQuery = useUserPlaylistsQuery({ owner: address })
+  const profilePreviewQuery = useProfilePreviewQuery({ address: playlistQuery.data?.preview.owner })
+
   const { rootManifest } = usePlaylistRootManifest({ identification })
   const [showCreateModal, setShowCreateModal] = useState(false)
   const { showError } = useErrorMessage()
@@ -222,10 +229,10 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
   const isPlaylistOwner = playlistQuery.data?.preview.owner === address
 
   return (
-    <div className="flex w-full flex-col gap-8 lg:flex-row">
-      <aside className="rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
-        <div className="flex items-center gap-4 lg:flex-col">
-          <div className="flex flex-1 flex-col">
+    <div className="flex w-full flex-col gap-8 lg:min-h-72 lg:flex-row">
+      <aside className="shrink-0 rounded-lg bg-gray-100 p-4 dark:bg-gray-800 lg:w-1/3 lg:max-w-80">
+        <div className="flex w-full items-center gap-4 lg:h-full lg:flex-col">
+          <div className="flex w-full flex-1 flex-col">
             {playlistQuery.isLoading ? (
               <Skeleton className="block h-5 w-full" />
             ) : (
@@ -234,31 +241,67 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
               </h1>
             )}
 
-            {playlistQuery.isLoading ? (
-              <Skeleton className="mt-2 block h-4 w-full" />
-            ) : (
-              <p className="mt-2 text-sm/tight text-gray-700 dark:text-gray-300">
-                {playlistQuery.data?.preview.type || "public"}
-              </p>
-            )}
+            <div className="mt-2">
+              {playlistQuery.isLoading ? (
+                <Skeleton className="block h-4 w-full" />
+              ) : (
+                <p className="text-sm/tight text-gray-700 dark:text-gray-300">
+                  {playlistQuery.data?.preview.type || "public"}
+                </p>
+              )}
+            </div>
 
-            {playlistQuery.isLoading ? (
-              <Skeleton className="mt-4 block h-4 w-full" />
-            ) : (
-              <p className="mt-4 text-sm/tight text-gray-700 dark:text-gray-300 md:text-base/tight">
-                {playlistQuery.data?.details.description || "description"}
-              </p>
-            )}
+            <div className="mt-3 md:mt-6">
+              <Link to={routes.channel(playlistQuery.data?.preview.owner ?? "0x0")}>
+                <div className="flex items-center space-x-2">
+                  <div className="size-6">
+                    {profilePreviewQuery.isLoading ? (
+                      <Skeleton className="block size-6" roundedFull />
+                    ) : (
+                      <Avatar
+                        size={24}
+                        image={profilePreviewQuery.data?.avatar}
+                        address={playlistQuery.data?.preview.owner}
+                      />
+                    )}
+                  </div>
+                  {profilePreviewQuery.isLoading ? (
+                    <Skeleton className="block h-4 w-20" />
+                  ) : (
+                    <h5
+                      className={cn(
+                        "max-w-full flex-grow overflow-hidden text-ellipsis text-sm font-semibold",
+                        "text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300",
+                        "transition-colors duration-200"
+                      )}
+                    >
+                      {profilePreviewQuery.data?.name ??
+                        shortenEthAddr(playlistQuery.data?.preview.owner)}
+                    </h5>
+                  )}
+                </div>
+              </Link>
+            </div>
+
+            <div className="mt-4 lg:my-8">
+              {playlistQuery.isLoading ? (
+                <Skeleton className="block h-4 w-full" />
+              ) : (
+                <p className="text-sm/tight text-gray-700 dark:text-gray-300 md:text-base/tight">
+                  {playlistQuery.data?.details.description || "description"}
+                </p>
+              )}
+            </div>
           </div>
 
-          <div className="shrink-0">
+          <div className="shrink-0 lg:mt-auto lg:w-full">
             {(() => {
               switch (playlistUserLibraryStatus) {
                 case "loading":
                   return <Skeleton className="block h-10 w-full" />
                 case "included":
                   return (
-                    <Dropdown>
+                    <Dropdown className="lg:w-full">
                       <Dropdown.Toggle className="w-full">
                         <Button className="w-full" color="muted">
                           <span>{isPlaylistOwner ? "In library" : "Subscribed"}</span>
@@ -309,11 +352,7 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
         </div>
       </aside>
 
-      {playlistQuery.isSuccess && playlistQuery.data.details.videos.length === 0 && (
-        <div className="flex flex-1 items-center justify-center p-8">
-          <p className="text-gray-700 dark:text-gray-300">No videos in this playlist</p>
-        </div>
-      )}
+      {playlistQuery.isSuccess && <PlaylistViewVideos playlist={playlistQuery.data} />}
 
       {playlistQuery.data && (
         <PlaylistEditModal

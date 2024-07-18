@@ -130,7 +130,7 @@ const Image: React.FC<ImageProps> = ({
     if (!newSrc) {
       return onError()
     }
-    if (newSrc === src) {
+    if (newSrc === src && !src.startsWith("http")) {
       return setImgLoaded(true)
     }
 

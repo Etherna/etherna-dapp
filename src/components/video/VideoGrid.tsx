@@ -17,16 +17,18 @@
 
 import React, { forwardRef } from "react"
 
-import VideoPreviewPlaceholder from "@/components/placeholders/VideoPreviewPlaceholder"
-import VideoPreview from "@/components/video/VideoPreview"
-import { cn } from "@/utils/classnames"
+import { ExclamationCircleIcon } from "@heroicons/react/24/solid"
 
-import type { WithIndexes, WithOffersStatus, WithOwner } from "@/types/video"
-import type { Video } from "@etherna/sdk-js"
+import VideoPreviewPlaceholder from "@/components/placeholders/VideoPreviewPlaceholder"
+import { Alert } from "@/components/ui/display"
+import MediaGrid from "@/components/ui/layout/MediaGrid"
+import VideoPreview from "@/components/video/VideoPreview"
+
+import type { AnyListVideo } from "@/types/video"
 
 type VideoGridProps = {
   label?: string
-  videos?: WithOwner<WithIndexes<WithOffersStatus<Video>>>[]
+  videos?: (AnyListVideo | null)[]
   isFetching?: boolean
   fetchingPreviewCount?: number
   mini?: boolean
@@ -48,42 +50,35 @@ const VideoGrid = forwardRef<HTMLDivElement, VideoGridProps>(
             <LabelTag>{label}</LabelTag>
           </div>
         )}
-        <div
-          className={cn(
-            "mx-auto grid max-w-[2560px] grid-flow-row-dense gap-4",
-            singleColumn
-              ? {
-                  "sm:gap-6": true,
-                  "grid-cols-1 grid-rows-[repeat(auto-fill,minmax(150px,1fr))]": true,
-                  "mx-auto max-w-screen-lg": true,
-                }
-              : {
-                  "grid-cols-[repeat(auto-fill,minmax(200px,1fr))]": !mini,
-                  "lg:grid-cols-[repeat(auto-fill,minmax(240px,1fr))]": !mini,
-                  "xl:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]": !mini,
-                  "grid-cols-[repeat(auto-fill,minmax(180px,1fr))]": mini,
-                  "lg:grid-cols-[repeat(auto-fill,minmax(220px,1fr))]": mini,
-                  "xl:grid-cols-[repeat(auto-fill,minmax(260px,1fr))]": mini,
-                }
-          )}
-          ref={ref}
-        >
+        <MediaGrid variant={singleColumn ? "single-col" : "default"} ref={ref}>
           {videos &&
-            videos.map(video => (
-              <VideoPreview
-                video={video}
-                videoOffers={video.offers}
-                hideProfile={mini}
-                decentralizedLink={decentralizedLink}
-                direction={singleColumn ? "horizontal" : "vertical"}
-                key={
-                  video.indexesStatus
-                    ? video.indexesStatus[Object.keys(video.indexesStatus)[0]]?.indexReference ??
-                      video.reference
-                    : video.reference
-                }
-              />
-            ))}
+            videos.map((video, i) =>
+              video ? (
+                <VideoPreview
+                  video={video}
+                  videoOffers={"offers" in video ? video.offers : undefined}
+                  hideProfile={mini}
+                  decentralizedLink={decentralizedLink}
+                  direction={singleColumn ? "horizontal" : "vertical"}
+                  key={i}
+                />
+              ) : (
+                <div
+                  key={i}
+                  className="relative mt-3 overflow-hidden"
+                  style={{
+                    paddingBottom: (9 / 16) * 100 + "%",
+                  }}
+                >
+                  <Alert className="absolute inset-0 px-3 py-8" color="error">
+                    <div className="flex flex-col items-center">
+                      <ExclamationCircleIcon width={24} />
+                      <p className="text-center text-sm">Cannot fetch video</p>
+                    </div>
+                  </Alert>
+                </div>
+              )
+            )}
           {isFetching &&
             Array(fetchingPreviewCount)
               .fill(0)
@@ -94,7 +89,7 @@ const VideoGrid = forwardRef<HTMLDivElement, VideoGridProps>(
                   key={i}
                 />
               ))}
-        </div>
+        </MediaGrid>
       </>
     )
   }

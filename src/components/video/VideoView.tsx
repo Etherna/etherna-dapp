@@ -32,14 +32,14 @@ import routes from "@/routes"
 import { withAccessToken } from "@/utils/jwt"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
-import type { VideoWithIndexes } from "@/types/video"
+import type { AnyListVideo } from "@/types/video"
 import type { ProfileWithEns } from "@etherna/sdk-js"
 import type { EthAddress } from "@etherna/sdk-js/clients"
 
 type VideoViewProps = {
   reference: string
   routeState?: {
-    video: VideoWithIndexes
+    video: AnyListVideo
     ownerProfile?: ProfileWithEns
     videoOffers: VideoOffersStatus
   }
@@ -52,7 +52,7 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
 
   const { video, notFound, loadVideo } = useSwarmVideo({
     reference,
-    routeState: routeState?.video ?? window.prefetchData?.video,
+    routeState: routeState?.video ?? (window.prefetchData?.video as AnyListVideo),
     fetchIndexStatus: true,
   })
   const { profile, loadProfile } = useSwarmProfile({

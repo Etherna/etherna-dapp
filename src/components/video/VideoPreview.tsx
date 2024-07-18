@@ -33,13 +33,12 @@ import { withAccessToken } from "@/utils/jwt"
 import { encodedSvg } from "@/utils/svg"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
-import type { WithIndexes, WithOwner } from "@/types/video"
-import type { Video } from "@etherna/sdk-js"
+import type { AnyListVideo } from "@/types/video"
 
 const thumbnailPreview = encodedSvg(<ThumbPlaceholder />)
 
 type VideoPreviewProps = {
-  video: WithIndexes<WithOwner<Video>>
+  video: AnyListVideo
   videoOffers?: VideoOffersStatus
   hideProfile?: boolean
   decentralizedLink?: boolean
@@ -88,8 +87,10 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
   const videoLink = useMemo(() => {
     return decentralizedLink
       ? video.reference
-      : video.indexesStatus[indexUrl]?.indexReference ?? video.reference
-  }, [decentralizedLink, indexUrl, video.indexesStatus, video.reference])
+      : "indexesStatus" in video
+        ? (video.indexesStatus?.[indexUrl]?.indexReference ?? video.reference)
+        : video.reference
+  }, [decentralizedLink, indexUrl, video])
 
   return (
     <div

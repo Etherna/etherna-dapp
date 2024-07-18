@@ -22,12 +22,12 @@ import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import { nullablePromise } from "@/utils/promise"
 
-import type { VideoWithIndexes } from "@/types/video"
+import type { AnyListVideo, VideoWithIndexes } from "@/types/video"
 import type { IndexVideo, Reference } from "@etherna/sdk-js/clients"
 
 type SwarmVideoOptions = {
   reference: string
-  routeState?: VideoWithIndexes | null
+  routeState?: AnyListVideo | null
   fetchIndexStatus?: boolean
 }
 
@@ -36,7 +36,9 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
   const indexClient = useClientsStore(state => state.indexClient)
   const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
   const [reference, setReference] = useState(opts.reference)
-  const [video, setVideo] = useState<VideoWithIndexes | null>(opts.routeState ?? null)
+  const [video, setVideo] = useState<VideoWithIndexes | null>(
+    opts.routeState ? { ...opts.routeState, indexesStatus: {} } : null
+  )
   const [isLoading, setIsloading] = useState(false)
   const [notFound, setNotFound] = useState(false)
 
