@@ -34,13 +34,13 @@ const PlaylistViewVideos: React.FC<PlaylistViewVideosProps> = ({ playlist }) => 
   const seedLimit =
     useSmartFetchCount(gridRef, {
       defaulSeed: 12,
-    }) ?? 12
+    }) ?? 0
   const { videos, isFetching, hasMore, loadMore } = usePlaylistVideos(playlist, {
     seedLimit,
   })
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 overflow-hidden">
       {playlist.details.videos.length === 0 && (
         <div className="flex flex-1 items-center justify-center p-8">
           <p className="text-gray-700 dark:text-gray-300">No videos in this playlist</p>
