@@ -18,8 +18,7 @@
 import React, { useCallback, useState } from "react"
 import Tippy from "@tippyjs/react"
 
-import { CheckIcon } from "@heroicons/react/24/outline"
-import { ClipboardIcon } from "@heroicons/react/24/solid"
+import { CheckIcon, ClipboardIcon } from "@heroicons/react/24/outline"
 
 import { cn } from "@/utils/classnames"
 
@@ -67,7 +66,7 @@ const CopyText: React.FC<CopyTextProps> = ({ children, label, onCopy }) => {
             )}
             onClick={copy}
           >
-            <ClipboardIcon className={cn({ "opacity-0": copied })} width={20} aria-hidden />
+            <ClipboardIcon className={cn({ "opacity-0": copied })} width={18} aria-hidden />
             <CheckIcon
               className={cn("text-green-500 absolute-center", {
                 hidden: !copied,
