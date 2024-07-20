@@ -61,7 +61,7 @@ const PlaylistPreview: React.FC<PlaylistPreviewProps> = ({ identification, owner
               className="mx-4 h-1 rounded-none rounded-t bg-gray-200 object-top dark:bg-gray-700"
               style={{
                 backgroundImage: playlistQuery.data.thumb
-                  ? `url(${playlistQuery.data.thumb})`
+                  ? blurHashToDataURL(playlistQuery.data.thumb.blurhash)
                   : undefined,
               }}
             />
@@ -69,7 +69,7 @@ const PlaylistPreview: React.FC<PlaylistPreviewProps> = ({ identification, owner
               className="mx-2 h-1.5 rounded-none rounded-t bg-gray-200 object-top dark:bg-gray-700"
               style={{
                 backgroundImage: playlistQuery.data.thumb
-                  ? `url(${playlistQuery.data.thumb})`
+                  ? blurHashToDataURL(playlistQuery.data.thumb.blurhash)
                   : undefined,
               }}
             />

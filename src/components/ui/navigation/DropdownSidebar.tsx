@@ -77,7 +77,7 @@ const DropdownSidebar: React.FC<DropdownSidebarProps> = ({ className, defaultTit
         <>
           <Listbox.Button
             className={cn(
-              "flex w-full items-center rounded px-4 py-3 lg:hidden",
+              "flex w-full max-w-72 items-center rounded px-4 py-3 lg:hidden",
               "border border-gray-400 dark:border-gray-600",
               "transition-colors duration-75 active:bg-gray-500/10"
             )}
@@ -89,7 +89,7 @@ const DropdownSidebar: React.FC<DropdownSidebarProps> = ({ className, defaultTit
 
           <Listbox.Options
             className={cn(
-              "absolute inset-x-0 top-full z-10 mt-2 flex-col space-y-2 rounded p-4",
+              "absolute inset-x-0 top-full z-10 mt-2 max-w-72 flex-col space-y-2 rounded p-4",
               "bg-gray-50 dark:bg-gray-800",
               "border border-gray-100 shadow-lg dark:border-gray-700",
               "shadow-gray-800/20 focus:outline-none",

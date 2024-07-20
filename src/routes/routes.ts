@@ -57,6 +57,8 @@ const routePaths = {
   studioVideoNew: `/studio/videos/new`,
   /** `/studio/channel` */
   studioChannel: `/studio/channel`,
+  /** `/studio/playlists` */
+  studioPlaylists: `/studio/playlists`,
   /** `/studio/postages` */
   studioPostages: `/studio/postages`,
 } as const

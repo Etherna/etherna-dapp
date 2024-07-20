@@ -17,7 +17,13 @@
 
 import React from "react"
 
-import { BanknotesIcon, FilmIcon, SparklesIcon, UserCircleIcon } from "@heroicons/react/24/solid"
+import {
+  BanknotesIcon,
+  FilmIcon,
+  RectangleStackIcon,
+  SparklesIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/solid"
 
 import SEO from "./SEO"
 import { Text } from "@/components/ui/display"
@@ -52,6 +58,13 @@ const StudioLayout: React.FC<StudioLayoutProps> = ({ children }) => {
             title="Customize"
             iconSvg={<UserCircleIcon />}
             isActive={pathname => /\/studio\/channel/.test(pathname)}
+            isResponsive={false}
+          />
+          <Sidebar.Item
+            to={routes.studioPlaylists}
+            title="Playlists"
+            iconSvg={<RectangleStackIcon />}
+            isActive={pathname => /\/studio\/playlists/.test(pathname)}
             isResponsive={false}
           />
         </DropdownSidebar>

@@ -15,13 +15,8 @@ interface UsePlaylistPreviewOptions {
 export const usePlaylistPreviewQuery = (opts: UsePlaylistPreviewOptions) => {
   const beeClient = useClientsStore(state => state.beeClient)
 
-  const id =
-    "id" in opts.playlistIdentification
-      ? opts.playlistIdentification.id
-      : opts.playlistIdentification.rootManifest
-
   return useQuery({
-    queryKey: ["playlist-preview", opts.owner, id],
+    queryKey: usePlaylistPreviewQuery.getQueryKey(opts.owner, opts.playlistIdentification),
     queryFn: async () => {
       const reader = new SwarmPlaylist.Reader(opts.playlistIdentification, {
         beeClient,
@@ -36,3 +31,11 @@ export const usePlaylistPreviewQuery = (opts: UsePlaylistPreviewOptions) => {
     enabled: opts.enabled,
   })
 }
+usePlaylistPreviewQuery.getQueryKey = (
+  owner: EthAddress | EnsAddress,
+  identification: PlaylistIdentification
+) => [
+  "playlist-preview",
+  owner,
+  "id" in identification ? identification.id : identification.rootManifest,
+]
