@@ -3,8 +3,9 @@ import { useQuery } from "@tanstack/react-query"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import useClientsStore from "@/stores/clients"
 
-import type { EnsAddress, EthAddress, Reference } from "@etherna/sdk-js/clients"
+import type { EnsAddress, EthAddress } from "@etherna/sdk-js/clients"
 import type { PlaylistIdentification } from "@etherna/sdk-js/swarm"
+import type { UseQueryOptions } from "@tanstack/react-query"
 
 interface UsePlaylistOptions {
   owner?: EthAddress | EnsAddress
@@ -13,11 +14,13 @@ interface UsePlaylistOptions {
 }
 
 export const usePlaylistQuery = (opts: UsePlaylistOptions) => {
-  const beeClient = useClientsStore(state => state.beeClient)
-
-  return useQuery({
-    queryKey: usePlaylistQuery.getQueryKey(opts.owner, opts.playlistIdentification),
+  return useQuery(usePlaylistQuery.getQueryConfig(opts))
+}
+usePlaylistQuery.getQueryConfig = (opts: UsePlaylistOptions) =>
+  ({
+    queryKey: usePlaylistQuery.getQueryKey(opts.playlistIdentification),
     queryFn: async () => {
+      const beeClient = useClientsStore.getState().beeClient
       const reader = new SwarmPlaylist.Reader(opts.playlistIdentification, {
         beeClient,
       })
@@ -29,14 +32,10 @@ export const usePlaylistQuery = (opts: UsePlaylistOptions) => {
       return playlist
     },
     enabled: opts.enabled,
-  })
-}
-usePlaylistQuery.getQueryKey = (
-  owner: EthAddress | EnsAddress | undefined,
-  identification: PlaylistIdentification
-) =>
+  }) satisfies UseQueryOptions
+usePlaylistQuery.getQueryKey = (identification: PlaylistIdentification) =>
   [
     "playlist",
-    owner,
     "id" in identification ? identification.id : identification.rootManifest,
+    "id" in identification ? identification.owner : null,
   ].filter(Boolean)

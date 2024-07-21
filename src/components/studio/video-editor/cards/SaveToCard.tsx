@@ -17,15 +17,19 @@
 
 import React, { useCallback, useEffect, useMemo } from "react"
 import { urlHostname } from "@etherna/sdk-js/utils"
+import { useQueries } from "@tanstack/react-query"
 
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import FieldDescription from "@/components/common/FieldDescription"
 import { Card, Spinner } from "@/components/ui/display"
 import { SelectionToggle } from "@/components/ui/inputs"
 import useVideoPublishStatus from "@/hooks/useVideoPublishStatus"
+import { useChannelPlaylistsQuery } from "@/queries/channel-playlists-query"
+import { usePlaylistQuery } from "@/queries/playlist-query"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
 import useVideoEditorStore from "@/stores/video-editor"
+import { ellipsis } from "@/utils/string"
 
 import type { VideoEditorPublishSourceType } from "@/stores/video-editor"
 
@@ -54,6 +58,12 @@ const SaveToCard: React.FC<SaveToCardProps> = ({ disabled }) => {
     playlistIds,
     ownerAddress: address!,
   })
+  const channelPlaylistsQuery = useChannelPlaylistsQuery({ owner: address })
+  const playlistsQueries = useQueries({
+    queries: (channelPlaylistsQuery.data ?? []).map(rootManifest =>
+      usePlaylistQuery.getQueryConfig({ playlistIdentification: { rootManifest } })
+    ),
+  })
 
   const isToggled = useCallback(
     (source: VideoEditorPublishSourceType, identifier: string) => {
@@ -63,6 +73,8 @@ const SaveToCard: React.FC<SaveToCardProps> = ({ disabled }) => {
   )
 
   useEffect(() => {
+    const channelPlaylists = playlistsQueries.map(q => q.data).filter(Boolean)
+
     updateSaveTo([
       {
         source: "playlist",
@@ -72,6 +84,14 @@ const SaveToCard: React.FC<SaveToCardProps> = ({ disabled }) => {
         videoId: undefined,
         add: editorStatus === "creating",
       },
+      ...channelPlaylists.map(playlist => ({
+        source: "playlist" as const,
+        name: playlist.preview.name,
+        description: ellipsis(playlist.details.description ?? "", 25),
+        identifier: playlist.preview.id,
+        videoId: undefined,
+        add: editorStatus === "creating",
+      })),
       ...indexes.map(host => ({
         source: "index" as const,
         name: host.name,
@@ -82,7 +102,7 @@ const SaveToCard: React.FC<SaveToCardProps> = ({ disabled }) => {
       })),
     ])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [...playlistsQueries.map(q => q.data)])
 
   useEffect(() => {
     if (saveTo.length === 0) return
@@ -93,7 +113,7 @@ const SaveToCard: React.FC<SaveToCardProps> = ({ disabled }) => {
         ...pubSource,
         videoId:
           pubSource.source === "index"
-            ? videoIndexesStatus[pubSource.identifier]?.videoId ?? pubSource.videoId
+            ? (videoIndexesStatus[pubSource.identifier]?.videoId ?? pubSource.videoId)
             : pubSource.videoId,
       }))
     )

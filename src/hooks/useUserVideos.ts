@@ -75,7 +75,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
         }
       )
 
-      playlistResolver = () => nullablePromise(reader.download())
+      playlistResolver = () => nullablePromise(reader.download({ mode: "full" }))
     }
 
     indexClients.current = opts.sources
@@ -120,7 +120,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
 
       const from = page * limit
       const to = from + limit
-      const vids = playlist.videos?.slice(from, to) ?? []
+      const vids = playlist.details.videos?.slice(from, to) ?? []
       const videos = await Promise.all(
         vids.map(async playlistVid => {
           const reader = new SwarmVideo.Reader(playlistVid.reference, {
@@ -200,7 +200,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
                 duration: 0,
                 reference: fakeReference,
                 thumbnail: null,
-                createdAt: Date.now(),
+                createdAt: new Date(),
                 updatedAt: null,
               },
               indexesStatus: {

@@ -53,7 +53,7 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
   const { showError } = useErrorMessage()
   const { waitPaymentConfirmation } = useBatchPaymentConfirmation()
 
-  const { channelPlaylist, loadPlaylists, updateVideosInPlaylist } = useChannelPlaylists(address!, {
+  const { channelPlaylist, loadPlaylists, updateVideosInPlaylist } = useChannelPlaylists({
     mode: "channel",
   })
   const { isLocked } = useWallet()
@@ -105,7 +105,7 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
       const migrationVideos = videosResults
         .map((result, i) =>
           result.status === "fulfilled"
-            ? result.value ?? { reference: videos[i].reference, preview: null }
+            ? (result.value ?? { reference: videos[i].reference, preview: null })
             : null
         )
         .filter(video => {
@@ -232,7 +232,9 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
         const initialReference = video.reference
         const previusReferences = extractVideoReferences(video)
         const isWalletConnected = !isLocked
-        const isInChannel = channelPlaylist.videos.some(vid => vid.reference === initialReference)
+        const isInChannel = channelPlaylist.details.videos.some(
+          vid => vid.reference === initialReference
+        )
         const visibility = opts.visibilityStatus[initialReference] ?? []
         const saveTo = [
           ...visibility

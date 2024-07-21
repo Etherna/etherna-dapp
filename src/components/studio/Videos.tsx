@@ -41,6 +41,7 @@ import { Button } from "@/components/ui/actions"
 import { Badge, Table, Tooltip } from "@/components/ui/display"
 import { Select } from "@/components/ui/inputs"
 import useBulkMigrations from "@/hooks/useBulkMigrations"
+import useChannelPlaylists from "@/hooks/useChannelPlaylists"
 import useUserVideos from "@/hooks/useUserVideos"
 import useUserVideosPinning from "@/hooks/useUserVideosPinning"
 import useUserVideosVisibility from "@/hooks/useUserVideosVisibility"
@@ -56,28 +57,35 @@ import type { VideosSource } from "@/hooks/useUserVideos"
 import type { VideoWithIndexes } from "@/types/video"
 
 const Videos: React.FC = () => {
-  const defaultBatchId = useUserStore(state => state.defaultBatchId)
   const defaultBatch = useUserStore(state => state.defaultBatch)
-  const profileInfo = useUserStore(state => state.profile)
   const address = useUserStore(state => state.address)
   const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
   const gatewayType = useExtensionsStore(state => state.currentGatewayType)
 
   const canEdit = !!defaultBatch
 
-  const sources = useMemo(() => {
-    return [
-      { id: PlaylistReader.channelPlaylistId, type: "playlist" },
-      { id: indexUrl, type: "index", indexUrl },
-    ] satisfies (VideosSource & { id: string })[]
-  }, [indexUrl])
-  const [source, setSource] = useState(sources[0].id)
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
   const [selectedVideos, setSelectedVideos] = useState<VideoWithIndexes[]>([])
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showMigrationModal, setShowMigrationModal] = useState(false)
 
+  const { channelPlaylists, allPlaylists } = useChannelPlaylists({ mode: "all" })
+
+  const sources = useMemo(() => {
+    return [
+      { id: PlaylistReader.channelPlaylistId, type: "playlist" },
+      ...channelPlaylists.map(
+        playlist =>
+          ({
+            type: "playlist",
+            id: playlist.preview.id,
+          }) satisfies VideosSource
+      ),
+      { id: indexUrl, type: "index", indexUrl },
+    ] satisfies (VideosSource & { id: string })[]
+  }, [indexUrl, channelPlaylists])
+  const [source, setSource] = useState(sources[0].id)
   const currentSource = useMemo(() => {
     return sources.find(s => s.id === source)!
   }, [source, sources])
@@ -167,9 +175,28 @@ const Videos: React.FC = () => {
           value={source}
           options={sources.map(source => ({
             value: source.id,
-            label: source.type === "playlist" ? "Public channel" : `Index`,
-            description:
-              source.type === "playlist" ? "Decentralized feed" : urlHostname(source.indexUrl),
+            label: (() => {
+              switch (source.type) {
+                case "playlist":
+                  const playlist = allPlaylists.find(playlist => playlist.preview.id === source.id)
+                  return source.id === PlaylistReader.channelPlaylistId
+                    ? "Public Channel"
+                    : playlist?.preview.name || "Channel playlist"
+                case "index":
+                  return "Index"
+              }
+            })(),
+            description: (() => {
+              switch (source.type) {
+                case "playlist":
+                  const playlist = allPlaylists.find(playlist => playlist.preview.id === source.id)
+                  return source.id === PlaylistReader.channelPlaylistId
+                    ? "All videos in the public channel"
+                    : playlist?.details.description || "Decentralized feed"
+                case "index":
+                  return urlHostname(source.indexUrl)
+              }
+            })(),
           }))}
           onChange={setSource}
         />

@@ -238,11 +238,6 @@ const actions = (set: SetFunc, get: GetFunc) => ({
       state.isOffered = offered
     })
   },
-  setPublishingSources(sources: VideoEditorPublishSource[]) {
-    set(state => {
-      state.saveTo = sources
-    })
-  },
   setPublishingResults(results: PublishStatus[] | undefined) {
     set(state => {
       state.publishingResults = results

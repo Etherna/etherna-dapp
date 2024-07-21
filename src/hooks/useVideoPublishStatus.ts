@@ -91,8 +91,8 @@ export default function useVideoPublishStatus(opts: UseVideoPublishStatusOptions
       }
 
       try {
-        const playlist = await reader.download()
-        const status = playlist.videos?.some(vid => vid.reference === opts.reference)
+        const playlist = await reader.download({ mode: "full" })
+        const status = playlist.details.videos.some(vid => vid.reference === opts.reference)
           ? "public"
           : "unindexed"
         publishStatus.status = status

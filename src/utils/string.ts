@@ -38,3 +38,10 @@ export const bytesToHex = (bytes: Uint8Array) => {
   }
   return hex
 }
+
+export const ellipsis = (text: string, maxLength: number) => {
+  if (text.length <= maxLength) {
+    return text
+  }
+  return text.slice(0, maxLength) + "..."
+}

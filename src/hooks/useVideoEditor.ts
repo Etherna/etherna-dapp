@@ -47,7 +47,7 @@ export default function useVideoEditor() {
   const { isLocked } = useWallet()
   const [isSaving, setIsSaving] = useState(false)
 
-  const { channelPlaylist, channelPlaylists, loadPlaylists } = useChannelPlaylists(address!, {
+  const { channelPlaylist, channelPlaylists, loadPlaylists } = useChannelPlaylists({
     mode: "all",
   })
 
