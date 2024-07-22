@@ -24,7 +24,7 @@ import { useQueryClient } from "@tanstack/react-query"
 
 import { ChevronDownIcon, ExclamationCircleIcon } from "@heroicons/react/24/solid"
 
-import PlaylistEditModal from "./PlaylistEditModal"
+import PlaylistEditModal from "../modals/PlaylistEditModal"
 import PlaylistShareButton from "./PlaylistShareButton"
 import PlaylistViewVideos from "./PlaylistViewVideos"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
@@ -377,7 +377,7 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
 
       {playlistQuery.data && (
         <PlaylistEditModal
-          open={showCreateModal}
+          show={showCreateModal}
           playlist={playlistQuery.data}
           onClose={() => setShowCreateModal(false)}
           onSave={updatePlaylist}

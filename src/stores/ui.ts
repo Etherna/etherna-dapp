@@ -25,6 +25,7 @@ export type UIState = {
   isLoadingProfile?: boolean
   shortcut?: { namespace: KeymapNamespace; key: string; shortcut?: string }
   showSidebar: boolean
+  showPlaylistCreation?: boolean
 }
 
 const getInitialState = (): UIState => ({
@@ -131,6 +132,11 @@ const actions = (set: SetFunc, get: GetFunc) => ({
   toggleSidebar(show: boolean) {
     set(state => {
       state.showSidebar = show
+    })
+  },
+  togglePlaylistCreation(show: boolean) {
+    set(state => {
+      state.showPlaylistCreation = show
     })
   },
 })

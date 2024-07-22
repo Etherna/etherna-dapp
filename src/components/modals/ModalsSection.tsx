@@ -16,17 +16,23 @@
  */
 
 import React from "react"
+import { useNavigate } from "react-router-dom"
 
 import BeeAuthModal from "./BeeAuthModal"
 import ExtensionEditorModal from "./ExtensionEditorModal"
 import ImageCropModal from "./ImageCropModal"
+import PlaylistEditModal from "./PlaylistEditModal"
 import ShortcutModal from "./ShortcutModal"
+import routes from "@/routes"
 import useUIStore from "@/stores/ui"
 
 const ModalsSection: React.FC = () => {
+  const navigate = useNavigate()
   const shortcut = useUIStore(state => state.shortcut)
   const cropping = useUIStore(state => state.cropping)
   const isAuthenticatingBee = useUIStore(state => state.isAuthenticatingBee)
+  const showPlaylistCreation = useUIStore(state => state.showPlaylistCreation)
+  const togglePlaylistCreation = useUIStore(state => state.togglePlaylistCreation)
 
   return (
     <section id="modals">
@@ -35,6 +41,15 @@ const ModalsSection: React.FC = () => {
       <ImageCropModal show={!!cropping} />
 
       <BeeAuthModal show={isAuthenticatingBee} />
+
+      <PlaylistEditModal
+        show={showPlaylistCreation}
+        onSave={playlist => {
+          navigate(routes.playlist(playlist.preview.rootManifest))
+          togglePlaylistCreation(false)
+        }}
+        onClose={() => togglePlaylistCreation(false)}
+      />
 
       <ExtensionEditorModal />
     </section>

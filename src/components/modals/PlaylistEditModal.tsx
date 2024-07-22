@@ -20,6 +20,7 @@ import { Controller, useForm } from "react-hook-form"
 import { PlaylistBuilder } from "@etherna/sdk-js/swarm"
 import { EmptyReference } from "@etherna/sdk-js/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useQueryClient } from "@tanstack/react-query"
 import { z, ZodError } from "zod"
 
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
@@ -29,13 +30,16 @@ import { Alert, FormGroup, Label } from "@/components/ui/display"
 import { Select, TextInput } from "@/components/ui/inputs"
 import useDefaultBatch from "@/hooks/useDefaultBatch"
 import useErrorMessage from "@/hooks/useErrorMessage"
+import { usePlaylistPreviewQuery } from "@/queries/playlist-preview-query"
+import { usePlaylistQuery } from "@/queries/playlist-query"
+import { useUserPlaylistsQuery } from "@/queries/user-playlists-query"
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
 
 import type { Playlist } from "@etherna/sdk-js"
 
 type PlaylistEditModalProps = {
-  open: boolean
+  show?: boolean
   playlist?: Playlist
   onClose?: () => void
   onSave?: (playlist: Playlist) => void
@@ -58,7 +62,7 @@ const PlaylistSchema = z
   })
 
 const PlaylistEditModal: React.FC<PlaylistEditModalProps> = ({
-  open,
+  show = false,
   playlist,
   onClose,
   onSave,
@@ -72,6 +76,7 @@ const PlaylistEditModal: React.FC<PlaylistEditModalProps> = ({
     saveAfterCreate: false,
   })
   const { showError } = useErrorMessage()
+  const queryClient = useQueryClient()
 
   const form = useForm<z.infer<typeof PlaylistSchema>>({
     resolver: zodResolver(PlaylistSchema),
@@ -143,7 +148,25 @@ const PlaylistEditModal: React.FC<PlaylistEditModalProps> = ({
         await userPlaylistsWriter.upload({
           batchId: defaultBatchId,
         })
+
+        await queryClient.invalidateQueries({
+          exact: true,
+          queryKey: useUserPlaylistsQuery.getQueryKey(owner),
+        })
       }
+
+      await queryClient.invalidateQueries({
+        exact: true,
+        queryKey: usePlaylistPreviewQuery.getQueryKey(owner, {
+          rootManifest: savedPlaylist.preview.rootManifest,
+        }),
+      })
+      await queryClient.invalidateQueries({
+        exact: true,
+        queryKey: usePlaylistQuery.getQueryKey({
+          rootManifest: savedPlaylist.preview.rootManifest,
+        }),
+      })
 
       onSave?.(savedPlaylist)
     } catch (error) {
@@ -165,7 +188,7 @@ const PlaylistEditModal: React.FC<PlaylistEditModalProps> = ({
 
   return (
     <Modal
-      show={open}
+      show={show}
       showCancelButton={!form.formState.isSubmitting}
       title={isCreating ? "Create playlist" : "Edit playlist"}
       footerButtons={

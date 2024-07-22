@@ -20,7 +20,7 @@ import { useQueryClient } from "@tanstack/react-query"
 
 import { DocumentMagnifyingGlassIcon } from "@heroicons/react/24/outline"
 
-import PlaylistEditModal from "./PlaylistEditModal"
+import PlaylistEditModal from "../modals/PlaylistEditModal"
 import PlaylistPreview from "./PlaylistPreview"
 import PlaylistPreviewPlaceholder from "@/components/placeholders/PlaylistPreviewPlaceholder"
 import { Button } from "@/components/ui/actions"
@@ -91,7 +91,7 @@ const UserPlaylistsView: React.FC<UserPlaylistsViewProps> = () => {
       )}
 
       <PlaylistEditModal
-        open={showCreateModal}
+        show={showCreateModal}
         onClose={() => setShowCreateModal(false)}
         onSave={addPlaylist}
       />

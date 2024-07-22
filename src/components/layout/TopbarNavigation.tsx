@@ -17,7 +17,13 @@
 
 import React from "react"
 
-import { ArrowUpTrayIcon, Bars2Icon, PlusIcon } from "@heroicons/react/24/outline"
+import {
+  ArrowUpTrayIcon,
+  Bars2Icon,
+  FilmIcon,
+  PlusIcon,
+  SquaresPlusIcon,
+} from "@heroicons/react/24/outline"
 
 import SearchItem from "./SearchItem"
 import Logo from "@/components/common/Logo"
@@ -34,6 +40,7 @@ const TopbarNavigation: React.FC = () => {
   const isLoadingProfile = useUIStore(state => state.isLoadingProfile)
   const floatingSidebar = useUIStore(state => state.floatingSidebar)
   const toggleSidebar = useUIStore(state => state.toggleSidebar)
+  const togglePlaylistCreation = useUIStore(state => state.togglePlaylistCreation)
 
   return (
     <Topbar>
@@ -48,11 +55,14 @@ const TopbarNavigation: React.FC = () => {
 
       <Topbar.Group leftCorrection>
         <Topbar.PopupItem toggle={<PlusIcon strokeWidth={2.5} width={20} aria-hidden />} hideMobile>
-          <Topbar.Item
-            to={routes.studioVideoNew}
-            prefix={<ArrowUpTrayIcon width={20} aria-hidden />}
-          >
+          <Topbar.Item to={routes.studioVideoNew} prefix={<FilmIcon width={18} aria-hidden />}>
             Upload a video
+          </Topbar.Item>
+          <Topbar.Item
+            prefix={<SquaresPlusIcon width={18} aria-hidden />}
+            onClick={() => togglePlaylistCreation(true)}
+          >
+            Create a playlist
           </Topbar.Item>
         </Topbar.PopupItem>
 
