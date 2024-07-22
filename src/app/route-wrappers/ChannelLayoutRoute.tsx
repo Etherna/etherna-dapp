@@ -16,27 +16,24 @@
  */
 
 import React from "react"
-import { useParams } from "react-router-dom"
+import { Outlet, useParams } from "react-router-dom"
 
-import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
-import SEO from "@/components/layout/SEO"
-import ProfileView from "@/components/profile/ProfileView"
-import { Container } from "@/components/ui/layout"
+import ChannelLayout from "@/components/layout/ChannelLayout"
 
 import type { EnsAddress, EthAddress } from "@etherna/sdk-js/clients"
 
-const ChannelPage = () => {
+const ChannelLayoutRoute: React.FC = () => {
   const { id } = useParams<{ id: EthAddress | EnsAddress }>()
 
-  return (
-    <AppLayoutWrapper>
-      <SEO title="Channel" />
+  if (!id) {
+    return null
+  }
 
-      <Container noPaddingX noPaddingY fluid>
-        <ProfileView profileAddress={id!} />
-      </Container>
-    </AppLayoutWrapper>
+  return (
+    <ChannelLayout address={id}>
+      <Outlet />
+    </ChannelLayout>
   )
 }
 
-export default ChannelPage
+export default ChannelLayoutRoute

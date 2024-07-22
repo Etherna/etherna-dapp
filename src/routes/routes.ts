@@ -33,6 +33,12 @@ const routePaths = {
   playlist: (rootManifest: Reference) => `/playlists/${rootManifest}`,
   /** `/channels/{id}` */
   channel: (id: string) => `/channel/${id}`,
+  /** `/channels/{id}/playlist/{channel|rootManifest}` */
+  channelPlaylist: (id: string, playlistId: string) => `/channel/${id}/playlist/${playlistId}`,
+  /** `/channels/{id}/index/{origin}` */
+  channelIndex: (id: string, origin: string) => `/channel/${id}/index/${origin}`,
+  /** `/channels/{id}/about` */
+  channelAbout: (id: string) => `/channel/${id}/about`,
   /** `/watch/{hash}` */
   watch: (hash: string) => `/watch/${hash}`,
   /** `/embed/{hash}` */
@@ -73,7 +79,7 @@ const withOrigin = (paths: typeof routePaths): typeof routePaths => {
         [routeName]:
           typeof routePath === "string"
             ? `${window.location.origin}${paths[routeName]}`
-            : (...args: any[]) => `${window.location.origin}${routePath(args as any)}`,
+            : (...args: [any, any]) => `${window.location.origin}${routePath(...args)}`,
       }
     },
     {} as typeof routePaths

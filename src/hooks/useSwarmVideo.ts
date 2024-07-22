@@ -16,6 +16,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { VideoDeserializer } from "@etherna/sdk-js/serializers"
+import { dateToTimestamp } from "@etherna/sdk-js/utils"
 
 import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
@@ -82,7 +83,7 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
           batchId: indexVideo.lastValidManifest.batchId ?? null,
           duration: indexVideo.lastValidManifest.duration,
           sources: indexVideo.lastValidManifest.sources,
-          createdAt: new Date(indexVideo.creationDateTime).getTime(),
+          createdAt: dateToTimestamp(new Date(indexVideo.creationDateTime)),
           updatedAt: indexVideo.lastValidManifest.updatedAt ?? null,
         })
         const preview = deserializer.deserializePreview(rawVideo, {
@@ -122,7 +123,7 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
 
       setVideo(newVideo)
     } catch (error) {
-      console.error(error)
+      console.error(error.issues)
       setNotFound(true)
     } finally {
       setIsloading(false)

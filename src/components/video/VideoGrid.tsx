@@ -31,18 +31,26 @@ type VideoGridProps = {
   videos?: (AnyListVideo | null)[]
   isFetching?: boolean
   fetchingPreviewCount?: number
-  mini?: boolean
+  hideOwner?: boolean
   singleColumn?: boolean
   decentralizedLink?: boolean
+  headingTag?: "h2" | "h3" | "h4" | "h5" | "h6"
 }
 
 const VideoGrid = forwardRef<HTMLDivElement, VideoGridProps>(
   (
-    { label, videos, mini, singleColumn, isFetching, decentralizedLink, fetchingPreviewCount = 4 },
+    {
+      label,
+      videos,
+      hideOwner,
+      singleColumn,
+      isFetching,
+      decentralizedLink,
+      fetchingPreviewCount = 4,
+      headingTag: LabelTag = "h3",
+    },
     ref
   ) => {
-    const LabelTag = mini ? "h5" : "h3"
-
     return (
       <>
         {label && (
@@ -57,7 +65,7 @@ const VideoGrid = forwardRef<HTMLDivElement, VideoGridProps>(
                 <VideoPreview
                   video={video}
                   videoOffers={"offers" in video ? video.offers : undefined}
-                  hideProfile={mini}
+                  hideProfile={hideOwner}
                   decentralizedLink={decentralizedLink}
                   direction={singleColumn ? "horizontal" : "vertical"}
                   key={i}
@@ -84,7 +92,7 @@ const VideoGrid = forwardRef<HTMLDivElement, VideoGridProps>(
               .fill(0)
               .map((_, i) => (
                 <VideoPreviewPlaceholder
-                  mini={mini}
+                  mini={hideOwner}
                   direction={singleColumn ? "horizontal" : "vertical"}
                   key={i}
                 />

@@ -88,10 +88,7 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
   }, [playlistQuery, rootManifest, userPlaylistsQuery])
 
   const updatePlaylist = (playlist: Playlist) => {
-    queryClient.setQueryData(
-      usePlaylistQuery.getQueryKey(undefined, identification),
-      () => playlist
-    )
+    queryClient.setQueryData(usePlaylistQuery.getQueryKey(identification), () => playlist)
     playlistQuery.refetch()
 
     setShowCreateModal(false)

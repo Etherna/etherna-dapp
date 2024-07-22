@@ -1,15 +1,15 @@
 import { EthernaPinningHandler, EthernaResourcesHandler } from "@etherna/sdk-js/handlers"
+import { PlaylistBuilder } from "@etherna/sdk-js/swarm"
 import { isEmptyReference } from "@etherna/sdk-js/utils"
 
 import SwarmPlaylist from "./SwarmPlaylist"
-import SwarmUserPlaylists from "./SwarmUserPlaylists"
 import uiStore from "@/stores/ui"
 import { deepCloneObject } from "@/utils/object"
 import { getResponseErrorMessage } from "@/utils/request"
 
 import type BeeClient from "./BeeClient"
 import type { PublishStatus, VideoEditorPublishSource } from "@/stores/video-editor"
-import type { Playlist, UserPlaylists, Video } from "@etherna/sdk-js"
+import type { Playlist, Video } from "@etherna/sdk-js"
 import type { EthernaGatewayClient, EthernaIndexClient, Reference } from "@etherna/sdk-js/clients"
 import type { VideoBuilder } from "@etherna/sdk-js/swarm"
 import type { AxiosError } from "axios"
@@ -18,7 +18,7 @@ type VideoSaverOptions = {
   initialReference: Reference | undefined
   previusReferences: Reference[]
   saveTo: VideoEditorPublishSource[]
-  channelPlaylist: Playlist | undefined
+  channelPlaylist: Playlist | undefined | null
   channelPlaylists: Playlist[] | undefined
   isWalletConnected: boolean
   beeClient: BeeClient
@@ -126,11 +126,16 @@ export default class VideoSaver {
 
       if (source.source === "playlist") {
         if (source.add) {
-          const ok = await this.addToPlaylist(initialReference, newVideo, opts.signal)
+          const ok = await this.addToPlaylist(
+            source.identifier,
+            initialReference,
+            newVideo,
+            opts.signal
+          )
           newPublishResults[statusIndex].ok = ok
           newPublishResults[statusIndex].type = "add"
         } else {
-          const ok = await this.removeFromPlaylist(newReference, opts.signal)
+          const ok = await this.removeFromPlaylist(source.identifier, newReference, opts.signal)
           newPublishResults[statusIndex].ok = ok
           newPublishResults[statusIndex].type = "remove"
         }
@@ -160,37 +165,53 @@ export default class VideoSaver {
     return true
   }
 
-  checkChannel() {
-    if (!this.options.channelPlaylist) {
-      uiStore.getState().showError("Channel error", "Channel video list not fetched correctly.")
-      return false
+  findPlaylist(playlistId: string) {
+    const isChannel = playlistId === SwarmPlaylist.Reader.channelPlaylistId
+    const playlist = isChannel
+      ? this.options.channelPlaylist
+      : this.options.channelPlaylists?.find(pl => pl.preview.id === playlistId)
+
+    if (!playlist) {
+      uiStore
+        .getState()
+        .showError("Playlist error", `${isChannel ? "Channel" : "Playlist"} not fetched correctly.`)
+      return null
     }
 
-    return true
+    return playlist
   }
 
-  async addToPlaylist(initialReference: Reference | undefined, video: Video, signal?: AbortSignal) {
-    if (!this.checkChannel()) return false
+  async addToPlaylist(
+    playlistId: string,
+    initialReference: Reference | undefined,
+    video: Video,
+    signal?: AbortSignal
+  ) {
     if (!this.checkAccountability()) return false
 
+    const playlist = this.findPlaylist(playlistId)
+
+    if (!playlist) return false
+
     try {
-      const playlist = deepCloneObject(this.options.channelPlaylist!)
       const playlistHasVideo =
-        playlist.videos.findIndex(video => video.reference === initialReference) >= 0
+        playlist.details.videos.findIndex(video => video.reference === initialReference) >= 0
 
       if (playlistHasVideo) {
         // remove from playlist
-        playlist.videos = playlist.videos.filter(video => video.reference !== initialReference)
+        playlist.details.videos = playlist.details.videos.filter(
+          video => video.reference !== initialReference
+        )
       }
       // add video to playlist
-      playlist.videos.push({
+      playlist.details.videos.push({
         reference: video.reference,
         title: video.preview.title,
-        addedAt: Date.now(),
+        addedAt: new Date(),
         publishedAt: undefined,
       })
 
-      await this.updateChannelPlaylist(playlist, signal)
+      await this.updatePlaylist(playlist, signal)
 
       return true
     } catch (error) {
@@ -199,14 +220,23 @@ export default class VideoSaver {
     }
   }
 
-  async removeFromPlaylist(reference: Reference | undefined, signal?: AbortSignal) {
-    if (!this.checkChannel()) return false
+  async removeFromPlaylist(
+    playlistId: string,
+    reference: Reference | undefined,
+    signal?: AbortSignal
+  ) {
     if (!this.checkAccountability()) return false
+
+    const playlist = this.findPlaylist(playlistId)
+
+    if (!playlist) return false
 
     try {
       const playlist = deepCloneObject(this.options.channelPlaylist!)
-      playlist.videos = playlist.videos.filter(video => video.reference !== reference)
-      await this.updateChannelPlaylist(playlist, signal)
+      playlist.details.videos = playlist.details.videos.filter(
+        video => video.reference !== reference
+      )
+      await this.updatePlaylist(playlist, signal)
       return true
     } catch (error) {
       console.error(error)
@@ -214,12 +244,23 @@ export default class VideoSaver {
     }
   }
 
-  async updateChannelPlaylist(channel: Playlist, signal?: AbortSignal) {
-    // save playlist
-    const playlistWriter = new SwarmPlaylist.Writer(channel, {
+  async updatePlaylist(playlist: Playlist, signal?: AbortSignal) {
+    const builder = new PlaylistBuilder()
+    builder.initialize(
+      playlist.reference,
+      playlist.preview.owner,
+      playlist.preview,
+      playlist.details
+    )
+    await builder.loadNode({ beeClient: this.options.beeClient })
+
+    const playlistWriter = new SwarmPlaylist.Writer(builder, {
       beeClient: this.options.beeClient,
     })
-    await playlistWriter.upload({ signal })
+
+    const batchId = this.videoBuilder.detailsMeta!.batchId ?? undefined
+
+    await playlistWriter.upload({ batchId, signal })
   }
 
   async addToIndex(initialVideoId: string | undefined, video: Video, signal?: AbortSignal) {

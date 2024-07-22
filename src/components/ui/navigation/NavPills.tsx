@@ -16,6 +16,7 @@
  */
 
 import React from "react"
+import { Link } from "react-router-dom"
 
 import { cn } from "@/utils/classnames"
 
@@ -29,12 +30,20 @@ export type NavPillsItemProps = {
   children?: React.ReactNode
   active?: boolean
   vertical?: boolean
+  href?: string
   onClick?: () => void
 }
 
-const NavPillsItem: React.FC<NavPillsItemProps> = ({ children, active, vertical, onClick }) => {
+const NavPillsItem: React.FC<NavPillsItemProps> = ({
+  children,
+  active,
+  vertical,
+  href,
+  onClick,
+}) => {
+  const Element = href ? Link : "button"
   return (
-    <div
+    <Element
       className={cn(
         "cursor-pointer rounded-full px-4 py-1.5 text-center font-semibold transition duration-200",
         "mr-2 last:mr-0",
@@ -44,11 +53,12 @@ const NavPillsItem: React.FC<NavPillsItemProps> = ({ children, active, vertical,
           "mb-2 mr-0 w-full last:mb-0": vertical,
         }
       )}
+      to={href!}
       onClick={onClick}
       data-component="nav-pills-item"
     >
       {children}
-    </div>
+    </Element>
   )
 }
 

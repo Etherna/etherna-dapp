@@ -36,38 +36,41 @@ const VideoVisibilityStatus: React.FC<VideoVisibilityStatusProps> = ({
 
   const { allPlaylists } = useChannelPlaylists()
 
-  const renderBadge = useCallback((sourceVisibility: VisibilityStatus, withLabel: boolean) => {
-    return (
-      <Badge
-        color={
-          sourceVisibility.status === "public"
-            ? "success"
-            : sourceVisibility.status === "processing"
-              ? "info"
-              : "muted"
-        }
-        variant="outline"
-        small
-        key={sourceVisibility.sourceIdentifier}
-      >
-        {withLabel && (
-          <>
-            <span>
-              {sourceVisibility.sourceType === "playlist"
-                ? sourceVisibility.sourceIdentifier === SwarmPlaylist.Reader.channelPlaylistId
-                  ? "Public Channel"
-                  : allPlaylists.find(
-                      playlist => playlist.preview.id === sourceVisibility.sourceIdentifier
-                    )?.preview.name || "Channel playlist"
-                : urlHostname(sourceVisibility.sourceIdentifier)}
-            </span>
-            <span>: </span>
-          </>
-        )}
-        <span>{sourceVisibility.status}</span>
-      </Badge>
-    )
-  }, [])
+  const renderBadge = useCallback(
+    (sourceVisibility: VisibilityStatus, withLabel: boolean) => {
+      return (
+        <Badge
+          color={
+            sourceVisibility.status === "public"
+              ? "success"
+              : sourceVisibility.status === "processing"
+                ? "info"
+                : "muted"
+          }
+          variant="outline"
+          small
+          key={sourceVisibility.sourceIdentifier}
+        >
+          {withLabel && (
+            <>
+              <span>
+                {sourceVisibility.sourceType === "playlist"
+                  ? sourceVisibility.sourceIdentifier === SwarmPlaylist.Reader.channelPlaylistId
+                    ? "Public Channel"
+                    : allPlaylists.find(
+                        playlist => playlist.preview.id === sourceVisibility.sourceIdentifier
+                      )?.preview.name || "Channel playlist"
+                  : urlHostname(sourceVisibility.sourceIdentifier)}
+              </span>
+              <span>: </span>
+            </>
+          )}
+          <span>{sourceVisibility.status}</span>
+        </Badge>
+      )
+    },
+    [allPlaylists]
+  )
 
   const toggleVisibility = useCallback(
     async (currentStatus: VisibilityStatus) => {

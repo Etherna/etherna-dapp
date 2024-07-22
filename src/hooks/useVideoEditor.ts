@@ -47,14 +47,9 @@ export default function useVideoEditor() {
   const { isLocked } = useWallet()
   const [isSaving, setIsSaving] = useState(false)
 
-  const { channelPlaylist, channelPlaylists, loadPlaylists } = useChannelPlaylists({
+  const { channelPlaylist, channelPlaylists } = useChannelPlaylists({
     mode: "all",
   })
-
-  useEffect(() => {
-    loadPlaylists()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const resetState = useCallback(() => {
     setPublishingResults(undefined)

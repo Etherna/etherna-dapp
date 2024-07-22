@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 
 interface UseSmartFetchCountOptions {
-  defaulSeed?: number
+  defaultSeed?: number
   rows?: number
 }
 
@@ -14,7 +14,7 @@ export default function useSmartFetchCount(
   useEffect(() => {
     if (gridRef && !gridRef.current) return
 
-    const defaultSeed = opts?.defaulSeed ?? 4
+    const defaultSeed = opts?.defaultSeed ?? 4
     const rows = opts?.rows
 
     if (gridRef?.current) {
@@ -26,8 +26,8 @@ export default function useSmartFetchCount(
       const pageHeight = window.screen?.availHeight || window.innerHeight
       const visibileRowsCount = rows ?? Math.ceil(pageHeight / (itemHeight + parseInt(rowsGap)))
 
-      const seedCount = Math.max(visibileRowsCount * gridCols.length, 6)
-      // const loadMoreCount = gridCols.length * 3 // 3 more rows per load
+      const seedCount = visibileRowsCount * gridCols.length
+
       setFetchCount(seedCount || defaultSeed)
     } else {
       setFetchCount(defaultSeed)

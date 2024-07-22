@@ -21,6 +21,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import AppLayoutRoute from "./route-wrappers/AppLayoutRoute"
 import AuthenticateRoute from "./route-wrappers/AuthenticateRoute"
+import ChannelLayoutRoute from "./route-wrappers/ChannelLayoutRoute"
 import DefaultBatchRoute from "./route-wrappers/DefaultBatchRoute"
 import IdentityRoute from "./route-wrappers/IdentityRoute"
 import SignedInRoute from "./route-wrappers/SignedInRoute"
@@ -36,7 +37,8 @@ const AsyncFollowing = lazy(() => import("@/pages/following"))
 const AsyncPlaylists = lazy(() => import("@/pages/playlists"))
 const AsyncPlaylist = lazy(() => import("@/pages/playlist"))
 const AsyncSaved = lazy(() => import("@/pages/saved"))
-const AsyncChannel = lazy(() => import("@/pages/channel"))
+const AsyncChannel = lazy(() => import("@/pages/channel/channel"))
+const AsyncChannelAbout = lazy(() => import("@/pages/channel/about"))
 const AsyncChannelEdit = lazy(() => import("@/pages/studio/channel-edit"))
 const AsyncChannelPlaylists = lazy(() => import("@/pages/studio/channel-playlists"))
 const AsyncVideosList = lazy(() => import("@/pages/studio/videos-list"))
@@ -82,6 +84,11 @@ const Saved = () => (
 const Channel = () => (
   <Suspense fallback={<PageLoader />}>
     <AsyncChannel />
+  </Suspense>
+)
+const ChannelAbout = () => (
+  <Suspense fallback={<PageLoader />}>
+    <AsyncChannelAbout />
   </Suspense>
 )
 const Watch = () => (
@@ -173,11 +180,15 @@ const Router = () => {
                 <Route path="/playlists" element={<Playlists />} />
                 <Route path="/playlists/:hash" element={<Playlist />} />
                 <Route path="/saved" element={<Saved />} />
-                <Route path="/channel/:id" element={<Channel />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/shortcuts" element={<Shortcuts />} />
                 <Route path="/postages" element={<Postages />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
+                <Route path="/channel/:id" element={<ChannelLayoutRoute />}>
+                  <Route path="" element={<Channel />} />
+                  <Route path="about" element={<ChannelAbout />} />
+                </Route>
 
                 <Route path="/watch" element={<VideoRoute />}>
                   <Route path=":hash" element={<Watch />} />

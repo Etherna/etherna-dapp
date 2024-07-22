@@ -19,7 +19,6 @@ import React, { useRef } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
 import VideoGrid from "@/components/video/VideoGrid"
-import useEffectOnce from "@/hooks/useEffectOnce"
 import usePlaylistVideos from "@/hooks/usePlaylistVideos"
 import useSmartFetchCount from "@/hooks/useSmartFetchCount"
 
@@ -27,13 +26,14 @@ import type { Playlist } from "@etherna/sdk-js"
 
 interface PlaylistViewVideosProps {
   playlist: Playlist
+  maxSeed?: number
 }
 
-const PlaylistViewVideos: React.FC<PlaylistViewVideosProps> = ({ playlist }) => {
+const PlaylistViewVideos: React.FC<PlaylistViewVideosProps> = ({ playlist, maxSeed }) => {
   const gridRef = useRef<HTMLDivElement>(null)
   const seedLimit =
     useSmartFetchCount(gridRef, {
-      defaulSeed: 12,
+      defaultSeed: maxSeed ?? 12,
     }) ?? 0
   const { videos, isFetching, hasMore, loadMore } = usePlaylistVideos(playlist, {
     seedLimit,
@@ -50,7 +50,7 @@ const PlaylistViewVideos: React.FC<PlaylistViewVideosProps> = ({ playlist }) => 
       <InfiniteScroller
         dataLength={videos?.length ?? 0}
         next={loadMore}
-        hasMore={hasMore}
+        hasMore={maxSeed ? false : hasMore}
         loader={<div />}
         style={{ overflow: "unset" }}
       >
@@ -58,7 +58,7 @@ const PlaylistViewVideos: React.FC<PlaylistViewVideosProps> = ({ playlist }) => 
           ref={gridRef}
           videos={videos}
           isFetching={isFetching}
-          fetchingPreviewCount={12}
+          fetchingPreviewCount={maxSeed ?? 12}
         />
       </InfiniteScroller>
     </div>
