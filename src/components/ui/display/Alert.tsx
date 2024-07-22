@@ -106,7 +106,7 @@ const Alert: React.FC<AlertProps> = ({
     >
       <div className="flex">
         <div className="flex-shrink-0">{styledIcon}</div>
-        <div className={cn({ "ml-3": styledIcon })}>
+        <div className={cn("w-full", { "ml-3": styledIcon })}>
           {title && (
             <h3
               className={cn("mb-2 text-sm font-semibold", {

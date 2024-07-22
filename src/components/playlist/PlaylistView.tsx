@@ -22,14 +22,14 @@ import { dateToTimestamp } from "@etherna/sdk-js/utils"
 import { Portal } from "@headlessui/react"
 import { useQueryClient } from "@tanstack/react-query"
 
-import { ChevronDownIcon } from "@heroicons/react/24/solid"
+import { ChevronDownIcon, ExclamationCircleIcon } from "@heroicons/react/24/solid"
 
 import PlaylistEditModal from "./PlaylistEditModal"
 import PlaylistShareButton from "./PlaylistShareButton"
 import PlaylistViewVideos from "./PlaylistViewVideos"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmUserPlaylists from "@/classes/SwarmUserPlaylists"
-import { Button, Dropdown } from "@/components/ui/actions"
+import { AlertPopup, Button, Dropdown } from "@/components/ui/actions"
 import { Alert, Avatar, Skeleton } from "@/components/ui/display"
 import useConfirmation from "@/hooks/useConfirmation"
 import useDefaultBatch from "@/hooks/useDefaultBatch"
@@ -235,124 +235,141 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
               <Skeleton className="block h-5 w-full" />
             ) : (
               <div className="flex items-start justify-between gap-2">
-                <h1 className="text-md/tight font-semibold md:text-lg/tight">
-                  {playlistQuery.data?.preview.name || "Playlist"}
-                </h1>
-                {rootManifest && <PlaylistShareButton rootManifest={rootManifest} />}
+                {playlistQuery.isError ? (
+                  <Alert
+                    className="w-full"
+                    color="error"
+                    title="Cannot load playlist"
+                    icon={<ExclamationCircleIcon />}
+                  >
+                    Make sure the playlist exists and that you have enough credits to load it.
+                  </Alert>
+                ) : (
+                  <h1 className="text-md/tight font-semibold md:text-lg/tight">
+                    {playlistQuery.data?.preview.name || "Playlist"}
+                  </h1>
+                )}
+                {rootManifest && playlistQuery.isSuccess && (
+                  <PlaylistShareButton rootManifest={rootManifest} />
+                )}
               </div>
             )}
           </div>
-          <div className="flex w-full lg:flex-col">
-            <div className="flex w-full flex-1 flex-col">
-              <div className="mt-2">
-                {playlistQuery.isLoading ? (
-                  <Skeleton className="block h-4 w-full" />
-                ) : (
-                  <p className="text-sm/tight text-gray-700 dark:text-gray-300">
-                    {playlistQuery.data?.preview.type || "public"}
-                  </p>
-                )}
-              </div>
+          {!playlistQuery.isError && (
+            <div className="flex w-full lg:flex-col">
+              <div className="flex w-full flex-1 flex-col">
+                <div className="mt-2">
+                  {playlistQuery.isLoading ? (
+                    <Skeleton className="block h-4 w-full" />
+                  ) : (
+                    <p className="text-sm/tight text-gray-700 dark:text-gray-300">
+                      {playlistQuery.data?.preview.type || "public"}
+                    </p>
+                  )}
+                </div>
 
-              <div className="mt-3 md:mt-6">
-                <Link to={routes.channel(playlistQuery.data?.preview.owner ?? "0x0")}>
-                  <div className="flex items-center space-x-2">
-                    <div className="size-6">
+                <div className="mt-3 md:mt-6">
+                  <Link to={routes.channel(playlistQuery.data?.preview.owner ?? "0x0")}>
+                    <div className="flex items-center space-x-2">
+                      <div className="size-6">
+                        {profilePreviewQuery.isLoading ? (
+                          <Skeleton className="block size-6" roundedFull />
+                        ) : (
+                          <Avatar
+                            size={24}
+                            image={profilePreviewQuery.data?.avatar}
+                            address={playlistQuery.data?.preview.owner}
+                          />
+                        )}
+                      </div>
                       {profilePreviewQuery.isLoading ? (
-                        <Skeleton className="block size-6" roundedFull />
+                        <Skeleton className="block h-4 w-20" />
                       ) : (
-                        <Avatar
-                          size={24}
-                          image={profilePreviewQuery.data?.avatar}
-                          address={playlistQuery.data?.preview.owner}
-                        />
+                        <h5
+                          className={cn(
+                            "max-w-full flex-grow overflow-hidden text-ellipsis text-sm font-semibold",
+                            "text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300",
+                            "transition-colors duration-200"
+                          )}
+                        >
+                          {profilePreviewQuery.data?.name ??
+                            shortenEthAddr(playlistQuery.data?.preview.owner)}
+                        </h5>
                       )}
                     </div>
-                    {profilePreviewQuery.isLoading ? (
-                      <Skeleton className="block h-4 w-20" />
-                    ) : (
-                      <h5
-                        className={cn(
-                          "max-w-full flex-grow overflow-hidden text-ellipsis text-sm font-semibold",
-                          "text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300",
-                          "transition-colors duration-200"
-                        )}
-                      >
-                        {profilePreviewQuery.data?.name ??
-                          shortenEthAddr(playlistQuery.data?.preview.owner)}
-                      </h5>
-                    )}
-                  </div>
-                </Link>
+                  </Link>
+                </div>
+
+                <div className="mt-4 lg:my-8">
+                  {playlistQuery.isLoading ? (
+                    <Skeleton className="block h-4 w-full" />
+                  ) : (
+                    <p className="text-sm/tight text-gray-700 dark:text-gray-300 md:text-base/tight">
+                      {playlistQuery.data?.details.description || "description"}
+                    </p>
+                  )}
+                </div>
               </div>
 
-              <div className="mt-4 lg:my-8">
-                {playlistQuery.isLoading ? (
-                  <Skeleton className="block h-4 w-full" />
-                ) : (
-                  <p className="text-sm/tight text-gray-700 dark:text-gray-300 md:text-base/tight">
-                    {playlistQuery.data?.details.description || "description"}
-                  </p>
-                )}
+              <div className="mt-auto shrink-0 lg:w-full">
+                {(() => {
+                  switch (playlistUserLibraryStatus) {
+                    case "loading":
+                      return <Skeleton className="block h-10 w-full" />
+                    case "included":
+                      return (
+                        <Dropdown className="lg:w-full">
+                          <Dropdown.Toggle className="w-full">
+                            <Button className="w-full" color="muted">
+                              <span>{isPlaylistOwner ? "In library" : "Subscribed"}</span>
+                              <ChevronDownIcon className="ml-2" width={16} />
+                            </Button>
+                          </Dropdown.Toggle>
+                          <Portal>
+                            <Dropdown.Menu>
+                              {isPlaylistOwner && (
+                                <>
+                                  <Dropdown.Item action={() => setShowCreateModal(true)}>
+                                    Edit
+                                  </Dropdown.Item>
+                                  <Dropdown.Separator />
+                                </>
+                              )}
+                              <Dropdown.Item action={() => removeFromLibrary()}>
+                                Remove from library
+                              </Dropdown.Item>
+                            </Dropdown.Menu>
+                          </Portal>
+                        </Dropdown>
+                      )
+                    case "not-included":
+                      return (
+                        <Dropdown>
+                          <Dropdown.Toggle className="w-full">
+                            <Button className="w-full">
+                              Add to library
+                              <ChevronDownIcon className="ml-2" width={16} />
+                            </Button>
+                          </Dropdown.Toggle>
+                          <Portal>
+                            <Dropdown.Menu>
+                              <Dropdown.Item action={() => addToLibrary("add")}>
+                                Subscribe
+                              </Dropdown.Item>
+                              <Dropdown.Item action={() => addToLibrary("copy")}>
+                                Copy
+                              </Dropdown.Item>
+                            </Dropdown.Menu>
+                          </Portal>
+                        </Dropdown>
+                      )
+                    case "error":
+                      return <Alert color="error">Cannot retrieve library status</Alert>
+                  }
+                })()}
               </div>
             </div>
-
-            <div className="mt-auto shrink-0 lg:w-full">
-              {(() => {
-                switch (playlistUserLibraryStatus) {
-                  case "loading":
-                    return <Skeleton className="block h-10 w-full" />
-                  case "included":
-                    return (
-                      <Dropdown className="lg:w-full">
-                        <Dropdown.Toggle className="w-full">
-                          <Button className="w-full" color="muted">
-                            <span>{isPlaylistOwner ? "In library" : "Subscribed"}</span>
-                            <ChevronDownIcon className="ml-2" width={16} />
-                          </Button>
-                        </Dropdown.Toggle>
-                        <Portal>
-                          <Dropdown.Menu>
-                            {isPlaylistOwner && (
-                              <>
-                                <Dropdown.Item action={() => setShowCreateModal(true)}>
-                                  Edit
-                                </Dropdown.Item>
-                                <Dropdown.Separator />
-                              </>
-                            )}
-                            <Dropdown.Item action={() => removeFromLibrary()}>
-                              Remove from library
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Portal>
-                      </Dropdown>
-                    )
-                  case "not-included":
-                    return (
-                      <Dropdown>
-                        <Dropdown.Toggle className="w-full">
-                          <Button className="w-full">
-                            Add to library
-                            <ChevronDownIcon className="ml-2" width={16} />
-                          </Button>
-                        </Dropdown.Toggle>
-                        <Portal>
-                          <Dropdown.Menu>
-                            <Dropdown.Item action={() => addToLibrary("add")}>
-                              Subscribe
-                            </Dropdown.Item>
-                            <Dropdown.Item action={() => addToLibrary("copy")}>Copy</Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Portal>
-                      </Dropdown>
-                    )
-                  case "error":
-                    return <Alert color="error">Cannot retrieve library status</Alert>
-                }
-              })()}
-            </div>
-          </div>
+          )}
         </div>
       </aside>
 
