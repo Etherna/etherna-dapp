@@ -24,6 +24,7 @@ import {
   ProfileSource,
   ProfileSourceContent,
   ProfileSourceDescription,
+  ProfileSourceEmptyMessage,
   ProfileSourceFooter,
   ProfileSourceHeader,
   ProfileSourceLoadMore,
@@ -48,15 +49,16 @@ const ProfilePlaylistPreview: React.FC<ProfilePlaylistPreviewProps> = ({
   address,
   identification,
 }) => {
-  const playlistQuery = usePlaylistQuery({
-    playlistIdentification: identification,
-  })
-
   const isChannel =
     "id" in identification && identification.id === SwarmPlaylist.Reader.channelPlaylistId
   const playlistId = (
     "id" in identification ? identification.id : identification.rootManifest
   ).toLowerCase()
+
+  const playlistQuery = usePlaylistQuery({
+    playlistIdentification: identification,
+    fillEmptyState: isChannel,
+  })
 
   return (
     <ProfileSource>
@@ -122,8 +124,15 @@ const ProfilePlaylistPreview: React.FC<ProfilePlaylistPreviewProps> = ({
           variant="preview"
           rows={isChannel ? 2 : 1}
         />
+
+        {playlistQuery.isSuccess && playlistQuery.data.details.videos.length === 0 && (
+          <ProfileSourceEmptyMessage>
+            {isChannel && "No videos found in this channel"}
+            {!isChannel && "No videos found in this playlist"}
+          </ProfileSourceEmptyMessage>
+        )}
       </ProfileSourceContent>
-      {playlistQuery.isSuccess && (
+      {playlistQuery.isSuccess && playlistQuery.data.details.videos.length > 0 && (
         <ProfileSourceFooter>
           <ProfileSourceLoadMore to={routes.channelPlaylist(address, playlistId)}>
             View all →

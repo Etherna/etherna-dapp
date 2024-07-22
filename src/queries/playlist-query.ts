@@ -1,3 +1,4 @@
+import { fetchAddressFromEns, isEnsAddress } from "@etherna/sdk-js/utils"
 import { useQuery } from "@tanstack/react-query"
 
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
@@ -11,6 +12,7 @@ interface UsePlaylistOptions {
   owner?: EthAddress | EnsAddress
   playlistIdentification: PlaylistIdentification
   enabled?: boolean
+  fillEmptyState?: boolean
 }
 
 export const usePlaylistQuery = (opts: UsePlaylistOptions) => {
@@ -25,11 +27,29 @@ usePlaylistQuery.getQueryConfig = (opts: UsePlaylistOptions) =>
         beeClient,
       })
 
-      const playlist = await reader.download({
-        mode: "full",
-      })
+      try {
+        const playlist = await reader.download({
+          mode: "full",
+        })
 
-      return playlist
+        return playlist
+      } catch (err) {
+        if (opts.fillEmptyState) {
+          const error = err as Error
+          if (error.message.includes("No epoch feed found")) {
+            const owner = isEnsAddress(opts.owner!)
+              ? await fetchAddressFromEns(opts.owner)
+              : opts.owner!
+
+            if (!owner) {
+              throw new Error("Can't find address from ENS name")
+            }
+
+            return SwarmPlaylist.Writer.emptyPlaylist(owner, SwarmPlaylist.Reader.channelPlaylistId)
+          }
+        }
+        throw err
+      }
     },
     enabled: opts.enabled,
   }) satisfies UseQueryOptions

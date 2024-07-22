@@ -15,7 +15,7 @@
  *
  */
 
-import React, { useRef } from "react"
+import React, { useEffect, useRef } from "react"
 import InfiniteScroller from "react-infinite-scroll-component"
 
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline"
@@ -28,6 +28,7 @@ import { useChannelVideosQuery } from "@/queries/channel-videos-query"
 import { useProfileQuery } from "@/queries/profile-query"
 
 import type { ChannelSource } from "@/queries/channel-videos-query"
+import type { Video } from "@etherna/sdk-js"
 import type { EnsAddress, EthAddress } from "@etherna/sdk-js/clients"
 
 interface ProfileSourceVideosProps {
@@ -37,6 +38,7 @@ interface ProfileSourceVideosProps {
   isLoading?: boolean
   variant?: "default" | "preview"
   rows?: number
+  onVideosFetched?: (videos: Video[]) => void
 }
 
 const ProfileSourceVideos: React.FC<ProfileSourceVideosProps> = ({
@@ -46,6 +48,7 @@ const ProfileSourceVideos: React.FC<ProfileSourceVideosProps> = ({
   error,
   variant,
   rows,
+  onVideosFetched,
 }) => {
   const gridRef = useRef<HTMLDivElement>(null)
   const defaultSeed = variant === "preview" ? 8 : 24
@@ -64,6 +67,13 @@ const ProfileSourceVideos: React.FC<ProfileSourceVideosProps> = ({
     firstFetchCount: seedCount ?? 0,
     sequentialFetchCount: 12,
   })
+
+  useEffect(() => {
+    if (videosQuery.isSuccess) {
+      onVideosFetched?.(videosQuery.data?.pages.flat() ?? [])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [videosQuery.data])
 
   const videos = videosQuery.data?.pages.flat() ?? []
 

@@ -78,6 +78,16 @@ const ProfileSourceContent = React.forwardRef<HTMLDivElement, React.ComponentPro
   }
 )
 
+const ProfileSourceEmptyMessage = React.forwardRef<HTMLDivElement, React.ComponentProps<"p">>(
+  ({ children, className, ...props }, ref) => {
+    return (
+      <p ref={ref} className={cn("text-center text-sm opacity-50", className)} {...props}>
+        {children ?? "No videos found"}
+      </p>
+    )
+  }
+)
+
 const ProfileSourceFooter = React.forwardRef<HTMLDivElement, React.ComponentProps<"div">>(
   ({ children, className, ...props }, ref) => {
     return (
@@ -110,6 +120,7 @@ export {
   ProfileSourceTitle,
   ProfileSourceDescription,
   ProfileSourceContent,
+  ProfileSourceEmptyMessage,
   ProfileSourceFooter,
   ProfileSourceLoadMore,
 }

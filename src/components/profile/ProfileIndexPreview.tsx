@@ -15,7 +15,7 @@
  *
  */
 
-import React from "react"
+import React, { useState } from "react"
 import { urlHostname } from "@etherna/sdk-js/utils"
 
 import { ReactComponent as IndexIcon } from "@/assets/icons/navigation/index.svg"
@@ -24,6 +24,7 @@ import {
   ProfileSource,
   ProfileSourceContent,
   ProfileSourceDescription,
+  ProfileSourceEmptyMessage,
   ProfileSourceFooter,
   ProfileSourceHeader,
   ProfileSourceLoadMore,
@@ -41,6 +42,7 @@ interface ProfileIndexPreviewProps {
 
 const ProfileIndexPreview: React.FC<ProfileIndexPreviewProps> = ({ address, url }) => {
   const hostname = urlHostname(url)!
+  const [hasSomeVideos, setHasSomeVideos] = useState<boolean>()
 
   return (
     <ProfileSource>
@@ -59,14 +61,21 @@ const ProfileIndexPreview: React.FC<ProfileIndexPreviewProps> = ({ address, url 
           source={{ type: "index", url }}
           variant="preview"
           rows={2}
+          onVideosFetched={videos => setHasSomeVideos(videos.length > 0)}
         />
+
+        {hasSomeVideos === false && (
+          <ProfileSourceEmptyMessage>No videos found on this index</ProfileSourceEmptyMessage>
+        )}
       </ProfileSourceContent>
 
-      <ProfileSourceFooter>
-        <ProfileSourceLoadMore to={routes.channelIndex(address, hostname)}>
-          View all →
-        </ProfileSourceLoadMore>
-      </ProfileSourceFooter>
+      {hasSomeVideos && (
+        <ProfileSourceFooter>
+          <ProfileSourceLoadMore to={routes.channelIndex(address, hostname)}>
+            View all →
+          </ProfileSourceLoadMore>
+        </ProfileSourceFooter>
+      )}
     </ProfileSource>
   )
 }
