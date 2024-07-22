@@ -20,6 +20,7 @@ import React from "react"
 import ProfileIndexPreview from "./ProfileIndexPreview"
 import ProfilePlaylistPreview from "./ProfilePlaylistPreview"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
+import SEO from "@/components/layout/SEO"
 import { useProfileQuery } from "@/queries/profile-query"
 import useExtensionsStore from "@/stores/extensions"
 
@@ -37,6 +38,10 @@ const ProfileChannel: React.FC<ProfileChannelProps> = ({ address }) => {
 
   return (
     <div className="space-y-10">
+      {profileQuery.isSuccess && (
+        <SEO title={`Channel | ${profileQuery.data.ens || profileQuery.data.preview.address}`} />
+      )}
+
       <ProfilePlaylistPreview
         address={address}
         identification={{

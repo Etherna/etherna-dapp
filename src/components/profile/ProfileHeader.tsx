@@ -18,7 +18,7 @@
 import React from "react"
 
 import Image from "@/components/common/Image"
-import MarkdownPreview from "@/components/common/MarkdownPreview"
+import TextCollapser from "@/components/common/TextCollapser"
 import { Button } from "@/components/ui/actions"
 import { Skeleton } from "@/components/ui/display"
 import { useProfileQuery } from "@/queries/profile-query"
@@ -103,7 +103,11 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ address }) => {
         </div>
         {profile?.details?.description && (
           <div className="col-span-full mt-4 overflow-hidden sm:col-span-1 md:col-start-2">
-            <MarkdownPreview className="text-sm" value={profile.details.description} />
+            <TextCollapser
+              buttonClassName="mr-auto"
+              text={profile.details.description}
+              previewLines={2}
+            />
           </div>
         )}
         {address === userAddress && (

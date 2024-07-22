@@ -38,7 +38,8 @@ const AsyncPlaylists = lazy(() => import("@/pages/playlists"))
 const AsyncPlaylist = lazy(() => import("@/pages/playlist"))
 const AsyncSaved = lazy(() => import("@/pages/saved"))
 const AsyncChannel = lazy(() => import("@/pages/channel/channel"))
-const AsyncChannelAbout = lazy(() => import("@/pages/channel/about"))
+const AsyncChannelIndexVideos = lazy(() => import("@/pages/channel/index-videos"))
+const AsyncChannelPlaylistVideos = lazy(() => import("@/pages/channel/playlist-videos"))
 const AsyncChannelEdit = lazy(() => import("@/pages/studio/channel-edit"))
 const AsyncChannelPlaylists = lazy(() => import("@/pages/studio/channel-playlists"))
 const AsyncVideosList = lazy(() => import("@/pages/studio/videos-list"))
@@ -86,9 +87,14 @@ const Channel = () => (
     <AsyncChannel />
   </Suspense>
 )
-const ChannelAbout = () => (
+const ChannelIndexVideos = () => (
   <Suspense fallback={<PageLoader />}>
-    <AsyncChannelAbout />
+    <AsyncChannelIndexVideos />
+  </Suspense>
+)
+const ChannelPlaylistVideos = () => (
+  <Suspense fallback={<PageLoader />}>
+    <AsyncChannelPlaylistVideos />
   </Suspense>
 )
 const Watch = () => (
@@ -187,7 +193,8 @@ const Router = () => {
 
                 <Route path="/channel/:id" element={<ChannelLayoutRoute />}>
                   <Route path="" element={<Channel />} />
-                  <Route path="about" element={<ChannelAbout />} />
+                  <Route path="index/:host" element={<ChannelIndexVideos />} />
+                  <Route path="playlist/:playlist" element={<ChannelPlaylistVideos />} />
                 </Route>
 
                 <Route path="/watch" element={<VideoRoute />}>

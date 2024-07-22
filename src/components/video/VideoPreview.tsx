@@ -56,8 +56,6 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
 
   const owner = "owner" in video ? video.owner : undefined
 
-  console.log(owner)
-
   const [ownerAddress, profileName] = useMemo(() => {
     const ownerAddress = video.preview.ownerAddress
     const profileName = owner?.preview.name || owner?.ens || shortenEthAddr(ownerAddress)

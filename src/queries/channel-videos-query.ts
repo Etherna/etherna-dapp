@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react"
 import { VideoDeserializer } from "@etherna/sdk-js/serializers"
 import { fetchAddressFromEns, isEnsAddress, isEthAddress } from "@etherna/sdk-js/utils"
-import { useInfiniteQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query"
 
+import { useVideoPreviewQuery } from "./video-preview-query"
 import IndexClient from "@/classes/IndexClient"
 import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
@@ -27,6 +28,7 @@ export const useChannelVideosQuery = (opts: ChannelVideosQueryOptions) => {
   const ownerAddress = useRef<EthAddress | undefined>(
     isEthAddress(opts.address) ? opts.address : undefined
   )
+  const queryClient = useQueryClient()
 
   const firstFetchCount = opts.firstFetchCount ?? 48
   const sequentialFetchCount = opts.sequentialFetchCount ?? 12
@@ -117,11 +119,9 @@ export const useChannelVideosQuery = (opts: ChannelVideosQueryOptions) => {
         const vids = source.data.details.videos.slice(from, to) ?? []
         const videos = await Promise.all(
           vids.map(async playlistVid => {
-            const reader = new SwarmVideo.Reader(playlistVid.reference, {
-              beeClient,
-            })
-            const video = await reader.download({ mode: "preview" })
-            return video
+            return await queryClient.fetchQuery(
+              useVideoPreviewQuery.getQueryConfig({ reference: playlistVid.reference })
+            )
           })
         )
         const videosIndexes = videos.map<VideoWithOwner>((video, i) => ({

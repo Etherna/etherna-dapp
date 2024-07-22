@@ -66,8 +66,7 @@ const ProfilePlaylistPreview: React.FC<ProfilePlaylistPreviewProps> = ({
         })}
       >
         <ProfileSourceTitle>
-          {isChannel && <PlaylistIcon className="mr-2" width={16} />}
-          {!isChannel && <PlaylistIcon className="mr-2" width={16} />}
+          <PlaylistIcon className="mr-2" width={16} />
           <span>
             {isChannel && "All channel videos"}
             {!isChannel && (
