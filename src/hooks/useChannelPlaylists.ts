@@ -24,7 +24,6 @@ import { useChannelPlaylistsQuery } from "@/queries/channel-playlists-query"
 import { usePlaylistQuery } from "@/queries/playlist-query"
 import useClientsStore from "@/stores/clients"
 import useUserStore from "@/stores/user"
-import { deepCloneArray } from "@/utils/array"
 import { deepCloneObject } from "@/utils/object"
 
 import type { Playlist, PlaylistVideo, Video } from "@etherna/sdk-js"
@@ -38,7 +37,7 @@ export default function useChannelPlaylists(opts?: UseUserPlaylistsOptions) {
   const owner = useUserStore(state => state.address ?? "0x0")
   const beeClient = useClientsStore(state => state.beeClient)
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
-  const { fetchBestUsableBatch } = useDefaultBatch()
+  const { fetchDefaultBatchIdOrCreate } = useDefaultBatch()
 
   const queryClient = useQueryClient()
   const channelPlaylistQuery = usePlaylistQuery({
@@ -95,9 +94,7 @@ export default function useChannelPlaylists(opts?: UseUserPlaylistsOptions) {
         builder.loadNode({
           beeClient,
         }),
-        defaultBatchId
-          ? Promise.resolve(defaultBatchId)
-          : fetchBestUsableBatch().then(batch => batch?.id),
+        fetchDefaultBatchIdOrCreate(),
       ])
 
       if (!batchId) {
@@ -109,7 +106,7 @@ export default function useChannelPlaylists(opts?: UseUserPlaylistsOptions) {
       })
       return await playlistWriter.upload({ batchId })
     },
-    [beeClient, defaultBatchId, fetchBestUsableBatch, owner]
+    [beeClient, fetchDefaultBatchIdOrCreate, owner]
   )
 
   const updatePlaylistAndUser = useCallback(

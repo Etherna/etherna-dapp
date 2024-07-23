@@ -78,7 +78,7 @@ const PlaylistEditModal: React.FC<PlaylistEditModalProps> = ({
   const owner = useUserStore(state => state.address ?? "0x0")
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
   const beeClient = useClientsStore(state => state.beeClient)
-  const { fetchBestUsableBatch } = useDefaultBatch({
+  const { fetchDefaultBatchIdOrCreate } = useDefaultBatch({
     autofetch: !defaultBatchId,
     saveAfterCreate: false,
   })
@@ -98,12 +98,7 @@ const PlaylistEditModal: React.FC<PlaylistEditModalProps> = ({
 
   const handleSave = async (values: z.infer<typeof PlaylistSchema>) => {
     try {
-      let batchId = defaultBatchId
-
-      if (!batchId) {
-        const batch = await fetchBestUsableBatch()
-        batchId = batch?.id
-      }
+      const batchId = await fetchDefaultBatchIdOrCreate()
 
       if (!batchId) {
         showError("Default postage batch not loaded or not created yet")

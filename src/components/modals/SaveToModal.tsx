@@ -54,7 +54,7 @@ const SaveToModal: React.FC<SaveToModalProps> = ({ show, video, onClose }: SaveT
   const [selectedPlaylists, setSelectedPlaylists] = useState<Reference[]>([])
   const [isSaving, setIsSaving] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
-  const { fetchBestUsableBatch } = useDefaultBatch({
+  const { fetchDefaultBatchIdOrCreate } = useDefaultBatch({
     autofetch: !defaultBatchId,
     saveAfterCreate: false,
   })
@@ -64,12 +64,7 @@ const SaveToModal: React.FC<SaveToModalProps> = ({ show, video, onClose }: SaveT
   const save = async () => {
     setIsSaving(true)
 
-    let batchId = defaultBatchId
-
-    if (!batchId) {
-      const batch = await fetchBestUsableBatch()
-      batchId = batch?.id
-    }
+    const batchId = await fetchDefaultBatchIdOrCreate()
 
     if (!batchId) {
       showError("Default postage batch not loaded or not created yet")

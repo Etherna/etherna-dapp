@@ -61,7 +61,7 @@ const PlaylistEditModal: React.FC<PlaylistEditModalProps> = ({
   const profile = useUserStore(state => state.profile)
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
   const beeClient = useClientsStore(state => state.beeClient)
-  const { fetchBestUsableBatch } = useDefaultBatch({
+  const { fetchDefaultBatchIdOrCreate } = useDefaultBatch({
     autofetch: !defaultBatchId,
     saveAfterCreate: false,
   })
@@ -85,12 +85,7 @@ const PlaylistEditModal: React.FC<PlaylistEditModalProps> = ({
 
   const handleSave = async (values: z.infer<typeof PlaylistSchema>) => {
     try {
-      let batchId = defaultBatchId
-
-      if (!batchId) {
-        const batch = await fetchBestUsableBatch()
-        batchId = batch?.id
-      }
+      let batchId = await fetchDefaultBatchIdOrCreate()
 
       if (!batchId) {
         showError("Default postage batch not loaded or not created yet")
@@ -126,7 +121,7 @@ const PlaylistEditModal: React.FC<PlaylistEditModalProps> = ({
       })
 
       const savedPlaylist = await playlistWriter.upload({
-        batchId: defaultBatchId,
+        batchId,
       })
 
       await queryClient.invalidateQueries({
@@ -137,7 +132,7 @@ const PlaylistEditModal: React.FC<PlaylistEditModalProps> = ({
       })
       await queryClient.invalidateQueries({
         exact: true,
-        queryKey: usePlaylistQuery.getQueryKey(owner, {
+        queryKey: usePlaylistQuery.getQueryKey({
           rootManifest: savedPlaylist.preview.rootManifest,
         }),
       })

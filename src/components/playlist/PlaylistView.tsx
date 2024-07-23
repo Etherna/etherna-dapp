@@ -57,7 +57,7 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
   const address = useUserStore(state => state.address ?? "0x0")
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
   const beeClient = useClientsStore(state => state.beeClient)
-  const { fetchBestUsableBatch } = useDefaultBatch({
+  const { fetchDefaultBatchIdOrCreate } = useDefaultBatch({
     autofetch: !defaultBatchId,
     saveAfterCreate: false,
   })
@@ -103,17 +103,6 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
     setShowEditModal(false)
   }
 
-  const fetchBatchId = async () => {
-    let batchId = defaultBatchId
-
-    if (!batchId) {
-      const batch = await fetchBestUsableBatch()
-      batchId = batch?.id
-    }
-
-    return batchId
-  }
-
   const addToLibrary = async (mode: "add" | "copy") => {
     if (!playlistQuery.data) {
       showError("Playlist is loading. Try again in a few seconds.")
@@ -128,7 +117,7 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
       return
     }
 
-    const batchId = await fetchBatchId()
+    const batchId = await fetchDefaultBatchIdOrCreate()
 
     if (!batchId) {
       showError("Default postage batch not loaded or not created yet")

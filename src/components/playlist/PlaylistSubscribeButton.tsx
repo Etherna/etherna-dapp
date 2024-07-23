@@ -41,7 +41,7 @@ const PlaylistSubscribeButton: React.FC<PlaylistSubscribeButtonProps> = ({
   const owner = useUserStore(state => state.address)
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
   const beeClient = useClientsStore(state => state.beeClient)
-  const { fetchBestUsableBatch } = useDefaultBatch({
+  const { fetchDefaultBatchIdOrCreate } = useDefaultBatch({
     autofetch: !defaultBatchId,
     saveAfterCreate: false,
   })
@@ -54,22 +54,11 @@ const PlaylistSubscribeButton: React.FC<PlaylistSubscribeButtonProps> = ({
 
   const isSubscribed = userPlaylistsQuery.data?.some(id => id === rootManifest)
 
-  const fetchBatchId = async () => {
-    let batchId = defaultBatchId
-
-    if (!batchId) {
-      const batch = await fetchBestUsableBatch()
-      batchId = batch?.id
-    }
-
-    return batchId
-  }
-
   const toggleSubscribe = async () => {
     setIsPending(true)
 
     try {
-      const batchId = await fetchBatchId()
+      const batchId = await fetchDefaultBatchIdOrCreate()
 
       if (!batchId) {
         showError("Default postage batch not loaded or not created yet")

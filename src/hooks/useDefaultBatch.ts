@@ -25,10 +25,10 @@ import {
   parsePostageBatch,
 } from "@etherna/sdk-js/utils"
 
+import useBatchPaymentConfirmation from "./useBatchPaymentConfirmation"
 import useBeeAuthentication from "./useBeeAuthentication"
 import useConfirmation from "./useConfirmation"
 import useSwarmProfile from "./useSwarmProfile"
-import BeeClient from "@/classes/BeeClient"
 import SwarmProfile from "@/classes/SwarmProfile"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
@@ -69,6 +69,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     mode: "full",
     address: address!,
   })
+  const { waitPaymentConfirmation } = useBatchPaymentConfirmation()
   const { waitAuth } = useBeeAuthentication()
   const { waitConfirmation } = useConfirmation()
 
@@ -303,6 +304,71 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     setDefaultBatch,
   ])
 
+  const fetchDefaultBatchIdOrCreate = useCallback(async () => {
+    if (defaultBatchId) {
+      return defaultBatchId
+    }
+
+    const bestBatch = await fetchBestUsableBatch()
+    if (bestBatch) {
+      return bestBatch.id
+    }
+
+    let proceed = await waitConfirmation(
+      "Your default postage batch is missing or expired",
+      "Do you want to create a new one? this is mandatory to continue."
+    )
+
+    if (!proceed) {
+      return null
+    }
+
+    const batchesHandler = new BatchesHandler({ beeClient, gatewayClient, gatewayType })
+    const { depth, amount } = await batchesHandler.calcDepthAmount(
+      0,
+      dayjs.duration(1, "years").asSeconds()
+    )
+
+    proceed = await waitPaymentConfirmation(depth, amount)
+
+    if (proceed) {
+      const batch = await createDefaultBatch()
+
+      if (!batch) {
+        return null
+      }
+
+      const waitUsableBatch = new Promise<void>(res => {
+        const checkBatch = async () => {
+          const updateBatch =
+            gatewayType === "etherna-gateway"
+              ? await gatewayClient.users.fetchBatch(batch.id)
+              : await beeClient.stamps.download(batch.id)
+          if (updateBatch.usable) {
+            res()
+          } else {
+            window.setTimeout(checkBatch, 1000)
+          }
+        }
+
+        checkBatch()
+      })
+
+      await waitUsableBatch
+
+      return batch.id
+    }
+  }, [
+    beeClient,
+    defaultBatchId,
+    gatewayClient,
+    gatewayType,
+    waitConfirmation,
+    createDefaultBatch,
+    fetchBestUsableBatch,
+    waitPaymentConfirmation,
+  ])
+
   return {
     isCreatingBatch,
     isFetchingBatch,
@@ -312,6 +378,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
     defaultBatch,
     fetchDefaultBatch,
     fetchBestUsableBatch,
+    fetchDefaultBatchIdOrCreate,
     createDefaultBatch,
   }
 }

@@ -42,7 +42,7 @@ const VideoBookmark: React.FC<VideoBookmarkProps> = ({ video }) => {
   const [isLoading, setIsLoading] = useState(false)
   const beeClient = useClientsStore(state => state.beeClient)
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
-  const { fetchBestUsableBatch } = useDefaultBatch({
+  const { fetchDefaultBatchIdOrCreate } = useDefaultBatch({
     autofetch: !defaultBatchId,
     saveAfterCreate: false,
   })
@@ -75,12 +75,7 @@ const VideoBookmark: React.FC<VideoBookmarkProps> = ({ video }) => {
 
     setIsLoading(true)
 
-    let batchId = defaultBatchId
-
-    if (!batchId) {
-      const batch = await fetchBestUsableBatch()
-      batchId = batch?.id
-    }
+    let batchId = await fetchDefaultBatchIdOrCreate()
 
     if (!batchId) {
       setIsLoading(false)

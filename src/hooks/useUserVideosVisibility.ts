@@ -56,8 +56,7 @@ export default function useUserVideosVisibility(
 ) {
   const beeClient = useClientsStore(state => state.beeClient)
   const address = useUserStore(state => state.address)
-  const defaultBatchId = useUserStore(state => state.defaultBatchId)
-  const { fetchBestUsableBatch } = useDefaultBatch()
+  const { fetchDefaultBatchIdOrCreate } = useDefaultBatch()
   const [togglingSource, setTogglingSource] = useState<VideosSource>()
   const { showError } = useErrorMessage()
 
@@ -149,9 +148,7 @@ export default function useUserVideosVisibility(
         builder.loadNode({
           beeClient,
         }),
-        defaultBatchId
-          ? Promise.resolve(defaultBatchId)
-          : fetchBestUsableBatch().then(batch => batch?.id),
+        fetchDefaultBatchIdOrCreate(),
       ])
 
       if (!batchId) {
@@ -178,7 +175,7 @@ export default function useUserVideosVisibility(
         ),
       })
     },
-    [address, beeClient, defaultBatchId, fetchBestUsableBatch, queryClient]
+    [address, beeClient, fetchDefaultBatchIdOrCreate, queryClient]
   )
 
   const addVideosToPlaylist = useCallback(
