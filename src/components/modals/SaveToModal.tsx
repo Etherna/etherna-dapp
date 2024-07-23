@@ -81,7 +81,7 @@ const SaveToModal: React.FC<SaveToModalProps> = ({ show, video, onClose }: SaveT
       await Promise.all(
         playlistsToUpdate.map(async rootManifest => {
           const fetchedPlaylist = queryClient.getQueryData(
-            usePlaylistQuery.getQueryKey(undefined, { rootManifest })
+            usePlaylistQuery.getQueryKey({ rootManifest })
           ) as Playlist | undefined
 
           if (!fetchedPlaylist) {
@@ -111,7 +111,7 @@ const SaveToModal: React.FC<SaveToModalProps> = ({ show, video, onClose }: SaveT
 
           queryClient.invalidateQueries({
             exact: true,
-            queryKey: usePlaylistQuery.getQueryKey(undefined, { rootManifest }),
+            queryKey: usePlaylistQuery.getQueryKey({ rootManifest }),
           })
         })
       )
