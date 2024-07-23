@@ -68,6 +68,11 @@ const PlaylistEditModal: React.FC<PlaylistEditModalProps> = ({
   onSave,
 }) => {
   const isCreating = !playlist
+  const isReservedPlaylist = [
+    SwarmPlaylist.Reader.savedPlaylistId,
+    SwarmPlaylist.Reader.channelPlaylistId,
+  ].includes(playlist?.preview.id ?? "")
+
   const owner = useUserStore(state => state.address ?? "0x0")
   const defaultBatchId = useUserStore(state => state.defaultBatchId)
   const beeClient = useClientsStore(state => state.beeClient)
@@ -148,13 +153,12 @@ const PlaylistEditModal: React.FC<PlaylistEditModalProps> = ({
         await userPlaylistsWriter.upload({
           batchId: defaultBatchId,
         })
-
-        await queryClient.invalidateQueries({
-          exact: true,
-          queryKey: useUserPlaylistsQuery.getQueryKey(owner),
-        })
       }
 
+      await queryClient.invalidateQueries({
+        exact: true,
+        queryKey: useUserPlaylistsQuery.getQueryKey(owner),
+      })
       await queryClient.invalidateQueries({
         exact: true,
         queryKey: usePlaylistPreviewQuery.getQueryKey(owner, {
@@ -206,7 +210,24 @@ const PlaylistEditModal: React.FC<PlaylistEditModalProps> = ({
           render={({ field }) => (
             <FormGroup>
               <Label>Name</Label>
-              <TextInput {...field} />
+              <TextInput
+                {...field}
+                value={
+                  isReservedPlaylist
+                    ? (() => {
+                        switch (playlist?.preview.id) {
+                          case SwarmPlaylist.Reader.savedPlaylistId:
+                            return "Saved videos"
+                          case SwarmPlaylist.Reader.channelPlaylistId:
+                            return "Channel videos"
+                          default:
+                            return "-"
+                        }
+                      })()
+                    : field.value
+                }
+                disabled={isReservedPlaylist || field.disabled}
+              />
             </FormGroup>
           )}
         />
@@ -216,7 +237,7 @@ const PlaylistEditModal: React.FC<PlaylistEditModalProps> = ({
           render={({ field }) => (
             <FormGroup>
               <Label>Description</Label>
-              <TextInput {...field} multiline />
+              <TextInput {...field} multiline disabled={isReservedPlaylist || field.disabled} />
             </FormGroup>
           )}
         />

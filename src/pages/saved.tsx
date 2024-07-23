@@ -16,22 +16,35 @@
  */
 
 import React from "react"
+import { useAuth } from "react-oidc-context"
+import { PlaylistReader } from "@etherna/sdk-js/swarm"
 
-import ComingSoon from "@/components/common/ComingSoon"
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
 import SEO from "@/components/layout/SEO"
+import UnauthenticatedPlaceholder from "@/components/placeholders/UnauthenticatedPlaceholder"
+import PlaylistView from "@/components/playlist/PlaylistView"
 import { Container } from "@/components/ui/layout"
+import useUserStore from "@/stores/user"
 
-const HomePage = () => (
-  <AppLayoutWrapper>
-    <SEO title="Saved videos" />
-    <Container fluid>
-      <ComingSoon
-        description={`Think of saved videos as your bookmarked videos, or better yet,
-        a 'Watch Later' playlist. Bookmark now videos you can't watch at the moment for a future moment.`}
-      />
-    </Container>
-  </AppLayoutWrapper>
-)
+const SavedVideosPage = () => {
+  const { isAuthenticated, isLoading } = useAuth()
+  const address = useUserStore(state => state.address)
 
-export default HomePage
+  return (
+    <AppLayoutWrapper>
+      <SEO title="Saved videos" />
+      <Container className="mx-auto" noPaddingY>
+        {address && (
+          <PlaylistView
+            identification={{
+              owner: address,
+              id: PlaylistReader.savedPlaylistId,
+            }}
+          />
+        )}
+        {!isAuthenticated && !isLoading && <UnauthenticatedPlaceholder />}
+      </Container>
+    </AppLayoutWrapper>
+  )
+}
+export default SavedVideosPage

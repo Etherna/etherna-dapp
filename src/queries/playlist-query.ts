@@ -37,15 +37,22 @@ usePlaylistQuery.getQueryConfig = (opts: UsePlaylistOptions) =>
         if (opts.fillEmptyState) {
           const error = err as Error
           if (error.message.includes("No epoch feed found")) {
-            const owner = isEnsAddress(opts.owner!)
-              ? await fetchAddressFromEns(opts.owner)
-              : opts.owner!
+            const ownerAddress =
+              "owner" in opts.playlistIdentification
+                ? opts.playlistIdentification.owner
+                : (opts.owner ?? "0x0")
+            const owner = isEnsAddress(ownerAddress)
+              ? await fetchAddressFromEns(ownerAddress)
+              : ownerAddress
 
-            if (!owner) {
+            if (!owner || owner === "0x0") {
               throw new Error("Can't find address from ENS name")
             }
 
-            return SwarmPlaylist.Writer.emptyPlaylist(owner, SwarmPlaylist.Reader.channelPlaylistId)
+            const playlistId =
+              "id" in opts.playlistIdentification ? opts.playlistIdentification.id : undefined
+            const emptyPlaylist = SwarmPlaylist.Writer.emptyPlaylist(owner, playlistId)
+            return emptyPlaylist
           }
         }
         throw err

@@ -21,15 +21,16 @@ import { PlaylistBuilder } from "@etherna/sdk-js/swarm"
 import { dateToTimestamp } from "@etherna/sdk-js/utils"
 import { Portal } from "@headlessui/react"
 import { useQueryClient } from "@tanstack/react-query"
+import { i } from "vite/dist/node/types.d-aGj9QkWt"
 
 import { ChevronDownIcon, ExclamationCircleIcon } from "@heroicons/react/24/solid"
 
-import PlaylistEditModal from "../modals/PlaylistEditModal"
 import PlaylistShareButton from "./PlaylistShareButton"
 import PlaylistViewVideos from "./PlaylistViewVideos"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmUserPlaylists from "@/classes/SwarmUserPlaylists"
-import { AlertPopup, Button, Dropdown } from "@/components/ui/actions"
+import PlaylistEditModal from "@/components/modals/PlaylistEditModal"
+import { Button, Dropdown } from "@/components/ui/actions"
 import { Alert, Avatar, Skeleton } from "@/components/ui/display"
 import useConfirmation from "@/hooks/useConfirmation"
 import useDefaultBatch from "@/hooks/useDefaultBatch"
@@ -61,12 +62,20 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
     saveAfterCreate: false,
   })
 
-  const playlistQuery = usePlaylistQuery({ playlistIdentification: identification })
+  const isReservedPlaylist =
+    "id" in identification &&
+    [SwarmPlaylist.Reader.channelPlaylistId, SwarmPlaylist.Reader.savedPlaylistId].includes(
+      identification.id
+    )
+  const playlistQuery = usePlaylistQuery({
+    playlistIdentification: identification,
+    fillEmptyState: isReservedPlaylist,
+  })
   const userPlaylistsQuery = useUserPlaylistsQuery({ owner: address })
   const profilePreviewQuery = useProfilePreviewQuery({ address: playlistQuery.data?.preview.owner })
 
   const { rootManifest } = usePlaylistRootManifest({ identification })
-  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
   const { showError } = useErrorMessage()
   const { waitConfirmation } = useConfirmation()
   const queryClient = useQueryClient()
@@ -91,7 +100,7 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
     queryClient.setQueryData(usePlaylistQuery.getQueryKey(identification), () => playlist)
     playlistQuery.refetch()
 
-    setShowCreateModal(false)
+    setShowEditModal(false)
   }
 
   const fetchBatchId = async () => {
@@ -165,7 +174,7 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
       savingRootManifest = playlist.preview.rootManifest
     }
 
-    currentLib.push(rootManifest)
+    currentLib.push(savingRootManifest)
 
     const writer = new SwarmUserPlaylists.Writer(currentLib, {
       beeClient,
@@ -175,14 +184,14 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
       batchId,
     })
 
+    queryClient.setQueryData(useUserPlaylistsQuery.getQueryKey(address), (data: string[]) => [
+      ...data,
+      rootManifest,
+    ])
+    await userPlaylistsQuery.refetch()
+
     if (mode === "copy") {
       navigate(routes.playlist(savingRootManifest))
-    } else {
-      queryClient.setQueryData(useUserPlaylistsQuery.getQueryKey(address), (data: string[]) => [
-        ...data,
-        rootManifest,
-      ])
-      userPlaylistsQuery.refetch()
     }
   }
 
@@ -246,66 +255,89 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
                   </Alert>
                 ) : (
                   <h1 className="text-md/tight font-semibold md:text-lg/tight">
-                    {playlistQuery.data?.preview.name || "Playlist"}
+                    {(() => {
+                      if (isReservedPlaylist) {
+                        switch (identification.id) {
+                          case SwarmPlaylist.Reader.channelPlaylistId:
+                            return "Channel playlist"
+                          case SwarmPlaylist.Reader.savedPlaylistId:
+                            return "Saved videos"
+                        }
+                      }
+                      return playlistQuery.data?.preview.name || "Unnamed playlist"
+                    })()}
                   </h1>
                 )}
-                {rootManifest && playlistQuery.isSuccess && (
+                {rootManifest && playlistQuery.isSuccess && !isReservedPlaylist && (
                   <PlaylistShareButton rootManifest={rootManifest} />
                 )}
               </div>
             )}
           </div>
           {!playlistQuery.isError && (
-            <div className="flex w-full lg:flex-col">
+            <div className="flex w-full lg:flex-1 lg:flex-col">
               <div className="flex w-full flex-1 flex-col">
-                <div className="mt-2">
+                <div className="">
                   {playlistQuery.isLoading ? (
                     <Skeleton className="block h-4 w-full" />
                   ) : (
-                    <p className="text-sm/tight text-gray-700 dark:text-gray-300">
+                    <p className="text-sm/tight text-gray-600 dark:text-gray-400">
                       {playlistQuery.data?.preview.type || "public"}
                     </p>
                   )}
                 </div>
 
-                <div className="mt-3 md:mt-6">
-                  <Link to={routes.channel(playlistQuery.data?.preview.owner ?? "0x0")}>
-                    <div className="flex items-center space-x-2">
-                      <div className="size-6">
+                {(!isReservedPlaylist ||
+                  ("owner" in identification && identification.owner !== address)) && (
+                  <div className="mt-3 md:mt-6">
+                    <Link to={routes.channel(playlistQuery.data?.preview.owner ?? "0x0")}>
+                      <div className="flex items-center space-x-2">
+                        <div className="size-6">
+                          {profilePreviewQuery.isLoading ? (
+                            <Skeleton className="block size-6" roundedFull />
+                          ) : (
+                            <Avatar
+                              size={24}
+                              image={profilePreviewQuery.data?.avatar}
+                              address={playlistQuery.data?.preview.owner}
+                            />
+                          )}
+                        </div>
                         {profilePreviewQuery.isLoading ? (
-                          <Skeleton className="block size-6" roundedFull />
+                          <Skeleton className="block h-4 w-20" />
                         ) : (
-                          <Avatar
-                            size={24}
-                            image={profilePreviewQuery.data?.avatar}
-                            address={playlistQuery.data?.preview.owner}
-                          />
+                          <h5
+                            className={cn(
+                              "max-w-full flex-grow overflow-hidden text-ellipsis text-sm font-semibold",
+                              "text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300",
+                              "transition-colors duration-200"
+                            )}
+                          >
+                            {profilePreviewQuery.data?.name ??
+                              shortenEthAddr(playlistQuery.data?.preview.owner)}
+                          </h5>
                         )}
                       </div>
-                      {profilePreviewQuery.isLoading ? (
-                        <Skeleton className="block h-4 w-20" />
-                      ) : (
-                        <h5
-                          className={cn(
-                            "max-w-full flex-grow overflow-hidden text-ellipsis text-sm font-semibold",
-                            "text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300",
-                            "transition-colors duration-200"
-                          )}
-                        >
-                          {profilePreviewQuery.data?.name ??
-                            shortenEthAddr(playlistQuery.data?.preview.owner)}
-                        </h5>
-                      )}
-                    </div>
-                  </Link>
-                </div>
+                    </Link>
+                  </div>
+                )}
 
                 <div className="mt-4 lg:my-8">
                   {playlistQuery.isLoading ? (
                     <Skeleton className="block h-4 w-full" />
                   ) : (
                     <p className="text-sm/tight text-gray-700 dark:text-gray-300 md:text-base/tight">
-                      {playlistQuery.data?.details.description || "description"}
+                      {(() => {
+                        if (isReservedPlaylist) {
+                          switch (identification.id) {
+                            case SwarmPlaylist.Reader.channelPlaylistId:
+                              return "All the videos from the channel"
+                            case SwarmPlaylist.Reader.savedPlaylistId:
+                              return "All the videos that you saved to watch later"
+                          }
+                        }
+                        return playlistQuery.data?.details.description || "description"
+                      })()}
                     </p>
                   )}
                 </div>
@@ -313,14 +345,26 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
 
               <div className="mt-auto shrink-0 lg:w-full">
                 {(() => {
+                  if (isReservedPlaylist) {
+                    if (identification.id === SwarmPlaylist.Reader.savedPlaylistId) {
+                      return (
+                        <Button className="lg:w-full" onClick={() => setShowEditModal(true)}>
+                          Edit
+                        </Button>
+                      )
+                    }
+
+                    return null
+                  }
+
                   switch (playlistUserLibraryStatus) {
                     case "loading":
                       return <Skeleton className="block h-10 w-full" />
                     case "included":
                       return (
                         <Dropdown className="lg:w-full">
-                          <Dropdown.Toggle className="w-full">
-                            <Button className="w-full" color="muted">
+                          <Dropdown.Toggle className="lg:w-full">
+                            <Button className="lg:w-full" color="muted">
                               <span>{isPlaylistOwner ? "In library" : "Subscribed"}</span>
                               <ChevronDownIcon className="ml-2" width={16} />
                             </Button>
@@ -329,7 +373,7 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
                             <Dropdown.Menu>
                               {isPlaylistOwner && (
                                 <>
-                                  <Dropdown.Item action={() => setShowCreateModal(true)}>
+                                  <Dropdown.Item action={() => setShowEditModal(true)}>
                                     Edit
                                   </Dropdown.Item>
                                   <Dropdown.Separator />
@@ -344,9 +388,9 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
                       )
                     case "not-included":
                       return (
-                        <Dropdown>
-                          <Dropdown.Toggle className="w-full">
-                            <Button className="w-full">
+                        <Dropdown className="lg:w-full">
+                          <Dropdown.Toggle className="lg:w-full">
+                            <Button className="lg:w-full">
                               Add to library
                               <ChevronDownIcon className="ml-2" width={16} />
                             </Button>
@@ -377,9 +421,9 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
 
       {playlistQuery.data && (
         <PlaylistEditModal
-          show={showCreateModal}
+          show={showEditModal}
           playlist={playlistQuery.data}
-          onClose={() => setShowCreateModal(false)}
+          onClose={() => setShowEditModal(false)}
           onSave={updatePlaylist}
         />
       )}

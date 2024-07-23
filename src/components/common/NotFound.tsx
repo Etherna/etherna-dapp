@@ -30,7 +30,7 @@ const NotFound: React.FC<NotFoundProps> = ({
   showBackLink,
 }) => {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
+    <div className="flex min-h-screen flex-col items-center justify-center space-y-4">
       <h1 className="-mt-16 flex items-center text-2xl">
         <span className="mr-6 border-r border-gray-300 py-3 pr-6 dark:border-gray-600">404</span>
         <span className="text-base font-normal">{message}</span>
