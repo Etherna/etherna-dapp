@@ -18,8 +18,10 @@
 import React, { useEffect, useRef, useState } from "react"
 import { useAuth } from "react-oidc-context"
 import { PlaylistBuilder } from "@etherna/sdk-js/swarm"
+import { Portal } from "@headlessui/react"
 import { useQueryClient } from "@tanstack/react-query"
 
+import PlaylistEditModal from "./PlaylistEditModal"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import UnauthenticatedPlaceholder from "@/components/placeholders/UnauthenticatedPlaceholder"
 import { Button, Modal } from "@/components/ui/actions"
@@ -51,6 +53,7 @@ const SaveToModal: React.FC<SaveToModalProps> = ({ show, video, onClose }: SaveT
   const initialVideoPlaylists = useRef<Reference[]>([])
   const [selectedPlaylists, setSelectedPlaylists] = useState<Reference[]>([])
   const [isSaving, setIsSaving] = useState(false)
+  const [showCreateModal, setShowCreateModal] = useState(false)
   const { fetchBestUsableBatch } = useDefaultBatch({
     autofetch: !defaultBatchId,
     saveAfterCreate: false,
@@ -126,53 +129,66 @@ const SaveToModal: React.FC<SaveToModalProps> = ({ show, video, onClose }: SaveT
   }
 
   return (
-    <Modal
-      show={show}
-      showCancelButton={false}
-      title="Save to..."
-      footerButtons={
-        <Button className="sm:ml-auto" loading={isSaving} onClick={save}>
-          Save
-        </Button>
-      }
-      onClose={onClose}
-      large
-      showCloseButton
-    >
-      {!owner && !isLoading && <UnauthenticatedPlaceholder />}
+    <>
+      <Modal
+        show={show}
+        showCancelButton={false}
+        title="Save to..."
+        footerButtons={
+          <div className="flex w-full justify-between gap-4">
+            <Button color="inverted" aspect="outline" onClick={() => setShowCreateModal(true)}>
+              New playlist
+            </Button>
+            <Button loading={isSaving} onClick={save}>
+              Save
+            </Button>
+          </div>
+        }
+        onClose={onClose}
+        large
+        showCloseButton
+        autoClose
+      >
+        {!owner && !isLoading && <UnauthenticatedPlaceholder />}
 
-      <div className="flex flex-col space-y-1">
-        {playlistsQuery.isLoading && (
-          <>
-            <PlaylistItemPlaceholder />
-            <PlaylistItemPlaceholder />
-            <PlaylistItemPlaceholder />
-            <PlaylistItemPlaceholder />
-          </>
-        )}
-        {playlistsQuery.isSuccess &&
-          playlistsQuery.data.map(rootManifest => (
-            <PlaylistItem
-              key={rootManifest}
-              rootManifest={rootManifest}
-              videoReference={video.reference}
-              selected={selectedPlaylists.includes(rootManifest)}
-              onPlaylistLoaded={playlist => {
-                if (playlist.details.videos.some(video => video.reference === video.reference)) {
-                  initialVideoPlaylists.current.push(rootManifest)
-                }
-              }}
-              onSelectedChange={selected => {
-                setSelectedPlaylists(
-                  selected
-                    ? [...selectedPlaylists, rootManifest]
-                    : selectedPlaylists.filter(p => p !== rootManifest)
-                )
-              }}
-            />
-          ))}
-      </div>
-    </Modal>
+        <div className="flex flex-col space-y-1">
+          {playlistsQuery.isLoading && (
+            <>
+              <PlaylistItemPlaceholder />
+              <PlaylistItemPlaceholder />
+              <PlaylistItemPlaceholder />
+              <PlaylistItemPlaceholder />
+            </>
+          )}
+          {playlistsQuery.isSuccess &&
+            playlistsQuery.data.map(rootManifest => (
+              <PlaylistItem
+                key={rootManifest}
+                rootManifest={rootManifest}
+                videoReference={video.reference}
+                selected={selectedPlaylists.includes(rootManifest)}
+                onPlaylistLoaded={playlist => {
+                  if (playlist.details.videos.some(video => video.reference === video.reference)) {
+                    initialVideoPlaylists.current.push(rootManifest)
+                  }
+                }}
+                onSelectedChange={selected => {
+                  setSelectedPlaylists(
+                    selected
+                      ? [...selectedPlaylists, rootManifest]
+                      : selectedPlaylists.filter(p => p !== rootManifest)
+                  )
+                }}
+              />
+            ))}
+        </div>
+        <PlaylistEditModal
+          show={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          onSave={() => setShowCreateModal(false)}
+        />
+      </Modal>
+    </>
   )
 }
 

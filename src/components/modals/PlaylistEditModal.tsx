@@ -39,6 +39,7 @@ import useUserStore from "@/stores/user"
 import type { Playlist } from "@etherna/sdk-js"
 
 type PlaylistEditModalProps = {
+  className?: string
   show?: boolean
   playlist?: Playlist
   onClose?: () => void
@@ -62,6 +63,7 @@ const PlaylistSchema = z
   })
 
 const PlaylistEditModal: React.FC<PlaylistEditModalProps> = ({
+  className,
   show = false,
   playlist,
   onClose,
@@ -192,6 +194,7 @@ const PlaylistEditModal: React.FC<PlaylistEditModalProps> = ({
 
   return (
     <Modal
+      className={className}
       show={show}
       showCancelButton={!form.formState.isSubmitting}
       title={isCreating ? "Create playlist" : "Edit playlist"}
