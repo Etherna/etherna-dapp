@@ -17,6 +17,7 @@
 
 import React, { useMemo } from "react"
 
+import VideoBookmark from "./VideoBookmark"
 import VideoComments from "./VideoComments"
 import VideoDetailsDescription from "./VideoDetailsDescription"
 import VideoDetailsInfoBar from "./VideoDetailsInfoBar"
@@ -46,6 +47,7 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ video, owner, videoOffers }
     <div>
       <VideoDetailsTitleBar title={video.preview.title}>
         <VideoExtraMenu video={video} />
+        <VideoBookmark video={video} />
       </VideoDetailsTitleBar>
 
       <VideoDetailsInfoBar video={video} videoOffers={videoOffers} />
