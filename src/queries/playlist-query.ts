@@ -32,7 +32,15 @@ usePlaylistQuery.getQueryConfig = (opts: UsePlaylistOptions) =>
           mode: "full",
         })
 
-        return playlist
+        return {
+          ...playlist,
+          details: {
+            ...playlist.details,
+            videos: playlist.details.videos.sort(
+              (a, b) => b.addedAt.getTime() - a.addedAt.getTime()
+            ),
+          },
+        }
       } catch (err) {
         if (opts.fillEmptyState) {
           const error = err as Error

@@ -320,7 +320,7 @@ export default class VideoProcessingController {
     const { depth, amount } = batch
       ? await this.batchHandler.calcDepthAmountForBatch(batch, minBatchSize - available)
       : await this.batchHandler.calcDepthAmount(minBatchSize)
-    const ok = shouldPay ? (await this.onBatchPayingRequest?.(depth, amount)) ?? true : true
+    const ok = shouldPay ? ((await this.onBatchPayingRequest?.(depth, amount)) ?? true) : true
 
     if (!ok) {
       return this.onBatchError?.(new BatchRejectError())
