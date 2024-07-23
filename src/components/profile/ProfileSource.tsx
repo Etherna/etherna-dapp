@@ -37,12 +37,38 @@ const ProfileSource = React.forwardRef<HTMLDivElement, React.ComponentProps<"div
 const ProfileSourceHeader = React.forwardRef<HTMLDivElement, React.ComponentProps<"div">>(
   ({ children, className, ...props }, ref) => {
     return (
-      <div ref={ref} className={cn("space-y-1", className)} {...props}>
+      <div
+        ref={ref}
+        className={cn("flex flex-col gap-x-2 gap-y-4 sm:flex-row", className)}
+        {...props}
+      >
         {children}
       </div>
     )
   }
 )
+
+const ProfileSourceHeaderSection = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div"> & { variant?: "fill" | "fit" }
+>(({ children, className, variant = "fill", ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "flex flex-col gap-1",
+        {
+          "flex-1": variant === "fill",
+          "shrink-0": variant === "fit",
+        },
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+})
 
 const ProfileSourceTitle = React.forwardRef<HTMLDivElement, React.ComponentProps<"h3">>(
   ({ children, className, ...props }, ref) => {
@@ -117,6 +143,7 @@ const ProfileSourceLoadMore = React.forwardRef<HTMLDivElement, React.ComponentPr
 export {
   ProfileSource,
   ProfileSourceHeader,
+  ProfileSourceHeaderSection,
   ProfileSourceTitle,
   ProfileSourceDescription,
   ProfileSourceContent,

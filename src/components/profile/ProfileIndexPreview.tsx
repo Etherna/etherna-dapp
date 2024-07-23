@@ -27,6 +27,7 @@ import {
   ProfileSourceEmptyMessage,
   ProfileSourceFooter,
   ProfileSourceHeader,
+  ProfileSourceHeaderSection,
   ProfileSourceLoadMore,
   ProfileSourceTitle,
 } from "./ProfileSource"
@@ -47,13 +48,15 @@ const ProfileIndexPreview: React.FC<ProfileIndexPreviewProps> = ({ address, url 
   return (
     <ProfileSource>
       <ProfileSourceHeader>
-        <ProfileSourceTitle>
-          <IndexIcon className="mr-2" width={16} />
-          <span>Index {hostname}</span>
-        </ProfileSourceTitle>
-        <ProfileSourceDescription>
-          Videos list provided by the {hostname} index
-        </ProfileSourceDescription>
+        <ProfileSourceHeaderSection variant="fill">
+          <ProfileSourceTitle>
+            <IndexIcon className="mr-2" width={16} />
+            <span>Index {hostname}</span>
+          </ProfileSourceTitle>
+          <ProfileSourceDescription>
+            Videos list provided by the {hostname} index
+          </ProfileSourceDescription>
+        </ProfileSourceHeaderSection>
       </ProfileSourceHeader>
       <ProfileSourceContent>
         <ProfileSourceVideos

@@ -26,9 +26,11 @@ import {
   ProfileVideosHeaderBack,
   ProfileVideosHeaderContent,
   ProfileVideosHeaderDescription,
+  ProfileVideosHeaderSection,
   ProfileVideosHeaderTitle,
 } from "./ProfileVideosHeader"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
+import PlaylistSubscribeButton from "@/components/playlist/PlaylistSubscribeButton"
 import { Skeleton } from "@/components/ui/display"
 import { usePlaylistQuery } from "@/queries/playlist-query"
 import routes from "@/routes"
@@ -60,53 +62,64 @@ const ProfileChannelPlaylistVideos: React.FC<ProfileChannelPlaylistVideosProps> 
       <ProfileVideosHeader>
         <ProfileVideosHeaderBack to={routes.channel(address)} />
         <ProfileVideosHeaderContent>
-          <ProfileVideosHeaderTitle>
-            <PlaylistIcon className="mr-2" width={16} />
-            <span>
-              {isChannel && "All channel videos"}
+          <ProfileVideosHeaderSection variant="fill">
+            <ProfileVideosHeaderTitle>
+              <PlaylistIcon className="mr-2" width={16} />
+              <span>
+                {isChannel && "All channel videos"}
+                {!isChannel && (
+                  <>
+                    {(() => {
+                      switch (playlistQuery.status) {
+                        case "success":
+                          return playlistQuery.data.preview.name
+                        case "pending":
+                          return <Skeleton className="block h-5 w-44" />
+                        case "error":
+                          return (
+                            <span className="inline-flex items-center space-x-2">
+                              <ExclamationCircleIcon width={16} />
+                              <span>{"Coudn't load playlist"}</span>
+                            </span>
+                          )
+                      }
+                    })()}
+                  </>
+                )}
+              </span>
+            </ProfileVideosHeaderTitle>
+            <ProfileVideosHeaderDescription>
+              {isChannel && "Decentralized videos feed"}
               {!isChannel && (
                 <>
                   {(() => {
                     switch (playlistQuery.status) {
                       case "success":
-                        return playlistQuery.data.preview.name
+                        return playlistQuery.data.details.description
                       case "pending":
-                        return <Skeleton className="block h-5 w-44" />
+                        return <Skeleton className="block h-4 w-full max-w-52" />
                       case "error":
                         return (
                           <span className="inline-flex items-center space-x-2">
                             <ExclamationCircleIcon width={16} />
-                            <span>{"Coudn't load playlist"}</span>
+                            <span>{playlistQuery.error.message || "Unknown error"}</span>
                           </span>
                         )
                     }
                   })()}
                 </>
               )}
-            </span>
-          </ProfileVideosHeaderTitle>
-          <ProfileVideosHeaderDescription>
-            {isChannel && "Decentralized videos feed"}
-            {!isChannel && (
-              <>
-                {(() => {
-                  switch (playlistQuery.status) {
-                    case "success":
-                      return playlistQuery.data.details.description
-                    case "pending":
-                      return <Skeleton className="block h-4 w-full max-w-52" />
-                    case "error":
-                      return (
-                        <span className="inline-flex items-center space-x-2">
-                          <ExclamationCircleIcon width={16} />
-                          <span>{playlistQuery.error.message || "Unknown error"}</span>
-                        </span>
-                      )
-                  }
-                })()}
-              </>
-            )}
-          </ProfileVideosHeaderDescription>
+            </ProfileVideosHeaderDescription>
+          </ProfileVideosHeaderSection>
+
+          {playlistQuery.isSuccess && (
+            <ProfileVideosHeaderSection variant="fit">
+              <PlaylistSubscribeButton
+                rootManifest={playlistQuery.data.preview.rootManifest}
+                small
+              />
+            </ProfileVideosHeaderSection>
+          )}
         </ProfileVideosHeaderContent>
       </ProfileVideosHeader>
 

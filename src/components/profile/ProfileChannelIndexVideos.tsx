@@ -26,6 +26,7 @@ import {
   ProfileVideosHeaderBack,
   ProfileVideosHeaderContent,
   ProfileVideosHeaderDescription,
+  ProfileVideosHeaderSection,
   ProfileVideosHeaderTitle,
 } from "./ProfileVideosHeader"
 import routes from "@/routes"
@@ -49,13 +50,15 @@ const ProfileChannelIndexVideos: React.FC<ProfileChannelIndexVideosProps> = ({ a
       <ProfileVideosHeader>
         <ProfileVideosHeaderBack to={routes.channel(address)} />
         <ProfileVideosHeaderContent>
-          <ProfileVideosHeaderTitle>
-            <IndexIcon className="mr-2" width={16} />
-            <span>Index {host}</span>
-          </ProfileVideosHeaderTitle>
-          <ProfileVideosHeaderDescription>
-            Videos list provided by the {host} index
-          </ProfileVideosHeaderDescription>
+          <ProfileVideosHeaderSection variant="fill">
+            <ProfileVideosHeaderTitle>
+              <IndexIcon className="mr-2" width={16} />
+              <span>Index {host}</span>
+            </ProfileVideosHeaderTitle>
+            <ProfileVideosHeaderDescription>
+              Videos list provided by the {host} index
+            </ProfileVideosHeaderDescription>
+          </ProfileVideosHeaderSection>
         </ProfileVideosHeaderContent>
       </ProfileVideosHeader>
 

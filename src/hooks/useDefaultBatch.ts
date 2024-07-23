@@ -123,7 +123,7 @@ export default function useDefaultBatch(opts: UseBatchesOpts = { autofetch: fals
             if (batch.usable) {
               return batch
             }
-          } catch {}
+          } catch (err) {}
         }
 
         return null
