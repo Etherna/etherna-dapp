@@ -78,13 +78,15 @@ export const useChannelVideosQuery = (opts: ChannelVideosQueryOptions) => {
       const ownerAddress = await getOwnerAddress()
       const source = opts.source
 
+      let videos: VideoWithOwner[] = []
+
       if (source?.type === "index") {
         const client = new IndexClient(source.url)
         const resp = await client.users.fetchVideos(ownerAddress, page, limit)
 
         total.current = resp.totalElements
 
-        return resp.elements
+        videos = resp.elements
           .filter(vid => vid.lastValidManifest)
           .map(indexVideo => {
             try {
@@ -112,19 +114,21 @@ export const useChannelVideosQuery = (opts: ChannelVideosQueryOptions) => {
           })
           .filter(Boolean) as VideoWithOwner[]
       } else if (source?.type === "playlist") {
+        total.current = source.data.details.videos.length
+
         const from = input.pageParam
           ? firstFetchPagesCount + (input.pageParam - 1) * sequentialFetchCount
           : 0
         const to = from + limit
         const vids = source.data.details.videos.slice(from, to) ?? []
-        const videos = await Promise.all(
+        const playlistVideos = await Promise.all(
           vids.map(async playlistVid => {
             return await queryClient.fetchQuery(
               useVideoPreviewQuery.getQueryConfig({ reference: playlistVid.reference })
             )
           })
         )
-        const videosIndexes = videos.map<VideoWithOwner>((video, i) => ({
+        videos = playlistVideos.map<VideoWithOwner>((video, i) => ({
           reference: video?.reference ?? (vids[i]!.reference as Reference),
           preview: video?.preview ?? {
             reference: "" as Reference,
@@ -140,11 +144,11 @@ export const useChannelVideosQuery = (opts: ChannelVideosQueryOptions) => {
           indexesStatus: {},
           owner: profile,
         }))
-
-        return videosIndexes
       } else {
         throw new Error("Invalid source")
       }
+
+      return { videos, total: total.current }
     },
     initialPageParam: 0,
     getNextPageParam: (_lastPage, _allPages, lastPageParam) => {

@@ -44,6 +44,7 @@ interface ProfileIndexPreviewProps {
 const ProfileIndexPreview: React.FC<ProfileIndexPreviewProps> = ({ address, url }) => {
   const hostname = urlHostname(url)!
   const [hasSomeVideos, setHasSomeVideos] = useState<boolean>()
+  const [total, setTotal] = useState<number>()
 
   return (
     <ProfileSource>
@@ -54,7 +55,8 @@ const ProfileIndexPreview: React.FC<ProfileIndexPreviewProps> = ({ address, url 
             <span>Index {hostname}</span>
           </ProfileSourceTitle>
           <ProfileSourceDescription>
-            Videos list provided by the {hostname} index
+            <span>Videos list provided by the {hostname} index</span>
+            {total != null && <span> - {total} videos</span>}
           </ProfileSourceDescription>
         </ProfileSourceHeaderSection>
       </ProfileSourceHeader>
@@ -64,7 +66,10 @@ const ProfileIndexPreview: React.FC<ProfileIndexPreviewProps> = ({ address, url 
           source={{ type: "index", url }}
           variant="preview"
           rows={2}
-          onVideosFetched={videos => setHasSomeVideos(videos.length > 0)}
+          onVideosFetched={(videos, total) => {
+            setHasSomeVideos(videos.length > 0)
+            setTotal(total)
+          }}
         />
 
         {hasSomeVideos === false && (

@@ -38,7 +38,7 @@ interface ProfileSourceVideosProps {
   isLoading?: boolean
   variant?: "default" | "preview"
   rows?: number
-  onVideosFetched?: (videos: Video[]) => void
+  onVideosFetched?: (videos: Video[], total: number) => void
 }
 
 const ProfileSourceVideos: React.FC<ProfileSourceVideosProps> = ({
@@ -68,14 +68,15 @@ const ProfileSourceVideos: React.FC<ProfileSourceVideosProps> = ({
     sequentialFetchCount: 12,
   })
 
+  const videos = (videosQuery.data?.pages.flat() ?? []).flatMap(({ videos }) => videos)
+
   useEffect(() => {
     if (videosQuery.isSuccess) {
-      onVideosFetched?.(videosQuery.data?.pages.flat() ?? [])
+      const total = videosQuery.data?.pages[0]?.total ?? 0
+      onVideosFetched?.(videos, total)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [videosQuery.data])
-
-  const videos = videosQuery.data?.pages.flat() ?? []
 
   return (
     <div>

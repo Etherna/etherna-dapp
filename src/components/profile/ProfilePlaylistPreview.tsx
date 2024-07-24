@@ -116,6 +116,9 @@ const ProfilePlaylistPreview: React.FC<ProfilePlaylistPreviewProps> = ({
                 })()}
               </>
             )}
+            {playlistQuery.isSuccess && (
+              <span> - {playlistQuery.data.details.videos.length} videos</span>
+            )}
           </ProfileSourceDescription>
         </ProfileSourceHeaderSection>
         {"rootManifest" in identification && (
