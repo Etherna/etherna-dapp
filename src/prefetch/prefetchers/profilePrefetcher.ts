@@ -47,7 +47,7 @@ const fetch = async () => {
       profileReader.download({
         mode: "full",
       }),
-      playlistReader.download(),
+      playlistReader.download({ mode: "full" }),
     ])
     const profile =
       profileResult.status === "fulfilled"
@@ -67,7 +67,8 @@ const fetch = async () => {
           } as ProfileWithEns)
 
     // Fetch channel playlists videos
-    const playlistVideos = channelResult.status === "fulfilled" ? channelResult.value.videos : []
+    const playlistVideos =
+      channelResult.status === "fulfilled" ? channelResult.value.details.videos : []
     const references = playlistVideos?.slice(0, 10) ?? []
     const videosPromises = await Promise.allSettled(
       references.map(video => {

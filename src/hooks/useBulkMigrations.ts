@@ -37,7 +37,6 @@ type BulkMigrationOptions = {
 }
 
 export default function useBulkMigrations(videos: Video[] | undefined, opts: BulkMigrationOptions) {
-  const address = useUserStore(state => state.address)
   const gatewayType = useExtensionsStore(state => state.currentGatewayType)
   const beeClient = useClientsStore(state => state.beeClient)
   const gatewayClient = useClientsStore(state => state.gatewayClient)
@@ -53,7 +52,7 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
   const { showError } = useErrorMessage()
   const { waitPaymentConfirmation } = useBatchPaymentConfirmation()
 
-  const { channelPlaylist, loadPlaylists, updateVideosInPlaylist } = useChannelPlaylists({
+  const { channelPlaylist, replaceVideosInPlaylist } = useChannelPlaylists({
     mode: "channel",
   })
   const { isLocked } = useWallet()
@@ -320,7 +319,7 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
 
     await Promise.allSettled(videos.map(vid => migrateVideo(vid, channelPlaylist, signal)))
 
-    await updateVideosInPlaylist(
+    await replaceVideosInPlaylist(
       SwarmPlaylist.Reader.channelPlaylistId,
       deferredChannelUpdates.current
     )
@@ -328,7 +327,7 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
     migrationArgs.current = undefined
 
     setIsMigrating(false)
-  }, [channelPlaylist, migrateVideo, updateVideosInPlaylist])
+  }, [channelPlaylist, migrateVideo, replaceVideosInPlaylist])
 
   const migrate = useCallback(
     async (videos: Video[], signal: AbortSignal) => {
@@ -347,17 +346,14 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
       shouldContinueMigration.current = true
 
       if (!channelPlaylist) {
-        const { channelPlaylist: channel } = (await loadPlaylists()) ?? {}
-        if (!channel) {
-          setIsMigrating(false)
-          throw new Error("Channel playlist not found. Please try again later")
-        }
+        setIsMigrating(false)
+        throw new Error("Channel playlist not found. Please try again later")
       } else {
         await continueMigration()
         console.info(deferredChannelUpdates.current)
       }
     },
-    [channelPlaylist, isMigrating, continueMigration, loadPlaylists, showError]
+    [channelPlaylist, isMigrating, continueMigration, showError]
   )
 
   const reset = useCallback(() => {

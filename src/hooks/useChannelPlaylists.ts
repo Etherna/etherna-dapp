@@ -132,7 +132,7 @@ export default function useChannelPlaylists(opts?: UseUserPlaylistsOptions) {
     [owner, queryClient, uploadPlaylist]
   )
 
-  const updateVideosInPlaylist = useCallback(
+  const replaceVideosInPlaylist = useCallback(
     async (playlistId: string, operations: { remove: Reference; add: Video }[]) => {
       const initialPlaylist = allPlaylists.find(playlist => playlist.preview.id === playlistId)
 
@@ -153,7 +153,7 @@ export default function useChannelPlaylists(opts?: UseUserPlaylistsOptions) {
         if (index >= 0) {
           newPlaylist.details.videos.splice(index, 1, vid)
         } else {
-          newPlaylist.details.videos.push(vid)
+          newPlaylist.details.videos.unshift(vid)
         }
       }
 
@@ -171,6 +171,6 @@ export default function useChannelPlaylists(opts?: UseUserPlaylistsOptions) {
     channelPlaylist,
     channelPlaylists,
     allPlaylists,
-    updateVideosInPlaylist,
+    replaceVideosInPlaylist,
   }
 }

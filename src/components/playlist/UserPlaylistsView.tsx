@@ -20,8 +20,8 @@ import { useQueryClient } from "@tanstack/react-query"
 
 import { DocumentMagnifyingGlassIcon } from "@heroicons/react/24/outline"
 
-import PlaylistEditModal from "../modals/PlaylistEditModal"
 import PlaylistPreview from "./PlaylistPreview"
+import PlaylistEditModal from "@/components/modals/PlaylistEditModal"
 import PlaylistPreviewPlaceholder from "@/components/placeholders/PlaylistPreviewPlaceholder"
 import { Button } from "@/components/ui/actions"
 import useSmartFetchCount from "@/hooks/useSmartFetchCount"
@@ -37,7 +37,7 @@ const UserPlaylistsView: React.FC<UserPlaylistsViewProps> = () => {
   const playlistsQuery = useUserPlaylistsQuery({ owner })
   const gridRef = useRef<HTMLDivElement>(null)
   const [showCreateModal, setShowCreateModal] = useState(false)
-  const count = useSmartFetchCount(gridRef, { defaulSeed: 4, rows: 1 }) ?? 4
+  const count = useSmartFetchCount(gridRef, { defaultSeed: 4, rows: 1 }) ?? 4
   const queryClient = useQueryClient()
 
   const addPlaylist = (playlist: Playlist) => {

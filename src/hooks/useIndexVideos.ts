@@ -54,7 +54,7 @@ export default function useIndexVideos(opts: SwarmVideosOptions = {}) {
   const [hasMore, setHasMore] = useState(true)
   const [error, setError] = useState<string>()
   const fetchCount = useSmartFetchCount(opts.gridRef, {
-    defaulSeed: opts.seedLimit,
+    defaultSeed: opts.seedLimit,
   })
 
   useEffect(() => {

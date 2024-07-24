@@ -123,7 +123,6 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
 
       setVideo(newVideo)
     } catch (error) {
-      console.error(error.issues)
       setNotFound(true)
     } finally {
       setIsloading(false)
