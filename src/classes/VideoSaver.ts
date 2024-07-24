@@ -3,6 +3,7 @@ import { PlaylistBuilder } from "@etherna/sdk-js/swarm"
 import { isEmptyReference } from "@etherna/sdk-js/utils"
 
 import SwarmPlaylist from "./SwarmPlaylist"
+import { queryClient } from "@/app/Router"
 import uiStore from "@/stores/ui"
 import { deepCloneObject } from "@/utils/object"
 import { getResponseErrorMessage } from "@/utils/request"
@@ -134,8 +135,8 @@ export default class VideoSaver {
           )
           newPublishResults[statusIndex].ok = ok
           newPublishResults[statusIndex].type = "add"
-        } else {
-          const ok = await this.removeFromPlaylist(source.identifier, newReference, opts.signal)
+        } else if (initialReference) {
+          const ok = await this.removeFromPlaylist(source.identifier, initialReference, opts.signal)
           newPublishResults[statusIndex].ok = ok
           newPublishResults[statusIndex].type = "remove"
         }
@@ -152,6 +153,13 @@ export default class VideoSaver {
         }
       }
     }
+
+    // clear caches
+    queryClient.invalidateQueries({
+      predicate(query) {
+        return query.queryKey.some(k => String(k).includes("playlist"))
+      },
+    })
 
     return newPublishResults
   }
@@ -194,24 +202,27 @@ export default class VideoSaver {
     if (!playlist) return false
 
     try {
+      const builder = new PlaylistBuilder()
+      builder.initialize(
+        playlist.reference,
+        playlist.preview.owner,
+        playlist.preview,
+        playlist.details
+      )
+      await builder.loadNode({ beeClient: this.options.beeClient })
+
       const playlistHasVideo =
         playlist.details.videos.findIndex(video => video.reference === initialReference) >= 0
 
       if (playlistHasVideo) {
         // remove from playlist
-        playlist.details.videos = playlist.details.videos.filter(
-          video => video.reference !== initialReference
-        )
+        builder.replaceVideo(initialReference!, video)
+      } else {
+        // add video to playlist
+        builder.addVideos([video])
       }
-      // add video to playlist
-      playlist.details.videos.push({
-        reference: video.reference,
-        title: video.preview.title,
-        addedAt: new Date(),
-        publishedAt: undefined,
-      })
 
-      await this.updatePlaylist(playlist, signal)
+      await this.updatePlaylist(builder, signal)
 
       return true
     } catch (error) {
@@ -220,11 +231,7 @@ export default class VideoSaver {
     }
   }
 
-  async removeFromPlaylist(
-    playlistId: string,
-    reference: Reference | undefined,
-    signal?: AbortSignal
-  ) {
+  async removeFromPlaylist(playlistId: string, reference: Reference, signal?: AbortSignal) {
     if (!this.checkAccountability()) return false
 
     const playlist = this.findPlaylist(playlistId)
@@ -232,11 +239,18 @@ export default class VideoSaver {
     if (!playlist) return false
 
     try {
-      const playlist = deepCloneObject(this.options.channelPlaylist!)
-      playlist.details.videos = playlist.details.videos.filter(
-        video => video.reference !== reference
+      const builder = new PlaylistBuilder()
+      builder.initialize(
+        playlist.reference,
+        playlist.preview.owner,
+        playlist.preview,
+        playlist.details
       )
-      await this.updatePlaylist(playlist, signal)
+      await builder.loadNode({ beeClient: this.options.beeClient })
+
+      builder.removeVideos([reference])
+
+      await this.updatePlaylist(builder, signal)
       return true
     } catch (error) {
       console.error(error)
@@ -244,16 +258,7 @@ export default class VideoSaver {
     }
   }
 
-  async updatePlaylist(playlist: Playlist, signal?: AbortSignal) {
-    const builder = new PlaylistBuilder()
-    builder.initialize(
-      playlist.reference,
-      playlist.preview.owner,
-      playlist.preview,
-      playlist.details
-    )
-    await builder.loadNode({ beeClient: this.options.beeClient })
-
+  async updatePlaylist(builder: PlaylistBuilder, signal?: AbortSignal) {
     const playlistWriter = new SwarmPlaylist.Writer(builder, {
       beeClient: this.options.beeClient,
     })

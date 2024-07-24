@@ -46,16 +46,8 @@ const SaveToCard: React.FC<SaveToCardProps> = ({ disabled }) => {
   const updateSaveTo = useVideoEditorStore(state => state.updateSaveTo)
   const indexes = useExtensionsStore(state => state.indexesList)
 
-  const [playlistIds, indexesUrls] = useMemo(() => {
-    return [
-      saveTo.filter(source => source.source === "playlist").map(source => source.identifier),
-      saveTo.filter(source => source.source === "index").map(source => source.identifier),
-    ]
-  }, [saveTo])
   const { isFetching, videoIndexesStatus, videoPlaylistsStatus } = useVideoPublishStatus({
     reference,
-    indexesUrls,
-    playlistIds,
     ownerAddress: address!,
   })
   const channelPlaylistsQuery = useChannelPlaylistsQuery({ owner: address })
@@ -65,15 +57,13 @@ const SaveToCard: React.FC<SaveToCardProps> = ({ disabled }) => {
     ),
   })
 
-  const isToggled = useCallback(
-    (source: VideoEditorPublishSourceType, identifier: string) => {
-      return saveTo.find(s => s.source === source && s.identifier === identifier)!.add
-    },
-    [saveTo]
-  )
+  const isToggled = (source: VideoEditorPublishSourceType, identifier: string) => {
+    return saveTo.find(s => s.source === source && s.identifier === identifier)?.add ?? false
+  }
 
   useEffect(() => {
     const channelPlaylists = playlistsQueries.map(q => q.data).filter(Boolean)
+    const isCreating = editorStatus === "creating"
 
     updateSaveTo([
       {
@@ -82,7 +72,7 @@ const SaveToCard: React.FC<SaveToCardProps> = ({ disabled }) => {
         description: "Decentralized feed",
         identifier: SwarmPlaylist.Reader.channelPlaylistId,
         videoId: undefined,
-        add: editorStatus === "creating",
+        add: isCreating ? true : isToggled("playlist", SwarmPlaylist.Reader.channelPlaylistId),
       },
       ...channelPlaylists.map(playlist => ({
         source: "playlist" as const,
@@ -90,15 +80,15 @@ const SaveToCard: React.FC<SaveToCardProps> = ({ disabled }) => {
         description: ellipsis(playlist.details.description ?? "", 25),
         identifier: playlist.preview.id,
         videoId: undefined,
-        add: editorStatus === "creating",
+        add: isCreating ? false : isToggled("playlist", playlist.preview.id),
       })),
       ...indexes.map(host => ({
         source: "index" as const,
         name: host.name,
         description: urlHostname(host.url) ?? "",
         identifier: host.url,
-        videoId: undefined,
-        add: editorStatus === "creating",
+        videoId: videoIndexesStatus?.[host.url]?.videoId ?? undefined,
+        add: isCreating ? true : isToggled("index", host.url),
       })),
     ])
     // eslint-disable-next-line react-hooks/exhaustive-deps
