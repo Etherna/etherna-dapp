@@ -51,7 +51,7 @@ const UserCreditBadge: React.FC<UserCreditBadgeProps> = ({ credit }) => {
         {
           "after:absolute after:inset-y-0 after:right-0 after:w-12 after:hover:opacity-0 after:md:content-none":
             expandable,
-          "after:bg-gradient-to-r after:from-gray-100/10 after:via-gray-100/80 after:to-gray-100 ":
+          "after:bg-gradient-to-r after:from-gray-100/10 after:via-gray-100/80 after:to-gray-100":
             expandable,
           "after:dark:from-gray-800/10 after:dark:via-gray-800/80 after:dark:to-gray-800":
             expandable,

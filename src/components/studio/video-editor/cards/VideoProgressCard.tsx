@@ -33,7 +33,7 @@ const VideoProgressCard: React.FC<VideoProgressCardProps> = ({ className, disabl
         <ProgressCard
           title="Encoding"
           indeterminate={encoding.status === "loading"}
-          progress={encoding.status === "error" ? 100 : encoding.progress ?? 0}
+          progress={encoding.status === "error" ? 100 : (encoding.progress ?? 0)}
           status={
             encoding.status === "progress"
               ? "progress-rainbow"
@@ -83,7 +83,7 @@ const VideoProgressCard: React.FC<VideoProgressCardProps> = ({ className, disabl
         </ProgressCard>
         <ProgressCard
           title="Upload"
-          progress={upload.status === "error" && !upload.progress ? 100 : upload.progress ?? 0}
+          progress={upload.status === "error" && !upload.progress ? 100 : (upload.progress ?? 0)}
           status={
             upload.status === "progress"
               ? "progress"

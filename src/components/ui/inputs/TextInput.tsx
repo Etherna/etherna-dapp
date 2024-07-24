@@ -149,7 +149,7 @@ const TextInput: React.FC<TextInputProps> & { CharactersLimit: typeof TextInputC
           className={cn(
             "block w-full appearance-none rounded-lg border px-3 py-3 leading-tight",
             "border-gray-200 bg-gray-400/5 placeholder-gray-400",
-            "dark:border-gray-800  dark:bg-gray-100/5 dark:placeholder-gray-500",
+            "dark:border-gray-800 dark:bg-gray-100/5 dark:placeholder-gray-500",
             "dark:focus:border-green-500 dark:focus:bg-transparent",
             "focus:border-green-500 focus:bg-transparent focus:outline-none focus:ring-0",
             "transition-colors duration-100",

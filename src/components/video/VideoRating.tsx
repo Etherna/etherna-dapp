@@ -120,7 +120,7 @@ const VideoRating: React.FC<VideoRatingProps> = ({ videoId, upvotes, downvotes, 
               "flex appearance-none items-center rounded-sm border-none bg-transparent px-1.5 py-0.5 shadow-none",
               "text-gray-500 dark:text-gray-400",
               "hover:bg-gray-200 dark:hover:bg-gray-800",
-              "active:bg-gray-200/75  dark:active:bg-gray-800/75",
+              "active:bg-gray-200/75 dark:active:bg-gray-800/75",
               {
                 "text-gray-800 dark:text-gray-50": currentVote === vote,
                 "text-gray-400 dark:text-gray-500": currentVote !== vote,

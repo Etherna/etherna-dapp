@@ -110,7 +110,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
           "absolute right-0 z-1 w-72 max-w-[90vw] rounded-md py-1 shadow-lg",
           "origin-top-right ring-1 ring-black ring-opacity-5 focus:outline-none",
           "border border-transparent dark:border-gray-700",
-          "bg-white dark:bg-gray-800 ",
+          "bg-white dark:bg-gray-800",
           "pointer-events-none origin-top transition duration-200 ease-out",
           {
             "-translate-y-4 scale-y-95 opacity-0": !open,

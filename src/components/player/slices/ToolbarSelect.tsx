@@ -55,7 +55,7 @@ const ToolbarSelect: React.FC<ToolbarSelectProps> = ({ children, value, options,
         <div
           className={cn("z-20 pb-10 pt-1 transition-opacity duration-200", {
             "pointer-events-none opacity-0": !showMenu,
-            "pointer-events-auto opacity-100 ": showMenu,
+            "pointer-events-auto opacity-100": showMenu,
           })}
           ref={el => el && el !== menuEl && setMenuEl(el)}
           style={{ ...styles.popper }}
