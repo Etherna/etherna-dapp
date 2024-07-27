@@ -26,6 +26,7 @@ import { cn } from "@/utils/classnames"
 
 export type ModalProps = {
   children?: React.ReactNode
+  className?: string
   show?: boolean
   title?: string
   icon?: React.ReactNode
@@ -43,6 +44,7 @@ export type ModalProps = {
 
 const Modal: React.FC<ModalProps> = ({
   children,
+  className,
   show,
   title,
   icon,
@@ -71,10 +73,10 @@ const Modal: React.FC<ModalProps> = ({
       <Dialog
         as="div"
         static
-        className={cn("fixed inset-0 z-50 overflow-y-auto")}
+        className={cn("fixed inset-0 isolate z-50 overflow-y-auto", className)}
         initialFocus={cancelButtonRef}
         open={show}
-        onClose={() => (autoClose ? handleCancel() : () => {})}
+        onClose={() => {}}
         tabIndex={0}
         data-component="modal"
       >
@@ -89,7 +91,8 @@ const Modal: React.FC<ModalProps> = ({
             leaveTo="opacity-0"
           >
             <Dialog.Overlay
-              className={cn("fixed inset-0 bg-black/30 backdrop-blur-sm transition-opacity")}
+              className={cn("fixed inset-0 z-0 bg-black/30 backdrop-blur-sm transition-opacity")}
+              onClick={() => (autoClose ? handleCancel() : () => {})}
             />
           </Transition.Child>
 
@@ -111,7 +114,7 @@ const Modal: React.FC<ModalProps> = ({
           >
             <div
               className={cn(
-                "relative inline-block w-full overflow-hidden rounded-lg text-left align-middle sm:my-8 sm:max-w-lg",
+                "relative z-10 inline-block w-full rounded-lg text-left align-middle sm:my-8 sm:max-w-lg",
                 "bg-white shadow-xl dark:bg-gray-700",
                 {
                   "sm:max-w-xl": large,

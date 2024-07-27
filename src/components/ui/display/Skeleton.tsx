@@ -20,7 +20,7 @@ import React from "react"
 import { cn } from "@/utils/classnames"
 
 export type SkeletonProps = {
-  children: React.ReactNode
+  children?: React.ReactNode
   className?: string
   show?: boolean
   roundedFull?: boolean

@@ -139,7 +139,7 @@ const TopbarItem: React.FC<TopbarItemProps> = ({
       {prefix && (
         <div
           className={cn({
-            "mr-1": title || children,
+            "mr-2": title || children,
           })}
         >
           {prefix}
@@ -184,7 +184,7 @@ const TopbarPopupItem: React.FC<TopbarPopupItemProps> = props => {
           </TopbarPopupItemToggle>
         }
         placement="bottom"
-        contentClassName="bg-white dark:bg-gray-800"
+        contentClassName="bg-white dark:bg-gray-800 px-2 py-3"
         arrowSize={12}
         adjustSidebar
       >
@@ -251,7 +251,7 @@ const TopbarLogo: React.FC<TopbarLogoProps> = ({ className, logo, logoCompact, f
 }
 
 const TopbarSpace: React.FC<TopbarSpaceProps> = ({ flexible, customWidth }) => {
-  const height = flexible ? "auto" : customWidth ?? "1.5rem"
+  const height = flexible ? "auto" : (customWidth ?? "1.5rem")
   return <div className={cn("topbar-space", { "flex-grow": flexible })} style={{ height }} />
 }
 
@@ -270,7 +270,7 @@ const Topbar: React.FC<TopbarProps> & {
         "floating-sidebar:left-0",
         "bg-white/80 backdrop-blur-xl dark:bg-gray-900/80",
         "border-b border-white/80 dark:border-black/20",
-        "[&~main]:mt-16 [&~main]:lg:mt-20"
+        "[&~main]:min-h-dvh [&~main]:pt-16 [&~main]:lg:pt-20"
       )}
       data-topbar
     >

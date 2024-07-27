@@ -17,11 +17,7 @@
 
 import React, { useEffect, useState } from "react"
 
-import { ChevronDownIcon } from "@heroicons/react/24/solid"
-
-import MarkdownPreview from "@/components/common/MarkdownPreview"
-import { Button } from "@/components/ui/actions"
-import { cn } from "@/utils/classnames"
+import TextCollapser from "@/components/common/TextCollapser"
 
 type VideoDetailsDescriptionProps = {
   description?: string | null
@@ -53,51 +49,13 @@ const VideoDetailsDescription: React.FC<VideoDetailsDescriptionProps> = ({ descr
   }, [descriptionEl])
 
   return (
-    <div className={cn("flex flex-col")}>
-      <div
-        className={cn(
-          "relative mt-4 text-gray-800 dark:text-gray-200",
-          shouldCompress && {
-            "after:absolute after:inset-x-0 after:bottom-0 after:block after:h-20": true,
-            "after:bg-gradient-to-t after:from-gray-50 after:to-gray-50/0": true,
-            "after:dark:from-gray-900 after:dark:to-gray-800/0": true,
-            "after:transition-opacity after:duration-200": true,
-            "max-h-[7.5rem] overflow-hidden transition-[max-height] duration-500 ease-out": true,
-          },
-          {
-            "after:pointer-events-none after:opacity-0": showMore,
-          }
-        )}
-        style={{
-          maxHeight: showMore && shouldCompress ? `${descriptionEl!.scrollHeight}px` : "",
-        }}
-        ref={el => el && setDescriptionEl(el)}
-      >
-        {description ? (
-          <MarkdownPreview value={description} disableHeading={true} forceNewLine />
-        ) : (
-          <p className="text-sm text-gray-500">
-            <em>{"This video doesn't have a description"}</em>
-          </p>
-        )}
-      </div>
-
-      {shouldCompress && (
-        <Button
-          aspect="text"
-          prefix={
-            <ChevronDownIcon
-              width={20}
-              className={cn({
-                "rotate-180": showMore,
-              })}
-              aria-hidden
-            />
-          }
-          onClick={() => setShowMore(!showMore)}
-        >
-          {showMore ? "Show less" : "Show more"}
-        </Button>
+    <div className="mt-4 text-gray-800 dark:text-gray-200">
+      {description ? (
+        <TextCollapser text={description} previewLines={5} />
+      ) : (
+        <p className="text-sm text-gray-500">
+          <em>{"This video doesn't have a description"}</em>
+        </p>
       )}
     </div>
   )

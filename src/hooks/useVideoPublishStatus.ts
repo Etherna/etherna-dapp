@@ -14,19 +14,17 @@
  *  limitations under the License.
  */
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
+import useChannelPlaylists from "./useChannelPlaylists"
 import useMounted from "./useMounted"
 import IndexClient from "@/classes/IndexClient"
-import SwarmPlaylist from "@/classes/SwarmPlaylist"
-import useClientsStore from "@/stores/clients"
+import useExtensionsStore from "@/stores/extensions"
 
 import type { EthAddress } from "@etherna/sdk-js/clients"
 
 export type UseVideoPublishStatusOptions = {
   reference?: string | undefined
-  indexesUrls: string[]
-  playlistIds: string[]
   ownerAddress: EthAddress
 }
 
@@ -36,75 +34,43 @@ type PublishStatus = {
 }
 
 export default function useVideoPublishStatus(opts: UseVideoPublishStatusOptions) {
-  const beeClient = useClientsStore(state => state.beeClient)
   const [isFetchingIndexes, setIsFetchingIndexes] = useState(false)
-  const [isFetchingPlaylists, setIsFetchingPlaylists] = useState(false)
   const [videoIndexesStatus, setVideoIndexesStatus] = useState<Record<string, PublishStatus>>()
   const [videoPlaylistsStatus, setVideoPlaylistsStatus] = useState<Record<string, PublishStatus>>()
   const mounted = useMounted()
-  const currentIndexesUrls = useRef<string[]>([])
-  const currentPlaylistsIds = useRef<string[]>([])
+
+  const indexesUrl = useExtensionsStore(state => state.indexesList.map(index => index.url))
+  const { allPlaylists, isFetchingPlaylists } = useChannelPlaylists({ mode: "all" })
 
   useEffect(() => {
-    const hasChanges =
-      opts.indexesUrls.length > 0 &&
-      opts.indexesUrls?.some(url => currentIndexesUrls.current.indexOf(url) === -1)
-
-    if (opts.reference && hasChanges) {
-      currentIndexesUrls.current = opts.indexesUrls
+    if (opts.reference) {
       fetchIndexesStatus()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts.reference, opts.indexesUrls])
+  }, [mounted, opts.reference])
 
   useEffect(() => {
-    const hasChanges =
-      opts.playlistIds.length > 0 &&
-      opts.playlistIds?.some(id => currentPlaylistsIds.current.indexOf(id) === -1)
-
-    if (opts.reference && hasChanges) {
-      currentPlaylistsIds.current = opts.playlistIds
+    if (opts.reference && !isFetchingPlaylists) {
       fetchPlaylistsStatus()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts.reference, opts.playlistIds])
+  }, [mounted, opts.reference, isFetchingPlaylists])
 
   const fetchPlaylistsStatus = useCallback(async () => {
     if (!opts.reference) return
     if (!mounted.current) return
 
-    setIsFetchingPlaylists(true)
-
     const videoPlaylistsStatus: Record<string, PublishStatus> = {}
 
-    for (const playlistId of opts.playlistIds) {
-      const reader = new SwarmPlaylist.Reader(undefined, {
-        beeClient,
-        playlistId: playlistId,
-        playlistOwner: opts.ownerAddress,
-      })
-
-      const publishStatus: PublishStatus = {
-        status: "unindexed",
-        videoId: undefined,
-      }
-
-      try {
-        const playlist = await reader.download()
-        const status = playlist.videos?.some(vid => vid.reference === opts.reference)
-          ? "public"
-          : "unindexed"
-        publishStatus.status = status
-      } catch (error) {
-        publishStatus.status = "error"
-      }
-
-      videoPlaylistsStatus[playlistId] = publishStatus
+    for (const playlist of allPlaylists) {
+      const status = playlist.details.videos.some(vid => vid.reference === opts.reference)
+        ? ("public" as const)
+        : ("unindexed" as const)
+      videoPlaylistsStatus[playlist.preview.id] = { status, videoId: undefined }
     }
 
-    mounted.current && setVideoPlaylistsStatus(videoPlaylistsStatus)
-    mounted.current && setIsFetchingPlaylists(false)
-  }, [beeClient, mounted, opts.ownerAddress, opts.playlistIds, opts.reference])
+    setVideoPlaylistsStatus(videoPlaylistsStatus)
+  }, [allPlaylists, mounted, opts.reference])
 
   const fetchIndexesStatus = useCallback(async () => {
     if (!opts.reference) return
@@ -114,7 +80,7 @@ export default function useVideoPublishStatus(opts: UseVideoPublishStatusOptions
 
     const videoIndexesStatus: Record<string, PublishStatus> = {}
 
-    for (const indexUrl of opts.indexesUrls) {
+    for (const indexUrl of indexesUrl) {
       const indexClient = new IndexClient(indexUrl)
 
       const publishStatus: PublishStatus = {
@@ -136,7 +102,7 @@ export default function useVideoPublishStatus(opts: UseVideoPublishStatusOptions
 
     mounted.current && setVideoIndexesStatus(videoIndexesStatus)
     mounted.current && setIsFetchingIndexes(false)
-  }, [opts.reference, opts.indexesUrls, mounted])
+  }, [opts.reference, indexesUrl, mounted])
 
   return {
     isFetching: isFetchingIndexes || isFetchingPlaylists,

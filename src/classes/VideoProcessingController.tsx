@@ -320,7 +320,7 @@ export default class VideoProcessingController {
     const { depth, amount } = batch
       ? await this.batchHandler.calcDepthAmountForBatch(batch, minBatchSize - available)
       : await this.batchHandler.calcDepthAmount(minBatchSize)
-    const ok = shouldPay ? (await this.onBatchPayingRequest?.(depth, amount)) ?? true : true
+    const ok = shouldPay ? ((await this.onBatchPayingRequest?.(depth, amount)) ?? true) : true
 
     if (!ok) {
       return this.onBatchError?.(new BatchRejectError())
@@ -340,7 +340,10 @@ export default class VideoProcessingController {
   }
 
   private async createBatch() {
-    if (!this.batchHandler) return this.onBatchError?.(new Error("Batch handler is missing"))
+    if (!this.batchHandler) {
+      this.onBatchError?.(new Error("Batch handler is missing"))
+      return null
+    }
 
     this.onBatchCreating?.()
 
@@ -351,7 +354,8 @@ export default class VideoProcessingController {
     )
 
     if (createError) {
-      return this.onBatchError?.(createError)
+      this.onBatchError?.(createError)
+      return null
     }
 
     const { batchID } = this.batchHandler.parseBatch(batch!)
@@ -364,7 +368,8 @@ export default class VideoProcessingController {
     )
 
     if (batchInfoError) {
-      return this.onBatchError?.(batchInfoError)
+      this.onBatchError?.(batchInfoError)
+      return null
     }
 
     this.batchId = batchID
@@ -373,7 +378,10 @@ export default class VideoProcessingController {
   }
 
   private async increaseBatch(batch: PostageBatch, depth: number, byAmount: string) {
-    if (!this.batchHandler) return this.onBatchError?.(new Error("Batch handler is missing"))
+    if (!this.batchHandler) {
+      this.onBatchError?.(new Error("Batch handler is missing"))
+      return null
+    }
 
     this.onBatchUpdating?.()
 
@@ -382,7 +390,8 @@ export default class VideoProcessingController {
       this.batchHandler.topupBatch(batch.batchID, byAmount)
     )
     if (topupError) {
-      return this.onBatchError?.(topupError)
+      this.onBatchError?.(topupError)
+      return null
     }
     await this.batchHandler.waitBatchPropagation(batch, BatchUpdateType.Topup)
 
@@ -391,7 +400,8 @@ export default class VideoProcessingController {
       this.batchHandler.diluteBatch(batch.batchID, depth)
     )
     if (diluteError) {
-      return this.onBatchError?.(diluteError)
+      this.onBatchError?.(diluteError)
+      return null
     }
     this.onBatchWaiting?.()
     const finalBatch = await this.batchHandler.waitBatchPropagation(batch, BatchUpdateType.Dilute)
@@ -400,7 +410,10 @@ export default class VideoProcessingController {
   }
 
   private async loadBatch(batchId: BatchId) {
-    if (!this.batchHandler) return this.onBatchError?.(new Error("Batch handler is missing"))
+    if (!this.batchHandler) {
+      this.onBatchError?.(new Error("Batch handler is missing"))
+      return null
+    }
 
     this.batchId = batchId
 
@@ -409,7 +422,8 @@ export default class VideoProcessingController {
     const [batch] = await this.batchHandler.loadBatches([batchId])
 
     if (!batch) {
-      return this.onBatchError?.(new BatchNotFoundError())
+      this.onBatchError?.(new BatchNotFoundError())
+      return null
     }
 
     return this.batchHandler.parseBatch(batch)

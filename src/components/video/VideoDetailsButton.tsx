@@ -23,13 +23,15 @@ type VideoDetailsButtonProps = {
   children?: React.ReactNode
   icon?: React.ReactNode
   className?: string
+  disabled?: boolean
   onClick?(): void
 }
 
 const VideoDetailsButton: React.FC<VideoDetailsButtonProps> = ({
   children,
-  icon,
   className,
+  icon,
+  disabled,
   onClick,
 }) => {
   return (
@@ -41,6 +43,7 @@ const VideoDetailsButton: React.FC<VideoDetailsButtonProps> = ({
         className
       )}
       onClick={onClick}
+      disabled={disabled}
     >
       {icon && <span className="mr-2 h-[1.2em]">{icon}</span>}
       {children}

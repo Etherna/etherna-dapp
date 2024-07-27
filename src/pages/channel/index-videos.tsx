@@ -12,19 +12,26 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
-
-import { v4 } from "uuid"
-
-/**
- * Generate a random uuid
  *
- * @returns UUID v4 string
  */
-export default function uuidv4() {
-  return v4()
+
+import React from "react"
+import { useParams } from "react-router-dom"
+
+import SEO from "@/components/layout/SEO"
+import ProfileChannelIndexVideos from "@/components/profile/ProfileChannelIndexVideos"
+
+import type { EnsAddress, EthAddress } from "@etherna/sdk-js/clients"
+
+const ChannelIndexVideosPage = () => {
+  const { id, host } = useParams<{ id: EthAddress | EnsAddress; host: string }>()
+
+  return (
+    <>
+      <SEO title={`Index videos | ${host} | ${id}`} />
+      <ProfileChannelIndexVideos address={id!} host={host!} />
+    </>
+  )
 }
 
-export const uuidv4Short = () => {
-  return uuidv4().split("-")[0]
-}
+export default ChannelIndexVideosPage

@@ -16,23 +16,26 @@
  */
 
 import React from "react"
+import { useAuth } from "react-oidc-context"
 
-import ComingSoon from "@/components/common/ComingSoon"
 import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
 import SEO from "@/components/layout/SEO"
+import UnauthenticatedPlaceholder from "@/components/placeholders/UnauthenticatedPlaceholder"
+import UserPlaylistsView from "@/components/playlist/UserPlaylistsView"
 import { Container } from "@/components/ui/layout"
 
-const HomePage = () => (
-  <AppLayoutWrapper>
-    <SEO title="Playlists" />
-    <Container fluid>
-      <ComingSoon
-        description={`Here you'll be able to create your own playlist.
-        Playlists are collections of videos that you can save as you prefer to keep your favorite
-        videos organized in categories.`}
-      />
-    </Container>
-  </AppLayoutWrapper>
-)
+const PlaylistsPage = () => {
+  const { isAuthenticated, isLoading } = useAuth()
 
-export default HomePage
+  return (
+    <AppLayoutWrapper>
+      <SEO title="Playlists" />
+      <Container fluid>
+        {isAuthenticated && <UserPlaylistsView />}
+        {!isAuthenticated && !isLoading && <UnauthenticatedPlaceholder />}
+      </Container>
+    </AppLayoutWrapper>
+  )
+}
+
+export default PlaylistsPage

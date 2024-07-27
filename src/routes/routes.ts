@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+import type { Reference } from "@etherna/sdk-js/clients"
+
 const routePaths = {
   /** `/` */
   home: `/`,
@@ -27,8 +29,16 @@ const routePaths = {
   saved: `/saved`,
   /** `/playlists` */
   playlists: `/playlists`,
+  /** `/playlist/{rootManifest}` */
+  playlist: (rootManifest: Reference) => `/playlists/${rootManifest}`,
   /** `/channels/{id}` */
   channel: (id: string) => `/channel/${id}`,
+  /** `/channels/{id}/playlist/{channel|rootManifest}` */
+  channelPlaylist: (id: string, playlistId: string) => `/channel/${id}/playlist/${playlistId}`,
+  /** `/channels/{id}/index/{origin}` */
+  channelIndex: (id: string, origin: string) => `/channel/${id}/index/${origin}`,
+  /** `/channels/{id}/about` */
+  channelAbout: (id: string) => `/channel/${id}/about`,
   /** `/watch/{hash}` */
   watch: (hash: string) => `/watch/${hash}`,
   /** `/embed/{hash}` */
@@ -53,6 +63,8 @@ const routePaths = {
   studioVideoNew: `/studio/videos/new`,
   /** `/studio/channel` */
   studioChannel: `/studio/channel`,
+  /** `/studio/playlists` */
+  studioPlaylists: `/studio/playlists`,
   /** `/studio/postages` */
   studioPostages: `/studio/postages`,
 } as const
@@ -67,7 +79,7 @@ const withOrigin = (paths: typeof routePaths): typeof routePaths => {
         [routeName]:
           typeof routePath === "string"
             ? `${window.location.origin}${paths[routeName]}`
-            : (...args: any[]) => `${window.location.origin}${routePath(args as any)}`,
+            : (...args: [any, any]) => `${window.location.origin}${routePath(...args)}`,
       }
     },
     {} as typeof routePaths

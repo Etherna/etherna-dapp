@@ -20,6 +20,7 @@ import React, { useMemo } from "react"
 import VideoOffersBadge from "./VideoOffersBadge"
 import VideoOffersButton from "./VideoOffersButton"
 import VideoRating from "./VideoRating"
+import VideoSaveTo from "./VideoSaveTo"
 import VideoShareButton from "./VideoShareButton"
 import VideoStatusBadge from "./VideoStatusBadge"
 import useVideoOffers from "@/hooks/useVideoOffers"
@@ -98,6 +99,7 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
                 onUnpinResources={unpinResources}
               />
             )}
+            <VideoSaveTo video={video} />
           </div>
         </div>
       </div>

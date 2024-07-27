@@ -35,6 +35,8 @@ export type VideoWithOwner = WithOwner<Video>
 
 export type VideoWithAll = WithIndexes<WithOffersStatus<WithOwner<Video>>>
 
+export type AnyListVideo = VideoWithOwner | VideoWithAll | VideoWithIndexes
+
 export type IndexesStatus = {
   indexesStatus: {
     [url: string]:

@@ -24,7 +24,7 @@
     },
     "typeRoots": ["src/typings"]
   },
-  "include": ["*.ts", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx"],
   "exclude": ["build", "public", "scripts"],
   "references": [
     {

@@ -1,15 +1,16 @@
 import { EthernaPinningHandler, EthernaResourcesHandler } from "@etherna/sdk-js/handlers"
+import { PlaylistBuilder } from "@etherna/sdk-js/swarm"
 import { isEmptyReference } from "@etherna/sdk-js/utils"
 
 import SwarmPlaylist from "./SwarmPlaylist"
-import SwarmUserPlaylists from "./SwarmUserPlaylists"
+import { queryClient } from "@/app/Router"
 import uiStore from "@/stores/ui"
 import { deepCloneObject } from "@/utils/object"
 import { getResponseErrorMessage } from "@/utils/request"
 
 import type BeeClient from "./BeeClient"
 import type { PublishStatus, VideoEditorPublishSource } from "@/stores/video-editor"
-import type { Playlist, UserPlaylists, Video } from "@etherna/sdk-js"
+import type { Playlist, Video } from "@etherna/sdk-js"
 import type { EthernaGatewayClient, EthernaIndexClient, Reference } from "@etherna/sdk-js/clients"
 import type { VideoBuilder } from "@etherna/sdk-js/swarm"
 import type { AxiosError } from "axios"
@@ -18,8 +19,8 @@ type VideoSaverOptions = {
   initialReference: Reference | undefined
   previusReferences: Reference[]
   saveTo: VideoEditorPublishSource[]
-  channelPlaylist: Playlist | undefined
-  userPlaylists: UserPlaylists | undefined
+  channelPlaylist: Playlist | undefined | null
+  channelPlaylists: Playlist[] | undefined
   isWalletConnected: boolean
   beeClient: BeeClient
   gatewayClient: EthernaGatewayClient
@@ -126,11 +127,16 @@ export default class VideoSaver {
 
       if (source.source === "playlist") {
         if (source.add) {
-          const ok = await this.addToPlaylist(initialReference, newVideo, opts.signal)
+          const ok = await this.addToPlaylist(
+            source.identifier,
+            initialReference,
+            newVideo,
+            opts.signal
+          )
           newPublishResults[statusIndex].ok = ok
           newPublishResults[statusIndex].type = "add"
-        } else {
-          const ok = await this.removeFromPlaylist(newReference, opts.signal)
+        } else if (initialReference) {
+          const ok = await this.removeFromPlaylist(source.identifier, initialReference, opts.signal)
           newPublishResults[statusIndex].ok = ok
           newPublishResults[statusIndex].type = "remove"
         }
@@ -148,6 +154,13 @@ export default class VideoSaver {
       }
     }
 
+    // clear caches
+    queryClient.invalidateQueries({
+      predicate(query) {
+        return query.queryKey.some(k => String(k).includes("playlist"))
+      },
+    })
+
     return newPublishResults
   }
 
@@ -160,37 +173,56 @@ export default class VideoSaver {
     return true
   }
 
-  checkChannel() {
-    if (!this.options.channelPlaylist) {
-      uiStore.getState().showError("Channel error", "Channel video list not fetched correctly.")
-      return false
+  findPlaylist(playlistId: string) {
+    const isChannel = playlistId === SwarmPlaylist.Reader.channelPlaylistId
+    const playlist = isChannel
+      ? this.options.channelPlaylist
+      : this.options.channelPlaylists?.find(pl => pl.preview.id === playlistId)
+
+    if (!playlist) {
+      uiStore
+        .getState()
+        .showError("Playlist error", `${isChannel ? "Channel" : "Playlist"} not fetched correctly.`)
+      return null
     }
 
-    return true
+    return playlist
   }
 
-  async addToPlaylist(initialReference: Reference | undefined, video: Video, signal?: AbortSignal) {
-    if (!this.checkChannel()) return false
+  async addToPlaylist(
+    playlistId: string,
+    initialReference: Reference | undefined,
+    video: Video,
+    signal?: AbortSignal
+  ) {
     if (!this.checkAccountability()) return false
 
+    const playlist = this.findPlaylist(playlistId)
+
+    if (!playlist) return false
+
     try {
-      const playlist = deepCloneObject(this.options.channelPlaylist!)
+      const builder = new PlaylistBuilder()
+      builder.initialize(
+        playlist.reference,
+        playlist.preview.owner,
+        playlist.preview,
+        playlist.details
+      )
+      await builder.loadNode({ beeClient: this.options.beeClient })
+
       const playlistHasVideo =
-        playlist.videos.findIndex(video => video.reference === initialReference) >= 0
+        playlist.details.videos.findIndex(video => video.reference === initialReference) >= 0
 
       if (playlistHasVideo) {
         // remove from playlist
-        playlist.videos = playlist.videos.filter(video => video.reference !== initialReference)
+        builder.replaceVideo(initialReference!, video)
+      } else {
+        // add video to playlist
+        builder.addVideos([video])
       }
-      // add video to playlist
-      playlist.videos.push({
-        reference: video.reference,
-        title: video.preview.title,
-        addedAt: Date.now(),
-        publishedAt: undefined,
-      })
 
-      await this.updateChannelAndUser(playlist, signal)
+      await this.updatePlaylist(builder, signal)
 
       return true
     } catch (error) {
@@ -199,14 +231,26 @@ export default class VideoSaver {
     }
   }
 
-  async removeFromPlaylist(reference: Reference | undefined, signal?: AbortSignal) {
-    if (!this.checkChannel()) return false
+  async removeFromPlaylist(playlistId: string, reference: Reference, signal?: AbortSignal) {
     if (!this.checkAccountability()) return false
 
+    const playlist = this.findPlaylist(playlistId)
+
+    if (!playlist) return false
+
     try {
-      const playlist = deepCloneObject(this.options.channelPlaylist!)
-      playlist.videos = playlist.videos.filter(video => video.reference !== reference)
-      await this.updateChannelAndUser(playlist, signal)
+      const builder = new PlaylistBuilder()
+      builder.initialize(
+        playlist.reference,
+        playlist.preview.owner,
+        playlist.preview,
+        playlist.details
+      )
+      await builder.loadNode({ beeClient: this.options.beeClient })
+
+      builder.removeVideos([reference])
+
+      await this.updatePlaylist(builder, signal)
       return true
     } catch (error) {
       console.error(error)
@@ -214,25 +258,14 @@ export default class VideoSaver {
     }
   }
 
-  async updateChannelAndUser(channel: Playlist, signal?: AbortSignal) {
-    // save playlist
-    const playlistWriter = new SwarmPlaylist.Writer(channel, {
+  async updatePlaylist(builder: PlaylistBuilder, signal?: AbortSignal) {
+    const playlistWriter = new SwarmPlaylist.Writer(builder, {
       beeClient: this.options.beeClient,
     })
-    const reference = await playlistWriter.upload({ signal })
-    // save user playlists
-    const userPlaylists: UserPlaylists = {
-      ...(this.options.userPlaylists ?? {
-        channel: null,
-        saved: null,
-        custom: [],
-      }),
-      channel: reference,
-    }
-    const userPlaylistsWriter = new SwarmUserPlaylists.Writer(userPlaylists, {
-      beeClient: this.options.beeClient,
-    })
-    await userPlaylistsWriter.upload({ signal })
+
+    const batchId = this.videoBuilder.detailsMeta!.batchId ?? undefined
+
+    await playlistWriter.upload({ batchId, signal })
   }
 
   async addToIndex(initialVideoId: string | undefined, video: Video, signal?: AbortSignal) {

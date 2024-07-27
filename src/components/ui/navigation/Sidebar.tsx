@@ -325,7 +325,7 @@ const SidebarLogo: React.FC<SidebarLogoProps> = ({ className, logo, logoCompact 
 }
 
 const SidebarSpace: React.FC<SidebarSpaceProps> = ({ flexible, customHeight }) => {
-  const height = flexible ? "auto" : customHeight ?? "2.25rem"
+  const height = flexible ? "auto" : (customHeight ?? "2.25rem")
   return (
     <div
       className={cn({ "flex-grow": flexible })}

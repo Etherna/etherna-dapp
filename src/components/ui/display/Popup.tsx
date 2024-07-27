@@ -67,7 +67,7 @@ const Popup: React.FC<PopupProps> = ({
       { name: "offset", options: { offset: [16, 16] } },
       {
         name: "preventOverflow",
-        options: { altAxis: true, padding: 4 + (adjustSidebar ? sidebarWidth ?? 0 : 0) },
+        options: { altAxis: true, padding: 4 + (adjustSidebar ? (sidebarWidth ?? 0) : 0) },
       },
     ],
   })

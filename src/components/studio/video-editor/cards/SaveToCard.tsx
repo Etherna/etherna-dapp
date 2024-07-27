@@ -17,15 +17,19 @@
 
 import React, { useCallback, useEffect, useMemo } from "react"
 import { urlHostname } from "@etherna/sdk-js/utils"
+import { useQueries } from "@tanstack/react-query"
 
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import FieldDescription from "@/components/common/FieldDescription"
 import { Card, Spinner } from "@/components/ui/display"
 import { SelectionToggle } from "@/components/ui/inputs"
 import useVideoPublishStatus from "@/hooks/useVideoPublishStatus"
+import { useChannelPlaylistsQuery } from "@/queries/channel-playlists-query"
+import { usePlaylistQuery } from "@/queries/playlist-query"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
 import useVideoEditorStore from "@/stores/video-editor"
+import { ellipsis } from "@/utils/string"
 
 import type { VideoEditorPublishSourceType } from "@/stores/video-editor"
 
@@ -42,27 +46,25 @@ const SaveToCard: React.FC<SaveToCardProps> = ({ disabled }) => {
   const updateSaveTo = useVideoEditorStore(state => state.updateSaveTo)
   const indexes = useExtensionsStore(state => state.indexesList)
 
-  const [playlistIds, indexesUrls] = useMemo(() => {
-    return [
-      saveTo.filter(source => source.source === "playlist").map(source => source.identifier),
-      saveTo.filter(source => source.source === "index").map(source => source.identifier),
-    ]
-  }, [saveTo])
   const { isFetching, videoIndexesStatus, videoPlaylistsStatus } = useVideoPublishStatus({
     reference,
-    indexesUrls,
-    playlistIds,
     ownerAddress: address!,
   })
+  const channelPlaylistsQuery = useChannelPlaylistsQuery({ owner: address })
+  const playlistsQueries = useQueries({
+    queries: (channelPlaylistsQuery.data ?? []).map(rootManifest =>
+      usePlaylistQuery.getQueryConfig({ playlistIdentification: { rootManifest } })
+    ),
+  })
 
-  const isToggled = useCallback(
-    (source: VideoEditorPublishSourceType, identifier: string) => {
-      return saveTo.find(s => s.source === source && s.identifier === identifier)!.add
-    },
-    [saveTo]
-  )
+  const isToggled = (source: VideoEditorPublishSourceType, identifier: string) => {
+    return saveTo.find(s => s.source === source && s.identifier === identifier)?.add ?? false
+  }
 
   useEffect(() => {
+    const channelPlaylists = playlistsQueries.map(q => q.data).filter(Boolean)
+    const isCreating = editorStatus === "creating"
+
     updateSaveTo([
       {
         source: "playlist",
@@ -70,19 +72,27 @@ const SaveToCard: React.FC<SaveToCardProps> = ({ disabled }) => {
         description: "Decentralized feed",
         identifier: SwarmPlaylist.Reader.channelPlaylistId,
         videoId: undefined,
-        add: editorStatus === "creating",
+        add: isCreating ? true : isToggled("playlist", SwarmPlaylist.Reader.channelPlaylistId),
       },
+      ...channelPlaylists.map(playlist => ({
+        source: "playlist" as const,
+        name: playlist.preview.name,
+        description: ellipsis(playlist.details.description ?? "", 25),
+        identifier: playlist.preview.id,
+        videoId: undefined,
+        add: isCreating ? false : isToggled("playlist", playlist.preview.id),
+      })),
       ...indexes.map(host => ({
         source: "index" as const,
         name: host.name,
         description: urlHostname(host.url) ?? "",
         identifier: host.url,
-        videoId: undefined,
-        add: editorStatus === "creating",
+        videoId: videoIndexesStatus?.[host.url]?.videoId ?? undefined,
+        add: isCreating ? true : isToggled("index", host.url),
       })),
     ])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [...playlistsQueries.map(q => q.data)])
 
   useEffect(() => {
     if (saveTo.length === 0) return
@@ -93,7 +103,7 @@ const SaveToCard: React.FC<SaveToCardProps> = ({ disabled }) => {
         ...pubSource,
         videoId:
           pubSource.source === "index"
-            ? videoIndexesStatus[pubSource.identifier]?.videoId ?? pubSource.videoId
+            ? (videoIndexesStatus[pubSource.identifier]?.videoId ?? pubSource.videoId)
             : pubSource.videoId,
       }))
     )

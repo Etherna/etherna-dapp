@@ -84,7 +84,7 @@ const VideoProgress: React.FC<VideoProgressProps> = ({ className, focus }) => {
           <div
             className={cn(
               "mt-0.5 h-5 w-5 rounded-full",
-              "-translate-x-1/2 -translate-y-1/2  bg-primary-500",
+              "-translate-x-1/2 -translate-y-1/2 bg-primary-500",
               "opacity-0 transition-opacity duration-200",
               {
                 "opacity-100": hasFocus,

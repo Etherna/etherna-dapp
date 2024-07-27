@@ -1,49 +1,43 @@
 import { useEffect, useRef } from "react"
 import { VideoDeserializer } from "@etherna/sdk-js/serializers"
 import { fetchAddressFromEns, isEnsAddress, isEthAddress } from "@etherna/sdk-js/utils"
-import { useInfiniteQuery } from "@tanstack/react-query"
-import { z } from "zod"
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query"
 
+import { useVideoPreviewQuery } from "./video-preview-query"
 import IndexClient from "@/classes/IndexClient"
-import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmVideo from "@/classes/SwarmVideo"
-import { FundsMissingError } from "@/errors/funds-missing-error"
 import useClientsStore from "@/stores/clients"
-import useUserStore from "@/stores/user"
 
 import type { VideoWithOwner } from "@/types/video"
 import type { Playlist, Profile, ProfileWithEns } from "@etherna/sdk-js"
 import type { EnsAddress, EthAddress, Reference } from "@etherna/sdk-js/clients"
 
+export type ChannelSource = { type: "playlist"; data: Playlist } | { type: "index"; url: string }
+
 interface ChannelVideosQueryOptions {
   address: EthAddress | EnsAddress
   profile: Profile | null
-  source: string
+  source: ChannelSource | undefined
   firstFetchCount?: number
   sequentialFetchCount?: number
 }
 
 export const useChannelVideosQuery = (opts: ChannelVideosQueryOptions) => {
   const beeClient = useClientsStore(state => state.beeClient)
-  const isSignedInGateway = useUserStore(state => state.isSignedInGateway)
-  const credit = useUserStore(state => state.credit)
-  const creditUnlimited = useUserStore(state => state.creditUnlimited)
   const total = useRef(NaN)
-  const channelPlaylist = useRef<Playlist>()
   const ownerAddress = useRef<EthAddress | undefined>(
     isEthAddress(opts.address) ? opts.address : undefined
   )
+  const queryClient = useQueryClient()
 
   const firstFetchCount = opts.firstFetchCount ?? 48
   const sequentialFetchCount = opts.sequentialFetchCount ?? 12
   const firstFetchPagesCount = Math.ceil(firstFetchCount / sequentialFetchCount)
-  const isIndexSource = z.string().url().safeParse(opts.source).success
 
   const maxCursor = isNaN(total.current) ? 0 : Math.ceil(total.current / sequentialFetchCount)
 
   useEffect(() => {
     ownerAddress.current = isEthAddress(opts.address) ? opts.address : undefined
-    channelPlaylist.current = undefined
     total.current = NaN
   }, [opts.address, opts.source])
 
@@ -74,20 +68,25 @@ export const useChannelVideosQuery = (opts: ChannelVideosQueryOptions) => {
         ? Math.ceil(firstFetchPagesCount / sequentialFetchCount) + input.pageParam
         : 0
       const limit = input.pageParam ? sequentialFetchCount : firstFetchCount
-      const profile: ProfileWithEns = {
-        ...opts.profile!,
-        ens: isEnsAddress(opts.address) ? opts.address : null,
-      }
+      const profile = opts.profile
+        ? ({
+            ...opts.profile!,
+            ens: isEnsAddress(opts.address) ? opts.address : null,
+          } satisfies ProfileWithEns)
+        : undefined
 
       const ownerAddress = await getOwnerAddress()
+      const source = opts.source
 
-      if (isIndexSource) {
-        const client = new IndexClient(opts.source)
+      let videos: VideoWithOwner[] = []
+
+      if (source?.type === "index") {
+        const client = new IndexClient(source.url)
         const resp = await client.users.fetchVideos(ownerAddress, page, limit)
 
         total.current = resp.totalElements
 
-        return resp.elements
+        videos = resp.elements
           .filter(vid => vid.lastValidManifest)
           .map(indexVideo => {
             try {
@@ -114,53 +113,22 @@ export const useChannelVideosQuery = (opts: ChannelVideosQueryOptions) => {
             }
           })
           .filter(Boolean) as VideoWithOwner[]
-      } else if (opts.source === "channel") {
-        if (!channelPlaylist.current) {
-          const ownerAddress =
-            opts.profile?.preview.address ??
-            (isEnsAddress(opts.address) ? await fetchAddressFromEns(opts.address) : opts.address)
-
-          if (!ownerAddress) {
-            throw new Error("ENS address not found")
-          }
-
-          const reader = new SwarmPlaylist.Reader(undefined, {
-            beeClient,
-            playlistId: SwarmPlaylist.Reader.channelPlaylistId,
-            playlistOwner: ownerAddress,
-          })
-
-          try {
-            channelPlaylist.current = await reader.download()
-          } catch (error) {
-            console.error(error)
-
-            if (!isSignedInGateway || (!credit && !creditUnlimited)) {
-              throw new FundsMissingError()
-            }
-          }
-        }
-
-        if (!channelPlaylist.current) {
-          total.current = 0
-          return []
-        }
+      } else if (source?.type === "playlist") {
+        total.current = source.data.details.videos.length
 
         const from = input.pageParam
           ? firstFetchPagesCount + (input.pageParam - 1) * sequentialFetchCount
           : 0
         const to = from + limit
-        const vids = channelPlaylist.current.videos?.slice(from, to) ?? []
-        const videos = await Promise.all(
+        const vids = source.data.details.videos.slice(from, to) ?? []
+        const playlistVideos = await Promise.all(
           vids.map(async playlistVid => {
-            const reader = new SwarmVideo.Reader(playlistVid.reference, {
-              beeClient,
-            })
-            const video = await reader.download({ mode: "preview" })
-            return video
+            return await queryClient.fetchQuery(
+              useVideoPreviewQuery.getQueryConfig({ reference: playlistVid.reference })
+            )
           })
         )
-        const videosIndexes = videos.map<VideoWithOwner>((video, i) => ({
+        videos = playlistVideos.map<VideoWithOwner>((video, i) => ({
           reference: video?.reference ?? (vids[i]!.reference as Reference),
           preview: video?.preview ?? {
             reference: "" as Reference,
@@ -176,11 +144,11 @@ export const useChannelVideosQuery = (opts: ChannelVideosQueryOptions) => {
           indexesStatus: {},
           owner: profile,
         }))
-
-        return videosIndexes
       } else {
         throw new Error("Invalid source")
       }
+
+      return { videos, total: total.current }
     },
     initialPageParam: 0,
     getNextPageParam: (_lastPage, _allPages, lastPageParam) => {
@@ -189,6 +157,6 @@ export const useChannelVideosQuery = (opts: ChannelVideosQueryOptions) => {
       }
       return lastPageParam + 1
     },
-    enabled: !!opts.profile,
+    enabled: !!opts.source && opts.firstFetchCount !== 0,
   })
 }

@@ -26,7 +26,7 @@ type VideoDetailsTitleBarProps = {
 
 const VideoDetailsTitleBar: React.FC<VideoDetailsTitleBarProps> = ({ title, children }) => {
   return (
-    <div className="mb-5 flex sm:flex-row">
+    <div className="mb-5 flex items-start">
       <h1
         className={cn(
           "mb-0 max-w-full flex-1 flex-grow overflow-hidden",
@@ -40,7 +40,9 @@ const VideoDetailsTitleBar: React.FC<VideoDetailsTitleBarProps> = ({ title, chil
         {title || "Untitled"}
       </h1>
 
-      <div className="ml-auto flex items-center space-x-8">{children}</div>
+      <div className="flex shrink-0 flex-col gap-x-8 gap-y-3 pt-1 sm:flex-row-reverse sm:items-center">
+        {children}
+      </div>
     </div>
   )
 }

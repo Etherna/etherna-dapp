@@ -51,7 +51,7 @@ const VideoDeleteModal: React.FC<VideoDeleteModalProps> = ({
       .replace("{0}", videos.length > 1 ? `these ${videos.length} videos` : "this video")
       .replace(
         "{1}",
-        `from ${source.type === "channel" ? `public channel` : `index: "${source.indexUrl}"`}`
+        `from ${source.type === "playlist" ? `public channel` : `index: "${source.indexUrl}"`}`
       )
   }, [source, videos.length])
 

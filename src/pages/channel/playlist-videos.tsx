@@ -18,25 +18,20 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 
-import AppLayoutWrapper from "@/components/layout/AppLayoutWrapper"
 import SEO from "@/components/layout/SEO"
-import ProfileView from "@/components/profile/ProfileView"
-import { Container } from "@/components/ui/layout"
+import ProfileChannelPlaylistVideos from "@/components/profile/ProfileChannelPlaylistVideos"
 
 import type { EnsAddress, EthAddress } from "@etherna/sdk-js/clients"
 
-const ChannelPage = () => {
-  const { id } = useParams<{ id: EthAddress | EnsAddress }>()
+const ChannelPlaylistVideosPage = () => {
+  const { id, playlist } = useParams<{ id: EthAddress | EnsAddress; playlist: string }>()
 
   return (
-    <AppLayoutWrapper>
-      <SEO title="Channel" />
-
-      <Container noPaddingX noPaddingY fluid>
-        <ProfileView profileAddress={id!} />
-      </Container>
-    </AppLayoutWrapper>
+    <>
+      <SEO title={`Playlist videos | ${playlist} | ${id}`} />
+      <ProfileChannelPlaylistVideos address={id!} playlistId={playlist!} />
+    </>
   )
 }
 
-export default ChannelPage
+export default ChannelPlaylistVideosPage

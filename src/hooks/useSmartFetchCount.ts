@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react"
 
+interface UseSmartFetchCountOptions {
+  defaultSeed?: number
+  rows?: number
+}
+
 export default function useSmartFetchCount(
   gridRef: React.RefObject<HTMLElement> | undefined,
-  defaulSeed = 24,
-  defaultFetch = 12
+  opts?: UseSmartFetchCountOptions
 ) {
   const [fetchCount, setFetchCount] = useState<number | null>(null)
 
   useEffect(() => {
     if (gridRef && !gridRef.current) return
+
+    const defaultSeed = opts?.defaultSeed ?? 4
+    const rows = opts?.rows
 
     if (gridRef?.current) {
       const gridColsTemplate = getComputedStyle(gridRef.current).gridTemplateColumns
@@ -17,15 +24,15 @@ export default function useSmartFetchCount(
       const colWidth = parseInt(gridCols[0])
       const itemHeight = colWidth * 0.9 // ratio calculated by height/width of preview item with badge
       const pageHeight = window.screen?.availHeight || window.innerHeight
-      const visibileRowsCount = Math.ceil(pageHeight / (itemHeight + parseInt(rowsGap)))
+      const visibileRowsCount = rows ?? Math.ceil(pageHeight / (itemHeight + parseInt(rowsGap)))
 
-      const seedCount = Math.max(visibileRowsCount * gridCols.length, 6)
-      // const loadMoreCount = gridCols.length * 3 // 3 more rows per load
-      setFetchCount(seedCount || defaulSeed)
+      const seedCount = visibileRowsCount * gridCols.length
+
+      setFetchCount(seedCount || defaultSeed)
     } else {
-      setFetchCount(defaulSeed)
+      setFetchCount(defaultSeed)
     }
-  }, [gridRef, defaulSeed])
+  }, [gridRef, opts])
 
   return fetchCount
 }

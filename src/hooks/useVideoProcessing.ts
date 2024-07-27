@@ -15,6 +15,7 @@
  */
 
 import { useEffect, useRef } from "react"
+import { EmptyReference } from "@etherna/sdk-js/utils"
 
 import useBatchPaymentConfirmation from "./useBatchPaymentConfirmation"
 import useErrorMessage from "./useErrorMessage"
@@ -26,10 +27,8 @@ import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useVideoEditorStore from "@/stores/video-editor"
 
-import type { Reference } from "@etherna/sdk-js/clients"
-
 // controller instance should be global to avoid duplicate events
-export let videoProcessingController = new VideoProcessingController("0".repeat(64) as Reference)
+export let videoProcessingController = new VideoProcessingController(EmptyReference)
 
 export default function useVideoProcessing() {
   const abortController = useRef<AbortController>()

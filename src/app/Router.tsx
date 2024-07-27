@@ -21,6 +21,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import AppLayoutRoute from "./route-wrappers/AppLayoutRoute"
 import AuthenticateRoute from "./route-wrappers/AuthenticateRoute"
+import ChannelLayoutRoute from "./route-wrappers/ChannelLayoutRoute"
 import DefaultBatchRoute from "./route-wrappers/DefaultBatchRoute"
 import IdentityRoute from "./route-wrappers/IdentityRoute"
 import SignedInRoute from "./route-wrappers/SignedInRoute"
@@ -34,9 +35,13 @@ const AsyncHome = lazy(() => import("@/pages/home"))
 const AsyncFrames = lazy(() => import("@/pages/frames"))
 const AsyncFollowing = lazy(() => import("@/pages/following"))
 const AsyncPlaylists = lazy(() => import("@/pages/playlists"))
+const AsyncPlaylist = lazy(() => import("@/pages/playlist"))
 const AsyncSaved = lazy(() => import("@/pages/saved"))
-const AsyncChannel = lazy(() => import("@/pages/channel"))
+const AsyncChannel = lazy(() => import("@/pages/channel/channel"))
+const AsyncChannelIndexVideos = lazy(() => import("@/pages/channel/index-videos"))
+const AsyncChannelPlaylistVideos = lazy(() => import("@/pages/channel/playlist-videos"))
 const AsyncChannelEdit = lazy(() => import("@/pages/studio/channel-edit"))
+const AsyncChannelPlaylists = lazy(() => import("@/pages/studio/channel-playlists"))
 const AsyncVideosList = lazy(() => import("@/pages/studio/videos-list"))
 const AsyncVideoEdit = lazy(() => import("@/pages/studio/video-edit"))
 const AsyncWatch = lazy(() => import("@/pages/watch"))
@@ -67,6 +72,11 @@ const Playlists = () => (
     <AsyncPlaylists />
   </Suspense>
 )
+const Playlist = () => (
+  <Suspense fallback={<PageLoader />}>
+    <AsyncPlaylist />
+  </Suspense>
+)
 const Saved = () => (
   <Suspense fallback={<PageLoader />}>
     <AsyncSaved />
@@ -75,6 +85,16 @@ const Saved = () => (
 const Channel = () => (
   <Suspense fallback={<PageLoader />}>
     <AsyncChannel />
+  </Suspense>
+)
+const ChannelIndexVideos = () => (
+  <Suspense fallback={<PageLoader />}>
+    <AsyncChannelIndexVideos />
+  </Suspense>
+)
+const ChannelPlaylistVideos = () => (
+  <Suspense fallback={<PageLoader />}>
+    <AsyncChannelPlaylistVideos />
   </Suspense>
 )
 const Watch = () => (
@@ -90,6 +110,11 @@ const Embed = () => (
 const ChannelEdit = () => (
   <Suspense fallback={<PageLoader />}>
     <AsyncChannelEdit />
+  </Suspense>
+)
+const ChannelPlaylists = () => (
+  <Suspense fallback={<PageLoader />}>
+    <AsyncChannelPlaylists />
   </Suspense>
 )
 const VideosList = () => (
@@ -132,10 +157,12 @@ const Callback = () => {
   return null
 }
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+      retry: false,
+      staleTime: Infinity,
     },
   },
 })
@@ -157,12 +184,18 @@ const Router = () => {
                 <Route path="/frames" element={<Frames />} />
                 <Route path="/following" element={<Following />} />
                 <Route path="/playlists" element={<Playlists />} />
+                <Route path="/playlists/:hash" element={<Playlist />} />
                 <Route path="/saved" element={<Saved />} />
-                <Route path="/channel/:id" element={<Channel />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/shortcuts" element={<Shortcuts />} />
                 <Route path="/postages" element={<Postages />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
+                <Route path="/channel/:id" element={<ChannelLayoutRoute />}>
+                  <Route path="" element={<Channel />} />
+                  <Route path="index/:host" element={<ChannelIndexVideos />} />
+                  <Route path="playlist/:playlist" element={<ChannelPlaylistVideos />} />
+                </Route>
 
                 <Route path="/watch" element={<VideoRoute />}>
                   <Route path=":hash" element={<Watch />} />
@@ -175,6 +208,7 @@ const Router = () => {
                       <Route path="videos" element={<VideosList />} />
                       <Route path="videos/:id" element={<VideoEdit />} />
                       <Route path="channel" element={<ChannelEdit />} />
+                      <Route path="playlists" element={<ChannelPlaylists />} />
                     </Route>
                   </Route>
                 </Route>

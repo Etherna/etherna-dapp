@@ -17,6 +17,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 import { Link, Navigate } from "react-router-dom"
+import { PlaylistReader } from "@etherna/sdk-js/swarm"
 import { urlHostname } from "@etherna/sdk-js/utils"
 
 import {
@@ -40,6 +41,7 @@ import { Button } from "@/components/ui/actions"
 import { Badge, Table, Tooltip } from "@/components/ui/display"
 import { Select } from "@/components/ui/inputs"
 import useBulkMigrations from "@/hooks/useBulkMigrations"
+import useChannelPlaylists from "@/hooks/useChannelPlaylists"
 import useUserVideos from "@/hooks/useUserVideos"
 import useUserVideosPinning from "@/hooks/useUserVideosPinning"
 import useUserVideosVisibility from "@/hooks/useUserVideosVisibility"
@@ -49,36 +51,41 @@ import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
 import { cn } from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
-import { shortenEthAddr } from "@/utils/ethereum"
 import { encodedSvg } from "@/utils/svg"
 
 import type { VideosSource } from "@/hooks/useUserVideos"
 import type { VideoWithIndexes } from "@/types/video"
-import type { Profile } from "@etherna/sdk-js"
 
 const Videos: React.FC = () => {
-  const defaultBatchId = useUserStore(state => state.defaultBatchId)
   const defaultBatch = useUserStore(state => state.defaultBatch)
-  const profileInfo = useUserStore(state => state.profile)
   const address = useUserStore(state => state.address)
   const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
   const gatewayType = useExtensionsStore(state => state.currentGatewayType)
 
   const canEdit = !!defaultBatch
 
-  const sources = useMemo(() => {
-    return [
-      { id: "channel", type: "channel" },
-      { id: indexUrl, type: "index", indexUrl },
-    ] as (VideosSource & { id: string })[]
-  }, [indexUrl])
-  const [source, setSource] = useState(sources[0].id)
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
   const [selectedVideos, setSelectedVideos] = useState<VideoWithIndexes[]>([])
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showMigrationModal, setShowMigrationModal] = useState(false)
 
+  const { channelPlaylists, allPlaylists } = useChannelPlaylists({ mode: "all" })
+
+  const sources = useMemo(() => {
+    return [
+      { id: PlaylistReader.channelPlaylistId, type: "playlist" },
+      ...channelPlaylists.map(
+        playlist =>
+          ({
+            type: "playlist",
+            id: playlist.preview.id,
+          }) satisfies VideosSource
+      ),
+      { id: indexUrl, type: "index", indexUrl },
+    ] satisfies (VideosSource & { id: string })[]
+  }, [indexUrl, channelPlaylists])
+  const [source, setSource] = useState(sources[0].id)
   const currentSource = useMemo(() => {
     return sources.find(s => s.id === source)!
   }, [source, sources])
@@ -122,7 +129,7 @@ const Videos: React.FC = () => {
     migrate,
     reset: resetMigration,
   } = useBulkMigrations(videos, {
-    sourceType: currentSource.type,
+    sourceType: currentSource.type === "playlist" ? "channel" : "index",
     pinningStatus,
     offersStatus: videosOffersStatus,
     visibilityStatus: visibility,
@@ -168,9 +175,28 @@ const Videos: React.FC = () => {
           value={source}
           options={sources.map(source => ({
             value: source.id,
-            label: source.type === "channel" ? "Public channel" : `Index`,
-            description:
-              source.type === "channel" ? "Decentralized feed" : urlHostname(source.indexUrl),
+            label: (() => {
+              switch (source.type) {
+                case "playlist":
+                  const playlist = allPlaylists.find(playlist => playlist.preview.id === source.id)
+                  return source.id === PlaylistReader.channelPlaylistId
+                    ? "Public Channel"
+                    : playlist?.preview.name || "Channel playlist"
+                case "index":
+                  return "Index"
+              }
+            })(),
+            description: (() => {
+              switch (source.type) {
+                case "playlist":
+                  const playlist = allPlaylists.find(playlist => playlist.preview.id === source.id)
+                  return source.id === PlaylistReader.channelPlaylistId
+                    ? "All videos in the public channel"
+                    : playlist?.details.description || "Decentralized feed"
+                case "index":
+                  return urlHostname(source.indexUrl)
+              }
+            })(),
           }))}
           onChange={setSource}
         />

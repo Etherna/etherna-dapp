@@ -3,8 +3,8 @@ import { BatchesHandler } from "@etherna/sdk-js/handlers"
 import { extractVideoReferences, isInvalidReference } from "@etherna/sdk-js/utils"
 
 import useBatchPaymentConfirmation from "./useBatchPaymentConfirmation"
+import useChannelPlaylists from "./useChannelPlaylists"
 import useErrorMessage from "./useErrorMessage"
-import useUserPlaylists from "./useUserPlaylists"
 import useWallet from "./useWallet"
 import SwarmPlaylist from "@/classes/SwarmPlaylist"
 import SwarmVideo from "@/classes/SwarmVideo"
@@ -37,7 +37,6 @@ type BulkMigrationOptions = {
 }
 
 export default function useBulkMigrations(videos: Video[] | undefined, opts: BulkMigrationOptions) {
-  const address = useUserStore(state => state.address)
   const gatewayType = useExtensionsStore(state => state.currentGatewayType)
   const beeClient = useClientsStore(state => state.beeClient)
   const gatewayClient = useClientsStore(state => state.gatewayClient)
@@ -53,18 +52,17 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
   const { showError } = useErrorMessage()
   const { waitPaymentConfirmation } = useBatchPaymentConfirmation()
 
-  const { channelPlaylist, userPlaylists, loadPlaylists, updateVideosInPlaylist } =
-    useUserPlaylists(address!, {
-      fetchChannel: true,
-    })
+  const { channelPlaylist, replaceVideosInPlaylist } = useChannelPlaylists({
+    mode: "channel",
+  })
   const { isLocked } = useWallet()
 
   useEffect(() => {
-    if (channelPlaylist && userPlaylists && shouldContinueMigration.current) {
+    if (channelPlaylist && shouldContinueMigration.current) {
       continueMigration()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [channelPlaylist, userPlaylists])
+  }, [channelPlaylist])
 
   useEffect(() => {
     if (videos) {
@@ -106,7 +104,7 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
       const migrationVideos = videosResults
         .map((result, i) =>
           result.status === "fulfilled"
-            ? result.value ?? { reference: videos[i].reference, preview: null }
+            ? (result.value ?? { reference: videos[i].reference, preview: null })
             : null
         )
         .filter(video => {
@@ -233,7 +231,9 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
         const initialReference = video.reference
         const previusReferences = extractVideoReferences(video)
         const isWalletConnected = !isLocked
-        const isInChannel = channelPlaylist.videos.some(vid => vid.reference === initialReference)
+        const isInChannel = channelPlaylist.details.videos.some(
+          vid => vid.reference === initialReference
+        )
         const visibility = opts.visibilityStatus[initialReference] ?? []
         const saveTo = [
           ...visibility
@@ -257,7 +257,7 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
           indexClient,
           gatewayClient,
           channelPlaylist,
-          userPlaylists: { channel: null, saved: null, custom: [] },
+          channelPlaylists: [],
           initialReference,
           previusReferences,
           isWalletConnected,
@@ -319,7 +319,7 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
 
     await Promise.allSettled(videos.map(vid => migrateVideo(vid, channelPlaylist, signal)))
 
-    await updateVideosInPlaylist(
+    await replaceVideosInPlaylist(
       SwarmPlaylist.Reader.channelPlaylistId,
       deferredChannelUpdates.current
     )
@@ -327,7 +327,7 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
     migrationArgs.current = undefined
 
     setIsMigrating(false)
-  }, [channelPlaylist, migrateVideo, updateVideosInPlaylist])
+  }, [channelPlaylist, migrateVideo, replaceVideosInPlaylist])
 
   const migrate = useCallback(
     async (videos: Video[], signal: AbortSignal) => {
@@ -345,18 +345,15 @@ export default function useBulkMigrations(videos: Video[] | undefined, opts: Bul
 
       shouldContinueMigration.current = true
 
-      if (!channelPlaylist || !userPlaylists) {
-        const { channelPlaylist: channel } = (await loadPlaylists()) ?? {}
-        if (!channel) {
-          setIsMigrating(false)
-          throw new Error("Channel playlist not found. Please try again later")
-        }
+      if (!channelPlaylist) {
+        setIsMigrating(false)
+        throw new Error("Channel playlist not found. Please try again later")
       } else {
         await continueMigration()
         console.info(deferredChannelUpdates.current)
       }
     },
-    [channelPlaylist, userPlaylists, isMigrating, continueMigration, loadPlaylists, showError]
+    [channelPlaylist, isMigrating, continueMigration, showError]
   )
 
   const reset = useCallback(() => {

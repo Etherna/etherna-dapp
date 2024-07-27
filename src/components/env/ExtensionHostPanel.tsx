@@ -174,7 +174,7 @@ const ExtensionHostPanel = <T extends IndexExtensionHost | GatewayExtensionHost>
       const key = param.key as keyof T
       editorTempExtension![key] = editorTempExtension![key]
         ? editorTempExtension![key]
-        : param.default ?? (null as any)
+        : (param.default ?? (null as any))
     }
 
     if (selectedHostIndex === -1) {

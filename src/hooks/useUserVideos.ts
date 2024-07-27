@@ -25,16 +25,17 @@ import SwarmVideo from "@/classes/SwarmVideo"
 import useClientsStore from "@/stores/clients"
 import useExtensionsStore from "@/stores/extensions"
 import useUserStore from "@/stores/user"
-import { wait } from "@/utils/promise"
+import { nullablePromise, wait } from "@/utils/promise"
 import { getResponseErrorMessage } from "@/utils/request"
 
-import type { IndexesStatus, VideoWithIndexes } from "@/types/video"
-import type { Playlist, Profile } from "@etherna/sdk-js"
+import type { VideoWithIndexes } from "@/types/video"
+import type { Playlist } from "@etherna/sdk-js"
 import type { Reference } from "@etherna/sdk-js/clients"
 
 export type VideosSource =
   | {
-      type: "channel"
+      type: "playlist"
+      id: string
     }
   | {
       type: "index"
@@ -47,7 +48,7 @@ export type UseUserVideosOptions = {
   limit?: number
 }
 
-let playlistResolver: (() => Promise<Playlist>) | undefined
+let playlistResolver: (() => Promise<Playlist | null>) | undefined
 
 export default function useUserVideos(opts: UseUserVideosOptions) {
   const beeClient = useClientsStore(state => state.beeClient)
@@ -56,24 +57,25 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
   const [isFetching, setIsFetching] = useState(false)
   const [total, setTotal] = useState(0)
   const [videos, setVideos] = useState<VideoWithIndexes[]>()
-  const channelPlaylist = useRef<Playlist>()
+  const playlist = useRef<Playlist | null>()
   const indexClients = useRef<IndexClient[]>()
   const currentIndexClient = useRef<IndexClient>()
   const { showError } = useErrorMessage()
 
   useEffect(() => {
-    if (opts.fetchSource.type === "channel") {
-      channelPlaylist.current = undefined
+    if (opts.fetchSource.type === "playlist") {
+      playlist.current = undefined
     }
 
-    if (!channelPlaylist.current) {
-      const reader = new SwarmPlaylist.Reader(undefined, {
-        playlistId: SwarmPlaylist.Reader.channelPlaylistId,
-        playlistOwner: address,
-        beeClient,
-      })
+    if (!playlist.current && opts.fetchSource.type === "playlist") {
+      const reader = new SwarmPlaylist.Reader(
+        { id: opts.fetchSource.id, owner: address! },
+        {
+          beeClient,
+        }
+      )
 
-      playlistResolver = () => reader.download()
+      playlistResolver = () => nullablePromise(reader.download({ mode: "full" }))
     }
 
     indexClients.current = opts.sources
@@ -96,12 +98,12 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
   }, [opts.fetchSource.type, address])
 
   const getPlaylist = useCallback(async () => {
-    if (channelPlaylist.current) return channelPlaylist.current
+    if (playlist.current) return playlist.current
 
     try {
-      const playlist = await playlistResolver!()
-      channelPlaylist.current = playlist
-      return playlist
+      const downloadedPlaylist = await playlistResolver!()
+      playlist.current = downloadedPlaylist
+      return downloadedPlaylist
     } catch (error) {
       console.error(error)
       return null
@@ -118,7 +120,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
 
       const from = page * limit
       const to = from + limit
-      const vids = playlist.videos?.slice(from, to) ?? []
+      const vids = playlist.details.videos?.slice(from, to) ?? []
       const videos = await Promise.all(
         vids.map(async playlistVid => {
           const reader = new SwarmVideo.Reader(playlistVid.reference, {
@@ -198,7 +200,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
                 duration: 0,
                 reference: fakeReference,
                 thumbnail: null,
-                createdAt: Date.now(),
+                createdAt: new Date(),
                 updatedAt: null,
               },
               indexesStatus: {
@@ -220,7 +222,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
     async (page: number, limit: number): Promise<VideoWithIndexes[]> => {
       import.meta.env.DEV && wait(1000)
 
-      return opts.fetchSource.type === "channel"
+      return opts.fetchSource.type === "playlist"
         ? await fetchPlaylistVideos(page, limit)
         : await fetchIndexVideos(page, limit)
     },
@@ -251,7 +253,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
 
   const invalidate = useCallback(
     async (page: number) => {
-      channelPlaylist.current = await playlistResolver!()
+      playlist.current = await playlistResolver!()
       await fetchPage(page)
     },
     [fetchPage]

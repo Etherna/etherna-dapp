@@ -16,22 +16,22 @@
  */
 
 import React from "react"
+import { useParams } from "react-router-dom"
 
-import MarkdownPreview from "@/components/common/MarkdownPreview"
+import SEO from "@/components/layout/SEO"
+import ProfileChannel from "@/components/profile/ProfileChannel"
 
-type ProfileAboutProps = {
-  name?: string | null
-  address?: string | null
-  description?: string | null
-}
+import type { EnsAddress, EthAddress } from "@etherna/sdk-js/clients"
 
-const ProfileAbout: React.FC<ProfileAboutProps> = ({ name, address, description }) => {
+const ChannelPage = () => {
+  const { id } = useParams<{ id: EthAddress | EnsAddress }>()
+
   return (
-    <div>
-      {/* <h3>{name || shortenEthAddr(address)}</h3> */}
-      <MarkdownPreview value={description || ""} disableHeading={true} />
-    </div>
+    <>
+      <SEO title={`Channel | ${id}`} />
+      <ProfileChannel address={id!} />
+    </>
   )
 }
 
-export default ProfileAbout
+export default ChannelPage

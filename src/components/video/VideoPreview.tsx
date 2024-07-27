@@ -33,13 +33,12 @@ import { withAccessToken } from "@/utils/jwt"
 import { encodedSvg } from "@/utils/svg"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
-import type { WithIndexes, WithOwner } from "@/types/video"
-import type { Video } from "@etherna/sdk-js"
+import type { AnyListVideo } from "@/types/video"
 
 const thumbnailPreview = encodedSvg(<ThumbPlaceholder />)
 
 type VideoPreviewProps = {
-  video: WithIndexes<WithOwner<Video>>
+  video: AnyListVideo
   videoOffers?: VideoOffersStatus
   hideProfile?: boolean
   decentralizedLink?: boolean
@@ -55,41 +54,44 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
 }) => {
   const indexUrl = useExtensionsStore(state => state.currentIndexUrl)
 
+  const owner = "owner" in video ? video.owner : undefined
+
   const [ownerAddress, profileName] = useMemo(() => {
     const ownerAddress = video.preview.ownerAddress
-    const profileName =
-      video.owner?.preview.name || video.owner?.ens || shortenEthAddr(ownerAddress)
+    const profileName = owner?.preview.name || owner?.ens || shortenEthAddr(ownerAddress)
     return [ownerAddress, profileName]
-  }, [video.preview.ownerAddress, video.owner?.preview.name, video.owner?.ens])
+  }, [video.preview.ownerAddress, owner])
 
   const profileAvatar = useMemo(() => {
-    const profileAvatar = video.owner?.preview.avatar
+    const profileAvatar = owner?.preview.avatar
     return profileAvatar
-  }, [video.owner?.preview.avatar])
+  }, [owner])
 
   const videoThumbnail = useMemo(() => {
     return video.preview.thumbnail
   }, [video.preview.thumbnail])
 
   const isLoadingProfile = useMemo(() => {
-    return !video.owner
-  }, [video.owner])
+    return !owner
+  }, [owner])
 
   const isVideoOffered = useMemo(() => {
     return videoOffers?.offersStatus === "full" || videoOffers?.offersStatus === "sources"
   }, [videoOffers])
 
   const profileLink = useMemo(() => {
-    const channelAddress = video.owner?.ens || ownerAddress
+    const channelAddress = owner?.ens || ownerAddress
     const profileLink = ownerAddress ? routes.channel(channelAddress) : null
     return profileLink
-  }, [ownerAddress, video.owner?.ens])
+  }, [ownerAddress, owner])
 
   const videoLink = useMemo(() => {
     return decentralizedLink
       ? video.reference
-      : video.indexesStatus[indexUrl]?.indexReference ?? video.reference
-  }, [decentralizedLink, indexUrl, video.indexesStatus, video.reference])
+      : "indexesStatus" in video
+        ? (video.indexesStatus?.[indexUrl]?.indexReference ?? video.reference)
+        : video.reference
+  }, [decentralizedLink, indexUrl, video])
 
   return (
     <div
@@ -103,7 +105,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
           "w-full shrink-0 sm:w-1/3": direction === "horizontal",
         })}
         to={routes.watch(videoLink)}
-        state={{ video, ownerProfile: video.owner, videoOffers }}
+        state={{ video, ownerProfile: owner, videoOffers }}
       >
         <div
           className={cn("relative flex w-full overflow-hidden rounded-md before:pb-[56.25%]", {})}
@@ -157,10 +159,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({
             "sm:space-y-2": direction === "horizontal",
           })}
         >
-          <Link
-            to={routes.watch(videoLink)}
-            state={{ video, ownerProfile: video.owner, videoOffers }}
-          >
+          <Link to={routes.watch(videoLink)} state={{ video, ownerProfile: owner, videoOffers }}>
             <h4
               className={cn(
                 "flex-grow text-base font-semibold leading-tight",

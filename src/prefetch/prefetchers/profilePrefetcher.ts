@@ -35,18 +35,19 @@ const fetch = async () => {
     const address = matches[1] as EthAddress
 
     // Fetch channel playlist & profile
-    const playlistReader = new SwarmPlaylist.Reader(undefined, {
-      beeClient,
-      playlistId: SwarmPlaylist.Reader.channelPlaylistId,
-      playlistOwner: address,
-    })
+    const playlistReader = new SwarmPlaylist.Reader(
+      { id: SwarmPlaylist.Reader.channelPlaylistId, owner: address },
+      {
+        beeClient,
+      }
+    )
     const profileReader = new SwarmProfile.Reader(address, { beeClient })
 
     const [profileResult, channelResult] = await Promise.allSettled([
       profileReader.download({
         mode: "full",
       }),
-      playlistReader.download(),
+      playlistReader.download({ mode: "full" }),
     ])
     const profile =
       profileResult.status === "fulfilled"
@@ -66,7 +67,8 @@ const fetch = async () => {
           } as ProfileWithEns)
 
     // Fetch channel playlists videos
-    const playlistVideos = channelResult.status === "fulfilled" ? channelResult.value.videos : []
+    const playlistVideos =
+      channelResult.status === "fulfilled" ? channelResult.value.details.videos : []
     const references = playlistVideos?.slice(0, 10) ?? []
     const videosPromises = await Promise.allSettled(
       references.map(video => {

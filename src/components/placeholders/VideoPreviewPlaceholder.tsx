@@ -37,11 +37,10 @@ const VideoPreviewPlaceholder: React.FC<VideoPreviewPlaceholderProps> = ({
       })}
     >
       <Skeleton
-        className={cn({
+        className={cn("overflow-hidden rounded-md", {
           "w-full": direction === "vertical",
           "w-full sm:w-1/3": direction === "horizontal",
         })}
-        squared
       >
         <div className="w-full pb-[56.25%]" />
       </Skeleton>

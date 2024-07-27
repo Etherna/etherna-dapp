@@ -49,7 +49,7 @@ const Container: React.FC<ContainerProps> = ({
       className={cn(
         "relative flex flex-grow",
         {
-          "max-w-screen-xl": !fluid,
+          "w-full max-w-screen-2xl": !fluid,
           "flex-row flex-wrap": row,
           "flex-col": !row,
           "px-container": !noPaddingX,
