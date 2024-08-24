@@ -173,8 +173,11 @@ const actions = (set: SetFunc, get: GetFunc) => ({
     set(state => {
       const getAdaptiveSourceQuality = (source: VideoSource & { type: "hls" | "dash" }) => {
         if (source.path.match(/audio\.(mpd|m3u8)$/)) return "Audio"
+        if (source.path.match(/audio\/playlist\.(mpd|m3u8)$/)) return "Audio"
         if (source.path.match(/[0-9]{3,}p\.(mpd|m3u8)$/))
           return source.path.match(/([0-9]{3,}p)\.(mpd|m3u8)$/)![1] as VideoQuality
+        if (source.path.match(/[0-9]{3,}p\/playlist\.(mpd|m3u8)$/))
+          return source.path.match(/([0-9]{3,}p)\/playlist\.(mpd|m3u8)$/)![1] as VideoQuality
         return "Auto"
       }
       const preferredQuality = state.currentQuality
