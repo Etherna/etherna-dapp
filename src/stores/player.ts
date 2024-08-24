@@ -38,13 +38,17 @@ export type PlayerState = {
 export const QUALITY_STORAGE_KEY = "etherna:player-quality"
 export const PLAYER_INITIAL_QUALITY = "360p"
 
+const AUDIO_REGEX = /audio(\/playlist)?\.(mpd|m3u8)$/
+const VIDEO_REGEX = /(?<q>([0-9]{3,}p)|([0-9]{3,}p))(\/playlist)?\.(mpd|m3u8)$/
+const MANFIEST_REGEX = /(manifest|master)\.(mpd|m3u8)$/
+
 const getCurrentSource = (sources: VideoSource[], quality: PlayerQuality) => {
   if (quality === "Audio") {
-    return sources.find(s => s.type !== "mp4" && s.path.match(/audio\.(mpd|m3u8)$/))
+    return sources.find(s => s.type !== "mp4" && s.path.match(AUDIO_REGEX))
   }
   const isAdaptive = sources.some(s => s.type !== "mp4")
   if (isAdaptive) {
-    return sources.find(s => s.type !== "mp4" && s.path.match(/manifest\.(mpd|m3u8)$/))
+    return sources.find(s => s.type !== "mp4" && s.path.match(MANFIEST_REGEX))
   }
   const mp4Source =
     sources.find(s => s.type === "mp4" && s.quality === quality) ??
@@ -172,12 +176,9 @@ const actions = (set: SetFunc, get: GetFunc) => ({
   setSources(hash: string, sources: VideoSource[]) {
     set(state => {
       const getAdaptiveSourceQuality = (source: VideoSource & { type: "hls" | "dash" }) => {
-        if (source.path.match(/audio\.(mpd|m3u8)$/)) return "Audio"
-        if (source.path.match(/audio\/playlist\.(mpd|m3u8)$/)) return "Audio"
-        if (source.path.match(/[0-9]{3,}p\.(mpd|m3u8)$/))
-          return source.path.match(/([0-9]{3,}p)\.(mpd|m3u8)$/)![1] as VideoQuality
-        if (source.path.match(/[0-9]{3,}p\/playlist\.(mpd|m3u8)$/))
-          return source.path.match(/([0-9]{3,}p)\/playlist\.(mpd|m3u8)$/)![1] as VideoQuality
+        if (source.path.match(AUDIO_REGEX)) return "Audio"
+        if (source.path.match(VIDEO_REGEX))
+          return source.path.match(VIDEO_REGEX)!.groups!.q as VideoQuality
         return "Auto"
       }
       const preferredQuality = state.currentQuality
