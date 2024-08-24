@@ -1,5 +1,12 @@
 import React, { forwardRef, useCallback, useMemo, useRef, useState } from "react"
-import { isHLSProvider, MediaPlayer, MediaProvider } from "@vidstack/react"
+import {
+  Caption,
+  Captions,
+  isHLSProvider,
+  MediaPlayer,
+  MediaProvider,
+  Track,
+} from "@vidstack/react"
 
 import BufferingIndicator from "./slices/BufferingIndicator"
 import ClickToPlay from "./slices/ClickToPlay"
@@ -15,6 +22,7 @@ import { isTouchDevice } from "@/utils/browser"
 import { withoutAccessToken } from "@/utils/jwt"
 
 import type { Profile, VideoSource } from "@etherna/sdk-js"
+import type { VideoDetails } from "@etherna/sdk-js/schemas/video"
 import type { MediaErrorDetail, MediaErrorEvent, MediaPlayerInstance } from "@vidstack/react"
 
 type PlayerVideoProps = {
@@ -27,6 +35,7 @@ type PlayerVideoProps = {
   embed?: boolean
   owner: Profile | undefined | null
   aspectRatio?: number | null
+  captions?: VideoDetails["captions"]
   xhrSetup?(xhr: XMLHttpRequest): void
   onPlaybackError?(err: MediaErrorDetail, event: MediaErrorEvent): void
 }
@@ -46,6 +55,7 @@ const PlayerVideo = forwardRef<MediaPlayerInstance, PlayerVideoProps>(
       owner,
       embed,
       aspectRatio,
+      captions,
       xhrSetup,
       onPlaybackError,
     },
@@ -103,7 +113,17 @@ const PlayerVideo = forwardRef<MediaPlayerInstance, PlayerVideoProps>(
         crossorigin="anonymous"
         preload="none"
       >
-        <MediaProvider className="aspect-[var(--media-aspect-ratio)] [&_video]:max-h-[80vh] [&_video]:w-full" />
+        <MediaProvider className="aspect-[var(--media-aspect-ratio)] [&_video]:max-h-[80vh] [&_video]:w-full">
+          {captions?.map((caption, i) => (
+            <Track
+              key={i.toString()}
+              src="/subs/english.vtt"
+              kind="subtitles"
+              label={caption.label}
+              lang={caption.lang}
+            />
+          ))}
+        </MediaProvider>
 
         {error && <ErrorBanner />}
 
@@ -132,6 +152,8 @@ const PlayerVideo = forwardRef<MediaPlayerInstance, PlayerVideoProps>(
             )}
 
             <BufferingIndicator />
+
+            <Captions />
           </>
         )}
       </MediaPlayer>
