@@ -64,13 +64,14 @@ const UserPlaylistsView: React.FC<UserPlaylistsViewProps> = () => {
         ref={gridRef}
         className="grid w-full grid-flow-row-dense grid-cols-1 gap-4 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))]"
       >
-        {playlistsQuery.data?.map(playlist => (
-          <PlaylistPreview
-            identification={{ rootManifest: playlist }}
-            owner={owner}
-            key={playlist}
-          />
-        ))}
+        {playlistsQuery.isSuccess &&
+          playlistsQuery.data.map(playlist => (
+            <PlaylistPreview
+              identification={{ rootManifest: playlist }}
+              owner={owner}
+              key={playlist}
+            />
+          ))}
 
         {playlistsQuery.isLoading && (
           <>

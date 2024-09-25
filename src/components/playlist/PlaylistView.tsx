@@ -85,7 +85,7 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
     if (playlistQuery.isLoading) return "loading"
     if (userPlaylistsQuery.isLoading) return "loading"
 
-    if (playlistQuery.isSuccess && userPlaylistsQuery.isSuccess && rootManifest) {
+    if (userPlaylistsQuery.isSuccess && rootManifest) {
       if (userPlaylistsQuery.data?.includes(rootManifest)) {
         return "included"
       } else {
@@ -194,10 +194,6 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
 
     if (!proceed) return
 
-    if (!playlistQuery.data) {
-      showError("Playlist is loading. Try again in a few seconds.")
-      return
-    }
     if (playlistQuery.isLoading) {
       showError("Library is loading. Try again in a few seconds.")
       return
@@ -263,146 +259,143 @@ const PlaylistView: React.FC<PlaylistViewProps> = ({ identification }) => {
               </div>
             )}
           </div>
-          {!playlistQuery.isError && (
-            <div className="flex w-full lg:flex-1 lg:flex-col">
-              <div className="flex w-full flex-1 flex-col">
-                <div className="">
-                  {playlistQuery.isLoading ? (
-                    <Skeleton className="block h-4 w-full" />
-                  ) : (
-                    <p className="text-sm/tight text-gray-600 dark:text-gray-400">
-                      {playlistQuery.data?.preview.type || "public"}
-                    </p>
-                  )}
-                </div>
 
-                {(!isReservedPlaylist ||
-                  ("owner" in identification && identification.owner !== address)) && (
-                  <div className="mt-3 md:mt-6">
-                    <Link to={routes.channel(playlistQuery.data?.preview.owner ?? "0x0")}>
-                      <div className="flex items-center space-x-2">
-                        <div className="size-6">
-                          {profilePreviewQuery.isLoading ? (
-                            <Skeleton className="block size-6" roundedFull />
-                          ) : (
-                            <Avatar
-                              size={24}
-                              image={profilePreviewQuery.data?.avatar}
-                              address={playlistQuery.data?.preview.owner}
-                            />
-                          )}
-                        </div>
+          <div className="flex w-full lg:flex-1 lg:flex-col">
+            <div className="flex w-full flex-1 flex-col">
+              <div className="">
+                {playlistQuery.isLoading ? (
+                  <Skeleton className="block h-4 w-full" />
+                ) : (
+                  <p className="text-sm/tight text-gray-600 dark:text-gray-400">
+                    {playlistQuery.data?.preview.type || "public"}
+                  </p>
+                )}
+              </div>
+
+              {(!isReservedPlaylist ||
+                ("owner" in identification && identification.owner !== address)) && (
+                <div className="mt-3 md:mt-6">
+                  <Link to={routes.channel(playlistQuery.data?.preview.owner ?? "0x0")}>
+                    <div className="flex items-center space-x-2">
+                      <div className="size-6">
                         {profilePreviewQuery.isLoading ? (
-                          <Skeleton className="block h-4 w-20" />
+                          <Skeleton className="block size-6" roundedFull />
                         ) : (
-                          <h5
-                            className={cn(
-                              "max-w-full flex-grow overflow-hidden text-ellipsis text-sm font-semibold",
-                              "text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300",
-                              "transition-colors duration-200"
-                            )}
-                          >
-                            {profilePreviewQuery.data?.name ??
-                              shortenEthAddr(playlistQuery.data?.preview.owner)}
-                          </h5>
+                          <Avatar
+                            size={24}
+                            image={profilePreviewQuery.data?.avatar}
+                            address={playlistQuery.data?.preview.owner}
+                          />
                         )}
                       </div>
-                    </Link>
-                  </div>
-                )}
-
-                <div className="mt-4 lg:my-8">
-                  {playlistQuery.isLoading ? (
-                    <Skeleton className="block h-4 w-full" />
-                  ) : (
-                    <p className="text-sm/tight text-gray-700 dark:text-gray-300 md:text-base/tight">
-                      {(() => {
-                        if (isReservedPlaylist) {
-                          switch (identification.id) {
-                            case SwarmPlaylist.Reader.channelPlaylistId:
-                              return "All the videos from the channel"
-                            case SwarmPlaylist.Reader.savedPlaylistId:
-                              return "All the videos that you saved to watch later"
-                          }
-                        }
-                        return playlistQuery.data?.details.description || "description"
-                      })()}
-                    </p>
-                  )}
+                      {profilePreviewQuery.isLoading ? (
+                        <Skeleton className="block h-4 w-20" />
+                      ) : (
+                        <h5
+                          className={cn(
+                            "max-w-full flex-grow overflow-hidden text-ellipsis text-sm font-semibold",
+                            "text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300",
+                            "transition-colors duration-200"
+                          )}
+                        >
+                          {profilePreviewQuery.data?.name ??
+                            shortenEthAddr(playlistQuery.data?.preview.owner)}
+                        </h5>
+                      )}
+                    </div>
+                  </Link>
                 </div>
-              </div>
+              )}
 
-              <div className="mt-auto shrink-0 lg:w-full">
-                {(() => {
-                  if (isReservedPlaylist) {
-                    if (identification.id === SwarmPlaylist.Reader.savedPlaylistId) {
-                      return (
-                        <Button className="lg:w-full" onClick={() => setShowEditModal(true)}>
-                          Edit
-                        </Button>
-                      )
-                    }
-
-                    return null
-                  }
-
-                  switch (playlistUserLibraryStatus) {
-                    case "loading":
-                      return <Skeleton className="block h-10 w-full" />
-                    case "included":
-                      return (
-                        <Dropdown className="lg:w-full">
-                          <Dropdown.Toggle className="lg:w-full">
-                            <Button className="lg:w-full" color="muted">
-                              <span>{isPlaylistOwner ? "In library" : "Subscribed"}</span>
-                              <ChevronDownIcon className="ml-2" width={16} />
-                            </Button>
-                          </Dropdown.Toggle>
-                          <Portal>
-                            <Dropdown.Menu>
-                              {isPlaylistOwner && (
-                                <>
-                                  <Dropdown.Item action={() => setShowEditModal(true)}>
-                                    Edit
-                                  </Dropdown.Item>
-                                  <Dropdown.Separator />
-                                </>
-                              )}
-                              <Dropdown.Item action={() => removeFromLibrary()}>
-                                Remove from library
-                              </Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Portal>
-                        </Dropdown>
-                      )
-                    case "not-included":
-                      return (
-                        <Dropdown className="lg:w-full">
-                          <Dropdown.Toggle className="lg:w-full">
-                            <Button className="lg:w-full">
-                              Add to library
-                              <ChevronDownIcon className="ml-2" width={16} />
-                            </Button>
-                          </Dropdown.Toggle>
-                          <Portal>
-                            <Dropdown.Menu>
-                              <Dropdown.Item action={() => addToLibrary("add")}>
-                                Subscribe
-                              </Dropdown.Item>
-                              <Dropdown.Item action={() => addToLibrary("copy")}>
-                                Copy
-                              </Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Portal>
-                        </Dropdown>
-                      )
-                    case "error":
-                      return <Alert color="error">Cannot retrieve library status</Alert>
-                  }
-                })()}
+              <div className="mt-4 lg:my-8">
+                {playlistQuery.isLoading ? (
+                  <Skeleton className="block h-4 w-full" />
+                ) : (
+                  <p className="text-sm/tight text-gray-700 dark:text-gray-300 md:text-base/tight">
+                    {(() => {
+                      if (isReservedPlaylist) {
+                        switch (identification.id) {
+                          case SwarmPlaylist.Reader.channelPlaylistId:
+                            return "All the videos from the channel"
+                          case SwarmPlaylist.Reader.savedPlaylistId:
+                            return "All the videos that you saved to watch later"
+                        }
+                      }
+                      return playlistQuery.data?.details.description || ""
+                    })()}
+                  </p>
+                )}
               </div>
             </div>
-          )}
+
+            <div className="mt-auto shrink-0 lg:w-full">
+              {(() => {
+                if (isReservedPlaylist) {
+                  if (identification.id === SwarmPlaylist.Reader.savedPlaylistId) {
+                    return (
+                      <Button className="lg:w-full" onClick={() => setShowEditModal(true)}>
+                        Edit
+                      </Button>
+                    )
+                  }
+
+                  return null
+                }
+
+                switch (playlistUserLibraryStatus) {
+                  case "loading":
+                    return <Skeleton className="block h-10 w-full" />
+                  case "included":
+                    return (
+                      <Dropdown className="lg:w-full">
+                        <Dropdown.Toggle className="lg:w-full">
+                          <Button className="lg:w-full" color="muted">
+                            <span>{isPlaylistOwner ? "In library" : "Subscribed"}</span>
+                            <ChevronDownIcon className="ml-2" width={16} />
+                          </Button>
+                        </Dropdown.Toggle>
+                        <Portal>
+                          <Dropdown.Menu>
+                            {isPlaylistOwner && (
+                              <>
+                                <Dropdown.Item action={() => setShowEditModal(true)}>
+                                  Edit
+                                </Dropdown.Item>
+                                <Dropdown.Separator />
+                              </>
+                            )}
+                            <Dropdown.Item action={() => removeFromLibrary()}>
+                              Remove from library
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Portal>
+                      </Dropdown>
+                    )
+                  case "not-included":
+                    return (
+                      <Dropdown className="lg:w-full">
+                        <Dropdown.Toggle className="lg:w-full">
+                          <Button className="lg:w-full">
+                            Add to library
+                            <ChevronDownIcon className="ml-2" width={16} />
+                          </Button>
+                        </Dropdown.Toggle>
+                        <Portal>
+                          <Dropdown.Menu>
+                            <Dropdown.Item action={() => addToLibrary("add")}>
+                              Subscribe
+                            </Dropdown.Item>
+                            <Dropdown.Item action={() => addToLibrary("copy")}>Copy</Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Portal>
+                      </Dropdown>
+                    )
+                  case "error":
+                    return <Alert color="error">Cannot retrieve library status</Alert>
+                }
+              })()}
+            </div>
+          </div>
         </div>
       </aside>
 
