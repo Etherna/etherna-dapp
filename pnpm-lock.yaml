@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@etherna/sdk-js':
-        specifier: 1.4.3
-        version: 1.4.3(axios@1.7.2)(immer@10.1.1)(zustand@4.5.4(@types/react@18.3.3)(immer@10.1.1)(react@18.3.1))
+        specifier: 1.5.0
+        version: 1.5.0(axios@1.7.2)(immer@10.1.1)(zustand@4.5.4(@types/react@18.3.3)(immer@10.1.1)(react@18.3.1))
       '@ffmpeg/ffmpeg':
         specifier: 0.11.6
         version: 0.11.6
@@ -618,8 +618,8 @@ packages:
     resolution: {integrity: sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@etherna/sdk-js@1.4.3':
-    resolution: {integrity: sha512-atwgXiysgNYm9MbL2tohHzAYJZmHIh12A9ZSQnwn+PPvmtw3F+sMFtcku+zmW9xohNN/Ntjb8IvxiAxbdbeezA==}
+  '@etherna/sdk-js@1.5.0':
+    resolution: {integrity: sha512-47A6HPRa06vPNjFFI+MMwq+FWHHX9mLBvd6xL9Z0L+mGSgC9koNOUYbhsDaXoZ3aEZ/s8qkLY3unZzgGYDlcRw==}
     peerDependencies:
       axios: '>=1.7'
       immer: '>=10.0'
@@ -3620,7 +3620,7 @@ snapshots:
 
   '@eslint/js@8.57.0': {}
 
-  '@etherna/sdk-js@1.4.3(axios@1.7.2)(immer@10.1.1)(zustand@4.5.4(@types/react@18.3.3)(immer@10.1.1)(react@18.3.1))':
+  '@etherna/sdk-js@1.5.0(axios@1.7.2)(immer@10.1.1)(zustand@4.5.4(@types/react@18.3.3)(immer@10.1.1)(react@18.3.1))':
     dependencies:
       axios: 1.7.2
       immer: 10.1.1
