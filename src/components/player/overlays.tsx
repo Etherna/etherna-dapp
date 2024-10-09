@@ -4,6 +4,7 @@ import { Time, useMediaState, Poster as VidstackPoster } from "@vidstack/react"
 import { CircleDollarSign, PlayIcon } from "lucide-react"
 
 import Logo from "../common/Logo"
+import { Spinner } from "../ui/display"
 import { ChangeQualityRadio } from "./menus"
 import routes from "@/routes"
 import { usePlayerStore } from "@/stores/player"
@@ -140,6 +141,34 @@ export function WatchOnEtherna({ hash }: { hash: string }) {
         <span>Watch on</span>
         <Logo className="h-5 grayscale" forceWhite />
       </a>
+    </div>
+  )
+}
+
+export function Loading() {
+  const error = useMediaState("error")
+  const waiting = useMediaState("waiting")
+  const seeking = useMediaState("seeking")
+
+  const isLoading = !error && (waiting || seeking)
+
+  if (!isLoading) {
+    return null
+  }
+
+  return <Spinner className="absolute-center" size={32} />
+}
+
+export function Error() {
+  const error = useMediaState("error")
+
+  if (!error) {
+    return null
+  }
+
+  return (
+    <div className="absolute inset-0 flex flex-col bg-red-500/80 backdrop-blur">
+      <p>Error</p>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import React from "react"
 import * as Tooltip from "@radix-ui/react-tooltip"
-import { Captions, Controls } from "@vidstack/react"
+import { Captions, Controls, useMediaState } from "@vidstack/react"
 
 import * as Buttons from "../buttons"
 import * as Menus from "../menus"
@@ -15,6 +15,14 @@ export interface AudioLayoutProps {
 const popupOffset = 12
 
 export function AudioLayout({ thumbnails }: AudioLayoutProps) {
+  const error = useMediaState("error")
+  const canPlay = useMediaState("canPlay")
+  const canShowLayout = !error && canPlay
+
+  if (!canShowLayout) {
+    return null
+  }
+
   return (
     <>
       <Captions

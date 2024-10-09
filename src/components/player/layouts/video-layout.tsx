@@ -19,7 +19,14 @@ export interface VideoLayoutProps {
 }
 
 export function VideoLayout({ thumbnails }: VideoLayoutProps) {
+  const error = useMediaState("error")
   const started = useMediaState("started")
+  const canPlay = useMediaState("canPlay")
+  const canShowLayout = !error && canPlay
+
+  if (!canShowLayout) {
+    return null
+  }
 
   return (
     <>

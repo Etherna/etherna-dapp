@@ -25,7 +25,7 @@ module.exports = {
     semi: ["error", "never"],
     "no-console":
       process.env.NODE_ENV === "production"
-        ? ["error", { allow: ["info", "warn", "error", "debug", "table"] }]
+        ? ["error", { allow: ["info", "warn", "error", "debug", "table", "group", "groupEnd"] }]
         : "off",
     "react/self-closing-comp": ["warn", { component: true, html: true }],
     "react/react-in-jsx-scope": "off",
