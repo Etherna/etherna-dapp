@@ -15,13 +15,13 @@
  *
  */
 
-import React, { useCallback, useEffect, useMemo } from "react"
+import React, { useCallback, useEffect } from "react"
 import removeMarkdown from "remove-markdown"
 
 import VideoJsonLd from "./VideoJsonLd"
 import NotFound from "@/components/common/NotFound"
 import SEO from "@/components/layout/SEO"
-import Player from "@/components/player/Player"
+import { Player } from "@/components/player/player"
 import { Container } from "@/components/ui/layout"
 import VideoDetails from "@/components/video/VideoDetails"
 import useErrorMessage from "@/hooks/useErrorMessage"
@@ -29,10 +29,10 @@ import useResetRouteState from "@/hooks/useResetRouteState"
 import useSwarmProfile from "@/hooks/useSwarmProfile"
 import useSwarmVideo from "@/hooks/useSwarmVideo"
 import routes from "@/routes"
-import { withAccessToken } from "@/utils/jwt"
+import useSessionStore from "@/stores/session"
 
 import type { VideoOffersStatus } from "@/hooks/useVideoOffers"
-import type { AnyListVideo } from "@/types/video"
+import type { AnyListVideo, VideoWithOwner } from "@/types/video"
 import type { ProfileWithEns } from "@etherna/sdk-js"
 import type { EthAddress } from "@etherna/sdk-js/clients"
 
@@ -48,6 +48,7 @@ type VideoViewProps = {
 
 const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) => {
   useResetRouteState()
+  const bytePrice = useSessionStore(state => state.bytesPrice)
   const { showError } = useErrorMessage()
 
   const { video, notFound, loadVideo } = useSwarmVideo({
@@ -60,24 +61,6 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
     address: video?.preview.ownerAddress as EthAddress,
     prefetchedProfile: routeState?.ownerProfile,
   })
-
-  const sources = useMemo(() => {
-    if (!video?.details) {
-      return []
-    }
-    return video.details.sources.map(s => ({
-      ...s,
-      url: withAccessToken(s.url),
-    }))
-  }, [video])
-
-  const posterUrl = useMemo(() => {
-    const posterUrl = video?.preview.thumbnail?.sources.sort((a, b) => b.width - a.width)?.[0]?.url
-    if (posterUrl) {
-      return withAccessToken(posterUrl)
-    }
-    return undefined
-  }, [video])
 
   useEffect(() => {
     if (!video?.details) {
@@ -100,6 +83,13 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
   if (notFound) {
     return <NotFound message="This video cannot be found" />
   }
+
+  const videoWithOwner = {
+    reference: video?.reference,
+    preview: video?.preview,
+    details: video?.details,
+    owner: profile ?? undefined,
+  } satisfies Partial<VideoWithOwner>
 
   return (
     <>
@@ -127,28 +117,18 @@ const VideoView: React.FC<VideoViewProps> = ({ reference, routeState, embed }) =
       </SEO>
 
       {embed ? (
-        <Player
-          hash={reference}
-          title={video?.preview.title || reference}
-          owner={profile}
-          sources={sources}
-          posterUrl={posterUrl}
-          posterBlurDataURL={video?.preview.thumbnail?.blurredBase64}
-          embed
-        />
+        <Player videoManifest={videoWithOwner} resourceId={reference} bytePrice={bytePrice} embed />
       ) : (
         <div className="mb-16">
           <Container fluid align="center" noPaddingX noPaddingY>
-            <div className="w-full lg:w-3/4">
-              <Player
-                hash={reference}
-                title={video?.preview.title || reference}
-                owner={profile}
-                sources={sources}
-                posterUrl={posterUrl}
-                posterBlurDataURL={video?.preview.thumbnail?.blurredBase64}
-                aspectRatio={video?.details?.aspectRatio}
-              />
+            <div className="w-full space-y-6 lg:w-3/4">
+              <div className="-mx-4 md:mx-0">
+                <Player
+                  videoManifest={videoWithOwner}
+                  resourceId={reference}
+                  bytePrice={bytePrice}
+                />
+              </div>
 
               {video && (
                 <VideoDetails video={video} owner={profile} videoOffers={routeState?.videoOffers} />

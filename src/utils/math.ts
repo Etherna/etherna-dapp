@@ -41,3 +41,25 @@ export const getDecimalParts = (num: number, fractionDigits?: number) => {
     sign,
   }
 }
+
+/**
+ * Round number to an optimal number of digits. If the result number is 0 keep rounding until it reaches the `maxFractionDigits`
+ *
+ * @param num Number to round
+ * @param optimalFractionDigits Optimal number of digits
+ * @param maxFractionDigits Maximum number of digits
+ */
+export const autoRoundNumber = (
+  num: number,
+  optimalFractionDigits: number,
+  maxFractionDigits = 8
+) => {
+  for (let digit = optimalFractionDigits; digit <= maxFractionDigits; digit++) {
+    const rounded = parseFloat(num.toFixed(digit))
+    if (rounded !== 0) {
+      return rounded
+    }
+  }
+
+  return 0
+}

@@ -28,9 +28,10 @@ export default function useVideoTracking(mediaEl: MediaPlayerInstance | null | u
     if (!window.Matomo?.MediaAnalytics) return
     if (!!tracker) return
 
-    const MA = window.Matomo!.MediaAnalytics
     // find the actual resource / URL of the video
-    const resource = mediaEl.el?.dataset.src || mediaEl.state.source.src.toString()
+    const resource = mediaEl.el?.dataset.matomoResource ?? "undefined"
+
+    const MA = window.Matomo!.MediaAnalytics
     // update tracker
     const videoTracker = new MA.MediaTracker("EthernaPlayer", MA.mediaType.VIDEO, resource)
     setTracker(videoTracker)
