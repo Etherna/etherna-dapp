@@ -34,7 +34,7 @@ export default function useShortcuts(keymap: Shortcuts, handler: (action: string
       const target: HTMLElement =
         (document.activeElement as HTMLElement) ?? (document.body as HTMLElement)
 
-      if (target.nodeName === "INPUT" || target.nodeName === "TEXTAREA") {
+      if (["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(target.nodeName)) {
         return
       }
       if (target.dataset.slateEditor === "true") {

@@ -152,6 +152,8 @@ export default {
     require("@tailwindcss/forms"),
     require("tailwind-scrollbar"),
     require("tailwindcss-safe-area"),
+    require("tailwindcss-interaction-media"),
+    require("tailwindcss-animate"),
     require("@vidstack/react/tailwind.cjs"),
     plugin(({ addUtilities, addVariant, matchUtilities, theme }) => {
       const utils = {
@@ -161,7 +163,8 @@ export default {
           top: "50%",
           "--tw-translate-x": "-50%",
           "--tw-translate-y": "-50%",
-          transform: "var(--tw-transform)",
+          transform:
+            "translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))",
         },
       }
 

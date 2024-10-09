@@ -1,177 +1,211 @@
-/*
- *  Copyright 2021-present Etherna Sagl
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+import "@vidstack/react/player/styles/base.css"
+import "@vidstack/react/player/styles/default/captions.css"
 
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useRef } from "react"
+import { Captions, isHLSProvider, MediaPlayer, MediaProvider, Track } from "@vidstack/react"
 
-import PlayerAudio from "./PlayerAudio"
-import PlayerVideo from "./PlayerVideo"
-import BytesCounter from "./slices/BytesCounter"
-import PlayerShortcuts from "./slices/PlayerShortcuts"
-import PlayerPlaceholder from "@/components/placeholders/PlayerPlaceholder"
+import { Spinner } from "../ui/display"
+import { AudioLayout } from "./layouts/audio-layout"
+import { VideoLayout } from "./layouts/video-layout"
+import * as Overlays from "./overlays"
+import { PlayerShortcuts } from "./shotcuts"
+import { getSourceResolution } from "./utils"
+import Fraction from "@/classes/Fraction"
+import { useBzzUrlResolver } from "@/hooks/useBzzUrlResolver"
 import useVideoTracking from "@/hooks/useVideoTracking"
-import usePlayerStore from "@/stores/player"
+import { usePlayerStore } from "@/stores/player"
 import { cn } from "@/utils/classnames"
-import { getAccessToken } from "@/utils/jwt"
-import http from "@/utils/request"
+import { getAccessToken, withAccessToken } from "@/utils/jwt"
 
-import type { Profile, VideoSource } from "@etherna/sdk-js"
-import type { MediaErrorDetail, MediaErrorEvent, MediaPlayerInstance } from "@vidstack/react"
+import type { VideoWithOwner } from "@/types/video"
+import type {
+  DASHSrc,
+  HLSSrc,
+  MediaPlayerInstance,
+  MediaProviderAdapter,
+  VideoSrc,
+} from "@vidstack/react"
 
-type PlayerProps = {
-  hash: string
-  title: string | undefined
-  owner: Profile | undefined | null
-  sources: VideoSource[]
-  posterUrl?: string | null
-  posterBlurDataURL?: string | null
+interface PlayerProps {
+  videoManifest: Partial<VideoWithOwner>
+  resourceId: string
   embed?: boolean
-  aspectRatio?: number | null
+  bytePrice?: number
 }
 
-const Player: React.FC<PlayerProps> = ({
-  hash,
-  title,
-  owner,
-  sources,
-  posterUrl,
-  posterBlurDataURL,
-  embed,
-  aspectRatio,
-}) => {
-  const [player, setPlayer] = useState<MediaPlayerInstance | null>(null)
-  const currentHash = usePlayerStore(state => state.hash)
-  const currentSource = usePlayerStore(state => state.currentSource)
-  const isPlaying = usePlayerStore(state => state.isPlaying)
-  const isIdle = usePlayerStore(state => state.isIdle)
-  const loadPlayer = usePlayerStore(state => state.loadPlayer)
+export function Player({ videoManifest, resourceId, embed, bytePrice }: PlayerProps) {
+  const player = useRef<MediaPlayerInstance>(null)
+  const viewType = usePlayerStore(state => state.viewType)
+  const setBytePrice = usePlayerStore(state => state.setBytePrice)
   const setSources = usePlayerStore(state => state.setSources)
-  const showError = usePlayerStore(state => state.showError)
-  useVideoTracking(player)
+  const resolver = useBzzUrlResolver({ appendToken: true })
 
-  const isMp4Source = useMemo(() => {
-    return currentSource?.type === "mp4"
-  }, [currentSource])
+  useVideoTracking(player.current)
 
-  const isAudioSource = useMemo(() => {
-    return currentSource?.type !== "mp4" && /audio.(mpd|m3u8)$/.test(currentSource?.path ?? "")
-  }, [currentSource])
-
-  useEffect(() => {
-    if (!player) return
-    loadPlayer(player)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [player])
-
-  useEffect(() => {
-    if (hash && sources.length > 0) {
-      setSources(hash, sources)
+  const sources = useMemo(() => {
+    if (!videoManifest?.details) {
+      return []
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hash, sources])
+    return videoManifest.details.sources
+      .map(s => ({
+        ...s,
+        url: s.type === "mp4" ? withAccessToken(s.url) : s.url,
+      }))
+      .sort((a, b) => getSourceResolution(b) - getSourceResolution(a))
+  }, [videoManifest])
 
-  const onPlaybackError = useCallback(
-    async (err: MediaErrorDetail, event: MediaErrorEvent) => {
-      console.error(err)
-
-      if (!currentSource?.url) return
-
-      // get error code
-      try {
-        await http.get(currentSource.url, {
-          headers: {
-            Range: "bytes=0-0",
-            Authorization: `Bearer ${getAccessToken()}`,
-          },
-        })
-      } catch (error: any) {
-        console.warn(error)
-
-        if (error.response) {
-          showError(error.response.status, "")
-        } else {
-          showError(500, error.message)
+  const src = useMemo(() => {
+    return sources
+      .filter(
+        s =>
+          (s.type === "mp4" && viewType === "video") ||
+          (s.type !== "mp4" && s.isMaster && viewType === "video") ||
+          (s.type !== "mp4" && s.isAudio && viewType === "audio")
+      )
+      .map(source => {
+        switch (source.type) {
+          case "mp4":
+            return {
+              src: source.url,
+              type: "video/mp4",
+              bitrate: source.bitrate,
+              height: parseInt(source.quality),
+              width: Math.round(
+                parseInt(source.quality) * (videoManifest.details?.aspectRatio ?? 16 / 9)
+              ),
+            } satisfies VideoSrc
+          case "hls":
+            return {
+              src: source.url,
+              type: "application/x-mpegurl",
+            } satisfies HLSSrc
+          case "dash":
+            return {
+              src: source.url,
+              type: "application/dash+xml",
+            } satisfies DASHSrc
         }
-      }
-    },
-    [currentSource, showError]
-  )
+      })
+  }, [sources, videoManifest.details?.aspectRatio, viewType])
 
-  const xhrSetup = useCallback((xhr: XMLHttpRequest) => {
-    const token = getAccessToken()
-    if (token) {
-      xhr.setRequestHeader("Authorization", `Bearer ${token}`)
+  useEffect(() => {
+    if (!player.current) {
+      return
     }
-  }, [])
 
-  if (!currentSource || !currentHash || currentHash !== hash) {
-    return !embed ? <PlayerPlaceholder /> : null
+    console.debug("Video manifest: ", videoManifest)
+
+    setSources(sources)
+    setBytePrice(bytePrice ?? 0)
+
+    // Subscribe to state updates.
+    const unsub = player.current.subscribe(({}) => {})
+
+    return () => {
+      unsub()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sources])
+
+  function onProviderChange(provider: MediaProviderAdapter | null) {
+    // We can configure provider's here.
+    if (isHLSProvider(provider)) {
+      provider.library = () => import("hls.js")
+      provider.config.autoStartLoad = false
+      provider.config.maxBufferLength = 3
+      provider.config = {
+        xhrSetup: (xhr: XMLHttpRequest) => {
+          const token = getAccessToken()
+          if (token) {
+            xhr.setRequestHeader("Authorization", `Bearer ${token}`)
+          }
+        },
+      }
+    }
   }
 
   return (
-    <PlayerShortcuts>
-      <div
-        className={cn("relative z-0 flex flex-col overflow-hidden", {
-          "-mx-4 mb-6 md:mx-0 lg:mt-6": !embed,
-          "landscape-touch:fixed landscape-touch:inset-0 landscape-touch:z-10": !embed,
-          "landscape-touch:mb-0 landscape-touch:pb-15": !embed,
+    <MediaPlayer
+      ref={player}
+      className={cn(
+        "group w-full overflow-hidden bg-slate-50 bg-cover bg-no-repeat font-sans text-white ring-sky-500 data-[focus]:ring-4 dark:bg-slate-950",
+        {
+          "h-28": viewType === "audio",
+          "h-56": viewType === "audio" && videoManifest.preview?.thumbnail,
+          "max-h-[80vh] md:mx-0 md:rounded-md lg:mt-6 [&_video]:h-full": !embed,
+          "landscape-touch:!fixed landscape-touch:inset-0 landscape-touch:z-50 landscape-touch:h-full landscape-touch:max-h-full md:landscape-touch:rounded-none":
+            !embed,
           "h-screen w-screen": embed,
-        })}
-        data-player
-        data-playing={`${isPlaying}`}
-        data-mouse-idle={`${isIdle}`}
-      >
-        {currentSource && (
-          <>
-            {isAudioSource ? (
-              <PlayerAudio
-                title={title || hash}
-                hash={hash}
-                owner={owner}
-                source={currentSource}
-                posterUrl={posterUrl ?? undefined}
-                posterBlurDataURL={posterBlurDataURL ?? undefined}
-                embed={embed}
-                xhrSetup={xhrSetup}
-                onPlaybackError={onPlaybackError}
-                ref={p => p && p !== player && setPlayer(p)}
-              />
-            ) : (
-              <PlayerVideo
-                title={title || hash}
-                hash={hash}
-                owner={owner}
-                source={currentSource}
-                sourceType={isMp4Source ? "mp4" : "auto"}
-                posterUrl={posterUrl ?? undefined}
-                posterBlurDataURL={posterBlurDataURL ?? undefined}
-                embed={embed}
-                aspectRatio={aspectRatio}
-                xhrSetup={xhrSetup}
-                onPlaybackError={onPlaybackError}
-                ref={p => p && p !== player && setPlayer(p)}
-              />
-            )}
-          </>
-        )}
-      </div>
+        }
+      )}
+      src={src}
+      viewType={viewType}
+      title={videoManifest.preview?.title}
+      aspectRatio={
+        viewType === "video"
+          ? videoManifest.details?.aspectRatio
+            ? Fraction.fromDecimal(videoManifest.details?.aspectRatio).toString()
+            : "16 / 9"
+          : undefined
+      }
+      preload="none"
+      onProviderChange={onProviderChange}
+      data-matomo-title={videoManifest.preview?.title}
+      data-matomo-resource={resourceId}
+      style={{
+        backgroundImage: videoManifest.preview?.thumbnail?.blurredBase64
+          ? `url(${videoManifest.preview?.thumbnail?.blurredBase64})`
+          : undefined,
+      }}
+      keyDisabled
+      crossOrigin
+      playsInline
+    >
+      <MediaProvider>
+        <Overlays.Poster
+          thumbnail={videoManifest.preview?.thumbnail}
+          alt={`Poster for ${videoManifest.preview?.title}`}
+          crossOrigin
+        />
+        {videoManifest.details?.captions
+          .sort((a, b) =>
+            b.lang.startsWith("en")
+              ? 1
+              : a.lang.startsWith("en")
+                ? -1
+                : a.lang.localeCompare(b.lang)
+          )
+          .map(track => (
+            <Track
+              key={track.lang}
+              src={
+                videoManifest.reference ? resolver(videoManifest.reference, track.path) : undefined
+              }
+              kind="subtitles"
+              label={track.label}
+              lang={track.lang}
+            />
+          ))}
+      </MediaProvider>
 
-      <BytesCounter />
-    </PlayerShortcuts>
+      {viewType === "audio" && player.current?.state.canPlay && <AudioLayout />}
+      {viewType === "video" && player.current?.state.canPlay && <VideoLayout />}
+
+      {player.current?.state.waiting ||
+        (player.current?.state.seeking && <Spinner className="absolute-center" size={32} />)}
+
+      {embed && <Overlays.WatchOnEtherna hash={resourceId} />}
+
+      <Captions
+        className="vds-captions media-captions absolute inset-x-0 bottom-2 z-10 select-none break-words opacity-0 transition-[opacity,bottom] duration-100 aria-hidden:hidden media-captions:opacity-100 media-controls:bottom-[85px] media-preview:opacity-0"
+        style={{
+          "--cue-default-font-size": "1rem",
+        }}
+      />
+
+      <Overlays.Startup />
+
+      <PlayerShortcuts />
+    </MediaPlayer>
   )
 }
-
-export default Player

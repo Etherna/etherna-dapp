@@ -28,7 +28,6 @@ module.exports = {
         ? ["error", { allow: ["info", "warn", "error", "debug", "table"] }]
         : "off",
     "react/self-closing-comp": ["warn", { component: true, html: true }],
-    "no-restricted-imports": ["warn", { patterns: ["../"] }],
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
     "react/display-name": "off",

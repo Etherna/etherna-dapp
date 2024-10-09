@@ -15,7 +15,7 @@
  *
  */
 
-import React, { useMemo } from "react"
+import React, { useEffect, useMemo } from "react"
 
 import VideoOffersBadge from "./VideoOffersBadge"
 import VideoOffersButton from "./VideoOffersButton"
@@ -26,6 +26,8 @@ import VideoStatusBadge from "./VideoStatusBadge"
 import useVideoOffers from "@/hooks/useVideoOffers"
 import useVideoPinning from "@/hooks/useVideoPinning"
 import useExtensionsStore from "@/stores/extensions"
+import { usePlayerStore } from "@/stores/player"
+import useSessionStore from "@/stores/session"
 import { cn } from "@/utils/classnames"
 import dayjs from "@/utils/dayjs"
 
@@ -45,9 +47,21 @@ const VideoDetailsInfoBar: React.FC<VideoDetailsInfoBarProps> = ({ video, videoO
     disable: gatewayType === "bee",
   })
   const { videoPinningStatus, pinResources, unpinResources } = useVideoPinning(video)
+  const bytePrice = useSessionStore(state => state.bytesPrice)
+  const setPlayerBytePrice = usePlayerStore(state => state.setBytePrice)
+
   const indexStatus = useMemo(() => {
     return video.indexesStatus[indexUrl]
   }, [indexUrl, video.indexesStatus])
+
+  useEffect(() => {
+    if (videoOffersStatus?.offersStatus === "full") {
+      setPlayerBytePrice(0)
+    } else {
+      setPlayerBytePrice(bytePrice ?? 0)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [videoOffersStatus])
 
   return (
     <div className="flex flex-col">
