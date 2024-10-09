@@ -1,10 +1,14 @@
+import {
+  AUDIO_MANIFEST_REGEX,
+  MASTER_MANIFEST_REGEX,
+  VIDEO_MANIFEST_REGEX,
+} from "@etherna/sdk-js/utils"
 import { useStore } from "zustand"
 import { devtools } from "zustand/middleware"
 import { immer } from "zustand/middleware/immer"
 import { createStore } from "zustand/vanilla"
 
 import logger from "./middlewares/log"
-import { AUDIO_REGEX, MANIFEST_REGEX, VIDEO_REGEX } from "@/components/player/utils"
 
 import type { VideoQuality, VideoSource } from "@etherna/sdk-js"
 import type { Draft } from "immer"
@@ -36,14 +40,14 @@ const actions = (set: SetFunc, get: GetFunc) => ({
           if (source.type === "mp4") {
             return parseInt(source.quality)
           }
-          if (MANIFEST_REGEX.test(source.path)) {
+          if (MASTER_MANIFEST_REGEX.test(source.path)) {
             return -1
           }
-          if (AUDIO_REGEX.test(source.path)) {
+          if (AUDIO_MANIFEST_REGEX.test(source.path)) {
             return 0
           }
-          if (VIDEO_REGEX.test(source.path)) {
-            const matches = VIDEO_REGEX.exec(source.path)
+          if (VIDEO_MANIFEST_REGEX.test(source.path)) {
+            const matches = VIDEO_MANIFEST_REGEX.exec(source.path)
             return matches?.groups?.q ? parseInt(matches.groups.q) : 0
           }
           return 0

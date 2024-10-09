@@ -93,13 +93,23 @@ export function Player({ videoManifest, resourceId, embed, bytePrice }: PlayerPr
       return
     }
 
-    console.debug("Video manifest: ", videoManifest)
+    console.info("Video manifest: ", videoManifest)
 
     setSources(sources)
     setBytePrice(bytePrice ?? 0)
 
     // Subscribe to state updates.
-    const unsub = player.current.subscribe(({}) => {})
+    const unsub = player.current.subscribe(state => {
+      console.group("Player state")
+      console.debug("buffered", state.buffered)
+      console.debug("canPlay", state.canPlay)
+      console.debug("canSeek", state.canSeek)
+      console.debug("quality", state.quality, state.qualities)
+      console.debug("seekable", state.seekable)
+      console.debug("seeking", state.seeking)
+      console.debug("waiting", state.waiting)
+      console.groupEnd()
+    })
 
     return () => {
       unsub()
@@ -188,13 +198,8 @@ export function Player({ videoManifest, resourceId, embed, bytePrice }: PlayerPr
           ))}
       </MediaProvider>
 
-      {viewType === "audio" && player.current?.state.canPlay && <AudioLayout />}
-      {viewType === "video" && player.current?.state.canPlay && <VideoLayout />}
-
-      {player.current?.state.waiting ||
-        (player.current?.state.seeking && <Spinner className="absolute-center" size={32} />)}
-
-      {embed && <Overlays.WatchOnEtherna hash={resourceId} />}
+      {viewType === "audio" && player.current && <AudioLayout />}
+      {viewType === "video" && player.current && <VideoLayout />}
 
       <Captions
         className="vds-captions media-captions absolute inset-x-0 bottom-2 z-10 select-none break-words opacity-0 transition-[opacity,bottom] duration-100 aria-hidden:hidden media-captions:opacity-100 media-controls:bottom-[85px] media-preview:opacity-0"
@@ -203,7 +208,10 @@ export function Player({ videoManifest, resourceId, embed, bytePrice }: PlayerPr
         }}
       />
 
+      {embed && <Overlays.WatchOnEtherna hash={resourceId} />}
       <Overlays.Startup />
+      <Overlays.Loading />
+      <Overlays.Error />
 
       <PlayerShortcuts />
     </MediaPlayer>

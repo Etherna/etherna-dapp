@@ -3,7 +3,11 @@ import * as RadioGroup from "@radix-ui/react-radio-group"
 import { Time, useMediaState, Poster as VidstackPoster } from "@vidstack/react"
 import { CircleDollarSign, PlayIcon } from "lucide-react"
 
+import { ExclamationCircleIcon, LockClosedIcon } from "@heroicons/react/24/solid"
+import { ReactComponent as CreditErrorIcon } from "@/assets/icons/credit-error.svg"
+
 import Logo from "../common/Logo"
+import { Spinner } from "../ui/display"
 import { ChangeQualityRadio } from "./menus"
 import routes from "@/routes"
 import { usePlayerStore } from "@/stores/player"
@@ -140,6 +144,65 @@ export function WatchOnEtherna({ hash }: { hash: string }) {
         <span>Watch on</span>
         <Logo className="h-5 grayscale" forceWhite />
       </a>
+    </div>
+  )
+}
+
+export function Loading() {
+  const error = useMediaState("error")
+  const waiting = useMediaState("waiting")
+  const seeking = useMediaState("seeking")
+
+  const isLoading = !error && (waiting || seeking)
+
+  if (!isLoading) {
+    return null
+  }
+
+  return <Spinner className="absolute-center" size={32} />
+}
+
+export function Error() {
+  const error = useMediaState("error")
+
+  if (!error) {
+    return null
+  }
+
+  const statusCode = parseInt(/status ([4|5]\d\d)/.exec(error.message)?.[1] ?? "0")
+
+  const ErrorIcon = (props: React.ComponentProps<"svg">) => {
+    switch (statusCode) {
+      case 401:
+        return <LockClosedIcon {...props} />
+      case 402:
+        return <CreditErrorIcon {...props} />
+      case 403:
+        return <LockClosedIcon {...props} />
+      default:
+        return <ExclamationCircleIcon {...props} />
+    }
+  }
+
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-red-200/80 p-3 text-slate-950 backdrop-blur-2xl dark:bg-red-950/80 dark:text-slate-50 md:gap-5 md:p-6">
+      <ErrorIcon className="size-8 md:size-12" />
+      <div className="max-w-xl py-6 text-center text-lg font-semibold md:text-xl lg:text-2xl">
+        {(() => {
+          switch (statusCode) {
+            case 401:
+              return "This is a pay to watch video. To watch this content you need to signin and have some credit available."
+            case 402:
+              return "You don't have enough credit. Please add some more to enjoin this content."
+            case 403:
+              return "You don't have permission to access this resource."
+            case 404:
+              return "Video source not found."
+            default:
+              return "Cannot play this video. An unkown error occured."
+          }
+        })()}
+      </div>
     </div>
   )
 }
