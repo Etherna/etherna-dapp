@@ -117,7 +117,7 @@
     "tailwindcss-interaction-media": "0.1.0",
     "tailwindcss-safe-area": "0.5.1",
     "typescript": "5.5.4",
-    "vite": "5.3.4",
+    "vite": "5.3.6",
     "vite-plugin-checker": "0.7.2",
     "vite-plugin-dynamic-base": "1.1.0",
     "vite-plugin-eslint": "1.8.1",
