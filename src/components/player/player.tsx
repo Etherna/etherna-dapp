@@ -100,15 +100,15 @@ export function Player({ videoManifest, resourceId, embed, bytePrice }: PlayerPr
 
     // Subscribe to state updates.
     const unsub = player.current.subscribe(state => {
-      console.group("Player state")
-      console.debug("buffered", state.buffered)
-      console.debug("canPlay", state.canPlay)
-      console.debug("canSeek", state.canSeek)
-      console.debug("quality", state.quality, state.qualities)
-      console.debug("seekable", state.seekable)
-      console.debug("seeking", state.seeking)
-      console.debug("waiting", state.waiting)
-      console.groupEnd()
+      // console.group("Player state")
+      // console.debug("buffered", state.buffered)
+      // console.debug("canPlay", state.canPlay)
+      // console.debug("canSeek", state.canSeek)
+      // console.debug("quality", state.quality, state.qualities)
+      // console.debug("seekable", state.seekable)
+      // console.debug("seeking", state.seeking)
+      // console.debug("waiting", state.waiting)
+      // console.groupEnd()
     })
 
     return () => {
