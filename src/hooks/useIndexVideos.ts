@@ -160,11 +160,7 @@ export default function useIndexVideos(opts: SwarmVideosOptions = {}) {
           : await indexClient.videos.fetchLatestVideos(page, fetchCount)
 
         const newVideos = indexVideos.elements.map(indexVideo => {
-          const swarmVideoReader = new SwarmVideo.Reader(indexVideo.id, {
-            beeClient,
-            indexClient,
-          })
-          const videoRaw = JSON.stringify(swarmVideoReader.indexPreviewToRaw(indexVideo).preview)
+          const videoRaw = JSON.stringify(SwarmVideo.Reader.indexVideoPreviewToRaw(indexVideo))
           const reference = indexVideo.hash
           const preview = new VideoDeserializer(beeClient.url).deserializePreview(videoRaw, {
             reference,
