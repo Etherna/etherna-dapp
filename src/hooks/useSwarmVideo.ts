@@ -75,21 +75,11 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
 
       if (!newVideo && indexVideo?.lastValidManifest?.sources.length) {
         const deserializer = new VideoDeserializer(beeClient.url)
-        const rawVideo = JSON.stringify({
-          ownerAddress: indexVideo.ownerAddress,
-          title: indexVideo.lastValidManifest.title,
-          description: indexVideo.lastValidManifest.description,
-          thumbnail: indexVideo.lastValidManifest.thumbnail,
-          batchId: indexVideo.lastValidManifest.batchId ?? null,
-          duration: indexVideo.lastValidManifest.duration,
-          sources: indexVideo.lastValidManifest.sources,
-          createdAt: dateToTimestamp(new Date(indexVideo.creationDateTime)),
-          updatedAt: indexVideo.lastValidManifest.updatedAt ?? null,
-        })
-        const preview = deserializer.deserializePreview(rawVideo, {
+        const parsedIndexVideo = JSON.stringify(SwarmVideo.Reader.indexVideoToRaw(indexVideo))
+        const preview = deserializer.deserializePreview(parsedIndexVideo, {
           reference: indexVideo.lastValidManifest.hash,
         })
-        const details = deserializer.deserializeDetails(rawVideo, {
+        const details = deserializer.deserializeDetails(parsedIndexVideo, {
           reference: indexVideo.lastValidManifest.hash,
         })
         newVideo = {
@@ -123,6 +113,7 @@ export default function useSwarmVideo(opts: SwarmVideoOptions) {
 
       setVideo(newVideo)
     } catch (error) {
+      console.error(error)
       setNotFound(true)
     } finally {
       setIsloading(false)

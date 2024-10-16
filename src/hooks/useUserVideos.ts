@@ -163,10 +163,7 @@ export default function useUserVideos(opts: UseUserVideosOptions) {
         .filter(vid => vid.lastValidManifest)
         .map(indexVideo => {
           try {
-            const videoReader = new SwarmVideo.Reader(indexVideo.lastValidManifest!.hash, {
-              beeClient,
-            })
-            const rawVideo = videoReader.indexVideoToRaw(indexVideo)
+            const rawVideo = SwarmVideo.Reader.indexVideoToRaw(indexVideo)
             const deserializer = new VideoDeserializer(beeClient.url)
             const preview = deserializer.deserializePreview(JSON.stringify(rawVideo.preview), {
               reference: indexVideo.lastValidManifest!.hash,
