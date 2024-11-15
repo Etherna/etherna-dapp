@@ -21,6 +21,8 @@ import { Outlet, useNavigate } from "react-router-dom"
 import { WebStorageStateStore } from "oidc-client-ts"
 
 import { getBaseOrigin } from "@/routes"
+import useClientsStore from "@/stores/clients"
+import { getAccessToken } from "@/utils/jwt"
 
 import type { User } from "oidc-client-ts"
 
@@ -53,6 +55,7 @@ const IdentityRoute: React.FC = () => {
 const IdentityRouteSilentRenew: React.FC = () => {
   const auth = useAuth()
   const hasTriedSilentRenew = useRef(false)
+  const updateAccesToken = useClientsStore(state => state.updateBeeClientAccessToken)
 
   if (auth.isLoading) return null
   if (
@@ -65,6 +68,8 @@ const IdentityRouteSilentRenew: React.FC = () => {
     auth.signinSilent()
     return null
   }
+
+  updateAccesToken(getAccessToken() ?? "")
 
   return <Outlet />
 }

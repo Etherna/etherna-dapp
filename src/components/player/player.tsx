@@ -138,7 +138,7 @@ export function Player({ videoManifest, resourceId, embed, bytePrice }: PlayerPr
     <MediaPlayer
       ref={player}
       className={cn(
-        "group w-full overflow-hidden bg-slate-50 bg-cover bg-no-repeat font-sans text-white ring-sky-500 data-[focus]:ring-4 dark:bg-slate-950",
+        "group relative w-full overflow-hidden bg-slate-50 bg-cover bg-no-repeat font-sans text-white ring-sky-500 data-[focus]:ring-4 dark:bg-slate-950",
         {
           "h-28": viewType === "audio",
           "h-56": viewType === "audio" && videoManifest.preview?.thumbnail,

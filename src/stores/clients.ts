@@ -7,6 +7,7 @@ import BeeClient from "@/classes/BeeClient"
 import GatewayClient from "@/classes/GatewayClient"
 import IndexClient from "@/classes/IndexClient"
 import SSOClient from "@/classes/SSOClient"
+import { createRequest } from "@/utils/request"
 
 import type { PostageBatch, Signer } from "@etherna/sdk-js/clients"
 import type { Draft } from "immer"
@@ -47,6 +48,17 @@ const actions = (set: SetFunc, get: GetFunc) => ({
   updateBeeClientBatches: (batches: PostageBatch[]) => {
     set(state => {
       state.beeClient.postageBatches = batches
+    })
+  },
+  updateBeeClientAccessToken: (token: string) => {
+    set(state => {
+      state.beeClient.request = createRequest({
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: false,
+        baseURL: state.beeClient.url,
+      })
     })
   },
 })
