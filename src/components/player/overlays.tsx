@@ -134,7 +134,7 @@ export function Startup() {
 
 export function WatchOnEtherna({ hash }: { hash: string }) {
   return (
-    <div className="absolute bottom-2 left-0 z-1 -translate-x-full transition-transform duration-200 ease-out media-paused:translate-x-0 media-started:bottom-auto media-started:top-6 md:bottom-auto md:top-6">
+    <div className="absolute bottom-2 left-0 z-10 -translate-x-full transition-transform duration-200 ease-out media-paused:translate-x-0 media-started:bottom-auto media-started:top-6 md:bottom-auto md:top-6">
       <a
         className="inline-flex items-center space-x-3 rounded-r-md bg-gray-800/60 p-3 text-sm font-medium tracking-tight text-white hover:text-white sm:p-4"
         href={routes.withOrigin.watch(hash)}

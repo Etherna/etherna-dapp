@@ -73,12 +73,13 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       data-component="progress-bar"
     >
       <div
-        className={cn("h-full rounded-full transition-[width] duration-300", {
+        className={cn("h-full rounded-full transition-[width]", {
           "bg-primary-500 text-primary-500": color === "primary",
           "bg-green-500 text-green-500": color === "success",
           "bg-red-500 text-red-500": color === "error",
           "bg-gray-400 text-gray-500 dark:bg-gray-600 dark:text-gray-300": color === "muted",
           "animate-[pulse_4s_infinite]": color === "rainbow",
+          "duration-300": !indeterminate,
           "absolute inset-0 w-full animate-slide": indeterminate,
         })}
         style={{
