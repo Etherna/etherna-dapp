@@ -22,11 +22,13 @@ export default class Fraction {
   }
 
   static findPeriodDigits(decimal: number) {
-    const [num, den] = decimal.toString().split(".")
+    let [num, den] = decimal.toString().split(".")
 
-    if (!num || !den) {
+    if (!num) {
       throw new Error("Invalid decimal")
     }
+
+    den ??= "0"
 
     const isStringRepeating = (s: string) => (s + s).indexOf(s, 1) < s.length
     const repeatingString = (s: string) => s.slice(0, (s + s).indexOf(s, 1))
@@ -52,11 +54,14 @@ export default class Fraction {
   }
 
   static fromDecimal(decimal: number) {
-    const [num, den] = decimal.toString().split(".")
+    let [num, den] = decimal.toString().split(".")
 
-    if (!num || !den) {
+
+    if (!num) {
       throw new Error("Invalid decimal")
     }
+
+    den ??= "0"
 
     const { isPeriodic, repeatingDigits } = Fraction.findPeriodDigits(decimal)
 
